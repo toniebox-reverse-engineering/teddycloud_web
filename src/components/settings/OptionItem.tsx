@@ -20,7 +20,6 @@ export const OptionItem = ({ option }: OptionItemProps) => {
     fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/get/${iD}`)
       .then((response) => response.text())
       .then((data) => {
-        console.log("data", data);
         setOptionValue(data);
         if (type === "bool") {
           setValue(data === "true" ? true : false);

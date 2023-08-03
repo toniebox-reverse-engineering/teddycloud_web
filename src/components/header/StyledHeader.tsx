@@ -6,6 +6,7 @@ import logoImg from "../../assets/logo.png";
 import { Menu, MenuProps } from "antd";
 import { Link } from "react-router-dom";
 import { changeLanguage } from "i18next";
+import { ServerStatus } from "./ServerStatus";
 
 const StyledLogo = styled.img`
   height: 32px;
@@ -42,6 +43,7 @@ export const StyledHeader = () => {
     <StyledHeaderComponent>
       <StyledLogo src={logoImg} /> TeddyCloud Server
       <Menu theme="dark" mode="horizontal" items={mainNav} />
+      <ServerStatus />
       <StyledLanguageSwitcher>
         <div>{t("language.change")}</div>
         <span onClick={() => changeLanguage("en")}>EN</span>

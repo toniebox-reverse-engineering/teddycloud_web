@@ -23,7 +23,6 @@ export const StatsPage = () => {
       const statsRequest = (await api.apiStatsGet) as StatsList;
       if (statsRequest?.stats?.length && statsRequest?.stats?.length > 0) {
         setStats(statsRequest);
-        console.log("statsRequest", statsRequest);
       }
     };
 
@@ -43,7 +42,6 @@ export const StatsPage = () => {
         <StyledContent>
           <h1>{t(`home.stats.title`)}</h1>
           {stats?.stats?.map((stat) => {
-            console.log("stat", stat);
             return (
               <div key={stat.iD}>
                 <h2>{t("home.stats." + stat.iD)}</h2>

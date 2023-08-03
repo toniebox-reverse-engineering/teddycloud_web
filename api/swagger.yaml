@@ -16,7 +16,9 @@ tags:
   - name: TeddyCloud
     description: TeddyCloud endpoints
   - name: Boxine
-    description: Boxine endpoints
+    description: Boxine endpoints but mostly responded by teddycloud server
+  - name: BoxineForced
+    description: Boxine endpoints forced to not be answered by TeddyCloud. Mostly the same as the Boxine-Endpoints but with /reversed
 
 # -----------------------------------
 paths:
@@ -147,6 +149,31 @@ paths:
     get:
       tags:
         - Boxine
+      description: Get unix timestamp.
+      responses:
+        '200':
+          description: Unix timestamp
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '406':
+          $ref: '#/components/responses/Unacceptable'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError'
+  #
+  # Boxine Forced
+  #
+  /reverse/v1/time:
+    get:
+      tags:
+        - BoxineForced
       description: Get unix timestamp.
       responses:
         '200':
