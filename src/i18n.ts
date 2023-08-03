@@ -15,7 +15,7 @@ i18n
     debug: false,
     backend: {
       queryStringParams: { v: "2023072701" },
-      loadPath: "/translations/{{lng}}.json",
+      loadPath: `${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/translations/{{lng}}.json`,
     },
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

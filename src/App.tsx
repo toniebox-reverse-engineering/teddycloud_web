@@ -17,14 +17,14 @@ function App() {
           <StyledHeader />
           <Layout>
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/home/stats" element={<StatsPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
+              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/`} element={<HomePage />} />
+              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/home/stats`} element={<StatsPage />} />
+              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/settings`} element={<SettingsPage />} />
               <Route
-                path="/settings/certificates"
+                path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/settings/certificates`}
                 element={<CertificatesPage />}
               />
-              <Route path="/uitest" element={<UiTest />} />
+              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/uitest`} element={<UiTest />} />
             </Routes>
           </Layout>
         </Router>
