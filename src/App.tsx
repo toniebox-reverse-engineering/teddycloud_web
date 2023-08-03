@@ -13,18 +13,18 @@ function App() {
   return (
     <div className="App">
       <Layout>
-        <Router>
+        <Router basename={"/web"}>
           <StyledHeader />
           <Layout>
             <Routes>
-              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/`} element={<HomePage />} />
-              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/home/stats`} element={<StatsPage />} />
-              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/settings`} element={<SettingsPage />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/home/stats" element={<StatsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route
-                path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/settings/certificates`}
+                path="/settings/certificates"
                 element={<CertificatesPage />}
               />
-              <Route path={`${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/uitest`} element={<UiTest />} />
+              <Route path="/uitest" element={<UiTest />} />
             </Routes>
           </Layout>
         </Router>
