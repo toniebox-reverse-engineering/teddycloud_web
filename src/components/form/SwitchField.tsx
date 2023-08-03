@@ -37,7 +37,7 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
         checked={isChecked}
         onChange={(value: boolean) => {
           //TODO: Fix fetch and replace with apiClient
-          fetch(`http://localhost/api/set/${name}`, {
+          fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/set/${name}`, {
             method: "POST",
             body: value.toString(),
             headers: {

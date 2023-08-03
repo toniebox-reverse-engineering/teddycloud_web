@@ -28,7 +28,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
         {...inputProps}
         {...field}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
-          fetch(`http://localhost/api/set/${name}`, {
+          fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/set/${name}`, {
             method: "POST",
             body: event.target.value,
             headers: {
