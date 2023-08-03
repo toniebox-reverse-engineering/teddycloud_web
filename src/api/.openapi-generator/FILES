@@ -1,4 +1,5 @@
 .openapi-generator-ignore
+apis/BoxineApi.ts
 apis/GenericApi.ts
 apis/TeddyCloudApi.ts
 apis/index.ts

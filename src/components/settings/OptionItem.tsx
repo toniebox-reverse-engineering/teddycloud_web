@@ -17,7 +17,7 @@ export const OptionItem = ({ option }: OptionItemProps) => {
 
   useEffect(() => {
     // TODO: fetch option value with API Client generator
-    fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/get/${iD}`)
+    fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/get/${iD}`)
       .then((response) => response.text())
       .then((data) => {
         console.log("data", data);

@@ -28,7 +28,7 @@ import {
     StatsListToJSON,
 } from '../models';
 
-export interface SetCloudCacheContentPostRequest {
+export interface ApiSetCloudCacheContentPostRequest {
     body: boolean;
 }
 
@@ -40,13 +40,13 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all options
      */
-    async getIndexGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OptionsList>> {
+    async apiGetIndexGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OptionsList>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/getIndex`,
+            path: `/api/getIndex`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -58,17 +58,17 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all options
      */
-    async getIndexGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OptionsList> {
-        const response = await this.getIndexGetRaw(initOverrides);
+    async apiGetIndexGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OptionsList> {
+        const response = await this.apiGetIndexGetRaw(initOverrides);
         return await response.value();
     }
 
     /**
      * Cache cloud content on local server
      */
-    async setCloudCacheContentPostRaw(requestParameters: SetCloudCacheContentPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async apiSetCloudCacheContentPostRaw(requestParameters: ApiSetCloudCacheContentPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling setCloudCacheContentPost.');
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling apiSetCloudCacheContentPost.');
         }
 
         const queryParameters: any = {};
@@ -78,7 +78,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'text/plain';
 
         const response = await this.request({
-            path: `/set/cloud.cacheContent`,
+            path: `/api/set/cloud.cacheContent`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -91,20 +91,20 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * Cache cloud content on local server
      */
-    async setCloudCacheContentPost(requestParameters: SetCloudCacheContentPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.setCloudCacheContentPostRaw(requestParameters, initOverrides);
+    async apiSetCloudCacheContentPost(requestParameters: ApiSetCloudCacheContentPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiSetCloudCacheContentPostRaw(requestParameters, initOverrides);
     }
 
     /**
      * Load all available stats.
      */
-    async statsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StatsList>> {
+    async apiStatsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StatsList>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/stats`,
+            path: `/api/stats`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -116,21 +116,21 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * Load all available stats.
      */
-    async statsGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StatsList> {
-        const response = await this.statsGetRaw(initOverrides);
+    async apiStatsGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<StatsList> {
+        const response = await this.apiStatsGetRaw(initOverrides);
         return await response.value();
     }
 
     /**
      * tell server to write to config file
      */
-    async triggerWriteConfigGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async apiTriggerWriteConfigGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/triggerWriteConfig`,
+            path: `/api/triggerWriteConfig`,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -146,8 +146,8 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * tell server to write to config file
      */
-    async triggerWriteConfigGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
-        const response = await this.triggerWriteConfigGetRaw(initOverrides);
+    async apiTriggerWriteConfigGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.apiTriggerWriteConfigGetRaw(initOverrides);
         return await response.value();
     }
 

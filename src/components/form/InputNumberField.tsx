@@ -27,7 +27,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
         {...inputNumberProps}
         {...field}
         onChange={(value: number | undefined | string | null) => {
-          fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/set/${name}`, {
+          fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/set/${name}`, {
             method: "POST",
             body: value?.toString(),
             headers: {

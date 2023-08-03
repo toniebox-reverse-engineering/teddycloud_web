@@ -6,7 +6,7 @@ info:
 
 # -----------------------------------
 servers:
-  - url: http://localhost/api
+  - url: http://localhost
     description: Local development server.
   
 # -----------------------------------
@@ -15,6 +15,8 @@ tags:
     description: Generic endpoints
   - name: TeddyCloud
     description: TeddyCloud endpoints
+  - name: Boxine
+    description: Boxine endpoints
 
 # -----------------------------------
 paths:
@@ -54,7 +56,7 @@ paths:
   #
   # TeddyCloud
   #
-  /stats:
+  /api/stats:
     get:
       tags:
         - TeddyCloud
@@ -77,7 +79,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/InternalServerError'
           
-  /getIndex:
+  /api/getIndex:
     get:
       tags:
         - TeddyCloud
@@ -90,7 +92,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OptionsList'
   
-  /triggerWriteConfig:
+  /api/triggerWriteConfig:
     get:
       tags:
         - TeddyCloud
@@ -113,7 +115,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/InternalServerError'       
           
-  /set/cloud.cacheContent:
+  /api/set/cloud.cacheContent:
     post:
       tags:
         - TeddyCloud
@@ -137,6 +139,33 @@ paths:
           $ref: '#/components/responses/Unacceptable'
         '5XX':
           $ref: '#/components/responses/InternalServerError'
+
+  #
+  # Boxine
+  #
+  /v1/time:
+    get:
+      tags:
+        - Boxine
+      description: Get unix timestamp.
+      responses:
+        '200':
+          description: Unix timestamp
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '406':
+          $ref: '#/components/responses/Unacceptable'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError'
+          
 
 
 # -----------------------------------
