@@ -6,7 +6,7 @@ import {
   StyledLayout,
   StyledSider,
 } from "../../components/StyledComponents";
-import { HomeSubNav } from "../../components/HomeSubNav";
+import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { StatsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 export const StatsPage = () => {
   const { t } = useTranslation();
   const [stats, setStats] = useState<StatsList | undefined>();
-  
+
   useEffect(() => {
     const fetchStats = async () => {
       const statsRequest = (await api.statsGet()) as StatsList;

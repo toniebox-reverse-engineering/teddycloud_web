@@ -6,7 +6,7 @@ import {
   StyledLayout,
   StyledSider,
 } from "../../components/StyledComponents";
-import { HomeSubNav } from "../../components/HomeSubNav";
+import { HomeSubNav } from "../../components/home/HomeSubNav";
 
 export const HomePage = () => {
   const { t } = useTranslation();

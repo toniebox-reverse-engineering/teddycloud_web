@@ -6,11 +6,11 @@ import {
   StyledLayout,
   StyledSider,
 } from "../../components/StyledComponents";
-import { SettingsSubNav } from "../../components/SettingsSubNav";
+import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
-import OptionItem from "../../components/OptionItem";
+import OptionItem from "../../components/settings/OptionItem";
 import { Formik } from "formik";
 import * as Yup from "yup";
 

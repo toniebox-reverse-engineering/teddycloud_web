@@ -6,7 +6,7 @@ import {
   StyledLayout,
   StyledSider,
 } from "../../../components/StyledComponents";
-import { SettingsSubNav } from "../../../components/SettingsSubNav";
+import { SettingsSubNav } from "../../../components/settings/SettingsSubNav";
 
 export const CertificatesPage = () => {
   const { t } = useTranslation();

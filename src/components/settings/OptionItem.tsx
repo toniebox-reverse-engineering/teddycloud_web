@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { OptionsItem } from "../api";
-import { SwitchField } from "./form/SwitchField";
+import { OptionsItem } from "../../api";
+import { SwitchField } from "../form/SwitchField";
 import { useField } from "formik";
-import { InputField } from "./form/InputField";
-import { InputNumberField } from "./form/InputNumberField";
+import { InputField } from "../form/InputField";
+import { InputNumberField } from "../form/InputNumberField";
 
 type OptionItemProps = {
   option: OptionsItem;
