@@ -2,7 +2,7 @@
   "name": "teddycloud-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": "web/",
+  "homepage": "/web",
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.7.0",
     "@types/jest": "^27.5.2",

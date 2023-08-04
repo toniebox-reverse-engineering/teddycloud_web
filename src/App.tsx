@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="App">
       <Layout>
-        <Router basename={"/web"}>
+        <Router basename={process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}>
           <StyledHeader />
           <Layout>
             <Routes>
