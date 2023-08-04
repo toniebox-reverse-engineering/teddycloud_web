@@ -10,27 +10,31 @@ export const ServerStatus = () => {
   const [boxineStatus, setBoxineStatus] = useState<boolean>(false);
   const [teddyStatus, setTeddyStatus] = useState<boolean>(false);
 
+  const fetchTime = async () => {
+    try {
+      const timeRequest = (await api.v1TimeGet()) as String;
+      if (timeRequest.length === 10) {
+        setTeddyStatus(true);
+      }
+    } catch (e) {
+      setTeddyStatus(false);
+    }
+    try {
+      const timeRequest2 = (await api2.reverseV1TimeGet()) as String;
+
+      if (timeRequest2.length === 10) {
+        setBoxineStatus(true);
+      }
+    } catch (e) {
+      setBoxineStatus(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchTime = async () => {
-      try {
-        const timeRequest = (await api.v1TimeGet()) as String;
-        if (timeRequest.length === 10) {
-          setTeddyStatus(true);
-        }
-      } catch (e) {
-        setTeddyStatus(false);
-      }
-      try {
-        const timeRequest2 = (await api2.reverseV1TimeGet()) as String;
+    fetchTime();
+  }, []);
 
-        if (timeRequest2.length === 10) {
-          setBoxineStatus(true);
-        }
-      } catch (e) {
-        setBoxineStatus(false);
-      }
-    };
-
+  useEffect(() => {
     const interval = setInterval(() => {
       fetchTime();
     }, 1000 * 10);
