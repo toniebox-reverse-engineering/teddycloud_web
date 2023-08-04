@@ -26,7 +26,10 @@ export const StatsPage = () => {
       }
     };
 
-    fetchStats();
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 1000 * 10);
+    return () => clearInterval(interval);
   }, []);
 
   return (
