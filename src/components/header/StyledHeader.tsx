@@ -1,12 +1,16 @@
 import { useTranslation } from "react-i18next";
 import { Header } from "antd/es/layout/layout";
 import styled from "styled-components";
+import { MenuOutlined } from "@ant-design/icons";
 
 import logoImg from "../../assets/logo.png";
-import { Menu, MenuProps } from "antd";
+import { Button, Drawer, Menu, MenuProps } from "antd";
 import { Link } from "react-router-dom";
 import { changeLanguage } from "i18next";
 import { ServerStatus } from "./ServerStatus";
+import { useState } from "react";
+import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 
 const StyledLogo = styled.img`
   height: 32px;
@@ -17,21 +21,16 @@ const StyledHeaderComponent = styled(Header)`
   align-items: center;
 `;
 
-const StyledLanguageSwitcher = styled.div`
+const StyledRightPart = styled.div`
   margin-left: auto;
   display: flex;
   align-items: center;
-  > span {
-    margin-left: 8px;
-    cursor: pointer;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 `;
 
 export const StyledHeader = () => {
   const { t } = useTranslation();
+  const [navOpen, setNavOpen] = useState(false);
+
   const mainNav: MenuProps["items"] = [
     { key: "/", label: <Link to="/">{t("home.navigationTitle")}</Link> },
     {
@@ -41,14 +40,34 @@ export const StyledHeader = () => {
   ];
   return (
     <StyledHeaderComponent>
-      <StyledLogo src={logoImg} /> TeddyCloud Server
-      <Menu theme="dark" mode="horizontal" items={mainNav} />
-      <ServerStatus />
-      <StyledLanguageSwitcher>
-        <div>{t("language.change")}</div>
-        <span onClick={() => changeLanguage("en")}>EN</span>
-        <span onClick={() => changeLanguage("de")}>DE</span>
-      </StyledLanguageSwitcher>
+      <StyledLogo src={logoImg} />
+      <HiddenMobile> TeddyCloud Server</HiddenMobile>
+
+      <HiddenMobile>
+        <Menu theme="dark" mode="horizontal" items={mainNav} />
+      </HiddenMobile>
+      <StyledRightPart>
+        <ServerStatus />
+        <HiddenMobile>
+          <StyledLanguageSwitcher />
+        </HiddenMobile>
+        <HiddenDesktop>
+          <Button
+            className="barsMenu"
+            type="primary"
+            onClick={() => setNavOpen(true)}
+            icon={<MenuOutlined />}
+          />
+          <Drawer
+            placement="right"
+            open={navOpen}
+            onClose={() => setNavOpen(false)}
+          >
+            <Menu theme="dark" mode="vertical" items={mainNav} />
+            <StyledLanguageSwitcher />
+          </Drawer>
+        </HiddenDesktop>
+      </StyledRightPart>
     </StyledHeaderComponent>
   );
 };

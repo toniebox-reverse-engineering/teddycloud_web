@@ -1,6 +1,7 @@
 import { Breadcrumb } from "antd";
 import { useTranslation } from "react-i18next";
 import {
+  HiddenDesktop,
   StyledBreadcrumb,
   StyledContent,
   StyledLayout,
@@ -17,6 +18,9 @@ export const CertificatesPage = () => {
         <SettingsSubNav />
       </StyledSider>
       <StyledLayout>
+        <HiddenDesktop>
+          <SettingsSubNav />
+        </HiddenDesktop>
         <StyledBreadcrumb>
           <Breadcrumb.Item>{t("home.navigationTitle")}</Breadcrumb.Item>
           <Breadcrumb.Item>{t("settings.navigationTitle")}</Breadcrumb.Item>

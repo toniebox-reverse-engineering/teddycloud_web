@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { BoxineApi, BoxineForcedApi } from "../../api";
 import { Badge, Space } from "antd";
+import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 
 const api = new BoxineApi(defaultAPIConfig());
 const api2 = new BoxineForcedApi(defaultAPIConfig());
@@ -37,11 +38,13 @@ export const ServerStatus = () => {
   return (
     <Space>
       <div>
-        Boxine
+        <HiddenDesktop>B</HiddenDesktop>
+        <HiddenMobile>Boxine</HiddenMobile>
         <Badge dot status={boxineStatus ? "success" : "error"} />
       </div>
       <div>
-        TeddyCloud
+        <HiddenDesktop>TC</HiddenDesktop>
+        <HiddenMobile>TeddyCloud</HiddenMobile>
         <Badge dot status={teddyStatus ? "success" : "error"} />
       </div>
     </Space>
