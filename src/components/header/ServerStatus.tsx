@@ -34,13 +34,6 @@ export const ServerStatus = () => {
     fetchTime();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchTime();
-    }, 1000 * 10);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <Space>
       <div>
