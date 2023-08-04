@@ -20,7 +20,7 @@ export const StatsPage = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const statsRequest = (await api.apiStatsGet) as StatsList;
+      const statsRequest = (await api.apiStatsGet()) as StatsList;
       if (statsRequest?.stats?.length && statsRequest?.stats?.length > 0) {
         setStats(statsRequest);
       }
