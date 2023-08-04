@@ -74,17 +74,19 @@ export const CertificatesPage = () => {
         />
         <StyledContent>
           <h1>{t(`settings.certificates.title`)}</h1>
-          <Dragger {...props}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Drag and drop client certificates from your box here
-            </p>
-          </Dragger>
+          <div>
+            <Dragger {...props}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">
+                Click or drag file to this area to upload
+              </p>
+              <p className="ant-upload-hint">
+                Drag and drop client certificates from your box here
+              </p>
+            </Dragger>
+          </div>
         </StyledContent>
       </StyledLayout>
     </>
