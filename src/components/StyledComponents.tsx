@@ -1,5 +1,6 @@
 import { Breadcrumb, Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
+import Item from "antd/es/list/Item";
 import styled from "styled-components";
 
 export const StyledSubMenu = styled(Menu)`
@@ -40,4 +41,8 @@ export const HiddenMobile = styled.span`
   @media (max-width: 768px) {
     display: none;
   }
+`;
+
+export const StyledBreadcrumbItem = styled(Item)`
+  padding: 10px;
 `;

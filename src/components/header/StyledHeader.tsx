@@ -6,7 +6,6 @@ import { MenuOutlined } from "@ant-design/icons";
 import logoImg from "../../assets/logo.png";
 import { Button, Drawer, Menu, MenuProps } from "antd";
 import { Link } from "react-router-dom";
-import { changeLanguage } from "i18next";
 import { ServerStatus } from "./ServerStatus";
 import { useState } from "react";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
@@ -36,6 +35,10 @@ export const StyledHeader = () => {
     {
       key: "/settings",
       label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+    },
+    {
+      key: "/tonies",
+      label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
     },
   ];
   return (

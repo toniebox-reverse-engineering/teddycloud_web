@@ -32,6 +32,10 @@ export interface ApiSetCloudCacheContentPostRequest {
     body: boolean;
 }
 
+export interface ApiUploadCertPostRequest {
+    filename?: Array<Blob>;
+}
+
 /**
  * 
  */
@@ -148,6 +152,59 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiTriggerWriteConfigGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.apiTriggerWriteConfigGetRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * upload certificates
+     */
+    async apiUploadCertPostRaw(requestParameters: ApiUploadCertPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters.filename) {
+            requestParameters.filename.forEach((element) => {
+                formParams.append('filename', element as any);
+            })
+        }
+
+        const response = await this.request({
+            path: `/api/uploadCert`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * upload certificates
+     */
+    async apiUploadCertPost(requestParameters: ApiUploadCertPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.apiUploadCertPostRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

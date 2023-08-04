@@ -1,8 +1,8 @@
-import { Breadcrumb } from "antd";
 import { useTranslation } from "react-i18next";
 import {
   HiddenDesktop,
   StyledBreadcrumb,
+  StyledBreadcrumbItem,
   StyledContent,
   StyledLayout,
   StyledSider,
@@ -21,9 +21,7 @@ export const HomePage = () => {
         <HiddenDesktop>
           <HomeSubNav />
         </HiddenDesktop>
-        <StyledBreadcrumb>
-          <Breadcrumb.Item>{t("home.navigationTitle")}</Breadcrumb.Item>
-        </StyledBreadcrumb>
+        <StyledBreadcrumb items={[{ title: t("home.navigationTitle") }]} />
         <StyledContent>
           <h1>{t(`home.title`)}</h1>
         </StyledContent>

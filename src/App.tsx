@@ -8,6 +8,7 @@ import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage
 import { HomePage } from "./pages/home/HomePage";
 import { StatsPage } from "./pages/home/StatsPage";
 import { StyledHeader } from "./components/header/StyledHeader";
+import { ToniesPage } from "./pages/tonies/ToniesPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/home/stats" element={<StatsPage />} />
+              <Route path="/tonies" element={<ToniesPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route
                 path="/settings/certificates"

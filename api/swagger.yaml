@@ -94,6 +94,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/OptionsList'
   
+  /api/uploadCert:
+    post:
+      tags:
+        - TeddyCloud
+      description: upload certificates
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: 'just 200 for success, no response content'
+          content:
+            "text/plain":
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '406':
+          $ref: '#/components/responses/Unacceptable'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError'
+  
+  
   /api/triggerWriteConfig:
     get:
       tags:

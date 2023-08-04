@@ -4,6 +4,7 @@ import { Content } from "antd/es/layout/layout";
 import { LaptopOutlined, UserOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import Item from "antd/es/list/Item";
 
 const subnav: MenuProps["items"] = [
   {
@@ -46,9 +47,9 @@ export const UiTest = () => {
       </Sider>
       <Layout style={{ padding: "0 24px 24px" }}>
         <Breadcrumb style={{ margin: "16px 0" }}>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
+          <Item>Home</Item>
+          <Item>List</Item>
+          <Item>App</Item>
         </Breadcrumb>
         <Content
           style={{

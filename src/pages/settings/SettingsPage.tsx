@@ -1,8 +1,11 @@
-import { Breadcrumb, Form } from "antd";
+import { Form } from "antd";
+
+import Item from "antd/es/list/Item";
 import { useTranslation } from "react-i18next";
 import {
   HiddenDesktop,
   StyledBreadcrumb,
+  StyledBreadcrumbItem,
   StyledContent,
   StyledLayout,
   StyledSider,
@@ -53,10 +56,12 @@ export const SettingsPage = () => {
         <HiddenDesktop>
           <SettingsSubNav />
         </HiddenDesktop>
-        <StyledBreadcrumb>
-          <Breadcrumb.Item>{t("home.navigationTitle")}</Breadcrumb.Item>
-          <Breadcrumb.Item>{t("settings.navigationTitle")}</Breadcrumb.Item>
-        </StyledBreadcrumb>
+        <StyledBreadcrumb
+          items={[
+            { title: t("home.navigationTitle") },
+            { title: t("settings.navigationTitle") },
+          ]}
+        />
         <StyledContent>
           <h1>{t(`settings.title`)}</h1>
 
