@@ -1,6 +1,7 @@
 import { Breadcrumb } from "antd";
 import { useTranslation } from "react-i18next";
 import {
+  HiddenDesktop,
   StyledBreadcrumb,
   StyledContent,
   StyledLayout,
@@ -41,6 +42,9 @@ export const StatsPage = () => {
         <HomeSubNav />
       </StyledSider>
       <StyledLayout>
+        <HiddenDesktop>
+          <HomeSubNav />
+        </HiddenDesktop>
         <StyledBreadcrumb>
           <Breadcrumb.Item>{t("home.navigationTitle")}</Breadcrumb.Item>
           <Breadcrumb.Item>{t("home.stats.navigationTitle")}</Breadcrumb.Item>
