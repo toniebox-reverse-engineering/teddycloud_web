@@ -35,9 +35,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
               "Content-Type": "text/plain",
             },
           });
-          helpers.setValue(
-            event.target.value === null ? undefined : Number(event.target.value)
-          );
+          helpers.setValue(event.target.value);
         }}
       />
     </FormItem>
