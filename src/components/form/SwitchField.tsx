@@ -1,7 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useField } from "formik";
 import FormItem from "antd/es/form/FormItem";
-import { Switch, SwitchProps } from "antd";
+import { Switch, SwitchProps, message } from "antd";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
 
 type SwitchFieldProps = {
   name: string;
@@ -11,6 +13,7 @@ type SwitchFieldProps = {
     fromBooleanToValue: (booleanValue?: boolean) => any;
   };
 };
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
   const { t } = useTranslation();
@@ -37,13 +40,30 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
         checked={isChecked}
         onChange={(value: boolean) => {
           //TODO: Fix fetch and replace with apiClient
-          fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/set/${name}`, {
-            method: "POST",
-            body: value.toString(),
-            headers: {
-              "Content-Type": "text/plain",
-            },
-          });
+          const triggerWriteConfig = async () => {
+            await api.apiTriggerWriteConfigGet();
+          };
+
+          try {
+            fetch(
+              `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/set/${name}`,
+              {
+                method: "POST",
+                body: value?.toString(),
+                headers: {
+                  "Content-Type": "text/plain",
+                },
+              }
+            );
+
+            try {
+              triggerWriteConfig();
+            } catch (e) {
+              message.error("Error while saving config to file.");
+            }
+          } catch (e) {
+            message.error("Error while sending data to server.");
+          }
 
           setValue(value);
         }}
