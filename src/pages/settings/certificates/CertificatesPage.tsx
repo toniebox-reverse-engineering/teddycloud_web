@@ -24,6 +24,10 @@ export const CertificatesPage = () => {
     customRequest: (options) => {
       const { onSuccess, onError, file, filename } = options;
 
+      const triggerWriteConfig = async () => {
+        await api.apiTriggerWriteConfigGet();
+      };
+
       const formData = new FormData();
       formData.append(filename!, file);
 
@@ -31,6 +35,12 @@ export const CertificatesPage = () => {
         try {
           await api.apiUploadCertPost(formData);
           onSuccess!("Ok");
+
+          try {
+            triggerWriteConfig();
+          } catch (e) {
+            message.error("Error while saving config to file.");
+          }
         } catch (err) {
           const error = new Error("Some error");
           onError!(error);
