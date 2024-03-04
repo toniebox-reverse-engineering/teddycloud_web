@@ -15,9 +15,9 @@
 
 import * as runtime from '../runtime';
 import type {
-  Errors,
-  OptionsList,
-  StatsList,
+    Errors,
+    OptionsList,
+    StatsList,
 } from '../models';
 import {
     ErrorsFromJSON,
@@ -27,6 +27,8 @@ import {
     StatsListFromJSON,
     StatsListToJSON,
 } from '../models';
+
+import { TagsTonieCardList, TonieCardProps } from '../../components/tonies/TonieCard';
 
 export interface ApiSetCloudCacheContentPostRequest {
     body: boolean;
@@ -40,6 +42,31 @@ export interface ApiUploadCertPostRequest {
  * 
  */
 export class TeddyCloudApi extends runtime.BaseAPI {
+
+
+    /**
+     * get all tags
+     */
+    async apiGetTagIndexRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TagsTonieCardList>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/getTagIndex`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+        return new runtime.JSONApiResponse<TagsTonieCardList>(response);
+    }
+    /**
+     * get all tags
+     */
+    async apiGetTagIndex(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieCardProps[]> {
+        const response = await this.apiGetTagIndexRaw(initOverrides);
+        return (await response.value()).tags;
+    }
 
     /**
      * get all options
@@ -72,7 +99,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiSetCloudCacheContentPostRaw(requestParameters: ApiSetCloudCacheContentPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling apiSetCloudCacheContentPost.');
+            throw new runtime.RequiredError('body', 'Required parameter requestParameters.body was null or undefined when calling apiSetCloudCacheContentPost.');
         }
 
         const queryParameters: any = {};
