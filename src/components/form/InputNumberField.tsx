@@ -9,11 +9,12 @@ import { TeddyCloudApi } from "../../api";
 type InputNumberFieldProps = {
   name: string;
   label?: string;
+  description?: string;
 };
 
 const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
   const { t } = useTranslation();
-  const { name, label, ...inputNumberProps } = props;
+  const { name, label, description, ...inputNumberProps } = props;
   const [field, meta, helpers] = useField<number | undefined>(name!);
 
   const hasFeedback = !!(meta.touched && meta.error);
@@ -27,6 +28,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
       help={hasFeedback ? help : undefined}
       validateStatus={validateStatus}
       label={label}
+      tooltip={description}
     >
       <InputNumber
         {...inputNumberProps}

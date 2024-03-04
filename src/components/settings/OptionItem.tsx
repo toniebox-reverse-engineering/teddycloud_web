@@ -10,7 +10,7 @@ type OptionItemProps = {
 };
 
 export const OptionItem = ({ option }: OptionItemProps) => {
-  const { type, iD, description, shortname } = option;
+  const { type, iD, description, label, shortname } = option;
   const [optionValue, setOptionValue] = useState<string>("");
 
   const [field, meta, { setValue }] = useField(iD);
@@ -33,10 +33,10 @@ export const OptionItem = ({ option }: OptionItemProps) => {
 
   return (
     <div key={iD}>
-      {type === "bool" && <SwitchField name={iD} label={description} />}
-      {type === "int" && <InputNumberField name={iD} label={description} />}
-      {type === "uint" && <InputNumberField name={iD} label={description} />}
-      {type === "string" && <InputField name={iD} label={description} />}
+      {type === "bool" && <SwitchField name={iD} label={label} description={description} />}
+      {type === "int" && <InputNumberField name={iD} label={label} description={description} />}
+      {type === "uint" && <InputNumberField name={iD} label={label} description={description} />}
+      {type === "string" && <InputField name={iD} label={label} description={description} />}
     </div>
   );
 };

@@ -9,24 +9,25 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 type InputFieldProps = {
   name: string;
   label?: string;
+  description?: string;
 };
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const InputField = (props: InputFieldProps & InputProps) => {
   const { t } = useTranslation();
-  const { name, label, ...inputProps } = props;
+  const { name, label, description, ...inputProps } = props;
   const [field, meta, helpers] = useField(name!);
 
   const hasFeedback = !!(meta.touched && meta.error);
   const help = meta.touched && meta.error && t(meta.error);
   const validateStatus = meta.touched && meta.error ? "error" : undefined;
-
   return (
     <FormItem
       help={hasFeedback ? help : undefined}
       validateStatus={validateStatus}
       label={label}
+      tooltip={description}
     >
       <Input
         {...inputProps}

@@ -310,6 +310,7 @@ components:
         - ID
         - shortname
         - description
+        - label
         - type
       properties:
         ID:
@@ -321,6 +322,9 @@ components:
         description:
           type: string
           description: "Object description"
+        label:
+          type: string
+          description: "Object label"
         type:
           type: string
           description: "Object type"

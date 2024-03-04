@@ -38,6 +38,12 @@ export interface OptionsItem {
      */
     description: string;
     /**
+     * Object label
+     * @type {string}
+     * @memberof OptionsItem
+     */
+    label: string;
+    /**
      * Object type
      * @type {string}
      * @memberof OptionsItem
@@ -53,6 +59,7 @@ export function instanceOfOptionsItem(value: object): boolean {
     isInstance = isInstance && "iD" in value;
     isInstance = isInstance && "shortname" in value;
     isInstance = isInstance && "description" in value;
+    isInstance = isInstance && "label" in value;
     isInstance = isInstance && "type" in value;
 
     return isInstance;
@@ -67,10 +74,11 @@ export function OptionsItemFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        
+
         'iD': json['ID'],
         'shortname': json['shortname'],
         'description': json['description'],
+        'label': json['label'],
         'type': json['type'],
     };
 }
@@ -83,10 +91,11 @@ export function OptionsItemToJSON(value?: OptionsItem | null): any {
         return null;
     }
     return {
-        
+
         'ID': value.iD,
         'shortname': value.shortname,
         'description': value.description,
+        'label': value.label,
         'type': value.type,
     };
 }

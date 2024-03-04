@@ -12,12 +12,13 @@ type SwitchFieldProps = {
     fromValueToBoolean: (fromValue: any) => boolean | undefined;
     fromBooleanToValue: (booleanValue?: boolean) => any;
   };
+  description?: string;
 };
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
   const { t } = useTranslation();
-  const { name, label, valueConverter, ...switchProps } = props;
+  const { name, label, valueConverter, description, ...switchProps } = props;
   const [field, meta, { setValue }] = useField(name!);
 
   const hasFeedback = !!(meta.touched && meta.error);
@@ -33,6 +34,7 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
       help={hasFeedback ? help : undefined}
       validateStatus={validateStatus}
       label={label}
+      tooltip={description}
     >
       <Switch
         {...switchProps}
