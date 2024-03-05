@@ -55,16 +55,11 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     };
 
     const playAudio = async () => {
-        const response = await fetch(tonieCard.audioUrl);
-        const arrayBuffer = await response.arrayBuffer();
-        const blob = new Blob([arrayBuffer.slice(4096)], { type: 'audio/ogg; codecs=opus' }); // Skip the first 4096 bytes
-        const audioUrl = URL.createObjectURL(blob);
-
-        const newAudio = new Audio(audioUrl);
+        const newAudio = new Audio(tonieCard.audioUrl);
         setAudio(newAudio);
         newAudio.onended = () => setIsPlaying(false); // Update state when audio ends
         newAudio.ontimeupdate = () => {
-            const playProgress = newAudio.currentTime;// / newAudio.duration;
+            const playProgress = newAudio.currentTime; // / newAudio.duration;
             setProgress(playProgress); // Update the progress state based on play progress
         };
         newAudio.play();
