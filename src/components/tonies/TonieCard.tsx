@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Button, Popover, message, Slider } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, EditOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons';
 
 const { Meta } = Card;
 
@@ -18,6 +18,7 @@ export type TonieCardProps = {
     nocloud: boolean;
     source: string;
     audioUrl: string;
+    downloadTriggerUrl: string;
     tonieInfo: {
         series: string;
         episode: string;
@@ -32,6 +33,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const [isLive, setIsLive] = useState(tonieCard.live);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [messageApi, contextHolder] = message.useMessage();
+    const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
+    const [isValid, setIsValid] = useState(tonieCard.valid);
 
     const handleLiveClick = () => {
         setIsLive(!isLive);
@@ -72,6 +76,35 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
     };
     const formatter = (value: any) => `${formatDuration(value)}`;
+    const handleBackgroundDownload = async () => {
+        const url = tonieCard.downloadTriggerUrl;
+        setDownloadTriggerUrl("");
+        try {
+            messageApi.open({
+                type: 'loading',
+                content: 'Downloading...',
+                duration: 0,
+            });
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(response.status + " " + response.statusText);
+            }
+            const blob = await response.blob();
+            messageApi.destroy();
+            messageApi.open({
+                type: 'success',
+                content: "Downloaded file",
+            });
+            setIsValid(true);
+        } catch (error) {
+            messageApi.destroy();
+            messageApi.open({
+                type: 'error',
+                content: "Error during background download: " + error,
+            });
+            setDownloadTriggerUrl(url);
+        }
+    }
 
     const content = (
         <div>
@@ -92,28 +125,39 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         </Popover>
     )
     return (
-        <Card
-            extra={more}
-            hoverable
-            size="small"
-            title={tonieCard.tonieInfo.series}
-            cover={<img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`} src={tonieCard.tonieInfo.picture} />}
-            actions={[
-                <EditOutlined key="edit" />,
-                tonieCard.valid ?
-                    (isPlaying ? <PauseCircleOutlined key="playpause" onClick={handlePlayPauseClick} /> : <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
-                    <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />,
-                <RetweetOutlined key="live" style={{ color: isLive ? 'red' : 'lightgray' }} onClick={handleLiveClick} />
-            ]}
-        >
-            <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
-            <Slider
-                min={0}
-                max={audio ? audio.duration : 1}
-                value={progress}
-                step={1}
-                tooltip={{ formatter }}
-            />
-        </Card>
+        <>
+            {contextHolder}
+            <Card
+                extra={more}
+                hoverable
+                size="small"
+                title={tonieCard.tonieInfo.series}
+                cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`
+                } src={tonieCard.tonieInfo.picture} />}
+                actions={
+                    [
+                        <EditOutlined key="edit" />,
+                        isValid ?
+                            (isPlaying ?
+                                <PauseCircleOutlined key="playpause" onClick={handlePlayPauseClick} /> :
+                                <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
+                            ) :
+                            (downloadTriggerUrl.length > 0 ?
+                                <DownloadOutlined key="download" onClick={handleBackgroundDownload} /> :
+                                <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />
+                            ),
+                        <RetweetOutlined key="live" style={{ color: isLive ? 'red' : 'lightgray' }} onClick={handleLiveClick} />
+                    ]}
+            >
+                <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
+                <Slider
+                    min={0}
+                    max={audio ? audio.duration : 1}
+                    value={progress}
+                    step={1}
+                    tooltip={{ formatter }}
+                />
+            </Card >
+        </>
     );
 };
