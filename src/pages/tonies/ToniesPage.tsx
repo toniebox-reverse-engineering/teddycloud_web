@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, Row } from 'antd';
+import { List } from 'antd';
 import { StyledBreadcrumb, StyledContent, StyledLayout, StyledSider } from '../../components/StyledComponents';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard'; // Import the TonieCard component and its props type
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -89,25 +89,23 @@ export const ToniesPage = () => {
         />
         <StyledContent>
           <h1>{t('tonies.title')}</h1>
-          <Row gutter={[16, 16]}>
-            {/* Map through tonies and render TonieCard components */}
-            {tonies.filter(tonie => tonie.type === 'tag').map((tonie, index) => (
-              <Col key={index} span={8}>
-                {/* Pass each tonie as prop to TonieCard */}
+          <List
+            grid={{
+              gutter: 7,
+              xs: 1,
+              sm: 2,
+              md: 2,
+              lg: 3,
+              xl: 4,
+              xxl: 5,
+            }}
+            dataSource={tonies.filter(tonie => tonie.type === 'tag')}
+            renderItem={(tonie) => (
+              <List.Item>
                 <TonieCard tonieCard={tonie} />
-              </Col>
-            ))}
-          </Row>
-
-          <Row gutter={[16, 16]}>
-            {/* Map through tonies and render TonieCard components */}
-            {tonies.filter(tonie => tonie.type !== 'tag').map((tonie, index) => (
-              <Col key={index} span={8}>
-                {/* Pass each tonie as prop to TonieCard */}
-                <TonieCard tonieCard={tonie} />
-              </Col>
-            ))}
-          </Row>
+              </List.Item>
+            )}
+          />
         </StyledContent>
       </StyledLayout>
     </>
