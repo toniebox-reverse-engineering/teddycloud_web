@@ -55,7 +55,7 @@ export const SystemSoundsPage = () => {
         />
         <StyledContent>
           <h1>{t('tonies.system-sounds.title')}</h1>
-          <ToniesList tonieCards={tonies.filter(tonie => tonie.type !== 'system')} />
+          <ToniesList tonieCards={tonies.filter(tonie => tonie.type === 'system')} />
         </StyledContent>
       </StyledLayout>
     </>
