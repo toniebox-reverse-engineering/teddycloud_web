@@ -33,11 +33,11 @@ export const StyledHeader = () => {
   const mainNav: MenuProps["items"] = [
     { key: "/", label: <Link to="/">{t("home.navigationTitle")}</Link> },
     {
-      key: "/settings",
+      key: "settings",
       label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
     },
     {
-      key: "/tonies",
+      key: "tonies",
       label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
     },
   ];
