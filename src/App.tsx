@@ -9,6 +9,8 @@ import { HomePage } from "./pages/home/HomePage";
 import { StatsPage } from "./pages/home/StatsPage";
 import { StyledHeader } from "./components/header/StyledHeader";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
+import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
+import { ContentPage } from "./pages/tonies/ContentPage";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/home/stats" element={<StatsPage />} />
               <Route path="/tonies" element={<ToniesPage />} />
+              <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
+              <Route path="/tonies/content" element={<ContentPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route
                 path="/settings/certificates"
