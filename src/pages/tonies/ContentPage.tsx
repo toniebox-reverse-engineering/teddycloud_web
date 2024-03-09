@@ -96,23 +96,42 @@ export const ContentPage = () => {
     },
   ];
 
-  const defaultSorter = (a: any, b: any, key: string) => {
-    const fieldA = a[key];
-    const fieldB = b[key];
+  const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
+    const getValue = (obj: any, keys: string[]) => {
+      return keys.reduce((acc, currentKey) => {
+        if (acc && acc[currentKey] !== undefined) {
+          return acc[currentKey];
+        }
+        return undefined;
+      }, obj);
+    };
+
+    // Get the values of the fields
+    const fieldA = Array.isArray(dataIndex) ? getValue(a, dataIndex) : a[dataIndex];
+    const fieldB = Array.isArray(dataIndex) ? getValue(b, dataIndex) : b[dataIndex];
+
+    if (fieldA === undefined && fieldB === undefined) {
+      return 0; // Both values are undefined, consider them equal
+    } else if (fieldA === undefined) {
+      return 1; // Field A is undefined, consider it greater than B
+    } else if (fieldB === undefined) {
+      return -1; // Field B is undefined, consider it greater than A
+    }
 
     if (typeof fieldA === 'string' && typeof fieldB === 'string') {
       return fieldA.localeCompare(fieldB);
     } else if (typeof fieldA === 'number' && typeof fieldB === 'number') {
       return fieldA - fieldB;
     } else {
-      console.log("Unsupported types for sorting:", fieldA, fieldB);
+      console.log("Unsupported types for sorting:", a, b);
+      console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
       return 0;
     }
   };
 
   columns.forEach(column => {
     if (!column.hasOwnProperty('sorter')) {
-      (column as any).sorter = (a: any, b: any) => defaultSorter(a, b, column.key);
+      (column as any).sorter = (a: any, b: any) => defaultSorter(a, b, column.dataIndex);
     }
   });
   return (
