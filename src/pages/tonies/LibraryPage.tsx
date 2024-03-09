@@ -24,7 +24,7 @@ export const LibraryPage = () => {
         />
         <StyledContent>
           <h1>{t('tonies.library.title')}</h1>
-          <FileBrowser special="library" />;
+          <FileBrowser special="library" />
         </StyledContent>
       </StyledLayout>
     </>

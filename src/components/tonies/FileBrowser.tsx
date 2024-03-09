@@ -2,20 +2,50 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
-import { Table } from 'antd';
+import { Table, message } from 'antd';
+import { Key } from 'antd/es/table/interface'; // Import Key type from Ant Design
+import { SortOrder } from 'antd/es/table/interface';
+
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
+import { useAudioContext } from '../audio/AudioContext';
+
+import { PlayCircleOutlined } from '@ant-design/icons';
+
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const FileBrowser: React.FC<{ special: string }> = ({ special }) => {
+export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number }> = ({ special, maxSelectedRows = 0 }) => {
     const { t } = useTranslation();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const { playAudio } = useAudioContext();
 
     const [files, setFiles] = useState([]);
     const [path, setPath] = useState('');
     const location = useLocation();
     const navigate = useNavigate();
 
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+    const rowClassName = (record: any) => {
+        return selectedRowKeys.includes(record.key) ? 'highlight-row' : '';
+    };
+    const onSelectChange = (newSelectedRowKeys: Key[]) => {
+        if (newSelectedRowKeys.length > maxSelectedRows) {
+            message.warning('You can only select up to ' + maxSelectedRows + ' files');
+        } else {
+            setSelectedRowKeys(newSelectedRowKeys);
+        }
+    };
+    const handleRowClick = (record: any, table: any) => {
+        console.log(table);
+        if (selectedRowKeys.includes(record.key)) {
+            onSelectChange(selectedRowKeys.filter(key => key !== record.key));
+        } else if (selectedRowKeys.length < maxSelectedRows) {
+            onSelectChange([...selectedRowKeys, record.key]);
+        }
+    };
 
     useEffect(() => {
         // Function to parse the query parameters from the URL
@@ -40,23 +70,67 @@ export const FileBrowser: React.FC<{ special: string }> = ({ special }) => {
         setPath(newPath); // Update the path state
     };
 
+
+
+    const getFieldValue = (obj: any, keys: string[]) => {
+        return keys.reduce((acc, currentKey) => {
+            if (acc && acc[currentKey] !== undefined) {
+                return acc[currentKey];
+            }
+            return undefined;
+        }, obj);
+    };
+    const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
+        // Get the values of the fields
+        const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
+        const fieldB = Array.isArray(dataIndex) ? getFieldValue(b, dataIndex) : b[dataIndex];
+
+        if (fieldA === undefined && fieldB === undefined) {
+            return 0; // Both values are undefined, consider them equal
+        } else if (fieldA === undefined) {
+            return 1; // Field A is undefined, consider it greater than B
+        } else if (fieldB === undefined) {
+            return -1; // Field B is undefined, consider it greater than A
+        }
+
+        if (typeof fieldA === 'string' && typeof fieldB === 'string') {
+            return fieldA.localeCompare(fieldB);
+        } else if (typeof fieldA === 'number' && typeof fieldB === 'number') {
+            return fieldA - fieldB;
+        } else {
+            console.log("Unsupported types for sorting:", a, b);
+            console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
+            return 0;
+        }
+    };
+    const dirNameSorter = (a: any, b: any) => {
+        if (a.isDir === b.isDir) {
+            return defaultSorter(a, b, 'name');
+        }
+        return a.isDir ? -1 : 1;
+    }
+
     const columns = [
+        {
+            title: '',
+            dataIndex: ['tonieInfo', 'picture'],
+            key: 'picture',
+            sorter: undefined,
+            render: (picture: string) => picture && <img src={picture} alt="Tonie Picture" style={{ width: 100 }} />
+        },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            sorter: dirNameSorter,
+            defaultSortOrder: 'ascend' as SortOrder,
+            render: (name: string, record: any) => (record.isDir ? '[' + name + ']' : name),
         },
         {
             title: 'Size',
             dataIndex: 'size',
             key: 'size',
             render: (size: number, record: any) => (record.isDir ? '<DIR>' : size),
-        },
-        {
-            title: 'Picture',
-            dataIndex: ['tonieInfo', 'picture'],
-            key: 'picture',
-            render: (picture: string) => picture && <img src={picture} alt="Tonie Picture" style={{ width: 100 }} />
         },
         {
             title: 'Model',
@@ -79,40 +153,19 @@ export const FileBrowser: React.FC<{ special: string }> = ({ special }) => {
             key: 'date',
             render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
         },
+        {
+            title: '',
+            dataIndex: 'name',
+            key: 'controls',
+            sorter: undefined,
+            render: (name: string, record: any) =>
+            (record.tafHeader ?
+                <PlayCircleOutlined onClick={() => playAudio(
+                    process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + name + "?ogg=true&special=" + special,
+                    record.tonieInfo)} />
+                : ""),
+        }
     ];
-
-    const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
-        const getValue = (obj: any, keys: string[]) => {
-            return keys.reduce((acc, currentKey) => {
-                if (acc && acc[currentKey] !== undefined) {
-                    return acc[currentKey];
-                }
-                return undefined;
-            }, obj);
-        };
-
-        // Get the values of the fields
-        const fieldA = Array.isArray(dataIndex) ? getValue(a, dataIndex) : a[dataIndex];
-        const fieldB = Array.isArray(dataIndex) ? getValue(b, dataIndex) : b[dataIndex];
-
-        if (fieldA === undefined && fieldB === undefined) {
-            return 0; // Both values are undefined, consider them equal
-        } else if (fieldA === undefined) {
-            return 1; // Field A is undefined, consider it greater than B
-        } else if (fieldB === undefined) {
-            return -1; // Field B is undefined, consider it greater than A
-        }
-
-        if (typeof fieldA === 'string' && typeof fieldB === 'string') {
-            return fieldA.localeCompare(fieldB);
-        } else if (typeof fieldA === 'number' && typeof fieldB === 'number') {
-            return fieldA - fieldB;
-        } else {
-            console.log("Unsupported types for sorting:", a, b);
-            console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
-            return 0;
-        }
-    };
 
     columns.forEach(column => {
         if (!column.hasOwnProperty('sorter')) {
@@ -120,12 +173,23 @@ export const FileBrowser: React.FC<{ special: string }> = ({ special }) => {
         }
     });
     return (
-        <Table dataSource={files} columns={columns} rowKey="name" pagination={false} onRow={(record, rowIndex) => ({
-            onDoubleClick: () => {
-                if (record.isDir) {
-                    handleDirClick(record.name);
-                }
-            }
-        })} />
+        <Table
+            dataSource={files}
+            columns={columns}
+            rowKey="name"
+            pagination={false}
+            onRow={(record) => ({
+                onDoubleClick: () => {
+                    if (record.isDir) {
+                        handleDirClick(record.name);
+                    }
+                },
+            })}
+            rowClassName={rowClassName}
+            rowSelection={maxSelectedRows > 0 ? {
+                selectedRowKeys,
+                onChange: onSelectChange,
+            } : undefined}
+        />
     );
 };

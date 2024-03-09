@@ -24,7 +24,7 @@ export const ContentPage = () => {
         />
         <StyledContent>
           <h1>{t('tonies.content.title')}</h1>
-          <FileBrowser special="" />;
+          <FileBrowser special="" />
         </StyledContent>
       </StyledLayout>
     </>

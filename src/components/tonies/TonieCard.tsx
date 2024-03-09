@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Card, Button, Popover, message, Slider } from 'antd';
 import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons';
 
+import { useAudioContext } from '../audio/AudioContext';
+
+
 const { Meta } = Card;
 
 
@@ -31,11 +34,11 @@ export type TonieCardProps = {
 export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
     const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     const [isLive, setIsLive] = useState(tonieCard.live);
-    const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [messageApi, contextHolder] = message.useMessage();
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
+    const { playAudio } = useAudioContext();
 
     const handleLiveClick = () => {
         setIsLive(!isLive);
@@ -46,38 +49,11 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         }
     };
     const handlePlayPauseClick = () => {
-        if (audio) {
-            if (isPlaying) {
-                audio.pause();
-            } else {
-                audio.play();
-            }
-            setIsPlaying(!isPlaying);
-        } else {
-            playAudio();
-        }
+        playAudio(process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl, tonieCard.tonieInfo);
     };
 
-    const playAudio = async () => {
-        const newAudio = new Audio(tonieCard.audioUrl);
-        setAudio(newAudio);
-        newAudio.onended = () => setIsPlaying(false); // Update state when audio ends
-        newAudio.ontimeupdate = () => {
-            const playProgress = newAudio.currentTime; // / newAudio.duration;
-            setProgress(playProgress); // Update the progress state based on play progress
-        };
-        newAudio.play();
-        setIsPlaying(true);
-    };
-    const formatDuration = (value: any) => {
-        const seconds = Math.round(value);
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds - (minutes * 60);
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    };
-    const formatter = (value: any) => `${formatDuration(value)}`;
     const handleBackgroundDownload = async () => {
-        const url = tonieCard.downloadTriggerUrl;
+        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.downloadTriggerUrl;
         setDownloadTriggerUrl("");
         try {
             messageApi.open({
@@ -138,10 +114,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                     [
                         <EditOutlined key="edit" />,
                         isValid ?
-                            (isPlaying ?
-                                <PauseCircleOutlined key="playpause" onClick={handlePlayPauseClick} /> :
-                                <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
-                            ) :
+                            (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
                             (downloadTriggerUrl.length > 0 ?
                                 <DownloadOutlined key="download" onClick={handleBackgroundDownload} /> :
                                 <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />
@@ -150,13 +123,6 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                     ]}
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
-                <Slider
-                    min={0}
-                    max={audio ? audio.duration : 1}
-                    value={progress}
-                    step={1}
-                    tooltip={{ formatter }}
-                />
             </Card >
         </>
     );
