@@ -45,16 +45,6 @@ export const FileBrowser: React.FC<{ special: string }> = ({ special }) => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: (text: string, record: any) => {
-                if (record.isDir) {
-                    return (
-                        <span style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={() => handleDirClick(record.name)}>
-                            {text}
-                        </span>
-                    );
-                }
-                return text;
-            },
         },
         {
             title: 'Size',
@@ -130,6 +120,12 @@ export const FileBrowser: React.FC<{ special: string }> = ({ special }) => {
         }
     });
     return (
-        <Table dataSource={files} columns={columns} rowKey="name" pagination={false} />
+        <Table dataSource={files} columns={columns} rowKey="name" pagination={false} onRow={(record, rowIndex) => ({
+            onDoubleClick: () => {
+                if (record.isDir) {
+                    handleDirClick(record.name);
+                }
+            }
+        })} />
     );
 };
