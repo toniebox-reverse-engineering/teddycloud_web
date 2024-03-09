@@ -15,7 +15,7 @@ import { PlayCircleOutlined } from '@ant-design/icons';
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number }> = ({ special, maxSelectedRows = 0 }) => {
+export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, selectTafOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, onFileSelectChange }) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -32,12 +32,27 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number }
         return selectedRowKeys.includes(record.key) ? 'highlight-row' : '';
     };
     const onSelectChange = (newSelectedRowKeys: Key[]) => {
+        if (selectTafOnly) {
+            const rowCount = newSelectedRowKeys.length;
+            newSelectedRowKeys = newSelectedRowKeys.filter(key => {
+                const file = files.find((f: any) => f.name === key) as any;
+                return file && file.tafHeader !== undefined;
+            });
+            if (rowCount !== newSelectedRowKeys.length) {
+                message.warning('You can only select TAF files!');
+            }
+        }
         if (newSelectedRowKeys.length > maxSelectedRows) {
             message.warning('You can only select up to ' + maxSelectedRows + ' files');
         } else {
             setSelectedRowKeys(newSelectedRowKeys);
         }
+
+        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
+        if (onFileSelectChange !== undefined)
+            onFileSelectChange(selectedFiles, path, special);
     };
+
     const handleRowClick = (record: any, table: any) => {
         console.log(table);
         if (selectedRowKeys.includes(record.key)) {

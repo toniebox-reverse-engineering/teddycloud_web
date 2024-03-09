@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Card, Button, Popover, message, Slider } from 'antd';
+import { Card, Button, Popover, message, Slider, Modal } from 'antd';
 import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons';
 
 import { useAudioContext } from '../audio/AudioContext';
+import { FileBrowser } from './FileBrowser';
 
 
 const { Meta } = Card;
@@ -37,6 +38,54 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
     const { playAudio } = useAudioContext();
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+    const [selectedFile, setSelectedFile] = useState<string>("");
+    const handleFileSelectChange = (files: any[], path: string, special: string) => {
+        if (files.length == 1) {
+            const prefix = special === "library" ? "lib:/" : "content:/";
+            const filePath = prefix + path + "/" + files[0].name;
+            console.log(filePath);
+            setSelectedFile(filePath);
+        } else {
+            setSelectedFile("");
+        }
+    }
+
+    const showModal = () => {
+        setSelectedFile("");
+        setIsModalOpen(true);
+    };
+    const handleOk = async () => {
+        setIsModalOpen(false);
+        if (selectedFile === "") {
+            message.error('Could not empty source!');
+            return;
+        }
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: "source=" + selectedFile
+            });
+            if (!response.ok) {
+                throw new Error(response.status + " " + response.statusText);
+            }
+            message.success('Source set to ' + selectedFile + "!");
+        } catch (error) {
+            message.error('Could not set source! ' + error);
+        }
+    };
+    const handleCancel = () => {
+        setSelectedFile("");
+        setIsModalOpen(false);
+    };
+
+    const handleEditClick = () => {
+        showModal();
+    }
 
     const handleLiveClick = async () => {
         const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
@@ -123,7 +172,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 } src={tonieCard.tonieInfo.picture} />}
                 actions={
                     [
-                        <EditOutlined key="edit" />,
+                        <EditOutlined key="edit" onClick={handleEditClick} />,
                         isValid ?
                             (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
                             (downloadTriggerUrl.length > 0 ?
@@ -135,6 +184,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
             </Card >
+            <Modal title="Edit Tag" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <FileBrowser special="library" maxSelectedRows={1} onFileSelectChange={handleFileSelectChange} />
+            </Modal>
         </>
     );
 };
