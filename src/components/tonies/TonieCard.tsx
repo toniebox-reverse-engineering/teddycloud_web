@@ -32,21 +32,32 @@ export type TonieCardProps = {
 }
 
 export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
-    const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
     const [isLive, setIsLive] = useState(tonieCard.live);
-    const [progress, setProgress] = useState(0);
     const [messageApi, contextHolder] = message.useMessage();
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
     const { playAudio } = useAudioContext();
 
-    const handleLiveClick = () => {
-        setIsLive(!isLive);
-        if (!isLive) {
-            message.success('Live enabled!');
-        } else {
-            message.success('Live disabled!');
+    const handleLiveClick = async () => {
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: "live=" + !isLive
+            });
+            if (!response.ok) {
+                throw new Error(response.status + " " + response.statusText);
+            }
+            setIsLive(!isLive);
+            if (!isLive) {
+                message.success('Live enabled!');
+            } else {
+                message.success('Live disabled!');
+            }
+        } catch (error) {
+            message.error('Could not change live flag! ' + error);
         }
+
     };
     const handlePlayPauseClick = () => {
         playAudio(process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl, tonieCard.tonieInfo);
