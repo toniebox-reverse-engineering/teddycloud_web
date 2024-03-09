@@ -11,6 +11,7 @@ import { StyledHeader } from "./components/header/StyledHeader";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { ContentPage } from "./pages/tonies/ContentPage";
+import { LibraryPage } from "./pages/tonies/LibraryPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route path="/tonies" element={<ToniesPage />} />
               <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
               <Route path="/tonies/content" element={<ContentPage />} />
+              <Route path="/tonies/library" element={<LibraryPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route
                 path="/settings/certificates"

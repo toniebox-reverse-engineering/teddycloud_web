@@ -6,7 +6,7 @@ import {
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from '../../components/tonies/FileBrowser';
 
-export const ContentPage = () => {
+export const LibraryPage = () => {
   const { t } = useTranslation();
   return (
     <>
@@ -19,12 +19,12 @@ export const ContentPage = () => {
           items={[
             { title: t('home.navigationTitle') },
             { title: t('tonies.navigationTitle') },
-            { title: t('tonies.content.navigationTitle') },
+            { title: t('tonies.library.navigationTitle') },
           ]}
         />
         <StyledContent>
-          <h1>{t('tonies.content.title')}</h1>
-          <FileBrowser special="" />;
+          <h1>{t('tonies.library.title')}</h1>
+          <FileBrowser special="library" />;
         </StyledContent>
       </StyledLayout>
     </>
