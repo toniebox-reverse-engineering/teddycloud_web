@@ -49,10 +49,6 @@ export const StyledFooter = () => {
       <div style={{ paddingBottom: footerHeight }} />
 
       <StyledFooterComponent>
-        <StyledLogo src={logoImg} />
-
-        <HiddenMobile> TeddyCloud Server</HiddenMobile>
-
         <HiddenMobile>
 
         </HiddenMobile>
@@ -62,7 +58,6 @@ export const StyledFooter = () => {
         </StyledCenterPart>
 
         <StyledRightPart>
-          TEST
         </StyledRightPart>
       </StyledFooterComponent>
     </>
