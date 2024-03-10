@@ -3,7 +3,9 @@ import React, { useContext, useState } from 'react';
 
 interface AudioContextType {
     playAudio: (url: string, meta?: any) => void;
-    songImage: string | undefined;
+    songImage: string;
+    songArtist: string;
+    songTitle: string;
 }
 
 const AudioContext = React.createContext<AudioContextType | undefined>(undefined);
@@ -21,20 +23,24 @@ interface AudioProviderProps {
 }
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
-    const [songImage, setSongImage] = useState<string | undefined>(undefined);
+    const [songImage, setSongImage] = useState<string>("");
+    const [songArtist, setSongArtist] = useState<string>("");
+    const [songTitle, setSongTitle] = useState<string>("");
 
     const playAudio = (url: string, meta?: any) => {
         console.log("Play audio: " + url);
         const globalAudio = document.getElementById('globalAudioPlayer') as HTMLAudioElement;
         globalAudio.src = url;
-        globalAudio.play();
         if (meta) {
             setSongImage(meta.picture);
+            setSongArtist(meta.series);
+            setSongTitle(meta.episode);
         }
+        globalAudio.play();
     };
 
     return (
-        <AudioContext.Provider value={{ playAudio, songImage }}>
+        <AudioContext.Provider value={{ playAudio, songImage, songArtist, songTitle }}>
             {children}
         </AudioContext.Provider>
     );
