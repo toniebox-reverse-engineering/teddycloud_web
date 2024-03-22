@@ -2,7 +2,6 @@ import React from 'react';
 import { PlayCircleOutlined, PauseCircleOutlined, StepBackwardOutlined, StepForwardOutlined } from '@ant-design/icons';
 import { useAudioContext } from '../audio/AudioContext';
 import { useEffect, useState } from 'react';
-import MediaSession from '@mebtte/react-media-session';
 import { Progress, Tooltip } from 'antd';
 
 
@@ -157,22 +156,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ }) => {
                     onTimeUpdate={handleTimeUpdate}>
                     Your browser does not support the audio element.
                 </audio>
-                <MediaSession
-                    title={songTitle}
-                    artist={songArtist}
-                    artwork={[
-                        {
-                            src: songImage,
-                            sizes: '256x256,384x384,512x512'
-                        },
-                        {
-                            src: songImage,
-                            sizes: '96x96,128x128,192x192'
-                        },
-                    ]}
-                >
-
-                </MediaSession>
             </div>
         </div >
     );

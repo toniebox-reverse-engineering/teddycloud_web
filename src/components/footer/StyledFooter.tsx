@@ -1,12 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Footer } from "antd/es/layout/layout";
 import styled from "styled-components";
-import { MenuOutlined } from "@ant-design/icons";
-
-import logoImg from "../../assets/logo.png";
-import { Button, Drawer, Menu, MenuProps } from "antd";
-import { Link } from "react-router-dom";
-import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import { HiddenMobile } from "../StyledComponents";
 import AudioPlayerFooter from "./AudioPlayerFooter";
 
 import { useEffect, useState } from 'react';
