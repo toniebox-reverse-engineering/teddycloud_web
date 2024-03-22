@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { changeLanguage } from "i18next";
 

@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
-import { Card, Button, Popover, message, Slider, Modal } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons';
+import React, {useState} from 'react';
+import {Card, Button, Popover, message, Modal} from 'antd';
+import {
+    InfoCircleOutlined,
+    PlayCircleOutlined,
+    RetweetOutlined,
+    DownloadOutlined,
+    EditOutlined
+} from '@ant-design/icons';
 
-import { useAudioContext } from '../audio/AudioContext';
-import { FileBrowser } from './FileBrowser';
+import {useAudioContext} from '../audio/AudioContext';
+import {FileBrowser} from './FileBrowser';
 
 
-const { Meta } = Card;
+const {Meta} = Card;
 
 
 export type TagsTonieCardList = {
@@ -32,19 +38,19 @@ export type TonieCardProps = {
     };
 }
 
-export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
+export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({tonieCard}) => {
     const [isLive, setIsLive] = useState(tonieCard.live);
     const [messageApi, contextHolder] = message.useMessage();
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
-    const { playAudio } = useAudioContext();
+    const {playAudio} = useAudioContext();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     const [selectedFile, setSelectedFile] = useState<string>("");
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
-        if (files.length == 1) {
+        if (files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const filePath = prefix + path + "/" + files[0].name;
             console.log(filePath);
@@ -125,7 +131,6 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             if (!response.ok) {
                 throw new Error(response.status + " " + response.statusText);
             }
-            const blob = await response.blob();
             messageApi.destroy();
             messageApi.open({
                 type: 'success',
@@ -154,10 +159,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             </ol>
         </div>
     );
-    const title = `${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`;
     const more = (
         <Popover content={content} title={`${tonieCard.tonieInfo.episode}`} trigger="click" placement="bottomRight">
-            <Button icon={<InfoCircleOutlined />} />
+            <Button icon={<InfoCircleOutlined/>}/>
         </Popover>
     )
     return (
@@ -169,23 +173,24 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 size="small"
                 title={tonieCard.tonieInfo.series}
                 cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`
-                } src={tonieCard.tonieInfo.picture} />}
+                } src={tonieCard.tonieInfo.picture}/>}
                 actions={
                     [
-                        <EditOutlined key="edit" onClick={handleEditClick} />,
+                        <EditOutlined key="edit" onClick={handleEditClick}/>,
                         isValid ?
-                            (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
+                            (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick}/>) :
                             (downloadTriggerUrl.length > 0 ?
-                                <DownloadOutlined key="download" onClick={handleBackgroundDownload} /> :
-                                <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />
+                                    <DownloadOutlined key="download" onClick={handleBackgroundDownload}/> :
+                                    <PlayCircleOutlined key="playpause" style={{color: 'lightgray'}}/>
                             ),
-                        <RetweetOutlined key="live" style={{ color: isLive ? 'red' : 'lightgray' }} onClick={handleLiveClick} />
+                        <RetweetOutlined key="live" style={{color: isLive ? 'red' : 'lightgray'}}
+                                         onClick={handleLiveClick}/>
                     ]}
             >
-                <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
-            </Card >
+                <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid}/>
+            </Card>
             <Modal title="Edit Tag" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <FileBrowser special="library" maxSelectedRows={1} onFileSelectChange={handleFileSelectChange} />
+                <FileBrowser special="library" maxSelectedRows={1} onFileSelectChange={handleFileSelectChange}/>
             </Modal>
         </>
     );

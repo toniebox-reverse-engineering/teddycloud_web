@@ -1,14 +1,9 @@
-import { useTranslation } from "react-i18next";
 import { Footer } from "antd/es/layout/layout";
 import styled from "styled-components";
 import { HiddenMobile } from "../StyledComponents";
 import AudioPlayerFooter from "./AudioPlayerFooter";
 
 import { useEffect, useState } from 'react';
-
-const StyledLogo = styled.img`
-  height: 32px;
-`;
 const StyledFooterComponent = styled(Footer)`
   position: fixed;
   bottom: 0;
@@ -29,7 +24,6 @@ const StyledRightPart = styled.div`
 `;
 
 export const StyledFooter = () => {
-  const { t } = useTranslation();
   const [footerHeight, setFooterHeight] = useState(0);
 
   useEffect(() => {

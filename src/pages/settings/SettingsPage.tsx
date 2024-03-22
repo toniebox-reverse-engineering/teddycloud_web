@@ -1,11 +1,9 @@
 import { Form } from "antd";
 
-import Item from "antd/es/list/Item";
 import { useTranslation } from "react-i18next";
 import {
   HiddenDesktop,
   StyledBreadcrumb,
-  StyledBreadcrumbItem,
   StyledContent,
   StyledLayout,
   StyledSider,
@@ -16,7 +14,6 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
 import OptionItem from "../../components/settings/OptionItem";
 import { Formik } from "formik";
-import * as Yup from "yup";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

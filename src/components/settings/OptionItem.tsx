@@ -10,10 +10,9 @@ type OptionItemProps = {
 };
 
 export const OptionItem = ({ option }: OptionItemProps) => {
-  const { type, iD, description, label, shortname } = option;
-  const [optionValue, setOptionValue] = useState<string>("");
-
-  const [field, meta, { setValue }] = useField(iD);
+  const { type, iD, description, label} = option;
+  const [, setOptionValue] = useState<string>("");
+  const [, , { setValue }] = useField(iD);
 
   useEffect(() => {
     // TODO: fetch option value with API Client generator
@@ -22,14 +21,14 @@ export const OptionItem = ({ option }: OptionItemProps) => {
       .then((data) => {
         setOptionValue(data);
         if (type === "bool") {
-          setValue(data === "true" ? true : false);
+          setValue(data === "true");
         } else if (type === "int" || type === "uint") {
           setValue(+data);
         } else if (type === "string") {
           setValue(data);
         }
       });
-  }, []);
+  }, [iD, setValue, type]);
 
   return (
     <div key={iD}>

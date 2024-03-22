@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { useField } from "formik";
 import FormItem from "antd/es/form/FormItem";
 import { InputNumber, InputNumberProps, message } from "antd";
-import { ChangeEvent } from "react";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 
