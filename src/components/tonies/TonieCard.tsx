@@ -153,8 +153,8 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({tonieCard}) 
             <p><strong>Valid:</strong> {tonieCard.valid ? 'Yes' : 'No'}</p>
             <p><strong>Exists:</strong> {tonieCard.exists ? 'Yes' : 'No'}</p>
             <ol>
-                {tonieCard.tonieInfo.tracks.map((track) => (
-                    <li>{track}</li>
+                {tonieCard.tonieInfo.tracks.map((track, i) => (
+                    <li key={i}>{track}</li>
                 ))}
             </ol>
         </div>

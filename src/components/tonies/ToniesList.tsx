@@ -3,6 +3,7 @@ import { List } from 'antd';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard';
 
 export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCards }) => {
+    console.debug(tonieCards)
     return (
         <List
             grid={{
@@ -14,6 +15,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
                 xl: 4,
                 xxl: 5,
             }}
+            rowKey="uid"
             dataSource={tonieCards}
             renderItem={(tonie) => (
                 <List.Item>
