@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Card, Button, Popover, message, Slider, Modal } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined } from '@ant-design/icons';
+import { Card, Button, Input, Popover, message, Slider, Select, Modal } from 'antd';
+import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { useAudioContext } from '../audio/AudioContext';
 import { FileBrowser } from './FileBrowser';
+import { TonieArticleSearch } from './TonieArticleSearch';
 
 
 const { Meta } = Card;
@@ -11,6 +12,13 @@ const { Meta } = Card;
 
 export type TagsTonieCardList = {
     tags: TonieCardProps[];
+}
+export type TonieInfo = {
+    series: string;
+    episode: string;
+    model: string;
+    picture: string;
+    tracks: string[];
 }
 export type TonieCardProps = {
     uid: string;
@@ -23,13 +31,7 @@ export type TonieCardProps = {
     source: string;
     audioUrl: string;
     downloadTriggerUrl: string;
-    tonieInfo: {
-        series: string;
-        episode: string;
-        model: string;
-        picture: string;
-        tracks: string[];
-    };
+    tonieInfo: TonieInfo;
 }
 
 export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
@@ -39,8 +41,12 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const [isValid, setIsValid] = useState(tonieCard.valid);
     const { playAudio } = useAudioContext();
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isModelModalOpen, setIsModelModalOpen] = useState(false);
+    const [isMoreOpen, setIsMoreOpen] = useState(false);
 
+    const [activeModel, setActiveModel] = useState(tonieCard.tonieInfo.model);
+    const [selectedModel, setSelectedModel] = useState("");
 
     const [selectedFile, setSelectedFile] = useState<string>("");
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
@@ -54,12 +60,12 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         }
     }
 
-    const showModal = () => {
+    const showEditModal = () => {
         setSelectedFile("");
-        setIsModalOpen(true);
+        setIsEditModalOpen(true);
     };
-    const handleOk = async () => {
-        setIsModalOpen(false);
+    const handleEditOk = async () => {
+        setIsEditModalOpen(false);
         if (selectedFile === "") {
             message.error('Could not empty source!');
             return;
@@ -78,13 +84,27 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             message.error('Could not set source! ' + error);
         }
     };
-    const handleCancel = () => {
+    const handleEditCancel = () => {
         setSelectedFile("");
-        setIsModalOpen(false);
+        setIsEditModalOpen(false);
     };
-
     const handleEditClick = () => {
-        showModal();
+        showEditModal();
+    }
+
+    const showModelModal = () => {
+        setSelectedModel(activeModel);
+        setIsModelModalOpen(true);
+        setIsMoreOpen(false);
+    };
+    const handleModelOk = async () => {
+        setIsModelModalOpen(false);
+    }
+    const handleModelCancel = () => {
+        setIsModelModalOpen(false);
+    };
+    const handleModelClick = () => {
+        showModelModal();
     }
 
     const handleLiveClick = async () => {
@@ -106,7 +126,6 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         } catch (error) {
             message.error('Could not change live flag! ' + error);
         }
-
     };
     const handlePlayPauseClick = () => {
         playAudio(process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl, tonieCard.tonieInfo);
@@ -142,9 +161,36 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         }
     }
 
+    const handleMoreOpenChange = (newOpen: boolean) => {
+        setIsMoreOpen(newOpen);
+    };
+
+    const handleModelClearClick = () => {
+        setSelectedModel(activeModel);
+    };
+    const handleModelSave = async () => {
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: "tonie_model=" + selectedModel
+            });
+            if (!response.ok) {
+                throw new Error(response.status + " " + response.statusText);
+            }
+            setActiveModel(selectedModel);
+            message.success("Set tonie model to " + selectedModel + "!");
+        } catch (error) {
+            message.error('Could not change tonie model! ' + error);
+        }
+    }
+    const handleModelInputChange = (e: any) => {
+        setSelectedModel(e.target.value);
+    };
+
     const content = (
         <div>
-            <p><strong>Model:</strong> {tonieCard.tonieInfo.model}</p>
+            <p><strong>Model:</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
             <p><strong>Valid:</strong> {tonieCard.valid ? 'Yes' : 'No'}</p>
             <p><strong>Exists:</strong> {tonieCard.exists ? 'Yes' : 'No'}</p>
             <ol>
@@ -156,10 +202,13 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     );
     const title = `${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`;
     const more = (
-        <Popover content={content} title={`${tonieCard.tonieInfo.episode}`} trigger="click" placement="bottomRight">
+        <Popover open={isMoreOpen} onOpenChange={handleMoreOpenChange} content={content} title={`${tonieCard.tonieInfo.episode}`} trigger="click" placement="bottomRight">
             <Button icon={<InfoCircleOutlined />} />
         </Popover>
     )
+    const searchResultChanged = (newValue: string) => {
+        setSelectedModel(newValue);
+    }
     return (
         <>
             {contextHolder}
@@ -184,8 +233,15 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
             </Card >
-            <Modal title="Edit Tag" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                <FileBrowser special="library" maxSelectedRows={1} onFileSelectChange={handleFileSelectChange} />
+            <Modal title="Edit Tag" open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
+                <FileBrowser special="library" maxSelectedRows={1} trackUrl={false} onFileSelectChange={handleFileSelectChange} />
+            </Modal>
+            <Modal title={"Edit Model " + tonieCard.tonieInfo.model + " - " + title} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
+                <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
+                    addonAfter={activeModel == selectedModel ?
+                        (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
+                        (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
+                <TonieArticleSearch placeholder="Search for a model" style={{ width: 500 }} onChange={searchResultChanged} />
             </Modal>
         </>
     );
