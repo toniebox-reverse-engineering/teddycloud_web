@@ -10,13 +10,13 @@ import {useAudioContext} from '../audio/AudioContext';
 import {PlayCircleOutlined} from '@ant-design/icons';
 
 
-export const FileBrowser: React.FC<{
-    special: string,
-    maxSelectedRows?: number,
-    selectTafOnly?: boolean,
-    onFileSelectChange?: (files: any[], path: string, special: string) => void
-}> = ({special, maxSelectedRows = 0, selectTafOnly = true, onFileSelectChange}) => {
-    const {playAudio} = useAudioContext();
+const api = new TeddyCloudApi(defaultAPIConfig());
+
+export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, trackUrl?: boolean, selectTafOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, onFileSelectChange }) => {
+    const { t } = useTranslation();
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const { playAudio } = useAudioContext();
 
     const [files, setFiles] = useState([]);
     const [path, setPath] = useState('');
@@ -69,7 +69,9 @@ export const FileBrowser: React.FC<{
 
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
-        navigate(`?path=${newPath}`); // Update the URL with the new path using navigate
+        if (trackUrl) {
+            navigate(`?path=${newPath}`); // Update the URL with the new path using navigate
+        }
         setPath(newPath); // Update the path state
     };
 
