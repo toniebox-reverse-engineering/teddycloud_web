@@ -1,0 +1,15 @@
+.openapi-generator-ignore
+apis/BoxineApi.ts
+apis/BoxineForcedApi.ts
+apis/GenericApi.ts
+apis/TeddyCloudApi.ts
+apis/index.ts
+index.ts
+models/Errors.ts
+models/ErrorsErrorsInner.ts
+models/OptionsItem.ts
+models/OptionsList.ts
+models/StatsItem.ts
+models/StatsList.ts
+models/index.ts
+runtime.ts

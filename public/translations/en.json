@@ -1,0 +1,52 @@
+{
+  "home": {
+    "navigationTitle": "Home",
+    "title": "Welcome!",
+    "stats": {
+      "navigationTitle": "Stats",
+      "title": "Stats",
+      "connections": "Connections made to this server",
+      "reverse_requests": "Reverse proxy calls made by clients",
+      "cloud_requests": "Cloud requests executed",
+      "cloud_blocked": "Blocked cloud requests",
+      "cloud_failed": "Failed cloud requests"
+    }
+  },
+  "settings": {
+    "navigationTitle": "Settings",
+    "title": "Settings",
+    "general": {
+      "navigationTitle": "General",
+      "title": "General settings"
+    },
+    "certificates": {
+      "navigationTitle": "Certificates",
+      "title": "Certificates"
+    }
+  },
+  "tonies": {
+    "navigationTitle": "Tonies",
+    "title": "Tonies",
+    "tonies": {
+      "navigationTitle": "Tonies",
+      "title": "Tonies"
+    },
+    "system-sounds": {
+      "navigationTitle": "System Sounds",
+      "title": "System Sounds"
+    },
+    "content": {
+      "navigationTitle": "Content",
+      "title": "Content"
+    },
+    "library": {
+      "navigationTitle": "Library",
+      "title": "Library"
+    }
+  },
+  "language": {
+    "change": "Change language",
+    "english": "EN",
+    "german": "DE"
+  }
+}
