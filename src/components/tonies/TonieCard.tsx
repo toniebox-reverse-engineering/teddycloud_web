@@ -1,16 +1,6 @@
-import React, { useState } from 'react';
-import { Card, Button, Input, Popover, message, Slider, Select, Modal } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
+import { Card, Button, Input, Popover, message, Modal } from 'antd';
+import { InfoCircleOutlined, PlayCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 import React, {useState} from 'react';
-import {Card, Button, Popover, message, Modal} from 'antd';
-import {
-    InfoCircleOutlined,
-    PlayCircleOutlined,
-    RetweetOutlined,
-    DownloadOutlined,
-    EditOutlined
-} from '@ant-design/icons';
-
 import {useAudioContext} from '../audio/AudioContext';
 import {FileBrowser} from './FileBrowser';
 import { TonieArticleSearch } from './TonieArticleSearch';
@@ -208,6 +198,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({tonieCard}) 
             </ol>
         </div>
     );
+    const title = `${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`;
     const more = (
         <Popover open={isMoreOpen} onOpenChange={handleMoreOpenChange} content={content} title={`${tonieCard.tonieInfo.episode}`} trigger="click" placement="bottomRight">
             <Button icon={<InfoCircleOutlined/>}/>
@@ -246,7 +237,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({tonieCard}) 
             </Modal>
             <Modal title={"Edit Model " + tonieCard.tonieInfo.model + " - " + title} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
                 <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
-                    addonAfter={activeModel == selectedModel ?
+                    addonAfter={activeModel === selectedModel ?
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
                 <TonieArticleSearch placeholder="Search for a model" style={{ width: 500 }} onChange={searchResultChanged} />
