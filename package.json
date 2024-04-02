@@ -35,7 +35,8 @@
     "build": "react-scripts build",
     "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "npx eslint --max-warnings=0 ."
   },
   "eslintConfig": {
     "extends": [
