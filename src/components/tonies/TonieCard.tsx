@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {useAudioContext} from '../audio/AudioContext';
 import {FileBrowser} from './FileBrowser';
 import { TonieArticleSearch } from './TonieArticleSearch';
+import ImageUnknown from "../../assets/img_unknown.png";
 
 
 const {Meta} = Card;
@@ -186,6 +187,15 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({tonieCard}) 
         setSelectedModel(e.target.value);
     };
 
+    const handlePicture = (picture: string): string => {
+        switch (picture) {
+            case "/img_unknown.png":
+                return ImageUnknown
+            default:
+                return picture
+        }
+    }
+
     const content = (
         <div>
             <p><strong>Model:</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
@@ -215,8 +225,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({tonieCard}) 
                 hoverable
                 size="small"
                 title={tonieCard.tonieInfo.series}
-                cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`
-                } src={tonieCard.tonieInfo.picture}/>}
+                cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
+                             src={handlePicture(tonieCard.tonieInfo.picture)}
+                             style={{aspectRatio: 4/3}}/>}
                 actions={
                     [
                         <EditOutlined key="edit" onClick={handleEditClick}/>,
