@@ -2,6 +2,23 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Typicale development workflow:
+
+### TeddyCloud configuration
+You'll need to allow CORS for your teddyCloud instance used for development. The easisiest variant is to set `CORS Allow-Originⓘ` to `*`.
+
+### NPM Enviroment file '.env'
+Please place an enviroment file '.env' in the teddycloud_web directory.  
+```
+REACT_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
+REACT_APP_TEDDYCLOUD_WEB_BASE=/web
+```
+
+### Start NPM / teddyCloud
+Use `npm start` to start the NPM server in development mode. Be patient, it may take a while. 
+Be sure your teddyCloud instance is also running.
+
+
 ## Available Scripts
 
 In the project directory, you can run:
