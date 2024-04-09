@@ -51,9 +51,7 @@ export const StyledHeader = () => {
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
-        <HiddenMobile>
-          <StyledLanguageSwitcher />
-        </HiddenMobile>
+        <StyledLanguageSwitcher />
         <HiddenDesktop>
           <Button
             className="barsMenu"
