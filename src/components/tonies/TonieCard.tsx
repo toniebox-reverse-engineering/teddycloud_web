@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Card, Button, Input, Popover, message, Slider, Select, Modal } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
-
-import { useAudioContext } from '../audio/AudioContext';
-import { FileBrowser } from './FileBrowser';
+import { Card, Button, Input, Popover, message, Modal } from 'antd';
+import { InfoCircleOutlined, PlayCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
+import React, {useState} from 'react';
+import {useAudioContext} from '../audio/AudioContext';
+import {FileBrowser} from './FileBrowser';
 import { TonieArticleSearch } from './TonieArticleSearch';
+import ImageUnknown from "../../assets/img_unknown.png";
 
 
-const { Meta } = Card;
+const {Meta} = Card;
 
 
 export type TagsTonieCardList = {
@@ -34,12 +34,12 @@ export type TonieCardProps = {
     tonieInfo: TonieInfo;
 }
 
-export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
+export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({tonieCard}) => {
     const [isLive, setIsLive] = useState(tonieCard.live);
     const [messageApi, contextHolder] = message.useMessage();
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
-    const { playAudio } = useAudioContext();
+    const {playAudio} = useAudioContext();
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isModelModalOpen, setIsModelModalOpen] = useState(false);
@@ -50,7 +50,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
 
     const [selectedFile, setSelectedFile] = useState<string>("");
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
-        if (files.length == 1) {
+        if (files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const filePath = prefix + path + "/" + files[0].name;
             console.log(filePath);
@@ -144,7 +144,6 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             if (!response.ok) {
                 throw new Error(response.status + " " + response.statusText);
             }
-            const blob = await response.blob();
             messageApi.destroy();
             messageApi.open({
                 type: 'success',
@@ -188,14 +187,23 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         setSelectedModel(e.target.value);
     };
 
+    const handlePicture = (picture: string): string => {
+        switch (picture) {
+            case "/img_unknown.png":
+                return ImageUnknown
+            default:
+                return picture
+        }
+    }
+
     const content = (
         <div>
             <p><strong>Model:</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
             <p><strong>Valid:</strong> {tonieCard.valid ? 'Yes' : 'No'}</p>
             <p><strong>Exists:</strong> {tonieCard.exists ? 'Yes' : 'No'}</p>
             <ol>
-                {tonieCard.tonieInfo.tracks.map((track) => (
-                    <li>{track}</li>
+                {tonieCard.tonieInfo.tracks.map((track, i) => (
+                    <li key={i}>{track}</li>
                 ))}
             </ol>
         </div>
@@ -203,7 +211,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const title = `${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`;
     const more = (
         <Popover open={isMoreOpen} onOpenChange={handleMoreOpenChange} content={content} title={`${tonieCard.tonieInfo.episode}`} trigger="click" placement="bottomRight">
-            <Button icon={<InfoCircleOutlined />} />
+            <Button icon={<InfoCircleOutlined/>}/>
         </Popover>
     )
     const searchResultChanged = (newValue: string) => {
@@ -217,28 +225,30 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 hoverable
                 size="small"
                 title={tonieCard.tonieInfo.series}
-                cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`
-                } src={tonieCard.tonieInfo.picture} />}
+                cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
+                             src={handlePicture(tonieCard.tonieInfo.picture)}
+                             style={{aspectRatio: 4/3}}/>}
                 actions={
                     [
-                        <EditOutlined key="edit" onClick={handleEditClick} />,
+                        <EditOutlined key="edit" onClick={handleEditClick}/>,
                         isValid ?
-                            (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
+                            (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick}/>) :
                             (downloadTriggerUrl.length > 0 ?
-                                <DownloadOutlined key="download" onClick={handleBackgroundDownload} /> :
-                                <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />
+                                    <DownloadOutlined key="download" onClick={handleBackgroundDownload}/> :
+                                    <PlayCircleOutlined key="playpause" style={{color: 'lightgray'}}/>
                             ),
-                        <RetweetOutlined key="live" style={{ color: isLive ? 'red' : 'lightgray' }} onClick={handleLiveClick} />
+                        <RetweetOutlined key="live" style={{color: isLive ? 'red' : 'lightgray'}}
+                                         onClick={handleLiveClick}/>
                     ]}
             >
-                <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
-            </Card >
+                <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid}/>
+            </Card>
             <Modal title="Edit Tag" open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
-                <FileBrowser special="library" maxSelectedRows={1} trackUrl={false} onFileSelectChange={handleFileSelectChange} />
+                <FileBrowser special="library" maxSelectedRows={1} trackUrl={false} onFileSelectChange={handleFileSelectChange}/>
             </Modal>
             <Modal title={"Edit Model " + tonieCard.tonieInfo.model + " - " + title} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
                 <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
-                    addonAfter={activeModel == selectedModel ?
+                    addonAfter={activeModel === selectedModel ?
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
                 <TonieArticleSearch placeholder="Search for a model" style={{ width: 500 }} onChange={searchResultChanged} />

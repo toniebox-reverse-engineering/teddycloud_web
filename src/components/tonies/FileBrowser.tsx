@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
 
-import { useTranslation } from 'react-i18next';
-import { Table, message } from 'antd';
-import { Key } from 'antd/es/table/interface'; // Import Key type from Ant Design
-import { SortOrder } from 'antd/es/table/interface';
+import {Table, message} from 'antd';
+import {Key} from 'antd/es/table/interface'; // Import Key type from Ant Design
+import {SortOrder} from 'antd/es/table/interface';
 
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
-import { useAudioContext } from '../audio/AudioContext';
+import {useAudioContext} from '../audio/AudioContext';
 
-import { PlayCircleOutlined } from '@ant-design/icons';
+import {PlayCircleOutlined} from '@ant-design/icons';
 
+export const FileBrowser: React.FC<{
+    special: string,
+    maxSelectedRows?: number,
+    trackUrl?: boolean,
+    selectTafOnly?: boolean,
+    onFileSelectChange?: (files: any[], path: string, special: string) => void
+}> = ({special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, onFileSelectChange}) => {
 
-const api = new TeddyCloudApi(defaultAPIConfig());
-
-export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, trackUrl?: boolean, selectTafOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, onFileSelectChange }) => {
-    const { t } = useTranslation();
-    const [messageApi, contextHolder] = message.useMessage();
-
-    const { playAudio } = useAudioContext();
+    const {playAudio} = useAudioContext();
 
     const [files, setFiles] = useState([]);
     const [path, setPath] = useState('');
@@ -53,15 +51,6 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             onFileSelectChange(selectedFiles, path, special);
     };
 
-    const handleRowClick = (record: any, table: any) => {
-        console.log(table);
-        if (selectedRowKeys.includes(record.key)) {
-            onSelectChange(selectedRowKeys.filter(key => key !== record.key));
-        } else if (selectedRowKeys.length < maxSelectedRows) {
-            onSelectChange([...selectedRowKeys, record.key]);
-        }
-    };
-
     useEffect(() => {
         // Function to parse the query parameters from the URL
         const queryParams = new URLSearchParams(location.search);
@@ -86,7 +75,6 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
         }
         setPath(newPath); // Update the path state
     };
-
 
 
     const getFieldValue = (obj: any, keys: string[]) => {
@@ -133,7 +121,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             dataIndex: ['tonieInfo', 'picture'],
             key: 'picture',
             sorter: undefined,
-            render: (picture: string) => picture && <img src={picture} alt="Tonie Picture" style={{ width: 100 }} />
+            render: (picture: string) => picture && <img src={picture} alt="Tonie" style={{width: 100}}/>
         },
         {
             title: 'Name',
@@ -176,11 +164,11 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             key: 'controls',
             sorter: undefined,
             render: (name: string, record: any) =>
-            (record.tafHeader ?
-                <PlayCircleOutlined onClick={() => playAudio(
-                    process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + name + "?ogg=true&special=" + special,
-                    record.tonieInfo)} />
-                : ""),
+                (record.tafHeader ?
+                    <PlayCircleOutlined onClick={() => playAudio(
+                        process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + name + "?ogg=true&special=" + special,
+                        record.tonieInfo)}/>
+                    : ""),
         }
     ];
 

@@ -4,10 +4,9 @@ import type { SelectProps } from 'antd';
 import { TonieInfo } from './TonieCard';
 
 export const TonieArticleSearch: React.FC<{ placeholder: string; style: React.CSSProperties; onChange: (newValue: string) => void }> = (props) => {
-    const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<SelectProps['options']>([]);
     const [value, setValue] = useState<string>();
-    const [tonieInfos, setTonieInfos] = useState<TonieInfo[]>();
+    const [, setTonieInfos] = useState<TonieInfo[]>();
 
     const handleSearch = async (search: string) => {
         const searchEncode = encodeURIComponent(search);

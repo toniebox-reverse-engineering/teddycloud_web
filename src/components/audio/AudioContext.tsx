@@ -1,4 +1,3 @@
-import { TonieCardProps } from '../../components/tonies/TonieCard';
 import React, { useContext, useState } from 'react';
 
 interface AudioContextType {
