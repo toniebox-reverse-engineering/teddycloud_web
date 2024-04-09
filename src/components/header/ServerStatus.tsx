@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { BoxineApi, BoxineForcedApi } from "../../api";
-import { Badge, Space } from "antd";
+import { Space, Tag } from "antd";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons';
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 
 const api = new BoxineApi(defaultAPIConfig());
@@ -37,16 +41,14 @@ export const ServerStatus = () => {
 
   return (
     <Space>
-      <div>
-        <HiddenDesktop>B</HiddenDesktop>
-        <HiddenMobile>Boxine</HiddenMobile>
-        <Badge dot status={boxineStatus ? "success" : "error"} />
-      </div>
-      <div>
-        <HiddenDesktop>TC</HiddenDesktop>
-        <HiddenMobile>TeddyCloud</HiddenMobile>
-        <Badge dot status={teddyStatus ? "success" : "error"} />
-      </div>
+        <Tag icon={boxineStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={boxineStatus ? "#87d068" : "#f50"} bordered={false}>
+          <HiddenDesktop>B</HiddenDesktop>
+          <HiddenMobile>Boxine</HiddenMobile>
+        </Tag>
+        <Tag icon={boxineStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={teddyStatus ? "#87d068" : "#f50"} bordered={false}>
+          <HiddenDesktop>TC</HiddenDesktop>
+          <HiddenMobile>TeddyCloud</HiddenMobile>
+        </Tag>
     </Space>
   );
 };
