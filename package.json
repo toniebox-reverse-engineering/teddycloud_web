@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/web",
   "dependencies": {
+    "@mebtte/react-media-session": "^1.1.2",
     "@openapitools/openapi-generator-cli": "^2.7.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.39",
