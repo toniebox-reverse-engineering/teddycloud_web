@@ -8,14 +8,17 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 You'll need to allow CORS for your teddyCloud instance used for development. The easisiest variant is to set `CORS Allow-Originⓘ` to `*`.
 
 ### NPM Enviroment file '.env'
-Please place an enviroment file '.env' in the teddycloud_web directory.  
+Please place an enviroment file '.env.development.local' in the teddycloud_web directory.  
 ```
 REACT_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
 REACT_APP_TEDDYCLOUD_WEB_BASE=/web
 ```
 
+### Install dotenv
+Debian: `sudo apt install python3-dotenv-cli`
+
 ### Start NPM / teddyCloud
-Use `npm start` to start the NPM server in development mode. Be patient, it may take a while. 
+Use `./start_dev.sh` to start the NPM server in development mode. Be patient, it may take a while. 
 Be sure your teddyCloud instance is also running.
 
 
