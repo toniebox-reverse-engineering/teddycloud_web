@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Button, Input, Popover, message, Slider, Select, Modal } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, CloudSyncOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { useAudioContext } from '../audio/AudioContext';
 import { FileBrowser } from './FileBrowser';
@@ -36,6 +36,7 @@ export type TonieCardProps = {
 
 export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
     const [isLive, setIsLive] = useState(tonieCard.live);
+    const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
     const [messageApi, contextHolder] = message.useMessage();
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
@@ -125,6 +126,26 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             }
         } catch (error) {
             message.error('Could not change live flag! ' + error);
+        }
+    };
+    const handleNoCloudClick = async () => {
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: "nocloud=" + !isNoCloud
+            });
+            if (!response.ok) {
+                throw new Error(response.status + " " + response.statusText);
+            }
+            setIsNoCloud(!isNoCloud);
+            if (!isNoCloud) {
+                message.success('Cloud access blocked!');
+            } else {
+                message.success('Cloud access allowed!');
+            }
+        } catch (error) {
+            message.error('Could not change cloud access (nocloud) flag! ' + error);
         }
     };
     const handlePlayPauseClick = () => {
@@ -228,6 +249,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                                 <DownloadOutlined key="download" onClick={handleBackgroundDownload} /> :
                                 <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />
                             ),
+                        <CloudSyncOutlined key="nocloud" style={{ color: isNoCloud ? 'red' : 'lightgray' }} onClick={handleNoCloudClick} />,
                         <RetweetOutlined key="live" style={{ color: isLive ? 'red' : 'lightgray' }} onClick={handleLiveClick} />
                     ]}
             >
