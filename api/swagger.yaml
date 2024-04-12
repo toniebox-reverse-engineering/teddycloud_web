@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: TeddyCloud API
   description: OpenAPI specification for TeddyCloud Backend API
-  version: 1.0.1
+  version: 1.1.1
 
 # -----------------------------------
 servers:
@@ -63,6 +63,8 @@ paths:
       tags:
         - TeddyCloud
       description: Load all available stats.
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Stats items
@@ -86,6 +88,8 @@ paths:
       tags:
         - TeddyCloud
       description: get all options
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: all options recieved as array
@@ -99,6 +103,8 @@ paths:
       tags:
         - TeddyCloud
       description: upload certificates
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -135,6 +141,8 @@ paths:
       tags:
         - TeddyCloud
       description: tell server to write to config file
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Stats item
@@ -158,6 +166,8 @@ paths:
       tags:
         - TeddyCloud
       description: Cache cloud content on local server
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -177,6 +187,64 @@ paths:
           $ref: '#/components/responses/Unacceptable'
         '5XX':
           $ref: '#/components/responses/InternalServerError'
+          
+  /api/v1/login:
+    post:
+      tags:
+        - TeddyCloud
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                passwordHash:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+
+  /api/v1/refresh-token:
+    post:
+      tags:
+        - TeddyCloud
+      summary: Refresh JWT token
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
 
   #
   # Boxine
@@ -450,3 +518,9 @@ components:
                 id: 500
                 status: "HTTP/1.1 500 Internal Server Error"
                 title: Internal Server Error
+  
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
