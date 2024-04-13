@@ -21,8 +21,12 @@ export const StyledLanguageSwitcher = () => {
 
   return (
     <Space>
-      <Dropdown menu={{ items }} placement="bottom" trigger={['click']}>
-        <Tag color="transparent"><GlobalOutlined /></Tag>
+      <Dropdown menu={{ items }} trigger={["click"]}>
+        <a onClick={(e) => e.preventDefault()}>
+          <Tag color="transparent">
+            <GlobalOutlined />
+          </Tag>
+        </a>
       </Dropdown>
     </Space>
   );
