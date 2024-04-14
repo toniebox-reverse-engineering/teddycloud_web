@@ -188,7 +188,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/InternalServerError'
           
-  /api/v1/login:
+  /api/login:
     post:
       tags:
         - TeddyCloud
@@ -196,7 +196,7 @@ paths:
       requestBody:
         required: true
         content:
-          "application/json":
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
@@ -208,16 +208,13 @@ paths:
         '200':
           description: Successful login
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
+                type: string
         '401':
           description: Unauthorized
 
-  /api/v1/refresh-token:
+  /api/refresh-token:
     post:
       tags:
         - TeddyCloud
@@ -227,7 +224,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               type: object
               properties:
@@ -237,12 +234,9 @@ paths:
         '200':
           description: Token refreshed successfully
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                properties:
-                  token:
-                    type: string
+                type: string
         '401':
           description: Unauthorized
 
