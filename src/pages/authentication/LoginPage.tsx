@@ -19,11 +19,9 @@ export const LoginPage = () => {
     
     const handleSubmit = async (values: { username: string; password: string }) => {
         try {
-            console.log("Calling login")
             await login(values.username, values.password);
-            console.log("Calling Done")
-            navigate("/")
             // Redirect or show success message after successful login
+            navigate("/")
         } catch (error) {
             // Handle login error (e.g., display error message)
             console.error('Login error:', error);

@@ -8,11 +8,9 @@ import {
   StyledSider,
 } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
-import {useAuth} from "../../provider/AuthProvider";
 
 export const HomePage = () => {
   const { t } = useTranslation();
-  const { logout } = useAuth();
 
   return (
     <>

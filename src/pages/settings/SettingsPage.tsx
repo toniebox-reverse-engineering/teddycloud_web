@@ -34,7 +34,7 @@ export const SettingsPage = () => {
 
   useEffect(() => {
     const fetchOptions = async () => {
-      const optionsRequest = (await api.apiGetIndexGetRaw()) as OptionsList;
+      const optionsRequest = (await api.apiGetIndexGet()) as OptionsList;
       if (
         optionsRequest?.options?.length &&
         optionsRequest?.options?.length > 0
