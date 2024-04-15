@@ -188,7 +188,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/InternalServerError'
           
-  /api/login:
+  /api/auth/login:
     post:
       tags:
         - TeddyCloud
@@ -214,7 +214,7 @@ paths:
         '401':
           description: Unauthorized
 
-  /api/refresh-token:
+  /api/auth/refresh-token:
     post:
       tags:
         - TeddyCloud

@@ -16,7 +16,6 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
 import OptionItem from "../../components/settings/OptionItem";
 import { Formik } from "formik";
-import * as Yup from "yup";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -35,7 +34,7 @@ export const SettingsPage = () => {
 
   useEffect(() => {
     const fetchOptions = async () => {
-      const optionsRequest = (await api.apiGetIndexGet()) as OptionsList;
+      const optionsRequest = (await api.apiGetIndexGetRaw()) as OptionsList;
       if (
         optionsRequest?.options?.length &&
         optionsRequest?.options?.length > 0
