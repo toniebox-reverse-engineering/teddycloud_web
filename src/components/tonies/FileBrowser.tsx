@@ -133,13 +133,14 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
         return a.isDir ? -1 : 1;
     }
 
-    const columns = [
+    var columns = [
         {
             title: '',
             dataIndex: ['tonieInfo', 'picture'],
             key: 'picture',
             sorter: undefined,
-            render: (picture: string) => picture && <img src={picture} alt="Tonie Picture" style={{ width: 100 }} />
+            render: (picture: string) => picture && <img src={picture} alt="Tonie Picture" style={{ width: 100 }} />,
+            showOnDirOnly: false
         },
         {
             title: 'Name',
@@ -147,34 +148,40 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             key: 'name',
             sorter: dirNameSorter,
             defaultSortOrder: 'ascend' as SortOrder,
-            render: (name: string, record: any) => (record.isDir ? '[' + name + ']' : name),
+            render: (name: string, record: any) => (record.isDir && !showDirOnly ? '[' + name + ']' : name),
+            showOnDirOnly: true
         },
         {
             title: 'Size',
             dataIndex: 'size',
             key: 'size',
             render: (size: number, record: any) => (record.isDir ? '<DIR>' : humanFileSize(size)),
+            showOnDirOnly: false
         },
         {
             title: 'Model',
             dataIndex: ['tonieInfo', 'model'],
             key: 'model',
+            showOnDirOnly: false
         },
         {
             title: 'Series',
             dataIndex: ['tonieInfo', 'series'],
             key: 'series',
+            showOnDirOnly: false
         },
         {
             title: 'Episode',
             dataIndex: ['tonieInfo', 'episode'],
             key: 'episode',
+            showOnDirOnly: false
         },
         {
             title: 'Date',
             dataIndex: 'date',
             key: 'date',
             render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
+            showOnDirOnly: true
         },
         {
             title: '',
@@ -187,6 +194,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
                     process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + name + "?ogg=true&special=" + special,
                     record.tonieInfo)} />
                 : ""),
+            showOnDirOnly: false
         }
     ];
 
@@ -195,6 +203,10 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             (column as any).sorter = (a: any, b: any) => defaultSorter(a, b, column.dataIndex);
         }
     });
+
+    if(showDirOnly)
+        columns = columns.filter((column) => column.showOnDirOnly);
+
     return (
         <Table
             dataSource={files}
