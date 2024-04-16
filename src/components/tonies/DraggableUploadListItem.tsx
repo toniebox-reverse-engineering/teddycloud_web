@@ -18,6 +18,7 @@ interface DraggableUploadListItemProps {
     fileList: MyUploadFile<any>[];
     file: MyUploadFile<any>;
     onRemove: (file: MyUploadFile) => void;
+    disabled: boolean;
   }
 
 export const DraggableUploadListItem = ({
@@ -25,6 +26,7 @@ export const DraggableUploadListItem = ({
     fileList,
     file,
     onRemove,
+    disabled,
   }: DraggableUploadListItemProps) => {
     const {
       attributes,
@@ -70,6 +72,7 @@ export const DraggableUploadListItem = ({
               type="button"
               className="ant-btn css-dev-only-do-not-override-1kuana8 ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
               onClick={() => onRemove(file)}
+              disabled={disabled}
             >
               <span className="ant-btn-icon">
                 <DeleteOutlined />

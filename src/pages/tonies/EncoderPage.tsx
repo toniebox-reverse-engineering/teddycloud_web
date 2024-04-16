@@ -1,7 +1,26 @@
 import { FolderOpenOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
+import type { DragEndEvent } from "@dnd-kit/core";
+import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Location } from "@remix-run/router";
+import type { UploadProps } from "antd";
+import {
+  Button,
+  Collapse,
+  Divider,
+  Input,
+  Space,
+  Typography,
+  Upload,
+  message,
+} from "antd";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import {
   HiddenDesktop,
   StyledBreadcrumb,
@@ -9,23 +28,13 @@ import {
   StyledLayout,
   StyledSider,
 } from "../../components/StyledComponents";
-import type { DragEndEvent } from "@dnd-kit/core";
-import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { Button, message, Upload, Typography, Flex, Collapse } from "antd";
-import type { UploadProps } from "antd";
-import { useState } from "react";
-import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/tonies/FileBrowser";
 import { DraggableUploadListItem } from "../../components/tonies/DraggableUploadListItem";
+import { FileBrowser } from "../../components/tonies/FileBrowser";
+import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { MyUploadFile, upload } from "../../util/encoder";
 import { createQueryString, getFilePathFromQueryParam } from "../../util/url";
 
-const { Text, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 export const EncoderPage = () => {
   const { t } = useTranslation();
@@ -33,7 +42,7 @@ export const EncoderPage = () => {
 
   const [fileList, setFileList] = useState<MyUploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [tafFilename, setTafFilename] = useState("NewContent");
+  const [tafFilename, setTafFilename] = useState("");
 
   const sensor = useSensor(PointerSensor, {
     activationConstraint: { distance: 10 },
@@ -91,20 +100,12 @@ export const EncoderPage = () => {
     if (response.ok) {
       message.success(t("tonies.encoder.uploadSuccessful"));
       setFileList([]);
-      setTafFilename("NewContent");
+      setTafFilename("");
     } else {
       console.log("Upload failed:", responseData);
       message.error(t("tonies.encoder.uploadFailed"));
     }
     setUploading(false);
-  };
-
-  const updateTafFilename = (filename: string) => {
-    if (filename === "") {
-      setTafFilename("NewContent");
-      return;
-    }
-    setTafFilename(filename);
   };
 
   const props: UploadProps = {
@@ -126,6 +127,7 @@ export const EncoderPage = () => {
         fileList={fileList}
         file={file}
         onRemove={onRemove}
+        disabled={uploading}
       />
     ),
   };
@@ -134,17 +136,8 @@ export const EncoderPage = () => {
     {
       key: 1,
       label: (
-        <Paragraph
-          editable={{ onChange: updateTafFilename }}
-          style={{ margin: 0, marginRight: 16 }}
-        >
-          <Text type="secondary">
-            {t("tonies.encoder.targetDirectory")} {getFilePathFromQueryParam(location)}
-          </Text>
-          {tafFilename}
-          <Text type="secondary">
-            .taf
-          </Text>
+        <Paragraph style={{ margin: 0, marginRight: 16 }}>
+          {t("tonies.encoder.targetDirectory")}
         </Paragraph>
       ),
       children: (
@@ -171,41 +164,55 @@ export const EncoderPage = () => {
         />
         <StyledContent>
           <h1>{t("tonies.encoder.title")}</h1>
-          <div style={{ marginBottom: 16 }}>
-            <Collapse bordered={true} items={collapseItems} />
-          </div>
-          <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
-            <SortableContext
-              items={fileList.map((i) => i.uid)}
-              strategy={verticalListSortingStrategy}
-            >
-              <Upload {...props}>
-                <Button icon={<FolderOpenOutlined />}>
-                  {t("tonies.encoder.uploadFiles")}
-                </Button>
-              </Upload>
-              {fileList.length > 0 ? (
-                <Flex
-                  justify={"flex-end"}
-                  align="center"
-                  style={{ marginTop: 16 }}
-                >
+          <Space direction="vertical" style={{ display: "flex" }}>
+            <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
+              <SortableContext
+                items={fileList.map((i) => i.uid)}
+                strategy={verticalListSortingStrategy}
+              >
+                <Upload {...props}>
+                  <Button icon={<FolderOpenOutlined />} disabled={uploading}>
+                    {t("tonies.encoder.uploadFiles")}
+                  </Button>
+                </Upload>
+              </SortableContext>
+            </DndContext>
+            {fileList.length > 0 ? (
+              <>
+                <Divider />
+                <Collapse bordered={true} items={collapseItems} />
+                <Space direction="vertical" style={{display: "flex", alignItems: "flex-end"}}>
+                  <Input
+                    addonAfter=".taf"
+                    addonBefore={
+                      t("tonies.encoder.saveAs") +
+                      ": " +
+                      getFilePathFromQueryParam(location)
+                    }
+                    required
+                    status={
+                      fileList.length > 0 && tafFilename === "" ? "error" : ""
+                    }
+                    onChange={(event) => setTafFilename(event.target.value)}
+                    disabled={uploading}
+                    itemRef="inputRef"
+                  />
                   <Button
                     type="primary"
                     onClick={handleUpload}
-                    disabled={fileList.length === 0}
+                    disabled={fileList.length === 0 || tafFilename === ""}
                     loading={uploading}
                   >
                     {uploading
                       ? t("tonies.encoder.uploading")
                       : t("tonies.encoder.upload")}
                   </Button>
-                </Flex>
-              ) : (
-                <></>
-              )}
-            </SortableContext>
-          </DndContext>
+                </Space>
+              </>
+            ) : (
+              <></>
+            )}
+          </Space>
         </StyledContent>
       </StyledLayout>
     </>
