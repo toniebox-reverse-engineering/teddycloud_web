@@ -42,6 +42,17 @@
     "library": {
       "navigationTitle": "Library",
       "title": "Library"
+    },
+    "encoder": {
+      "navigationTitle": "Audio Encoder",
+      "title": "Audio Encoder",
+      "uploadFiles": "Select File(s)",
+      "uploading": "uploading...",
+      "upload": "Upload",
+      "filename": "Filename",
+      "uploadSuccessful": "The file was added successfully to the library",
+      "uploadFailed": "The upload encountered an error",
+      "targetDirectory": "Save as"
     }
   },
   "language": {
