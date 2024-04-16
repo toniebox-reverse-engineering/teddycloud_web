@@ -7,6 +7,7 @@ import { humanFileSize } from "../../util/humanFileSize";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { MyUploadFile } from "../../util/encoder";
+import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;
 
@@ -38,6 +39,8 @@ export const DraggableUploadListItem = ({
     } = useSortable({
       id: file.uid,
     });
+
+    const { t } = useTranslation();
   
     const draggingStyle: React.CSSProperties = {
       transform: CSS.Transform.toString(transform),
@@ -68,7 +71,7 @@ export const DraggableUploadListItem = ({
           </span>
           <span className="ant-upload-list-item-actions picture">
             <button
-              title="Remove file"
+              title={t("tonies.encoder.removeFile")}
               type="button"
               className="ant-btn css-dev-only-do-not-override-1kuana8 ant-btn-text ant-btn-sm ant-btn-icon-only ant-upload-list-item-action"
               onClick={() => onRemove(file)}

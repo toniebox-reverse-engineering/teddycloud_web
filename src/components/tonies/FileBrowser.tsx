@@ -139,7 +139,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             dataIndex: ['tonieInfo', 'picture'],
             key: 'picture',
             sorter: undefined,
-            render: (picture: string) => picture && <img src={picture} alt="Tonie Picture" style={{ width: 100 }} />,
+            render: (picture: string) => picture && <img src={picture} alt={t("tonies.content.toniePicture")} style={{ width: 100 }} />,
             showOnDirOnly: false
         },
         {

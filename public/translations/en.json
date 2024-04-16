@@ -37,7 +37,8 @@
     },
     "content": {
       "navigationTitle": "Content",
-      "title": "Content"
+      "title": "Content",
+      "toniePicture": "Tonie Picture"
     },
     "library": {
       "navigationTitle": "Library",
@@ -53,7 +54,8 @@
       "uploadSuccessful": "The file was added successfully to the library",
       "uploadFailed": "The upload encountered an error",
       "targetDirectory": "Choose target directory",
-      "saveAs": "Save file as"
+      "saveAs": "Save file as",
+      "removeFile": "Remove file"
     }
   },
   "language": {
