@@ -16,7 +16,7 @@ import { humanFileSize } from "../../util/humanFileSize";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, trackUrl?: boolean, selectTafOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, onFileSelectChange }) => {
+export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, trackUrl?: boolean, selectTafOnly?: boolean, showDirOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, showDirOnly = false, onFileSelectChange }) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -76,7 +76,12 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
         fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}`)
             .then((response) => response.json())
             .then((data) => {
-                setFiles(data.files);
+                var list: never[] = data.files;
+
+                if(showDirOnly)
+                    list = list.filter((file: any) => file.isDir);
+
+                setFiles(list);
             });
     }, [path, special]);
 
