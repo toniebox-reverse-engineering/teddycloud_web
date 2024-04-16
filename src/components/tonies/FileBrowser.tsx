@@ -148,7 +148,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             key: 'name',
             sorter: dirNameSorter,
             defaultSortOrder: 'ascend' as SortOrder,
-            render: (name: string, record: any) => (record.isDir && !showDirOnly ? '[' + name + ']' : name),
+            render: (name: string, record: any) => (record.isDir ? '[' + name + ']' : name),
             showOnDirOnly: true
         },
         {
