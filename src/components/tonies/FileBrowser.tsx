@@ -11,6 +11,7 @@ import { TeddyCloudApi } from "../../api";
 import { useAudioContext } from '../audio/AudioContext';
 
 import { PlayCircleOutlined } from '@ant-design/icons';
+import { humanFileSize } from "../../util/humanFileSize";
 
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -147,7 +148,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             title: 'Size',
             dataIndex: 'size',
             key: 'size',
-            render: (size: number, record: any) => (record.isDir ? '<DIR>' : size),
+            render: (size: number, record: any) => (record.isDir ? '<DIR>' : humanFileSize(size)),
         },
         {
             title: 'Model',
