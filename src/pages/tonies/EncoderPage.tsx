@@ -33,7 +33,7 @@ export const EncoderPage = () => {
 
   const [fileList, setFileList] = useState<MyUploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [tafFilename, setTafFilename] = useState("UnnamedTonieFile");
+  const [tafFilename, setTafFilename] = useState("NewContent");
 
   const sensor = useSensor(PointerSensor, {
     activationConstraint: { distance: 10 },
@@ -72,7 +72,7 @@ export const EncoderPage = () => {
 
     const currentUnixTime = Math.floor(Date.now() / 1000);
     const queryParams = {
-      name: tafFilename,
+      name: tafFilename + ".taf",
       audioId: currentUnixTime - 0x50000000,
       path: getFilePathFromQueryParam(location),
       special: "library",
@@ -91,7 +91,7 @@ export const EncoderPage = () => {
     if (response.ok) {
       message.success(t("tonies.encoder.uploadSuccessful"));
       setFileList([]);
-      setTafFilename("UnnamedTonieFile");
+      setTafFilename("NewContent");
     } else {
       console.log("Upload failed:", responseData);
       message.error(t("tonies.encoder.uploadFailed"));
@@ -101,7 +101,7 @@ export const EncoderPage = () => {
 
   const updateTafFilename = (filename: string) => {
     if (filename === "") {
-      setTafFilename("UnnamedTonieFile");
+      setTafFilename("NewContent");
       return;
     }
     setTafFilename(filename);
@@ -142,6 +142,9 @@ export const EncoderPage = () => {
             {t("tonies.encoder.targetDirectory")} {getFilePathFromQueryParam(location)}
           </Text>
           {tafFilename}
+          <Text type="secondary">
+            .taf
+          </Text>
         </Paragraph>
       ),
       children: (
