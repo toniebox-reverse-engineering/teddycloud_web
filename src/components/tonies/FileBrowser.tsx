@@ -6,19 +6,14 @@ import { Table, message } from 'antd';
 import { Key } from 'antd/es/table/interface'; // Import Key type from Ant Design
 import { SortOrder } from 'antd/es/table/interface';
 
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
 import { useAudioContext } from '../audio/AudioContext';
 
 import { PlayCircleOutlined } from '@ant-design/icons';
 import { humanFileSize } from "../../util/humanFileSize";
 
 
-const api = new TeddyCloudApi(defaultAPIConfig());
-
 export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, trackUrl?: boolean, selectTafOnly?: boolean, showDirOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, showDirOnly = false, onFileSelectChange }) => {
     const { t } = useTranslation();
-    const [messageApi, contextHolder] = message.useMessage();
 
     const { playAudio } = useAudioContext();
 
@@ -54,15 +49,6 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             onFileSelectChange(selectedFiles, path, special);
     };
 
-    const handleRowClick = (record: any, table: any) => {
-        console.log(table);
-        if (selectedRowKeys.includes(record.key)) {
-            onSelectChange(selectedRowKeys.filter(key => key !== record.key));
-        } else if (selectedRowKeys.length < maxSelectedRows) {
-            onSelectChange([...selectedRowKeys, record.key]);
-        }
-    };
-
     useEffect(() => {
         // Function to parse the query parameters from the URL
         const queryParams = new URLSearchParams(location.search);
@@ -83,7 +69,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
 
                 setFiles(list);
             });
-    }, [path, special]);
+    }, [path, special, showDirOnly]);
 
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
