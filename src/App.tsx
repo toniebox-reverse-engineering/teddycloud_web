@@ -14,6 +14,7 @@ import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { ContentPage } from "./pages/tonies/ContentPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
+import { EncoderPage } from "./pages/tonies/EncoderPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
                 <Route path="/tonies/content" element={<ContentPage />} />
                 <Route path="/tonies/library" element={<LibraryPage />} />
+                <Route path="/tonies/encoder" element={<EncoderPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route
                   path="/settings/certificates"

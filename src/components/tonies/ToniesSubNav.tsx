@@ -4,6 +4,7 @@ import {
   SettingOutlined,
   BookOutlined,
   SoundOutlined,
+  CloudUploadOutlined,
 } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -47,6 +48,13 @@ export const ToniesSubNav = () => {
         </Link>
       ),
       icon: React.createElement(BookOutlined),
+    },
+    {
+      key: "encoder",
+      label: (
+        <Link to="/tonies/encoder">{t("tonies.encoder.navigationTitle")}</Link>
+      ),
+      icon: React.createElement(CloudUploadOutlined),
     },
   ];
 
