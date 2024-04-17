@@ -6,21 +6,18 @@ import {
   arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Location } from "@remix-run/router";
-import type { UploadProps } from "antd";
+import type { TreeSelectProps, UploadProps } from "antd";
 import {
   Button,
-  Collapse,
   Divider,
   Input,
   Space,
-  Typography,
+  TreeSelect,
   Upload,
   message,
 } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 import {
   HiddenDesktop,
   StyledBreadcrumb,
@@ -29,20 +26,23 @@ import {
   StyledSider,
 } from "../../components/StyledComponents";
 import { DraggableUploadListItem } from "../../components/tonies/DraggableUploadListItem";
-import { FileBrowser } from "../../components/tonies/FileBrowser";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { MyUploadFile, upload } from "../../util/encoder";
-import { createQueryString, getFilePathFromQueryParam } from "../../util/url";
+import { createQueryString } from "../../util/url";
+import { DefaultOptionType } from "antd/es/select";
 
-const { Paragraph } = Typography;
+const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
 
 export const EncoderPage = () => {
   const { t } = useTranslation();
-  const location: Location = useLocation();
 
   const [fileList, setFileList] = useState<MyUploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [tafFilename, setTafFilename] = useState("");
+  const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
+  const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([
+    rootTreeNode,
+  ]);
 
   const sensor = useSensor(PointerSensor, {
     activationConstraint: { distance: 10 },
@@ -83,7 +83,7 @@ export const EncoderPage = () => {
     const queryParams = {
       name: tafFilename + ".taf",
       audioId: currentUnixTime - 0x50000000,
-      path: getFilePathFromQueryParam(location),
+      path: pathFromNodeId(treeNodeId),
       special: "library",
     };
 
@@ -101,6 +101,8 @@ export const EncoderPage = () => {
       message.success(t("tonies.encoder.uploadSuccessful"));
       setFileList([]);
       setTafFilename("");
+      setTreeData([rootTreeNode]);
+      setTreeNodeId(rootTreeNode.id);
     } else {
       console.log("Upload failed:", responseData);
       message.error(t("tonies.encoder.uploadFailed"));
@@ -132,19 +134,49 @@ export const EncoderPage = () => {
     ),
   };
 
-  const collapseItems = [
-    {
-      key: 1,
-      label: (
-        <Paragraph style={{ margin: 0, marginRight: 16 }}>
-          {t("tonies.encoder.targetDirectory")}
-        </Paragraph>
-      ),
-      children: (
-        <FileBrowser special="library" trackUrl={true} showDirOnly={true} />
-      ),
-    },
-  ];
+  const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
+    new Promise((resolve, reject) => {
+      const newPath = pathFromNodeId(id);
+      fetch(
+        `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${newPath}&special=library`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          var list: any[] = data.files;
+          list = list
+            .filter((entry) => entry.isDir && entry.name !== "..")
+            .sort((a, b) => {
+              return a.name === b.name
+                ? 0
+                : a.name.toLowerCase() > b.name.toLowerCase()
+                ? 1
+                : -1;
+            })
+            .map((entry) => {
+              return {
+                id: id + "." + list.indexOf(entry),
+                pId: id,
+                value: id + "." + list.indexOf(entry),
+                title: entry.name,
+              };
+            });
+          setTreeData(treeData.concat(list));
+          resolve(true);
+        })
+        .then(() => {
+          reject();
+        });
+    });
+
+  const pathFromNodeId = (nodeId: string): string => {
+    const node = treeData.filter((entry) => entry.value === nodeId)[0];
+    if (node.pId === "-1") return "";
+    return (
+      pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) +
+      "/" +
+      node.title
+    );
+  };
 
   return (
     <>
@@ -180,23 +212,39 @@ export const EncoderPage = () => {
             {fileList.length > 0 ? (
               <>
                 <Divider />
-                <Collapse bordered={true} items={collapseItems} />
-                <Space direction="vertical" style={{display: "flex", alignItems: "flex-end"}}>
-                  <Input
-                    addonAfter=".taf"
-                    addonBefore={
-                      t("tonies.encoder.saveAs") +
-                      ": " +
-                      getFilePathFromQueryParam(location)
-                    }
-                    required
-                    status={
-                      fileList.length > 0 && tafFilename === "" ? "error" : ""
-                    }
-                    onChange={(event) => setTafFilename(event.target.value)}
-                    disabled={uploading}
-                    itemRef="inputRef"
-                  />
+                <Space
+                  direction="vertical"
+                  style={{ display: "flex", alignItems: "flex-end" }}
+                >
+                  <Space.Compact
+                    direction="horizontal"
+                    style={{ display: "flex", alignItems: "flex-end" }}
+                  >
+                    <Input
+                      type="text"
+                      disabled
+                      value={t("tonies.encoder.saveAs")}
+                    ></Input>
+                    <TreeSelect
+                      treeLine
+                      treeDataSimpleMode
+                      style={{ width: "100%" }}
+                      value={treeNodeId}
+                      dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+                      onChange={setTreeNodeId}
+                      loadData={onLoadTreeData}
+                      treeData={treeData}
+                    />
+                    <Input
+                      addonAfter=".taf"
+                      required
+                      status={
+                        fileList.length > 0 && tafFilename === "" ? "error" : ""
+                      }
+                      onChange={(event) => setTafFilename(event.target.value)}
+                      disabled={uploading}
+                    />
+                  </Space.Compact>
                   <Button
                     type="primary"
                     onClick={handleUpload}
