@@ -19,16 +19,12 @@ const StyledFooterComponent = styled(Footer)`
   bottom: 0;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
 const StyledCenterPart = styled.div`
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-`;
-const StyledRightPart = styled.div`
-  margin-left: auto;
+  margin: auto;
   display: flex;
   align-items: center;
 `;
@@ -36,12 +32,22 @@ const StyledRightPart = styled.div`
 export const StyledFooter = () => {
   const { t } = useTranslation();
   const [footerHeight, setFooterHeight] = useState(0);
+  const [version, setVersion] = useState('');
+  const [versionShort, setVersionShort] = useState('');
 
   useEffect(() => {
     const footer = document.querySelector('footer');
     if (footer) {
       setFooterHeight(footer.offsetHeight);
     }
+    fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/get/internal.version.v_long`)
+          .then(response => response.text()) // Parse response as text
+          .then(data => setVersion(data))    // Set fetched data to state
+          .catch(error => console.error('Error fetching data:', error));
+          fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/get/internal.version.v_short`)
+          .then(response => response.text()) // Parse response as text
+          .then(data => setVersionShort(data))    // Set fetched data to state
+          .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   return (
@@ -49,16 +55,20 @@ export const StyledFooter = () => {
       <div style={{ paddingBottom: footerHeight }} />
 
       <StyledFooterComponent>
-        <HiddenMobile>
-
-        </HiddenMobile>
 
         <StyledCenterPart>
           <AudioPlayerFooter />
         </StyledCenterPart>
-
-        <StyledRightPart>
-        </StyledRightPart>
+        <StyledCenterPart>
+          <div style={{ marginTop: "8px" }}>
+            <small>
+                <Link to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/" target="_blank">
+                    <HiddenDesktop>{versionShort}</HiddenDesktop>
+                    <HiddenMobile>{version}</HiddenMobile>
+                </Link>
+            </small>
+          </div>
+        </StyledCenterPart>
       </StyledFooterComponent>
     </>
   );

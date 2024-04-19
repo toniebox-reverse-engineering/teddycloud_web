@@ -26,28 +26,38 @@ const StyledRightPart = styled.div`
   align-items: center;
 `;
 
+const StyledLeftPart = styled.div`
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+`;
+
 export const StyledHeader = () => {
   const { t } = useTranslation();
   const [navOpen, setNavOpen] = useState(false);
 
   const mainNav: MenuProps["items"] = [
-    { key: "/", label: <Link to="/">{t("home.navigationTitle")}</Link> },
     {
-      key: "settings",
-      label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+        key: "/",
+        label: <Link to="/">{t("home.navigationTitle")}</Link>,
     },
     {
-      key: "tonies",
-      label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
+        key: "settings",
+        label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+    },
+    {
+        key: "tonies",
+        label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
     },
   ];
   return (
     <StyledHeaderComponent>
-      <StyledLogo src={logoImg} />
-      <HiddenMobile> TeddyCloud Server</HiddenMobile>
-
+      <StyledLeftPart>
+          <StyledLogo src={logoImg} />
+          <HiddenMobile> TeddyCloud Server</HiddenMobile>
+      </StyledLeftPart>
       <HiddenMobile>
-        <Menu theme="dark" mode="horizontal" items={mainNav} />
+          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 280}}/>
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
