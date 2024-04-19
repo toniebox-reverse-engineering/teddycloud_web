@@ -69,7 +69,7 @@
       "cloudAccessBlocked": "Cloud-Zugang blockiert!",
       "cloudAccessEnabled": "Cloud-Zugang aktiviert!",
       "couldNotChangeCloudFlag": "Konnte Cloud-Zugriff (nocloud) Flag nicht ändern! ",
-      "Herunterladen": "Downloading...",
+      "downloading": "Herunterladen...",
       "downloadedFile": "Heruntergeladene Datei",
       "errorDuringDownload": "Fehler beim Herunterladen im Hintergrund: ",
       "setTonieToModelSuccessful":  "Setze Tonie-Modell auf {{selectedModel}}!",
