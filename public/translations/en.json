@@ -103,7 +103,13 @@
   },
   "fileBrowser": {
     "selectTafOnly": "You can only select TAF files!",
-    "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files"
+    "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files",
+    "name": "Name",
+    "size": "Size",
+    "model": "Model",
+    "series": "Series",
+    "episode": "Episode",
+    "date": "Date"
   },
   "tonieArticleSearch" : {
     "failedToFetchSearchResults" : "Failed to fetch search results: "

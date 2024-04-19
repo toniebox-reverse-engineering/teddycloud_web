@@ -129,7 +129,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             showOnDirOnly: false
         },
         {
-            title: 'Name',
+            title: t("fileBrowser.name"),
             dataIndex: 'name',
             key: 'name',
             sorter: dirNameSorter,
@@ -138,32 +138,32 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             showOnDirOnly: true
         },
         {
-            title: 'Size',
+            title: t("fileBrowser.size"),
             dataIndex: 'size',
             key: 'size',
             render: (size: number, record: any) => (record.isDir ? '<DIR>' : humanFileSize(size)),
             showOnDirOnly: false
         },
         {
-            title: 'Model',
+            title: t("fileBrowser.model"),
             dataIndex: ['tonieInfo', 'model'],
             key: 'model',
             showOnDirOnly: false
         },
         {
-            title: 'Series',
+            title: t("fileBrowser.series"),
             dataIndex: ['tonieInfo', 'series'],
             key: 'series',
             showOnDirOnly: false
         },
         {
-            title: 'Episode',
+            title: t("fileBrowser.episode"),
             dataIndex: ['tonieInfo', 'episode'],
             key: 'episode',
             showOnDirOnly: false
         },
         {
-            title: 'Date',
+            title: t("fileBrowser.date"),
             dataIndex: 'date',
             key: 'date',
             render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
