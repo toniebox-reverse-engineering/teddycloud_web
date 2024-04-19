@@ -22,8 +22,8 @@
     "certificates": {
       "navigationTitle": "Zertifikate",
       "title": "Zertifikate",
-      "uploadText" : "Klicken oder ziehen Sie die Datei zum Hochladen in diesen Bereich",
-      "uploadHint" : "Ziehen Sie die Client-Zertifikate aus Ihrer Box hierher"
+      "uploadText" : "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich",
+      "uploadHint" : "Ziehe die Client-Zertifikate aus deiner Box hierher"
     }
   },
   "tonies": {
@@ -73,7 +73,7 @@
       "downloadedFile": "Heruntergeladene Datei",
       "errorDuringDownload": "Fehler beim Herunterladen im Hintergrund: ",
       "setTonieToModelSuccessful":  "Setze Tonie-Modell auf {{selectedModel}}!",
-      "setTonieToModelFailed":  "Could not change tonie model!"
+      "setTonieToModelFailed":  "Konnte das Tonie-Modell nicht ändern!"
     },
     "infoModal" : {
       "model" : "Modell:",
