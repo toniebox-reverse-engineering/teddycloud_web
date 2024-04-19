@@ -80,6 +80,7 @@ export const HomePage = () => {
                 <li><Link to="https://github.com/toniebox-reverse-engineering" target="_blank">GitHub</Link></li>
                 <li><Link to="https://t.me/toniebox_reverse_engineering" target="_blank">Telegram Chat</Link></li>
                 <li><Link to="https://forum.revvox.de/" target="_blank">Discourse Forum</Link></li>
+                <li><Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">TeddyCloud Wiki</Link></li>
             </ul>
           </Paragraph>
         </StyledContent>

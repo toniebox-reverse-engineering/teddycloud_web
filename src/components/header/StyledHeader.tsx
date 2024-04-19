@@ -37,14 +37,17 @@ export const StyledHeader = () => {
   const [navOpen, setNavOpen] = useState(false);
 
   const mainNav: MenuProps["items"] = [
-    { key: "/", label: <Link to="/">{t("home.navigationTitle")}</Link> },
     {
-      key: "settings",
-      label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+        key: "/",
+        label: <Link to="/">{t("home.navigationTitle")}</Link>,
     },
     {
-      key: "tonies",
-      label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
+        key: "settings",
+        label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+    },
+    {
+        key: "tonies",
+        label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
     },
   ];
   return (
@@ -54,7 +57,7 @@ export const StyledHeader = () => {
           <HiddenMobile> TeddyCloud Server</HiddenMobile>
       </StyledLeftPart>
       <HiddenMobile>
-          <Menu theme="dark" mode="horizontal" items={mainNav} />
+          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 250}}/>
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
