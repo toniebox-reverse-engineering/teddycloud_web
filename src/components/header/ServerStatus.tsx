@@ -41,11 +41,11 @@ export const ServerStatus = () => {
 
   return (
     <Space>
-        <Tag icon={boxineStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={boxineStatus ? "#87d068" : "#f50"} bordered={false}>
+        <Tag icon={boxineStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={boxineStatus ? "#87d068" : "#f50"} bordered={false} style={{color: "#001529"}}>
           <HiddenDesktop>B</HiddenDesktop>
           <HiddenMobile>Boxine</HiddenMobile>
         </Tag>
-        <Tag icon={boxineStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={teddyStatus ? "#87d068" : "#f50"} bordered={false}>
+        <Tag icon={teddyStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />} color={teddyStatus ? "#87d068" : "#f50"} bordered={false} style={{color: "#001529"}}>
           <HiddenDesktop>TC</HiddenDesktop>
           <HiddenMobile>TeddyCloud</HiddenMobile>
         </Tag>
