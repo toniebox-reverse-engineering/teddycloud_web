@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Typography } from 'antd';
+import { Typography, Button } from 'antd';
 import { TonieCardProps } from '../../components/tonies/TonieCard'; // Import the TonieCard component and its props type
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
-import { ToniesList } from '../../components/tonies/ToniesList';
+import { ToniesList } from '../../components/tonies/ToniesListDisplayOnly';
 
 import {
   HiddenDesktop,
@@ -70,9 +70,17 @@ export const HomePage = () => {
             {t("home.forumIntroPart1")}<Link to ="https://forum.revvox.de/" target="_blank">https://forum.revvox.de/</Link>{t("home.forumIntroPart2")}
           </Paragraph>
           <Paragraph>
-          <h2>{t("home.yourTonies")}</h2>
-          <ToniesList tonieCards={tonies.filter(tonie => tonie.type === 'tag' && tonie.tonieInfo.series && !tonie.nocloud ).slice(0, 5)} />
-          <Link to="/tonies">{t("home.toAllYourTonies")}</Link>
+            <h2>{t("home.yourTonies")}</h2>
+            <ToniesList tonieCards={tonies.filter(tonie => tonie.type === 'tag' && tonie.tonieInfo.series && !tonie.nocloud ).slice(0, 5)} />
+            <Button><Link to="/tonies">{t("home.toAllYourTonies")}</Link></Button>
+          </Paragraph>
+          <Paragraph>
+            <h2>{t("home.helpfulLinks")}</h2>
+            <ul>
+                <li><Link to="https://github.com/toniebox-reverse-engineering" target="_blank">GitHub</Link></li>
+                <li><Link to="https://t.me/toniebox_reverse_engineering" target="_blank">Telegram Chat</Link></li>
+                <li><Link to="https://forum.revvox.de/" target="_blank">Discourse Forum</Link></li>
+            </ul>
           </Paragraph>
         </StyledContent>
       </StyledLayout>
