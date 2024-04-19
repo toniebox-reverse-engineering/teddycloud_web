@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Select, message } from 'antd';
 import type { SelectProps } from 'antd';
 import { TonieInfo } from './TonieCard';
 
 export const TonieArticleSearch: React.FC<{ placeholder: string; style: React.CSSProperties; onChange: (newValue: string) => void }> = (props) => {
+    const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<SelectProps['options']>([]);
     const [value, setValue] = useState<string>();
@@ -28,7 +30,7 @@ export const TonieArticleSearch: React.FC<{ placeholder: string; style: React.CS
             }));
             setData(result);
         } catch (error) {
-            message.error("Failed to fetch search results: " + error);
+            message.error(t("tonieArticleSearch.failedToFetchSearchResults") + error);
             return;
         }
 

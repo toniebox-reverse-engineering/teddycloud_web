@@ -26,6 +26,12 @@ const StyledRightPart = styled.div`
   align-items: center;
 `;
 
+const StyledLeftPart = styled.div`
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+`;
+
 export const StyledHeader = () => {
   const { t } = useTranslation();
   const [navOpen, setNavOpen] = useState(false);
@@ -43,11 +49,12 @@ export const StyledHeader = () => {
   ];
   return (
     <StyledHeaderComponent>
-      <StyledLogo src={logoImg} />
-      <HiddenMobile> TeddyCloud Server</HiddenMobile>
-
+      <StyledLeftPart>
+          <StyledLogo src={logoImg} />
+          <HiddenMobile> TeddyCloud Server</HiddenMobile>
+      </StyledLeftPart>
       <HiddenMobile>
-        <Menu theme="dark" mode="horizontal" items={mainNav} />
+          <Menu theme="dark" mode="horizontal" items={mainNav} />
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />

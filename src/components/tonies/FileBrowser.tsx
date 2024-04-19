@@ -35,11 +35,11 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
                 return file && file.tafHeader !== undefined;
             });
             if (rowCount !== newSelectedRowKeys.length) {
-                message.warning('You can only select TAF files!');
+                message.warning(t("fileBrowser.selectTafOnly"));
             }
         }
         if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning('You can only select up to ' + maxSelectedRows + ' files');
+            message.warning(t("fileBrowser.maxSelectedRows", {maxSelectedRows: maxSelectedRows}));
         } else {
             setSelectedRowKeys(newSelectedRowKeys);
         }

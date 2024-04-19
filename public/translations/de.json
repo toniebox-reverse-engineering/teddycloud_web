@@ -21,7 +21,9 @@
     },
     "certificates": {
       "navigationTitle": "Zertifikate",
-      "title": "Zertifikate"
+      "title": "Zertifikate",
+      "uploadText" : "Klicken oder ziehen Sie die Datei zum Hochladen in diesen Bereich",
+      "uploadHint" : "Ziehen Sie die Client-Zertifikate aus Ihrer Box hierher"
     }
   },
   "tonies": {
@@ -56,11 +58,48 @@
       "targetDirectory": "Zielpfad auswählen",
       "saveAs": "Datei speichern unter",
       "removeFile": "Datei entfernen"
+    },
+    "messages" : {
+      "couldNotEmptySource" : "Konnte Quelle nicht leeren!",
+      "sourceSetSuccessful": "Quelle auf {{selectedFile}} gesetzt!",
+      "couldNotSetSource": "Konnte Quelle nicht setzen! ",
+      "liveEnabled": "Live aktiviert!",
+      "liveDisabled": "Live deaktiviert!",
+      "couldNotChangeLiveFlag": "Konnte Live-Flag nicht ändern! ",
+      "cloudAccessBlocked": "Cloud-Zugang blockiert!",
+      "cloudAccessEnabled": "Cloud-Zugang aktiviert!",
+      "couldNotChangeCloudFlag": "Konnte Cloud-Zugriff (nocloud) Flag nicht ändern! ",
+      "Herunterladen": "Downloading...",
+      "downloadedFile": "Heruntergeladene Datei",
+      "errorDuringDownload": "Fehler beim Herunterladen im Hintergrund: ",
+      "setTonieToModelSuccessful":  "Setze Tonie-Modell auf {{selectedModel}}!",
+      "setTonieToModelFailed":  "Could not change tonie model!"
+    },
+    "infoModal" : {
+      "model" : "Modell:",
+      "valid" : "Gültig:",
+      "exists" : "Existiert:",
+      "yes": "Ja",
+      "no": "Nein"
+    },
+    "editModelModal" : {
+      "editModel" : "Modell bearbeiten ",
+      "placeholderSearchForAModel" : "Nach einem Modell suchen"
+    },
+    "editTagModal" : {
+      "editTag" : "Tag bearbeiten"
     }
   },
   "language": {
     "change": "Sprache ändern",
     "english": "EN",
     "german": "DE"
+  },
+  "fileBrowser": {
+    "selectTafOnly" : "Du kannst nur TAF Dateien auswählen!",
+    "maxSelectedRows" : "Du kannst nur maximal {{maxSelectedRows}} Dateien auswählen"
+  },
+  "tonieArticleSearch" : {
+    "failedToFetchSearchResults" : "Suchergebnisse konnten nicht abgerufen werden: "
   }
 }

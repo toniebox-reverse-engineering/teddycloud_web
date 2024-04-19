@@ -1,5 +1,6 @@
 import { MenuProps } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
+import { WifiOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -12,12 +13,12 @@ export const HomeSubNav = () => {
     {
       key: "home",
       label: <Link to="/">{t("home.navigationTitle")}</Link>,
-      icon: React.createElement(UserOutlined),
+      icon: React.createElement(HomeOutlined),
     },
     {
       key: "statistics",
       label: <Link to="/home/stats">{t("home.stats.navigationTitle")}</Link>,
-      icon: React.createElement(UserOutlined),
+      icon: React.createElement(WifiOutlined),
     },
   ];
 

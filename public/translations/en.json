@@ -21,7 +21,9 @@
     },
     "certificates": {
       "navigationTitle": "Certificates",
-      "title": "Certificates"
+      "title": "Certificates",
+      "uploadText": "Click or drag file to this area to upload",
+      "uploadHint": "Drag and drop client certificates from your box here"
     }
   },
   "tonies": {
@@ -56,11 +58,48 @@
       "targetDirectory": "Choose target directory",
       "saveAs": "Save file as",
       "removeFile": "Remove file"
+    },
+    "messages" : {
+      "couldNotEmptySource" : "Could not empty source!",
+      "sourceSetSuccessful": "Source set to {{selectedFile}}!",
+      "couldNotSetSource": "Could not set source! ",
+      "liveEnabled": "Live enabled!",
+      "liveDisabled": "Live disabled!",
+      "couldNotChangeLiveFlag": "Could not change live flag! ",
+      "cloudAccessBlocked": "Cloud access blocked!",
+      "cloudAccessEnabled": "Cloud access enabled!",
+      "couldNotChangeCloudFlag": "Could not change cloud access (nocloud) flag! ",
+      "downloading": "Downloading...",
+      "downloadedFile": "Downloaded file",
+      "errorDuringDownload": "Error during background download: ",
+      "setTonieToModelSuccessful":  "Set tonie model to {{selectedModel}}!",
+      "setTonieToModelFailed":  "Could not change tonie model!"
+    },
+    "infoModal" : {
+      "model" : "Model:",
+      "valid" : "Valid:",
+      "exists" : "Exists:",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "editModelModal" : {
+      "editModel" : "Edit model ",
+      "placeholderSearchForAModel" : "Search for a model"
+    },
+    "editTagModal" : {
+      "editTag" : "Edit Tag"
     }
   },
   "language": {
     "change": "Change language",
     "english": "EN",
     "german": "DE"
+  },
+  "fileBrowser": {
+    "selectTafOnly": "You can only select TAF files!",
+    "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files"
+  },
+  "tonieArticleSearch" : {
+    "failedToFetchSearchResults" : "Failed to fetch search results: "
   }
 }

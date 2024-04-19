@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, Button, Input, Popover, message, Slider, Select, Modal } from 'antd';
 import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, CloudSyncOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 
@@ -6,9 +7,7 @@ import { useAudioContext } from '../audio/AudioContext';
 import { FileBrowser } from './FileBrowser';
 import { TonieArticleSearch } from './TonieArticleSearch';
 
-
 const { Meta } = Card;
-
 
 export type TagsTonieCardList = {
     tags: TonieCardProps[];
@@ -35,6 +34,7 @@ export type TonieCardProps = {
 }
 
 export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
+    const { t } = useTranslation();
     const [isLive, setIsLive] = useState(tonieCard.live);
     const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
     const [messageApi, contextHolder] = message.useMessage();
@@ -68,7 +68,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const handleEditOk = async () => {
         setIsEditModalOpen(false);
         if (selectedFile === "") {
-            message.error('Could not empty source!');
+            message.error(t("tonies.messages.couldNotEmptySource"));
             return;
         }
         const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
@@ -80,9 +80,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             if (!response.ok) {
                 throw new Error(response.status + " " + response.statusText);
             }
-            message.success('Source set to ' + selectedFile + "!");
+            message.success(t("tonies.messages.sourceSetSuccessful", {selectedFile: selectedFile}));
         } catch (error) {
-            message.error('Could not set source! ' + error);
+            message.error(t("tonies.messages.sourceCouldNotSet") + error);
         }
     };
     const handleEditCancel = () => {
@@ -120,12 +120,12 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             }
             setIsLive(!isLive);
             if (!isLive) {
-                message.success('Live enabled!');
+                message.success(t("tonies.messages.liveEnabled"));
             } else {
-                message.success('Live disabled!');
+                message.success(t("tonies.messages.liveDisabled"));
             }
         } catch (error) {
-            message.error('Could not change live flag! ' + error);
+            message.error(t("tonies.messages.sourceCouldNotChangeLiveFlag") + error);
         }
     };
     const handleNoCloudClick = async () => {
@@ -140,12 +140,12 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             }
             setIsNoCloud(!isNoCloud);
             if (!isNoCloud) {
-                message.success('Cloud access blocked!');
+                message.success(t("tonies.messages.cloudAccessBlocked"));
             } else {
-                message.success('Cloud access allowed!');
+                message.success(t("tonies.messages.cloudAccessEnabled"));
             }
         } catch (error) {
-            message.error('Could not change cloud access (nocloud) flag! ' + error);
+            message.error(t("tonies.messages.sourceCouldNotChangeCloudFlag") + error);
         }
     };
     const handlePlayPauseClick = () => {
@@ -158,7 +158,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         try {
             messageApi.open({
                 type: 'loading',
-                content: 'Downloading...',
+                content: t("tonies.messages.downloading"),
                 duration: 0,
             });
             const response = await fetch(url);
@@ -169,14 +169,14 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             messageApi.destroy();
             messageApi.open({
                 type: 'success',
-                content: "Downloaded file",
+                content: t("tonies.messages.downloadedFile"),
             });
             setIsValid(true);
         } catch (error) {
             messageApi.destroy();
             messageApi.open({
                 type: 'error',
-                content: "Error during background download: " + error,
+                content: t("tonies.messages.errorDuringDownload") + error,
             });
             setDownloadTriggerUrl(url);
         }
@@ -200,9 +200,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 throw new Error(response.status + " " + response.statusText);
             }
             setActiveModel(selectedModel);
-            message.success("Set tonie model to " + selectedModel + "!");
+            message.success( t("tonies.messages.setTonieToModelSuccessful", {selectedModel: selectedModel}));
         } catch (error) {
-            message.error('Could not change tonie model! ' + error);
+            message.error(t("tonies.messages.setTonieToModelFailed") + error);
         }
     }
     const handleModelInputChange = (e: any) => {
@@ -211,9 +211,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
 
     const content = (
         <div>
-            <p><strong>Model:</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
-            <p><strong>Valid:</strong> {tonieCard.valid ? 'Yes' : 'No'}</p>
-            <p><strong>Exists:</strong> {tonieCard.exists ? 'Yes' : 'No'}</p>
+            <p><strong>{t("tonies.infoModal.model")}</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
+            <p><strong>{t("tonies.infoModal.valid")}</strong> {tonieCard.valid ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}</p>
+            <p><strong>{t("tonies.infoModal.exists")}</strong> {tonieCard.exists ?  t("tonies.infoModal.yes") : t("tonies.infoModal.no")}</p>
             <ol>
                 {tonieCard.tonieInfo.tracks.map((track) => (
                     <li>{track}</li>
@@ -255,15 +255,15 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
             </Card >
-            <Modal title="Edit Tag" open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
+            <Modal title={t("tonies.editTagModal.editTag")} open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
                 <FileBrowser special="library" maxSelectedRows={1} trackUrl={false} onFileSelectChange={handleFileSelectChange} />
             </Modal>
-            <Modal title={"Edit Model " + tonieCard.tonieInfo.model + " - " + title} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
+            <Modal title={t("tonies.editModelModal.editModel") + tonieCard.tonieInfo.model + " - " + title} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
                 <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
                     addonAfter={activeModel == selectedModel ?
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
-                <TonieArticleSearch placeholder="Search for a model" style={{ width: 500 }} onChange={searchResultChanged} />
+                <TonieArticleSearch placeholder={t("tonies.editModelModal.placeholderSearchForAModel")} style={{ width: 500 }} onChange={searchResultChanged} />
             </Modal>
         </>
     );
