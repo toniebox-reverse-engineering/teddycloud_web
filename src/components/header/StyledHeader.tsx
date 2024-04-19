@@ -57,7 +57,7 @@ export const StyledHeader = () => {
           <HiddenMobile> TeddyCloud Server</HiddenMobile>
       </StyledLeftPart>
       <HiddenMobile>
-          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 250}}/>
+          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 280}}/>
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
