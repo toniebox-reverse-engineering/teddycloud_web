@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, Button } from 'antd';
-import { TonieCardProps } from '../../components/tonies/TonieCard'; // Import the TonieCard component and its props type
+import { TonieCardProps } from '../../components/tonies/TonieCardDisplayOnly'; // Import the TonieCardDisplayOnly component and its props type
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 import { ToniesList } from '../../components/tonies/ToniesListDisplayOnly';
@@ -34,7 +34,7 @@ export const HomePage = () => {
       // sort random
       setTonies(tonieData.sort((a, b) => {
         if(Math.random() > 0.5 ) {
-           return Math.floor( -100 * Math.random());
+            return Math.floor( -100 * Math.random());
         } else {
             return Math.floor( 100 * Math.random());
         }
