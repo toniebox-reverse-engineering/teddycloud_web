@@ -62,7 +62,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     );
     const title = `${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`;
     const more = [
-        isValid ?
+        tonieCard.valid ?
         (<Button icon={<PlayCircleOutlined/>} key="playpause" onClick={handlePlayPauseClick} />) :
         (<Button icon={<PlayCircleOutlined/>} key="playpause" style={{ color: 'lightgray' }} />)
         ,
