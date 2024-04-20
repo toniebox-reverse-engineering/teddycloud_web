@@ -33,7 +33,6 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const { t } = useTranslation();
 
     const { playAudio } = useAudioContext();
-    const [isValid, setIsValid] = useState(tonieCard.valid);
     const [isMoreOpen, setIsMoreOpen] = useState(false);
 
     const showModelModal = () => {
