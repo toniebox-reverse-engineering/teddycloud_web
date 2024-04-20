@@ -55,10 +55,12 @@ export const StyledHeader = () => {
   ];
   return (
     <StyledHeaderComponent>
-      <StyledLeftPart>
+      <Link to="/" style={{color: "white"}}>
+        <StyledLeftPart>
           <StyledLogo src={logoImg} />
           <HiddenMobile> TeddyCloud Server</HiddenMobile>
-      </StyledLeftPart>
+        </StyledLeftPart>
+      </Link>
       <HiddenMobile>
           <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 280}}/>
       </HiddenMobile>
