@@ -63,7 +63,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const more = [
         tonieCard.valid ?
         (<Button icon={<PlayCircleOutlined/>} key="playpause" onClick={handlePlayPauseClick} />) :
-        (<Button icon={<PlayCircleOutlined/>} key="playpause" style={{ color: 'lightgray' }} />)
+        (<Button icon={<PlayCircleOutlined/>} key="playpause" disabled/>)
         ,
         (
         <Popover open={isMoreOpen} onOpenChange={handleMoreOpenChange} content={content} title={`${tonieCard.tonieInfo.episode}`} trigger="click" placement="bottomRight">
