@@ -2,3 +2,20 @@
   /* text-align: center; */
 }
 
+.ant-list .ant-row > div,
+.ant-list .ant-row .ant-col:first-child {
+  display: flex;
+}
+.ant-list .ant-row .ant-list-item {
+  flex: 1 1 auto;
+}
+.ant-list .ant-row .ant-list-item .ant-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-card-cover {
+    height: 100%;
+    align-content: center;
+}
