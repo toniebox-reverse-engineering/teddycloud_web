@@ -31,20 +31,13 @@ export const HomePage = () => {
     const fetchTonies = async () => {
       // Perform API call to fetch Tonie data
       const tonieData = await api.apiGetTagIndex();
+      // sort random
       setTonies(tonieData.sort((a, b) => {
-        if (a.tonieInfo.series < b.tonieInfo.series) {
-          return -1;
+        if(Math.random() > 0.5 ) {
+           return Math.floor( -100 * Math.random());
+        } else {
+            return Math.floor( 100 * Math.random());
         }
-        if (a.tonieInfo.series > b.tonieInfo.series) {
-          return 1;
-        }
-        if (a.tonieInfo.episode < b.tonieInfo.episode) {
-          return -1;
-        }
-        if (a.tonieInfo.episode > b.tonieInfo.episode) {
-          return 1;
-        }
-        return 0;
       }));
     };
 
@@ -62,8 +55,8 @@ export const HomePage = () => {
         </HiddenDesktop>
         <StyledBreadcrumb items={[{ title: t("home.navigationTitle") }]} />
         <StyledContent>
-          <h1>{t(`home.title`)}</h1>
           <Paragraph>
+            <h1>{t(`home.title`)}</h1>
             {t(`home.intro`)}
           </Paragraph>
           <Paragraph>
@@ -72,7 +65,7 @@ export const HomePage = () => {
           <Paragraph>
             <h2>{t("home.yourTonies")}</h2>
             <ToniesList tonieCards={tonies.filter(tonie => tonie.type === 'tag' && tonie.tonieInfo.series && !tonie.nocloud ).slice(0, 5)} />
-            <Button><Link to="/tonies">{t("home.toAllYourTonies")}</Link></Button>
+            <Button><Link to="/tonies">{t("home.toAllYourTonies")} ({ tonies.filter(tonie => tonie.type === 'tag' ).length})</Link></Button>
           </Paragraph>
           <Paragraph>
             <h2>{t("home.helpfulLinks")}</h2>
