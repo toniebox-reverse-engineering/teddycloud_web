@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, Button, Input, message, Slider, Select, Modal } from 'antd';
 import { InfoCircleOutlined, EditOutlined, SaveOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import { TonieboxModelSearch } from './TonieboxModelSearch';
+import { TonieboxSettingsPage } from './TonieboxSettingsPage';
 
 const { Meta } = Card;
 
@@ -37,7 +38,6 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     };
     const handleEditOk = async () => {
         setIsEditSettingsModalOpen(false);
-        message.success("Not yet implemented");
     };
     const handleEditCancel = () => {
         setIsEditSettingsModalOpen(false);
@@ -101,10 +101,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 <Meta description={"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")} />
             </Card >
             <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings")} open={isEditSettingsModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
-                  <p><Input name="cloudEnabled" addonBefore="Cloud enabled" /></p>
-                  <p><Input name="clientCA" value="certs/client/ca.der" addonBefore="Client CA" /></p>
-                  <p><Input name="clientCertificate" value="certs/client/client.der" addonBefore="Client certificate" /></p>
-                  <p><Input name="clientKey" value="certs/client/private.der" addonBefore="Client key" /></p>
+                  <TonieboxSettingsPage overlay={tonieboxCard.ID}/>
             </Modal>
             <Modal title={t("tonieboxes.editModelModal.editModel")} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
                  <p><Input name="boxName" value={tonieboxCard.boxName} addonBefore="Name" /></p>

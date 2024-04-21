@@ -44,6 +44,7 @@ export interface ApiUploadCertPostRequest {
  * 
  */
 export class TeddyCloudApi extends runtime.BaseAPI {
+
     /**
      * get all tonieboxes
      */
@@ -61,13 +62,13 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         return new runtime.JSONApiResponse<TonieboxCardList>(response);
     }
 
-     /**
-         * get all tonieboxes
-         */
-        async apiGetTonieboxesIndex(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieboxCardProps[]> {
-            const response = await this.apiGetTonieboxesIndexRaw(initOverrides);
-            return (await response.value()).boxes;
-        }
+    /**
+    * get all tonieboxes
+    */
+    async apiGetTonieboxesIndex(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieboxCardProps[]> {
+        const response = await this.apiGetTonieboxesIndexRaw(initOverrides);
+        return (await response.value()).boxes;
+    }
 
     /**
      * get all tags
@@ -96,13 +97,18 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all options
      */
-    async apiGetIndexGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OptionsList>> {
+    async apiGetIndexGetRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OptionsList>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        let path = `/api/getIndex`;
+        if(overlay != "") {
+            path = path + "?overlay=" + overlay;
+        }
+
         const response = await this.request({
-            path: `/api/getIndex`,
+            path: path,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -114,8 +120,8 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all options
      */
-    async apiGetIndexGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OptionsList> {
-        const response = await this.apiGetIndexGetRaw(initOverrides);
+    async apiGetIndexGet(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OptionsList> {
+        const response = await this.apiGetIndexGetRaw(overlay, initOverrides);
         return await response.value();
     }
 

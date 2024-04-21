@@ -21,7 +21,6 @@ export const TonieboxesPage = () => {
     const fetchTonieboxes = async () => {
       // Perform API call to fetch Toniebox data
       const tonieboxData = await api.apiGetTonieboxesIndex();
-      console.log("hallo");
       console.log(tonieboxData);
       setTonieboxes(tonieboxData);
     };
