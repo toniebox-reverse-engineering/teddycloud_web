@@ -100,11 +100,11 @@
     "navigationTitle" : "Tonieboxes",
     "title": "Your Tonieboxes",
     "editModelModal" : {
-      "editModel": "Edit Toniebox",
+      "editModel": "Edit Toniebox {{name}}",
       "placeholderSearchForAModel": "Select color variant of your Toniebox"
     },
     "editTonieboxSettingsModal": {
-      "editTonieboxSettings": "Settings for Toniebox"
+      "editTonieboxSettings": "Settings for Toniebox {{name}}"
     }
   },
   "language": {

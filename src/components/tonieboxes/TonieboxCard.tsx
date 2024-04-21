@@ -100,10 +100,10 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
             >
                 <Meta description={"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")} />
             </Card >
-            <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings")} open={isEditSettingsModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
+            <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings", {"name": tonieboxCard.boxName})} open={isEditSettingsModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
                   <TonieboxSettingsPage overlay={tonieboxCard.ID}/>
             </Modal>
-            <Modal title={t("tonieboxes.editModelModal.editModel")} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
+            <Modal title={t("tonieboxes.editModelModal.editModel", {"name": tonieboxCard.boxName})} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
                  <p><Input name="boxName" value={tonieboxCard.boxName} addonBefore="Name" /></p>
                  <p><TonieboxModelSearch placeholder={t("tonieboxes.editModelModal.placeholderSearchForAModel")} style={{ width: 500 }} onChange={searchResultChanged} /></p>
                  <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
