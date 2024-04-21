@@ -7,7 +7,7 @@ export const TonieboxesList: React.FC<{ tonieboxCards: TonieboxCardProps[] }> = 
 
         <List
             grid={{
-                gutter: 7,
+                gutter: 4,
                 xs: 1,
                 sm: 2,
                 md: 2,

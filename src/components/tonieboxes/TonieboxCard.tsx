@@ -3,12 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Card, Button, Input, message, Slider, Select, Modal } from 'antd';
 import { InfoCircleOutlined, EditOutlined, SaveOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import { TonieboxModelSearch } from './TonieboxModelSearch';
-import { SwitchField } from "../form/SwitchField";
-import { useField } from "formik";
-import { InputField } from "../form/InputField";
 
 const { Meta } = Card;
-
 
 export type TonieboxCardList = {
     boxes: TonieboxCardProps[];
@@ -19,7 +15,6 @@ export type TonieboxCardProps = {
     commonName: string;
     boxName: string;
 }
-
 
 export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ tonieboxCard }) => {
     const { t } = useTranslation();

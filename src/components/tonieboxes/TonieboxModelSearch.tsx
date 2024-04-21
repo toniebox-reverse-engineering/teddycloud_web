@@ -18,7 +18,6 @@ import type { SelectProps } from 'antd';
 export const TonieboxModelSearch: React.FC<{ placeholder: string; style: React.CSSProperties; onChange: (newValue: string) => void }> = (props) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
-    const [data, setData] = useState<SelectProps['options']>([]);
     const [value, setValue] = useState<string>();
 
     const handleChange = (newValue: string) => {
