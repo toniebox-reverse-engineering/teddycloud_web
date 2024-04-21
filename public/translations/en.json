@@ -96,6 +96,17 @@
       "editTag" : "Edit Tag"
     }
   },
+  "tonieboxes": {
+    "navigationTitle" : "Tonieboxes",
+    "title": "Your Tonieboxes",
+    "editModelModal" : {
+      "editModel": "Edit Toniebox",
+      "placeholderSearchForAModel": "Select color variant of your Toniebox"
+    },
+    "editTonieboxSettingsModal": {
+      "editTonieboxSettings": "Settings for Toniebox"
+    }
+  },
   "language": {
     "change": "Change language",
     "english": "EN",

@@ -29,6 +29,8 @@ import {
 } from '../models';
 
 import { TagsTonieCardList, TonieCardProps } from '../../components/tonies/TonieCard';
+import { TonieboxCardList, TonieboxCardProps } from '../../components/tonieboxes/TonieboxCard';
+
 
 export interface ApiSetCloudCacheContentPostRequest {
     body: boolean;
@@ -42,7 +44,30 @@ export interface ApiUploadCertPostRequest {
  * 
  */
 export class TeddyCloudApi extends runtime.BaseAPI {
+    /**
+     * get all tonieboxes
+     */
+    async apiGetTonieboxesIndexRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TonieboxCardList>> {
+        const queryParameters: any = {};
 
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/getBoxes`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+        return new runtime.JSONApiResponse<TonieboxCardList>(response);
+    }
+
+     /**
+         * get all tonieboxes
+         */
+        async apiGetTonieboxesIndex(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieboxCardProps[]> {
+            const response = await this.apiGetTonieboxesIndexRaw(initOverrides);
+            return (await response.value()).boxes;
+        }
 
     /**
      * get all tags

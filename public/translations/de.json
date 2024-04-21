@@ -97,6 +97,17 @@
       "editTag" : "Tag bearbeiten"
     }
   },
+  "tonieboxes": {
+    "navigationTitle" : "Tonieboxen",
+    "title": "Deine Tonieboxen",
+    "editModelModal" : {
+      "editModel": "Toniebox bearbeiten",
+      "placeholderSearchForAModel": "Wähle deine Farbvariante aus"
+    },
+    "editTonieboxSettingsModal": {
+      "editTonieboxSettings": "Einstellungen der Toniebox bearbeiten"
+    }
+  },
   "language": {
     "change": "Sprache ändern",
     "english": "EN",
