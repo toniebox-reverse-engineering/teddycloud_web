@@ -50,7 +50,7 @@ export const StyledHeader = () => {
         onClick: () => setNavOpen(false),
     },
     {
-        key: "toniesboxes",
+        key: "tonieboxes",
         label: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>,
         onClick: () => setNavOpen(false),
     },
