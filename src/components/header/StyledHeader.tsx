@@ -40,22 +40,27 @@ export const StyledHeader = () => {
     {
         key: "/",
         label: <Link to="/">{t("home.navigationTitle")}</Link>,
-    },
-    {
-        key: "settings",
-        label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+        onClick: () => setNavOpen(false),
     },
     {
         key: "tonies",
         label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
+        onClick: () => setNavOpen(false),
     },
+     {
+         key: "settings",
+         label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+         onClick: () => setNavOpen(false),
+     },
   ];
   return (
     <StyledHeaderComponent>
-      <StyledLeftPart>
+      <Link to="/" style={{color: "white"}}>
+        <StyledLeftPart>
           <StyledLogo src={logoImg} />
           <HiddenMobile> TeddyCloud Server</HiddenMobile>
-      </StyledLeftPart>
+        </StyledLeftPart>
+      </Link>
       <HiddenMobile>
           <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 280}}/>
       </HiddenMobile>
@@ -74,7 +79,7 @@ export const StyledHeader = () => {
             open={navOpen}
             onClose={() => setNavOpen(false)}
           >
-            <Menu theme="dark" mode="vertical" items={mainNav} />
+            <Menu mode="vertical" items={mainNav} />
             <StyledLanguageSwitcher />
           </Drawer>
         </HiddenDesktop>

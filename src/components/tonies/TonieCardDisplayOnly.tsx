@@ -33,7 +33,6 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const { t } = useTranslation();
 
     const { playAudio } = useAudioContext();
-    const [isValid, setIsValid] = useState(tonieCard.valid);
     const [isMoreOpen, setIsMoreOpen] = useState(false);
 
     const showModelModal = () => {
@@ -62,9 +61,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     );
     const title = `${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`;
     const more = [
-        isValid ?
+        tonieCard.valid ?
         (<Button icon={<PlayCircleOutlined/>} key="playpause" onClick={handlePlayPauseClick} />) :
-        (<Button icon={<PlayCircleOutlined/>} key="playpause" style={{ color: 'lightgray' }} />)
+        (<Button icon={<PlayCircleOutlined/>} key="playpause" disabled/>)
         ,
         (
         <Popover open={isMoreOpen} onOpenChange={handleMoreOpenChange} content={content} title={`${tonieCard.tonieInfo.episode}`} trigger="click" placement="bottomRight">
