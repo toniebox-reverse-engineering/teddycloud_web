@@ -11,10 +11,10 @@ const boxModelImages = [
   { id: 'Pink', img_src: 'https://cdn.tonies.de/thumbnails/03-0014-i.png'},
   { id: 'Purple', img_src: 'https://cdn.tonies.de/thumbnails/03-0010-i.png'},
   { id: 'Grey', img_src: 'https://cdn.tonies.de/thumbnails/03-0009-i.png'},
-  { id: 'Turquoise', img_src: 'https://cdn.tonies.de/thumbnails/03-0008-i.png'},
   { id: 'Red - Disney 100 Limited Edition', img_src: 'https://www.babyone.at/media/1e/e1/b0/1687489451/58525690_shop3.png'},
   { id: 'Dark Grey - Unter meinem Bett Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0005-i.png'},
   { id: 'Black - 3 Fragezeichen Limited Edition', img_src: 'https://www.galaxus.ch/im/Files/3/8/3/5/4/8/6/0/10000490-50001308-sRGB-b.png'},
+  { id: 'Turquoise - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0008-i.png'},
   { id: 'Yellow - Limited Edition', img_src: 'https://www.german-toys.com/media/image/7d/91/3c/toniebox-gelbpMXs4tGJTygY7.jpg'},
   { id: 'Dark Blue - Limited Edition', img_src: 'https://www.german-toys.com/media/image/ce/57/ab/dunkelblaue-Toniebox.jpg'},
 ];

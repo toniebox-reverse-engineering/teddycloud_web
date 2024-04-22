@@ -54,7 +54,7 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
               layout="horizontal"
             >
               {options?.options?.map((option, index, array) => {
-                if(!option.iD.includes("client_cert")) { return ""; };
+                if(!option.iD.includes("client_cert") && !option.iD.includes("flex_") && !option.iD.includes("toniebox.")) { return ""; };
                 const parts = option.iD.split(".");
                 const lastParts = array[index - 1]
                   ? array[index - 1].iD.split(".")
