@@ -3,17 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { Select, message } from 'antd';
 import type { SelectProps } from 'antd';
 
-    /* mocking box images - should be done earlier, currently on every action the image is changed */
-    const boxModelImages = [
-      { id: 'Green', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Toniebox_green_d-wbQxOcva.png' },
-      { id: 'Light Blue', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Toniebox_light_blue_-pWNBQTmB.png'},
-      { id: 'Red', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Toniebox_red_d-DrP5n54q.png'},
-      { id: 'Pink', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/03-0014-b-O1vs1-O6.png'},
-      { id: 'Purple', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Toniebox_purple_d-hcV9uyl-.png'},
-      { id: 'Grey', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Toniebox_grey_d-0hENHTGx.png'},
-      { id: 'Disney 100', img_src: 'https://cdn.idealo.com/folder/Product/202973/8/202973830/s1_produktbild_max_1/tonies-toniebox-starterset-disney-100-fantasia-limited-edition.jpg'},
-    ];
-
+/* mocking box images - should be done earlier, currently on every action the image is changed */
+const boxModelImages = [
+  { id: 'Green', img_src: 'https://cdn.tonies.de/thumbnails/03-0013-i.png' },
+  { id: 'Light Blue', img_src: 'https://cdn.tonies.de/thumbnails/03-0012-i.png'},
+  { id: 'Red', img_src: 'https://cdn.tonies.de/thumbnails/03-0011-i.png'},
+  { id: 'Pink', img_src: 'https://cdn.tonies.de/thumbnails/03-0014-i.png'},
+  { id: 'Purple', img_src: 'https://cdn.tonies.de/thumbnails/03-0010-i.png'},
+  { id: 'Grey', img_src: 'https://cdn.tonies.de/thumbnails/03-0009-i.png'},
+  { id: 'Turquoise', img_src: 'https://cdn.tonies.de/thumbnails/03-0008-i.png'},
+  { id: 'Red - Disney 100 Limited Edition', img_src: 'https://www.babyone.at/media/1e/e1/b0/1687489451/58525690_shop3.png'},
+  { id: 'Dark Grey - Unter meinem Bett Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0005-i.png'},
+  { id: 'Black - 3 Fragezeichen Limited Edition', img_src: 'https://www.galaxus.ch/im/Files/3/8/3/5/4/8/6/0/10000490-50001308-sRGB-b.png'},
+  { id: 'Yellow - Limited Edition', img_src: 'https://www.german-toys.com/media/image/7d/91/3c/toniebox-gelbpMXs4tGJTygY7.jpg'},
+  { id: 'Dark Blue - Limited Edition', img_src: 'https://www.german-toys.com/media/image/ce/57/ab/dunkelblaue-Toniebox.jpg'},
+];
 
 export const TonieboxModelSearch: React.FC<{ placeholder: string; style: React.CSSProperties; onChange: (newValue: string) => void }> = (props) => {
     const { t } = useTranslation();

@@ -31,7 +31,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const [activeModel, setActiveModel] = useState(""); // tonieboxCard.tonieboxInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
 
-    const [boxImage, setBoxImage] = useState(<img src='https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Toniebox_grey_d-0hENHTGx.png' />);
+    const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' />);
 
     const showEditSettingsModal = () => {
         setIsEditSettingsModalOpen(true);
