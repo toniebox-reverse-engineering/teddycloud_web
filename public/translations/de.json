@@ -22,6 +22,8 @@
   "settings": {
     "navigationTitle": "Einstellungen",
     "title": "Einstellungen",
+    "information": "Information",
+    "hint": "Dies sind die Default-Einstellungen. Einige der Einstellungen können von deinen Toniebox spezifischen überschrieben werden. Um diese zu ändern, gehe zu ",
     "general": {
       "navigationTitle": "Allgemein",
       "title": "Allgemeine Einstellungen"

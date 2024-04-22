@@ -1,5 +1,5 @@
-import { Form } from "antd";
-
+import { Form, Alert } from "antd";
+import { Link } from 'react-router-dom'; // Import Link from React Router
 import Item from "antd/es/list/Item";
 import { useTranslation } from "react-i18next";
 import {
@@ -64,7 +64,12 @@ export const SettingsPage = () => {
         />
         <StyledContent>
           <h1>{t(`settings.title`)}</h1>
-
+          <Alert
+                message={t("settings.information")}
+                description= <div>{t("settings.hint")} <Link to="/tonieboxes">Tonieboxes</Link>.</div>
+                type="info"
+                showIcon
+          />
           <Formik
             //validationSchema={settingsValidationSchema}
             initialValues={{
