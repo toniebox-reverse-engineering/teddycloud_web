@@ -255,15 +255,15 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
             </Card >
-            <Modal title={t("tonies.editTagModal.editTag")} open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
+            <Modal title={t("tonies.editTagModal.editTag")} width='auto' open={isEditModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
                 <FileBrowser special="library" maxSelectedRows={1} trackUrl={false} onFileSelectChange={handleFileSelectChange} />
             </Modal>
             <Modal title={t("tonies.editModelModal.editModel") + tonieCard.tonieInfo.model + " - " + title} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
-                <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
+                <p><Input value={selectedModel} width='auto' onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
                     addonAfter={activeModel == selectedModel ?
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
-                <TonieArticleSearch placeholder={t("tonies.editModelModal.placeholderSearchForAModel")} style={{ width: 500 }} onChange={searchResultChanged} />
+                <TonieArticleSearch placeholder={t("tonies.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} />
             </Modal>
         </>
     );

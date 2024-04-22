@@ -19,7 +19,7 @@ const boxModelImages = [
   { id: 'Dark Blue - Limited Edition', img_src: 'https://www.german-toys.com/media/image/ce/57/ab/dunkelblaue-Toniebox.jpg'},
 ];
 
-export const TonieboxModelSearch: React.FC<{ placeholder: string; style: React.CSSProperties; onChange: (newValue: string) => void }> = (props) => {
+export const TonieboxModelSearch: React.FC<{ placeholder: string; onChange: (newValue: string) => void }> = (props) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
     const [value, setValue] = useState<string>();
@@ -34,7 +34,6 @@ export const TonieboxModelSearch: React.FC<{ placeholder: string; style: React.C
             showSearch
             value={value}
             placeholder={props.placeholder}
-            style={props.style}
             defaultActiveFirstOption={false}
             suffixIcon={null}
             filterOption={false}
