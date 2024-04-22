@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Alert } from "antd";
 import { useTranslation } from 'react-i18next';
 import {
   HiddenDesktop, StyledBreadcrumb, StyledContent, StyledLayout, StyledSider
@@ -43,6 +44,13 @@ export const TonieboxesPage = () => {
         />
         <StyledContent>
           <h1>{t('tonieboxes.title')}</h1>
+          <p><Alert
+                          message="Warning! PoC state."
+                          description= "This page is still in development and is in state of a PoC! No data is saved. Box appearance is hardcoded and if you change it, after reload of page it's reset."
+                          type="warning"
+                          showIcon
+                    />
+          </p>
           <TonieboxesList tonieboxCards={tonieboxes} />
         </StyledContent>
       </StyledLayout>
