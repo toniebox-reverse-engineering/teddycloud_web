@@ -1,6 +1,5 @@
 import { MenuProps } from "antd";
-import { SafetyCertificateOutlined } from "@ant-design/icons";
-import { SettingOutlined } from "@ant-design/icons";
+import { SafetyCertificateOutlined, SettingOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";

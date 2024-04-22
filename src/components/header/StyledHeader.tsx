@@ -18,6 +18,8 @@ const StyledHeaderComponent = styled(Header)`
   color: white;
   display: flex;
   align-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
 `;
 
 const StyledRightPart = styled.div`
@@ -47,6 +49,11 @@ export const StyledHeader = () => {
         label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
         onClick: () => setNavOpen(false),
     },
+    {
+        key: "tonieboxes",
+        label: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>,
+        onClick: () => setNavOpen(false),
+    },
      {
          key: "settings",
          label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
@@ -62,7 +69,7 @@ export const StyledHeader = () => {
         </StyledLeftPart>
       </Link>
       <HiddenMobile>
-          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 280}}/>
+          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 290}}/>
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />

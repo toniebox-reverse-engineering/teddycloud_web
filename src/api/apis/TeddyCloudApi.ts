@@ -29,6 +29,8 @@ import {
 } from '../models';
 
 import { TagsTonieCardList, TonieCardProps } from '../../components/tonies/TonieCard';
+import { TonieboxCardList, TonieboxCardProps } from '../../components/tonieboxes/TonieboxCard';
+
 
 export interface ApiSetCloudCacheContentPostRequest {
     body: boolean;
@@ -43,6 +45,30 @@ export interface ApiUploadCertPostRequest {
  */
 export class TeddyCloudApi extends runtime.BaseAPI {
 
+    /**
+     * get all tonieboxes
+     */
+    async apiGetTonieboxesIndexRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TonieboxCardList>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/getBoxes`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+        return new runtime.JSONApiResponse<TonieboxCardList>(response);
+    }
+
+    /**
+    * get all tonieboxes
+    */
+    async apiGetTonieboxesIndex(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieboxCardProps[]> {
+        const response = await this.apiGetTonieboxesIndexRaw(initOverrides);
+        return (await response.value()).boxes;
+    }
 
     /**
      * get all tags
@@ -71,13 +97,18 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all options
      */
-    async apiGetIndexGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OptionsList>> {
+    async apiGetIndexGetRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OptionsList>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        let path = `/api/getIndex`;
+        if(overlay != "") {
+            path = path + "?overlay=" + overlay;
+        }
+
         const response = await this.request({
-            path: `/api/getIndex`,
+            path: path,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -89,8 +120,8 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all options
      */
-    async apiGetIndexGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OptionsList> {
-        const response = await this.apiGetIndexGetRaw(initOverrides);
+    async apiGetIndexGet(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OptionsList> {
+        const response = await this.apiGetIndexGetRaw(overlay, initOverrides);
         return await response.value();
     }
 

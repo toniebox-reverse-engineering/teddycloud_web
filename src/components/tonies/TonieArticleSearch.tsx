@@ -4,7 +4,7 @@ import { Select, message } from 'antd';
 import type { SelectProps } from 'antd';
 import { TonieInfo } from './TonieCard';
 
-export const TonieArticleSearch: React.FC<{ placeholder: string; style: React.CSSProperties; onChange: (newValue: string) => void }> = (props) => {
+export const TonieArticleSearch: React.FC<{ placeholder: string; onChange: (newValue: string) => void }> = (props) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<SelectProps['options']>([]);
@@ -47,7 +47,6 @@ export const TonieArticleSearch: React.FC<{ placeholder: string; style: React.CS
             showSearch
             value={value}
             placeholder={props.placeholder}
-            style={props.style}
             defaultActiveFirstOption={false}
             suffixIcon={null}
             filterOption={false}
