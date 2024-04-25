@@ -153,7 +153,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/InternalServerError'       
           
-  /api/set/cloud.cacheContent:
+  /api/settings/set/cloud.cacheContent:
     post:
       tags:
         - TeddyCloud

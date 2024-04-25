@@ -103,7 +103,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         let path = `/api/getIndex`;
-        if(overlay != "") {
+        if (overlay != "") {
             path = path + "?overlay=" + overlay;
         }
 
@@ -140,7 +140,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'text/plain';
 
         const response = await this.request({
-            path: `/api/set/cloud.cacheContent`,
+            path: `/api/settings/set/cloud.cacheContent`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

@@ -48,7 +48,7 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
           try {
             fetch(
-              `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/set/${name}`,
+              `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/${name}`,
               {
                 method: "POST",
                 body: value?.toString(),

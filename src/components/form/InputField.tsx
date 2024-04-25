@@ -39,7 +39,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
 
           try {
             fetch(
-              `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/set/${name}`,
+              `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/${name}`,
               {
                 method: "POST",
                 body: event.target.value,

@@ -40,14 +40,14 @@ export const StyledFooter = () => {
     if (footer) {
       setFooterHeight(footer.offsetHeight);
     }
-    fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/get/internal.version.v_long`)
-          .then(response => response.text()) // Parse response as text
-          .then(data => setVersion(data))    // Set fetched data to state
-          .catch(error => console.error('Error fetching data:', error));
-          fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/get/internal.version.v_short`)
-          .then(response => response.text()) // Parse response as text
-          .then(data => setVersionShort(data))    // Set fetched data to state
-          .catch(error => console.error('Error fetching data:', error));
+    fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/internal.version.v_long`)
+      .then(response => response.text()) // Parse response as text
+      .then(data => setVersion(data))    // Set fetched data to state
+      .catch(error => console.error('Error fetching data:', error));
+    fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/internal.version.v_short`)
+      .then(response => response.text()) // Parse response as text
+      .then(data => setVersionShort(data))    // Set fetched data to state
+      .catch(error => console.error('Error fetching data:', error));
   }, []);
 
   return (
@@ -62,10 +62,10 @@ export const StyledFooter = () => {
         <StyledCenterPart>
           <div style={{ marginTop: "8px" }}>
             <small>
-                <Link to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/" target="_blank">
-                    <HiddenDesktop>{versionShort}</HiddenDesktop>
-                    <HiddenMobile>{version}</HiddenMobile>
-                </Link>
+              <Link to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/" target="_blank">
+                <HiddenDesktop>{versionShort}</HiddenDesktop>
+                <HiddenMobile>{version}</HiddenMobile>
+              </Link>
             </small>
           </div>
         </StyledCenterPart>
