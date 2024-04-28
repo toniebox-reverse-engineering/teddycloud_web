@@ -81,7 +81,7 @@ paths:
         '5XX':
           $ref: '#/components/responses/InternalServerError'
           
-  /api/getIndex:
+  /api/settings/getIndex:
     get:
       tags:
         - TeddyCloud

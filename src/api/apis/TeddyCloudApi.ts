@@ -102,7 +102,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        let path = `/api/getIndex`;
+        let path = `/api/settings/getIndex`;
         if (overlay != "") {
             path = path + "?overlay=" + overlay;
         }
