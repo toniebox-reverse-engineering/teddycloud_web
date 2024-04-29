@@ -8,9 +8,10 @@ import { InputNumberField } from "../form/InputNumberField";
 type OptionItemProps = {
   option: OptionsItem;
   noOverlay?: boolean;
+  overlayId?: string;
 };
 
-export const OptionItem = ({ option, noOverlay }: OptionItemProps) => {
+export const OptionItem = ({ option, noOverlay, overlayId }: OptionItemProps) => {
   const { type, iD, description, label, shortname, value, overlayed } = option;
   const [optionValue, setOptionValue] = useState<string>("");
 
@@ -26,10 +27,10 @@ export const OptionItem = ({ option, noOverlay }: OptionItemProps) => {
 
   return (
     <div key={iD}>
-      {type === "bool" && <SwitchField name={iD} label={label} description={description} overlayed={overlayedProp}/>}
-      {type === "int" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp}/>}
-      {type === "uint" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp}/>}
-      {type === "string" && <InputField name={iD} label={label} description={description} overlayed={overlayedProp}/>}
+      {type === "bool" && <SwitchField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
+      {type === "int" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
+      {type === "uint" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
+      {type === "string" && <InputField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
     </div>);
 
 };

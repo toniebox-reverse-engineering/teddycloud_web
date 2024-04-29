@@ -48,7 +48,7 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
               // nothing to submit because of field onchange
             }}
           >
-            <Form disabled
+            <Form
               labelCol={{ span: 8 }}
               wrapperCol={{ span: 14 }}
               layout="horizontal"
@@ -118,7 +118,7 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
                       return null;
                     })}
 
-                    <OptionItem option={option} />
+                    <OptionItem option={option} overlayId={overlay}/>
                   </>
                 );
               })}
