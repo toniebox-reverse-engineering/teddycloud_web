@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Button, Input, Popover, message, Slider, Select, Modal } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, PauseCircleOutlined, CloudSyncOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
+import { Card, Button, Input, Popover, message, Modal } from 'antd';
+import { InfoCircleOutlined, PlayCircleOutlined, CloudSyncOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 
 import { useAudioContext } from '../audio/AudioContext';
 import { FileBrowser } from './FileBrowser';
@@ -51,7 +51,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
 
     const [selectedFile, setSelectedFile] = useState<string>("");
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
-        if (files.length == 1) {
+        if (files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const filePath = prefix + path + "/" + files[0].name;
             console.log(filePath);
@@ -260,7 +260,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             </Modal>
             <Modal title={t("tonies.editModelModal.editModel") + tonieCard.tonieInfo.model + " - " + title} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
                 <p><Input value={selectedModel} width='auto' onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
-                    addonAfter={activeModel == selectedModel ?
+                    addonAfter={activeModel === selectedModel ?
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
                 <TonieArticleSearch placeholder={t("tonies.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} />

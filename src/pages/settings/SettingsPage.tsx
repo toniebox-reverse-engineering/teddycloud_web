@@ -64,7 +64,7 @@ export const SettingsPage = () => {
           <h1>{t(`settings.title`)}</h1>
           <Alert
             message={t("settings.information")}
-            description=<div>{t("settings.hint")} <Link to="/tonieboxes">Tonieboxes</Link>.</div>
+            description=<div>{t("settings.hint")} <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.</div>
             type="info"
             showIcon
           />

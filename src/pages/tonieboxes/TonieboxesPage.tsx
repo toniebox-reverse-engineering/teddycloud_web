@@ -43,14 +43,7 @@ export const TonieboxesPage = () => {
           ]}
         />
         <StyledContent>
-          <h1>{t('tonieboxes.title')}</h1>
-          <p><Alert
-            message="Warning! PoC state."
-            description="This page is still in development and is in state of a PoC! Box settings are now saved. Box appearance is hardcoded and if you change it, after reload of page it's reset."
-            type="warning"
-            showIcon
-          />
-          </p>
+          <h1>{t('tonieboxes.title')}</h1>        
           <TonieboxesList tonieboxCards={tonieboxes} />
         </StyledContent>
       </StyledLayout>
