@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Button, Input, message, Slider, Select, Modal } from 'antd';
+import { Card, Button, Input, message, Slider, Select, Modal, Badge } from 'antd';
 import { InfoCircleOutlined, EditOutlined, SaveOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
 import { TonieboxModelSearch } from './TonieboxModelSearch';
 import { TonieboxSettingsPage } from './TonieboxSettingsPage';
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Meta } = Card;
 
@@ -20,6 +24,7 @@ export type TonieboxCardProps = {
 export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ tonieboxCard }) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
+    const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
 
     // isEditSettingsModal... --> Name of Toniebox, Certificates
     // isModelModal... --> Color of Toniebox to display image
@@ -32,6 +37,16 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const [selectedModel, setSelectedModel] = useState("");
 
     const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' />);
+
+    useEffect(() => {
+      const fetchTonieboxStatus = async () => {
+        // Perform API call to fetch Toniebox status
+        const tonieboxStatus = await api.apiGetTonieboxStatus(tonieboxCard.commonName);
+        setTonieboxStatus(tonieboxStatus);
+      };
+
+      fetchTonieboxStatus();
+    }, []);
 
     const showEditSettingsModal = () => {
         setIsEditSettingsModalOpen(true);
@@ -91,7 +106,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 extra={<Button icon={<EditOutlined key="edit" onClick={handleModelClick} /> } />}
                 hoverable
                 size="default"
-                title={tonieboxCard.boxName}
+                title={<div><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxCard.boxName}</div>}
                 cover={boxImage}
                 actions={
                     [

@@ -71,6 +71,37 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * get tonieBoxStatus
+     */
+    async apiGetTonieboxStatusRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.online`;
+        if (overlay != "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request({
+            path: path,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<boolean>(response);
+    }
+
+    /**
+     * get all options
+     */
+    async apiGetTonieboxStatus(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.apiGetTonieboxStatusRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * get all tags
      */
     async apiGetTagIndexRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TagsTonieCardList>> {

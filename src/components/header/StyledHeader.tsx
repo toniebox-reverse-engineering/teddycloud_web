@@ -69,7 +69,7 @@ export const StyledHeader = () => {
         </StyledLeftPart>
       </Link>
       <HiddenMobile>
-          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: 290}}/>
+          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: "calc(100vw - 480px)"}}/>
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
