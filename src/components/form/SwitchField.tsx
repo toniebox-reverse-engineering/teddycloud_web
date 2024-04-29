@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useField } from "formik";
 import FormItem from "antd/es/form/FormItem";
@@ -49,8 +49,8 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
         // Trigger write config only if setting was successfully updated
         triggerWriteConfig();
 
-        if(!checked) {
-            fetchFieldValue();
+        if (!checked) {
+          fetchFieldValue();
         }
       }).catch((error) => {
         message.error(`Error while ${checked ? "saving" : "resetting"} config: ${error}`);

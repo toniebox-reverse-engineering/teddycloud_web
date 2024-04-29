@@ -20,17 +20,17 @@ export const OptionItem = ({ option, noOverlay, overlayId }: OptionItemProps) =>
   useEffect(() => {
     setOptionValue(value);
     setValue(value);
-  }, []);
+  }, [setValue, value]);
 
   const overlayedProp = noOverlay ? undefined : overlayed;
 
 
   return (
     <div key={iD}>
-      {type === "bool" && <SwitchField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
-      {type === "int" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
-      {type === "uint" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
-      {type === "string" && <InputField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId}/>}
+      {type === "bool" && <SwitchField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
+      {type === "int" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
+      {type === "uint" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
+      {type === "string" && <InputField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
     </div>);
 
 };

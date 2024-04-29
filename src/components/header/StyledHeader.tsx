@@ -40,36 +40,36 @@ export const StyledHeader = () => {
 
   const mainNav: MenuProps["items"] = [
     {
-        key: "/",
-        label: <Link to="/">{t("home.navigationTitle")}</Link>,
-        onClick: () => setNavOpen(false),
+      key: "/",
+      label: <Link to="/">{t("home.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
     },
     {
-        key: "tonies",
-        label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
-        onClick: () => setNavOpen(false),
+      key: "tonies",
+      label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
     },
     {
-        key: "tonieboxes",
-        label: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>,
-        onClick: () => setNavOpen(false),
+      key: "tonieboxes",
+      label: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
     },
-     {
-         key: "settings",
-         label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
-         onClick: () => setNavOpen(false),
-     },
+    {
+      key: "settings",
+      label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
+    },
   ];
   return (
     <StyledHeaderComponent>
-      <Link to="/" style={{color: "white"}}>
+      <Link to="/" style={{ color: "white" }}>
         <StyledLeftPart>
           <StyledLogo src={logoImg} />
           <HiddenMobile> TeddyCloud Server</HiddenMobile>
         </StyledLeftPart>
       </Link>
       <HiddenMobile>
-          <Menu theme="dark" mode="horizontal" items={mainNav} style={{width: "calc(100vw - 480px)"}}/>
+        <Menu theme="dark" mode="horizontal" items={mainNav} style={{ width: "calc(100vw - 480px)" }} />
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />

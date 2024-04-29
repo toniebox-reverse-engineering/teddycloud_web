@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Button, Input, message, Slider, Select, Modal, Badge } from 'antd';
-import { InfoCircleOutlined, EditOutlined, SaveOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
+import { Card, Button, Input, message, Modal, Badge } from 'antd';
+import { EditOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 import { TonieboxModelSearch } from './TonieboxModelSearch';
@@ -31,22 +31,21 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
 
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
     const [isModelModalOpen, setIsModelModalOpen] = useState(false);
-    const [isMoreOpen, setIsMoreOpen] = useState(false);
 
     const [activeModel, setActiveModel] = useState(""); // tonieboxCard.tonieboxInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
 
-    const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' />);
+    const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" />);
 
     useEffect(() => {
-      const fetchTonieboxStatus = async () => {
-        // Perform API call to fetch Toniebox status
-        const tonieboxStatus = await api.apiGetTonieboxStatus(tonieboxCard.commonName);
-        setTonieboxStatus(tonieboxStatus);
-      };
+        const fetchTonieboxStatus = async () => {
+            // Perform API call to fetch Toniebox status
+            const tonieboxStatus = await api.apiGetTonieboxStatus(tonieboxCard.commonName);
+            setTonieboxStatus(tonieboxStatus);
+        };
 
-      fetchTonieboxStatus();
-    }, []);
+        fetchTonieboxStatus();
+    }, [tonieboxCard.commonName]);
 
     const showEditSettingsModal = () => {
         setIsEditSettingsModalOpen(true);
@@ -64,7 +63,6 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const showModelModal = () => {
         setSelectedModel(activeModel);
         setIsModelModalOpen(true);
-        setIsMoreOpen(false);
     };
     const handleModelOk = async () => {
         handleModelSave();
@@ -77,23 +75,17 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         showModelModal();
     }
 
-    const handleMoreOpenChange = (newOpen: boolean) => {
-        setIsMoreOpen(newOpen);
-    };
-
     const handleModelClearClick = () => {
         setSelectedModel(activeModel);
     };
     const handleModelSave = async () => {
         setActiveModel(selectedModel);
-        setBoxImage(<img src={selectedModel} />);
-        message.success( "Not implemented yet");
+        setBoxImage(<img src={selectedModel} alt=""/>);
+        message.success("Not implemented yet");
     }
     const handleModelInputChange = (e: any) => {
         setSelectedModel(e.target.value);
     };
-
-    const title = `${tonieboxCard.commonName}`;
 
     const searchResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
@@ -103,7 +95,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         <>
             {contextHolder}
             <Card
-                extra={<Button icon={<EditOutlined key="edit" onClick={handleModelClick} /> } />}
+                extra={<Button icon={<EditOutlined key="edit" onClick={handleModelClick} />} />}
                 hoverable
                 size="default"
                 title={<div><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxCard.boxName}</div>}
@@ -115,16 +107,16 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
             >
                 <Meta description={"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")} />
             </Card >
-            <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings", {"name": tonieboxCard.boxName})} width='auto' open={isEditSettingsModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
-                  <TonieboxSettingsPage overlay={tonieboxCard.ID}/>
+            <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings", { "name": tonieboxCard.boxName })} width='auto' open={isEditSettingsModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
+                <TonieboxSettingsPage overlay={tonieboxCard.ID} />
             </Modal>
-            <Modal title={t("tonieboxes.editModelModal.editModel", {"name": tonieboxCard.boxName})} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
-                 <p><Input name="boxName" value={tonieboxCard.boxName} addonBefore="Name" /></p>
-                 <p><TonieboxModelSearch placeholder={t("tonieboxes.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} /></p>
-                 <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
-                    /></p>
+            <Modal title={t("tonieboxes.editModelModal.editModel", { "name": tonieboxCard.boxName })} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
+                <p><Input name="boxName" value={tonieboxCard.boxName} addonBefore="Name" /></p>
+                <p><TonieboxModelSearch placeholder={t("tonieboxes.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} /></p>
+                <p><Input value={selectedModel} onChange={handleModelInputChange} addonBefore={<CloseOutlined onClick={handleModelClearClick} />}
+                /></p>
 
-               </Modal>
+            </Modal>
         </>
     );
 };

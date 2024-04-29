@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useField } from "formik";
 import FormItem from "antd/es/form/FormItem";
@@ -63,7 +63,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
     }
   };
 
- const fetchFieldValue = () => {
+  const fetchFieldValue = () => {
     try {
       fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`)
         .then(response => response.text())

@@ -312,6 +312,8 @@ components:
         - description
         - label
         - type
+        - value
+        - overlayed
       properties:
         ID:
           type: string
@@ -328,6 +330,12 @@ components:
         type:
           type: string
           description: "Object type"
+        value:
+          type: string
+          description: "Object value"
+        overlayed:
+          type: string
+          description: "Object overlayed"
 
   responses:
     BadRequest:

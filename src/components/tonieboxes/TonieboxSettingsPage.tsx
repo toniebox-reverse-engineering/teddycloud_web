@@ -1,16 +1,4 @@
 import { Form } from "antd";
-
-import Item from "antd/es/list/Item";
-import { useTranslation } from "react-i18next";
-import {
-  HiddenDesktop,
-  StyledBreadcrumb,
-  StyledBreadcrumbItem,
-  StyledContent,
-  StyledLayout,
-  StyledSider,
-} from "../../components/StyledComponents";
-import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
@@ -20,7 +8,6 @@ import { Formik } from "formik";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }) =>  {
-  const { t } = useTranslation();
   const [options, setOptions] = useState<OptionsList | undefined>();
 
   useEffect(() => {
@@ -35,7 +22,7 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
     };
 
     fetchOptions();
-  }, []);
+  }, [overlay]);
 
   return (
     <>

@@ -1,19 +1,12 @@
-import { useTranslation } from "react-i18next";
 import { Footer } from "antd/es/layout/layout";
 import styled from "styled-components";
-import { MenuOutlined } from "@ant-design/icons";
 
-import logoImg from "../../assets/logo.png";
-import { Button, Drawer, Menu, MenuProps } from "antd";
 import { Link } from "react-router-dom";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import AudioPlayerFooter from "./AudioPlayerFooter";
 
 import { useEffect, useState } from 'react';
 
-const StyledLogo = styled.img`
-  height: 32px;
-`;
 const StyledFooterComponent = styled(Footer)`
   position: fixed;
   bottom: 0;
@@ -29,8 +22,7 @@ const StyledCenterPart = styled.div`
   align-items: center;
 `;
 
-export const StyledFooter = () => {
-  const { t } = useTranslation();
+export const StyledFooter = () => {  
   const [footerHeight, setFooterHeight] = useState(0);
   const [version, setVersion] = useState('');
   const [versionShort, setVersionShort] = useState('');
