@@ -15,7 +15,7 @@ type InputFieldProps = {
   overlayId?: string;
 };
 
-export const InputField = (props: InputFieldProps & InputProps) => {
+const InputField = (props: InputFieldProps & InputProps) => {
   const { t } = useTranslation();
   const { name, label, description, overlayed: initialOverlayed, overlayId, ...inputProps } = props;
   const [field, meta, helpers] = useField(name!);
@@ -52,11 +52,30 @@ export const InputField = (props: InputFieldProps & InputProps) => {
         },
       }).then(() => {
         triggerWriteConfig();
+        if (!checked) {
+          // Fetch field value if checkbox is unchecked
+          fetchFieldValue();
+        }
       }).catch((error) => {
         message.error(`Error while ${checked ? "saving" : "resetting"} config: ${error}`);
       });
     } catch (error) {
       message.error(`Error while sending data to server: ${error}`);
+    }
+  };
+
+  const fetchFieldValue = () => {
+    try {
+      fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`)
+        .then(response => response.text())
+        .then(value => {
+          helpers.setValue(value);
+        })
+        .catch(error => {
+          message.error(`Error fetching field value: ${error}`);
+        });
+    } catch (error) {
+      message.error(`Error fetching field value: ${error}`);
     }
   };
 
@@ -112,3 +131,5 @@ export const InputField = (props: InputFieldProps & InputProps) => {
     </FormItem>
   );
 };
+
+export { InputField };

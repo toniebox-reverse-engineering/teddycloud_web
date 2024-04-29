@@ -51,11 +51,30 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
       }).then(() => {
         // Trigger write config only if setting was successfully updated
         triggerWriteConfig();
+        if (!checked) {
+          // Fetch field value if checkbox is unchecked
+          fetchFieldValue();
+        }
       }).catch((error) => {
         message.error(`Error while ${checked ? "saving" : "resetting"} config: ${error}`);
       });
     } catch (error) {
       message.error(`Error while sending data to server: ${error}`);
+    }
+  };
+
+ const fetchFieldValue = () => {
+    try {
+      fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`)
+        .then(response => response.text())
+        .then(value => {
+          helpers.setValue(value === "" ? undefined : Number(value));
+        })
+        .catch(error => {
+          message.error(`Error fetching field value: ${error}`);
+        });
+    } catch (error) {
+      message.error(`Error fetching field value: ${error}`);
     }
   };
 

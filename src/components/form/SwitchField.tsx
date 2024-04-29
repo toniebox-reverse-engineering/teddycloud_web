@@ -1,10 +1,10 @@
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { useField } from "formik";
 import FormItem from "antd/es/form/FormItem";
 import { Switch, SwitchProps, message, Checkbox } from "antd";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 type SwitchFieldProps = {
   name: string;
@@ -18,7 +18,7 @@ type SwitchFieldProps = {
   overlayId?: string;
 };
 
-export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
+const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
   const { t } = useTranslation();
   const { name, label, valueConverter, description, overlayed: initialOverlayed, overlayId, ...switchProps } = props;
   const [field, meta, { setValue }] = useField(name!);
@@ -48,6 +48,10 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
       }).then(() => {
         // Trigger write config only if setting was successfully updated
         triggerWriteConfig();
+
+        if(!checked) {
+            fetchFieldValue();
+        }
       }).catch((error) => {
         message.error(`Error while ${checked ? "saving" : "resetting"} config: ${error}`);
       });
@@ -61,6 +65,22 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
       await api.apiTriggerWriteConfigGet();
     } catch (error) {
       message.error("Error while saving config to file.");
+    }
+  };
+
+  const fetchFieldValue = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`);
+      const value = await response.text();
+      const newValue = value === "" ? undefined : valueConverter?.fromValueToBoolean(value);
+      setValue(newValue); // Set the field value
+
+      // Set the switch value based on the fetched value
+      const isChecked = valueConverter ? valueConverter.fromValueToBoolean(value) : value;
+      setValue(isChecked);
+
+    } catch (error) {
+      message.error(`Error fetching field value: ${error}`);
     }
   };
 
@@ -115,3 +135,5 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
     </FormItem>
   );
 };
+
+export { SwitchField };
