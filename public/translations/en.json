@@ -31,7 +31,7 @@
     "certificates": {
       "navigationTitle": "Certificates",
       "title": "Certificates",
-      "uploadText": "Click or drag file to this area to upload",
+      "uploadText": "Click or drag client certificates to this area to upload",
       "uploadHint": "Drag and drop client certificates from your box here"
     }
   },
@@ -107,7 +107,7 @@
       "placeholderSearchForAModel": "Select color variant of your Toniebox"
     },
     "editTonieboxSettingsModal": {
-      "editTonieboxSettings": "Settings for Toniebox {{name}}"
+      "editTonieboxSettings": "Edit settings for Toniebox {{name}}"
     }
   },
   "language": {
