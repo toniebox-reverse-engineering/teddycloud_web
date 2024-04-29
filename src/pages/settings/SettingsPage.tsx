@@ -123,7 +123,7 @@ export const SettingsPage = () => {
                       return null;
                     })}
 
-                    <OptionItem option={option} />
+                    <OptionItem option={option} noOverlay={true} />
                   </>
                 );
               })}

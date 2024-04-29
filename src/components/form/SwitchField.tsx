@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useField } from "formik";
 import FormItem from "antd/es/form/FormItem";
-import { Switch, SwitchProps, message } from "antd";
+import { Switch, SwitchProps, message, Checkbox } from "antd";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 
@@ -13,12 +13,13 @@ type SwitchFieldProps = {
     fromBooleanToValue: (booleanValue?: boolean) => any;
   };
   description?: string;
+  overlayed?: boolean;
 };
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
   const { t } = useTranslation();
-  const { name, label, valueConverter, description, ...switchProps } = props;
+  const { name, label, valueConverter, description, overlayed, ...switchProps } = props;
   const [field, meta, { setValue }] = useField(name!);
 
   const hasFeedback = !!(meta.touched && meta.error);
@@ -39,6 +40,7 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
       <Switch
         {...switchProps}
         {...field}
+
         checked={isChecked}
         onChange={(value: boolean) => {
           //TODO: Fix fetch and replace with apiClient
@@ -70,6 +72,7 @@ export const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
           setValue(value);
         }}
       />
+      {overlayed === undefined ?  "" : <Checkbox checked={overlayed} style={{marginLeft: "16px"}} /*onChange={onChange}*/> {t("settings.overlayed")}</Checkbox>}
     </FormItem>
   );
 };

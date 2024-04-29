@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useField } from "formik";
 import FormItem from "antd/es/form/FormItem";
-import { Input, InputProps, message } from "antd";
+import { Input, InputProps, message, Checkbox} from "antd";
 import { ChangeEvent } from "react";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -10,18 +10,22 @@ type InputFieldProps = {
   name: string;
   label?: string;
   description?: string;
+  overlayed?: boolean;
 };
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const InputField = (props: InputFieldProps & InputProps) => {
   const { t } = useTranslation();
-  const { name, label, description, ...inputProps } = props;
+  const { name, label, description, overlayed, ...inputProps } = props;
   const [field, meta, helpers] = useField(name!);
 
   const hasFeedback = !!(meta.touched && meta.error);
   const help = meta.touched && meta.error && t(meta.error);
   const validateStatus = meta.touched && meta.error ? "error" : undefined;
+
+  const addonAfter = overlayed === undefined ? "" : <Checkbox checked={overlayed} /*onChange={onChange}*/> {t("settings.overlayed")}</Checkbox> ;
+
   return (
     <FormItem
       help={hasFeedback ? help : undefined}
@@ -32,6 +36,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
       <Input
         {...inputProps}
         {...field}
+        addonAfter={ addonAfter }
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();

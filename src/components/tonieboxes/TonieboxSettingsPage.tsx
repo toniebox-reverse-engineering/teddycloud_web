@@ -40,7 +40,7 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
   return (
     <>
           <Formik
-            //validationSchema={settingsValidationSchema}
+            // validationSchema={settingsValidationSchema}
             initialValues={{
               test: "test",
             }}
@@ -53,8 +53,33 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
               wrapperCol={{ span: 14 }}
               layout="horizontal"
             >
-              {options?.options?.map((option, index, array) => {
-                if(!option.iD.includes("client_cert") && !option.iD.includes("flex_") && !option.iD.includes("toniebox.")) { return ""; };
+
+              { // to do change that to upcoming flag which indicates if overlaying make sense
+                options?.options?.map((option, index, array) => {
+                if(
+                    !option.iD.includes("core.client_cert.") && 
+                    !option.iD.includes("core.flex_") && 
+                    !option.iD.includes("toniebox.")  && 
+                    !option.iD.includes("cloud.enabled") && 
+                    !option.iD.includes("cloud.enableV1Claim") && 
+                    !option.iD.includes("cloud.enableV1CloudReset") && 
+                    !option.iD.includes("cloud.enableV1FreshnessCheck")  && 
+                    !option.iD.includes("cloud.enableV1Log")  && 
+                    !option.iD.includes("cloud.enableV1Time")  && 
+                    !option.iD.includes("cloud.enableV1Ota")  && 
+                    !option.iD.includes("cloud.enableV2Content")  && 
+                    !option.iD.includes("cloud.cacheOta")  && 
+                    !option.iD.includes("cloud.localOta")  && 
+                    !option.iD.includes("cloud.cacheContent")  && 
+                    !option.iD.includes("cloud.cacheToLibrary")  && 
+                    !option.iD.includes("cloud.markCustomTagByPass")  && 
+                    !option.iD.includes("cloud.prioCustomContent")  && 
+                    !option.iD.includes("cloud.updateOnLowerAudioId")  && 
+                    !option.iD.includes("cloud.dumpRuidAuthContentJson") 
+                ) { 
+                    return ""; 
+                };
+
                 const parts = option.iD.split(".");
                 const lastParts = array[index - 1]
                   ? array[index - 1].iD.split(".")
