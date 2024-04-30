@@ -113,7 +113,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
             ).then(() => {
               triggerWriteConfig();
             }).catch((e) => {
-              message.error("Error while sending data to server.");
+              message.error("Error while saving config to file.");
             });
           } catch (e) {
             message.error("Error while sending data to server.");

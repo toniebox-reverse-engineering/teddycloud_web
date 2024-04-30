@@ -1,10 +1,8 @@
-
 import { List } from 'antd';
 import { TonieboxCard, TonieboxCardProps } from '../../components/tonieboxes/TonieboxCard';
 
 export const TonieboxesList: React.FC<{ tonieboxCards: TonieboxCardProps[] }> = ({ tonieboxCards }) => {
     return (
-
         <List
             grid={{
                 gutter: 16,

@@ -111,13 +111,11 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
                   "Content-Type": "text/plain",
                 },
               }
-            );
-
-            try {
+            ).then(() => {
               triggerWriteConfig();
-            } catch (e) {
+            }).catch((e) => {
               message.error("Error while saving config to file.");
-            }
+            });
           } catch (e) {
             message.error("Error while sending data to server.");
           }

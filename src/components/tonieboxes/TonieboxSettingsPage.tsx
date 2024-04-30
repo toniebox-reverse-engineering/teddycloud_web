@@ -1,9 +1,9 @@
+import { useEffect, useState } from "react";
 import { Form } from "antd";
+import { Formik } from "formik";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { useEffect, useState } from "react";
 import OptionItem from "../../components/settings/OptionItem";
-import { Formik } from "formik";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
