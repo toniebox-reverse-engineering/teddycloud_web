@@ -1,4 +1,3 @@
-
 import { List } from 'antd';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCardDisplayOnly';
 
@@ -6,7 +5,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
     return (
         <List
             grid={{
-                gutter: 7,
+                gutter: 16,
                 xs: 1,
                 sm: 2,
                 md: 2,
