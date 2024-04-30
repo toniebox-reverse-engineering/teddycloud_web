@@ -111,6 +111,7 @@
       "model" : "Modell:"      
     },
     "editTonieboxSettingsModal": {
+      "editTonieboxSettingsLabel": "Einstellungen bearbeiten",
       "editTonieboxSettings": "Einstellungen der Toniebox {{name}} bearbeiten"
     }
   },

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Alert } from "antd";
 import { useTranslation } from 'react-i18next';
 import {
   HiddenDesktop, StyledBreadcrumb, StyledContent, StyledLayout, StyledSider
@@ -22,7 +21,6 @@ export const TonieboxesPage = () => {
     const fetchTonieboxes = async () => {
       // Perform API call to fetch Toniebox data
       const tonieboxData = await api.apiGetTonieboxesIndex();
-      console.log(tonieboxData);
       setTonieboxes(tonieboxData);
     };
 
@@ -43,7 +41,7 @@ export const TonieboxesPage = () => {
           ]}
         />
         <StyledContent>
-          <h1>{t('tonieboxes.title')}</h1>        
+          <h1>{t('tonieboxes.title')}</h1>
           <TonieboxesList tonieboxCards={tonieboxes} />
         </StyledContent>
       </StyledLayout>

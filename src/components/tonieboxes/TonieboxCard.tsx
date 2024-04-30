@@ -6,6 +6,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 import { TonieboxModelSearch } from './TonieboxModelSearch';
 import { TonieboxSettingsPage } from './TonieboxSettingsPage';
+import { boxModelImages } from '../../util/boxModels';
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -34,21 +35,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const [boxName, setBoxName] = useState(tonieboxCard.boxName);
     const [tonieboxName, setTonieBoxName] = useState(tonieboxCard.boxName);
 
-    const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" />);
-
-    const boxModelImages = [
-        { id: '03-0013', name: 'Green', img_src: 'https://cdn.tonies.de/thumbnails/03-0013-i.png' },
-        { id: '03-0012', name: 'Light Blue', img_src: 'https://cdn.tonies.de/thumbnails/03-0012-i.png' },
-        { id: '03-0011', name: 'Red', img_src: 'https://cdn.tonies.de/thumbnails/03-0011-i.png' },
-        { id: '03-0014', name: 'Pink', img_src: 'https://cdn.tonies.de/thumbnails/03-0014-i.png' },
-        { id: '03-0010', name: 'Purple', img_src: 'https://cdn.tonies.de/thumbnails/03-0010-i.png' },
-        { id: '03-0009', name: 'Grey', img_src: 'https://cdn.tonies.de/thumbnails/03-0009-i.png' },
-        { id: '99-0100', name: 'Red - Disney 100 Limited Edition', img_src: 'https://www.babyone.at/media/1e/e1/b0/1687489451/58525690_shop3.png' },
-        { id: '03-0005', name: 'Dark Grey - Unter meinem Bett Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0005-i.png' },
-        { id: '99-0003', name: 'Black - 3 Fragezeichen Limited Edition', img_src: 'https://www.galaxus.ch/im/Files/3/8/3/5/4/8/6/0/10000490-50001308-sRGB-b.png' },
-        { id: '03-0008', name: 'Turquoise - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0008-i.png' },
-        { id: '99-0002', name: 'Gulli - Limited Edition', img_src: 'https://i.ebayimg.com/images/g/lHIAAOSwyLtjiQGt/s-l1600.jpg' },
-    ];
+    const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" style={{ filter: "opacity(0.20)"}}/>);
 
     useEffect(() => {
         const fetchTonieboxStatus = async () => {
@@ -89,6 +76,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
 
     const showModelModal = () => {
 
+        setSearchFieldValue(undefined);
         if (selectedModel === undefined) {
             setSelectedModel(activeModel);
         } else {
@@ -98,6 +86,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     };
 
     const handleModelOk = async () => {
+        setSearchFieldValue(undefined)
         setSelectedModel(activeModel);
         setTonieBoxName(tonieboxName);
         setBoxName(tonieboxName);
@@ -105,6 +94,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     }
 
     const handleModelCancel = () => {
+        setSearchFieldValue(undefined)
         setSelectedModel(activeModel);
         setTonieBoxName(tonieboxName);
         setBoxName(tonieboxName);
@@ -185,7 +175,10 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         setSelectedModel(e.target.value);
     };
 
+    const [searchFieldValue, setSearchFieldValue] = useState<string | undefined>(undefined);
+
     const searchResultChanged = (newValue: string) => {
+        setSearchFieldValue(newValue);
         setSelectedModel(newValue);
     }
 
@@ -196,41 +189,43 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 extra={<Button icon={<EditOutlined key="edit" onClick={handleModelClick} />} />}
                 hoverable
                 size="default"
-                title={<div><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</div>}
+                title={<span><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</span>}
                 cover={boxImage}
-                actions={[<SettingOutlined key="edit" onClick={handleEditClick} />]}
+                actions={[<span key="settings" onClick={handleEditClick} >
+                    <SettingOutlined key="edit" style={{ marginRight: 8 }} />{t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettingsLabel")}
+                </span>]}
             >
                 <Meta description={"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")} />
             </Card >
             <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings", { "name": tonieboxCard.boxName })} width='auto' open={isEditSettingsModalOpen} onOk={handleEditOk} onCancel={handleEditCancel}>
                 <TonieboxSettingsPage overlay={tonieboxCard.ID} />
             </Modal>
-            <Modal title={t("tonieboxes.editModelModal.editModel", { "name": tonieboxCard.boxName })} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel}>
-                <p><Input name="boxName" value={boxName} onChange={(e) => setBoxName(e.target.value)} 
+            <Modal title={t("tonieboxes.editModelModal.editModel", { "name": tonieboxCard.boxName })} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel} afterClose={() => setSearchFieldValue('')}>
+                <p><Input name="boxName" value={boxName} onChange={(e) => setBoxName(e.target.value)}
                     addonBefore={
                         [
-                            boxName === tonieboxName ? 
-                            (<CloseOutlined style={{ color: 'lightgray', marginRight: 16 }} />) : 
-                            (<CloseOutlined style={{ marginRight: 16 }} onClick={handleBoxNameClearClick} />), 
+                            boxName === tonieboxName ?
+                                (<CloseOutlined style={{ color: 'lightgray', marginRight: 16 }} />) :
+                                (<CloseOutlined style={{ marginRight: 16 }} onClick={handleBoxNameClearClick} />),
                             t("tonieboxes.editModelModal.name")
                         ]
                     }
                     addonAfter={boxName === tonieboxName ?
                         (<SaveOutlined key="saveboxNameNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveboxName" onClick={handleBoxNameSave} />)} /></p>
-                <p><Input name="boxModel" readOnly value={selectedModel} width='auto' onChange={handleModelInputChange} 
+                <p><Input name="boxModel" readOnly value={selectedModel} width='auto' onChange={handleModelInputChange}
                     addonBefore={
                         [
-                            activeModel === selectedModel ? 
-                            (<CloseOutlined style={{ color: 'lightgray', marginRight: 16 }} />) : 
-                            (<CloseOutlined style={{ marginRight: 16 }} onClick={handleModelClearClick} />),
+                            activeModel === selectedModel ?
+                                (<CloseOutlined style={{ color: 'lightgray', marginRight: 16 }} />) :
+                                (<CloseOutlined style={{ marginRight: 16 }} onClick={handleModelClearClick} />),
                             t("tonieboxes.editModelModal.model")
                         ]
                     }
                     addonAfter={activeModel === selectedModel ?
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
-                <p><TonieboxModelSearch placeholder={t("tonieboxes.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} /></p>
+                <p><TonieboxModelSearch placeholder={t("tonieboxes.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} value={searchFieldValue} /></p>
             </Modal>
         </>
     );

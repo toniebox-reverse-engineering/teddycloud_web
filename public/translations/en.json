@@ -110,6 +110,7 @@
       "model" : "Model"
     },
     "editTonieboxSettingsModal": {
+      "editTonieboxSettingsLabel": "Edit settings",
       "editTonieboxSettings": "Edit settings for Toniebox {{name}}"
     }
   },
