@@ -119,7 +119,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
             ).then(() => {
               triggerWriteConfig();
             }).catch((e) => {
-              message.error("Error while sending data to server.");
+              message.error("Error while sending data to file.");
             });
           } catch (e) {
             message.error("Error while sending data to server.");
