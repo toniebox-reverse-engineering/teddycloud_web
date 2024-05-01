@@ -52,9 +52,13 @@
         "seriesFilterPlaceholder": "Series",
         "episodeFilterPlaceholder": "Episode",
         "valid": "Valid",
+        "invalid": "Invalid",
         "live": "Live",
+        "unsetLive": "Live disabled",
         "exists": "Exists",
-        "noCloud": "Cloud disabled",
+        "notExists": "Exists not",
+        "noCloud": "Cloud disabled",        
+        "unsetNoCloud": "Cloud enabled",
         "applyFilters": "Apply filter",
         "resetFilters": "Reset filter"
       }

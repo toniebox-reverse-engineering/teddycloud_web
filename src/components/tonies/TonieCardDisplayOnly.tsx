@@ -72,6 +72,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 extra={more}
                 hoverable
                 size="small"
+                style={{cursor: 'default'}}
                 title={tonieCard.tonieInfo.series}
                 cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`
                 } src={tonieCard.tonieInfo.picture} />}

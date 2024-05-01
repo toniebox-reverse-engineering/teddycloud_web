@@ -12,9 +12,13 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
     const [seriesFilter, setSeriesFilter] = useState('');
     const [episodeFilter, setEpisodeFilter] = useState('');
     const [validFilter, setValidFilter] = useState(false);
+    const [invalidFilter, setInvalidFilter] = useState(false);
     const [existsFilter, setExistsFilter] = useState(false);
+    const [notExistsFilter, setNotExistsFilter] = useState(false);
     const [liveFilter, setLiveFilter] = useState(false);
     const [nocloudFilter, setNocloudFilter] = useState(false);
+    const [unsetLiveFilter, setUnsetLiveFilter] = useState(false);
+    const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true); // Add loading state
 
@@ -28,9 +32,13 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
             tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase())
             && tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())
             && (!validFilter || tonie.valid)
+            && (!invalidFilter || !tonie.valid)
             && (!existsFilter || tonie.exists)
+            && (!notExistsFilter || !tonie.exists)
             && (!liveFilter || tonie.live)
             && (!nocloudFilter || tonie.nocloud)
+            && (!unsetLiveFilter || !tonie.live)
+            && (!unsetNocloudFilter || !tonie.nocloud)
         );
         if (searchText) {
             filtered = filtered.filter(tonie =>
@@ -49,9 +57,13 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
         setSeriesFilter('');
         setEpisodeFilter('');
         setValidFilter(false);
+        setInvalidFilter(false);
         setExistsFilter(false);
+        setNotExistsFilter(false);
         setLiveFilter(false);
         setNocloudFilter(false);
+        setUnsetLiveFilter(false);
+        setUnsetNocloudFilter(false);
         setFilteredTonies(tonieCards);
     };
 
@@ -97,9 +109,13 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
                         <div>
                             <div style={{ display: "flex", flexWrap: "wrap" }}>
                                 <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={validFilter} onChange={(checked) => setValidFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.valid")}</div>
+                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={invalidFilter} onChange={(checked) => setInvalidFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.invalid")}</div>
                                 <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={existsFilter} onChange={(checked) => setExistsFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.exists")}</div>
+                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={notExistsFilter} onChange={(checked) => setNotExistsFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.notExists")}</div>
                                 <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={liveFilter} onChange={(checked) => setLiveFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.live")}</div>
+                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetLiveFilter} onChange={(checked) => setUnsetLiveFilter(checked)}  style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetLive")}</div>
                                 <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={nocloudFilter} onChange={(checked) => setNocloudFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.noCloud")}</div>
+                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetNocloudFilter} onChange={(checked) => setUnsetNocloudFilter(checked)}  style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetNoCloud")}</div>
                             </div>
                             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end" }}>
                                 <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>{t('tonies.tonies.filterBar.resetFilters')}</Button>
