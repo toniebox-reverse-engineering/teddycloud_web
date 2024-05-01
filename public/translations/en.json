@@ -39,6 +39,7 @@
   "tonies": {
     "navigationTitle": "Tonies",
     "title": "Tonies",
+    "pageSelector": " tonies / page",
     "tonies": {
       "navigationTitle": "Tonies",
       "title": "Tonies"
