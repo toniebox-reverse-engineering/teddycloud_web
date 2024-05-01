@@ -134,6 +134,25 @@
       "editTonieboxSettings": "Edit settings for Toniebox {{name}}"
     }
   },
+  "community": {
+    "navigationTitle": "Community",
+    "title": "Community",
+    "contribution": {
+      "navigationTitle": "Contribution",
+      "title": "Contribution"
+    },
+    "contributer": {
+      "navigationTitle": "Contributer",
+      "title": "Contributer"
+    },
+    "changelog": {
+      "navigationTitle": "Changelog",
+      "title": "Changelog / Release notes"
+    },
+    "forum":  {
+      "navigationTitle": "Forum"
+    }
+  },
   "language": {
     "change": "Change language",
     "english": "EN",

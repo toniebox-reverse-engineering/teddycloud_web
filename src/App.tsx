@@ -16,6 +16,10 @@ import { ContentPage } from "./pages/tonies/ContentPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { EncoderPage } from "./pages/tonies/EncoderPage";
 import { TonieboxesPage } from "./pages/tonieboxes/TonieboxesPage";
+import { CommunityPage } from "./pages/community/CommunityPage";
+import { ContributionPage } from "./pages/community/ContributionPage";
+import { ContributorsPage } from "./pages/community/ContributorsPage";
+import { ChangelogPage } from "./pages/community/ChangelogPage";
 
 function App() {
   return (
@@ -35,10 +39,11 @@ function App() {
                 <Route path="/tonies/encoder" element={<EncoderPage />} />
                 <Route path="/tonieboxes" element={<TonieboxesPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
-                <Route
-                  path="/settings/certificates"
-                  element={<CertificatesPage />}
-                />
+                <Route path="/settings/certificates" element={<CertificatesPage />} />
+                <Route path="/community" element={<CommunityPage/>} />
+                <Route path="/community/contribution" element={<ContributionPage/>} />
+                <Route path="/community/contributors" element={<ContributorsPage/>} />
+                <Route path="/community/changelog" element={<ChangelogPage/>} />
                 <Route path="/uitest" element={<UiTest />} />
               </Routes>
             </Layout>
