@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Button, Input, Popover, message, Modal } from 'antd';
 import { InfoCircleOutlined, PlayCircleOutlined, CloudSyncOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
@@ -50,6 +50,12 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const [selectedModel, setSelectedModel] = useState("");
 
     const [selectedFile, setSelectedFile] = useState<string>("");
+
+    useEffect(() => {
+        setIsLive(tonieCard.live); // Update isLive state when tonieCard prop changes
+        setIsNoCloud(tonieCard.nocloud); // Update isNoCloud state when tonieCard prop changes
+    }, [tonieCard]);
+
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
         if (files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
@@ -80,7 +86,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
             if (!response.ok) {
                 throw new Error(response.status + " " + response.statusText);
             }
-            message.success(t("tonies.messages.sourceSetSuccessful", {selectedFile: selectedFile}));
+            message.success(t("tonies.messages.sourceSetSuccessful", { selectedFile: selectedFile }));
         } catch (error) {
             message.error(t("tonies.messages.sourceCouldNotSet") + error);
         }
@@ -200,7 +206,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 throw new Error(response.status + " " + response.statusText);
             }
             setActiveModel(selectedModel);
-            message.success( t("tonies.messages.setTonieToModelSuccessful", {selectedModel: selectedModel}));
+            message.success(t("tonies.messages.setTonieToModelSuccessful", { selectedModel: selectedModel }));
         } catch (error) {
             message.error(t("tonies.messages.setTonieToModelFailed") + error);
         }
@@ -213,7 +219,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         <div>
             <p><strong>{t("tonies.infoModal.model")}</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
             <p><strong>{t("tonies.infoModal.valid")}</strong> {tonieCard.valid ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}</p>
-            <p><strong>{t("tonies.infoModal.exists")}</strong> {tonieCard.exists ?  t("tonies.infoModal.yes") : t("tonies.infoModal.no")}</p>
+            <p><strong>{t("tonies.infoModal.exists")}</strong> {tonieCard.exists ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}</p>
             <ol>
                 {tonieCard.tonieInfo.tracks.map((track) => (
                     <li>{track}</li>
@@ -240,18 +246,17 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 title={tonieCard.tonieInfo.series}
                 cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`
                 } src={tonieCard.tonieInfo.picture} />}
-                actions={
-                    [
-                        <EditOutlined key="edit" onClick={handleEditClick} />,
-                        isValid ?
-                            (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
-                            (downloadTriggerUrl.length > 0 ?
-                                <DownloadOutlined key="download" onClick={handleBackgroundDownload} /> :
-                                <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />
-                            ),
-                        <CloudSyncOutlined key="nocloud" style={{ color: isNoCloud ? 'red' : 'lightgray' }} onClick={handleNoCloudClick} />,
-                        <RetweetOutlined key="live" style={{ color: isLive ? 'red' : 'lightgray' }} onClick={handleLiveClick} />
-                    ]}
+                actions={[
+                    <EditOutlined key="edit" onClick={handleEditClick} />,
+                    isValid ?
+                        (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
+                        (downloadTriggerUrl.length > 0 ?
+                            <DownloadOutlined key="download" onClick={handleBackgroundDownload} /> :
+                            <PlayCircleOutlined key="playpause" style={{ color: 'lightgray' }} />
+                        ),
+                    <CloudSyncOutlined key="nocloud" style={{ color: isNoCloud ? 'red' : 'lightgray' }} onClick={handleNoCloudClick} />,
+                    <RetweetOutlined key="live" style={{ color: isLive ? 'red' : 'lightgray' }} onClick={handleLiveClick} />
+                ]}
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
             </Card >

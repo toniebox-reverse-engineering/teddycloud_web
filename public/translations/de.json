@@ -33,17 +33,32 @@
     "certificates": {
       "navigationTitle": "Zertifikate",
       "title": "Zertifikate",
-      "uploadText" : "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich",
-      "uploadHint" : "Ziehe die Client-Zertifikate aus deiner Box hierher"
+      "uploadText": "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich",
+      "uploadHint": "Ziehe die Client-Zertifikate aus deiner Box hierher"
     }
   },
   "tonies": {
     "navigationTitle": "Tonies",
     "title": "Tonies",
-    "pageSelector": " Tonies / Seite",
     "tonies": {
       "navigationTitle": "Tonies",
-      "title": "Tonies"
+      "pageSelector": " Tonies / Seite",
+      "title": "Tonies",
+      "filterBar": {
+        "showFilters": "Filter einblenden",
+        "hideFilters": "Filter ausblenden",
+        "searchLabel": "Suche",
+        "searchPlaceholder": "Suchkriterium eingeben",
+        "filterLabel": "Filter",
+        "seriesFilterPlaceholder": "Serie",
+        "episodeFilterPlaceholder": "Episode",
+        "valid": "Gültig",
+        "live": "Live",
+        "exists": "Existiert",
+        "noCloud": "Cloud deaktiviert",
+        "applyFilters": "Filter anwenden",
+        "resetFilters": "Filter zurücksetzen"
+      }
     },
     "system-sounds": {
       "navigationTitle": "System Sounds",
@@ -71,8 +86,8 @@
       "saveAs": "Datei speichern unter",
       "removeFile": "Datei entfernen"
     },
-    "messages" : {
-      "couldNotEmptySource" : "Konnte Quelle nicht leeren!",
+    "messages": {
+      "couldNotEmptySource": "Konnte Quelle nicht leeren!",
       "sourceSetSuccessful": "Quelle auf {{selectedFile}} gesetzt!",
       "couldNotSetSource": "Konnte Quelle nicht setzen! ",
       "liveEnabled": "Live aktiviert!",
@@ -84,32 +99,32 @@
       "downloading": "Herunterladen...",
       "downloadedFile": "Datei heruntergeladen",
       "errorDuringDownload": "Fehler beim Herunterladen im Hintergrund: ",
-      "setTonieToModelSuccessful":  "Setze Tonie-Modell auf {{selectedModel}}!",
-      "setTonieToModelFailed":  "Konnte das Tonie-Modell nicht ändern!"
+      "setTonieToModelSuccessful": "Setze Tonie-Modell auf {{selectedModel}}!",
+      "setTonieToModelFailed": "Konnte das Tonie-Modell nicht ändern!"
     },
-    "infoModal" : {
-      "model" : "Modell:",
-      "valid" : "Gültig:",
-      "exists" : "Existiert:",
+    "infoModal": {
+      "model": "Modell:",
+      "valid": "Gültig:",
+      "exists": "Existiert:",
       "yes": "Ja",
       "no": "Nein"
     },
-    "editModelModal" : {
-      "editModel" : "Modell bearbeiten ",
-      "placeholderSearchForAModel" : "Nach einem Modell suchen"
+    "editModelModal": {
+      "editModel": "Modell bearbeiten ",
+      "placeholderSearchForAModel": "Nach einem Modell suchen"
     },
-    "editTagModal" : {
-      "editTag" : "Tag bearbeiten"
+    "editTagModal": {
+      "editTag": "Tag bearbeiten"
     }
   },
   "tonieboxes": {
-    "navigationTitle" : "Tonieboxen",
+    "navigationTitle": "Tonieboxen",
     "title": "Deine Tonieboxen",
-    "editModelModal" : {
+    "editModelModal": {
       "editModel": "Toniebox {{name}} bearbeiten",
       "placeholderSearchForAModel": "Wähle deine Farbvariante aus",
       "name": "Bezeichnung",
-      "model" : "Modell:"      
+      "model": "Modell:"
     },
     "editTonieboxSettingsModal": {
       "editTonieboxSettingsLabel": "Einstellungen bearbeiten",
@@ -122,8 +137,8 @@
     "german": "DE"
   },
   "fileBrowser": {
-    "selectTafOnly" : "Du kannst nur TAF Dateien auswählen!",
-    "maxSelectedRows" : "Du kannst nur maximal {{maxSelectedRows}} Dateien auswählen",
+    "selectTafOnly": "Du kannst nur TAF Dateien auswählen!",
+    "maxSelectedRows": "Du kannst nur maximal {{maxSelectedRows}} Dateien auswählen",
     "name": "Name",
     "size": "Größe",
     "model": "Modell",
@@ -131,7 +146,7 @@
     "episode": "Episode",
     "date": "Datum"
   },
-  "tonieArticleSearch" : {
-    "failedToFetchSearchResults" : "Suchergebnisse konnten nicht abgerufen werden: "
+  "tonieArticleSearch": {
+    "failedToFetchSearchResults": "Suchergebnisse konnten nicht abgerufen werden: "
   }
 }
