@@ -94,10 +94,38 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * get all options
+     * get tonieBoxStatus
      */
     async apiGetTonieboxStatus(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
         const response = await this.apiGetTonieboxStatusRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * get security mit alert
+     */
+    async apiGetSecurityMITAlertRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const path = `/api/settings/get/internal.security_mit.incident`;
+      
+        const response = await this.request({
+            path: path,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<boolean>(response);
+    }
+
+    /**
+     * get security mit alert
+     */
+    async apiGetSecurityMITAlert(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.apiGetSecurityMITAlertRaw(initOverrides);
         return await response.value();
     }
 

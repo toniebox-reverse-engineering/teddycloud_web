@@ -151,5 +151,9 @@
   },
   "tonieArticleSearch": {
     "failedToFetchSearchResults": "Failed to fetch search results: "
+  },
+  "security": {
+    "alert": "Alert",
+    "incident_detected": "Security Incident Detected! Please check your logs!"
   }
 }

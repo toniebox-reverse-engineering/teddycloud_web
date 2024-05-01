@@ -168,7 +168,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 extra={<Button icon={<EditOutlined key="edit" onClick={handleModelClick} />} />}
                 hoverable
                 size="default"
-                style={{cursor: 'default'}}
+                style={{ cursor: 'default' }}
                 title={<span><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</span>}
                 cover={boxImage}
                 actions={[<span key="settings" onClick={handleEditSettingsClick} >

@@ -152,5 +152,9 @@
   },
   "tonieArticleSearch": {
     "failedToFetchSearchResults": "Suchergebnisse konnten nicht abgerufen werden: "
+  },
+  "security": {
+    "alert": "ALARM, ALAAARM!",
+    "incident_detected": "Ein Sicherheitsvorfall wurde entdeckt! Bitte überprüfe deine Logs!"
   }
 }

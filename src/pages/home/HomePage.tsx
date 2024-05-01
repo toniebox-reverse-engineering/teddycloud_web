@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Typography, Button } from 'antd';
+import { Typography, Button, Alert } from 'antd';
 import { TonieCardProps } from '../../components/tonies/TonieCardDisplayOnly'; // Import the TonieCardDisplayOnly component and its props type
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
@@ -25,8 +25,16 @@ export const HomePage = () => {
 
   // Define the state with TonieCardProps[] type
   const [tonies, setTonies] = useState<TonieCardProps[]>([]);
+  const [displayIncidentAlert, setDisplayIncidentAlert] = useState(false);
 
   useEffect(() => {
+    const fetchDisplayIncidentAlert = async () => {
+      const displayIncidentAlert = await api.apiGetSecurityMITAlert();
+      setDisplayIncidentAlert(displayIncidentAlert);
+    };
+
+    fetchDisplayIncidentAlert();
+
     const fetchTonies = async () => {
       // Perform API call to fetch Tonie data
       const tonieData = await api.apiGetTagIndex();
@@ -56,6 +64,16 @@ export const HomePage = () => {
         <StyledContent>
           <Paragraph>
             <h1>{t(`home.title`)}</h1>
+            {
+              displayIncidentAlert ? (
+                <Alert
+                  message={t("security.alert")}
+                  description={t("security.incident_detected")}
+                  type="error"
+                  showIcon
+                  style={{ margin: "16px 0" }}
+                />
+              ) : ""}
             {t(`home.intro`)}
           </Paragraph>
           <Paragraph>
