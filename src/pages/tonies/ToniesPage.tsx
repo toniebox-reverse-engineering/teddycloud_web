@@ -57,7 +57,7 @@ export const ToniesPage = () => {
         />
         <StyledContent>
           <h1>{t('tonies.title')}</h1>
-          <ToniesList tonieCards={tonies.filter(tonie => tonie.type === 'tag')} />
+          <ToniesList showFilter={true} tonieCards={tonies.filter(tonie => tonie.type === 'tag')} />
         </StyledContent>
       </StyledLayout>
     </>

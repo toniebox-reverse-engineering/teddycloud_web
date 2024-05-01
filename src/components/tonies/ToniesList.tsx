@@ -5,7 +5,7 @@ import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard';
 
 const { Panel } = Collapse;
 
-export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCards }) => {
+export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: boolean }> = ({ tonieCards, showFilter }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState('');
@@ -74,56 +74,58 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
 
     return (
         <div className="tonies-list-container">
-            <Collapse
-                defaultActiveKey={[]}
-                onChange={() => setCollapsed(!collapsed)}
-                bordered={false}
-            >
-                <Panel header={collapsed ? t('tonies.tonies.filterBar.showFilters') : t('tonies.tonies.filterBar.hideFilters')} key="search-filter">
+            {showFilter ? (
+                <Collapse
+                    defaultActiveKey={[]}
+                    onChange={() => setCollapsed(!collapsed)}
+                    bordered={false}
+                >
+                    <Panel header={collapsed ? t('tonies.tonies.filterBar.showFilters') : t('tonies.tonies.filterBar.hideFilters')} key="search-filter">
 
-                    <label htmlFor="search-field" className="filter-label">{t('tonies.tonies.filterBar.searchLabel')}</label>
-                    <Input.Search
-                        id="search-field"
-                        placeholder={t('tonies.tonies.filterBar.searchPlaceholder')}
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        onSearch={handleFilter}
-                        enterButton
-                        style={{ margin: "8px 0 8px 0" }}
+                        <label htmlFor="search-field" className="filter-label">{t('tonies.tonies.filterBar.searchLabel')}</label>
+                        <Input.Search
+                            id="search-field"
+                            placeholder={t('tonies.tonies.filterBar.searchPlaceholder')}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            onSearch={handleFilter}
+                            enterButton
+                            style={{ margin: "8px 0 8px 0" }}
 
-                    />
-                    <div className="filter-container">
-                        <label className="filter-label">{t('tonies.tonies.filterBar.filterLabel')}</label>
-                        <Input
-                            style={{ margin: "8px 0 8px 0" }}
-                            placeholder={t('tonies.tonies.filterBar.seriesFilterPlaceholder')}
-                            value={seriesFilter}
-                            onChange={(e) => setSeriesFilter(e.target.value)}
                         />
-                        <Input
-                            style={{ margin: "8px 0 8px 0" }}
-                            placeholder={t('tonies.tonies.filterBar.episodeFilterPlaceholder')}
-                            value={episodeFilter}
-                            onChange={(e) => setEpisodeFilter(e.target.value)}
-                        />
-                        <div>
-                            <div style={{ display: "flex", flexWrap: "wrap" }}>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={validFilter} onChange={(checked) => setValidFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.valid")}</div>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={invalidFilter} onChange={(checked) => setInvalidFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.invalid")}</div>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={existsFilter} onChange={(checked) => setExistsFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.exists")}</div>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={notExistsFilter} onChange={(checked) => setNotExistsFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.notExists")}</div>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={liveFilter} onChange={(checked) => setLiveFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.live")}</div>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetLiveFilter} onChange={(checked) => setUnsetLiveFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetLive")}</div>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={nocloudFilter} onChange={(checked) => setNocloudFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.noCloud")}</div>
-                                <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetNocloudFilter} onChange={(checked) => setUnsetNocloudFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetNoCloud")}</div>
+                        <div className="filter-container">
+                            <label className="filter-label">{t('tonies.tonies.filterBar.filterLabel')}</label>
+                            <Input
+                                style={{ margin: "8px 0 8px 0" }}
+                                placeholder={t('tonies.tonies.filterBar.seriesFilterPlaceholder')}
+                                value={seriesFilter}
+                                onChange={(e) => setSeriesFilter(e.target.value)}
+                            />
+                            <Input
+                                style={{ margin: "8px 0 8px 0" }}
+                                placeholder={t('tonies.tonies.filterBar.episodeFilterPlaceholder')}
+                                value={episodeFilter}
+                                onChange={(e) => setEpisodeFilter(e.target.value)}
+                            />
+                            <div>
+                                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={validFilter} onChange={(checked) => setValidFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.valid")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={invalidFilter} onChange={(checked) => setInvalidFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.invalid")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={existsFilter} onChange={(checked) => setExistsFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.exists")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={notExistsFilter} onChange={(checked) => setNotExistsFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.notExists")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={liveFilter} onChange={(checked) => setLiveFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.live")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetLiveFilter} onChange={(checked) => setUnsetLiveFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetLive")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={nocloudFilter} onChange={(checked) => setNocloudFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.noCloud")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetNocloudFilter} onChange={(checked) => setUnsetNocloudFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetNoCloud")}</div>
+                                </div>
+                                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end" }}>
+                                    <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>{t('tonies.tonies.filterBar.resetFilters')}</Button>
+                                    <Button onClick={handleFilter} style={{ marginLeft: 16 }}>{t('tonies.tonies.filterBar.applyFilters')}</Button>
+                                </div>
                             </div>
-                            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end" }}>
-                                <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>{t('tonies.tonies.filterBar.resetFilters')}</Button>
-                                <Button onClick={handleFilter} style={{ marginLeft: 16 }}>{t('tonies.tonies.filterBar.applyFilters')}</Button>
-                            </div>
-                        </div>
-                    </div></Panel>
-            </Collapse>
+                        </div></Panel>
+                </Collapse>) : ""}
+
             <List
                 grid={{
                     gutter: 16,
