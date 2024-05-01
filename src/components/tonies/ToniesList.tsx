@@ -39,7 +39,6 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
                 || tonie.tonieInfo.model.toLowerCase().includes(searchText.toLowerCase())
                 || tonie.ruid.toLowerCase().includes(searchText.toLowerCase())
                 || tonie.uid.toLowerCase().includes(searchText.toLowerCase())
-                || tonie.tonieInfo.model.toLowerCase().includes(searchText.toLowerCase())
             );
         }
         setFilteredTonies(filtered);
