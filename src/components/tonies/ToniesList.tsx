@@ -12,8 +12,16 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
                 md: 2,
                 lg: 3,
                 xl: 4,
-                xxl: 5,
+                xxl: 6,
             }}
+
+            pagination={{
+                showSizeChanger: true,
+                hideOnSinglePage: true,
+                pageSizeOptions: ["10", "50", "100", "1000"],
+                position: "both"
+            }}
+
             dataSource={tonieCards}
             renderItem={(tonie) => (
                 <List.Item>
