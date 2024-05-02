@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { List, Switch, Input, Button, Collapse } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard';
@@ -22,10 +23,22 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true); // Add loading state
 
+    const location = useLocation();
+
     useEffect(() => {
-        setFilteredTonies(tonieCards); // Initialize filteredTonies with tonieCards
+        const searchParams = new URLSearchParams(location.search);
+        const tonieRUID = searchParams.get('tonieRUID');
+        if (tonieRUID) {
+            setSearchText(tonieRUID);
+            setCollapsed(false)
+            const prefilteredTonies = tonieCards.filter(tonie => tonie.ruid.toLowerCase() === tonieRUID);
+            setFilteredTonies(prefilteredTonies);
+        } else {
+            setCollapsed(true);
+            setFilteredTonies(tonieCards);
+        }
         setLoading(false); // Set loading to false when tonieCards are available
-    }, [tonieCards]);
+    }, [location.search, tonieCards]);
 
     const handleFilter = () => {
         let filtered = tonieCards.filter(tonie =>
@@ -71,12 +84,11 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         return <div>Loading...</div>;
     }
 
-
     return (
         <div className="tonies-list-container">
             {showFilter ? (
                 <Collapse
-                    defaultActiveKey={[]}
+                    defaultActiveKey={collapsed ? [] : ['search-filter']}
                     onChange={() => setCollapsed(!collapsed)}
                     bordered={false}
                 >

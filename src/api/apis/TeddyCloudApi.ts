@@ -100,6 +100,37 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const response = await this.apiGetTonieboxStatusRaw(overlay, initOverrides);
         return await response.value();
     }
+    
+    /**
+     * get last played tonie ruid of toniebox
+     */
+    async apiGetTonieboxLastRUIDRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.last_ruid`;
+        if (overlay != "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request({
+            path: path,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response);
+    }
+
+    /**
+     * get last played tonie ruid of toniebox
+     */
+    async apiGetTonieboxLastRUID(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.apiGetTonieboxLastRUIDRaw(overlay, initOverrides);
+        return await response.value();
+    }
 
     /**
      * get security mit alert

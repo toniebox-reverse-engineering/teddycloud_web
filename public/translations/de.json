@@ -124,6 +124,7 @@
   "tonieboxes": {
     "navigationTitle": "Tonieboxen",
     "title": "Deine Tonieboxen",
+    "lastPlayedTonie": "Zuletzt gespielter Tonie: ",
     "editModelModal": {
       "editModel": "Toniebox {{name}} bearbeiten",
       "placeholderSearchForAModel": "Wähle deine Farbvariante aus",

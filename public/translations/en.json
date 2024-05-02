@@ -123,6 +123,7 @@
   "tonieboxes": {
     "navigationTitle": "Tonieboxes",
     "title": "Your Tonieboxes",
+    "lastPlayedTonie": "Last played Tonie: ",
     "editModelModal": {
       "editModel": "Edit Toniebox {{name}}",
       "placeholderSearchForAModel": "Select color variant of your Toniebox",
