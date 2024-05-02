@@ -47,9 +47,9 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         fetchTonieboxStatus();
 
         const fetchTonieboxLastRUID = async () => {
-            const ruid = "6f9b581e500304e0"; await api.apiGetTonieboxLastRUID(tonieboxCard.commonName);
+            const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.commonName);
 
-            if (true) { // (ruid !== "ffffffffffffffff" && ruid !== "") {
+            if (ruid !== "ffffffffffffffff" && ruid !== "") {
                 const fetchTonies = async () => {
                     const tonieData = await api.apiGetTagIndex();
                     setLastPlayedTonie(tonieData.filter(tonieData => tonieData.ruid === ruid));
