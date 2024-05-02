@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { List, Switch, Input, Button, Collapse } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard';
+import { TeddyCloudApi } from '../../api';
+import { defaultAPIConfig } from '../../config/defaultApiConfig';
 
 const { Panel } = Collapse;
 
@@ -13,6 +15,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const [seriesFilter, setSeriesFilter] = useState('');
     const [episodeFilter, setEpisodeFilter] = useState('');
     const [validFilter, setValidFilter] = useState(false);
+    const [filterLastTonieboxRUIDs, setFilterLastTonieboxRUIDs] = useState(false);
     const [invalidFilter, setInvalidFilter] = useState(false);
     const [existsFilter, setExistsFilter] = useState(false);
     const [notExistsFilter, setNotExistsFilter] = useState(false);
@@ -21,9 +24,11 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const [unsetLiveFilter, setUnsetLiveFilter] = useState(false);
     const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
-    const [loading, setLoading] = useState(true); // Add loading state
+    const [loading, setLoading] = useState(true);
+    const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string]>>([]);
 
     const location = useLocation();
+    const api = new TeddyCloudApi(defaultAPIConfig());
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -36,9 +41,24 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         } else {
             setCollapsed(true);
             setFilteredTonies(tonieCards);
-        }
+        }       
+        const fetchTonieboxLastRUID = async (id: string) => {
+            const ruid = await api.apiGetTonieboxLastRUID(id);
+            return ruid;
+        };
+        const fetchTonieboxes = async () => {
+            const tonieboxData = await api.apiGetTonieboxesIndex();
+            const tonieboxLastRUIDs = await Promise.all(
+                tonieboxData.map(async toniebox => {
+                    const lastRUID = await fetchTonieboxLastRUID(toniebox.ID);
+                    return [lastRUID, toniebox.boxName] as [string, string];
+                })
+            );
+            setLastTonieboxRUIDs(tonieboxLastRUIDs);
+        };
+        fetchTonieboxes();
         setLoading(false); // Set loading to false when tonieCards are available
-    }, [location.search, tonieCards]);
+    }, [api, location.search, tonieCards]);
 
     const handleFilter = () => {
         let filtered = tonieCards.filter(tonie =>
@@ -62,6 +82,12 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                 || tonie.uid.toLowerCase().includes(searchText.toLowerCase())
             );
         }
+        if (filterLastTonieboxRUIDs) {
+            // Filter by RUID part of the lastTonieboxRUIDs array
+            filtered = filtered.filter(tonie =>
+                lastTonieboxRUIDs.some(([ruid]) => ruid === tonie.ruid)
+            );
+        }
         setFilteredTonies(filtered);
     };
 
@@ -77,6 +103,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         setNocloudFilter(false);
         setUnsetLiveFilter(false);
         setUnsetNocloudFilter(false);
+        setFilterLastTonieboxRUIDs(false);
         setFilteredTonies(tonieCards);
     };
 
@@ -129,6 +156,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                                     <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetLiveFilter} onChange={(checked) => setUnsetLiveFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetLive")}</div>
                                     <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={nocloudFilter} onChange={(checked) => setNocloudFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.noCloud")}</div>
                                     <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={unsetNocloudFilter} onChange={(checked) => setUnsetNocloudFilter(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.unsetNoCloud")}</div>
+                                    <div style={{ flexWrap: "nowrap", marginRight: 16 }}><Switch checked={filterLastTonieboxRUIDs} onChange={(checked) => setFilterLastTonieboxRUIDs(checked)} style={{ margin: "8px 0 8px 0" }} /> {t("tonies.tonies.filterBar.lastPlayed")}</div>
                                 </div>
                                 <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-end" }}>
                                     <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>{t('tonies.tonies.filterBar.resetFilters')}</Button>
@@ -137,7 +165,6 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                             </div>
                         </div></Panel>
                 </Collapse>) : ""}
-
             <List
                 grid={{
                     gutter: 16,
@@ -161,7 +188,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                 dataSource={filteredTonies}
                 renderItem={(tonie) => (
                     <List.Item>
-                        <TonieCard tonieCard={tonie} />
+                        <TonieCard tonieCard={tonie} lastRUIDs={lastTonieboxRUIDs} />
                     </List.Item>
                 )}
             />

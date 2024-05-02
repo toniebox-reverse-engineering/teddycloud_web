@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Button, Input, Popover, message, Modal } from 'antd';
-import { InfoCircleOutlined, PlayCircleOutlined, CloudSyncOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, PlayCircleOutlined, CloudSyncOutlined, RetweetOutlined, DownloadOutlined, EditOutlined, SaveOutlined, CloseOutlined, StarFilled } from '@ant-design/icons';
 
 import { useAudioContext } from '../audio/AudioContext';
 import { FileBrowser } from './FileBrowser';
@@ -33,7 +33,7 @@ export type TonieCardProps = {
     tonieInfo: TonieInfo;
 }
 
-export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
+export const TonieCard: React.FC<{ tonieCard: TonieCardProps, lastRUIDs: Array<[string, string]> }> = ({ tonieCard, lastRUIDs }) => {
     const { t } = useTranslation();
     const [isLive, setIsLive] = useState(tonieCard.live);
     const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
@@ -215,6 +215,21 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         setSelectedModel(e.target.value);
     };
 
+    // last played on Modal
+    const [isLastPlayedOnModalVisible, setIsLastPlayedOnModalVisible] = useState(false);
+    const showLastPlayedOnModal = () => {
+        setIsLastPlayedOnModalVisible(true);
+    };
+    const handleLastPlayedOnModalOk = () => {
+        setIsLastPlayedOnModalVisible(false);
+    };
+    const handleLastPlayedOnModalCancel = () => {
+        setIsLastPlayedOnModalVisible(false);
+    };
+
+    const toniePlayedOn = lastRUIDs.filter(([ruid]) => ruid === tonieCard.ruid).map(([, boxName]) => boxName);
+
+
     const content = (
         <div>
             <p><strong>{t("tonies.infoModal.model")}</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
@@ -236,6 +251,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
     const searchResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
     }
+
     return (
         <>
             {contextHolder}
@@ -248,6 +264,7 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                 cover={< img alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`
                 } src={tonieCard.tonieInfo.picture} />}
                 actions={[
+                    toniePlayedOn.length > 0 && (<StarFilled key="lastPlayed" onClick={showLastPlayedOnModal} title={t("tonies.lastPlayedOnModal.title")} />),
                     <EditOutlined key="edit" onClick={handleEditClick} />,
                     isValid ?
                         (<PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />) :
@@ -270,6 +287,14 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
                         (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
                 <TonieArticleSearch placeholder={t("tonies.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} />
+            </Modal>
+            <Modal title={t("tonies.lastPlayedOnModal.lastPlayedOn")} open={isLastPlayedOnModalVisible} onOk={handleLastPlayedOnModalOk} onCancel={handleLastPlayedOnModalCancel}>
+                <p>{t("tonies.lastPlayedOnModal.lastPlayedOnMessage")}:</p>
+                <ul>
+                    {toniePlayedOn.map((boxName, index) => (
+                        <li key={index}>{boxName}</li>
+                    ))}
+                </ul>
             </Modal>
         </>
     );

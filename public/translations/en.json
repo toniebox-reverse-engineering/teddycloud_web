@@ -59,6 +59,7 @@
         "notExists": "Exists not",
         "noCloud": "Cloud disabled",        
         "unsetNoCloud": "Cloud enabled",
+        "lastPlayed": "Last played",
         "applyFilters": "Apply filter",
         "resetFilters": "Reset filter"
       }
@@ -111,6 +112,11 @@
       "exists": "Exists:",
       "yes": "Yes",
       "no": "No"
+    },
+    "lastPlayedOnModal": {
+      "title": "This Tonie was played last!",
+      "lastPlayedOn": "Last played Tonie",
+      "lastPlayedOnMessage": "This Tonie was the last played one on"
     },
     "editModelModal": {
       "editModel": "Edit model ",

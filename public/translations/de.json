@@ -60,6 +60,7 @@
         "notExists": "Existiert nicht",
         "noCloud": "Cloud deaktiviert",
         "unsetNoCloud": "Cloud aktiviert",
+        "lastPlayed": "Zuletzt gespielt",
         "applyFilters": "Filter anwenden",
         "resetFilters": "Filter zurücksetzen"
       }
@@ -112,6 +113,11 @@
       "exists": "Existiert:",
       "yes": "Ja",
       "no": "Nein"
+    },
+    "lastPlayedOnModal": {
+      "title": "Dieser Tonie wurde zuletzt gespielt!",
+      "lastPlayedOn": "Zuletzt gepielter Tonie",
+      "lastPlayedOnMessage": "Dieser Tonie ist der zuletzt gespielte Tonie auf"
     },
     "editModelModal": {
       "editModel": "Modell bearbeiten ",
