@@ -28,6 +28,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string]>>([]);
 
     const location = useLocation();
+
     const api = new TeddyCloudApi(defaultAPIConfig());
 
     useEffect(() => {
@@ -41,7 +42,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         } else {
             setCollapsed(true);
             setFilteredTonies(tonieCards);
-        }       
+        }
         const fetchTonieboxLastRUID = async (id: string) => {
             const ruid = await api.apiGetTonieboxLastRUID(id);
             return ruid;
@@ -58,7 +59,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         };
         fetchTonieboxes();
         setLoading(false); // Set loading to false when tonieCards are available
-    }, [api, location.search, tonieCards]);
+    }, [location.search, tonieCards]);
 
     const handleFilter = () => {
         let filtered = tonieCards.filter(tonie =>
@@ -104,6 +105,8 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         setUnsetLiveFilter(false);
         setUnsetNocloudFilter(false);
         setFilterLastTonieboxRUIDs(false);
+        const urlWithoutParams = window.location.pathname;
+        window.history.pushState({}, '', urlWithoutParams);
         setFilteredTonies(tonieCards);
     };
 
