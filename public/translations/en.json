@@ -174,5 +174,11 @@
   "security": {
     "alert": "Alert",
     "incident_detected": "Security Incident Detected! Please check your logs!"
+  },
+  "server": {
+    "boxineStatusOffline": "Not connected to Boxine/Toniecloud",
+    "boxineStatusOnline": "Connected to Boxine/Toniecloud",
+    "teddycloudStatusOnline": "Teddycloud server running fine",
+    "teddycloudStatusOffline": "Teddycloud server offline"
   }
 }

@@ -150,7 +150,7 @@
       "navigationTitle": "Changelog",
       "title": "Changelog / Release notes"
     },
-    "forum":  {
+    "forum": {
       "navigationTitle": "Forum"
     }
   },
@@ -175,5 +175,11 @@
   "security": {
     "alert": "ALARM, ALAAARM!",
     "incident_detected": "Ein Sicherheitsvorfall wurde entdeckt! Bitte überprüfe deine Logs!"
+  },
+  "server": {
+    "boxineStatusOffline": "Nicht mit Boxine/Toniecloud verbunden",
+    "boxineStatusOnline": "Mit Boxine/Toniecloud verbunden",
+    "teddycloudStatusOnline": "Teddycloud Server online",
+    "teddycloudStatusOffline": "Teddycloud Server offline"
   }
 }
