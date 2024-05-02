@@ -2,10 +2,9 @@ import { useTranslation } from "react-i18next";
 import { Header } from "antd/es/layout/layout";
 import styled from "styled-components";
 import { MenuOutlined } from "@ant-design/icons";
-
 import logoImg from "../../assets/logo.png";
 import { Button, Drawer, Menu, MenuProps } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ServerStatus } from "./ServerStatus";
 import { useState } from "react";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
@@ -37,6 +36,7 @@ const StyledLeftPart = styled.div`
 export const StyledHeader = () => {
   const { t } = useTranslation();
   const [navOpen, setNavOpen] = useState(false);
+  const location = useLocation();
 
   const mainNav: MenuProps["items"] = [
     {
@@ -65,6 +65,11 @@ export const StyledHeader = () => {
       onClick: () => setNavOpen(false),
     },
   ];
+
+  let selectedKey = location.pathname.split('/')[1];
+  if (!selectedKey) selectedKey = '/';
+  if (selectedKey === "home") selectedKey = '/';
+
   return (
     <StyledHeaderComponent>
       <Link to="/" style={{ color: "white" }}>
@@ -74,7 +79,7 @@ export const StyledHeader = () => {
         </StyledLeftPart>
       </Link>
       <HiddenMobile>
-        <Menu theme="dark" mode="horizontal" items={mainNav} style={{ width: "calc(100vw - 480px)" }} />
+        <Menu theme="dark" mode="horizontal" items={mainNav} selectedKeys={[selectedKey]} style={{ width: "calc(100vw - 480px)" }} />
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
@@ -91,7 +96,7 @@ export const StyledHeader = () => {
             open={navOpen}
             onClose={() => setNavOpen(false)}
           >
-            <Menu mode="vertical" items={mainNav} />
+            <Menu mode="vertical" items={mainNav} selectedKeys={[selectedKey]} />
             <StyledLanguageSwitcher />
           </Drawer>
         </HiddenDesktop>
