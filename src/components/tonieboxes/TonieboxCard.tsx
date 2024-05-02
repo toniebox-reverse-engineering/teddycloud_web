@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, Button, Input, message, Modal, Badge } from 'antd';
 import { EditOutlined, SaveOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
@@ -7,6 +8,7 @@ import { TeddyCloudApi } from "../../api";
 import { TonieboxModelSearch } from './TonieboxModelSearch';
 import { TonieboxSettingsPage } from './TonieboxSettingsPage';
 import { boxModelImages } from '../../util/boxModels';
+import { TonieCardProps } from '../../components/tonies/TonieCard';
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -27,6 +29,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
+    const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
     const [isModelModalOpen, setIsModelModalOpen] = useState(false);
     const [activeModel, setActiveModel] = useState<string>(tonieboxCard.boxModel);
@@ -38,14 +41,26 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
 
     useEffect(() => {
         const fetchTonieboxStatus = async () => {
-            const tonieboxStatus = await api.apiGetTonieboxStatus(tonieboxCard.commonName);
+            const tonieboxStatus = await api.apiGetTonieboxStatus(tonieboxCard.ID);
             setTonieboxStatus(tonieboxStatus);
         };
-
         fetchTonieboxStatus();
 
-        selectBoxImage(tonieboxCard.boxModel);
+        const fetchTonieboxLastRUID = async () => {
+            const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
 
+            if (ruid !== "ffffffffffffffff" && ruid !== "") {
+                const fetchTonies = async () => {
+                    const tonieData = await api.apiGetTagIndex();
+                    setLastPlayedTonie(tonieData.filter(tonieData => tonieData.ruid === ruid));
+
+                };
+                fetchTonies();
+            }
+        };
+        fetchTonieboxLastRUID();
+
+        selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
 
     }, [tonieboxCard.commonName, tonieboxCard.boxModel]);
@@ -56,6 +71,18 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
             setBoxImage(<img src={selectedImage.img_src} alt="" />);
         }
     };
+
+    const setLastPlayedTonie = (tonie: TonieCardProps[]) => {
+        setLastPlayedTonieName(
+            <>
+                <Link to={"/tonies?tonieRUID=" + tonie[0].ruid}><img src={tonie[0].tonieInfo.picture}
+                    alt="Tonie"
+                    title={t("tonieboxes.lastPlayedTonie") + tonie[0].tonieInfo.series + " - " + tonie[0].tonieInfo.episode}
+                    style={{ position: 'absolute', bottom: 0, right: 0, zIndex: 1, padding: 8, borderRadius: 4, height: "60%" }}
+                /></Link>
+            </>
+        );
+    }
 
     // Settings
     const handleEditSettingsClick = () => {
@@ -168,13 +195,17 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 extra={<Button icon={<EditOutlined key="edit" onClick={handleModelClick} />} />}
                 hoverable
                 size="default"
+                style={{ cursor: 'default' }}
                 title={<span><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</span>}
-                cover={boxImage}
+                cover={<div style={{ position: 'relative' }}>
+                    {lastPlayedTonieName}
+                    <img src={boxImage.props.src} alt="Box" style={{ width: '100%', height: 'auto' }} />
+                </div>}
                 actions={[<span key="settings" onClick={handleEditSettingsClick} >
                     <SettingOutlined key="edit" style={{ marginRight: 8 }} />{t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettingsLabel")}
                 </span>]}
             >
-                <Meta description={"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")} />
+                <Meta description={<div>{"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")}</div>} />
             </Card >
             <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings", { "name": tonieboxCard.boxName })} width='auto' open={isEditSettingsModalOpen} onOk={handleEditSettingsOk} onCancel={handleEditSettingsCancel}>
                 <TonieboxSettingsPage overlay={tonieboxCard.ID} />

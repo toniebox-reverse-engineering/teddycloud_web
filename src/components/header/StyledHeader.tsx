@@ -59,6 +59,11 @@ export const StyledHeader = () => {
       label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
       onClick: () => setNavOpen(false),
     },
+    {
+      key: "community",
+      label: <Link to="/community">{t("community.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
+    },
   ];
   return (
     <StyledHeaderComponent>
