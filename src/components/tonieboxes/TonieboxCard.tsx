@@ -41,13 +41,13 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
 
     useEffect(() => {
         const fetchTonieboxStatus = async () => {
-            const tonieboxStatus = await api.apiGetTonieboxStatus(tonieboxCard.commonName);
+            const tonieboxStatus = await api.apiGetTonieboxStatus(tonieboxCard.ID);
             setTonieboxStatus(tonieboxStatus);
         };
         fetchTonieboxStatus();
 
         const fetchTonieboxLastRUID = async () => {
-            const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.commonName);
+            const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
 
             if (ruid !== "ffffffffffffffff" && ruid !== "") {
                 const fetchTonies = async () => {
