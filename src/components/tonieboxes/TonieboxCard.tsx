@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Card, Button, Input, message, Modal, Badge } from 'antd';
+import { Typography, Card, Button, Input, message, Modal, Badge } from 'antd';
 import { EditOutlined, SafetyCertificateOutlined, SaveOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
@@ -12,7 +12,7 @@ import { TonieCardProps } from '../../components/tonies/TonieCard';
 import { CertificateDragNDrop } from '../settings/CertificatesDragNDrop';
 
 const api = new TeddyCloudApi(defaultAPIConfig());
-
+const { Paragraph } = Typography;
 const { Meta } = Card;
 
 export type TonieboxCardList = {
@@ -235,7 +235,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 <CertificateDragNDrop overlay={tonieboxCard.ID} />
             </Modal>
             <Modal title={t("tonieboxes.editModelModal.editModel", { "name": tonieboxCard.boxName })} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel} afterClose={() => setSearchFieldValue('')}>
-                <p><Input name="boxName" value={boxName} onChange={(e) => setBoxName(e.target.value)}
+                <Paragraph><Input name="boxName" value={boxName} onChange={(e) => setBoxName(e.target.value)}
                     addonBefore={
                         [
                             boxName === tonieboxName ?
@@ -246,8 +246,8 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                     }
                     addonAfter={boxName === tonieboxName ?
                         (<SaveOutlined key="saveboxNameNoClick" style={{ color: 'lightgray' }} />) :
-                        (<SaveOutlined key="saveboxName" onClick={handleBoxNameSave} />)} /></p>
-                <p><Input name="boxModel" readOnly value={selectedModel} width='auto' onChange={handleModelInputChange}
+                        (<SaveOutlined key="saveboxName" onClick={handleBoxNameSave} />)} /></Paragraph>
+                <Paragraph><Input name="boxModel" readOnly value={selectedModel} width='auto' onChange={handleModelInputChange}
                     addonBefore={
                         [
                             activeModel === selectedModel ?
@@ -258,8 +258,8 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                     }
                     addonAfter={activeModel === selectedModel ?
                         (<SaveOutlined key="saveModelNoClick" style={{ color: 'lightgray' }} />) :
-                        (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></p>
-                <p><TonieboxModelSearch placeholder={t("tonieboxes.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} value={searchFieldValue} /></p>
+                        (<SaveOutlined key="saveModel" onClick={handleModelSave} />)} /></Paragraph>
+                <Paragraph><TonieboxModelSearch placeholder={t("tonieboxes.editModelModal.placeholderSearchForAModel")} onChange={searchResultChanged} value={searchFieldValue} /></Paragraph>
             </Modal>
         </>
     );
