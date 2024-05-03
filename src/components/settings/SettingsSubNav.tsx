@@ -1,5 +1,5 @@
 import { MenuProps } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { SafetyCertificateOutlined, SettingOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -14,7 +14,7 @@ export const SettingsSubNav = () => {
       label: (
         <Link to="/settings">{t("settings.general.navigationTitle")}</Link>
       ),
-      icon: React.createElement(UserOutlined),
+      icon: React.createElement(SettingOutlined),
     },
     {
       key: "certificates",
@@ -23,7 +23,7 @@ export const SettingsSubNav = () => {
           {t("settings.certificates.navigationTitle")}
         </Link>
       ),
-      icon: React.createElement(UserOutlined),
+      icon: React.createElement(SafetyCertificateOutlined),
     },
   ];
 

@@ -1,5 +1,11 @@
 import { MenuProps } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  SettingOutlined,
+  BookOutlined,
+  SoundOutlined,
+  CloudUploadOutlined,
+} from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -23,7 +29,7 @@ export const ToniesSubNav = () => {
           {t("tonies.system-sounds.navigationTitle")}
         </Link>
       ),
-      icon: React.createElement(UserOutlined),
+      icon: React.createElement(SettingOutlined),
     },
     {
       key: "content",
@@ -32,7 +38,7 @@ export const ToniesSubNav = () => {
           {t("tonies.content.navigationTitle")}
         </Link>
       ),
-      icon: React.createElement(UserOutlined),
+      icon: React.createElement(SoundOutlined),
     },
     {
       key: "library",
@@ -41,7 +47,14 @@ export const ToniesSubNav = () => {
           {t("tonies.library.navigationTitle")}
         </Link>
       ),
-      icon: React.createElement(UserOutlined),
+      icon: React.createElement(BookOutlined),
+    },
+    {
+      key: "encoder",
+      label: (
+        <Link to="/tonies/encoder">{t("tonies.encoder.navigationTitle")}</Link>
+      ),
+      icon: React.createElement(CloudUploadOutlined),
     },
   ];
 

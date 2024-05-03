@@ -7,37 +7,32 @@ import { InputNumberField } from "../form/InputNumberField";
 
 type OptionItemProps = {
   option: OptionsItem;
+  noOverlay?: boolean;
+  overlayId?: string;
 };
 
-export const OptionItem = ({ option }: OptionItemProps) => {
-  const { type, iD, description, label} = option;
-  const [, setOptionValue] = useState<string>("");
-  const [, , { setValue }] = useField(iD);
+export const OptionItem = ({ option, noOverlay, overlayId }: OptionItemProps) => {
+  const { type, iD, description, label, shortname, value, overlayed } = option;
+  const [optionValue, setOptionValue] = useState<string>("");
+
+  const [field, meta, { setValue }] = useField(iD);
 
   useEffect(() => {
-    // TODO: fetch option value with API Client generator
-    fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/get/${iD}`)
-      .then((response) => response.text())
-      .then((data) => {
-        setOptionValue(data);
-        if (type === "bool") {
-          setValue(data === "true");
-        } else if (type === "int" || type === "uint") {
-          setValue(+data);
-        } else if (type === "string") {
-          setValue(data);
-        }
-      });
-  }, [iD, setValue, type]);
+    setOptionValue(value);
+    setValue(value);
+  }, [setValue, value]);
+
+  const overlayedProp = noOverlay ? undefined : overlayed;
+
 
   return (
     <div key={iD}>
-      {type === "bool" && <SwitchField name={iD} label={label} description={description} />}
-      {type === "int" && <InputNumberField name={iD} label={label} description={description} />}
-      {type === "uint" && <InputNumberField name={iD} label={label} description={description} />}
-      {type === "string" && <InputField name={iD} label={label} description={description} />}
-    </div>
-  );
+      {type === "bool" && <SwitchField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
+      {type === "int" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
+      {type === "uint" && <InputNumberField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
+      {type === "string" && <InputField name={iD} label={label} description={description} overlayed={overlayedProp} overlayId={overlayId} />}
+    </div>);
+
 };
 
 export default OptionItem;

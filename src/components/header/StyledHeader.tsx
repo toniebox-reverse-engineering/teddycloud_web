@@ -18,10 +18,18 @@ const StyledHeaderComponent = styled(Header)`
   color: white;
   display: flex;
   align-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
 `;
 
 const StyledRightPart = styled.div`
   margin-left: auto;
+  display: flex;
+  align-items: center;
+`;
+
+const StyledLeftPart = styled.div`
+  margin-right: 12px;
   display: flex;
   align-items: center;
 `;
@@ -31,29 +39,41 @@ export const StyledHeader = () => {
   const [navOpen, setNavOpen] = useState(false);
 
   const mainNav: MenuProps["items"] = [
-    { key: "/", label: <Link to="/">{t("home.navigationTitle")}</Link> },
     {
-      key: "settings",
-      label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+      key: "/",
+      label: <Link to="/">{t("home.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
     },
     {
       key: "tonies",
       label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
+    },
+    {
+      key: "tonieboxes",
+      label: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
+    },
+    {
+      key: "settings",
+      label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
+      onClick: () => setNavOpen(false),
     },
   ];
   return (
     <StyledHeaderComponent>
-      <StyledLogo src={logoImg} />
-      <HiddenMobile> TeddyCloud Server</HiddenMobile>
-
+      <Link to="/" style={{ color: "white" }}>
+        <StyledLeftPart>
+          <StyledLogo src={logoImg} />
+          <HiddenMobile> TeddyCloud Server</HiddenMobile>
+        </StyledLeftPart>
+      </Link>
       <HiddenMobile>
-        <Menu theme="dark" mode="horizontal" items={mainNav} />
+        <Menu theme="dark" mode="horizontal" items={mainNav} style={{ width: "calc(100vw - 480px)" }} />
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
-        <HiddenMobile>
-          <StyledLanguageSwitcher />
-        </HiddenMobile>
+        <StyledLanguageSwitcher />
         <HiddenDesktop>
           <Button
             className="barsMenu"
@@ -66,7 +86,7 @@ export const StyledHeader = () => {
             open={navOpen}
             onClose={() => setNavOpen(false)}
           >
-            <Menu theme="dark" mode="vertical" items={mainNav} />
+            <Menu mode="vertical" items={mainNav} />
             <StyledLanguageSwitcher />
           </Drawer>
         </HiddenDesktop>

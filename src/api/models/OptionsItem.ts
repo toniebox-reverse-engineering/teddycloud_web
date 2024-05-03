@@ -49,6 +49,20 @@ export interface OptionsItem {
      * @memberof OptionsItem
      */
     type: string;
+
+    /**
+     * Object value
+     * @type {string}
+     * @memberof OptionsItem
+     */
+     value: string;
+
+     /**
+      * Object value
+      * @type {boolean}
+      * @memberof OptionsItem
+      */
+      overlayed: boolean;
 }
 
 /**
@@ -61,6 +75,8 @@ export function instanceOfOptionsItem(value: object): boolean {
     isInstance = isInstance && "description" in value;
     isInstance = isInstance && "label" in value;
     isInstance = isInstance && "type" in value;
+    isInstance = isInstance && "value" in value;
+    isInstance = isInstance && "overlayed" in value;
 
     return isInstance;
 }
@@ -80,6 +96,8 @@ export function OptionsItemFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'description': json['description'],
         'label': json['label'],
         'type': json['type'],
+        'value': json['value'],
+        'overlayed': json['overlayed'],
     };
 }
 
@@ -97,6 +115,8 @@ export function OptionsItemToJSON(value?: OptionsItem | null): any {
         'description': value.description,
         'label': value.label,
         'type': value.type,
+        'value': value.value,
+        'overlayed': value.overlayed,
     };
 }
 

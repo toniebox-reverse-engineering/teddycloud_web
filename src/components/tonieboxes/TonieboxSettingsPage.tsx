@@ -1,38 +1,18 @@
-import { Form, Alert } from "antd";
-import { Link } from 'react-router-dom'; // Import Link from React Router
-import { useTranslation } from "react-i18next";
-import {
-  HiddenDesktop,
-  StyledBreadcrumb,
-  StyledContent,
-  StyledLayout,
-  StyledSider,
-} from "../../components/StyledComponents";
-import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
+import { useEffect, useState } from "react";
+import { Form } from "antd";
+import { Formik } from "formik";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { useEffect, useState } from "react";
 import OptionItem from "../../components/settings/OptionItem";
-import { Formik } from "formik";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-/** TODO: Create validation schema for all settings before submitting them to backend
-const settingsValidationSchema = Yup.object().shape({
-  test: Yup.string().required("Dies ist ein Pflichtfeld."),
-  booleanToCheck: Yup.string()
-    .required("Pflichtfeld.")
-    .oneOf(["on"], "Muss true sein."),
-});
- */
-
-export const SettingsPage = () => {
-  const { t } = useTranslation();
+export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }) =>  {
   const [options, setOptions] = useState<OptionsList | undefined>();
 
   useEffect(() => {
     const fetchOptions = async () => {
-      const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
+      const optionsRequest = (await api.apiGetIndexGet(overlay)) as OptionsList;
       if (
         optionsRequest?.options?.length &&
         optionsRequest?.options?.length > 0
@@ -42,33 +22,12 @@ export const SettingsPage = () => {
     };
 
     fetchOptions();
-  }, []);
+  }, [overlay]);
 
   return (
     <>
-      <StyledSider>
-        <SettingsSubNav />
-      </StyledSider>
-      <StyledLayout>
-        <HiddenDesktop>
-          <SettingsSubNav />
-        </HiddenDesktop>
-        <StyledBreadcrumb
-          items={[
-            { title: t("home.navigationTitle") },
-            { title: t("settings.navigationTitle") },
-          ]}
-        />
-        <StyledContent>
-          <h1>{t(`settings.title`)}</h1>
-          <Alert
-            message={t("settings.information")}
-            description=<div>{t("settings.hint")} <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.</div>
-            type="info"
-            showIcon
-          />
           <Formik
-            //validationSchema={settingsValidationSchema}
+            // validationSchema={settingsValidationSchema}
             initialValues={{
               test: "test",
             }}
@@ -81,7 +40,33 @@ export const SettingsPage = () => {
               wrapperCol={{ span: 14 }}
               layout="horizontal"
             >
-              {options?.options?.map((option, index, array) => {
+
+              { // to do change that to upcoming flag which indicates if overlaying make sense
+                options?.options?.map((option, index, array) => {
+                if(
+                    !option.iD.includes("core.client_cert.") && 
+                    !option.iD.includes("core.flex_") && 
+                    !option.iD.includes("toniebox.")  && 
+                    !option.iD.includes("cloud.enabled") && 
+                    !option.iD.includes("cloud.enableV1Claim") && 
+                    !option.iD.includes("cloud.enableV1CloudReset") && 
+                    !option.iD.includes("cloud.enableV1FreshnessCheck")  && 
+                    !option.iD.includes("cloud.enableV1Log")  && 
+                    !option.iD.includes("cloud.enableV1Time")  && 
+                    !option.iD.includes("cloud.enableV1Ota")  && 
+                    !option.iD.includes("cloud.enableV2Content")  && 
+                    !option.iD.includes("cloud.cacheOta")  && 
+                    !option.iD.includes("cloud.localOta")  && 
+                    !option.iD.includes("cloud.cacheContent")  && 
+                    !option.iD.includes("cloud.cacheToLibrary")  && 
+                    !option.iD.includes("cloud.markCustomTagByPass")  && 
+                    !option.iD.includes("cloud.prioCustomContent")  && 
+                    !option.iD.includes("cloud.updateOnLowerAudioId")  && 
+                    !option.iD.includes("cloud.dumpRuidAuthContentJson") 
+                ) { 
+                    return ""; 
+                };
+
                 const parts = option.iD.split(".");
                 const lastParts = array[index - 1]
                   ? array[index - 1].iD.split(".")
@@ -120,14 +105,12 @@ export const SettingsPage = () => {
                       return null;
                     })}
 
-                    <OptionItem option={option} noOverlay={true} />
+                    <OptionItem option={option} overlayId={overlay}/>
                   </>
                 );
               })}
             </Form>
           </Formik>
-        </StyledContent>
-      </StyledLayout>
-    </>
+          </>
   );
 };

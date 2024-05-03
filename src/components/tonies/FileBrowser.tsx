@@ -8,14 +8,11 @@ import {SortOrder} from 'antd/es/table/interface';
 import {useAudioContext} from '../audio/AudioContext';
 
 import {PlayCircleOutlined} from '@ant-design/icons';
+import { humanFileSize } from "../../util/humanFileSize";
 
-export const FileBrowser: React.FC<{
-    special: string,
-    maxSelectedRows?: number,
-    trackUrl?: boolean,
-    selectTafOnly?: boolean,
-    onFileSelectChange?: (files: any[], path: string, special: string) => void
-}> = ({special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, onFileSelectChange}) => {
+
+export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, trackUrl?: boolean, selectTafOnly?: boolean, showDirOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, showDirOnly = false, onFileSelectChange }) => {
+    const { t } = useTranslation();
 
     const {playAudio} = useAudioContext();
 
@@ -37,11 +34,11 @@ export const FileBrowser: React.FC<{
                 return file && file.tafHeader !== undefined;
             });
             if (rowCount !== newSelectedRowKeys.length) {
-                message.warning('You can only select TAF files!');
+                message.warning(t("fileBrowser.selectTafOnly"));
             }
         }
         if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning('You can only select up to ' + maxSelectedRows + ' files');
+            message.warning(t("fileBrowser.maxSelectedRows", {maxSelectedRows: maxSelectedRows}));
         } else {
             setSelectedRowKeys(newSelectedRowKeys);
         }
@@ -64,9 +61,14 @@ export const FileBrowser: React.FC<{
         fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}`)
             .then((response) => response.json())
             .then((data) => {
-                setFiles(data.files);
+                var list: never[] = data.files;
+
+                if(showDirOnly)
+                    list = list.filter((file: any) => file.isDir);
+
+                setFiles(list);
             });
-    }, [path, special]);
+    }, [path, special, showDirOnly]);
 
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
@@ -115,48 +117,55 @@ export const FileBrowser: React.FC<{
         return a.isDir ? -1 : 1;
     }
 
-    const columns = [
+    var columns = [
         {
             title: '',
             dataIndex: ['tonieInfo', 'picture'],
             key: 'picture',
             sorter: undefined,
-            render: (picture: string) => picture && <img src={picture} alt="Tonie" style={{width: 100}}/>
+            render: (picture: string) => picture && <img src={picture} alt={t("tonies.content.toniePicture")} style={{ width: 100 }} />,
+            showOnDirOnly: false
         },
         {
-            title: 'Name',
+            title: t("fileBrowser.name"),
             dataIndex: 'name',
             key: 'name',
             sorter: dirNameSorter,
             defaultSortOrder: 'ascend' as SortOrder,
             render: (name: string, record: any) => (record.isDir ? '[' + name + ']' : name),
+            showOnDirOnly: true
         },
         {
-            title: 'Size',
+            title: t("fileBrowser.size"),
             dataIndex: 'size',
             key: 'size',
-            render: (size: number, record: any) => (record.isDir ? '<DIR>' : size),
+            render: (size: number, record: any) => (record.isDir ? '<DIR>' : humanFileSize(size)),
+            showOnDirOnly: false
         },
         {
-            title: 'Model',
+            title: t("fileBrowser.model"),
             dataIndex: ['tonieInfo', 'model'],
             key: 'model',
+            showOnDirOnly: false
         },
         {
-            title: 'Series',
+            title: t("fileBrowser.series"),
             dataIndex: ['tonieInfo', 'series'],
             key: 'series',
+            showOnDirOnly: false
         },
         {
-            title: 'Episode',
+            title: t("fileBrowser.episode"),
             dataIndex: ['tonieInfo', 'episode'],
             key: 'episode',
+            showOnDirOnly: false
         },
         {
-            title: 'Date',
+            title: t("fileBrowser.date"),
             dataIndex: 'date',
             key: 'date',
             render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
+            showOnDirOnly: true
         },
         {
             title: '',
@@ -169,6 +178,7 @@ export const FileBrowser: React.FC<{
                         process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + name + "?ogg=true&special=" + special,
                         record.tonieInfo)}/>
                     : ""),
+            showOnDirOnly: false
         }
     ];
 
@@ -177,6 +187,10 @@ export const FileBrowser: React.FC<{
             (column as any).sorter = (a: any, b: any) => defaultSorter(a, b, column.dataIndex);
         }
     });
+
+    if(showDirOnly)
+        columns = columns.filter((column) => column.showOnDirOnly);
+
     return (
         <Table
             dataSource={files}

@@ -90,10 +90,10 @@ export const CertificatesPage = () => {
                 <InboxOutlined />
               </p>
               <p className="ant-upload-text">
-                Click or drag file to this area to upload
+                { t("settings.certificates.uploadText")}
               </p>
               <p className="ant-upload-hint">
-                Drag and drop client certificates from your box here
+                { t("settings.certificates.uploadHint")}
               </p>
             </Dragger>
           </div>
