@@ -8,11 +8,26 @@ import {SortOrder} from 'antd/es/table/interface';
 import {useAudioContext} from '../audio/AudioContext';
 
 import {PlayCircleOutlined} from '@ant-design/icons';
-import { humanFileSize } from "../../util/humanFileSize";
+import {humanFileSize} from "../../util/humanFileSize";
+import {useTranslation} from "react-i18next";
 
 
-export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, trackUrl?: boolean, selectTafOnly?: boolean, showDirOnly?: boolean, onFileSelectChange?: (files: any[], path: string, special: string) => void }> = ({ special, maxSelectedRows = 0, selectTafOnly = true, trackUrl = true, showDirOnly = false, onFileSelectChange }) => {
-    const { t } = useTranslation();
+export const FileBrowser: React.FC<{
+    special: string,
+    maxSelectedRows?: number,
+    trackUrl?: boolean,
+    selectTafOnly?: boolean,
+    showDirOnly?: boolean,
+    onFileSelectChange?: (files: any[], path: string, special: string) => void
+}> = ({
+          special,
+          maxSelectedRows = 0,
+          selectTafOnly = true,
+          trackUrl = true,
+          showDirOnly = false,
+          onFileSelectChange
+      }) => {
+    const {t} = useTranslation();
 
     const {playAudio} = useAudioContext();
 
@@ -63,7 +78,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             .then((data) => {
                 var list: never[] = data.files;
 
-                if(showDirOnly)
+                if (showDirOnly)
                     list = list.filter((file: any) => file.isDir);
 
                 setFiles(list);
@@ -123,7 +138,8 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             dataIndex: ['tonieInfo', 'picture'],
             key: 'picture',
             sorter: undefined,
-            render: (picture: string) => picture && <img src={picture} alt={t("tonies.content.toniePicture")} style={{ width: 100 }} />,
+            render: (picture: string) => picture &&
+                <img src={picture} alt={t("tonies.content.toniePicture")} style={{width: 100}}/>,
             showOnDirOnly: false
         },
         {
@@ -188,7 +204,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
         }
     });
 
-    if(showDirOnly)
+    if (showDirOnly)
         columns = columns.filter((column) => column.showOnDirOnly);
 
     return (
