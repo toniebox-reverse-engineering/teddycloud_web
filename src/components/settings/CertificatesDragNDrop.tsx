@@ -1,76 +1,84 @@
-import { UploadProps, message } from "antd";
+import { Upload, message, UploadFile } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import Dragger from "antd/es/upload/Dragger";
-import { TeddyCloudApi } from "../../api";
+import { ApiUploadCertPostRequest, ResponseError, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const CertificateDragNDrop: React.FC<{ overlay?: String }> = ({ overlay }) => {
+export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }) => {
   const { t } = useTranslation();
 
-  const props: UploadProps = {
+  const handleUpload = async (file: UploadFile<any>) => {
+
+    const formData = new FormData();
+    formData.append("file", file as unknown as Blob);
+
+    const payload: ApiUploadCertPostRequest = {
+      filename: [formData.get("file") as Blob], // Wrap Blob in an array
+    };
+
+    const triggerWriteConfig = async () => {
+      await api.apiTriggerWriteConfigGet();
+    };
+
+    const UploadCertificates = async (formData: any) => {
+
+      try {
+
+        await api.apiUploadCertPost(formData, overlay);
+        try {
+          triggerWriteConfig();
+        } catch (e) {
+          message.error("Error while saving config to file.");
+        }
+        message.success(`${file.name} file uploaded successfully.`);
+
+      } catch (err) {
+        message.error(`${file.name} file upload failed. Take a look into the console`);
+      }
+
+    };
+
+    UploadCertificates(payload);
+
+  };
+
+  const props = {
     name: "file",
     multiple: true,
-    customRequest: (options) => {
-      const { onSuccess, onError, file, filename } = options;
-
-      const triggerWriteConfig = async () => {
-        await api.apiTriggerWriteConfigGet();
-      };
-
-      const formData = new FormData();
-      formData.append(filename!, file);
-
-      const UploadCertificates = async (formData: any) => {
-        try {
-          await api.apiUploadCertPost(formData, overlay);
-          onSuccess!("Ok");
-
-          try {
-            triggerWriteConfig();
-          } catch (e) {
-            message.error("Error while saving config to file.");
-          }
-        } catch (err) {
-          const error = new Error("Some error");
-          onError!(error);
-        }
-      };
-
-      UploadCertificates(formData);
+    customRequest: async (options: any) => {
+      const { onSuccess, onError, file } = options;
+      try {
+        await handleUpload(file);
+        onSuccess("Ok");
+      } catch (error) {
+        onError(error as Error);
+      }
     },
-    onChange(info) {
+    onChange(info: any) {
       const { status } = info.file;
       if (status !== "uploading") {
         console.log(info.file, info.fileList);
       }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
     },
 
-    onDrop(e) {
+    onDrop(e: any) {
       console.log("Dropped files", e.dataTransfer.files);
     },
   };
 
   return (
-    <>
-      <Dragger {...props}>
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">
-          {t("settings.certificates.uploadText")}
-        </p>
-        <p className="ant-upload-hint">
-          {t("settings.certificates.uploadHint")}
-        </p>
-      </Dragger>
-    </>
+    <Upload.Dragger {...props}>
+      <p className="ant-upload-drag-icon">
+        <InboxOutlined />
+      </p>
+      <p className="ant-upload-text">
+        {t("settings.certificates.uploadText")}
+      </p>
+      <p className="ant-upload-hint">
+        {t("settings.certificates.uploadHint")}
+      </p>
+    </Upload.Dragger>
   );
 };
