@@ -143,7 +143,10 @@
     },
     "uploadTonieboxCertificatesModal": {
       "Label": "Zertifikate",
-      "uploadTonieboxCertificates": "Zertifikate für Toniebox {{name}} hochladen"
+      "uploadTonieboxCertificates": "Zertifikate für Toniebox {{name}} hochladen",
+      "uploadPath": "Upload Pfad (certDir):",
+      "boxSpecific": " (Toniebox spezifisch hinterlegt)",
+      "AttentionGeneralPath": "(ACHTUNG: Default Pfad!)"
     }
   },
   "community": {

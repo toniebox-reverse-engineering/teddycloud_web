@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Typography, Card, Button, Input, message, Modal, Badge } from 'antd';
 import { EditOutlined, SafetyCertificateOutlined, SaveOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
+import { OptionsList, TeddyCloudApi } from "../../api";
 import { TonieboxModelSearch } from './TonieboxModelSearch';
 import { TonieboxSettingsPage } from './TonieboxSettingsPage';
 import { boxModelImages } from '../../util/boxModels';
@@ -31,6 +31,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
+    const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
     const [isUploadCertificatesModalOpen, setIsUploadCertificatesModalOpen] = useState(false);
     const [isModelModalOpen, setIsModelModalOpen] = useState(false);
@@ -70,7 +71,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const selectBoxImage = (id: string) => {
         const selectedImage = boxModelImages.find(item => item.id === id);
         if (selectedImage) {
-            setBoxImage(<img src={selectedImage.img_src} alt="" style={{ }}/>);
+            setBoxImage(<img src={selectedImage.img_src} alt="" style={{}} />);
         }
     };
 
@@ -88,6 +89,17 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
 
     // certificates
     const handleUploadCertificatesClick = () => {
+        const fetchOptions = async () => {
+            const optionsRequest = (await api.apiGetIndexGet(tonieboxCard.ID)) as OptionsList;
+            if (
+                optionsRequest?.options?.length &&
+                optionsRequest?.options?.length > 0
+            ) {
+                setOptions(optionsRequest);
+            }
+        };
+
+        fetchOptions();
         showUploadCertificatesModal();
     };
     const showUploadCertificatesModal = () => {
@@ -215,15 +227,15 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 title={<span><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</span>}
                 cover={<div style={{ position: 'relative' }}>
                     {lastPlayedTonieName}
-                    <img src={boxImage.props.src} alt="Box" style={{...boxImage.props.style, width: '100%', height: 'auto' }} />
+                    <img src={boxImage.props.src} alt="Box" style={{ ...boxImage.props.style, width: '100%', height: 'auto' }} />
                 </div>}
                 actions={[
-                    	<span key="settings" onClick={handleUploadCertificatesClick} >
-                            <SafetyCertificateOutlined key="certificate" style={{ marginRight: 8 }} />{t("tonieboxes.uploadTonieboxCertificatesModal.Label")}
-                        </span>, 
-                        <span key="settings" onClick={handleEditSettingsClick} >
-                            <SettingOutlined key="edit" style={{ marginRight: 8 }} />{t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettingsLabel")}
-                        </span>
+                    <span key="settings" onClick={handleUploadCertificatesClick} >
+                        <SafetyCertificateOutlined key="certificate" style={{ marginRight: 8 }} />{t("tonieboxes.uploadTonieboxCertificatesModal.Label")}
+                    </span>,
+                    <span key="settings" onClick={handleEditSettingsClick} >
+                        <SettingOutlined key="edit" style={{ marginRight: 8 }} />{t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettingsLabel")}
+                    </span>
                 ]}
             >
                 <Meta description={<div>{"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")}</div>} />
@@ -232,6 +244,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 <TonieboxSettingsPage overlay={tonieboxCard.ID} />
             </Modal>
             <Modal title={t("tonieboxes.uploadTonieboxCertificatesModal.uploadTonieboxCertificates", { "name": tonieboxCard.boxName })} width='auto' open={isUploadCertificatesModalOpen} onOk={handleUploadCertificatesOk} onCancel={handleUploadCertificatesCancel}>
+                <Paragraph>{t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")} : <i>{options?.options?.find((option: { iD: string; }) => option.iD === "core.certdir")?.value}</i> <small>{options?.options?.find((option: { iD: string; }) => option.iD === "core.certdir")?.overlayed ? t("tonieboxes.uploadTonieboxCertificatesModal.boxSpecific") : t("tonieboxes.uploadTonieboxCertificatesModal.AttentionGeneralPath")}</small></Paragraph>
                 <CertificateDragNDrop overlay={tonieboxCard.ID} />
             </Modal>
             <Modal title={t("tonieboxes.editModelModal.editModel", { "name": tonieboxCard.boxName })} open={isModelModalOpen} onOk={handleModelOk} onCancel={handleModelCancel} afterClose={() => setSearchFieldValue('')}>
