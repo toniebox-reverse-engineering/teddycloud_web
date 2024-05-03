@@ -35,7 +35,9 @@
       "information": "Information",
       "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
       "uploadText": "Click or drag client certificates to this area to upload",
-      "uploadHint": "Drag and drop client certificates from your box here"
+      "uploadHint": "Drag and drop client certificates from your box here",
+      "uploadSuccessful": "{{filename}} file uploaded successfully.",
+      "uploadFailed": "{{filename}} file upload failed. Take a look into the console"
     }
   },
   "tonies": {

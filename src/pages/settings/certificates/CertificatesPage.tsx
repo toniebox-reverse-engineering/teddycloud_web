@@ -9,7 +9,7 @@ import {
   StyledSider,
 } from "../../../components/StyledComponents";
 import { SettingsSubNav } from "../../../components/settings/SettingsSubNav";
-import { CertificateDragNDrop } from "../../../components/settings/CertificatesDragNDrop";
+import { CertificateDragNDrop } from "../../../components/form/CertificatesDragAndDrop";
 
 
 export const CertificatesPage = () => {

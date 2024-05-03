@@ -9,7 +9,7 @@ import { TonieboxModelSearch } from './TonieboxModelSearch';
 import { TonieboxSettingsPage } from './TonieboxSettingsPage';
 import { boxModelImages } from '../../util/boxModels';
 import { TonieCardProps } from '../../components/tonies/TonieCard';
-import { CertificateDragNDrop } from '../settings/CertificatesDragNDrop';
+import { CertificateDragNDrop } from '../form/CertificatesDragAndDrop';
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph } = Typography;
