@@ -7,6 +7,7 @@ import { TeddyCloudApi } from '../../api';
 import { defaultAPIConfig } from '../../config/defaultApiConfig';
 
 const { Panel } = Collapse;
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: boolean }> = ({ tonieCards, showFilter }) => {
     const { t } = useTranslation();
@@ -29,9 +30,8 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
 
     const location = useLocation();
 
-    const api = new TeddyCloudApi(defaultAPIConfig());
-
     useEffect(() => {
+        
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get('tonieRUID');
         if (tonieRUID) {
