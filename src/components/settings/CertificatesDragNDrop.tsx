@@ -1,7 +1,7 @@
 import { Upload, message, UploadFile } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { ApiUploadCertPostRequest, ResponseError, TeddyCloudApi } from "../../api";
+import { ApiUploadCertPostRequest, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
