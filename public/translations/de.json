@@ -33,6 +33,8 @@
     "certificates": {
       "navigationTitle": "Zertifikate",
       "title": "Zertifikate",
+      "information": "Information",
+      "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der Teddycloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
       "uploadText": "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich",
       "uploadHint": "Ziehe die Client-Zertifikate aus deiner Box hierher"
     }

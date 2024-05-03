@@ -1,4 +1,6 @@
 import { useTranslation } from "react-i18next";
+import { Link } from 'react-router-dom';
+import { Alert, Typography } from "antd";
 import {
   HiddenDesktop,
   StyledBreadcrumb,
@@ -9,8 +11,10 @@ import {
 import { SettingsSubNav } from "../../../components/settings/SettingsSubNav";
 import { CertificateDragNDrop } from "../../../components/settings/CertificatesDragNDrop";
 
+
 export const CertificatesPage = () => {
   const { t } = useTranslation();
+  const { Paragraph } = Typography;
 
   return (
     <>
@@ -30,9 +34,17 @@ export const CertificatesPage = () => {
         />
         <StyledContent>
           <h1>{t(`settings.certificates.title`)}</h1>
-          <div>
-            <CertificateDragNDrop/>
-          </div>
+          <Paragraph>
+            <Alert
+              message={t("settings.certificates.information")}
+              description=<div>{t("settings.certificates.hint")} <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.</div>
+              type="info"
+              showIcon
+            />
+          </Paragraph>
+          <Paragraph>
+            <CertificateDragNDrop />
+          </Paragraph>
         </StyledContent>
       </StyledLayout>
     </>

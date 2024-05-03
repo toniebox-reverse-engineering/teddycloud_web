@@ -22,7 +22,7 @@
     "navigationTitle": "Settings",
     "title": "Settings",
     "information": "Information",
-    "hint": "This are the default settings. Some of the settings might be overwritten by each of your Tonieboxes. To change these settings got to ",
+    "hint": "This are the default settings. Some of the settings might be overwritten by each of your Tonieboxes. To change these settings go to ",
     "tonieboxes": "tonieboxes",
     "overlayed": "overlayed",
     "general": {
@@ -32,6 +32,8 @@
     "certificates": {
       "navigationTitle": "Certificates",
       "title": "Certificates",
+      "information": "Information",
+      "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
       "uploadText": "Click or drag client certificates to this area to upload",
       "uploadHint": "Drag and drop client certificates from your box here"
     }
