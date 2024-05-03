@@ -138,8 +138,12 @@
       "model": "Modell:"
     },
     "editTonieboxSettingsModal": {
-      "editTonieboxSettingsLabel": "Einstellungen bearbeiten",
+      "editTonieboxSettingsLabel": "Einstellungen",
       "editTonieboxSettings": "Einstellungen der Toniebox {{name}} bearbeiten"
+    },
+    "uploadTonieboxCertificatesModal": {
+      "Label": "Zertifikate",
+      "uploadTonieboxCertificates": "Zertifikate für Toniebox {{name}} hochladen"
     }
   },
   "community": {

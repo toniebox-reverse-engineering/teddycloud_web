@@ -44,6 +44,7 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
               { // to do change that to upcoming flag which indicates if overlaying make sense
                 options?.options?.map((option, index, array) => {
                 if(
+                    !option.iD.includes("core.certdir") && 
                     !option.iD.includes("core.client_cert.") && 
                     !option.iD.includes("core.flex_") && 
                     !option.iD.includes("toniebox.")  && 

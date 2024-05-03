@@ -137,8 +137,12 @@
       "model": "Model"
     },
     "editTonieboxSettingsModal": {
-      "editTonieboxSettingsLabel": "Edit settings",
+      "editTonieboxSettingsLabel": "Settings",
       "editTonieboxSettings": "Edit settings for Toniebox {{name}}"
+    },
+    "uploadTonieboxCertificatesModal": {
+      "Label": "Certificates",
+      "uploadTonieboxCertificates": "Upload certificates for Toniebox {{name}}"
     }
   },
   "community": {
