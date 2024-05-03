@@ -79,7 +79,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         let path = `/api/settings/get/internal.online`;
-        if (overlay != "") {
+        if (overlay !== "") {
             path = path + "?overlay=" + overlay;
         }
 
@@ -110,7 +110,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         let path = `/api/settings/get/internal.last_ruid`;
-        if (overlay != "") {
+        if (overlay !== "") {
             path = path + "?overlay=" + overlay;
         }
 
@@ -193,7 +193,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         let path = `/api/settings/getIndex`;
-        if (overlay != "") {
+        if (overlay !== "") {
             path = path + "?overlay=" + overlay;
         }
 
@@ -306,7 +306,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * upload certificates
      */
-    async apiUploadCertPostRaw(requestParameters: ApiUploadCertPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async apiUploadCertPostRaw(requestParameters: ApiUploadCertPostRequest, overlay?:String, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -319,6 +319,12 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
         let formParams: { append(param: string, value: any): any };
         let useForm = false;
+
+        let path = `/api/uploadCert`;
+        if (overlay !== "" && overlay !== undefined ) {
+            path = path + "?overlay=" + overlay;
+        }
+
         // use FormData to transmit files using content-type "multipart/form-data"
         useForm = canConsumeForm;
         if (useForm) {
@@ -334,7 +340,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/uploadCert`,
+            path: path,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -351,8 +357,8 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * upload certificates
      */
-    async apiUploadCertPost(requestParameters: ApiUploadCertPostRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
-        const response = await this.apiUploadCertPostRaw(requestParameters, initOverrides);
+    async apiUploadCertPost(requestParameters: ApiUploadCertPostRequest = {}, overlay?: String, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.apiUploadCertPostRaw(requestParameters, overlay, initOverrides);
         return await response.value();
     }
 
