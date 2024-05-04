@@ -190,7 +190,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                 }}
                 dataSource={filteredTonies}
                 renderItem={(tonie) => (
-                    <List.Item>
+                    <List.Item id={tonie.ruid}>
                         <TonieCard tonieCard={tonie} lastRUIDs={lastTonieboxRUIDs} />
                     </List.Item>
                 )}
