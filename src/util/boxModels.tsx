@@ -11,7 +11,7 @@ export const boxModelImages = [
   { id: '10000490', name: 'Black - 3 Fragezeichen Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/10000490-i.png' },
   { id: '03-0008', name: 'Turquoise - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0008-i.png' },
   { id: '10002192', name: 'Gulli - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/10002192_Toniebox_gulli_d.png' },
-  { id: '99-0001', name: 'Box Cover Sleepy Bear', img_src: 'https://res.cloudinary.com/tonies/image/fetch/f_auto,q_100,c_fill,w_780,h_780,c_crop,x_200,y_140/https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyB-Z4RAvhCP.png' },
-  { id: '99-0002', name: 'Box Cover Sleepy Sheep', img_src: 'https://res.cloudinary.com/tonies/image/fetch/f_auto,q_100,c_fill,w_780,h_780,c_crop,x_200,y_140/https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyS-e5lq1qK_.png' },
-  { id: '99-0003', name: 'Box Cover Sleepy Rabbit', img_src: 'https://res.cloudinary.com/tonies/image/fetch/f_auto,q_100,c_fill,w_780,h_780,c_crop,x_200,y_140/https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyR-oenxTNhu.png' },
+  { id: '99-0001', name: 'Box Cover Sleepy Bear', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyB-Z4RAvhCP.png' },
+  { id: '99-0002', name: 'Box Cover Sleepy Sheep', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyS-e5lq1qK_.png' },
+  { id: '99-0003', name: 'Box Cover Sleepy Rabbit', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyR-oenxTNhu.png' },
 ];
