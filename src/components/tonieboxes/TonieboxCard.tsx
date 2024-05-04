@@ -40,7 +40,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const [selectedModel, setSelectedModel] = useState<string>(tonieboxCard.boxModel);
     const [boxName, setBoxName] = useState(tonieboxCard.boxName);
     const [tonieboxName, setTonieBoxName] = useState(tonieboxCard.boxName);
-    const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" style={{ filter: "opacity(0.20)" }} />);
+    const [boxImage, setBoxImage] = useState<string | null>(null);
     const [searchFieldValue, setSearchFieldValue] = useState<string | undefined>(undefined);
 
     useEffect(() => {
@@ -91,7 +91,40 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const selectBoxImage = (id: string) => {
         const selectedImage = boxModelImages.find(item => item.id === id);
         if (selectedImage) {
-            setBoxImage(<img src={selectedImage.img_src} alt="" style={{}} />);
+            if (selectedImage.crop) {
+                fetch(selectedImage.img_src)
+                    .then((response) => response.blob())
+                    .then((blob) => createImageBitmap(blob))
+                    .then((bitmap) => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        if (ctx) {
+                            const [cropX, cropY, cropWidth, cropHeight] = selectedImage.crop;
+                            canvas.width = cropWidth;
+                            canvas.height = cropHeight;
+                            ctx.drawImage(bitmap, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+                            canvas.toBlob(blob => {
+                                if (blob) {
+                                    const reader = new FileReader();
+                                    reader.onload = () => {
+                                        const resizedImgSrc = reader.result;
+                                        setBoxImage(resizedImgSrc as string);
+                                    };
+                                    reader.readAsDataURL(blob);
+                                } else {
+                                    setBoxImage(selectedImage.img_src);
+                                }
+                            }, 'image/png');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching image:', error);
+                    });
+            } else {
+                setBoxImage(selectedImage.img_src);
+            }
+        } else {
+            console.error("Selected image not found.");
         }
     };
 
@@ -247,7 +280,14 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 title={<span><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</span>}
                 cover={<div style={{ position: 'relative' }}>
                     {lastPlayedTonieName}
-                    <img src={boxImage.props.src} alt="Box" style={{ ...boxImage.props.style, width: '100%', height: 'auto' }} />
+                    {boxImage ?
+                        <img src={boxImage} alt="" style={{ width: '100%', height: 'auto' }} /> :
+                        (
+                            (tonieboxCard.boxModel !== "") ?
+                                "" :
+                                <img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" style={{ filter: "opacity(0.20)", width: '100%', height: 'auto' }} />
+                        )
+                    }
                 </div>}
                 actions={[
                     <span key="settings" onClick={handleUploadCertificatesClick} >
