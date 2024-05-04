@@ -7,7 +7,6 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { TonieboxModelSearch } from './TonieboxModelSearch';
 import { TonieboxSettingsPage } from './TonieboxSettingsPage';
-import { boxModelImages } from '../../util/boxModels';
 import { TonieCardProps } from '../../components/tonies/TonieCard';
 import { CertificateDragNDrop } from '../form/CertificatesDragAndDrop';
 
@@ -26,7 +25,14 @@ export type TonieboxCardProps = {
     boxModel: string;
 }
 
-export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ tonieboxCard }) => {
+interface TonieboxImage {
+    id: string;
+    name: string;
+    img_src: string;
+    crop?: number[];
+}
+
+export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxImages: TonieboxImage[] }> = ({ tonieboxCard, tonieboxImages }) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
@@ -89,7 +95,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     }, [tonieboxCard.ID, tonieboxCard.boxModel]);
 
     const selectBoxImage = (id: string) => {
-        const selectedImage = boxModelImages.find(item => item.id === id);
+        const selectedImage = tonieboxImages.find((item: { id: string }) => item.id === id);
         if (selectedImage) {
             if (selectedImage.crop) {
                 fetch(selectedImage.img_src)
@@ -99,22 +105,28 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         if (ctx) {
-                            const [cropX, cropY, cropWidth, cropHeight] = selectedImage.crop;
-                            canvas.width = cropWidth;
-                            canvas.height = cropHeight;
-                            ctx.drawImage(bitmap, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-                            canvas.toBlob(blob => {
-                                if (blob) {
-                                    const reader = new FileReader();
-                                    reader.onload = () => {
-                                        const resizedImgSrc = reader.result;
-                                        setBoxImage(resizedImgSrc as string);
-                                    };
-                                    reader.readAsDataURL(blob);
-                                } else {
-                                    setBoxImage(selectedImage.img_src);
-                                }
-                            }, 'image/png');
+                            const crop = selectedImage.crop; // Store selectedImage.crop in a variable
+                            if (crop) {
+                                // Check if crop is not undefined
+                                const [cropX, cropY, cropWidth, cropHeight] = crop;
+                                canvas.width = cropWidth;
+                                canvas.height = cropHeight;
+                                ctx.drawImage(bitmap, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+                                canvas.toBlob((blob) => {
+                                    if (blob) {
+                                        const reader = new FileReader();
+                                        reader.onload = () => {
+                                            const resizedImgSrc = reader.result;
+                                            setBoxImage(resizedImgSrc as string);
+                                        };
+                                        reader.readAsDataURL(blob);
+                                    } else {
+                                        setBoxImage(selectedImage.img_src);
+                                    }
+                                }, 'image/png');
+                            } else {
+                                setBoxImage(selectedImage.img_src);
+                            }
                         }
                     })
                     .catch((error) => {
@@ -124,7 +136,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 setBoxImage(selectedImage.img_src);
             }
         } else {
-            console.error("Selected image not found.");
+            console.error('Selected image not found.');
         }
     };
 
