@@ -14,7 +14,7 @@ export const boxModelImages = [
   { id: '03-0008', name: 'Turquoise - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0008-i.png' },
   { id: '10002192', name: 'Gulli - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/10002192_Toniebox_gulli_d.png', crop: [110,13,930,930] },
   // not real box models, only offical tonie covers
-  { id: '99-0001', name: 'Box Cover Sleepy Bear', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyB-Z4RAvhCP.png', crop: [210,120,770,770] },
+  { id: '99-0001', name: 'Box Cover Sleepy Bear', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyB-Z4RAvhCP.png', crop: [140,55,845,845] },
   { id: '99-0002', name: 'Box Cover Sleepy Sheep', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyS-e5lq1qK_.png', crop: [210,120,770,770] },
   { id: '99-0003', name: 'Box Cover Sleepy Rabbit', img_src: 'https://278163f382d2bab4b036-4f5ec62496a160f3570d3b6e48fc4516.ssl.cf3.rackcdn.com/Tonies_Cover_SleepyR-oenxTNhu.png', crop: [210,120,770,770] },
 ];
