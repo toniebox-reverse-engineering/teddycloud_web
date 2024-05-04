@@ -96,15 +96,15 @@ export const TonieboxSettingsPage : React.FC<{ overlay: string }> = ({ overlay }
                                 marginTop: "10px",
                                 marginBottom: "10px",
                               }}
-                              key={index}
-                            >
-                              .{part}
-                            </h4>
-                          );
-                        }
+                            key={`category-${part}`}
+                          >
+                            .{part}
+                          </h4>
+                        );
                       }
-                      return null;
-                    })}
+                    }
+                    return null;
+                  })}
 
                     <OptionItem option={option} overlayId={overlay}/>
                   </>
