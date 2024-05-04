@@ -30,6 +30,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
+    const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
@@ -49,6 +50,25 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         };
         fetchTonieboxStatus();
 
+        const fetchTonieboxVersion = async () => {
+            const tonieboxVersion = await api.apiGetTonieboxVersion(tonieboxCard.ID);
+            const BoxVersions: { [key: string]: string } = {
+                "0": "UNKNOWN",
+                "1": "CC3200",
+                "2": "CC3235",
+                "3": "ESP32"
+            };
+
+            if (tonieboxVersion in BoxVersions) {
+                const version = BoxVersions[tonieboxVersion as keyof typeof BoxVersions];
+                setTonieboxVersion(version);
+            } else {
+                setTonieboxVersion("UNKNOWN");
+            };
+
+        };
+        fetchTonieboxVersion();
+
         const fetchTonieboxLastRUID = async () => {
             const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
 
@@ -66,7 +86,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
 
-    }, [tonieboxCard.commonName, tonieboxCard.boxModel]);
+    }, [tonieboxCard.ID, tonieboxCard.boxModel]);
 
     const selectBoxImage = (id: string) => {
         const selectedImage = boxModelImages.find(item => item.id === id);
@@ -238,7 +258,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                     </span>
                 ]}
             >
-                <Meta description={<div>{"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")}</div>} />
+                <Meta description={<div>{(tonieboxVersion !== 'UNKNOWN' ? tonieboxVersion : 'MAC') + ': ' + tonieboxCard.ID.replace(/(.{2})(?=.)/g, '$1:')}</div>} />
             </Card >
             <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings", { "name": tonieboxCard.boxName })} width='auto' open={isEditSettingsModalOpen} onOk={handleEditSettingsOk} onCancel={handleEditSettingsCancel}>
                 <TonieboxSettingsPage overlay={tonieboxCard.ID} />
