@@ -229,15 +229,14 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps, lastRUIDs: Array<[
 
     const toniePlayedOn = lastRUIDs.filter(([ruid]) => ruid === tonieCard.ruid).map(([, boxName]) => boxName);
 
-
     const content = (
         <div>
             <p><strong>{t("tonies.infoModal.model")}</strong> {tonieCard.tonieInfo.model} <EditOutlined key="edit" onClick={handleModelClick} /></p>
             <p><strong>{t("tonies.infoModal.valid")}</strong> {tonieCard.valid ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}</p>
             <p><strong>{t("tonies.infoModal.exists")}</strong> {tonieCard.exists ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}</p>
             <ol>
-                {tonieCard.tonieInfo.tracks.map((track) => (
-                    <li>{track}</li>
+                {tonieCard.tonieInfo.tracks.map((track, index) => (
+                    <li key={index}>{track}</li>
                 ))}
             </ol>
         </div>

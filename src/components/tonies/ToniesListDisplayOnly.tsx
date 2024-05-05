@@ -15,7 +15,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
             }}
             dataSource={tonieCards}
             renderItem={(tonie) => (
-                <List.Item>
+                <List.Item id={tonie.ruid}>
                     <TonieCard tonieCard={tonie} />
                 </List.Item>
             )}

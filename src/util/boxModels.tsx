@@ -1,14 +1,40 @@
-// MockUp, ToDo Replace with tonieboxes.json like tonies.json
-export const boxModelImages = [
-  { id: '03-0013', name: 'Green', img_src: 'https://cdn.tonies.de/thumbnails/03-0013-i.png' },
-  { id: '03-0012', name: 'Light Blue', img_src: 'https://cdn.tonies.de/thumbnails/03-0012-i.png' },
-  { id: '03-0011', name: 'Red', img_src: 'https://cdn.tonies.de/thumbnails/03-0011-i.png' },
-  { id: '03-0014', name: 'Pink', img_src: 'https://cdn.tonies.de/thumbnails/03-0014-i.png' },
-  { id: '03-0010', name: 'Purple', img_src: 'https://cdn.tonies.de/thumbnails/03-0010-i.png' },
-  { id: '03-0009', name: 'Grey', img_src: 'https://cdn.tonies.de/thumbnails/03-0009-i.png' },
-  { id: '99-0100', name: 'Red - Disney 100 Limited Edition', img_src: 'https://www.babyone.at/media/1e/e1/b0/1687489451/58525690_shop3.png' },
-  { id: '03-0005', name: 'Dark Grey - Unter meinem Bett Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0005-i.png' },
-  { id: '10000490', name: 'Black - 3 Fragezeichen Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/10000490-i.png' },
-  { id: '03-0008', name: 'Turquoise - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/03-0008-i.png' },
-  { id: '10002192', name: 'Gulli - Limited Edition', img_src: 'https://cdn.tonies.de/thumbnails/10002192_Toniebox_gulli_d.png' },
-];
+import { useEffect, useState } from 'react';
+
+interface TonieboxImage {
+    id: string;
+    name: string;
+    img_src: string;
+    crop?: number[];
+}
+
+export default function GetBoxModelImages() {
+    const [boxModelImages, setBoxModelImages] = useState<TonieboxImage[]>([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                // Fetch the JSON data
+                const response = await fetch('data/tonieboxes.json');
+                const jsonData = await response.json();
+
+                // Transform the JSON data into the desired array format
+                const dataArray: TonieboxImage[] = jsonData.map((item: any) => ({
+                    id: item.id,
+                    name: item.name,
+                    img_src: item.img_src,
+                    crop: item.crop || null, // Use crop if available, otherwise set to null
+                }));
+
+                // Set the transformed array to state
+                setBoxModelImages(dataArray);
+            } catch (error) {
+                console.error('Error fetching and transforming data:', error);
+                setBoxModelImages([]); // Set an empty array in case of error
+            }
+        }
+
+        fetchData();
+    }, []);
+
+    return boxModelImages;
+}
