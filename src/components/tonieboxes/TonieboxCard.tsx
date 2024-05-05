@@ -269,7 +269,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
                 title={<span><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</span>}
                 cover={<div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
                     {lastPlayedTonieName}
-                    { /* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique*/}
+                    { /* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique */ }
                     <img src={tonieboxImages.find((item: { id: string }) => item.id === '03-0009')?.img_src} alt="" style={{ position: 'relative', filter: "opacity(0)", width: '100%', height: 'auto' }} />
                     {boxImage}
                 </div>}
