@@ -35,7 +35,7 @@
         "img_src": "https://cdn.tonies.de/thumbnails/10001853_Toniebox_Disney_d.png",
         "crop": [
             5,
-            22,
+            30,
             1.32
         ]
     },
@@ -47,7 +47,12 @@
     {
         "id": "10000490",
         "name": "Black - 3 Fragezeichen Limited Edition",
-        "img_src": "https://cdn.tonies.de/thumbnails/10000490-i.png"
+        "img_src": "https://cdn.tonies.de/thumbnails/10000490-i.png",
+        "crop": [
+            5,
+            -10,
+            0.97
+        ]
     },
     {
         "id": "03-0008",
@@ -60,7 +65,7 @@
         "img_src": "https://cdn.tonies.de/thumbnails/10002192_Toniebox_gulli_d.png",
         "crop": [
             6,
-            23,
+            30,
             1.33            
         ]
     },
