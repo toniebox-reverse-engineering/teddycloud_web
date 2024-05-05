@@ -14,11 +14,14 @@ export default function GetBoxModelImages() {
         async function fetchData() {
             try {
                 // Fetch the JSON data
-                const response = await fetch('data/tonieboxes.json');
+                const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/tonieboxesJson`);
                 const jsonData = await response.json();
+                const responseCustom = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/tonieboxesCustomJson`);
+                const jsonDataCustom = await responseCustom.json();
+                const jsonDataCombined = [...jsonDataCustom, ...jsonData];
 
                 // Transform the JSON data into the desired array format
-                const dataArray: TonieboxImage[] = jsonData.map((item: any) => ({
+                const dataArray: TonieboxImage[] = jsonDataCombined.map((item: any) => ({
                     id: item.id,
                     name: item.name,
                     img_src: item.img_src,
