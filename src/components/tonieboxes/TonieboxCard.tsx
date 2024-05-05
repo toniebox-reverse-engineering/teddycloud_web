@@ -46,7 +46,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
     const [selectedModel, setSelectedModel] = useState<string>(tonieboxCard.boxModel);
     const [boxName, setBoxName] = useState(tonieboxCard.boxName);
     const [tonieboxName, setTonieBoxName] = useState(tonieboxCard.boxName);
-    const [boxImage, setBoxImage] = useState<JSX.Element | null>(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" style={{ filter: "opacity(0.20)", width: '100%', height: 'auto', 'position': 'absolute', 'top': '0', 'left': '0' }} />);
+    const [boxImage, setBoxImage] = useState<JSX.Element | null>(null);
     const [searchFieldValue, setSearchFieldValue] = useState<string | undefined>(undefined);
 
     useEffect(() => {
@@ -99,6 +99,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
         if (selectedImage) {
             setBoxImage(<img src={selectedImage.img_src} alt="" style={{ ...getCroppedImageStyle(id), 'position': 'absolute', 'top': '0', 'left': '0' }} />);
         } else {
+            setBoxImage(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" style={{ filter: "opacity(0.20)", width: '100%', height: 'auto', 'position': 'absolute', 'top': '0', 'left': '0' }} />);
             console.error('Selected image not found.');
         }
     };
