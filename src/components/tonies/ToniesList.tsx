@@ -9,6 +9,7 @@ import { defaultAPIConfig } from '../../config/defaultApiConfig';
 
 const { Panel } = Collapse;
 const api = new TeddyCloudApi(defaultAPIConfig());
+const STORAGE_KEY = 'toniesListState';
 
 export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: boolean }> = ({ tonieCards, showFilter }) => {
     const { t } = useTranslation();
@@ -28,11 +29,39 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string]>>([]);
-    const [pageSize, setPageSize] = useState<number>(24);
+    const [pageSize, setPageSize] = useState<number>(() => {
+        const storedState = localStorage.getItem(STORAGE_KEY);
+        if (storedState) {
+            const { pageSize } = JSON.parse(storedState);
+            return pageSize;
+        }
+        return 24;
+    });
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
+    const [showAll, setShowAll] = useState(false);
+    const [doLocalStore, setLocalStore] = useState(true);
 
     const location = useLocation();
+
+    useEffect(() => {
+        const storedState = localStorage.getItem(STORAGE_KEY);
+        if (storedState) {
+            try {
+                const { pageSize, showAll } = JSON.parse(storedState);
+                if (showAll) {
+                    handleShowAll();
+                } else {
+                    setPageSize(pageSize);
+                    handlePageSizeChange(1, pageSize);
+                }
+            } catch (error) {
+                console.error("Error parsing stored state:", error);
+            }
+        } else {
+            console.log("No stored state found.");
+        }
+    }, []);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -63,6 +92,15 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         fetchTonieboxes();
         setLoading(false); // Set loading to false when tonieCards are available
     }, [location.search, tonieCards]);
+
+    useEffect(() => {
+        const stateToStore = JSON.stringify({ pageSize, paginationEnabled, showAll });
+        localStorage.setItem(STORAGE_KEY, stateToStore);
+    }, [doLocalStore, pageSize, paginationEnabled, showAll]);
+
+    const storeLocalStorage = () => {
+        setLocalStore(!doLocalStore);
+    };
 
     const handleFilter = () => {
         let filtered = tonieCards.filter(tonie =>
@@ -117,10 +155,13 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     useEffect(() => {
         createSiblingButton();
     }, [loading, paginationEnabled]);
-    const showAll = () => {
-        handlePageSizeChange(1, 1000000);
-        setPaginationEnabled(!paginationEnabled);
-    }
+
+    const handleShowAll = () => {
+        setShowAll(true);
+        setPaginationEnabled(false); // Set paginationEnabled based on the new state of showAll
+        storeLocalStorage();
+    };
+
     const createSiblingButton = () => {
         if (document.querySelector('.ant-pagination-custom-show-all-button-container')) {
             return;
@@ -129,22 +170,25 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         siblingButtonContainer.classList.add('ant-pagination-custom-show-all-button-container');
         document.querySelector('.ant-pagination-next')?.after(siblingButtonContainer);
         const button = (
-            <Button className="show-all-button" onClick={showAll} title={t('tonies.tonies.showAll')}>
+            <Button className="show-all-button" onClick={handleShowAll} title={t('tonies.tonies.showAll')}>
                 {t('tonies.tonies.showAll')}
             </Button>
         );
         const root = createRoot(siblingButtonContainer);
         root.render(button);
     };
-    const handlePageSizeChange = (current: number, size: number) => {
-        setPageSize(size as number);
-        setCurrentPage(current);
-    };
-    const togglePagination = () => {
-        setPaginationEnabled(!paginationEnabled);
+
+    const handleShowPagination = () => {
+        setPaginationEnabled(true);
+        setShowAll(false);
         handlePageSizeChange(1, pageSize);
     };
 
+    const handlePageSizeChange = (current: number, size: number) => {
+        setPageSize(size as number);
+        setCurrentPage(current);
+        storeLocalStorage();
+    };
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -204,7 +248,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                         </div></Panel>
                 </Collapse>) : ""}
             <div style={{ textAlign: 'right', marginBottom: '16px', marginTop: '32px' }}>
-                {!paginationEnabled ? <Button onClick={togglePagination}>{t('tonies.tonies.showPagination')}</Button> : ''}
+                {!paginationEnabled ? <Button onClick={handleShowPagination}>{t('tonies.tonies.showPagination')}</Button> : ''}
             </div>
             <List
                 grid={{
@@ -218,7 +262,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                 }}
                 pagination={paginationEnabled ? {
                     showSizeChanger: true,
-                    defaultPageSize: pageSize,
+                    pageSize: pageSize,
                     current: currentPage,
                     pageSizeOptions: ["24", "48", "96", "192"],
                     position: "both",
