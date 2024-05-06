@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard';
 import { TeddyCloudApi } from '../../api';
 import { defaultAPIConfig } from '../../config/defaultApiConfig';
+import { TFunction } from 'i18next';
 
 const { Panel } = Collapse;
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -153,8 +154,8 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
 
     // show all injection as antd does not support that nativly
     useEffect(() => {
-        createSiblingButton();
-    }, [loading, paginationEnabled]);
+        createSiblingButton(t);
+    }, [loading, paginationEnabled, t]);
 
     const handleShowAll = () => {
         setShowAll(true);
@@ -162,10 +163,14 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         storeLocalStorage();
     };
 
-    const createSiblingButton = () => {
-        if (document.querySelector('.ant-pagination-custom-show-all-button-container')) {
-            return;
+    const createSiblingButton = (t: TFunction<"translation", undefined>) => {
+        // Remove existing button if present
+        const existingButton = document.querySelector('.show-all-button');
+        if (existingButton) {
+            existingButton.remove();
         }
+
+        // Create and render translated button
         const siblingButtonContainer = document.createElement('div');
         siblingButtonContainer.classList.add('ant-pagination-custom-show-all-button-container');
         document.querySelector('.ant-pagination-next')?.after(siblingButtonContainer);
