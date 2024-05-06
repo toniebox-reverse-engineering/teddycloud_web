@@ -19,7 +19,7 @@ export const ChangelogPage = () => {
 
   const changelogData = [
     {
-      version: "Version 0.5.0",
+      version: "0.5.0",
       changes: [
         "security mitigations on public instances as it‘s definitely not recommended to host teddycloud in public accessible for all",
         "prepared authentication for frontend (backend adaptions)",
@@ -47,7 +47,7 @@ export const ChangelogPage = () => {
       githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.5.0"
     },
     {
-      version: "Version 0.4.5 and older",
+      version: "0.4.5 and older",
       changes: [
         "A lot more. See Github for details!"
       ],
@@ -76,7 +76,7 @@ export const ChangelogPage = () => {
               dataSource={changelogData}
               renderItem={(item) => (
                 <>
-                  <h2>{item.version}</h2>
+                  <h2>Version {item.version}</h2>
                   <Paragraph>
                     <h3>Changes</h3>
                     <ul>
