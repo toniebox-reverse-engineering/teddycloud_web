@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createRoot } from 'react-dom/client';
 import { useLocation } from 'react-router-dom';
 import { List, Switch, Input, Button, Collapse } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -27,11 +28,13 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string]>>([]);
+    const [pageSize, setPageSize] = useState<number>(24);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
 
     const location = useLocation();
 
     useEffect(() => {
-        
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get('tonieRUID');
         if (tonieRUID) {
@@ -110,6 +113,38 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         setFilteredTonies(tonieCards);
     };
 
+    // show all injection as antd does not support that nativly
+    useEffect(() => {
+        createSiblingButton();
+    }, [loading, paginationEnabled]);
+    const showAll = () => {
+        handlePageSizeChange(1, 1000000);
+        setPaginationEnabled(!paginationEnabled);
+    }
+    const createSiblingButton = () => {
+        if (document.querySelector('.ant-pagination-custom-show-all-button-container')) {
+            return;
+        }
+        const siblingButtonContainer = document.createElement('div');
+        siblingButtonContainer.classList.add('ant-pagination-custom-show-all-button-container');
+        document.querySelector('.ant-pagination-next')?.after(siblingButtonContainer);
+        const button = (
+            <Button className="show-all-button" onClick={showAll} title={t('tonies.tonies.showAll')}>
+                {t('tonies.tonies.showAll')}
+            </Button>
+        );
+        const root = createRoot(siblingButtonContainer);
+        root.render(button);
+    };
+    const handlePageSizeChange = (current: number, size: number) => {
+        setPageSize(size as number);
+        setCurrentPage(current);
+    };
+    const togglePagination = () => {
+        setPaginationEnabled(!paginationEnabled);
+        handlePageSizeChange(1, pageSize);
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -168,6 +203,9 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                             </div>
                         </div></Panel>
                 </Collapse>) : ""}
+            <div style={{ textAlign: 'right', marginBottom: '16px', marginTop: '32px' }}>
+                {!paginationEnabled ? <Button onClick={togglePagination}>{t('tonies.tonies.showPagination')}</Button> : ''}
+            </div>
             <List
                 grid={{
                     gutter: 16,
@@ -178,16 +216,18 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                     xl: 4,
                     xxl: 6
                 }}
-                pagination={{
+                pagination={paginationEnabled ? {
                     showSizeChanger: true,
-                    defaultPageSize: 24,
+                    defaultPageSize: pageSize,
+                    current: currentPage,
                     pageSizeOptions: ["24", "48", "96", "192"],
                     position: "both",
                     style: { marginBottom: "16px" },
                     locale: {
                         items_per_page: t('tonies.tonies.pageSelector'),
-                    }
-                }}
+                    },
+                    onChange: handlePageSizeChange,
+                } : false}
                 dataSource={filteredTonies}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>

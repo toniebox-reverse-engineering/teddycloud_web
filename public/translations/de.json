@@ -48,6 +48,8 @@
       "navigationTitle": "Tonies",
       "pageSelector": " Tonies / Seite",
       "title": "Tonies",
+      "showPagination": "Pagination einblenden",
+      "showAll": "Zeige alle",
       "filterBar": {
         "showFilters": "Filter einblenden",
         "hideFilters": "Filter ausblenden",
