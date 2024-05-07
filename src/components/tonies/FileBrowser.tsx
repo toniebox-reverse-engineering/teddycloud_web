@@ -39,7 +39,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             }
         }
         if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning(t("fileBrowser.maxSelectedRows", {maxSelectedRows: maxSelectedRows}));
+            message.warning(t("fileBrowser.maxSelectedRows", { maxSelectedRows: maxSelectedRows }));
         } else {
             setSelectedRowKeys(newSelectedRowKeys);
         }
@@ -64,7 +64,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
             .then((data) => {
                 var list: never[] = data.files;
 
-                if(showDirOnly)
+                if (showDirOnly)
                     list = list.filter((file: any) => file.isDir);
 
                 setFiles(list);
@@ -190,7 +190,7 @@ export const FileBrowser: React.FC<{ special: string, maxSelectedRows?: number, 
         }
     });
 
-    if(showDirOnly)
+    if (showDirOnly)
         columns = columns.filter((column) => column.showOnDirOnly);
 
     return (

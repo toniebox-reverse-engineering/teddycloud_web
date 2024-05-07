@@ -52,7 +52,6 @@ export function StatsListFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
         'stats': !exists(json, 'stats') ? undefined : ((json['stats'] as Array<any>).map(StatsItemFromJSON)),
     };
 }
@@ -65,7 +64,6 @@ export function StatsListToJSON(value?: StatsList | null): any {
         return null;
     }
     return {
-        
         'stats': value.stats === undefined ? undefined : ((value.stats as Array<any>).map(StatsItemToJSON)),
     };
 }
