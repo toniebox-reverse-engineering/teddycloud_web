@@ -103,11 +103,9 @@ export const TonieCard: React.FC<{
   };
   const handleSaveChanges = async () => {
     setIsEditModalOpen(false);
-    if(activeSource !== selectedSource)
-      handleSourceSave();
-    
-    if(activeModel !== selectedModel)
-      handleModelSave();
+    if (activeSource !== selectedSource) handleSourceSave();
+
+    if (activeModel !== selectedModel) handleModelSave();
   };
 
   const handleLiveClick = async () => {
@@ -201,7 +199,9 @@ export const TonieCard: React.FC<{
       setActiveModel(selectedModel);
       message.success(
         t("tonies.messages.setTonieToModelSuccessful", {
-          selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
+          selectedModel: selectedModel
+            ? selectedModel
+            : t("tonies.messages.setToEmptyValue"),
         })
       );
     } catch (error) {
@@ -222,7 +222,9 @@ export const TonieCard: React.FC<{
       setActiveSource(selectedSource);
       message.success(
         t("tonies.messages.setTonieToSourceSuccessful", {
-          selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
+          selectedSource: selectedSource
+            ? selectedSource
+            : t("tonies.messages.setToEmptyValue"),
         })
       );
     } catch (error) {
@@ -245,11 +247,6 @@ export const TonieCard: React.FC<{
 
   const searchModelResultChanged = (newValue: string) => {
     setSelectedModel(newValue);
-  };
-
-  var activeCardStyle = {
-    borderColor: "#1677ff",
-    borderWidth: "1px",
   };
 
   const informationModalTitel = (
@@ -414,7 +411,11 @@ export const TonieCard: React.FC<{
         hoverable={false}
         key={tonieCard.ruid}
         size="small"
-        style={toniePlayedOn.length > 0 ? activeCardStyle : {}}
+        style={
+          toniePlayedOn.length > 0
+            ? { borderTop: "3px #1677ff inset" }
+            : { paddingTop: "2px" }
+        }
         title={tonieCard.tonieInfo.series}
         cover={
           <img
