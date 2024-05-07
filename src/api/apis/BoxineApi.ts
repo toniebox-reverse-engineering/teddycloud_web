@@ -15,7 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
-  Errors,
+    Errors,
 } from '../models';
 import {
     ErrorsFromJSON,

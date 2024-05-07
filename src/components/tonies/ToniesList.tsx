@@ -31,7 +31,6 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const location = useLocation();
 
     useEffect(() => {
-        
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get('tonieRUID');
         if (tonieRUID) {

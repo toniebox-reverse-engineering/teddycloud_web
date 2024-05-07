@@ -55,14 +55,14 @@ export interface OptionsItem {
      * @type {string}
      * @memberof OptionsItem
      */
-     value: string;
+    value: string;
 
-     /**
-      * Object value
-      * @type {boolean}
-      * @memberof OptionsItem
-      */
-      overlayed: boolean;
+    /**
+     * Object value
+     * @type {boolean}
+     * @memberof OptionsItem
+     */
+    overlayed: boolean;
 }
 
 /**

@@ -13,7 +13,7 @@ code {
 }
 
 .ant-select {
-   width: -webkit-fill-available !important;
-   width: -moz-available !important;
-   width: stretch !important;
+  width: -webkit-fill-available !important;
+  width: -moz-available !important;
+  width: stretch !important;
 }

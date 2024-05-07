@@ -23,7 +23,7 @@ const StyledCenterPart = styled.div`
   align-items: center;
 `;
 
-export const StyledFooter = () => {  
+export const StyledFooter = () => {
   const [footerHeight, setFooterHeight] = useState(0);
   const [version, setVersion] = useState('');
   const [versionShort, setVersionShort] = useState('');
