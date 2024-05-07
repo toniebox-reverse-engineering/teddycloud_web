@@ -111,7 +111,8 @@
       "setTonieToModelSuccessful": "Setze Tonie-Modell auf {{selectedModel}}!",
       "setTonieToModelFailed": "Konnte das Tonie-Modell nicht ändern!",
       "setTonieToSourceSuccessful": "Setze Tonie-Quelle auf {{selectedSource}}!",
-      "setTonieToSourceFailed": "Konnte die Tonie-Quelle nicht ändern!"
+      "setTonieToSourceFailed": "Konnte die Tonie-Quelle nicht ändern!",
+      "setToEmptyValue": "leer"
     },
     "infoModal": {
       "model": "Modell:",
@@ -130,7 +131,7 @@
       "title": "Modell bearbeiten",
       "placeholderSearchForAModel": "Nach einem Modell suchen",
       "source": "Quelle",
-      "model": "Model",
+      "model": "Modell",
       "save": "Speichern"
     },
     "selectFileModal": {
@@ -138,7 +139,7 @@
     },
     "informationModal": {
       "unknownModel": "Unbekanntes Model",
-      "ok": "ok"
+      "ok": "OK"
     }
   },
   "tonieboxes": {

@@ -110,7 +110,8 @@
       "setTonieToModelSuccessful": "Set tonie model to {{selectedModel}}!",
       "setTonieToModelFailed": "Could not change tonie model!",
       "setTonieToSourceSuccessful": "Set tonie source to {{selectedSource}}!",
-      "setTonieToSourceFailed": "Could not change tonie source!"
+      "setTonieToSourceFailed": "Could not change tonie source!",
+      "setToEmptyValue": "empty"
     },
     "infoModal": {
       "model": "Model:",
@@ -137,7 +138,7 @@
     },
     "informationModal": {
       "unknownModel": "Unknwown Model",
-      "ok": "ok"
+      "ok": "OK"
     }
   },
   "tonieboxes": {
