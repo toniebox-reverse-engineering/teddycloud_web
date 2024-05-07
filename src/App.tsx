@@ -18,6 +18,7 @@ import { EncoderPage } from "./pages/tonies/EncoderPage";
 import { TonieboxesPage } from "./pages/tonieboxes/TonieboxesPage";
 import { CommunityPage } from "./pages/community/CommunityPage";
 import { ContributionPage } from "./pages/community/ContributionPage";
+import { ContributionToniesJsonPage } from "./pages/community/ContributionToniesJsonPage";
 import { ContributorsPage } from "./pages/community/ContributorsPage";
 import { ChangelogPage } from "./pages/community/ChangelogPage";
 
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/settings/certificates" element={<CertificatesPage />} />
                 <Route path="/community" element={<CommunityPage/>} />
                 <Route path="/community/contribution" element={<ContributionPage/>} />
+                <Route path="/community/contribution/tonies-json" element={<ContributionToniesJsonPage/>} />
                 <Route path="/community/contributors" element={<ContributorsPage/>} />
                 <Route path="/community/changelog" element={<ChangelogPage/>} />
                 <Route path="/uitest" element={<UiTest />} />

@@ -159,7 +159,13 @@
     "title": "Community",
     "contribution": {
       "navigationTitle": "Contribution",
-      "title": "Contribution"
+      "title": "Contribution",
+      "toniesJson": {
+        "navigationTitle": "tonies.json",
+        "title": "Contribute tonies.json",
+        "text": "You are welcome to support us by sending us the missing data of the Tonies listed below. In the future this will be possible directly in TeddyCloud, at the moment you can use TeddyBench. Thank you in advance!"
+     
+      }
     },
     "contributors": {
       "navigationTitle": "Contributors",
