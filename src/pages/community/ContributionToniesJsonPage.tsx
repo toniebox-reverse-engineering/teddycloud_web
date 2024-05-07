@@ -29,7 +29,7 @@ export const ContributionToniesJsonPage = () => {
   const { t } = useTranslation();
 
   const [tonieJsonEntries, setTonieJsonEntries] = useState<TonieJsonEntry[]>([]);
-  const [groupedTonieJsonEntries, setGroupedTonieJsonEntries] = useState<{ [key: string]: { [key: string]: TonieJsonEntry[] } }>({});
+  const [groupedTonieJsonEntries, setGroupedTonieJsonEntries] = useState<{ [key: string]: TonieJsonEntry[] }>({});
 
   useEffect(() => {
     async function fetchData() {
@@ -55,15 +55,12 @@ export const ContributionToniesJsonPage = () => {
         setTonieJsonEntries(dataArray);
 
         // Group tonieJsonEntries by language and category
-        const groupedData: { [key: string]: { [key: string]: TonieJsonEntry[] } } = {};
+        const groupedData: { [key: string]: TonieJsonEntry[] } = {};
         dataArray.forEach((entry) => {
           if (!groupedData[entry.language]) {
-            groupedData[entry.language] = {};
+            groupedData[entry.language] = [];
           }
-          if (!groupedData[entry.language][entry.category]) {
-            groupedData[entry.language][entry.category] = [];
-          }
-          groupedData[entry.language][entry.category].push(entry);
+          groupedData[entry.language].push(entry);
         });
         setGroupedTonieJsonEntries(groupedData);
       } catch (error) {
@@ -97,20 +94,14 @@ export const ContributionToniesJsonPage = () => {
             <Collapse accordion>
               {Object.keys(groupedTonieJsonEntries).map((language, index) => (
                 <Panel header={language} key={index}>
-                  <Collapse accordion>
-                    {Object.keys(groupedTonieJsonEntries[language]).map((category, subIndex) => (
-                      <Panel header={category} key={subIndex}>
-                        <List>
-                          {Array.isArray(groupedTonieJsonEntries[language][category]) &&
-                            groupedTonieJsonEntries[language][category].map((tonieJsonEntry, subSubIndex) => (
-                              <List.Item key={subSubIndex} id={tonieJsonEntry.model}>
-                                <div><img src={tonieJsonEntry.pic} alt="" style={{ width: '100px', height: 'auto' }}></img>{tonieJsonEntry.model} - {tonieJsonEntry.series} - {tonieJsonEntry.episodes}</div>
-                              </List.Item>
-                            ))}
-                        </List>
-                      </Panel>
-                    ))}
-                  </Collapse>
+                  <List>
+                    {Array.isArray(groupedTonieJsonEntries[language]) &&
+                      groupedTonieJsonEntries[language].map((tonieJsonEntry, subSubIndex) => (
+                        <List.Item key={subSubIndex} id={tonieJsonEntry.model}>
+                          <div><img src={tonieJsonEntry.pic} alt="" style={{ width: '100px', height: 'auto' }}></img>{tonieJsonEntry.model} - {tonieJsonEntry.series} - {tonieJsonEntry.episodes}</div>
+                        </List.Item>
+                      ))}
+                  </List>
                 </Panel>
               ))}
             </Collapse>
