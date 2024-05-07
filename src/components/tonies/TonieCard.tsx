@@ -68,7 +68,6 @@ export const TonieCard: React.FC<{
   const [activeSource, setActiveSource] = useState(tonieCard.source);
   const [selectedSource, setSelectedSource] = useState("");
 
-
   useEffect(() => {
     setIsLive(tonieCard.live); // Update isLive state when tonieCard prop changes
     setIsNoCloud(tonieCard.nocloud); // Update isNoCloud state when tonieCard prop changes
@@ -104,8 +103,11 @@ export const TonieCard: React.FC<{
   };
   const handleSaveChanges = async () => {
     setIsEditModalOpen(false);
-    handleSourceSave();
-    handleModelSave();
+    if(activeSource !== selectedSource)
+      handleSourceSave();
+    
+    if(activeModel !== selectedModel)
+      handleModelSave();
   };
 
   const handleLiveClick = async () => {
@@ -128,6 +130,7 @@ export const TonieCard: React.FC<{
       message.error(t("tonies.messages.sourceCouldNotChangeLiveFlag") + error);
     }
   };
+
   const handleNoCloudClick = async () => {
     const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
     try {
@@ -198,7 +201,7 @@ export const TonieCard: React.FC<{
       setActiveModel(selectedModel);
       message.success(
         t("tonies.messages.setTonieToModelSuccessful", {
-          selectedModel: selectedModel,
+          selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
         })
       );
     } catch (error) {
@@ -219,7 +222,7 @@ export const TonieCard: React.FC<{
       setActiveSource(selectedSource);
       message.success(
         t("tonies.messages.setTonieToSourceSuccessful", {
-          selectedSource: selectedSource,
+          selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
         })
       );
     } catch (error) {
@@ -420,7 +423,10 @@ export const TonieCard: React.FC<{
           />
         }
         actions={[
-          <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
+          <InfoCircleOutlined
+            key="info"
+            onClick={() => setInformationModalOpen(true)}
+          />,
           <EditOutlined key="edit" onClick={showModelModal} />,
           isValid ? (
             <PlayCircleOutlined

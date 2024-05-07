@@ -7,7 +7,6 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { TonieboxModelSearch } from './TonieboxModelSearch';
 import { TonieboxSettingsPage } from './TonieboxSettingsPage';
-import { boxModelImages } from '../../util/boxModels';
 import { TonieCardProps } from '../../components/tonies/TonieCard';
 import { CertificateDragNDrop } from '../form/CertificatesDragAndDrop';
 
@@ -26,10 +25,18 @@ export type TonieboxCardProps = {
     boxModel: string;
 }
 
-export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ tonieboxCard }) => {
+interface TonieboxImage {
+    id: string;
+    name: string;
+    img_src: string;
+    crop?: number[];
+}
+
+export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxImages: TonieboxImage[] }> = ({ tonieboxCard, tonieboxImages }) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
+    const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
@@ -39,7 +46,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
     const [selectedModel, setSelectedModel] = useState<string>(tonieboxCard.boxModel);
     const [boxName, setBoxName] = useState(tonieboxCard.boxName);
     const [tonieboxName, setTonieBoxName] = useState(tonieboxCard.boxName);
-    const [boxImage, setBoxImage] = useState(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" style={{ filter: "opacity(0.20)" }} />);
+    const [boxImage, setBoxImage] = useState<JSX.Element | null>(null);
     const [searchFieldValue, setSearchFieldValue] = useState<string | undefined>(undefined);
 
     useEffect(() => {
@@ -48,6 +55,25 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
             setTonieboxStatus(tonieboxStatus);
         };
         fetchTonieboxStatus();
+
+        const fetchTonieboxVersion = async () => {
+            const tonieboxVersion = await api.apiGetTonieboxVersion(tonieboxCard.ID);
+            const BoxVersions: { [key: string]: string } = {
+                "0": "UNKNOWN",
+                "1": "CC3200",
+                "2": "CC3235",
+                "3": "ESP32"
+            };
+
+            if (tonieboxVersion in BoxVersions) {
+                const version = BoxVersions[tonieboxVersion as keyof typeof BoxVersions];
+                setTonieboxVersion(version);
+            } else {
+                setTonieboxVersion("UNKNOWN");
+            };
+
+        };
+        fetchTonieboxVersion();
 
         const fetchTonieboxLastRUID = async () => {
             const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
@@ -66,12 +92,15 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
 
-    }, [tonieboxCard.commonName, tonieboxCard.boxModel]);
+    }, [tonieboxCard.ID, tonieboxCard.boxModel]);
 
     const selectBoxImage = (id: string) => {
-        const selectedImage = boxModelImages.find(item => item.id === id);
+        const selectedImage = tonieboxImages.find((item: { id: string }) => item.id === id);
         if (selectedImage) {
-            setBoxImage(<img src={selectedImage.img_src} alt="" style={{}} />);
+            setBoxImage(<img src={selectedImage.img_src} alt="" style={{ ...getCroppedImageStyle(id), 'position': 'absolute', 'top': '0', 'left': '0' }} />);
+        } else {
+            setBoxImage(<img src='https://cdn.tonies.de/thumbnails/03-0009-i.png' alt="" style={{ filter: "opacity(0.20)", width: '100%', height: 'auto', 'position': 'absolute', 'top': '0', 'left': '0' }} />);
+            console.error('Selected image not found.');
         }
     };
 
@@ -216,6 +245,20 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
         setSelectedModel(newValue);
     }
 
+    const getCroppedImageStyle = (boxModel: string) => {
+        const tonieboxImage = tonieboxImages.find(image => image.id === boxModel);
+        if (tonieboxImage && tonieboxImage.crop) {
+            const [x, y, scale] = tonieboxImage.crop;
+            return {
+                width: `100%`,
+                height: `auto`,
+                transform: `scale(${scale}) translateX(${x}px) translateY(${y}px)`,
+            };
+        } else {
+            return { width: '100%', height: 'auto' };
+        }
+    };
+
     return (
         <>
             {contextHolder}
@@ -225,9 +268,11 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                 size="default"
                 style={{ cursor: 'default' }}
                 title={<span><Badge dot status={tonieboxStatus ? "success" : "error"} /> {tonieboxName}</span>}
-                cover={<div style={{ position: 'relative' }}>
+                cover={<div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
                     {lastPlayedTonieName}
-                    <img src={boxImage.props.src} alt="Box" style={{ ...boxImage.props.style, width: '100%', height: 'auto' }} />
+                    { /* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique */ }
+                    <img src={tonieboxImages.find((item: { id: string }) => item.id === '03-0009')?.img_src} alt="" style={{ position: 'relative', filter: "opacity(0)", width: '100%', height: 'auto' }} />
+                    {boxImage}
                 </div>}
                 actions={[
                     <span key="settings" onClick={handleUploadCertificatesClick} >
@@ -238,7 +283,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps }> = ({ to
                     </span>
                 ]}
             >
-                <Meta description={<div>{"MAC: " + tonieboxCard.ID.replace(/(.{2})(?=.)/g, "$1:")}</div>} />
+                <Meta description={<div>{(tonieboxVersion !== 'UNKNOWN' ? tonieboxVersion : 'MAC') + ': ' + tonieboxCard.ID.replace(/(.{2})(?=.)/g, '$1:')}</div>} />
             </Card >
             <Modal title={t("tonieboxes.editTonieboxSettingsModal.editTonieboxSettings", { "name": tonieboxCard.boxName })} width='auto' open={isEditSettingsModalOpen} onOk={handleEditSettingsOk} onCancel={handleEditSettingsCancel}>
                 <TonieboxSettingsPage overlay={tonieboxCard.ID} />

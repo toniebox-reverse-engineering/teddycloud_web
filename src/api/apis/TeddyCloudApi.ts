@@ -50,7 +50,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiGetTonieboxesIndexRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TonieboxCardList>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -75,7 +74,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiGetTonieboxStatusRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         let path = `/api/settings/get/internal.online`;
@@ -100,13 +98,42 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const response = await this.apiGetTonieboxStatusRaw(overlay, initOverrides);
         return await response.value();
     }
-    
+
+    /**
+     * get tonieBoxVersion
+     */
+    async apiGetTonieboxVersionRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.toniebox_firmware.boxIC`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request({
+            path: path,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<string>(response);
+    }
+
+    /**
+     * get tonieBoxVersion
+     */
+    async apiGetTonieboxVersion(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.apiGetTonieboxVersionRaw(overlay, initOverrides);
+        return response.value();
+    }
+
     /**
      * get last played tonie ruid of toniebox
      */
     async apiGetTonieboxLastRUIDRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         let path = `/api/settings/get/internal.last_ruid`;
@@ -137,11 +164,10 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiGetSecurityMITAlertRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         const path = `/api/settings/get/internal.security_mit.incident`;
-      
+
         const response = await this.request({
             path: path,
             method: 'GET',
@@ -165,7 +191,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiGetTagIndexRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TagsTonieCardList>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -189,7 +214,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiGetIndexGetRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OptionsList>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         let path = `/api/settings/getIndex`;
@@ -222,9 +246,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body', 'Required parameter requestParameters.body was null or undefined when calling apiSetCloudCacheContentPost.');
         }
-
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'text/plain';
@@ -252,7 +274,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiStatsGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<StatsList>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -278,7 +299,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiTriggerWriteConfigGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
@@ -306,9 +326,8 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * upload certificates
      */
-    async apiUploadCertPostRaw(requestParameters: ApiUploadCertPostRequest, overlay?:String, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async apiUploadCertPostRaw(requestParameters: ApiUploadCertPostRequest, overlay?: String, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         const consumes: runtime.Consume[] = [
@@ -321,7 +340,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         let useForm = false;
 
         let path = `/api/uploadCert`;
-        if (overlay !== "" && overlay !== undefined ) {
+        if (overlay !== "" && overlay !== undefined) {
             path = path + "?overlay=" + overlay;
         }
 

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Select } from 'antd';
-import { boxModelImages } from '../../util/boxModels';
+import GetBoxModelImages from '../../util/boxModels';
 
 export const TonieboxModelSearch: React.FC<{ placeholder: string; onChange: (newValue: string) => void; value: any }> = (props) => {
-
+    const boxModelImages = GetBoxModelImages();
     const handleChange = (newValue: string) => {
         props.onChange(newValue);
     };
@@ -18,7 +18,7 @@ export const TonieboxModelSearch: React.FC<{ placeholder: string; onChange: (new
             filterOption={false}
             onChange={handleChange}
             notFoundContent={null}
-            options={(boxModelImages || []).map((d) => ({
+            options={(boxModelImages || []).map((d: any) => ({
                 value: d.id,
                 label: d.name,
             }))}
