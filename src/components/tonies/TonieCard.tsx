@@ -8,14 +8,14 @@ import {
     PlayCircleOutlined,
     RetweetOutlined,
     SaveFilled,
-} from "@ant-design/icons";
-import { Button, Card, Divider, Input, Modal, Typography, message } from "antd";
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+} from '@ant-design/icons';
+import { Button, Card, Divider, Input, Modal, Typography, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { useAudioContext } from "../audio/AudioContext";
-import { FileBrowser } from "./FileBrowser";
-import { TonieArticleSearch } from "./TonieArticleSearch";
+import { useAudioContext } from '../audio/AudioContext';
+import { FileBrowser } from './FileBrowser';
+import { TonieArticleSearch } from './TonieArticleSearch';
 
 const { Meta } = Card;
 const { Text } = Typography;
@@ -63,10 +63,10 @@ export const TonieCard: React.FC<{
     const [isSelectFileModalOpen, seSelectFileModalOpen] = useState(false);
 
     const [activeModel, setActiveModel] = useState(tonieCard.tonieInfo.model);
-    const [selectedModel, setSelectedModel] = useState("");
+    const [selectedModel, setSelectedModel] = useState('');
 
     const [activeSource, setActiveSource] = useState(tonieCard.source);
-    const [selectedSource, setSelectedSource] = useState("");
+    const [selectedSource, setSelectedSource] = useState('');
 
     useEffect(() => {
         setIsLive(tonieCard.live); // Update isLive state when tonieCard prop changes
@@ -79,8 +79,8 @@ export const TonieCard: React.FC<{
         special: string
     ) => {
         if (files.length === 1) {
-            const prefix = special === "library" ? "lib:/" : "content:/";
-            const filePath = prefix + path + "/" + files[0].name;
+            const prefix = special === 'library' ? 'lib:/' : 'content:/';
+            const filePath = prefix + path + '/' + files[0].name;
             setSelectedSource(filePath);
         } else {
             setSelectedSource(activeSource);
@@ -112,21 +112,21 @@ export const TonieCard: React.FC<{
         const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
         try {
             const response = await fetch(url, {
-                method: "POST",
-                body: "live=" + !isLive,
+                method: 'POST',
+                body: 'live=' + !isLive,
             });
             if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
+                throw new Error(response.status + ' ' + response.statusText);
             }
             setIsLive(!isLive);
             if (!isLive) {
-                message.success(t("tonies.messages.liveEnabled"));
+                message.success(t('tonies.messages.liveEnabled'));
             } else {
-                message.success(t("tonies.messages.liveDisabled"));
+                message.success(t('tonies.messages.liveDisabled'));
             }
         } catch (error) {
             message.error(
-                t("tonies.messages.sourceCouldNotChangeLiveFlag") + error
+                t('tonies.messages.sourceCouldNotChangeLiveFlag') + error
             );
         }
     };
@@ -135,21 +135,21 @@ export const TonieCard: React.FC<{
         const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
         try {
             const response = await fetch(url, {
-                method: "POST",
-                body: "nocloud=" + !isNoCloud,
+                method: 'POST',
+                body: 'nocloud=' + !isNoCloud,
             });
             if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
+                throw new Error(response.status + ' ' + response.statusText);
             }
             setIsNoCloud(!isNoCloud);
             if (!isNoCloud) {
-                message.success(t("tonies.messages.cloudAccessBlocked"));
+                message.success(t('tonies.messages.cloudAccessBlocked'));
             } else {
-                message.success(t("tonies.messages.cloudAccessEnabled"));
+                message.success(t('tonies.messages.cloudAccessEnabled'));
             }
         } catch (error) {
             message.error(
-                t("tonies.messages.sourceCouldNotChangeCloudFlag") + error
+                t('tonies.messages.sourceCouldNotChangeCloudFlag') + error
             );
         }
     };
@@ -164,28 +164,28 @@ export const TonieCard: React.FC<{
         const url =
             process.env.REACT_APP_TEDDYCLOUD_API_URL +
             tonieCard.downloadTriggerUrl;
-        setDownloadTriggerUrl("");
+        setDownloadTriggerUrl('');
         try {
             messageApi.open({
-                type: "loading",
-                content: t("tonies.messages.downloading"),
+                type: 'loading',
+                content: t('tonies.messages.downloading'),
                 duration: 0,
             });
             const response = await fetch(url);
             if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
+                throw new Error(response.status + ' ' + response.statusText);
             }
             messageApi.destroy();
             messageApi.open({
-                type: "success",
-                content: t("tonies.messages.downloadedFile"),
+                type: 'success',
+                content: t('tonies.messages.downloadedFile'),
             });
             setIsValid(true);
         } catch (error) {
             messageApi.destroy();
             messageApi.open({
-                type: "error",
-                content: t("tonies.messages.errorDuringDownload") + error,
+                type: 'error',
+                content: t('tonies.messages.errorDuringDownload') + error,
             });
             setDownloadTriggerUrl(url);
         }
@@ -195,22 +195,22 @@ export const TonieCard: React.FC<{
         const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
         try {
             const response = await fetch(url, {
-                method: "POST",
-                body: "tonie_model=" + selectedModel,
+                method: 'POST',
+                body: 'tonie_model=' + selectedModel,
             });
             if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
+                throw new Error(response.status + ' ' + response.statusText);
             }
             setActiveModel(selectedModel);
             message.success(
-                t("tonies.messages.setTonieToModelSuccessful", {
+                t('tonies.messages.setTonieToModelSuccessful', {
                     selectedModel: selectedModel
                         ? selectedModel
-                        : t("tonies.messages.setToEmptyValue"),
+                        : t('tonies.messages.setToEmptyValue'),
                 })
             );
         } catch (error) {
-            message.error(t("tonies.messages.setTonieToModelFailed") + error);
+            message.error(t('tonies.messages.setTonieToModelFailed') + error);
         }
     };
 
@@ -218,22 +218,22 @@ export const TonieCard: React.FC<{
         const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
         try {
             const response = await fetch(url, {
-                method: "POST",
-                body: "source=" + selectedSource,
+                method: 'POST',
+                body: 'source=' + selectedSource,
             });
             if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
+                throw new Error(response.status + ' ' + response.statusText);
             }
             setActiveSource(selectedSource);
             message.success(
-                t("tonies.messages.setTonieToSourceSuccessful", {
+                t('tonies.messages.setTonieToSourceSuccessful', {
                     selectedSource: selectedSource
                         ? selectedSource
-                        : t("tonies.messages.setToEmptyValue"),
+                        : t('tonies.messages.setToEmptyValue'),
                 })
             );
         } catch (error) {
-            message.error(t("tonies.messages.setTonieToSourceFailed") + error);
+            message.error(t('tonies.messages.setTonieToSourceFailed') + error);
         }
     };
 
@@ -257,9 +257,9 @@ export const TonieCard: React.FC<{
     const informationModalTitel = (
         <>
             <h3>
-                {title !== " - "
+                {title !== ' - '
                     ? title
-                    : t("tonies.informationModal.unknownModel")}
+                    : t('tonies.informationModal.unknownModel')}
                 <br />
                 <Text type="secondary">{tonieCard.uid}</Text>
             </h3>
@@ -268,7 +268,7 @@ export const TonieCard: React.FC<{
 
     const informationModalFooter = (
         <Button type="primary" onClick={() => setInformationModalOpen(false)}>
-            {t("tonies.informationModal.ok")}
+            {t('tonies.informationModal.ok')}
         </Button>
     );
 
@@ -285,7 +285,7 @@ export const TonieCard: React.FC<{
             {toniePlayedOn.length > 0 ? (
                 <>
                     <strong>
-                        {t("tonies.lastPlayedOnModal.lastPlayedOnMessage")}:
+                        {t('tonies.lastPlayedOnModal.lastPlayedOnMessage')}:
                     </strong>
                     <ul>
                         {toniePlayedOn.map((boxName, index) => (
@@ -298,20 +298,20 @@ export const TonieCard: React.FC<{
             )}
             <div>
                 <p>
-                    <strong>{t("tonies.infoModal.valid")}</strong>{" "}
+                    <strong>{t('tonies.infoModal.valid')}</strong>{' '}
                     {tonieCard.valid
-                        ? t("tonies.infoModal.yes")
-                        : t("tonies.infoModal.no")}
+                        ? t('tonies.infoModal.yes')
+                        : t('tonies.infoModal.no')}
                 </p>
                 <p>
-                    <strong>{t("tonies.infoModal.exists")}</strong>{" "}
+                    <strong>{t('tonies.infoModal.exists')}</strong>{' '}
                     {tonieCard.exists
-                        ? t("tonies.infoModal.yes")
-                        : t("tonies.infoModal.no")}
+                        ? t('tonies.infoModal.yes')
+                        : t('tonies.infoModal.no')}
                 </p>
                 {tonieCard.tonieInfo.tracks.length > 0 ? (
                     <>
-                        <strong>{t("tonies.infoModal.tracklist")}</strong>
+                        <strong>{t('tonies.infoModal.tracklist')}</strong>
                         <ol>
                             {tonieCard.tonieInfo.tracks.map((track, index) => (
                                 <li key={index}>{track}</li>
@@ -328,15 +328,15 @@ export const TonieCard: React.FC<{
     const editModalTitel = (
         <>
             <h3 style={{ lineHeight: 0 }}>
-                {t("tonies.editModal.title")}
+                {t('tonies.editModal.title')}
                 {tonieCard.tonieInfo.model
-                    ? " (" + tonieCard.tonieInfo.model + ")"
-                    : ""}
+                    ? ' (' + tonieCard.tonieInfo.model + ')'
+                    : ''}
             </h3>
             {tonieCard.tonieInfo.series ? (
                 <Text type="secondary">{title}</Text>
             ) : (
-                " "
+                ' '
             )}
         </>
     );
@@ -351,7 +351,7 @@ export const TonieCard: React.FC<{
                     activeModel === selectedModel
                 }
             >
-                <SaveFilled key="saveClick" /> {t("tonies.editModal.save")}
+                <SaveFilled key="saveClick" /> {t('tonies.editModal.save')}
             </Button>
         </>
     );
@@ -364,7 +364,7 @@ export const TonieCard: React.FC<{
             footer={editModalFooter}
         >
             <Divider orientation="left" orientationMargin="0">
-                {t("tonies.editModal.source")}
+                {t('tonies.editModal.source')}
             </Divider>
             <div>
                 <Input
@@ -384,7 +384,7 @@ export const TonieCard: React.FC<{
                 />
             </div>
             <Divider orientation="left" orientationMargin="0">
-                {t("tonies.editModal.model")}
+                {t('tonies.editModal.model')}
             </Divider>
             <div>
                 <p>
@@ -401,7 +401,7 @@ export const TonieCard: React.FC<{
                 </p>
                 <TonieArticleSearch
                     placeholder={t(
-                        "tonies.editModal.placeholderSearchForAModel"
+                        'tonies.editModal.placeholderSearchForAModel'
                     )}
                     onChange={searchModelResultChanged}
                 />
@@ -411,7 +411,7 @@ export const TonieCard: React.FC<{
 
     const selectFileModal = (
         <Modal
-            title={t("tonies.selectFileModal.selectFile")}
+            title={t('tonies.selectFileModal.selectFile')}
             open={isSelectFileModalOpen}
             onOk={() => seSelectFileModalOpen(false)}
             onCancel={handleCancelSelectFile}
@@ -435,8 +435,8 @@ export const TonieCard: React.FC<{
                 size="small"
                 style={
                     toniePlayedOn.length > 0
-                        ? { borderTop: "3px #1677ff inset" }
-                        : { paddingTop: "2px" }
+                        ? { borderTop: '3px #1677ff inset' }
+                        : { paddingTop: '2px' }
                 }
                 title={tonieCard.tonieInfo.series}
                 cover={
@@ -464,17 +464,17 @@ export const TonieCard: React.FC<{
                     ) : (
                         <PlayCircleOutlined
                             key="playpause"
-                            style={{ color: "lightgray" }}
+                            style={{ color: 'lightgray' }}
                         />
                     ),
                     <CloudSyncOutlined
                         key="nocloud"
-                        style={{ color: isNoCloud ? "red" : "lightgray" }}
+                        style={{ color: isNoCloud ? 'red' : 'lightgray' }}
                         onClick={handleNoCloudClick}
                     />,
                     <RetweetOutlined
                         key="live"
-                        style={{ color: isLive ? "red" : "lightgray" }}
+                        style={{ color: isLive ? 'red' : 'lightgray' }}
                         onClick={handleLiveClick}
                     />,
                 ]}
