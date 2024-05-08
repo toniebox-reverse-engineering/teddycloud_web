@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard';
 import { TeddyCloudApi } from '../../api';
 import { defaultAPIConfig } from '../../config/defaultApiConfig';
-import ToniesPagination from './toniesPagination';
+import ToniesPagination from './ToniesPagination';
 
 const { Panel } = Collapse;
 const api = new TeddyCloudApi(defaultAPIConfig());
