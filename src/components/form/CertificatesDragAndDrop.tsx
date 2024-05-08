@@ -32,9 +32,9 @@ export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }
         } catch (e) {
           message.error("Error while saving config to file.");
         }
-        message.success(t("settings.certificates.uploadSuccessful", {filename: file.name}));
+        message.success(t("settings.certificates.uploadSuccessful", { filename: file.name }));
       } catch (err) {
-        message.error(t("settings.certificates.uploadFailed", {filename: file.name}));
+        message.error(t("settings.certificates.uploadFailed", { filename: file.name }));
       }
 
     };

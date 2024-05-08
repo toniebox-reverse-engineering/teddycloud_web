@@ -60,7 +60,6 @@ export function StatsItemFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         return json;
     }
     return {
-        
         'iD': json['ID'],
         'description': json['description'],
         'value': json['value'],
@@ -75,7 +74,6 @@ export function StatsItemToJSON(value?: StatsItem | null): any {
         return null;
     }
     return {
-        
         'ID': value.iD,
         'description': value.description,
         'value': value.value,

@@ -41,11 +41,11 @@ function App() {
                 <Route path="/tonieboxes" element={<TonieboxesPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/settings/certificates" element={<CertificatesPage />} />
-                <Route path="/community" element={<CommunityPage/>} />
-                <Route path="/community/contribution" element={<ContributionPage/>} />
-                <Route path="/community/contribution/tonies-json" element={<ContributionToniesJsonPage/>} />
-                <Route path="/community/contributors" element={<ContributorsPage/>} />
-                <Route path="/community/changelog" element={<ChangelogPage/>} />
+                <Route path="/community" element={<CommunityPage />} />
+                <Route path="/community/contribution" element={<ContributionPage />} />
+                <Route path="/community/contribution/tonies-json" element={<ContributionToniesJsonPage />} />
+                <Route path="/community/contributors" element={<ContributorsPage />} />
+                <Route path="/community/changelog" element={<ChangelogPage />} />
                 <Route path="/uitest" element={<UiTest />} />
               </Routes>
             </Layout>

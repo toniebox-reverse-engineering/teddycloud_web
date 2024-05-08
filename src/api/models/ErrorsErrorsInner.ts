@@ -57,7 +57,6 @@ export function ErrorsErrorsInnerFromJSONTyped(json: any, ignoreDiscriminator: b
         return json;
     }
     return {
-        
         'id': !exists(json, 'id') ? undefined : json['id'],
         'status': !exists(json, 'status') ? undefined : json['status'],
         'title': !exists(json, 'title') ? undefined : json['title'],
@@ -72,7 +71,6 @@ export function ErrorsErrorsInnerToJSON(value?: ErrorsErrorsInner | null): any {
         return null;
     }
     return {
-        
         'id': value.id,
         'status': value.status,
         'title': value.title,

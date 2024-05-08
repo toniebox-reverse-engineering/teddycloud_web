@@ -149,8 +149,8 @@ export const EncoderPage = () => {
               return a.name === b.name
                 ? 0
                 : a.name.toLowerCase() > b.name.toLowerCase()
-                ? 1
-                : -1;
+                  ? 1
+                  : -1;
             })
             .map((entry) => {
               return {
