@@ -151,7 +151,7 @@
             "placeholderSearchForAModel": "Wähle deine Farbvariante aus",
             "name": "Bezeichnung",
             "model": "Modell",
-            "unsetBoxName": "Unbekannte Box",
+            "unsetBoxName": "Modell unbekannt/ungesetzt",
             "errorOnNameChange": "Fehler beim Speichern des Namens: {{error}}",
             "successOnNameChange": "Der Name der Toniebox wurde geändert",
             "errorOnModelChange": "Fehler beim Speichern des Models: {{error}}",
