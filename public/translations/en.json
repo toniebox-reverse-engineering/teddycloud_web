@@ -137,7 +137,8 @@
       "selectFile": "Select TAF-file"
     },
     "informationModal": {
-      "unknownModel": "Unknwown Model""ok": "OK"
+      "unknownModel": "Unknown Model",
+      "ok": "OK"
     }
   },
   "tonieboxes": {
