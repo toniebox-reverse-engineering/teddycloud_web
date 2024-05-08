@@ -131,7 +131,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
         setLastPlayedTonieName(
             <>
                 <Link to={"/tonies?tonieRUID=" + tonie[0].ruid}><img src={tonie[0].tonieInfo.picture}
-                        alt="Tonie"
+                    alt="Tonie"
                     title={t("tonieboxes.lastPlayedTonie") + tonie[0].tonieInfo.series + " - " + tonie[0].tonieInfo.episode}
                     style={{ position: 'absolute', bottom: 0, right: 0, zIndex: 1, padding: 8, borderRadius: 4, height: "60%" }}
                 /></Link>
@@ -413,35 +413,12 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
                 size="default"
                 style={{ cursor: "default" }}
                 title={<span>{tonieboxName}</span>}
-                cover={
-                    <div
-                        style={{
-                            position: "relative",
-                            width: "100%",
-                            height: "100%",
-                            overflow: "hidden",
-                        }}
-                    >
-                        {lastPlayedTonieName}
-                        {/* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique */}
-                        <img
-                            src={
-                                tonieboxImages.find(
-                                    (item: { id: string }) =>
-                                        item.id === "03-0009"
-                                )?.img_src
-                            }
-                            alt=""
-                            style={{
-                                position: "relative",
-                                filter: "opacity(0)",
-                                width: "100%",
-                                height: "auto",
-                            }}
-                        />
-                        {boxImage}
-                    </div>
-                }
+                cover={<div style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
+                    {lastPlayedTonieName}
+                    {/* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique */}
+                    <img src={tonieboxImages.find((item: { id: string }) => item.id === "03-0009")?.img_src} alt="" style={{ position: "relative", filter: "opacity(0)", width: "100%", height: "auto" }}/>
+                    {boxImage}
+                </div>}
                 actions={[
                     <>
                         {tonieboxStatus ? (
