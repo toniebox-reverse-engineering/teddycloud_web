@@ -19,6 +19,7 @@ const StyledHeaderComponent = styled(Header)`
   align-items: center;
   padding-left: 16px;
   padding-right: 16px;
+  background: #141414;
 `;
 
 const StyledRightPart = styled.div`
@@ -79,7 +80,10 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
         </StyledLeftPart>
       </Link>
       <HiddenMobile>
-        <Menu theme="dark" mode="horizontal" items={mainNav} selectedKeys={[selectedKey]} style={{ width: "calc(100vw - 480px)" }} />
+        <Menu theme="dark" mode="horizontal" items={mainNav} selectedKeys={[selectedKey]} style={{
+          width: "calc(100vw - 480px)",
+          background: '#141414 !important',
+        }} />
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
