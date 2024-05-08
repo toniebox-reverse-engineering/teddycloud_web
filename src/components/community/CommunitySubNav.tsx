@@ -16,7 +16,7 @@ export const CommunitySubNav = () => {
     },
     {
       key: "contribution",
-      label: <Link to="/community/contribution">{t("community.contribution.navigationTitle")}</Link>,
+      label: <Link to="/community/contribution" style={{ color: "currentColor" }}>{t("community.contribution.navigationTitle")}</Link>,
       icon: React.createElement(DeploymentUnitOutlined),
       children: [
         {
