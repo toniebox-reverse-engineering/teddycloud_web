@@ -5,9 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCard';
 import { TeddyCloudApi } from '../../api';
 import { defaultAPIConfig } from '../../config/defaultApiConfig';
+import ToniesPagination from './ToniesPagination';
 
 const { Panel } = Collapse;
 const api = new TeddyCloudApi(defaultAPIConfig());
+const STORAGE_KEY = 'toniesListState';
 
 export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: boolean }> = ({ tonieCards, showFilter }) => {
     const { t } = useTranslation();
@@ -27,8 +29,39 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string]>>([]);
+    const [pageSize, setPageSize] = useState<number>(() => {
+        const storedState = localStorage.getItem(STORAGE_KEY);
+        if (storedState) {
+            const { pageSize } = JSON.parse(storedState);
+            return pageSize;
+        }
+        return 24;
+    });
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
+    const [showAll, setShowAll] = useState(false);
+    const [doLocalStore, setLocalStore] = useState(true);
 
     const location = useLocation();
+
+    useEffect(() => {
+        const storedState = localStorage.getItem(STORAGE_KEY);
+        if (storedState) {
+            try {
+                const { pageSize, showAll } = JSON.parse(storedState);
+                if (showAll) {
+                    handleShowAll();
+                } else {
+                    setPageSize(pageSize);
+                    handlePageSizeChange(1, pageSize);
+                }
+            } catch (error) {
+                console.error("Error parsing stored state:", error);
+            }
+        } else {
+            console.log("No stored state found.");
+        }
+    }, []);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -59,6 +92,15 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         fetchTonieboxes();
         setLoading(false); // Set loading to false when tonieCards are available
     }, [location.search, tonieCards]);
+
+    useEffect(() => {
+        const stateToStore = JSON.stringify({ pageSize, paginationEnabled, showAll });
+        localStorage.setItem(STORAGE_KEY, stateToStore);
+    }, [doLocalStore, pageSize, paginationEnabled, showAll]);
+
+    const storeLocalStorage = () => {
+        setLocalStore(!doLocalStore);
+    };
 
     const handleFilter = () => {
         let filtered = tonieCards.filter(tonie =>
@@ -109,9 +151,61 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
         setFilteredTonies(tonieCards);
     };
 
+    const handleShowAll = () => {
+        setShowAll(true);
+        setPaginationEnabled(false);
+        storeLocalStorage();
+    };
+
+    const handleShowPagination = () => {
+        setPaginationEnabled(true);
+        setShowAll(false);
+        handlePageSizeChange(1, pageSize);
+    };
+
+    const handlePageSizeChange = (current: number, size: number) => {
+        setPageSize(size as number);
+        setCurrentPage(current);
+        storeLocalStorage();
+    };
     if (loading) {
         return <div>Loading...</div>;
     }
+
+    const getCurrentPageData = () => {
+        if (showAll) {
+            if (filteredTonies.length > 0) {
+                return filteredTonies;
+            } else {
+                return tonieCards;
+            }
+        }
+        else {
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            if (filteredTonies.length > 0) {
+                return filteredTonies.slice(startIndex, endIndex);
+            } else {
+                return tonieCards.slice(startIndex, endIndex);
+            }
+        }
+    };
+
+    const listPagination = (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            {!paginationEnabled ? (
+                <Button onClick={handleShowPagination}>{t('tonies.tonies.showPagination')}</Button>
+            ) : (
+                <ToniesPagination
+                    currentPage={currentPage}
+                    onChange={handlePageSizeChange}
+                    total={filteredTonies.length > 0 ? filteredTonies.length : tonieCards.length}
+                    pageSize={pageSize}
+                    additionalButtonOnClick={handleShowAll}
+                />
+            )}
+        </div>
+    );
 
     return (
         <div className="tonies-list-container">
@@ -168,6 +262,8 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                         </div></Panel>
                 </Collapse>) : ""}
             <List
+                header={listPagination}
+                footer={listPagination}
                 grid={{
                     gutter: 16,
                     xs: 1,
@@ -177,23 +273,15 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[], showFilter: bo
                     xl: 4,
                     xxl: 6
                 }}
-                pagination={{
-                    showSizeChanger: true,
-                    defaultPageSize: 24,
-                    pageSizeOptions: ["24", "48", "96", "192"],
-                    position: "both",
-                    style: { marginBottom: "16px" },
-                    locale: {
-                        items_per_page: t('tonies.tonies.pageSelector'),
-                    }
-                }}
-                dataSource={filteredTonies}
+                dataSource={getCurrentPageData()}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>
                         <TonieCard tonieCard={tonie} lastRUIDs={lastTonieboxRUIDs} />
                     </List.Item>
                 )}
             />
+
+
         </div>
     );
 };

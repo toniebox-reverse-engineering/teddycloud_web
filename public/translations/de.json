@@ -48,6 +48,8 @@
       "navigationTitle": "Tonies",
       "pageSelector": " Tonies / Seite",
       "title": "Tonies",
+      "showPagination": "Pagination einblenden",
+      "showAll": "Zeige alle",
       "filterBar": {
         "showFilters": "Filter einblenden",
         "hideFilters": "Filter ausblenden",
@@ -169,7 +171,12 @@
     "title": "Community",
     "contribution": {
       "navigationTitle": "Contribution",
-      "title": "Contribution"
+      "title": "Contribution",
+      "toniesJson": {
+        "navigationTitle": "tonies.json",
+        "title": "Contribute tonies.json",
+        "text": "Ihr könnt uns gerne unterstützen, indem ihr uns die fehlenden Daten der unten aufgeführten Tonies zukommen lasst. Perspektivisch wird dies in TeddyCloud direkt möglich sein, momentan könnt ihr dazu TeddyBench nutzen. Wir danken euch schon einmal!"
+      }
     },
     "contributors": {
       "navigationTitle": "Contributors",

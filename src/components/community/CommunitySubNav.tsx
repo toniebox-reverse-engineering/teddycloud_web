@@ -1,5 +1,5 @@
 import { MenuProps } from "antd";
-import { LikeOutlined, CommentOutlined, DeploymentUnitOutlined, FireOutlined, BranchesOutlined } from "@ant-design/icons";
+import { LikeOutlined, CommentOutlined, DeploymentUnitOutlined, FireOutlined, BranchesOutlined, FileTextOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -16,8 +16,15 @@ export const CommunitySubNav = () => {
     },
     {
       key: "contribution",
-      label: <Link to="/community/contribution">{t("community.contribution.navigationTitle")}</Link>,
+      label: <Link to="/community/contribution" style={{ color: "currentColor" }}>{t("community.contribution.navigationTitle")}</Link>,
       icon: React.createElement(DeploymentUnitOutlined),
+      children: [
+        {
+          key: "toniesJson",
+          label: <Link to="/community/contribution/tonies-json">{t("community.contribution.toniesJson.navigationTitle")}</Link>,
+          icon: React.createElement(FileTextOutlined),
+        },
+      ]
     },
     {
       key: "contributors",
