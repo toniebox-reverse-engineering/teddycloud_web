@@ -81,7 +81,7 @@ export const HomePage = () => {
           </Paragraph>
           <Paragraph>
             <h2>{t("home.yourTonies")}</h2>
-            <ToniesList tonieCards={tonies.filter(tonie => tonie.type === 'tag' && tonie.tonieInfo.series && !tonie.nocloud).slice(0, 5)} />
+            <ToniesList tonieCards={tonies.filter(tonie => tonie.type === 'tag' && tonie.tonieInfo.series && !tonie.nocloud).slice(0, 6)} />
             <Button><Link to="/tonies">{t("home.toAllYourTonies")} ({tonies.filter(tonie => tonie.type === 'tag').length})</Link></Button>
           </Paragraph>
           <Paragraph>

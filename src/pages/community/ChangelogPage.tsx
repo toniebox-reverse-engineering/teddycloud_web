@@ -19,6 +19,28 @@ export const ChangelogPage = () => {
 
   const changelogData = [
     {
+      version: "0.5.1",
+      changes: [
+        "Stabilization Backend (added locks to prevent crashes, removed memory leaks)",
+        "Creating dirs when uploading certificates to a not yet existing path",
+        "Moving Tafs from Content to Library on click (not yet available in (new?) frontend)",
+        "new /web gui: Pagination + Filtering on Tonies List ( Paging Tonies · Issue #24 · toniebox-reverse-engineering/teddycloud_web · GitHub 2 )",
+        "new /web gui: Extend Box Management: Certificate upload now box specific possible, overworked certificate upload ( Certificate upload box related · Issue #26 · toniebox-reverse-engineering/teddycloud_web · GitHub )",
+        "new /web gui: Show last played Tonie on Box Management, link to prefiltered Tonieslist, added marking of the Last played Tonies on each box in Tonieslist ( Make use of internal.last_ruid · Issue #30 · toniebox-reverse-engineering/teddycloud_web · GitHub 1 )",
+        "new /web gui: adapted cursor on cards to default as cards not really clickable ( TonieCard Cursor · Issue #25 · toniebox-reverse-engineering/teddycloud_web · GitHub )",
+        "new /web gui: fixed navigation item marking",
+        "new /web gui: updated box models, added pseudomodels of the official tonies covers (sleepy bear, sheep and rabbit). They are now placed in a json in the config folder. Custom tonieboxes are now also possible. Add your customised one in tonieboxes.custom.json and choose it in the box mgmt.",
+        "new /web gui: added community section (WIP) ( Add Changelog and contribution page · Issue #27 · toniebox-reverse-engineering/teddycloud_web · GitHub 1 )",
+        "new /web gui: fixed warnings"
+      ],
+      commits: [
+        "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.0...tc_v0.5.1",
+        "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.0...tcw_v0.5.1"
+      ],
+      discussionLink: "https://forum.revvox.de/t/release-notes-0-5-1/447",
+      githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.5.1"
+    },
+    {
       version: "0.5.0",
       changes: [
         "security mitigations on public instances as it‘s definitely not recommended to host teddycloud in public accessible for all",

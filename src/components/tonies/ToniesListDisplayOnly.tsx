@@ -11,7 +11,7 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
                 md: 2,
                 lg: 3,
                 xl: 4,
-                xxl: 5,
+                xxl: 6,
             }}
             dataSource={tonieCards}
             renderItem={(tonie) => (
