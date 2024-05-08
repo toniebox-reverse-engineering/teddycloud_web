@@ -36,7 +36,7 @@ export const UiTest = () => {
 
   return (
     <>
-      <Sider width={200} style={{ background: "#FFF" }}>
+      <Sider width={200}>
         <Menu
           mode="inline"
           //defaultSelectedKeys={["1"]}
@@ -56,7 +56,6 @@ export const UiTest = () => {
             padding: 24,
             margin: 0,
             minHeight: 280,
-            background: "#FFF",
           }}
         >
           <p>{t(`welcome.title`)}</p>

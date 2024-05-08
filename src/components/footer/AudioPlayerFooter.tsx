@@ -184,8 +184,7 @@ const styles = {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '10px',
-        backgroundColor: '#333',
-        color: '#fff',
+        backgroundColor: '#333'
     },
     controls: {
         display: 'flex',
@@ -194,8 +193,7 @@ const styles = {
     controlButton: {
         fontSize: '24px',
         margin: '0 10px',
-        cursor: 'pointer',
-        color: '#fff',
+        cursor: 'pointer'
     },
     trackInfo: {
         display: 'flex',

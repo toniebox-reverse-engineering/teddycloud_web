@@ -33,7 +33,7 @@ const StyledLeftPart = styled.div`
   align-items: center;
 `;
 
-export const StyledHeader = () => {
+export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) => {
   const { t } = useTranslation();
   const [navOpen, setNavOpen] = useState(false);
   const location = useLocation();
@@ -83,6 +83,7 @@ export const StyledHeader = () => {
       </HiddenMobile>
       <StyledRightPart>
         <ServerStatus />
+        {themeSwitch}
         <StyledLanguageSwitcher />
         <HiddenDesktop>
           <Button
@@ -97,7 +98,6 @@ export const StyledHeader = () => {
             onClose={() => setNavOpen(false)}
           >
             <Menu mode="vertical" items={mainNav} selectedKeys={[selectedKey]} />
-            <StyledLanguageSwitcher />
           </Drawer>
         </HiddenDesktop>
       </StyledRightPart>
