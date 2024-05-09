@@ -43,6 +43,7 @@
   "tonies": {
     "navigationTitle": "Tonies",
     "title": "Tonies",
+    "unsetTonie": "Undefined Tonie",
     "tonies": {
       "navigationTitle": "Tonies",
       "pageSelector": " tonies / page",
@@ -139,7 +140,7 @@
       "selectFile": "Select TAF-file"
     },
     "informationModal": {
-      "unknownModel": "Unknwown Model",
+      "unknownModel": "Unknown Model",
       "ok": "OK"
     }
   },

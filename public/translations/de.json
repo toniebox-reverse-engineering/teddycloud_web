@@ -44,6 +44,7 @@
   "tonies": {
     "navigationTitle": "Tonies",
     "title": "Tonies",
+    "unsetTonie": "Undefinierter Tonie",
     "tonies": {
       "navigationTitle": "Tonies",
       "pageSelector": " Tonies / Seite",
