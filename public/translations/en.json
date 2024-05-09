@@ -43,7 +43,7 @@
   "tonies": {
     "navigationTitle": "Tonies",
     "title": "Tonies",
-    "unsetTonie": "Undefined Tonie",
+    "unsetTonie": "Tonie/Tag",
     "tonies": {
       "navigationTitle": "Tonies",
       "pageSelector": " tonies / page",
