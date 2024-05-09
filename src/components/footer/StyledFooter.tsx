@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 const StyledFooterComponent = styled(Footer)`
   position: fixed;
   bottom: 0;
+  z-index: 10;
   width: 100%;
   display: flex;
   flex-direction: column;

@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, Alert } from "antd";
 import { Link } from 'react-router-dom'; // Import Link from React Router
 import { useTranslation } from "react-i18next";
@@ -83,21 +84,19 @@ export const SettingsPage = () => {
             >
               {options?.options?.map((option, index, array) => {
                 const parts = option.iD.split(".");
-                const lastParts = array[index - 1]
-                  ? array[index - 1].iD.split(".")
-                  : [];
+                const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
                 return (
-                  <>
-                    {parts.slice(0, -1).map((part, index) => {
-                      if (lastParts[index] !== part) {
-                        if (index === 0) {
+                  <React.Fragment key={index}>
+                    {parts.slice(0, -1).map((part, partIndex) => {
+                      if (lastParts[partIndex] !== part) {
+                        if (partIndex === 0) {
                           return (
                             <h3
                               style={{
-                                marginLeft: `${index * 20}px`,
+                                marginLeft: `${partIndex * 20}px`,
                                 marginBottom: "10px",
                               }}
-                              key={index}
+                              key={`category-${part}`}
                             >
                               Category {part}
                             </h3>
@@ -106,11 +105,11 @@ export const SettingsPage = () => {
                           return (
                             <h4
                               style={{
-                                marginLeft: `${index * 10}px`,
+                                marginLeft: `${partIndex * 10}px`,
                                 marginTop: "10px",
                                 marginBottom: "10px",
                               }}
-                              key={index}
+                              key={`category-${part}`}
                             >
                               .{part}
                             </h4>
@@ -119,9 +118,8 @@ export const SettingsPage = () => {
                       }
                       return null;
                     })}
-
-                    <OptionItem option={option} noOverlay={true} />
-                  </>
+                    <OptionItem option={option} noOverlay={true} key={option.iD} />
+                  </React.Fragment>
                 );
               })}
             </Form>
