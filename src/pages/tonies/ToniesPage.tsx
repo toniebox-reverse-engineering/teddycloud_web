@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  HiddenDesktop, StyledBreadcrumb, StyledContent, StyledLayout, StyledSider
-} from '../../components/StyledComponents';
+import { HiddenDesktop, StyledBreadcrumb, StyledContent, StyledLayout, StyledSider } from '../../components/StyledComponents';
 import { TonieCardProps } from '../../components/tonies/TonieCard'; // Import the TonieCard component and its props type
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
@@ -14,13 +12,10 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const ToniesPage = () => {
   const { t } = useTranslation();
-
-  // Define the state with TonieCardProps[] type
   const [tonies, setTonies] = useState<TonieCardProps[]>([]);
 
   useEffect(() => {
     const fetchTonies = async () => {
-      // Perform API call to fetch Tonie data
       const tonieData = await api.apiGetTagIndex();
       setTonies(tonieData.sort((a, b) => {
         if (a.tonieInfo.series < b.tonieInfo.series) {

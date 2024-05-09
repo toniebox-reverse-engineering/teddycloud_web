@@ -22,6 +22,14 @@ code {
   background: #141414;
 }
 
+.ant-list-header {
+  border-block-end: none !important;
+}
+
+.ant-menu.ant-menu-root.ant-menu-inline {
+  border-inline-end: none !important;
+}
+
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */

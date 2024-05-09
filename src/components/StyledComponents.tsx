@@ -2,6 +2,10 @@ import { Breadcrumb, Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import Item from "antd/es/list/Item";
 import styled from "styled-components";
+import { theme } from 'antd';
+
+const { useToken } = theme;
+const useThemeToken = () => useToken().token;
 
 export const StyledSubMenu = styled(Menu)`
   height: 100%;
@@ -13,6 +17,7 @@ export const StyledSider = styled(Sider)`
   @media (max-width: 768px) {
     display: none;
   }
+  margin: 8px;
 `;
 
 export const StyledLayout = styled(Layout)`
@@ -27,6 +32,7 @@ export const StyledContent = styled(Layout.Content)`
   padding: 24px;
   margin: 0;
   min-height: 280px;
+  background: ${() => useThemeToken().colorBgContainer};
 `;
 
 export const HiddenDesktop = styled.span`

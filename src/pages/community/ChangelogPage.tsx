@@ -24,6 +24,8 @@ export const ChangelogPage = () => {
         "Stabilization backend",
         "Fixed bug backend crashs when changing any tonie setting",
         "Fix for random directories in library (and everywhere)",
+        "Fixed bug storing last played tonie per box",
+        "Save IP of Toniebox as prepartion for linking CFW Tonieboxes",
         "new /web gui: enhanced Tonies Card, added editable content source",
         "new /web gui: enhanced Toniebox Card, improved UX",
         "new /web gui: Dark theme (Last used Theme stored in localStorage in Browser)",
