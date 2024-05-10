@@ -405,7 +405,7 @@ export const TonieboxCard: React.FC<{
         <>
             {contextHolder}
             <Card
-                hoverable
+                hoverable={false}
                 size="default"
                 style={{ cursor: "default" }}
                 title={<span>{tonieboxName}</span>}
