@@ -31,11 +31,9 @@ export const ToniesPage = () => {
     const [tonieBoxContentDirs, setTonieboxContentDirs] = useState<Array<[string, string[], string]>>([]);
     const [overlay, setOverlay] = useState(() => {
         if (linkOverlay !== null) {
-            console.log("LinkOverlay: ", linkOverlay);
             localStorage.setItem("overlay", linkOverlay);
             return linkOverlay;
         } else {
-            console.log("storedOverlay");
             const savedOverlay = localStorage.getItem("overlay");
             return savedOverlay ? savedOverlay : "TC Default";
         }
