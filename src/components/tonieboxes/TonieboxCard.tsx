@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Typography, Card, Button, Input, message, Modal, Divider, Select } from "antd";
+import { Typography, Card, Button, Input, message, Modal, Divider, Select, theme } from "antd";
 import {
     EditOutlined,
     SafetyCertificateOutlined,
@@ -20,6 +20,7 @@ import GetBoxModelImages from "../../util/boxModels";
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph, Text } = Typography;
 const { Meta } = Card;
+const { useToken } = theme;
 
 export type TonieboxCardList = {
     boxes: TonieboxCardProps[];
@@ -44,6 +45,8 @@ export const TonieboxCard: React.FC<{
     tonieboxImages: TonieboxImage[];
 }> = ({ tonieboxCard, tonieboxImages }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
+
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
@@ -349,7 +352,7 @@ export const TonieboxCard: React.FC<{
                         <CloseOutlined
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
-                                color: boxName === tonieboxName ? "lightgray" : "",
+                                color: boxName === tonieboxName ? token.colorTextDisabled : "",
                             }}
                         />
                     }
@@ -440,7 +443,7 @@ export const TonieboxCard: React.FC<{
                         ) : (
                             <WifiOutlined
                                 style={{
-                                    color: "lightgrey",
+                                    color: token.colorTextDescription,
                                     cursor: "default",
                                 }}
                                 title="offline"

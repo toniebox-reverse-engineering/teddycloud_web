@@ -9,7 +9,7 @@ import {
     RetweetOutlined,
     SaveFilled,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Input, Modal, Typography, message } from "antd";
+import { Button, Card, Divider, Input, Modal, Typography, message, theme } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -19,6 +19,7 @@ import { TonieArticleSearch } from "./TonieArticleSearch";
 
 const { Meta } = Card;
 const { Text } = Typography;
+const { useToken } = theme;
 
 export type TagsTonieCardList = {
     tags: TonieCardProps[];
@@ -49,6 +50,7 @@ export const TonieCard: React.FC<{
     lastRUIDs: Array<[string, string]>;
 }> = ({ tonieCard, lastRUIDs }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
     const [isLive, setIsLive] = useState(tonieCard.live);
     const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
     const [messageApi, contextHolder] = message.useMessage();
@@ -401,16 +403,19 @@ export const TonieCard: React.FC<{
                     ) : downloadTriggerUrl.length > 0 ? (
                         <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
                     ) : (
-                        <PlayCircleOutlined key="playpause" style={{ color: "lightgray" }} />
+                        <PlayCircleOutlined
+                            key="playpause"
+                            style={{ cursor: "default", color: token.colorTextDisabled }}
+                        />
                     ),
                     <CloudSyncOutlined
                         key="nocloud"
-                        style={{ color: isNoCloud ? "red" : "lightgray" }}
+                        style={{ color: isNoCloud ? "red" : token.colorTextDisabled }}
                         onClick={handleNoCloudClick}
                     />,
                     <RetweetOutlined
                         key="live"
-                        style={{ color: isLive ? "red" : "lightgray" }}
+                        style={{ color: isLive ? "red" : token.colorTextDisabled }}
                         onClick={handleLiveClick}
                     />,
                 ]}
