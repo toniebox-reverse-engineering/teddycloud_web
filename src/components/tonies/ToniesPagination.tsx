@@ -1,6 +1,6 @@
-import React from 'react';
-import { Pagination, Button } from 'antd';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import { Pagination, Button } from "antd";
+import { useTranslation } from "react-i18next";
 
 interface ToniesPaginationProps {
     currentPage: number;
@@ -15,7 +15,7 @@ const ToniesPagination: React.FC<ToniesPaginationProps> = ({
     onChange,
     total,
     pageSize,
-    additionalButtonOnClick
+    additionalButtonOnClick,
 }) => {
     const { t } = useTranslation();
 
@@ -28,11 +28,11 @@ const ToniesPagination: React.FC<ToniesPaginationProps> = ({
                 onChange={onChange}
                 showSizeChanger
                 pageSizeOptions={["24", "48", "96", "192"]}
-                locale={{ items_per_page: t('tonies.tonies.pageSelector') }}
-                style={{ margin: '0 16px' }}
+                locale={{ items_per_page: t("tonies.tonies.pageSelector") }}
+                style={{ margin: "0 16px" }}
             />
-            <Button onClick={additionalButtonOnClick} style={{ marginRight: '8px' }}>
-                {t('tonies.tonies.showAll')}
+            <Button onClick={additionalButtonOnClick} style={{ marginRight: "8px" }}>
+                {t("tonies.tonies.showAll")}
             </Button>
         </>
     );

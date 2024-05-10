@@ -1,5 +1,5 @@
-import { List } from 'antd';
-import { TonieCard, TonieCardProps } from '../../components/tonies/TonieCardDisplayOnly';
+import { List } from "antd";
+import { TonieCard, TonieCardProps } from "../../components/tonies/TonieCardDisplayOnly";
 
 export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCards }) => {
     return (
@@ -20,5 +20,5 @@ export const ToniesList: React.FC<{ tonieCards: TonieCardProps[] }> = ({ tonieCa
                 </List.Item>
             )}
         />
-    )
-}
+    );
+};
