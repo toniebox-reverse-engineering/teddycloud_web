@@ -1,5 +1,5 @@
-import React from 'react';
-import { useAudioContext } from './AudioContext';
+import React from "react";
+import { useAudioContext } from "./AudioContext";
 
 const StartAudio: React.FC<{ audioUrl: string }> = ({ audioUrl }) => {
     const { playAudio } = useAudioContext();
@@ -8,9 +8,7 @@ const StartAudio: React.FC<{ audioUrl: string }> = ({ audioUrl }) => {
         playAudio(audioUrl);
     };
 
-    return (
-        <button onClick={handleStartAudio}>Start Audio</button>
-    );
+    return <button onClick={handleStartAudio}>Start Audio</button>;
 };
 
 export default StartAudio;
