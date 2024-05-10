@@ -22,7 +22,7 @@ export const ContentPage = () => {
     const [tonieBoxContentDirs, setTonieboxContentDirs] = useState<Array<[string, string[], string]>>([]);
     const [overlay, setOverlay] = useState(() => {
         const savedOverlay = localStorage.getItem("overlay");
-        return savedOverlay ? savedOverlay : "TC Default";
+        return savedOverlay ? savedOverlay : "";
     });
 
     useEffect(() => {
@@ -57,7 +57,11 @@ export const ContentPage = () => {
                 []
             );
 
-            groupedContentDirs.push(["", ["TeddyCloud Default Content Dir"], ""]);
+            const contentDir = await api.apiGetTonieboxContentDir("");
+            const existingGroupIndex = groupedContentDirs.findIndex((group) => group[0] === contentDir);
+            if (existingGroupIndex === -1) {
+                groupedContentDirs.push(["", ["TeddyCloud Default Content Dir"], ""]);
+            }
 
             const updatedContentDirs: [string, string[], string][] = groupedContentDirs.map(
                 ([contentDir, boxNames, boxId]) => [contentDir, boxNames, boxId]
@@ -106,10 +110,11 @@ export const ContentPage = () => {
                             onChange={handleSelectChange}
                             style={{ maxWidth: "300px" }}
                             value={overlay}
+                            title={t("tonies.content.showToniesOfBoxes")}
                         >
                             {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
                                 <Option key={boxId} value={boxId}>
-                                    {boxNames}
+                                    {boxNames.join(", ")}
                                 </Option>
                             ))}
                         </Select>

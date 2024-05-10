@@ -79,7 +79,8 @@
     "content": {
       "navigationTitle": "Content",
       "title": "Content",
-      "toniePicture": "Tonie Bild"
+      "toniePicture": "Tonie Bild",
+      "showToniesOfBoxes": "Inhalte der folgenden Tonieboxen anzeigen"
     },
     "library": {
       "navigationTitle": "Library",
