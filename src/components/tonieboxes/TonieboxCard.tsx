@@ -191,12 +191,12 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
                 headers: {
                     "Content-Type": "text/plain",
                 },
-            }).then(() => {
+                }).then(() => {
                     triggerWriteConfig();
-                })
-                .catch((e) => {
+                }).catch((e) => {
                     message.error(t("tonieboxes.editModelModal.errorWhileSavingConfig"));
-                });
+                }
+            );
             message.success(t("tonieboxes.editModelModal.successOnModelChange"));
         } catch (error) {
             message.error(
@@ -219,12 +219,12 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
                 headers: {
                     "Content-Type": "text/plain",
                 },
-            }).then(() => {
+                }).then(() => {
                     triggerWriteConfig();
-                })
-                .catch((e) => {
+                }).catch((e) => {
                     message.error(t("tonieboxes.editModelModal.errorWhileSavingConfig"));
-                });
+                }
+            );
             message.success(t("tonieboxes.editModelModal.successOnNameChange"));
         } catch (error) {
             message.error(
