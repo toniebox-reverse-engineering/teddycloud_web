@@ -438,11 +438,12 @@ export const TonieCard: React.FC<{
                         ? { borderTop: "3px #1677ff inset" }
                         : { paddingTop: "2px" }
                 }
-                title={tonieCard.tonieInfo.series}
+                title={tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                 cover={
                     <img
                         alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
                         src={tonieCard.tonieInfo.picture}
+                        style={tonieCard.tonieInfo.picture.includes('unknown') ? {paddingTop: "10px"} : {}}
                     />
                 }
                 actions={[

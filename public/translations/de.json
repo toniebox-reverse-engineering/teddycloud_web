@@ -44,6 +44,7 @@
   "tonies": {
     "navigationTitle": "Tonies",
     "title": "Tonies",
+    "unsetTonie": "Tonie/Tag",
     "tonies": {
       "navigationTitle": "Tonies",
       "pageSelector": " Tonies / Seite",
@@ -149,18 +150,24 @@
     "title": "Deine Tonieboxen",
     "lastPlayedTonie": "Zuletzt gespielter Tonie: ",
     "editModelModal": {
-      "editModel": "Toniebox {{name}} bearbeiten",
+      "editModel": "Toniebox \"{{name}}\" bearbeiten",
       "placeholderSearchForAModel": "Wähle deine Farbvariante aus",
       "name": "Bezeichnung",
-      "model": "Modell:"
+      "model": "Modell",
+      "unsetBoxName": "Modell unbekannt/ungesetzt",
+      "errorOnNameChange": "Fehler beim Speichern des Namens: {{error}}",
+      "successOnNameChange": "Der Name der Toniebox wurde geändert",
+      "errorOnModelChange": "Fehler beim Speichern des Models: {{error}}",
+      "successOnModelChange": "Das Model der Toniebox wurde geändert",
+      "errorWhileSavingConfig": "Fehler beim Speichern der Einstellungen"
     },
     "editTonieboxSettingsModal": {
       "editTonieboxSettingsLabel": "Einstellungen",
-      "editTonieboxSettings": "Einstellungen der Toniebox {{name}} bearbeiten"
+      "editTonieboxSettings": "Einstellungen der Toniebox \"{{name}}\" bearbeiten"
     },
     "uploadTonieboxCertificatesModal": {
       "Label": "Zertifikate",
-      "uploadTonieboxCertificates": "Zertifikate für Toniebox {{name}} hochladen",
+      "uploadTonieboxCertificates": "Zertifikate für Toniebox \"{{name}}\" hochladen",
       "uploadPath": "Upload Pfad (certDir):",
       "boxSpecific": " (Toniebox spezifisch hinterlegt)",
       "AttentionGeneralPath": "(ACHTUNG: Default Pfad!)"
