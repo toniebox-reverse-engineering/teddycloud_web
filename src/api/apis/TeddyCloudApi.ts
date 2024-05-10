@@ -160,6 +160,36 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+    * get toniebox content dir
+    */
+    async apiGetTonieboxContentDirRaw(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/core.contentdir`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request({
+            path: path,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.TextApiResponse(response);
+    }
+
+    /**
+     * get toniebox content dir
+     */
+    async apiGetTonieboxContentDir(overlay: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.apiGetTonieboxContentDirRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * get security mit alert
      */
     async apiGetSecurityMITAlertRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<boolean>> {
@@ -189,12 +219,17 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all tags
      */
-    async apiGetTagIndexRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TagsTonieCardList>> {
+    async apiGetTagIndexRaw(overlay?: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TagsTonieCardList>> {
         const queryParameters: any = {};
         const headerParameters: runtime.HTTPHeaders = {};
 
+        let path = `/api/getTagIndex`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
         const response = await this.request({
-            path: `/api/getTagIndex`,
+            path: path,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -204,9 +239,30 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     /**
      * get all tags
      */
-    async apiGetTagIndex(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieCardProps[]> {
-        const response = await this.apiGetTagIndexRaw(initOverrides);
+    async apiGetTagIndex(overlay?: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieCardProps[]> {
+        const response = await this.apiGetTagIndexRaw(overlay, initOverrides);
         return (await response.value()).tags;
+    }
+
+    async apiGetTagIndexMergedAllOverlays(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TonieCardProps[]> {
+        const tonieboxData = await this.apiGetTonieboxesIndex();
+
+        // Fetch tag index for each toniebox and merge the results into one array
+        const mergedTonieCards: TonieCardProps[][] = await Promise.all(tonieboxData.map(async toniebox => {
+            const tonieCards = await this.apiGetTagIndex(toniebox.ID, initOverrides);
+            return tonieCards;
+        }));
+
+        const flattenedTonieCards = mergedTonieCards.flat();
+
+        // Filter out duplicates based on the ruid AND source property (assume some tags have different content in each overlay)
+        const uniqueTonieCards = flattenedTonieCards.filter((tag, index, self) =>
+            index === self.findIndex(t => (
+                t.ruid === tag.ruid && t.source === tag.source
+            ))
+        );
+
+        return uniqueTonieCards;
     }
 
     /**

@@ -37,7 +37,7 @@ export const HomePage = () => {
 
     const fetchTonies = async () => {
       // Perform API call to fetch Tonie data
-      const tonieData = await api.apiGetTagIndex();
+      const tonieData = await api.apiGetTagIndexMergedAllOverlays();
       // sort random
       setTonies(tonieData.sort((a, b) => {
         if (Math.random() > 0.5) {

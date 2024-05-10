@@ -48,6 +48,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                 !option.iD.includes("core.certdir") &&
                 !option.iD.includes("core.client_cert.") &&
                 !option.iD.includes("core.flex_") &&
+                !option.iD.includes("core.contentdir") &&
                 !option.iD.includes("toniebox.") &&
                 !option.iD.includes("cloud.enabled") &&
                 !option.iD.includes("cloud.enableV1Claim") &&
