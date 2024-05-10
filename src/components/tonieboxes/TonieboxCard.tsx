@@ -1,30 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import {
-    Typography,
-    Card,
-    Button,
-    Input,
-    message,
-    Modal,
-    Divider,
-    Select,
-} from "antd";
-import {
-    EditOutlined,
-    SafetyCertificateOutlined,
-    CloseOutlined,
-    SettingOutlined,
-    WifiOutlined,
-    SaveFilled,
-} from "@ant-design/icons";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { OptionsList, TeddyCloudApi } from "../../api";
-import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
-import { TonieCardProps } from "../../components/tonies/TonieCard";
-import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
-import GetBoxModelImages from "../../util/boxModels";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Typography, Card, Button, Input, message, Modal, Divider, Select } from 'antd';
+import { EditOutlined, SafetyCertificateOutlined, CloseOutlined, SettingOutlined, WifiOutlined, SaveFilled } from '@ant-design/icons';
+import { defaultAPIConfig } from '../../config/defaultApiConfig';
+import { OptionsList, TeddyCloudApi } from '../../api';
+import { TonieboxSettingsPage } from './TonieboxSettingsPage';
+import { TonieCardProps } from '../../components/tonies/TonieCard';
+import { CertificateDragNDrop } from '../form/CertificatesDragAndDrop';
+import GetBoxModelImages from '../../util/boxModels';
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph, Text } = Typography;
