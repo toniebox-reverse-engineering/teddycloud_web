@@ -2,7 +2,7 @@ import { Breadcrumb, Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import Item from "antd/es/list/Item";
 import styled from "styled-components";
-import { theme } from 'antd';
+import { theme } from "antd";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
