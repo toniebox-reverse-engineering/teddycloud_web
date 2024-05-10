@@ -181,19 +181,11 @@ export const ToniesList: React.FC<{
 
     const getCurrentPageData = () => {
         if (showAll) {
-            if (filteredTonies.length > 0) {
-                return filteredTonies;
-            } else {
-                return tonieCards;
-            }
+            return filteredTonies;
         } else {
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = startIndex + pageSize;
-            if (filteredTonies.length > 0) {
-                return filteredTonies.slice(startIndex, endIndex);
-            } else {
-                return tonieCards.slice(startIndex, endIndex);
-            }
+            return filteredTonies.slice(startIndex, endIndex);
         }
     };
 
