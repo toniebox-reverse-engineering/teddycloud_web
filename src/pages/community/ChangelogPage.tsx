@@ -30,6 +30,7 @@ export const ChangelogPage = () => {
                 "new /web gui: enhanced Toniebox Card, improved UX",
                 "new /web gui: Dark theme (Last used Theme stored in localStorage in Browser)",
                 "new /web gui: Show All (Hide Pagination on Tonies List, stored in localStorage in Browser)",
+                "new /web gui: Tonies pages now are shown on base of used content folder (can be choosen if different are used by tonieboxes)"
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.1...tc_v0.5.2",
