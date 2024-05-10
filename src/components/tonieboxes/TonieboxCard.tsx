@@ -195,13 +195,9 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
                     triggerWriteConfig();
                 })
                 .catch((e) => {
-                    message.error(
-                        t("tonieboxes.editModelModal.errorWhileSavingConfig")
-                    );
+                    message.error(t("tonieboxes.editModelModal.errorWhileSavingConfig"));
                 });
-            message.success(
-                t("tonieboxes.editModelModal.successOnModelChange")
-            );
+            message.success(t("tonieboxes.editModelModal.successOnModelChange"));
         } catch (error) {
             message.error(
                 t("tonieboxes.editModelModal.errorOnModelChange", {
@@ -227,9 +223,7 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
                     triggerWriteConfig();
                 })
                 .catch((e) => {
-                    message.error(
-                        t("tonieboxes.editModelModal.errorWhileSavingConfig")
-                    );
+                    message.error(t("tonieboxes.editModelModal.errorWhileSavingConfig"));
                 });
             message.success(t("tonieboxes.editModelModal.successOnNameChange"));
         } catch (error) {
@@ -360,12 +354,8 @@ export const TonieboxCard: React.FC<{ tonieboxCard: TonieboxCardProps, tonieboxI
                     {options?.options?.find(
                         (option: { iD: string }) => option.iD === "core.certdir"
                     )?.overlayed
-                        ? t(
-                              "tonieboxes.uploadTonieboxCertificatesModal.boxSpecific"
-                          )
-                        : t(
-                              "tonieboxes.uploadTonieboxCertificatesModal.AttentionGeneralPath"
-                          )}
+                        ? t("tonieboxes.uploadTonieboxCertificatesModal.boxSpecific")
+                        : t("tonieboxes.uploadTonieboxCertificatesModal.AttentionGeneralPath")}
                 </small>
             </Paragraph>
             <CertificateDragNDrop overlay={tonieboxCard.ID} />
