@@ -95,7 +95,11 @@ export const ToniesPage = () => {
                             ))}
                         </Select>
                     </div>
-                    <ToniesList showFilter={true} tonieCards={tonies.filter((tonie) => tonie.type === "tag")} />
+                    <ToniesList
+                        showFilter={true}
+                        tonieCards={tonies.filter((tonie) => tonie.type === "tag")}
+                        overlay={overlay}
+                    />
                 </StyledContent>
             </StyledLayout>
         </>

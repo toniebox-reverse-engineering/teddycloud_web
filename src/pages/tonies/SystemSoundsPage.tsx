@@ -93,7 +93,11 @@ export const SystemSoundsPage = () => {
                             ))}
                         </Select>
                     </div>
-                    <ToniesList showFilter={false} tonieCards={tonies.filter((tonie) => tonie.type === "system")} />
+                    <ToniesList
+                        showFilter={false}
+                        tonieCards={tonies.filter((tonie) => tonie.type === "system")}
+                        overlay={overlay}
+                    />
                 </StyledContent>
             </StyledLayout>
         </>

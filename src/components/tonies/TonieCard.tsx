@@ -48,7 +48,8 @@ export type TonieCardProps = {
 export const TonieCard: React.FC<{
     tonieCard: TonieCardProps;
     lastRUIDs: Array<[string, string]>;
-}> = ({ tonieCard, lastRUIDs }) => {
+    overlay: string;
+}> = ({ tonieCard, lastRUIDs, overlay }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [isLive, setIsLive] = useState(tonieCard.live);
@@ -77,7 +78,7 @@ export const TonieCard: React.FC<{
     }, [tonieCard]);
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
-        if (files.length === 1) {
+        if (files && files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const filePath = prefix + path + "/" + files[0].name;
             setSelectedSource(filePath);
@@ -108,7 +109,7 @@ export const TonieCard: React.FC<{
     };
 
     const handleLiveClick = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -129,7 +130,7 @@ export const TonieCard: React.FC<{
     };
 
     const handleNoCloudClick = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -182,7 +183,7 @@ export const TonieCard: React.FC<{
     };
 
     const handleModelSave = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -203,7 +204,7 @@ export const TonieCard: React.FC<{
     };
 
     const handleSourceSave = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -264,7 +265,7 @@ export const TonieCard: React.FC<{
             maskClosable={true}
             onCancel={() => setInformationModalOpen(false)}
         >
-            {toniePlayedOn.length > 0 ? (
+            {toniePlayedOn && toniePlayedOn.length > 0 ? (
                 <>
                     <strong>{t("tonies.lastPlayedOnModal.lastPlayedOnMessage")}:</strong>
                     <ul>
@@ -285,7 +286,7 @@ export const TonieCard: React.FC<{
                     <strong>{t("tonies.infoModal.exists")}</strong>{" "}
                     {tonieCard.exists ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}
                 </p>
-                {tonieCard.tonieInfo.tracks.length > 0 ? (
+                {tonieCard.tonieInfo.tracks && tonieCard.tonieInfo.tracks.length > 0 ? (
                     <>
                         <strong>{t("tonies.infoModal.tracklist")}</strong>
                         <ol>
@@ -386,7 +387,11 @@ export const TonieCard: React.FC<{
                 hoverable={false}
                 key={tonieCard.ruid}
                 size="small"
-                style={toniePlayedOn.length > 0 ? { borderTop: "3px #1677ff inset" } : { paddingTop: "2px" }}
+                style={
+                    toniePlayedOn && toniePlayedOn.length > 0
+                        ? { borderTop: "3px #1677ff inset" }
+                        : { paddingTop: "2px" }
+                }
                 title={tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                 cover={
                     <img
@@ -400,7 +405,7 @@ export const TonieCard: React.FC<{
                     <EditOutlined key="edit" onClick={showModelModal} />,
                     isValid ? (
                         <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
-                    ) : downloadTriggerUrl.length > 0 ? (
+                    ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
                         <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
                     ) : (
                         <PlayCircleOutlined

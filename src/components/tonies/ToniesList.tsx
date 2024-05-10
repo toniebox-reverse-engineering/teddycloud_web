@@ -14,7 +14,8 @@ const STORAGE_KEY = "toniesListState";
 export const ToniesList: React.FC<{
     tonieCards: TonieCardProps[];
     showFilter: boolean;
-}> = ({ tonieCards, showFilter }) => {
+    overlay: string;
+}> = ({ tonieCards, showFilter, overlay }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
@@ -181,11 +182,13 @@ export const ToniesList: React.FC<{
 
     const getCurrentPageData = () => {
         if (showAll) {
-            return filteredTonies;
+            return filteredTonies !== null ? filteredTonies : tonieCards;
         } else {
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = startIndex + pageSize;
-            return filteredTonies.slice(startIndex, endIndex);
+            return filteredTonies !== null
+                ? filteredTonies.slice(startIndex, endIndex)
+                : tonieCards.slice(startIndex, endIndex);
         }
     };
 
@@ -197,7 +200,7 @@ export const ToniesList: React.FC<{
                 <ToniesPagination
                     currentPage={currentPage}
                     onChange={handlePageSizeChange}
-                    total={filteredTonies.length > 0 ? filteredTonies.length : tonieCards.length}
+                    total={filteredTonies !== null ? filteredTonies.length : tonieCards.length}
                     pageSize={pageSize}
                     additionalButtonOnClick={handleShowAll}
                 />
@@ -408,7 +411,7 @@ export const ToniesList: React.FC<{
                 dataSource={getCurrentPageData()}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>
-                        <TonieCard tonieCard={tonie} lastRUIDs={lastTonieboxRUIDs} />
+                        <TonieCard tonieCard={tonie} lastRUIDs={lastTonieboxRUIDs} overlay={overlay} />
                     </List.Item>
                 )}
             />
