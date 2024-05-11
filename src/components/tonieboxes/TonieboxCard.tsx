@@ -50,6 +50,7 @@ export const TonieboxCard: React.FC<{
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
+    const [lastOnline, setLastOnline] = useState<string>("");
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
@@ -105,6 +106,14 @@ export const TonieboxCard: React.FC<{
             }
         };
         fetchTonieboxLastRUID();
+
+        if (!tonieboxStatus) {
+            const fetchTonieboxLastOnline = async () => {
+                const lastOnline = await api.apiGetLastOnline(tonieboxCard.ID);
+                setLastOnline(lastOnline);
+            };
+            fetchTonieboxLastOnline();
+        }
 
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
@@ -438,14 +447,20 @@ export const TonieboxCard: React.FC<{
                 actions={[
                     <>
                         {tonieboxStatus ? (
-                            <WifiOutlined style={{ color: "green", cursor: "default" }} title="online" />
+                            <WifiOutlined
+                                style={{ color: "green", cursor: "default" }}
+                                title={t("tonieboxes.online")}
+                            />
                         ) : (
                             <WifiOutlined
                                 style={{
                                     color: token.colorTextDescription,
                                     cursor: "default",
                                 }}
-                                title="offline"
+                                title={
+                                    t("tonieboxes.offline") +
+                                    (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
+                                }
                             />
                         )}
                     </>,

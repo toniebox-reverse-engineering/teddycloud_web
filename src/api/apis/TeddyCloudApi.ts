@@ -70,6 +70,47 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * get tonieBoxLastOnline
+     */
+    async apiGetLastOnlineRaw(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.last_connection`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.JSONApiResponse<string>(response);
+    }
+
+    /**
+     * get tonieBoxLastOnline
+     */
+    async apiGetLastOnline(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetLastOnlineRaw(overlay, initOverrides);
+        const timestamp = await response.value();
+        const date = new Date(parseInt(timestamp, 10) * 1000);
+        return date.toLocaleString();
+    }
+
+    /**
      * get tonieBoxStatus
      */
     async apiGetTonieboxStatusRaw(
@@ -283,6 +324,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         );
         return new runtime.JSONApiResponse<TagsTonieCardList>(response);
     }
+
     /**
      * get all tags
      */

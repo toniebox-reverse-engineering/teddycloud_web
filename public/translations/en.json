@@ -149,6 +149,9 @@
     "navigationTitle": "Tonieboxes",
     "title": "Your Tonieboxes",
     "lastPlayedTonie": "Last played Tonie: ",
+    "online": "online",
+    "offline": "offline",
+    "lastOnline": "last online",
     "editModelModal": {
       "editModel": "Edit Toniebox \"{{name}}\"",
       "placeholderSearchForAModel": "Select color variant of your Toniebox",

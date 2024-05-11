@@ -53,11 +53,11 @@ export const TonieCard: React.FC<{
 }> = ({ tonieCard, lastRUIDs, overlay, readOnly }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const [isLive, setIsLive] = useState(tonieCard.live);
-    const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
     const [messageApi, contextHolder] = message.useMessage();
-    const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
+    const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
+    const [isLive, setIsLive] = useState(tonieCard.live);
+    const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [audioUrl, setAudioUrl] = useState(tonieCard.audioUrl);
     const { playAudio } = useAudioContext();
 
@@ -93,6 +93,7 @@ export const TonieCard: React.FC<{
     const showFileSelectModal = () => {
         seSelectFileModalOpen(true);
     };
+
     const handleCancelSelectFile = () => {
         setSelectedSource(activeSource);
         seSelectFileModalOpen(false);
@@ -104,6 +105,7 @@ export const TonieCard: React.FC<{
 
         setIsEditModalOpen(true);
     };
+
     const handleSaveChanges = async () => {
         setIsEditModalOpen(false);
         if (activeSource !== selectedSource) handleSourceSave();
@@ -156,11 +158,18 @@ export const TonieCard: React.FC<{
             message.error(t("tonies.messages.sourceCouldNotChangeCloudFlag") + error);
         }
     };
-    const handlePlayPauseClick = () => {
-        playAudio(
-            process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl + (overlay ? `&overlay=${overlay}` : ""),
-            tonieCard.tonieInfo
-        );
+
+    const handlePlayPauseClick = async () => {
+        if (tonieCard.ruid !== undefined) {
+            const url =
+                (process.env.REACT_APP_TEDDYCLOUD_API_URL || "") +
+                "/content/download/" +
+                tonieCard.ruid.substring(0, 8).toUpperCase() +
+                "/500304E0?skip_header=true" +
+                (overlay ? "&overlay=" + overlay : "");
+
+            playAudio(url, tonieCard.tonieInfo);
+        }
     };
 
     const handleBackgroundDownload = async () => {
