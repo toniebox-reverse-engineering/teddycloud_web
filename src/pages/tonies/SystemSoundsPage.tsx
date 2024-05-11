@@ -95,8 +95,10 @@ export const SystemSoundsPage = () => {
                     </div>
                     <ToniesList
                         showFilter={false}
+                        showPagination={true}
                         tonieCards={tonies.filter((tonie) => tonie.type === "system")}
                         overlay={overlay}
+                        readOnly={false}
                     />
                 </StyledContent>
             </StyledLayout>

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, Button, Alert } from "antd";
-import { TonieCardProps } from "../../components/tonies/TonieCardDisplayOnly"; // Import the TonieCardDisplayOnly component and its props type
+import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import the TonieCardDisplayOnly component and its props type
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
-import { ToniesList } from "../../components/tonies/ToniesListDisplayOnly";
+import { ToniesList } from "../../components/tonies/ToniesList";
 
 import {
     HiddenDesktop,
@@ -92,6 +92,10 @@ export const HomePage = () => {
                             tonieCards={tonies
                                 .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series && !tonie.nocloud)
                                 .slice(0, 6)}
+                            overlay=""
+                            showFilter={false}
+                            showPagination={false}
+                            readOnly={true}
                         />
                         <Button>
                             <Link to="/tonies">

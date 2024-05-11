@@ -49,7 +49,8 @@ export const TonieCard: React.FC<{
     tonieCard: TonieCardProps;
     lastRUIDs: Array<[string, string]>;
     overlay: string;
-}> = ({ tonieCard, lastRUIDs, overlay }) => {
+    readOnly: boolean;
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [isLive, setIsLive] = useState(tonieCard.live);
@@ -384,6 +385,45 @@ export const TonieCard: React.FC<{
         </Modal>
     );
 
+    const actions = readOnly
+        ? [
+              <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
+              isValid ? (
+                  <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
+              ) : (
+                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+              ),
+              <CloudSyncOutlined
+                  key="nocloud"
+                  style={{ cursor: "default", color: isNoCloud ? "red" : token.colorTextDisabled }}
+              />,
+              <RetweetOutlined
+                  key="live"
+                  style={{ cursor: "default", color: isLive ? "red" : token.colorTextDisabled }}
+              />,
+          ]
+        : [
+              <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
+              <EditOutlined key="edit" onClick={showModelModal} />,
+              isValid ? (
+                  <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
+              ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
+                  <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
+              ) : (
+                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+              ),
+              <CloudSyncOutlined
+                  key="nocloud"
+                  style={{ color: isNoCloud ? "red" : token.colorTextDisabled }}
+                  onClick={handleNoCloudClick}
+              />,
+              <RetweetOutlined
+                  key="live"
+                  style={{ color: isLive ? "red" : token.colorTextDisabled }}
+                  onClick={handleLiveClick}
+              />,
+          ];
+
     return (
         <>
             {contextHolder}
@@ -404,30 +444,7 @@ export const TonieCard: React.FC<{
                         style={tonieCard.tonieInfo.picture.includes("unknown") ? { paddingTop: "10px" } : {}}
                     />
                 }
-                actions={[
-                    <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
-                    <EditOutlined key="edit" onClick={showModelModal} />,
-                    isValid ? (
-                        <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
-                    ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
-                        <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
-                    ) : (
-                        <PlayCircleOutlined
-                            key="playpause"
-                            style={{ cursor: "default", color: token.colorTextDisabled }}
-                        />
-                    ),
-                    <CloudSyncOutlined
-                        key="nocloud"
-                        style={{ color: isNoCloud ? "red" : token.colorTextDisabled }}
-                        onClick={handleNoCloudClick}
-                    />,
-                    <RetweetOutlined
-                        key="live"
-                        style={{ color: isLive ? "red" : token.colorTextDisabled }}
-                        onClick={handleLiveClick}
-                    />,
-                ]}
+                actions={actions}
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
             </Card>

@@ -14,8 +14,10 @@ const STORAGE_KEY = "toniesListState";
 export const ToniesList: React.FC<{
     tonieCards: TonieCardProps[];
     showFilter: boolean;
+    showPagination: boolean;
     overlay: string;
-}> = ({ tonieCards, showFilter, overlay }) => {
+    readOnly: boolean;
+}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
@@ -397,8 +399,8 @@ export const ToniesList: React.FC<{
                 ""
             )}
             <List
-                header={listPagination}
-                footer={listPagination}
+                header={showPagination ? listPagination : ""}
+                footer={showPagination ? listPagination : ""}
                 grid={{
                     gutter: 16,
                     xs: 1,
@@ -411,7 +413,12 @@ export const ToniesList: React.FC<{
                 dataSource={getCurrentPageData()}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>
-                        <TonieCard tonieCard={tonie} lastRUIDs={lastTonieboxRUIDs} overlay={overlay} />
+                        <TonieCard
+                            tonieCard={tonie}
+                            lastRUIDs={lastTonieboxRUIDs}
+                            overlay={overlay}
+                            readOnly={readOnly}
+                        />
                     </List.Item>
                 )}
             />

@@ -97,8 +97,10 @@ export const ToniesPage = () => {
                     </div>
                     <ToniesList
                         showFilter={true}
+                        showPagination={true}
                         tonieCards={tonies.filter((tonie) => tonie.type === "tag")}
                         overlay={overlay}
+                        readOnly={false}
                     />
                 </StyledContent>
             </StyledLayout>
