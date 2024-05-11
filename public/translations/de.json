@@ -25,7 +25,7 @@
     "information": "Information",
     "hint": "Dies sind die Default-Einstellungen. Einige der Einstellungen können von deinen Toniebox spezifischen Einstellungen überschrieben werden. Um diese zu ändern, gehe zu ",
     "warning": "Achtung!",
-    "warningHint": "Text inputs müssen aktuell gesondert gespeichert werden bis eine bessere Lösung implementiert ist. Klicke dazu auf das Save Icon hinter dem Feld.",
+    "warningHint": "Texteingaben müssen derzeit explizit gespeichert werden, bis eine bessere Lösung implementiert ist. Klicke dazu auf das Speichersymbol am Ende des Feldes.",
     "tonieboxes": "Tonieboxen",
     "overlayed": "überschrieben",
     "general": {
