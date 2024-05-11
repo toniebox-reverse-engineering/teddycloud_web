@@ -154,7 +154,7 @@ export const TonieCard: React.FC<{
     };
 
     const handleBackgroundDownload = async () => {
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.downloadTriggerUrl;
+        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.downloadTriggerUrl + `?overlay=${overlay}`;
         setDownloadTriggerUrl("");
         try {
             messageApi.open({
@@ -166,6 +166,10 @@ export const TonieCard: React.FC<{
             if (!response.ok) {
                 throw new Error(response.status + " " + response.statusText);
             }
+
+            // blob used that message is shown after download finished
+            const blob = await response.blob();
+
             messageApi.destroy();
             messageApi.open({
                 type: "success",

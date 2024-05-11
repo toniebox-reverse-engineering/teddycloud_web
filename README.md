@@ -1,26 +1,85 @@
-# Getting Started with Create React App
+# TeddyCloud next Generation Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the next generation of the TeddyCloud Administration Frontend!
 
-## Typicale development workflow:
+If you are using this repo the first time, have a look in section General React Information first.
 
-### TeddyCloud configuration
+## TeddyCloud configuration
+
 You'll need to allow CORS for your teddyCloud instance used for development. The easisiest variant is to set `CORS Allow-Originⓘ` to `*`.
 
-### NPM Enviroment file '.env'
-Please place an enviroment file '.env.development.local' in the teddycloud_web directory.  
+## NPM Enviroment file '.env'
+
+Please place an enviroment file '.env.development.local' in the teddycloud_web directory.
+
 ```
 REACT_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
 REACT_APP_TEDDYCLOUD_WEB_BASE=/web
 ```
 
-### Install dotenv
-Debian: `sudo apt install python3-dotenv-cli`
-
 ### Start NPM / teddyCloud
-Use `./start_dev.sh` to start the NPM server in development mode. Be patient, it may take a while. 
+
+Use `./start_dev.sh` to start the NPM server in development mode. Be patient, it may take a while.
 Be sure your teddyCloud instance is also running.
 
+## Coding guidelines
+
+There are no complete guidelines defined currently, only some fragments which you shall read and follow.
+
+### Design framework
+
+We are using the AntD framework. If you add anything new, try to use AntD components. AntD provides also a wide range of Icons.
+
+More details about can be found here:
+
+-   [AntD](https://ant.design/)
+-   [AntD Components](https://ant.design/components/overview)
+-   [AntD Icons](https://ant.design/components/icon)
+
+### Usage of Colors
+
+As we support dark and light theme, we ask you to refrain from using explicit color specifications (#000000) and to use the colors provided instead:
+
+If not already added, extend the file with
+
+```typescript
+import { theme } from "antd";
+...
+const { useToken } = theme;
+...
+
+export const TonieCard: React.FC<{
+    overlay: string;
+}> = ({ overlay }) => {
+...
+    const { token } = useToken();
+...
+```
+
+and then you can use:
+
+```typescript
+token.*
+// e.g. token.colorTextDisabled
+```
+
+## Known Weaknesses
+
+### API Definitions
+
+Ideally, the TeddyCloudApi.ts should be generated with swagger.yaml. However, it was actually changed manually and new API functions were added directly. This should be revised in the future. Until then, you should NOT generate the API with the openapitools, as this will break the frontend.
+
+## General React App information
+
+## Getting Started with Create React App
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Typicale development workflow:
+
+### Install dotenv
+
+Debian: `sudo apt install python3-dotenv-cli`
 
 ## Available Scripts
 
