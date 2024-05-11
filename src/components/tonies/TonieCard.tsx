@@ -151,11 +151,17 @@ export const TonieCard: React.FC<{
         }
     };
     const handlePlayPauseClick = () => {
-        playAudio(process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl, tonieCard.tonieInfo);
+        playAudio(
+            process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl + (overlay ? `&overlay=${overlay}` : ""),
+            tonieCard.tonieInfo
+        );
     };
 
     const handleBackgroundDownload = async () => {
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.downloadTriggerUrl + `?overlay=${overlay}`;
+        const url =
+            process.env.REACT_APP_TEDDYCLOUD_API_URL +
+            tonieCard.downloadTriggerUrl +
+            (overlay ? `?overlay=${overlay}` : "");
         setDownloadTriggerUrl("");
         try {
             messageApi.open({
