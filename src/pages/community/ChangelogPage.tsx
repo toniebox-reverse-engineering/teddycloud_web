@@ -30,7 +30,7 @@ export const ChangelogPage = () => {
                 "new /web gui: enhanced Toniebox Card, improved UX",
                 "new /web gui: Dark theme (Last used Theme stored in localStorage in Browser)",
                 "new /web gui: Show All (Hide Pagination on Tonies List, stored in localStorage in Browser)",
-                "new /web gui: Tonies pages now are shown on base of used content folder (can be choosen if different are used by tonieboxes)",
+                "new /web gui: Support of overlayed content folder. More details can be found here: https://forum.revvox.de/t/teddycloud-supporting-multiple-tonieboxes/365/5",
                 "new /web gui: Text inputs in Settings must be saved explicitly. (only Textinputs, other types are still autosaved.) Expect changes in future releases.",
                 "new /web gui: fixed various state bugs",
                 "new /web gui: show last online date of offline tonieboxes",
