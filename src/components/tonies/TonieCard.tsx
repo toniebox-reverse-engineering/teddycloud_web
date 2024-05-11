@@ -58,6 +58,7 @@ export const TonieCard: React.FC<{
     const [messageApi, contextHolder] = message.useMessage();
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
     const [isValid, setIsValid] = useState(tonieCard.valid);
+    const [audioUrl, setAudioUrl] = useState(tonieCard.audioUrl);
     const { playAudio } = useAudioContext();
 
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
@@ -76,6 +77,7 @@ export const TonieCard: React.FC<{
         setIsNoCloud(tonieCard.nocloud); // Update isNoCloud state when tonieCard prop changes
         setActiveSource(tonieCard.source);
         setActiveModel(tonieCard.tonieInfo.model);
+        setAudioUrl(tonieCard.audioUrl);
     }, [tonieCard]);
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
@@ -110,7 +112,9 @@ export const TonieCard: React.FC<{
     };
 
     const handleLiveClick = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
+        const url =
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -131,7 +135,9 @@ export const TonieCard: React.FC<{
     };
 
     const handleNoCloudClick = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
+        const url =
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -194,7 +200,9 @@ export const TonieCard: React.FC<{
     };
 
     const handleModelSave = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
+        const url =
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
                 method: "POST",
@@ -215,7 +223,9 @@ export const TonieCard: React.FC<{
     };
 
     const handleSourceSave = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}?overlay=${overlay}`;
+        const url =
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
                 method: "POST",
