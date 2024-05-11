@@ -88,7 +88,8 @@ export const FileBrowser: React.FC<{
     useEffect(() => {
         // TODO: fetch option value with API Client generator
         fetch(
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}&overlay=${overlay}`
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}` +
+                (overlay ? `&overlay=${overlay}` : "")
         )
             .then((response) => response.json())
             .then((data) => {
@@ -213,7 +214,8 @@ export const FileBrowser: React.FC<{
                                     "/" +
                                     name +
                                     "?ogg=true&special=" +
-                                    special,
+                                    special +
+                                    (overlay ? `&overlay=${overlay}` : ""),
                                 record.tonieInfo
                             )
                         }
