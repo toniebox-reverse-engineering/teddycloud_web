@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Form } from "antd";
+import { useTranslation } from "react-i18next";
+import { Alert, Form } from "antd";
 import { Formik } from "formik";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -10,6 +11,8 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay }) => {
     const [options, setOptions] = useState<OptionsList | undefined>();
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchOptions = async () => {
@@ -24,6 +27,14 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
 
     return (
         <>
+            <Alert
+                message={t("settings.warning")}
+                description=<div>{t("settings.warningHint")}</div>
+                type="warning"
+                showIcon
+                style={{ margin: "8px" }}
+            />
+
             <Formik
                 // validationSchema={settingsValidationSchema}
                 initialValues={{

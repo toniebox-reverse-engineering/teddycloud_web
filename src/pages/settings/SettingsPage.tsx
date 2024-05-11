@@ -65,6 +65,13 @@ export const SettingsPage = () => {
                         type="info"
                         showIcon
                     />
+                    <Alert
+                        message={t("settings.warning")}
+                        description=<div>{t("settings.warningHint")}</div>
+                        type="warning"
+                        showIcon
+                        style={{ margin: "8px 0" }}
+                    />
                     <Formik
                         //validationSchema={settingsValidationSchema}
                         initialValues={{
