@@ -65,7 +65,7 @@ token.*
 
 ### Use translations
 
-Please use always t("...") instead of hard coded text. Add the language strings both in the german and english translation.json.
+Please use always t("...") instead of hard coded text. Add the strings both in the german and english translation.json.
 
 ## Known Weaknesses
 
