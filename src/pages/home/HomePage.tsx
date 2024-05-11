@@ -90,7 +90,7 @@ export const HomePage = () => {
                         <h2>{t("home.yourTonies")}</h2>
                         <ToniesList
                             tonieCards={tonies
-                                .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series && !tonie.nocloud)
+                                .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
                                 .slice(0, 6)}
                             overlay=""
                             showFilter={false}
