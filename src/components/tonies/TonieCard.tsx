@@ -393,8 +393,8 @@ export const TonieCard: React.FC<{
                 size="small"
                 style={
                     toniePlayedOn && toniePlayedOn.length > 0
-                        ? { borderTop: "3px #1677ff inset" }
-                        : { paddingTop: "2px" }
+                        ? { background: token.colorBgContainerDisabled, borderTop: "3px #1677ff inset" }
+                        : { background: token.colorBgContainerDisabled, paddingTop: "2px" }
                 }
                 title={tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                 cover={

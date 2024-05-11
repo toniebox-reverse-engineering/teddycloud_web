@@ -21,18 +21,22 @@ code {
 }
 
 .ant-list-header {
-  border-block-end: none !important;
+    border-block-end: none !important;
 }
 
 .ant-menu.ant-menu-root.ant-menu-inline {
-  border-inline-end: none !important;
+    border-inline-end: none !important;
+}
+
+.ant-card-actions {
+    background: transparent !important;
 }
 
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */
-.ant-list .ant-row > div,
-.ant-list .ant-row > div,
+.ant-list .ant-row>div,
+.ant-list .ant-row>div,
 .ant-list .ant-row .ant-col:first-child {
     display: flex;
 }

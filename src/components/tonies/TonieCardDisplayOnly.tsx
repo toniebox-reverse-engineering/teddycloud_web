@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, Button, Popover } from "antd";
+import { Card, Button, Popover, theme } from "antd";
 import { InfoCircleOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import { useAudioContext } from "../audio/AudioContext";
 const { Meta } = Card;
-
+const { useToken } = theme;
 export type TagsTonieCardList = {
     tags: TonieCardProps[];
 };
@@ -31,6 +31,7 @@ export type TonieCardProps = {
 
 export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
 
     const { playAudio } = useAudioContext();
     const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -85,9 +86,9 @@ export const TonieCard: React.FC<{ tonieCard: TonieCardProps }> = ({ tonieCard }
         <>
             <Card
                 extra={more}
-                hoverable
+                hoverable={false}
                 size="small"
-                style={{ cursor: "default" }}
+                style={{ background: token.colorBgContainerDisabled, cursor: "default" }}
                 title={tonieCard.tonieInfo.series}
                 cover={
                     <img
