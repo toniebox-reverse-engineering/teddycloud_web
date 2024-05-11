@@ -63,6 +63,10 @@ token.*
 // e.g. token.colorTextDisabled
 ```
 
+### Use translations
+
+Please use always t("...") instead of hard coded text. Add the language strings both in the german and english translation.json.
+
 ## Known Weaknesses
 
 ### API Definitions
