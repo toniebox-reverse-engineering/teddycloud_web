@@ -78,7 +78,6 @@ export const ToniesList: React.FC<{
             const prefilteredTonies = tonieCards.filter((tonie) => tonie.ruid.toLowerCase() === tonieRUID);
             setFilteredTonies(prefilteredTonies);
         } else {
-            setCollapsed(true);
             setFilteredTonies(tonieCards);
         }
         const fetchTonieboxLastRUID = async (id: string) => {
@@ -158,6 +157,7 @@ export const ToniesList: React.FC<{
         setFilterLastTonieboxRUIDs(false);
         const urlWithoutParams = window.location.pathname;
         window.history.pushState({}, "", urlWithoutParams);
+        location.search = "";
         setFilteredTonies(tonieCards);
     };
 
