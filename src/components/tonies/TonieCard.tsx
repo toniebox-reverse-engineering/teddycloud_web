@@ -72,12 +72,14 @@ export const TonieCard: React.FC<{
     const [selectedSource, setSelectedSource] = useState("");
 
     useEffect(() => {
+        // Update states when tonieCard prop changes
         setIsValid(tonieCard.valid);
-        setIsLive(tonieCard.live); // Update isLive state when tonieCard prop changes
-        setIsNoCloud(tonieCard.nocloud); // Update isNoCloud state when tonieCard prop changes
+        setIsLive(tonieCard.live);
+        setIsNoCloud(tonieCard.nocloud);
         setActiveSource(tonieCard.source);
         setActiveModel(tonieCard.tonieInfo.model);
         setAudioUrl(tonieCard.audioUrl);
+        setDownloadTriggerUrl(tonieCard.downloadTriggerUrl);
     }, [tonieCard]);
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
