@@ -22,9 +22,10 @@ export const ChangelogPage = () => {
             version: "0.5.2",
             changes: [
                 "Stabilization backend",
-                "Fixed bug backend crashs when changing any tonie setting",
+                "Several fixes and changes regards backend crashes and emptied config files when changing any tonie setting",
                 "Fix for random directories in library (and everywhere)",
                 "Fixed bug storing last played tonie per box",
+                "API for searching models is no case insensitive",
                 "Save IP of Toniebox as prepartion for linking CFW Tonieboxes",
                 "new /web gui: enhanced Tonies Card, added editable content source",
                 "new /web gui: enhanced Toniebox Card, improved UX",

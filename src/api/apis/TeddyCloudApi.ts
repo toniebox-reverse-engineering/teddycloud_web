@@ -106,7 +106,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<string> {
         const response = await this.apiGetLastOnlineRaw(overlay, initOverrides);
         const timestamp = await response.value();
-        const date = new Date(parseInt(timestamp, 10) * 1000);
+        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
         return date.toLocaleString();
     }
 
