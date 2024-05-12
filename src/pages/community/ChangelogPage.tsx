@@ -25,6 +25,7 @@ export const ChangelogPage = () => {
                 "Several fixes and changes regards backend crashes and emptied config files when changing any tonie setting",
                 "Fix for random directories in library (and everywhere)",
                 "Fixed bug storing last played tonie per box",
+                "Fixed bug clearing text settings (like paths or flex tonie)",
                 "API for searching models is now case insensitive",
                 "Save IP of Toniebox as prepartion for linking CFW Tonieboxes",
                 "new /web gui: enhanced Tonies Card, added editable content source",
@@ -35,6 +36,7 @@ export const ChangelogPage = () => {
                 "new /web gui: Text inputs in Settings must be saved explicitly. (only Textinputs, other types are still autosaved.) Expect changes in future releases.",
                 "new /web gui: fixed various state bugs",
                 "new /web gui: show last online date of offline tonieboxes",
+                "new /web gui: Messages on successful setting updates",
                 "new /web gui: some refactoring",
             ],
             commits: [

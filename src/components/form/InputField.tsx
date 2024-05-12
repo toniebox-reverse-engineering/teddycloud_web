@@ -46,6 +46,9 @@ const InputField = (props: InputFieldProps & InputProps) => {
                     if (!checked) {
                         // Fetch field value if checkbox is unchecked
                         fetchFieldValue();
+                        message.success(t("settings.overlayDisabled"));
+                    } else {
+                        message.success(t("settings.overlayEnabled"));
                     }
                 })
                 .catch((error) => {
@@ -75,6 +78,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
             })
                 .then(() => {
                     triggerWriteConfig();
+                    message.success(t("settings.saved"));
                 })
                 .catch((e) => {
                     message.error("Error while sending data to file.");
