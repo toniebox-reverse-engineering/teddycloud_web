@@ -52,6 +52,9 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
                     if (!checked) {
                         fetchFieldValue();
+                        message.success(t("settings.overlayDisabled"));
+                    } else {
+                        message.success(t("settings.overlayEnabled"));
                     }
                 })
                 .catch((error) => {
@@ -111,6 +114,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
                         })
                             .then(() => {
                                 triggerWriteConfig();
+                                message.success(t("settings.saved"));
                             })
                             .catch((e) => {
                                 message.error("Error while saving config to file.");

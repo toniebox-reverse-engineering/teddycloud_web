@@ -60,6 +60,9 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
                     if (!checked) {
                         // Fetch field value if checkbox is unchecked
                         fetchFieldValue();
+                        message.success(t("settings.overlayDisabled"));
+                    } else {
+                        message.success(t("settings.overlayEnabled"));
                     }
                 })
                 .catch((error) => {
@@ -118,6 +121,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
                         })
                             .then(() => {
                                 triggerWriteConfig();
+                                message.success(t("settings.saved"));
                             })
                             .catch((e) => {
                                 message.error("Error while saving config to file.");

@@ -17,6 +17,7 @@ type InputFieldProps = {
 
 const InputField = (props: InputFieldProps & InputProps) => {
     const { t } = useTranslation();
+    const [messageApi, contextHolder] = message.useMessage();
     const { name, label, description, overlayed: initialOverlayed, overlayId, ...inputProps } = props;
     const [field, meta, helpers] = useField(name!);
     const [overlayed, setOverlayed] = useState(initialOverlayed); // State to track overlayed boolean
@@ -46,6 +47,9 @@ const InputField = (props: InputFieldProps & InputProps) => {
                     if (!checked) {
                         // Fetch field value if checkbox is unchecked
                         fetchFieldValue();
+                        message.success(t("settings.overlayDisabled"));
+                    } else {
+                        message.success(t("settings.overlayEnabled"));
                     }
                 })
                 .catch((error) => {
@@ -57,7 +61,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
     };
 
     const handleFieldSave: MouseEventHandler<HTMLSpanElement> = (event) => {
-        const inputValue = field.value || ""; // Get input value from useField hook
+        const inputValue = field.value || null; // Get input value from useField hook
 
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
@@ -75,6 +79,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
             })
                 .then(() => {
                     triggerWriteConfig();
+                    message.success(t("settings.saved"));
                 })
                 .catch((e) => {
                     message.error("Error while sending data to file.");
