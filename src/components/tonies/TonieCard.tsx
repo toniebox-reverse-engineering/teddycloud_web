@@ -244,6 +244,7 @@ export const TonieCard: React.FC<{
                 throw new Error(response.status + " " + response.statusText);
             }
             setActiveSource(selectedSource);
+            selectedSource ? setIsValid(true) : setIsValid(false);
             message.success(
                 t("tonies.messages.setTonieToSourceSuccessful", {
                     selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
