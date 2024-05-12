@@ -50,20 +50,24 @@ export const ContentPage = () => {
                         }}
                     >
                         <h1>{t("tonies.content.title")}</h1>
-                        <Select
-                            id="contentDirectorySelect"
-                            defaultValue=""
-                            onChange={handleSelectChange}
-                            style={{ maxWidth: "300px" }}
-                            value={overlay}
-                            title={t("tonies.content.showToniesOfBoxes")}
-                        >
-                            {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
-                                <Option key={boxId} value={boxId}>
-                                    {boxNames.join(", ")}
-                                </Option>
-                            ))}
-                        </Select>
+                        {tonieBoxContentDirs.length > 1 ? (
+                            <Select
+                                id="contentDirectorySelect"
+                                defaultValue=""
+                                onChange={handleSelectChange}
+                                style={{ maxWidth: "300px" }}
+                                value={overlay}
+                                title={t("tonies.content.showToniesOfBoxes")}
+                            >
+                                {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
+                                    <Option key={boxId} value={boxId}>
+                                        {boxNames.join(", ")}
+                                    </Option>
+                                ))}
+                            </Select>
+                        ) : (
+                            ""
+                        )}
                     </div>
                     <FileBrowser special="" overlay={overlay} />
                 </StyledContent>

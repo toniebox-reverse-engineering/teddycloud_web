@@ -28,6 +28,7 @@ export const ChangelogPage = () => {
                 "Fixed bug clearing text settings (like paths or flex tonie)",
                 "API for searching models is now case insensitive",
                 "Save IP of Toniebox as prepartion for linking CFW Tonieboxes",
+                "Introduced Settings level - 1: Basic, 2: Detail, 3: Expert (1 Default - if you are missing settings, increase level!)",
                 "new /web gui: enhanced Tonies Card, added editable content source",
                 "new /web gui: enhanced Toniebox Card, improved UX",
                 "new /web gui: Dark theme (Last used Theme stored in localStorage in Browser)",

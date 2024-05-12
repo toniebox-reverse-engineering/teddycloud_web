@@ -80,20 +80,25 @@ export const ToniesPage = () => {
                         }}
                     >
                         <h1 style={{ width: "200px" }}>{t("tonies.title")}</h1>
-                        <Select
-                            id="contentDirectorySelect"
-                            defaultValue=""
-                            onChange={handleSelectChange}
-                            style={{ maxWidth: "300px" }}
-                            value={overlay}
-                            title={t("tonies.content.showToniesOfBoxes")}
-                        >
-                            {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
-                                <Option key={boxId} value={boxId}>
-                                    {boxNames.join(", ")}
-                                </Option>
-                            ))}
-                        </Select>
+
+                        {tonieBoxContentDirs.length > 1 ? (
+                            <Select
+                                id="contentDirectorySelect"
+                                defaultValue=""
+                                onChange={handleSelectChange}
+                                style={{ maxWidth: "300px" }}
+                                value={overlay}
+                                title={t("tonies.content.showToniesOfBoxes")}
+                            >
+                                {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
+                                    <Option key={boxId} value={boxId}>
+                                        {boxNames.join(", ")}
+                                    </Option>
+                                ))}
+                            </Select>
+                        ) : (
+                            ""
+                        )}
                     </div>
                     <ToniesList
                         showFilter={true}
