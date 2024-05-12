@@ -17,7 +17,6 @@ type InputFieldProps = {
 
 const InputField = (props: InputFieldProps & InputProps) => {
     const { t } = useTranslation();
-    const [messageApi, contextHolder] = message.useMessage();
     const { name, label, description, overlayed: initialOverlayed, overlayId, ...inputProps } = props;
     const [field, meta, helpers] = useField(name!);
     const [overlayed, setOverlayed] = useState(initialOverlayed); // State to track overlayed boolean
