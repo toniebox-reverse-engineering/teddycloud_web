@@ -263,7 +263,8 @@ export const TonieCard: React.FC<{
 
     const toniePlayedOn = lastRUIDs.filter(([ruid]) => ruid === tonieCard.ruid).map(([, boxName]) => boxName);
 
-    const title = `${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`;
+    const title =
+        `${tonieCard.tonieInfo.series}` + (tonieCard.tonieInfo.episode ? ` - ${tonieCard.tonieInfo.episode}` : "");
 
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
@@ -272,7 +273,7 @@ export const TonieCard: React.FC<{
     const informationModalTitel = (
         <>
             <h3>
-                {title !== " - " ? title : t("tonies.informationModal.unknownModel")}
+                {title ? title : t("tonies.informationModal.unknownModel")}
                 <br />
                 <Text type="secondary">{tonieCard.uid}</Text>
             </h3>
