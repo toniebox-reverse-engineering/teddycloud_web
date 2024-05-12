@@ -342,12 +342,13 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const tonieboxData = await this.apiGetTonieboxesIndex();
 
         // Fetch tag index for each toniebox and merge the results into one array
-        const mergedTonieCards: TonieCardProps[][] = await Promise.all(
-            tonieboxData.map(async (toniebox) => {
+        const mergedTonieCards: TonieCardProps[][] = await Promise.all([
+            ...tonieboxData.map(async (toniebox) => {
                 const tonieCards = await this.apiGetTagIndex(toniebox.ID, initOverrides);
                 return tonieCards;
-            })
-        );
+            }),
+            this.apiGetTagIndex("", initOverrides),
+        ]);
 
         const flattenedTonieCards = mergedTonieCards.flat();
 
