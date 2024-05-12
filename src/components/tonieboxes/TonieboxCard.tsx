@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Typography, Card, Button, Input, message, Modal, Divider, Select } from "antd";
+import { Typography, Card, Button, Input, message, Modal, Divider, Select, theme } from "antd";
 import {
     EditOutlined,
     SafetyCertificateOutlined,
@@ -20,6 +20,7 @@ import GetBoxModelImages from "../../util/boxModels";
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph, Text } = Typography;
 const { Meta } = Card;
+const { useToken } = theme;
 
 export type TonieboxCardList = {
     boxes: TonieboxCardProps[];
@@ -44,9 +45,12 @@ export const TonieboxCard: React.FC<{
     tonieboxImages: TonieboxImage[];
 }> = ({ tonieboxCard, tonieboxImages }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
+
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
+    const [lastOnline, setLastOnline] = useState<string>("");
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
@@ -95,13 +99,21 @@ export const TonieboxCard: React.FC<{
 
             if (ruid !== "ffffffffffffffff" && ruid !== "") {
                 const fetchTonies = async () => {
-                    const tonieData = await api.apiGetTagIndex();
+                    const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
                     setLastPlayedTonie(tonieData.filter((tonieData) => tonieData.ruid === ruid));
                 };
                 fetchTonies();
             }
         };
         fetchTonieboxLastRUID();
+
+        if (!tonieboxStatus) {
+            const fetchTonieboxLastOnline = async () => {
+                const lastOnline = await api.apiGetLastOnline(tonieboxCard.ID);
+                setLastOnline(lastOnline);
+            };
+            fetchTonieboxLastOnline();
+        }
 
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
@@ -143,15 +155,14 @@ export const TonieboxCard: React.FC<{
     const setLastPlayedTonie = (tonie: TonieCardProps[]) => {
         setLastPlayedTonieName(
             <>
-                <Link to={"/tonies?tonieRUID=" + tonie[0].ruid}>
+                <Link to={"/tonies?tonieRUID=" + tonie[0].ruid + "&overlay=" + tonieboxCard.ID}>
                     <img
                         src={tonie[0].tonieInfo.picture}
                         alt="Tonie"
                         title={
                             t("tonieboxes.lastPlayedTonie") +
                             tonie[0].tonieInfo.series +
-                            " - " +
-                            tonie[0].tonieInfo.episode
+                            (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "")
                         }
                         style={{
                             position: "absolute",
@@ -349,7 +360,7 @@ export const TonieboxCard: React.FC<{
                         <CloseOutlined
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
-                                color: boxName === tonieboxName ? "lightgray" : "",
+                                color: boxName === tonieboxName ? token.colorTextDisabled : "",
                             }}
                         />
                     }
@@ -405,9 +416,9 @@ export const TonieboxCard: React.FC<{
         <>
             {contextHolder}
             <Card
-                hoverable
+                hoverable={false}
                 size="default"
-                style={{ cursor: "default" }}
+                style={{ background: token.colorBgContainerDisabled, cursor: "default" }}
                 title={<span>{tonieboxName}</span>}
                 cover={
                     <div
@@ -436,14 +447,20 @@ export const TonieboxCard: React.FC<{
                 actions={[
                     <>
                         {tonieboxStatus ? (
-                            <WifiOutlined style={{ color: "green", cursor: "default" }} title="online" />
+                            <WifiOutlined
+                                style={{ color: "green", cursor: "default" }}
+                                title={t("tonieboxes.online")}
+                            />
                         ) : (
                             <WifiOutlined
                                 style={{
-                                    color: "lightgrey",
+                                    color: token.colorTextDescription,
                                     cursor: "default",
                                 }}
-                                title="offline"
+                                title={
+                                    t("tonieboxes.offline") +
+                                    (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
+                                }
                             />
                         )}
                     </>,

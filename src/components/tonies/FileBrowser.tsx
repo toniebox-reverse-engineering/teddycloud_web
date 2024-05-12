@@ -13,6 +13,7 @@ import { humanFileSize } from "../../util/humanFileSize";
 
 export const FileBrowser: React.FC<{
     special: string;
+    overlay?: string;
     maxSelectedRows?: number;
     trackUrl?: boolean;
     selectTafOnly?: boolean;
@@ -20,6 +21,7 @@ export const FileBrowser: React.FC<{
     onFileSelectChange?: (files: any[], path: string, special: string) => void;
 }> = ({
     special,
+    overlay = "",
     maxSelectedRows = 0,
     selectTafOnly = true,
     trackUrl = true,
@@ -32,6 +34,7 @@ export const FileBrowser: React.FC<{
 
     const [files, setFiles] = useState([]);
     const [path, setPath] = useState("");
+    const [overlayChanged, setOverlayChanged] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -74,8 +77,20 @@ export const FileBrowser: React.FC<{
     }, [location]);
 
     useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        queryParams.set("path", "");
+        setPath("");
+        const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+        window.history.replaceState(null, "", newUrl);
+        setOverlayChanged(!overlayChanged);
+    }, [overlay]);
+
+    useEffect(() => {
         // TODO: fetch option value with API Client generator
-        fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}`)
+        fetch(
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}` +
+                (overlay ? `&overlay=${overlay}` : "")
+        )
             .then((response) => response.json())
             .then((data) => {
                 var list: never[] = data.files;
@@ -84,7 +99,7 @@ export const FileBrowser: React.FC<{
 
                 setFiles(list);
             });
-    }, [path, special, showDirOnly]);
+    }, [path, special, showDirOnly, overlayChanged]);
 
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
@@ -199,7 +214,8 @@ export const FileBrowser: React.FC<{
                                     "/" +
                                     name +
                                     "?ogg=true&special=" +
-                                    special,
+                                    special +
+                                    (overlay ? `&overlay=${overlay}` : ""),
                                 record.tonieInfo
                             )
                         }

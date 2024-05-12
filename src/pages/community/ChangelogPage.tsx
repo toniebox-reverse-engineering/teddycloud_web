@@ -19,6 +19,31 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.5.2",
+            changes: [
+                "Stabilization backend",
+                "Fixed bug backend crashs when changing any tonie setting",
+                "Fix for random directories in library (and everywhere)",
+                "Fixed bug storing last played tonie per box",
+                "Save IP of Toniebox as prepartion for linking CFW Tonieboxes",
+                "new /web gui: enhanced Tonies Card, added editable content source",
+                "new /web gui: enhanced Toniebox Card, improved UX",
+                "new /web gui: Dark theme (Last used Theme stored in localStorage in Browser)",
+                "new /web gui: Show All (Hide Pagination on Tonies List, stored in localStorage in Browser)",
+                "new /web gui: Support of overlayed content folder. More details can be found here: https://forum.revvox.de/t/teddycloud-supporting-multiple-tonieboxes/365/5",
+                "new /web gui: Text inputs in Settings must be saved explicitly. (only Textinputs, other types are still autosaved.) Expect changes in future releases.",
+                "new /web gui: fixed various state bugs",
+                "new /web gui: show last online date of offline tonieboxes",
+                "new /web gui: some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.1...tc_v0.5.2",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.1...tcw_v0.5.2",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-5-2/450",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.5.2",
+        },
+        {
             version: "0.5.1",
             changes: [
                 "Stabilization Backend (added locks to prevent crashes, removed memory leaks)",

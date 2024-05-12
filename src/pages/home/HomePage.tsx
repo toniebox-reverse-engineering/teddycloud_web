@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, Button, Alert } from "antd";
-import { TonieCardProps } from "../../components/tonies/TonieCardDisplayOnly"; // Import the TonieCardDisplayOnly component and its props type
+import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import the TonieCardDisplayOnly component and its props type
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
-import { ToniesList } from "../../components/tonies/ToniesListDisplayOnly";
+import { ToniesList } from "../../components/tonies/ToniesList";
 
 import {
     HiddenDesktop,
@@ -37,7 +37,7 @@ export const HomePage = () => {
 
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
-            const tonieData = await api.apiGetTagIndex();
+            const tonieData = await api.apiGetTagIndexMergedAllOverlays();
             // sort random
             setTonies(
                 tonieData.sort((a, b) => {
@@ -90,8 +90,12 @@ export const HomePage = () => {
                         <h2>{t("home.yourTonies")}</h2>
                         <ToniesList
                             tonieCards={tonies
-                                .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series && !tonie.nocloud)
+                                .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
                                 .slice(0, 6)}
+                            overlay=""
+                            showFilter={false}
+                            showPagination={false}
+                            readOnly={true}
                         />
                         <Button>
                             <Link to="/tonies">

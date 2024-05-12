@@ -14,7 +14,10 @@ const STORAGE_KEY = "toniesListState";
 export const ToniesList: React.FC<{
     tonieCards: TonieCardProps[];
     showFilter: boolean;
-}> = ({ tonieCards, showFilter }) => {
+    showPagination: boolean;
+    overlay: string;
+    readOnly: boolean;
+}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
@@ -75,7 +78,6 @@ export const ToniesList: React.FC<{
             const prefilteredTonies = tonieCards.filter((tonie) => tonie.ruid.toLowerCase() === tonieRUID);
             setFilteredTonies(prefilteredTonies);
         } else {
-            setCollapsed(true);
             setFilteredTonies(tonieCards);
         }
         const fetchTonieboxLastRUID = async (id: string) => {
@@ -155,6 +157,7 @@ export const ToniesList: React.FC<{
         setFilterLastTonieboxRUIDs(false);
         const urlWithoutParams = window.location.pathname;
         window.history.pushState({}, "", urlWithoutParams);
+        location.search = "";
         setFilteredTonies(tonieCards);
     };
 
@@ -181,19 +184,13 @@ export const ToniesList: React.FC<{
 
     const getCurrentPageData = () => {
         if (showAll) {
-            if (filteredTonies.length > 0) {
-                return filteredTonies;
-            } else {
-                return tonieCards;
-            }
+            return filteredTonies !== null ? filteredTonies : tonieCards;
         } else {
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = startIndex + pageSize;
-            if (filteredTonies.length > 0) {
-                return filteredTonies.slice(startIndex, endIndex);
-            } else {
-                return tonieCards.slice(startIndex, endIndex);
-            }
+            return filteredTonies !== null
+                ? filteredTonies.slice(startIndex, endIndex)
+                : tonieCards.slice(startIndex, endIndex);
         }
     };
 
@@ -205,7 +202,7 @@ export const ToniesList: React.FC<{
                 <ToniesPagination
                     currentPage={currentPage}
                     onChange={handlePageSizeChange}
-                    total={filteredTonies.length > 0 ? filteredTonies.length : tonieCards.length}
+                    total={filteredTonies !== null ? filteredTonies.length : tonieCards.length}
                     pageSize={pageSize}
                     additionalButtonOnClick={handleShowAll}
                 />
@@ -402,8 +399,8 @@ export const ToniesList: React.FC<{
                 ""
             )}
             <List
-                header={listPagination}
-                footer={listPagination}
+                header={showPagination ? listPagination : ""}
+                footer={showPagination ? listPagination : ""}
                 grid={{
                     gutter: 16,
                     xs: 1,
@@ -416,7 +413,12 @@ export const ToniesList: React.FC<{
                 dataSource={getCurrentPageData()}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>
-                        <TonieCard tonieCard={tonie} lastRUIDs={lastTonieboxRUIDs} />
+                        <TonieCard
+                            tonieCard={tonie}
+                            lastRUIDs={lastTonieboxRUIDs}
+                            overlay={overlay}
+                            readOnly={readOnly}
+                        />
                     </List.Item>
                 )}
             />
