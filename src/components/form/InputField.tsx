@@ -60,7 +60,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
     };
 
     const handleFieldSave: MouseEventHandler<HTMLSpanElement> = (event) => {
-        const inputValue = field.value || null; // Get input value from useField hook
+        const inputValue = field.value || ""; // Get input value from useField hook
 
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
