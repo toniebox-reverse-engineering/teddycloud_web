@@ -440,12 +440,12 @@ export const TonieCard: React.FC<{
               ),
               <CloudSyncOutlined
                   key="nocloud"
-                  style={{ color: isNoCloud ? "red" : token.colorTextDisabled }}
+                  style={{ color: isNoCloud ? "red" : token.colorTextDescription }}
                   onClick={handleNoCloudClick}
               />,
               <RetweetOutlined
                   key="live"
-                  style={{ color: isLive ? "red" : token.colorTextDisabled }}
+                  style={{ color: isLive ? "red" : token.colorTextDescription }}
                   onClick={handleLiveClick}
               />,
           ];
