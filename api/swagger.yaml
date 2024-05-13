@@ -1,3 +1,7 @@
+#
+# to be used with e.g. https://editor-next.swagger.io/
+#
+
 openapi: 3.0.3
 info:
   title: TeddyCloud API
@@ -6,8 +10,8 @@ info:
 
 # -----------------------------------
 servers:
-  - url: http://localhost
-    description: Local development server.
+  - url: http://localhost:8080/
+    description: Local development server. Adjust the port as needed.
   
 # -----------------------------------
 tags:
@@ -70,16 +74,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatsList'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '406':
-          $ref: '#/components/responses/Unacceptable'
-        '5XX':
-          $ref: '#/components/responses/InternalServerError'
           
   /api/settings/getIndex:
     get:
@@ -118,16 +112,6 @@ paths:
             "text/plain":
               schema:
                 type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '406':
-          $ref: '#/components/responses/Unacceptable'
-        '5XX':
-          $ref: '#/components/responses/InternalServerError'
   
   
   /api/triggerWriteConfig:
@@ -137,21 +121,11 @@ paths:
       description: tell server to write to config file
       responses:
         '200':
-          description: Stats item
+          description: trigger successful
           content:
             "text/plain":
               schema:
                 type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '406':
-          $ref: '#/components/responses/Unacceptable'
-        '5XX':
-          $ref: '#/components/responses/InternalServerError'       
           
   /api/settings/set/cloud.cacheContent:
     post:
@@ -166,17 +140,370 @@ paths:
               type: boolean
       responses:
         '200':
-          description: 'just 200 for success, no response content'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '406':
-          $ref: '#/components/responses/Unacceptable'
-        '5XX':
-          $ref: '#/components/responses/InternalServerError'
+          description: 'OK'
+
+  /api/fileDelete:
+    post:
+      summary: Deletes a specified file from the server.
+      operationId: fileDelete
+      parameters:
+        - name: overlay
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Settings overlay ID.
+        - name: special
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Special folder source, only 'library' supported yet
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: Path of the file to be deleted.
+      responses:
+        '200':
+          description: File successfully deleted.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '500':
+          description: Error during file deletion.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error deleting file '{path}', error {error_code}"
+
+  /api/dirDelete:
+    post:
+      summary: Deletes a specified directory from the server.
+      operationId: dirDelete
+      parameters:
+        - name: overlay
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Settings overlay ID.
+        - name: special
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Special folder source, only 'library' supported yet
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: Path of the directory to be deleted.
+      responses:
+        '200':
+          description: File successfully deleted.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '500':
+          description: Error during file deletion.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error deleting file '{path}', error {error_code}"
+
+  /api/dirCreate:
+    post:
+      summary: Creates a specified directory on the server.
+      operationId: dirCreate
+      parameters:
+        - name: overlay
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Settings overlay ID.
+        - name: special
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Special folder source, only 'library' supported yet
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: Path of the directory to be created.
+      responses:
+        '200':
+          description: Directory successfully created.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '500':
+          description: Error during creation.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Error creating directory '{path}', error {error_code}"
+
+  /api/uploadFirmware:
+    post:
+      summary: Creates a specified directory on the server.
+      operationId: uploadFirmware
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              description: ESP32 firmware image
+              properties:
+                firmwareImage:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: File uploaded, filename follows
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "ESP32_aabbccddeeff_23.bin"
+        '500':
+          description: Error
+          content:
+            text/plain:
+              schema:
+                type: string
+
+
+  /api/patchFirmware:
+    get:
+      summary: Patch firmware.
+      operationId: patchFirmware
+      parameters:
+        - name: filename
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Firmware image name received from /api/uploadFirmware.
+        - name: hostname
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Hostname of TeddyCloud to set within image.
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            binary/octet-stream:
+              schema:
+                type: object
+                description: Patched firmware image
+        '404':
+          description: 'Something went wrong'
+
+  /api/fileUpload:
+    post:
+      summary: Upload a file.
+      parameters:
+        - name: overlay
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Settings overlay ID.
+        - name: special
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Special folder source, only 'library' supported yet
+        - name: path
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Path where to write the file to. Max 256 characters.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              description: File to write including filename
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/pcmUpload:
+    post:
+      summary: Upload PCM data.
+      parameters:
+        - name: overlay
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Settings overlay ID.
+        - name: special
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Special folder source, only 'library' supported yet
+        - name: name
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Name of the TAF to create.
+        - name: uid
+          in: query
+          schema:
+            type: string
+          required: true
+          description: UID of the TAF to create.
+        - name: audioId
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Audio-ID of the TAF to create as integer.
+        - name: path
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Path where to write the file to. Max 256 characters.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              description: PCM data to encode to TAF
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/fileIndexV2:
+    get:
+      summary: Get file index version 2.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/fileIndex:
+    get:
+      summary: Get file index.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/toniesJsonSearch:
+    get:
+      summary: Search Tonies JSON.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/toniesJsonUpdate:
+    get:
+      summary: Update Tonies JSON.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/toniesJson:
+    get:
+      summary: Retrieve Tonies JSON.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/toniesCustomJson:
+    get:
+      summary: Retrieve custom Tonies JSON.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/tonieboxesJson:
+    get:
+      summary: Retrieve Tonieboxes JSON.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/tonieboxesCustomJson:
+    get:
+      summary: Retrieve custom Tonieboxes JSON.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/getTagIndex:
+    get:
+      summary: Get tag index.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/getBoxes:
+    get:
+      summary: Get boxes.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/assignUnknown:
+    post:
+      summary: Assign unknown entity.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/settings/reset/:
+    post:
+      summary: Reset settings.
+      responses:
+        '200':
+          description: 'OK'
+
+  /api/migrateContent2Lib:
+    post:
+      summary: Migrate content to library.
+      responses:
+        '200':
+          description: 'OK'
+
 
   #
   # Boxine

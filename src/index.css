@@ -1,19 +1,61 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+        "Droid Sans", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 .ant-select {
-   width: -webkit-fill-available !important;
-   width: -moz-available !important;
-   width: stretch !important;
+    width: -webkit-fill-available !important;
+    width: -moz-available !important;
+    width: stretch !important;
 }
+
+.ant-menu.ant-menu-dark {
+    background: #141414;
+}
+
+.ant-list-header {
+    border-block-end: none !important;
+}
+
+.ant-menu.ant-menu-root.ant-menu-inline {
+    border-inline-end: none !important;
+}
+
+.ant-card-actions {
+    background: transparent !important;
+}
+
+/* workaround to set same card height within a row,
+ * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
+ * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */
+.ant-list .ant-row>div,
+.ant-list .ant-row>div,
+.ant-list .ant-row .ant-col:first-child {
+    display: flex;
+}
+
+.ant-list .ant-row .ant-list-item {
+    flex: 1 1 auto;
+}
+
+.ant-list .ant-row .ant-list-item .ant-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ant-card-cover {
+    height: 100%;
+    align-content: center;
+    height: 100%;
+    align-content: center;
+}
+
+/* end of workaround */

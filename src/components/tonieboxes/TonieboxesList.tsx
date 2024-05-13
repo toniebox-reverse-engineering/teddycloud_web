@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
-import { List } from 'antd';
-import { TonieboxCard, TonieboxCardProps } from '../../components/tonieboxes/TonieboxCard';
-import GetBoxModelImages from '../../util/boxModels';
+import React, { useState } from "react";
+import { List } from "antd";
+import { TonieboxCard, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
+import GetBoxModelImages from "../../util/boxModels";
 
-export const TonieboxesList: React.FC<{ tonieboxCards: TonieboxCardProps[] }> = ({ tonieboxCards }) => {
+export const TonieboxesList: React.FC<{
+    tonieboxCards: TonieboxCardProps[];
+}> = ({ tonieboxCards }) => {
     const [loading, setLoading] = useState(true);
     const boxModelImages = GetBoxModelImages();
 
@@ -30,5 +32,5 @@ export const TonieboxesList: React.FC<{ tonieboxCards: TonieboxCardProps[] }> = 
                 </List.Item>
             )}
         />
-    )
-}
+    );
+};

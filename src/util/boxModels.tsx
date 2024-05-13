@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface TonieboxImage {
     id: string;
@@ -16,7 +16,9 @@ export default function GetBoxModelImages() {
                 // Fetch the JSON data
                 const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/tonieboxesJson`);
                 const jsonData = await response.json();
-                const responseCustom = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/tonieboxesCustomJson`);
+                const responseCustom = await fetch(
+                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/tonieboxesCustomJson`
+                );
                 const jsonDataCustom = await responseCustom.json();
                 const jsonDataCombined = [...jsonDataCustom, ...jsonData];
 
@@ -31,7 +33,7 @@ export default function GetBoxModelImages() {
                 // Set the transformed array to state
                 setBoxModelImages(dataArray);
             } catch (error) {
-                console.error('Error fetching and transforming data:', error);
+                console.error("Error fetching and transforming data:", error);
                 setBoxModelImages([]); // Set an empty array in case of error
             }
         }
