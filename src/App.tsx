@@ -23,27 +23,49 @@ import { ContributorsPage } from "./pages/community/ContributorsPage";
 import { ChangelogPage } from "./pages/community/ChangelogPage";
 import { useState, useEffect } from "react";
 import { ConfigProvider, theme } from "antd";
-import { SunOutlined, MoonOutlined } from "@ant-design/icons";
+import { SunOutlined, MoonOutlined, BulbOutlined } from "@ant-design/icons";
+
+function detectColorScheme() {
+    const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const storedTheme = localStorage.getItem("theme");
+
+    if (storedTheme == "auto") {
+        return prefersDarkMode ? "dark" : "light";
+    } else {
+        return storedTheme;
+    }
+}
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        // Load theme from localStorage or default to light mode
+
+    // State for managing theme mode
+    const [themeMode, setThemeMode] = useState(() => {
         const savedTheme = localStorage.getItem("theme");
-        return savedTheme === "dark";
+        return savedTheme || "auto"; // Default to 'auto' if no theme is saved
     });
 
+    const [isDarkMode, setIsDarkMode] = useState(detectColorScheme() === "dark");
+
+    // Function to toggle between dark, light, and auto modes
     const toggleTheme = () => {
-        setIsDarkMode((prevMode) => !prevMode);
+        setThemeMode((prevMode) => {
+            if (prevMode === "dark") return "light";
+            else if (prevMode === "light") return "auto";
+            else return "dark";
+        });
     };
 
+    // Effect to update local storage when theme mode changes
     useEffect(() => {
-        localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-    }, [isDarkMode]);
+        localStorage.setItem("theme", themeMode);
+        setIsDarkMode(detectColorScheme() === "dark");
+    }, [themeMode]);
 
-    const themeSwitchIcon = (
-        <Space> {isDarkMode ? <SunOutlined onClick={toggleTheme} /> : <MoonOutlined onClick={toggleTheme} />}</Space>
-    );
+    let themeSwitchIcon;
+    if (themeMode === "dark") themeSwitchIcon = <MoonOutlined onClick={toggleTheme} />;
+    else if (themeMode === "light") themeSwitchIcon = <SunOutlined onClick={toggleTheme} />;
+    else themeSwitchIcon = <BulbOutlined onClick={toggleTheme} />;
 
     return (
         <ConfigProvider
