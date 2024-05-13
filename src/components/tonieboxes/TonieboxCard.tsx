@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Typography, Card, Button, Input, message, Modal, Divider, Select, theme } from "antd";
+import { Typography, Card, Button, Input, message, Modal, Divider, Select, theme, Tooltip } from "antd";
 import {
     EditOutlined,
     SafetyCertificateOutlined,
@@ -447,21 +447,23 @@ export const TonieboxCard: React.FC<{
                 actions={[
                     <>
                         {tonieboxStatus ? (
-                            <WifiOutlined
-                                style={{ color: "green", cursor: "default" }}
-                                title={t("tonieboxes.online")}
-                            />
+                            <Tooltip title={t("tonieboxes.online")}>
+                                <WifiOutlined style={{ color: "green", cursor: "default" }} />
+                            </Tooltip>
                         ) : (
-                            <WifiOutlined
-                                style={{
-                                    color: token.colorTextDescription,
-                                    cursor: "default",
-                                }}
+                            <Tooltip
                                 title={
                                     t("tonieboxes.offline") +
                                     (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
                                 }
-                            />
+                            >
+                                <WifiOutlined
+                                    style={{
+                                        color: token.colorTextDescription,
+                                        cursor: "default",
+                                    }}
+                                />
+                            </Tooltip>
                         )}
                     </>,
                     <EditOutlined key="edit" onClick={() => showModelModal()} />,
