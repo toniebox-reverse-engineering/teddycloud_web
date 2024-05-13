@@ -13,7 +13,7 @@ import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
 
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { Select } from "antd";
+import { Select, Tooltip } from "antd";
 import { useLocation } from "react-router-dom";
 import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
 
@@ -82,20 +82,21 @@ export const ToniesPage = () => {
                         <h1 style={{ width: "200px" }}>{t("tonies.title")}</h1>
 
                         {tonieBoxContentDirs.length > 1 ? (
-                            <Select
-                                id="contentDirectorySelect"
-                                defaultValue=""
-                                onChange={handleSelectChange}
-                                style={{ maxWidth: "300px" }}
-                                value={overlay}
-                                title={t("tonies.content.showToniesOfBoxes")}
-                            >
-                                {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
-                                    <Option key={boxId} value={boxId}>
-                                        {boxNames.join(", ")}
-                                    </Option>
-                                ))}
-                            </Select>
+                            <Tooltip title={t("tonies.content.showToniesOfBoxes")}>
+                                <Select
+                                    id="contentDirectorySelect"
+                                    defaultValue=""
+                                    onChange={handleSelectChange}
+                                    style={{ maxWidth: "300px" }}
+                                    value={overlay}
+                                >
+                                    {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
+                                        <Option key={boxId} value={boxId}>
+                                            {boxNames.join(", ")}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Tooltip>
                         ) : (
                             ""
                         )}

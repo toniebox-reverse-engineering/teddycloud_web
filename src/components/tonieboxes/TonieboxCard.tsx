@@ -156,24 +156,29 @@ export const TonieboxCard: React.FC<{
         setLastPlayedTonieName(
             <>
                 <Link to={"/tonies?tonieRUID=" + tonie[0].ruid + "&overlay=" + tonieboxCard.ID}>
-                    <img
-                        src={tonie[0].tonieInfo.picture}
-                        alt="Tonie"
+                    <Tooltip
+                        placement="top"
+                        zIndex={2}
                         title={
                             t("tonieboxes.lastPlayedTonie") +
                             tonie[0].tonieInfo.series +
                             (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "")
                         }
-                        style={{
-                            position: "absolute",
-                            bottom: 0,
-                            right: 0,
-                            zIndex: 1,
-                            padding: 8,
-                            borderRadius: 4,
-                            height: "60%",
-                        }}
-                    />
+                    >
+                        <img
+                            src={tonie[0].tonieInfo.picture}
+                            alt="Tonie"
+                            style={{
+                                position: "absolute",
+                                bottom: 0,
+                                right: 0,
+                                zIndex: 1,
+                                padding: 8,
+                                borderRadius: 4,
+                                height: "60%",
+                            }}
+                        />
+                    </Tooltip>
                 </Link>
             </>
         );
