@@ -138,6 +138,7 @@
         "editModal": {
             "title": "Edit model",
             "placeholderSearchForAModel": "Search for a model",
+            "placeholderSearchForARadioStream": "Search for a radio stream",
             "source": "Source",
             "model": "Model",
             "save": "Save"
@@ -221,6 +222,10 @@
         "date": "Date"
     },
     "tonieArticleSearch": {
+        "failedToFetchSearchResults": "Failed to fetch search results: "
+    },
+    "radioStreamSearch": {
+        "searchLabel": "[Optionally] Search for a radio stream",
         "failedToFetchSearchResults": "Failed to fetch search results: "
     },
     "security": {

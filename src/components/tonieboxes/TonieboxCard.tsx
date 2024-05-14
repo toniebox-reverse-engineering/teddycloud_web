@@ -483,9 +483,7 @@ export const TonieboxCard: React.FC<{
                 <Meta
                     description={
                         <div>
-                            {(tonieboxVersion !== "UNKNOWN" ? tonieboxVersion : "MAC") +
-                                ": " +
-                                getTonieboxIdFormatted()}
+                            {(tonieboxVersion !== "UNKNOWN" ? tonieboxVersion : "MAC") + " " + getTonieboxIdFormatted()}
                         </div>
                     }
                 />
