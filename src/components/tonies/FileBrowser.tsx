@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { Table, message } from "antd";
+import { Table, Tooltip, message } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 
 import { useAudioContext } from "../audio/AudioContext";
 
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { CloudServerOutlined, PlayCircleOutlined, TruckOutlined } from "@ant-design/icons";
 import { humanFileSize } from "../../util/humanFileSize";
 
 export const FileBrowser: React.FC<{
@@ -31,10 +31,10 @@ export const FileBrowser: React.FC<{
     const { t } = useTranslation();
 
     const { playAudio } = useAudioContext();
-
+    const [messageApi, contextHolder] = message.useMessage();
     const [files, setFiles] = useState([]);
     const [path, setPath] = useState("");
-    const [overlayChanged, setOverlayChanged] = useState(false);
+    const [rebuildList, setRebuildList] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -82,7 +82,7 @@ export const FileBrowser: React.FC<{
         setPath("");
         const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
         window.history.replaceState(null, "", newUrl);
-        setOverlayChanged(!overlayChanged);
+        setRebuildList(!rebuildList);
     }, [overlay]);
 
     useEffect(() => {
@@ -99,7 +99,7 @@ export const FileBrowser: React.FC<{
 
                 setFiles(list);
             });
-    }, [path, special, showDirOnly, overlayChanged]);
+    }, [path, special, showDirOnly, rebuildList]);
 
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
@@ -145,6 +145,53 @@ export const FileBrowser: React.FC<{
             return defaultSorter(a, b, "name");
         }
         return a.isDir ? -1 : 1;
+    };
+
+    const migrateContent2Lib = (ruid: string, libroot: boolean, overlay?: string) => {
+        try {
+            messageApi.open({
+                type: "loading",
+                content: t("fileBrowser.messages.migrationOngoing"),
+                duration: 0,
+            });
+
+            const body = `ruid=${ruid}&libroot=${libroot}`;
+            fetch(
+                process.env.REACT_APP_TEDDYCLOUD_API_URL +
+                    "/api/migrateContent2Lib" +
+                    (overlay ? "?overlay=" + overlay : ""),
+                {
+                    method: "POST",
+                    body: body,
+                    headers: {
+                        "Content-Type": "text/plain",
+                    },
+                }
+            )
+                .then(() => {
+                    messageApi.destroy();
+                    messageApi.open({
+                        type: "success",
+                        content: t("fileBrowser.messages.migrationSuccessful"),
+                    });
+
+                    // now the page shall reload
+                    setRebuildList(!rebuildList);
+                })
+                .catch((error) => {
+                    messageApi.destroy();
+                    messageApi.open({
+                        type: "error",
+                        content: t("fileBrowser.messages.migrationFailed") + ": " + error,
+                    });
+                });
+        } catch (error) {
+            messageApi.destroy();
+            messageApi.open({
+                type: "error",
+                content: t("fileBrowser.messages.migrationFailed") + ": " + error,
+            });
+        }
     };
 
     var columns = [
@@ -204,25 +251,39 @@ export const FileBrowser: React.FC<{
             key: "controls",
             sorter: undefined,
             render: (name: string, record: any) =>
-                record.tafHeader ? (
-                    <PlayCircleOutlined
-                        onClick={() =>
-                            playAudio(
-                                process.env.REACT_APP_TEDDYCLOUD_API_URL +
-                                    "/content" +
-                                    path +
-                                    "/" +
-                                    name +
-                                    "?ogg=true&special=" +
-                                    special +
-                                    (overlay ? `&overlay=${overlay}` : ""),
-                                record.tonieInfo
-                            )
-                        }
-                    />
-                ) : (
-                    ""
-                ),
+                record.tafHeader
+                    ? [
+                          <Tooltip title={t("fileBrowser.migrateContentToLib")}>
+                              <CloudServerOutlined
+                                  onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
+                                  style={{ margin: "0 16px 0 0" }}
+                              />
+                          </Tooltip>,
+                          <Tooltip title={t("fileBrowser.migrateContentToLibRoot")}>
+                              <TruckOutlined
+                                  onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
+                                  style={{ margin: "0 16px 0 0" }}
+                              />
+                          </Tooltip>,
+                          <Tooltip title={t("fileBrowser.playFile")}>
+                              <PlayCircleOutlined
+                                  onClick={() =>
+                                      playAudio(
+                                          process.env.REACT_APP_TEDDYCLOUD_API_URL +
+                                              "/content" +
+                                              path +
+                                              "/" +
+                                              name +
+                                              "?ogg=true&special=" +
+                                              special +
+                                              (overlay ? `&overlay=${overlay}` : ""),
+                                          record.tonieInfo
+                                      )
+                                  }
+                              />
+                          </Tooltip>,
+                      ]
+                    : "",
             showOnDirOnly: false,
         },
     ];
@@ -236,27 +297,30 @@ export const FileBrowser: React.FC<{
     if (showDirOnly) columns = columns.filter((column) => column.showOnDirOnly);
 
     return (
-        <Table
-            dataSource={files}
-            columns={columns}
-            rowKey="name"
-            pagination={false}
-            onRow={(record) => ({
-                onDoubleClick: () => {
-                    if (record.isDir) {
-                        handleDirClick(record.name);
-                    }
-                },
-            })}
-            rowClassName={rowClassName}
-            rowSelection={
-                maxSelectedRows > 0
-                    ? {
-                          selectedRowKeys,
-                          onChange: onSelectChange,
-                      }
-                    : undefined
-            }
-        />
+        <>
+            {contextHolder}
+            <Table
+                dataSource={files}
+                columns={columns}
+                rowKey="name"
+                pagination={false}
+                onRow={(record) => ({
+                    onDoubleClick: () => {
+                        if (record.isDir) {
+                            handleDirClick(record.name);
+                        }
+                    },
+                })}
+                rowClassName={rowClassName}
+                rowSelection={
+                    maxSelectedRows > 0
+                        ? {
+                              selectedRowKeys,
+                              onChange: onSelectChange,
+                          }
+                        : undefined
+                }
+            />
+        </>
     );
 };

@@ -220,7 +220,15 @@
         "model": "Modell",
         "series": "Serie",
         "episode": "Episode",
-        "date": "Datum"
+        "date": "Datum",
+        "playFile": "Abspielen",
+        "migrateContentToLib": "TAF-Datei in Library (by/audioId/) migrieren",
+        "migrateContentToLibRoot": "TAF-Datei in Library (root) migrieren",
+        "messages": {
+            "migrationOngoing": "migriere...",
+            "migrationSuccessful": "Migration erfolgreich!",
+            "migrationFailed": "Migration fehlgeschlagen!"
+        }
     },
     "tonieArticleSearch": {
         "failedToFetchSearchResults": "Suchergebnisse konnten nicht abgerufen werden: "
