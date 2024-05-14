@@ -253,18 +253,26 @@ export const FileBrowser: React.FC<{
             render: (name: string, record: any) =>
                 record.tafHeader
                     ? [
-                          <Tooltip title={t("fileBrowser.migrateContentToLib")}>
-                              <CloudServerOutlined
-                                  onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
-                                  style={{ margin: "0 16px 0 0" }}
-                              />
-                          </Tooltip>,
-                          <Tooltip title={t("fileBrowser.migrateContentToLibRoot")}>
-                              <TruckOutlined
-                                  onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
-                                  style={{ margin: "0 16px 0 0" }}
-                              />
-                          </Tooltip>,
+                          special !== "library" ? (
+                              <Tooltip title={t("fileBrowser.migrateContentToLib")}>
+                                  <CloudServerOutlined
+                                      onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
+                                      style={{ margin: "0 16px 0 0" }}
+                                  />
+                              </Tooltip>
+                          ) : (
+                              ""
+                          ),
+                          special !== "library" ? (
+                              <Tooltip title={t("fileBrowser.migrateContentToLibRoot")}>
+                                  <TruckOutlined
+                                      onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
+                                      style={{ margin: "0 16px 0 0" }}
+                                  />
+                              </Tooltip>
+                          ) : (
+                              ""
+                          ),
                           <Tooltip title={t("fileBrowser.playFile")}>
                               <PlayCircleOutlined
                                   onClick={() =>
