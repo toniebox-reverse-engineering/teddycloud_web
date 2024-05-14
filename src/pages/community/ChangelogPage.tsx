@@ -19,6 +19,20 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.5.3",
+            changes: [
+                "Stabilization backend",
+                "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
+                "new /web gui: Tonies - Content section - added Migrate Content to Lib button on TAF files",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.2...tcw_v0.5.3",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-5-3/450",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.5.3",
+        },
+        {
             version: "0.5.2",
             changes: [
                 "Stabilization backend",
