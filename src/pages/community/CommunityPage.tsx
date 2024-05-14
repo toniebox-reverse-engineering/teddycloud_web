@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { Typography, Button, Alert } from "antd";
+import { Typography } from "antd";
 
 import {
     HiddenDesktop,

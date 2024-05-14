@@ -17,6 +17,8 @@ import { useAudioContext } from "../audio/AudioContext";
 import { FileBrowser } from "./FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
 
+import { RadioStreamSearch } from "./RadioStreamSearch";
+
 const { Meta } = Card;
 const { Text } = Typography;
 const { useToken } = theme;
@@ -262,6 +264,10 @@ export const TonieCard: React.FC<{
         setSelectedModel(newValue);
     };
 
+    const searchRadioResultChanged = (newValue: string) => {
+        setSelectedSource(newValue);
+    };
+
     const informationModalTitel = (
         <>
             <h3>
@@ -364,6 +370,10 @@ export const TonieCard: React.FC<{
                     onChange={handleSourceInputChange}
                     addonBefore={<CloseOutlined onClick={() => setSelectedSource(activeSource)} />}
                     addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
+                />
+                <RadioStreamSearch
+                    placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
+                    onChange={searchRadioResultChanged}
                 />
             </div>
             <Divider orientation="left" orientationMargin="0">
