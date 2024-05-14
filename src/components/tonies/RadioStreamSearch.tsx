@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Select, Typography, message } from "antd";
 import type { SelectProps } from "antd";
@@ -12,44 +12,25 @@ export const RadioStreamSearch: React.FC<{
     const [data, setData] = useState<SelectProps["options"]>([]);
     const [value, setValue] = useState<string>();
 
-    interface RadioStation {
-        changeuuid: string;
-        stationuuid: string;
-        serveruuid: string;
-        name: string;
-        url: string;
-        url_resolved: string;
-        homepage: string;
-        favicon: string;
-        tags: string;
-        country: string;
-        countrycode: string;
-        iso_3166_2: string | null;
-        state: string;
-        language: string;
-        languagecodes: string;
-        votes: number;
-        lastchangetime: string; // ISO 8601 date-time string
-        lastchangetime_iso8601: string;
-        codec: string;
-        bitrate: number;
-        hls: number;
-        lastcheckok: number;
-        lastchecktime: string; // ISO 8601 date-time string
-        lastchecktime_iso8601: string;
-        lastcheckoktime: string; // ISO 8601 date-time string
-        lastcheckoktime_iso8601: string;
-        lastlocalchecktime: string; // ISO 8601 date-time string
-        lastlocalchecktime_iso8601: string;
-        clicktimestamp: string; // ISO 8601 date-time string
-        clicktimestamp_iso8601: string;
-        clickcount: number;
-        clicktrend: number;
-        ssl_error: number;
-        geo_lat: number;
-        geo_long: number;
-        has_extended_info: boolean;
-    }
+    const [isRadioBrowserApiAvailable, setApiAvailable] = useState(false);
+
+    // we use https://www.radio-browser.info/ as source for available radio stations
+    const radioBrowserAPIBaseJsonUrl = "https://de1.api.radio-browser.info/json/";
+    useEffect(() => {
+        const checkApiAvailability = async () => {
+            try {
+                const response = await fetch(radioBrowserAPIBaseJsonUrl + "stats");
+                if (response.ok) {
+                    setApiAvailable(true);
+                }
+            } catch (error) {
+                console.log("Radio Browser API not available, disable radiostream search.");
+                setApiAvailable(false);
+            }
+        };
+
+        checkApiAvailability();
+    }, []);
 
     const debounce = (func: (...args: any[]) => void, wait: number) => {
         let timeout: NodeJS.Timeout;
@@ -66,11 +47,8 @@ export const RadioStreamSearch: React.FC<{
         }
         const searchEncode = encodeURIComponent(search);
 
-        // we use https://www.radio-browser.info/ as source for available radio stations
         const url =
-            "http://de1.api.radio-browser.info/json/stations/search?name=" +
-            searchEncode +
-            "&is_https=true&hidebroken=true";
+            radioBrowserAPIBaseJsonUrl + "stations/search?name=" + searchEncode + "&is_https=true&hidebroken=true";
         try {
             const response = await fetch(url, {});
             if (!response.ok) {
@@ -105,7 +83,7 @@ export const RadioStreamSearch: React.FC<{
         props.onChange(newValue);
     };
 
-    return (
+    const radioStreamSearchInput = isRadioBrowserApiAvailable ? (
         <>
             <Typography.Text style={{ fontSize: "small", display: "inline-block", marginTop: "8px" }}>
                 {t("radioStreamSearch.searchLabel")}
@@ -128,5 +106,8 @@ export const RadioStreamSearch: React.FC<{
                 }))}
             />
         </>
+    ) : (
+        <></>
     );
+    return radioStreamSearchInput;
 };
