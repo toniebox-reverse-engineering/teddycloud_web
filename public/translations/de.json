@@ -32,6 +32,10 @@
         "saved": "Einstellung gespeichert!",
         "overlayDisabled": "Overlayed deaktiviert!",
         "overlayEnabled": "Overlayed aktiviert!",
+        "restartServer": "Server neustarten",
+        "restartInProgress": "TeddyCloud wird gestartet...",
+        "restartFailed": "Neustart TeddyCloud Server fehlgeschlagen!",
+        "restartComplete": "Neustart TeddyCloud Server erfolgreich!",
         "general": {
             "navigationTitle": "Allgemein",
             "title": "Allgemeine Einstellungen"
