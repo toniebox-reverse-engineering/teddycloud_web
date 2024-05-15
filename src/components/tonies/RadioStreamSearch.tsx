@@ -55,13 +55,13 @@ export const RadioStreamSearch: React.FC<{
                 throw new Error(response.status + " " + response.statusText);
             }
             const data = await response.json();
-            const uniqueData = Array.from(new Set(data.map((item: { url_resolved: any }) => item.url_resolved))).map(
-                (url_resolved) => {
+            const uniqueData = Array.from(new Set(data.map((item: { url: any }) => item.url))).map(
+                (url) => {
                     const item = data.find(
-                        (station: { url_resolved: unknown }) => station.url_resolved === url_resolved
+                        (station: { url: unknown }) => station.url === url
                     );
                     return {
-                        value: item!.url_resolved,
+                        value: item!.url,
                         text:
                             (item!.country ? "[" + item!.country + "] " : "") +
                             item!.name +
