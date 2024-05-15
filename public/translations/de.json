@@ -22,6 +22,7 @@
     "settings": {
         "navigationTitle": "Einstellungen",
         "title": "Einstellungen",
+        "levelLabel": "Settings level",
         "information": "Information",
         "hint": "Dies sind die Default-Einstellungen. Einige der Einstellungen können von deinen Toniebox spezifischen Einstellungen überschrieben werden. Um diese zu ändern, gehe zu ",
         "warning": "Achtung! Speicherbutton + Settings level",
