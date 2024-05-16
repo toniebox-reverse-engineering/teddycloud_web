@@ -22,10 +22,12 @@ export const ChangelogPage = () => {
             version: "0.5.3",
             changes: [
                 "Stabilization backend",
+                "store last played time of last played tag",
                 "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
                 "new /web gui: Tonies - Content section - added Migrate Content to Lib button on TAF files",
                 "new /web gui: added RTNL Log Page",
                 "new /web gui: added Json File Modal in Content section (double click on json file row)",
+                "new /web gui: show date time of last played tag (toniecard + toniboxcard)",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
