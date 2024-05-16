@@ -53,7 +53,6 @@ export const TonieboxCard: React.FC<{
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
     const [lastOnline, setLastOnline] = useState<string>("");
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
-    const [ruidTime, setRuidTime] = useState<string>("");
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
     const [isUploadCertificatesModalOpen, setIsUploadCertificatesModalOpen] = useState(false);
@@ -99,11 +98,13 @@ export const TonieboxCard: React.FC<{
         const fetchTonieboxLastRUID = async () => {
             const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
             if (ruid !== "ffffffffffffffff" && ruid !== "") {
+                const ruidTime = await api.apiGetTonieboxLastRUIDTime(tonieboxCard.ID);
                 const fetchTonies = async () => {
                     const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
-                    const ruidTime = await api.apiGetTonieboxLastRUIDTime(tonieboxCard.ID);
-                    setRuidTime(ruidTime);
-                    setLastPlayedTonie(tonieData.filter((tonieData) => tonieData.ruid === ruid));
+                    setLastPlayedTonie(
+                        tonieData.filter((tonieData) => tonieData.ruid === ruid),
+                        ruidTime
+                    );
                 };
                 fetchTonies();
             }
@@ -156,7 +157,7 @@ export const TonieboxCard: React.FC<{
         }
     };
 
-    const setLastPlayedTonie = (tonie: TonieCardProps[]) => {
+    const setLastPlayedTonie = (tonie: TonieCardProps[], time?: string) => {
         setLastPlayedTonieName(
             <>
                 <Link to={"/tonies?tonieRUID=" + tonie[0].ruid + "&overlay=" + tonieboxCard.ID}>
@@ -167,7 +168,7 @@ export const TonieboxCard: React.FC<{
                             t("tonieboxes.lastPlayedTonie") +
                             tonie[0].tonieInfo.series +
                             (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "") +
-                            (ruidTime ? " (" + ruidTime + ")" : "")
+                            (time ? " (" + time + ")" : "")
                         }
                     >
                         <img
