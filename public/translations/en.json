@@ -48,6 +48,13 @@
             "uploadHint": "Drag and drop client certificates from your box here",
             "uploadSuccessful": "{{filename}} file uploaded successfully.",
             "uploadFailed": "{{filename}} file upload failed. Take a look into the console"
+        },
+        "rtnl": {
+            "navigationTitle": "RTNL log",
+            "title": "RTNL Log",
+            "information": "Information",
+            "hint": "RTNL Log is disabled.",
+            "enableRtnl": "Enable RTNL Log"
         }
     },
     "tonies": {
@@ -185,6 +192,10 @@
             "uploadPath": "Upload path (certDir):",
             "boxSpecific": " (overlayed for toniebox)",
             "AttentionGeneralPath": "(ATTENTION: Default Path!)"
+        },
+        "esp32BoxFlashing": {
+            "navigationTitle": "ESP32 Box Flashing",
+            "title": "ESP32 Box Flashing"
         }
     },
     "community": {

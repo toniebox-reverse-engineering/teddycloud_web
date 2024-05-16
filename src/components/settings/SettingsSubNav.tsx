@@ -1,5 +1,5 @@
 import { MenuProps, message } from "antd";
-import { SafetyCertificateOutlined, SettingOutlined, PoweroffOutlined } from "@ant-design/icons";
+import { SafetyCertificateOutlined, SettingOutlined, PoweroffOutlined, FileSearchOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -71,6 +71,11 @@ export const SettingsSubNav = () => {
             key: "certificates",
             label: <Link to="/settings/certificates">{t("settings.certificates.navigationTitle")}</Link>,
             icon: React.createElement(SafetyCertificateOutlined),
+        },
+        {
+            key: "rtnl",
+            label: <Link to="/settings/rtnl">{t("settings.rtnl.navigationTitle")}</Link>,
+            icon: React.createElement(FileSearchOutlined),
         },
         {
             key: "restart_server",

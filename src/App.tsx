@@ -5,6 +5,7 @@ import { AudioProvider } from "./components/audio/AudioContext";
 
 import { UiTest } from "./components/UiTest";
 import { SettingsPage } from "./pages/settings/SettingsPage";
+import { RtnlPage } from "./pages/settings/RtnlPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
 import { HomePage } from "./pages/home/HomePage";
 import { StatsPage } from "./pages/home/StatsPage";
@@ -24,6 +25,7 @@ import { ChangelogPage } from "./pages/community/ChangelogPage";
 import { useState, useEffect } from "react";
 import { ConfigProvider, theme } from "antd";
 import { SunOutlined, MoonOutlined, BulbOutlined } from "@ant-design/icons";
+import { ESP32BoxFlashing } from "./pages/tonieboxes/ESP32BoxFlashing";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -88,8 +90,10 @@ function App() {
                                     <Route path="/tonies/library" element={<LibraryPage />} />
                                     <Route path="/tonies/encoder" element={<EncoderPage />} />
                                     <Route path="/tonieboxes" element={<TonieboxesPage />} />
+                                    <Route path="/tonieboxes/esp32boxflashing" element={<ESP32BoxFlashing />} />
                                     <Route path="/settings" element={<SettingsPage />} />
                                     <Route path="/settings/certificates" element={<CertificatesPage />} />
+                                    <Route path="/settings/rtnl" element={<RtnlPage />} />
                                     <Route path="/community" element={<CommunityPage />} />
                                     <Route path="/community/contribution" element={<ContributionPage />} />
                                     <Route
