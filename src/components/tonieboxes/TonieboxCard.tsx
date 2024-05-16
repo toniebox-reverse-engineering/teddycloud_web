@@ -53,6 +53,7 @@ export const TonieboxCard: React.FC<{
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
     const [lastOnline, setLastOnline] = useState<string>("");
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
+    const [ruidTime, setRuidTime] = useState<string>("");
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
     const [isUploadCertificatesModalOpen, setIsUploadCertificatesModalOpen] = useState(false);
@@ -97,10 +98,11 @@ export const TonieboxCard: React.FC<{
 
         const fetchTonieboxLastRUID = async () => {
             const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
-
             if (ruid !== "ffffffffffffffff" && ruid !== "") {
                 const fetchTonies = async () => {
                     const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
+                    const ruidTime = await api.apiGetTonieboxLastRUIDTime(tonieboxCard.ID);
+                    setRuidTime(ruidTime);
                     setLastPlayedTonie(tonieData.filter((tonieData) => tonieData.ruid === ruid));
                 };
                 fetchTonies();
@@ -164,7 +166,8 @@ export const TonieboxCard: React.FC<{
                         title={
                             t("tonieboxes.lastPlayedTonie") +
                             tonie[0].tonieInfo.series +
-                            (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "")
+                            (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "") +
+                            (ruidTime ? " (" + ruidTime + ")" : "")
                         }
                     >
                         <img

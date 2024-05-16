@@ -228,6 +228,47 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * get last played tonie time
+     */
+    async apiGetTonieboxLastRUIDTimeRaw(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.last_ruid_time`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.TextApiResponse(response);
+    }
+
+    /**
+     * get last played tonie time
+     */
+    async apiGetTonieboxLastRUIDTime(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTonieboxLastRUIDTimeRaw(overlay, initOverrides);
+        const timestamp = await response.value();
+        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
+        return date.toLocaleString();
+    }
+
+    /**
      * get toniebox content dir
      */
     async apiGetTonieboxContentDirRaw(

@@ -34,7 +34,7 @@ export const ToniesList: React.FC<{
     const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
-    const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string]>>([]);
+    const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
     const [pageSize, setPageSize] = useState<number>(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
         if (storedState) {
@@ -85,12 +85,17 @@ export const ToniesList: React.FC<{
             const ruid = await api.apiGetTonieboxLastRUID(id);
             return ruid;
         };
+        const fetchTonieboxLastRUIDTime = async (id: string) => {
+            const ruidTime = await api.apiGetTonieboxLastRUIDTime(id);
+            return ruidTime;
+        };
         const fetchTonieboxes = async () => {
             const tonieboxData = await api.apiGetTonieboxesIndex();
             const tonieboxLastRUIDs = await Promise.all(
                 tonieboxData.map(async (toniebox) => {
                     const lastRUID = await fetchTonieboxLastRUID(toniebox.ID);
-                    return [lastRUID, toniebox.boxName] as [string, string];
+                    const lastRUIDTime = await fetchTonieboxLastRUIDTime(toniebox.ID);
+                    return [lastRUID, lastRUIDTime, toniebox.boxName] as [string, string, string];
                 })
             );
             setLastTonieboxRUIDs(tonieboxLastRUIDs);

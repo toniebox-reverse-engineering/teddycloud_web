@@ -204,7 +204,7 @@ export const RtnlPage = () => {
                                         key={index}
                                         style={{
                                             padding: 0,
-                                            margin: 0,
+                                            margin: "-4px 0 -4px 0",
                                             fontFamily: "monospace",
                                             border: "none",
                                             background: "rgb(43, 43, 43)",

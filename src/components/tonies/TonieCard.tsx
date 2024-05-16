@@ -49,7 +49,7 @@ export type TonieCardProps = {
 
 export const TonieCard: React.FC<{
     tonieCard: TonieCardProps;
-    lastRUIDs: Array<[string, string]>;
+    lastRUIDs: Array<[string, string, string]>;
     overlay: string;
     readOnly: boolean;
 }> = ({ tonieCard, lastRUIDs, overlay, readOnly }) => {
@@ -254,7 +254,9 @@ export const TonieCard: React.FC<{
         setSelectedSource(e.target.value);
     };
 
-    const toniePlayedOn = lastRUIDs.filter(([ruid]) => ruid === tonieCard.ruid).map(([, boxName]) => boxName);
+    const toniePlayedOn = lastRUIDs
+        .filter(([ruid]) => ruid === tonieCard.ruid)
+        .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }));
 
     const title =
         `${tonieCard.tonieInfo.series}` + (tonieCard.tonieInfo.episode ? ` - ${tonieCard.tonieInfo.episode}` : "");
@@ -297,8 +299,11 @@ export const TonieCard: React.FC<{
                 <>
                     <strong>{t("tonies.lastPlayedOnModal.lastPlayedOnMessage")}:</strong>
                     <ul>
-                        {toniePlayedOn.map((boxName, index) => (
-                            <li key={index}>{boxName}</li>
+                        {toniePlayedOn.map(({ ruidTime, boxName }, index) => (
+                            <li key={index}>
+                                {boxName}
+                                {ruidTime ? " (" + ruidTime + ")" : ""}
+                            </li>
                         ))}
                     </ul>
                 </>
