@@ -60,7 +60,6 @@ export const TonieCard: React.FC<{
     const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
     const [isLive, setIsLive] = useState(tonieCard.live);
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
-    const [audioUrl, setAudioUrl] = useState(tonieCard.audioUrl);
     const { playAudio } = useAudioContext();
 
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
@@ -80,7 +79,6 @@ export const TonieCard: React.FC<{
         setIsNoCloud(tonieCard.nocloud);
         setActiveSource(tonieCard.source);
         setActiveModel(tonieCard.tonieInfo.model);
-        setAudioUrl(tonieCard.audioUrl);
         setDownloadTriggerUrl(tonieCard.downloadTriggerUrl);
     }, [tonieCard]);
 
@@ -183,6 +181,7 @@ export const TonieCard: React.FC<{
             }
 
             // blob used that message is shown after download finished
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const blob = await response.blob();
 
             messageApi.destroy();

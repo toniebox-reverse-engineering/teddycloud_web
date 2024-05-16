@@ -12,9 +12,11 @@ type OptionItemProps = {
 };
 
 export const OptionItem = ({ option, noOverlay, overlayId }: OptionItemProps) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { type, iD, description, label, shortname, value, overlayed } = option;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [optionValue, setOptionValue] = useState<string>("");
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [field, meta, { setValue }] = useField(iD);
 
     useEffect(() => {

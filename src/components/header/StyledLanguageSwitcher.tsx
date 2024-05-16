@@ -22,7 +22,7 @@ export const StyledLanguageSwitcher = () => {
     return (
         <Space>
             <Dropdown menu={{ items }} trigger={["click"]}>
-                <a onClick={(e) => e.preventDefault()} title={t("language.change")}>
+                <a href="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
                     <Tag color="transparent">
                         <GlobalOutlined />
                     </Tag>

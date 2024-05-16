@@ -67,6 +67,7 @@ export const ToniesList: React.FC<{
         } else {
             console.log("No stored state found.");
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

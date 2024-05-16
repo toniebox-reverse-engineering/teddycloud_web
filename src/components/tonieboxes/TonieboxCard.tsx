@@ -47,6 +47,7 @@ export const TonieboxCard: React.FC<{
     const { t } = useTranslation();
     const { token } = useToken();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
@@ -117,6 +118,7 @@ export const TonieboxCard: React.FC<{
 
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tonieboxCard.ID, tonieboxCard.boxModel]);
 
     const selectBoxImage = (id: string) => {

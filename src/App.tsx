@@ -1,5 +1,5 @@
 import "./App.css";
-import { Layout, Space } from "antd";
+import { Layout } from "antd";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AudioProvider } from "./components/audio/AudioContext";
 
@@ -31,7 +31,7 @@ function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const storedTheme = localStorage.getItem("theme");
 
-    if (storedTheme == "auto") {
+    if (storedTheme === "auto") {
         return prefersDarkMode ? "dark" : "light";
     } else {
         return storedTheme;

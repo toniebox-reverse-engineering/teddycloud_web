@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Select } from "antd";
 import {
@@ -11,11 +10,8 @@ import {
 
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/tonies/FileBrowser";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
 import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
 
-const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
 
 export const ContentPage = () => {

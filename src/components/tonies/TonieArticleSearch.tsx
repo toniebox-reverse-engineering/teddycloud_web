@@ -9,9 +9,12 @@ export const TonieArticleSearch: React.FC<{
     onChange: (newValue: string) => void;
 }> = (props) => {
     const { t } = useTranslation();
+    // this is actually needed that the search works
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<SelectProps["options"]>([]);
     const [value, setValue] = useState<string>();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [tonieInfos, setTonieInfos] = useState<TonieInfo[]>();
 
     const handleSearch = async (search: string) => {
