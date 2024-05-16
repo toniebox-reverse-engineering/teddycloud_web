@@ -33,7 +33,7 @@ export const SettingsSubNav = () => {
             duration: 0,
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
 
         let attempts = 0;
         while (attempts < 10) {

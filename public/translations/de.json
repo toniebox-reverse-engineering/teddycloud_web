@@ -53,9 +53,8 @@
         "rtnl": {
             "navigationTitle": "RTNL log",
             "title": "RTNL Log",
-            "information": "Information",
-            "hint": "RTNL Log is disabled.",
-            "enableRtnl": "RTNL Log anzeigen"
+            "enableRtnl": "Logging aktivieren",
+            "clear": "RTNL Log leeren"
         }
     },
     "tonies": {

@@ -9,6 +9,7 @@ import {
 } from "../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { Alert, Typography } from "antd";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -35,7 +36,13 @@ export const ESP32BoxFlashing = () => {
                     <Paragraph>
                         <Alert
                             message={t("settings.information")}
-                            description=<div>Development still in progress</div>
+                            description=<div>
+                                Development still in progress - Please use legacy{" "}
+                                <Link to={process.env.REACT_APP_TEDDYCLOUD_API_URL + ""} target="_blank">
+                                    TeddyCloud Administration GUI
+                                </Link>{" "}
+                                till development is completed.
+                            </div>
                             type="info"
                             showIcon
                         />
