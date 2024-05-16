@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
 import { StyledSubMenu } from "../StyledComponents";
 import { TonieboxIcon } from "../../util/tonieboxIcon";
+import { DeliveredProcedureOutlined } from "@ant-design/icons";
 
 export const TonieboxesSubNav = () => {
     const { t } = useTranslation();
@@ -17,6 +18,11 @@ export const TonieboxesSubNav = () => {
                 </Link>
             ),
             icon: React.createElement(TonieboxIcon),
+        },
+        {
+            key: "esp32boxflashing",
+            label: <Link to="/tonieboxes/esp32boxflashing">{t("tonieboxes.esp32BoxFlashing.navigationTitle")}</Link>,
+            icon: React.createElement(DeliveredProcedureOutlined),
         },
     ];
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { Table, Tooltip, message } from "antd";
+import { Modal, Table, Tooltip, message } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 
@@ -37,9 +37,32 @@ export const FileBrowser: React.FC<{
     const [rebuildList, setRebuildList] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
+    const [currentFile, setCurrentFile] = useState("");
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
+    const [jsonData, setJsonData] = useState(null);
+    const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState(false);
+
+    const fetchJsonData = async (url: string) => {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            setJsonData(data);
+        } catch (error) {
+            console.error("Error fetching JSON data:", error);
+        }
+    };
+
+    const showJsonViewer = (file: string) => {
+        fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + file);
+        setCurrentFile(file);
+        setJsonViewerModalOpened(true);
+    };
+
+    const handleJsonViewerModalClose = () => {
+        setJsonViewerModalOpened(false);
+    };
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
     };
@@ -307,6 +330,15 @@ export const FileBrowser: React.FC<{
     return (
         <>
             {contextHolder}
+            <Modal
+                width={700}
+                title={"File: " + currentFile}
+                open={jsonViewerModalOpened}
+                onCancel={handleJsonViewerModalClose}
+                onOk={handleJsonViewerModalClose}
+            >
+                {jsonData ? <pre style={{ overflow: "auto" }}>{JSON.stringify(jsonData, null, 2)}</pre> : "Loading..."}
+            </Modal>
             <Table
                 dataSource={files}
                 columns={columns}
@@ -316,6 +348,9 @@ export const FileBrowser: React.FC<{
                     onDoubleClick: () => {
                         if (record.isDir) {
                             handleDirClick(record.name);
+                        } else if (record.name.includes(".json")) {
+                            console.log("json");
+                            showJsonViewer(path + "/" + record.name);
                         }
                     },
                 })}
