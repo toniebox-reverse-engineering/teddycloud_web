@@ -6,6 +6,7 @@ import GetBoxModelImages from "../../util/boxModels";
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
 }> = ({ tonieboxCards }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [loading, setLoading] = useState(true);
     const boxModelImages = GetBoxModelImages();
 

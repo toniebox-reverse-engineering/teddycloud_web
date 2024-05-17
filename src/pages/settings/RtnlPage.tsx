@@ -133,7 +133,7 @@ export const RtnlPage = () => {
                 const data = JSON.parse(event.data);
                 setLogEntries((prevLogEntries) => [
                     ...prevLogEntries,
-                    "Raw3 |" + " Datetime: " + data.data.datetime + " Unknown: " + data.data.field2,
+                    "Raw3 | Datetime: " + data.data.datetime + " Unknown: " + data.data.field2,
                 ]);
             });
 
@@ -148,6 +148,7 @@ export const RtnlPage = () => {
         } else {
             return;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rtnlActive]);
 
     useEffect(() => {
@@ -203,7 +204,7 @@ export const RtnlPage = () => {
                                         key={index}
                                         style={{
                                             padding: 0,
-                                            margin: 0,
+                                            margin: "-4px 0 -4px 0",
                                             fontFamily: "monospace",
                                             border: "none",
                                             background: "rgb(43, 43, 43)",

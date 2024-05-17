@@ -1,64 +1,16 @@
-import { MenuProps, message } from "antd";
+import { MenuProps } from "antd";
 import { SafetyCertificateOutlined, SettingOutlined, PoweroffOutlined, FileSearchOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
-import { BoxineApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-
-const api = new BoxineApi(defaultAPIConfig());
+import { restartServer } from "../../util/restartServer";
 
 export const SettingsSubNav = () => {
     const { t } = useTranslation();
-    const [messageApi, contextHolder] = message.useMessage();
 
-    const restartServer = async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/triggerRestart`);
-            const data = await response.text();
-
-            if (data.toString() !== "OK") {
-                message.error(t("settings.restartFailed"));
-                return;
-            }
-        } catch (error) {
-            message.error(t("settings.restartFailed"));
-            return;
-        }
-
-        messageApi.open({
-            type: "loading",
-            content: t("settings.restartInProgress"),
-            duration: 0,
-        });
-
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        let attempts = 0;
-        while (attempts < 10) {
-            try {
-                const timeRequest = (await api.v1TimeGet()) as String;
-                if (timeRequest.length === 10) {
-                    messageApi.destroy();
-                    messageApi.open({
-                        type: "success",
-                        content: t("settings.restartComplete"),
-                    });
-                    window.location.href = `${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}`;
-                    return;
-                }
-            } catch (e) {
-                // Increment attempts and wait for 3 seconds
-                attempts++;
-                await new Promise((resolve) => setTimeout(resolve, 3000));
-            }
-        }
-        messageApi.destroy();
-        messageApi.open({
-            type: "error",
-            content: t("settings.restartFailed"),
-        });
+    const handleRestartServer = async () => {
+        await restartServer(true);
     };
 
     const subnav: MenuProps["items"] = [
@@ -79,14 +31,13 @@ export const SettingsSubNav = () => {
         },
         {
             key: "restart_server",
-            label: <label onClick={restartServer}>{t("settings.restartServer")}</label>,
+            label: <label onClick={handleRestartServer}>{t("settings.restartServer")}</label>,
             icon: React.createElement(PoweroffOutlined),
         },
     ];
 
     return (
         <>
-            {contextHolder}
             <StyledSubMenu
                 mode="inline"
                 //defaultSelectedKeys={["1"]}

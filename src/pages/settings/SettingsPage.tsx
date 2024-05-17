@@ -15,11 +15,12 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
 import OptionItem from "../../components/settings/OptionItem";
 import { Formik } from "formik";
-import * as Yup from "yup";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 /** TODO: Create validation schema for all settings before submitting them to backend
+import * as Yup from "yup";
+...
 const settingsValidationSchema = Yup.object().shape({
   test: Yup.string().required("Dies ist ein Pflichtfeld."),
   booleanToCheck: Yup.string()

@@ -106,6 +106,7 @@ export const FileBrowser: React.FC<{
         const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
         window.history.replaceState(null, "", newUrl);
         setRebuildList(!rebuildList);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [overlay]);
 
     useEffect(() => {
@@ -122,6 +123,7 @@ export const FileBrowser: React.FC<{
 
                 setFiles(list);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
 
     const handleDirClick = (dirPath: string) => {

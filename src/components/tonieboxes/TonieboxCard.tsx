@@ -47,6 +47,7 @@ export const TonieboxCard: React.FC<{
     const { t } = useTranslation();
     const { token } = useToken();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
@@ -96,11 +97,14 @@ export const TonieboxCard: React.FC<{
 
         const fetchTonieboxLastRUID = async () => {
             const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
-
             if (ruid !== "ffffffffffffffff" && ruid !== "") {
+                const ruidTime = await api.apiGetTonieboxLastRUIDTime(tonieboxCard.ID);
                 const fetchTonies = async () => {
                     const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
-                    setLastPlayedTonie(tonieData.filter((tonieData) => tonieData.ruid === ruid));
+                    setLastPlayedTonie(
+                        tonieData.filter((tonieData) => tonieData.ruid === ruid),
+                        ruidTime
+                    );
                 };
                 fetchTonies();
             }
@@ -117,6 +121,7 @@ export const TonieboxCard: React.FC<{
 
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tonieboxCard.ID, tonieboxCard.boxModel]);
 
     const selectBoxImage = (id: string) => {
@@ -152,7 +157,7 @@ export const TonieboxCard: React.FC<{
         }
     };
 
-    const setLastPlayedTonie = (tonie: TonieCardProps[]) => {
+    const setLastPlayedTonie = (tonie: TonieCardProps[], time?: string) => {
         setLastPlayedTonieName(
             <>
                 <Link to={"/tonies?tonieRUID=" + tonie[0].ruid + "&overlay=" + tonieboxCard.ID}>
@@ -162,7 +167,8 @@ export const TonieboxCard: React.FC<{
                         title={
                             t("tonieboxes.lastPlayedTonie") +
                             tonie[0].tonieInfo.series +
-                            (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "")
+                            (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "") +
+                            (time ? " (" + time + ")" : "")
                         }
                     >
                         <img

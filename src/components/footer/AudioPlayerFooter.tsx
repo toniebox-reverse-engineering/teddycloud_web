@@ -3,7 +3,7 @@ import { PlayCircleOutlined, PauseCircleOutlined, StepBackwardOutlined, StepForw
 import { useAudioContext } from "../audio/AudioContext";
 import { useEffect, useState } from "react";
 import MediaSession from "@mebtte/react-media-session";
-import { Progress, Tooltip } from "antd";
+import { Progress } from "antd";
 
 interface AudioPlayerFooterProps {
     /*
@@ -16,7 +16,7 @@ interface AudioPlayerFooterProps {
     */
 }
 
-const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({}) => {
+const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = () => {
     const { songImage, songArtist, songTitle } = useAudioContext(); // Access the songImage from the audio context
     const [isPlaying, setIsPlaying] = useState(false);
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
@@ -30,10 +30,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({}) => {
         visible: boolean;
     }>({ left: 0, top: 0, visible: false });
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
-
-    const handlePlayPause = () => {
-        setIsPlaying((isPlaying) => !isPlaying);
-    };
 
     const handleAudioPlay = () => {
         setIsPlaying(true);
