@@ -30,8 +30,10 @@
         "yup": "^1.2.0"
     },
     "scripts": {
-        "start": "react-scripts start",
         "build": "react-scripts build",
+        "start-http": "react-scripts start",
+        "start-https": "cross-env HTTPS=true PORT=3443 react-scripts start",
+        "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
         "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
@@ -58,6 +60,7 @@
         "printWidth": 120
     },
     "devDependencies": {
-        "@types/react-syntax-highlighter": "^15.5.13"
+        "@types/react-syntax-highlighter": "^15.5.13",
+        "cross-env": "^7.0.3"
     }
 }
