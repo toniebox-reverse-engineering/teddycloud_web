@@ -78,19 +78,12 @@ export const ESP32BoxFlashing = () => {
 
             console.log("value", value);
             if (!value && !httpsActive) {
-                const httpsURL = `https://${window.location.host}${window.location.pathname}${window.location.search}`;
-
                 // Redirect to the HTTPS URL
-                // we need to trigger a server restart first!
-                await restartServer(false);
-                console.log("server restarted");
+                const httpsURL = `https://${window.location.host}${window.location.pathname}${window.location.search}`;
                 window.location.replace(httpsURL);
             } else if (value && httpsActive) {
-                const httpURL = `http://${window.location.host}${window.location.pathname}${window.location.search}`;
-
                 // Redirect to the HTTP URL
-                // as http is always available no restart needed
-                console.log("go to http");
+                const httpURL = `http://${window.location.host}${window.location.pathname}${window.location.search}`;
                 window.location.replace(httpURL);
             }
         } catch (e) {
