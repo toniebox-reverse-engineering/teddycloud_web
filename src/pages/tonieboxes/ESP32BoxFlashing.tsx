@@ -13,7 +13,6 @@ import { Alert, Divider, Switch, Typography, message } from "antd";
 import { Link } from "react-router-dom";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { restartServer } from "../../util/restartServer";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
