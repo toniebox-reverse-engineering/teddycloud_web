@@ -8,6 +8,7 @@ export const RadioStreamSearch: React.FC<{
     onChange: (newValue: string) => void;
 }> = (props) => {
     const { t } = useTranslation();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<SelectProps["options"]>([]);
     const [value, setValue] = useState<string>();
@@ -55,20 +56,16 @@ export const RadioStreamSearch: React.FC<{
                 throw new Error(response.status + " " + response.statusText);
             }
             const data = await response.json();
-            const uniqueData = Array.from(new Set(data.map((item: { url: any }) => item.url))).map(
-                (url) => {
-                    const item = data.find(
-                        (station: { url: unknown }) => station.url === url
-                    );
-                    return {
-                        value: item!.url,
-                        text:
-                            (item!.country ? "[" + item!.country + "] " : "") +
-                            item!.name +
-                            (item!.language ? " (" + item!.language + ")" : ""),
-                    };
-                }
-            );
+            const uniqueData = Array.from(new Set(data.map((item: { url: any }) => item.url))).map((url) => {
+                const item = data.find((station: { url: unknown }) => station.url === url);
+                return {
+                    value: item!.url,
+                    text:
+                        (item!.country ? "[" + item!.country + "] " : "") +
+                        item!.name +
+                        (item!.language ? " (" + item!.language + ")" : ""),
+                };
+            });
             setData(uniqueData);
         } catch (error) {
             message.error(t("radioStreamSearch.failedToFetchSearchResults") + error);
@@ -76,6 +73,7 @@ export const RadioStreamSearch: React.FC<{
         }
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const debouncedSearch = useCallback(debounce(handleSearch, 300), []);
 
     const handleChange = (newValue: string) => {
