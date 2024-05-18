@@ -15,9 +15,13 @@ Please place an enviroment file '.env.development.local' in the teddycloud_web d
 ```
 REACT_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
 REACT_APP_TEDDYCLOUD_WEB_BASE=/web
+PORT_HTTPS=3443
+PORT_HTTP=3000
 SSL_CRT_FILE=./localhost.pem
 SSL_KEY_FILE=./localhost-key.pem
 ```
+
+PORT_HTTPS and PORT_HTTP should match the ones entered in the package.json. If you don't change them, these are the ones from the example above.
 
 ### Parallel http/https setup
 
@@ -37,7 +41,7 @@ If you don't need the ESP32 Box flashing section working, you can adapt the pack
 ```json
 "scripts": {
         "build": "react-scripts build",
-        "start-http": "react-scripts start",
+        "start-http": "cross-env PORT=3000 react-scripts start",
         "start-https": "cross-env HTTPS=true PORT=3443 react-scripts start",
         "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
         "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
@@ -144,6 +148,8 @@ Open [https://localhost:3443](https://localhost:3443) to view the https variant 
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
+
+If you changed the default ports, adapt the links above accordingly.
 
 ### `npm test`
 

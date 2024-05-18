@@ -75,18 +75,24 @@ export const ESP32BoxFlashing = () => {
             triggerWriteConfig();
             setWebHttpOnly(value);
 
-            console.log("value", value);
+            const httpsPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS || "";
+            const httpPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP || "";
+
+            console.log("http", httpPort);
+            console.log("http", process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP);
+            console.log("https", httpsPort);
+
             if (!value && !httpsActive) {
                 // Redirect to the HTTPS URL
-                const httpsURL = `https://${window.location.host.replace("3000", "3443")}${window.location.pathname}${
-                    window.location.search
-                }`;
+                const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${
+                    window.location.pathname
+                }${window.location.search}`;
                 window.location.replace(httpsURL);
             } else if (value && httpsActive) {
                 // Redirect to the HTTP URL
-                const httpURL = `http://${window.location.host.replace("3443", "3000")}${window.location.pathname}${
-                    window.location.search
-                }`;
+                const httpURL = `http://${window.location.host.replace(httpsPort, httpPort)}${
+                    window.location.pathname
+                }${window.location.search}`;
                 window.location.replace(httpURL);
             }
         } catch (e) {
@@ -95,9 +101,30 @@ export const ESP32BoxFlashing = () => {
     };
 
     const ESP32BoxFlashingForm = httpsActive ? (
-        <Paragraph>Somewhen in future you will be able to do the flashing here.</Paragraph>
+        <>
+            <Alert
+                message={t("settings.information")}
+                description=<div>
+                    Development still in progress - Please use legacy{" "}
+                    <Link to={process.env.REACT_APP_TEDDYCLOUD_API_URL + ""} target="_blank">
+                        TeddyCloud Administration GUI
+                    </Link>{" "}
+                    till development is completed.
+                </div>
+                type="info"
+                showIcon
+            />
+            <Paragraph>Somewhen in future you will be able to do the flashing here.</Paragraph>
+        </>
     ) : (
-        ""
+        <>
+            <Alert
+                message={t("settings.information")}
+                description={t("tonieboxes.esp32BoxFlashing.disableHttpOnlyForFlashing")}
+                type="info"
+                showIcon
+            />
+        </>
     );
 
     return (
@@ -136,18 +163,6 @@ export const ESP32BoxFlashing = () => {
                         </Text>
                     </Paragraph>
                     <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
-                    <Alert
-                        message={t("settings.information")}
-                        description=<div>
-                            Development still in progress - Please use legacy{" "}
-                            <Link to={process.env.REACT_APP_TEDDYCLOUD_API_URL + ""} target="_blank">
-                                TeddyCloud Administration GUI
-                            </Link>{" "}
-                            till development is completed.
-                        </div>
-                        type="info"
-                        showIcon
-                    />
                     {ESP32BoxFlashingForm}
                 </StyledContent>
             </StyledLayout>
