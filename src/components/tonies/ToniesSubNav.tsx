@@ -1,5 +1,12 @@
 import { MenuProps } from "antd";
-import { UserOutlined, SettingOutlined, BookOutlined, SoundOutlined, CloudUploadOutlined } from "@ant-design/icons";
+import {
+    UserOutlined,
+    SettingOutlined,
+    BookOutlined,
+    SoundOutlined,
+    CloudUploadOutlined,
+    UnorderedListOutlined,
+} from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -15,14 +22,14 @@ export const ToniesSubNav = () => {
             icon: React.createElement(UserOutlined),
         },
         {
-            key: "system-sounds",
-            label: <Link to="/tonies/system-sounds">{t("tonies.system-sounds.navigationTitle")}</Link>,
-            icon: React.createElement(SettingOutlined),
+            key: "encoder",
+            label: <Link to="/tonies/encoder">{t("tonies.encoder.navigationTitle")}</Link>,
+            icon: React.createElement(CloudUploadOutlined),
         },
         {
-            key: "content",
-            label: <Link to="/tonies/content">{t("tonies.content.navigationTitle")}</Link>,
-            icon: React.createElement(SoundOutlined),
+            key: "tap",
+            label: <Link to="/tonies/tap">{t("tonies.tap.navigationTitle")}</Link>,
+            icon: React.createElement(UnorderedListOutlined),
         },
         {
             key: "library",
@@ -30,9 +37,14 @@ export const ToniesSubNav = () => {
             icon: React.createElement(BookOutlined),
         },
         {
-            key: "encoder",
-            label: <Link to="/tonies/encoder">{t("tonies.encoder.navigationTitle")}</Link>,
-            icon: React.createElement(CloudUploadOutlined),
+            key: "content",
+            label: <Link to="/tonies/content">{t("tonies.content.navigationTitle")}</Link>,
+            icon: React.createElement(SoundOutlined),
+        },
+        {
+            key: "system-sounds",
+            label: <Link to="/tonies/system-sounds">{t("tonies.system-sounds.navigationTitle")}</Link>,
+            icon: React.createElement(SettingOutlined),
         },
     ];
 

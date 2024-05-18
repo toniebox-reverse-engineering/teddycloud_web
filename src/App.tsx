@@ -16,6 +16,7 @@ import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { ContentPage } from "./pages/tonies/ContentPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { EncoderPage } from "./pages/tonies/EncoderPage";
+import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
 import { TonieboxesPage } from "./pages/tonieboxes/TonieboxesPage";
 import { CommunityPage } from "./pages/community/CommunityPage";
 import { ContributionPage } from "./pages/community/ContributionPage";
@@ -89,6 +90,7 @@ function App() {
                                     <Route path="/tonies/content" element={<ContentPage />} />
                                     <Route path="/tonies/library" element={<LibraryPage />} />
                                     <Route path="/tonies/encoder" element={<EncoderPage />} />
+                                    <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
                                     <Route path="/tonieboxes" element={<TonieboxesPage />} />
                                     <Route path="/tonieboxes/esp32boxflashing" element={<ESP32BoxFlashing />} />
                                     <Route path="/settings" element={<SettingsPage />} />

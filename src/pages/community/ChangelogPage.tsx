@@ -28,6 +28,8 @@ export const ChangelogPage = () => {
                 "new /web gui: added RTNL Log Page",
                 "new /web gui: added Json File Modal in Content section (double click on json file row)",
                 "new /web gui: show date time of last played tag (toniecard + toniboxcard)",
+                "new /web gui: added Tonie Audio Playlist page (WIP - Implementation not yet finished), rearranged menu entries tonies section",
+                "new /web gui: added delete feature in content, library and audio playlist page",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",

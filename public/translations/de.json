@@ -115,6 +115,10 @@
             "saveAs": "Datei speichern unter",
             "removeFile": "Datei entfernen"
         },
+        "tap": {
+            "navigationTitle": "Audio Playlists",
+            "title": "Tonie Audio Playlists"
+        },
         "messages": {
             "couldNotEmptySource": "Konnte Quelle nicht leeren!",
             "sourceSetSuccessful": "Quelle auf {{selectedFile}} gesetzt!",
@@ -243,12 +247,20 @@
         "episode": "Episode",
         "date": "Datum",
         "playFile": "Abspielen",
+        "delete": "Löschen",
         "migrateContentToLib": "TAF-Datei in Library (by/audioId/) migrieren",
         "migrateContentToLibRoot": "TAF-Datei in Library (root) migrieren",
         "messages": {
             "migrationOngoing": "migriere...",
             "migrationSuccessful": "Migration erfolgreich!",
-            "migrationFailed": "Migration fehlgeschlagen!"
+            "migrationFailed": "Migration fehlgeschlagen",
+            "deleting": "Wird gelöscht...",
+            "deleteSuccessful": "Löschvorgang erfolgreich!",
+            "deleteFailed": "Löschvorgang fehlgeschlagen"
+        },
+        "tap": {
+            "edit": "(WIP - not implemented yet) Tonie Audio Playlist editieren",
+            "copy": "(WIP - not implemented yet) Tonie Audio Playlist duplizieren"
         }
     },
     "tonieArticleSearch": {
