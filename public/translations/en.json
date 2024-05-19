@@ -295,6 +295,6 @@
         "nl-be": "Dutch (Belgium)",
         "it-it": "Italian",
         "de-de": "German",
-        "other": "Other/undefined"
+        "undefined": "Other/undefined"
     }
 }

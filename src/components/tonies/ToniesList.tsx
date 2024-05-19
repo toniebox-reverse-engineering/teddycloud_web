@@ -126,7 +126,10 @@ export const ToniesList: React.FC<{
             (tonie) =>
                 tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase()) &&
                 tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase()) &&
-                (selectedLanguages.length === 0 || selectedLanguages.includes(tonie.tonieInfo.language)) &&
+                (selectedLanguages.length === 0 ||
+                    selectedLanguages.includes(
+                        tonie.tonieInfo.language !== undefined ? tonie.tonieInfo.language : "undefined"
+                    )) &&
                 (!validFilter || tonie.valid) &&
                 (!invalidFilter || !tonie.valid) &&
                 (!existsFilter || tonie.exists) &&

@@ -482,9 +482,9 @@ export const TonieCard: React.FC<{
                                 zIndex={2}
                                 title={t("languageUtil." + tonieCard.tonieInfo.language)}
                             >
-                                <div style={{ height: 20, width: "auto" }}>
+                                <Text style={{ height: 20, width: "auto" }}>
                                     <LanguageFlagSVG countryCode={tonieCard.tonieInfo.language} height={20} />
-                                </div>
+                                </Text>
                             </Tooltip>
                         ) : (
                             ""

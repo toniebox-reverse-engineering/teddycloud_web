@@ -296,6 +296,6 @@
         "nl-be": "Niederländisch (Belgien)",
         "it-it": "Italienisch",
         "de-de": "Deutsch",
-        "other": "Andere/undefiniert"
+        "undefined": "Andere/undefiniert"
     }
 }

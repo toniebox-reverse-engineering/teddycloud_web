@@ -162,5 +162,5 @@ export const languageOptions: [string, string][] = [
     [t("languageUtil.nl-nl"), "nl-nl"],
     [t("languageUtil.pl-pl"), "pl-pl"],
     [t("languageUtil.pt-pt"), "pt-pt"],
-    [t("languageUtil.other"), ""],
+    [t("languageUtil.other"), "undefined"],
 ];
