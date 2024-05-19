@@ -128,7 +128,11 @@ export const ToniesList: React.FC<{
                 tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase()) &&
                 (selectedLanguages.length === 0 ||
                     selectedLanguages.includes(
-                        tonie.tonieInfo.language !== undefined ? tonie.tonieInfo.language : "undefined"
+                        tonie.tonieInfo.language !== undefined
+                            ? languageOptions.includes(tonie.tonieInfo.language)
+                                ? tonie.tonieInfo.language
+                                : "undefined"
+                            : "undefined"
                     )) &&
                 (!validFilter || tonie.valid) &&
                 (!invalidFilter || !tonie.valid) &&
@@ -274,7 +278,7 @@ export const ToniesList: React.FC<{
                                 onChange={(values) => setSelectedLanguages(values)}
                                 style={{ width: "100%", margin: "8px 0" }}
                             >
-                                {languageOptions.map(([label, key]) => (
+                                {languageOptions.map((key) => (
                                     <Option key={key} value={key}>
                                         {key ? t("languageUtil." + key) : t("languageUtil.other")}
                                     </Option>

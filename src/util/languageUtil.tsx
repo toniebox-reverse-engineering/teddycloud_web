@@ -1,4 +1,3 @@
-import { t } from "i18next";
 import React from "react";
 
 interface FlagSVGProps {
@@ -151,16 +150,16 @@ const LanguageFlagSVG: React.FC<FlagSVGProps> = ({ countryCode, height }) => {
 
 export default LanguageFlagSVG;
 
-export const languageOptions: [string, string][] = [
-    [t("languageUtil.de-de"), "de-de"],
-    [t("languageUtil.en-gb"), "en-gb"],
-    [t("languageUtil.en-us"), "en-us"],
-    [t("languageUtil.es-es"), "es-es"],
-    [t("languageUtil.fr-fr"), "fr-fr"],
-    [t("languageUtil.it-it"), "it-it"],
-    [t("languageUtil.nl-be"), "nl-be"],
-    [t("languageUtil.nl-nl"), "nl-nl"],
-    [t("languageUtil.pl-pl"), "pl-pl"],
-    [t("languageUtil.pt-pt"), "pt-pt"],
-    [t("languageUtil.other"), "undefined"],
+export const languageOptions: string[] = [
+    "de-de",
+    "en-gb",
+    "en-us",
+    "es-es",
+    "fr-fr",
+    "it-it",
+    "nl-be",
+    "nl-nl",
+    "pl-pl",
+    "pt-pt",
+    "undefined",
 ];
