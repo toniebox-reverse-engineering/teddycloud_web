@@ -67,6 +67,8 @@ to
 Use `./start_dev.sh` to start the NPM server in development mode. Be patient, it may take a while.
 Be sure your teddyCloud instance is also running.
 
+If you just need the http variant, simply call `dotenv -e .env.development.local npm start-http`
+
 ## Coding guidelines
 
 There are no complete guidelines defined currently, only some fragments which you shall read and follow.

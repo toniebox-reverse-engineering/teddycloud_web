@@ -17,6 +17,9 @@ import {
     TruckOutlined,
 } from "@ant-design/icons";
 import { humanFileSize } from "../../util/humanFileSize";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { darcula, dracula, oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { materialLight } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -211,6 +214,27 @@ export const FileBrowser: React.FC<{
                     },
                 }
             )
+                /* prepared handling with response if response is added in backend
+            .then((response) => response.text())
+                .then((data) => {
+                    messageApi.destroy();
+
+                    if (data === "OK") {
+                        messageApi.open({
+                            type: "success",
+                            content: t("fileBrowser.messages.migrationSuccessful"),
+                        });
+
+                        // now the page shall reload
+                        setRebuildList(!rebuildList);
+                    } else {
+                        messageApi.open({
+                            type: "error",
+                            content: t("fileBrowser.messages.migrationFailed") + ": " + data,
+                        });
+                    }
+                })
+            */
                 .then(() => {
                     messageApi.destroy();
                     messageApi.open({
@@ -338,7 +362,7 @@ export const FileBrowser: React.FC<{
             showOnDirOnly: true,
         },
         {
-            title: "",
+            title: t("fileBrowser.actions"),
             dataIndex: "name",
             key: "controls",
             sorter: undefined,
@@ -440,6 +464,17 @@ export const FileBrowser: React.FC<{
         });
     }
 
+    function detectColorScheme() {
+        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const storedTheme = localStorage.getItem("theme");
+
+        if (storedTheme === "auto") {
+            return prefersDarkMode ? "dark" : "light";
+        } else {
+            return storedTheme;
+        }
+    }
+
     return (
         <>
             {contextHolder}
@@ -450,7 +485,22 @@ export const FileBrowser: React.FC<{
                 onCancel={handleJsonViewerModalClose}
                 onOk={handleJsonViewerModalClose}
             >
-                {jsonData ? <pre style={{ overflow: "auto" }}>{JSON.stringify(jsonData, null, 2)}</pre> : "Loading..."}
+                {jsonData ? (
+                    <SyntaxHighlighter
+                        language="json"
+                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                        customStyle={{
+                            padding: 0,
+                            borderRadius: 0,
+                            margin: 0,
+                            border: "none",
+                        }}
+                    >
+                        {JSON.stringify(jsonData, null, 2)}
+                    </SyntaxHighlighter>
+                ) : (
+                    "Loading..."
+                )}
             </Modal>
             <Table
                 dataSource={files}

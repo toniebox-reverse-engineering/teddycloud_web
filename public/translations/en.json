@@ -245,6 +245,7 @@
         "series": "Series",
         "episode": "Episode",
         "date": "Date",
+        "actions": "Actions",
         "playFile": "Play",
         "delete": "Delete",
         "migrateContentToLib": "Migrate TAF to library (by/audioId/)",
