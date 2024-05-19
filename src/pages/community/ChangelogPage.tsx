@@ -35,7 +35,7 @@ export const ChangelogPage = () => {
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
                 "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.2...tcw_v0.5.3",
             ],
-            discussionLink: "https://forum.revvox.de/t/release-notes-0-5-3/450",
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-5-3/468",
             githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.5.3",
         },
         {
