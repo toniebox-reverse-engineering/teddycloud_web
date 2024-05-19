@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Typography } from "antd";
+import { Modal, Table, Tooltip, message, Typography, Button } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 
@@ -484,6 +484,12 @@ export const FileBrowser: React.FC<{
         }
     }
 
+    const jsonViewerModalFooter = (
+        <Button type="primary" onClick={() => setJsonViewerModalOpened(false)}>
+            {t("tonies.informationModal.ok")}
+        </Button>
+    );
+
     return (
         <>
             {contextHolder}
@@ -498,11 +504,11 @@ export const FileBrowser: React.FC<{
                 <Paragraph>{t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}</Paragraph>
             </Modal>
             <Modal
+                footer={jsonViewerModalFooter}
                 width={700}
                 title={"File: " + currentFile}
                 open={jsonViewerModalOpened}
                 onCancel={handleJsonViewerModalClose}
-                onOk={handleJsonViewerModalClose}
             >
                 {jsonData ? (
                     <SyntaxHighlighter
