@@ -28,12 +28,15 @@ export const ChangelogPage = () => {
                 "new /web gui: added RTNL Log Page",
                 "new /web gui: added Json File Modal in Content section (double click on json file row)",
                 "new /web gui: show date time of last played tag (toniecard + toniboxcard)",
+                "new /web gui: added Tonie Audio Playlist page (WIP - Implementation not yet finished), rearranged menu entries tonies section",
+                "new /web gui: added delete feature in content, library and audio playlist page",
+                "new /web gui: improved changelog page, parse links and open links in new tab",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
                 "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.2...tcw_v0.5.3",
             ],
-            discussionLink: "https://forum.revvox.de/t/release-notes-0-5-3/450",
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-5-3/468",
             githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.5.3",
         },
         {
@@ -51,7 +54,7 @@ export const ChangelogPage = () => {
                 "new /web gui: enhanced Toniebox Card, improved UX",
                 "new /web gui: Dark theme (Last used Theme stored in localStorage in Browser)",
                 "new /web gui: Show All (Hide Pagination on Tonies List, stored in localStorage in Browser)",
-                "new /web gui: Support of overlayed content folder. More details can be found here: https://forum.revvox.de/t/teddycloud-supporting-multiple-tonieboxes/365/5",
+                "new /web gui: Support of overlayed content folder. More details can be found here: https://forum.revvox.de/t/teddycloud-supporting-multiple-tonieboxes/451/1",
                 "new /web gui: Text inputs in Settings must be saved explicitly. (only Textinputs, other types are still autosaved.) Expect changes in future releases.",
                 "new /web gui: fixed various state bugs",
                 "new /web gui: show last online date of offline tonieboxes",
@@ -122,6 +125,21 @@ export const ChangelogPage = () => {
         },
     ];
 
+    const renderChangeEntry = (entry: string) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const parts = entry.split(urlRegex);
+
+        return parts.map((part, index) =>
+            urlRegex.test(part) ? (
+                <Link key={index} to={part} target="_blank" rel="noopener noreferrer">
+                    {part}
+                </Link>
+            ) : (
+                part
+            )
+        );
+    };
+
     return (
         <>
             <StyledSider>
@@ -150,7 +168,7 @@ export const ChangelogPage = () => {
                                         <h3>Changes</h3>
                                         <ul>
                                             {item.changes.map((change, index) => (
-                                                <li key={index}>{change}</li>
+                                                <li key={index}>{renderChangeEntry(change)}</li>
                                             ))}
                                         </ul>
                                     </Paragraph>
@@ -162,7 +180,9 @@ export const ChangelogPage = () => {
                                             <ul>
                                                 {item.commits.map((commit, index) => (
                                                     <li key={index}>
-                                                        <Link to={commit}>{commit}</Link>
+                                                        <Link to={commit} target="_blank">
+                                                            {commit}
+                                                        </Link>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -173,7 +193,9 @@ export const ChangelogPage = () => {
                                             <Text strong>Discussion:</Text>
                                             <ul>
                                                 <li>
-                                                    <Link to={item.discussionLink}>{item.discussionLink}</Link>
+                                                    <Link to={item.discussionLink} target="_blank">
+                                                        {item.discussionLink}
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </>
@@ -183,7 +205,9 @@ export const ChangelogPage = () => {
                                             <Text strong>GitHub Release:</Text>
                                             <ul>
                                                 <li>
-                                                    <Link to={item.githubReleaseLink}>{item.githubReleaseLink}</Link>
+                                                    <Link to={item.githubReleaseLink} target="_blank">
+                                                        {item.githubReleaseLink}
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </>

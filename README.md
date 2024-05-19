@@ -15,12 +15,59 @@ Please place an enviroment file '.env.development.local' in the teddycloud_web d
 ```
 REACT_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
 REACT_APP_TEDDYCLOUD_WEB_BASE=/web
+PORT_HTTPS=3443
+PORT_HTTP=3000
+SSL_CRT_FILE=./localhost.pem
+SSL_KEY_FILE=./localhost-key.pem
+```
+
+PORT_HTTPS and PORT_HTTP should match the ones entered in the package.json. If you don't change them, these are the ones from the example above.
+
+### Parallel http/https setup
+
+_needed for ESP32 Box Flashing section_
+
+You need to provide certificates for https. Use mkcert. The generated certificates must be stored in projects root path (or adapt the 'env.development.local' file accordingly).
+
+```shell
+mkcert -install
+mkcert localhost
+```
+
+You must also allow unsecure content in chrome ([HowTo](https://stackoverflow.com/questions/18321032/how-to-get-chrome-to-allow-mixed-content)) to be able to connect to teddycloud server in https context.
+
+If you don't need the ESP32 Box flashing section working, you can adapt the package.json and change the following:
+
+```json
+"scripts": {
+        "build": "react-scripts build",
+        "start-http": "cross-env PORT=3000 react-scripts start",
+        "start-https": "cross-env HTTPS=true PORT=3443 react-scripts start",
+        "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
+        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+```
+
+to
+
+```json
+"scripts": {
+        "build": "react-scripts build",
+        "start": "react-scripts start",
+        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
 ```
 
 ### Start NPM / teddyCloud
 
 Use `./start_dev.sh` to start the NPM server in development mode. Be patient, it may take a while.
 Be sure your teddyCloud instance is also running.
+
+If you just need the http variant, simply call `dotenv -e .env.development.local npm start-http`
 
 ## Coding guidelines
 
@@ -85,6 +132,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Debian: `sudo apt install python3-dotenv-cli`
 
+### additional packages
+
+You need to install cross-env:
+
+`npm install --save-dev cross-env`
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -92,10 +145,13 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open [http://localhost:3000](http://localhost:3000) to view the http variant in the browser.
+Open [https://localhost:3443](https://localhost:3443) to view the https variant in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
+
+If you changed the default ports, adapt the links above accordingly.
 
 ### `npm test`
 

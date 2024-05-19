@@ -8,24 +8,39 @@ import { SortOrder } from "antd/es/table/interface";
 
 import { useAudioContext } from "../audio/AudioContext";
 
-import { CloudServerOutlined, PlayCircleOutlined, TruckOutlined } from "@ant-design/icons";
+import {
+    CloudServerOutlined,
+    CopyOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    PlayCircleOutlined,
+    TruckOutlined,
+} from "@ant-design/icons";
 import { humanFileSize } from "../../util/humanFileSize";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export const FileBrowser: React.FC<{
     special: string;
+    filetypeFilter?: string[];
+    isTapList?: boolean;
     overlay?: string;
     maxSelectedRows?: number;
     trackUrl?: boolean;
     selectTafOnly?: boolean;
     showDirOnly?: boolean;
+    showColumns?: string[];
     onFileSelectChange?: (files: any[], path: string, special: string) => void;
 }> = ({
     special,
+    filetypeFilter = [],
+    isTapList = false,
     overlay = "",
     maxSelectedRows = 0,
     selectTafOnly = true,
     trackUrl = true,
     showDirOnly = false,
+    showColumns = undefined,
     onFileSelectChange,
 }) => {
     const { t } = useTranslation();
@@ -55,7 +70,8 @@ export const FileBrowser: React.FC<{
     };
 
     const showJsonViewer = (file: string) => {
-        fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + file);
+        const folder = special === "library" ? "/library" : "/content";
+        fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
         setCurrentFile(file);
         setJsonViewerModalOpened(true);
     };
@@ -120,7 +136,11 @@ export const FileBrowser: React.FC<{
                 var list: never[] = data.files;
 
                 if (showDirOnly) list = list.filter((file: any) => file.isDir);
-
+                if (filetypeFilter.length > 0)
+                    list = list.filter(
+                        (file: any) =>
+                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
+                    );
                 setFiles(list);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -193,6 +213,27 @@ export const FileBrowser: React.FC<{
                     },
                 }
             )
+                /* prepared handling with response if response is added in backend
+            .then((response) => response.text())
+                .then((data) => {
+                    messageApi.destroy();
+
+                    if (data === "OK") {
+                        messageApi.open({
+                            type: "success",
+                            content: t("fileBrowser.messages.migrationSuccessful"),
+                        });
+
+                        // now the page shall reload
+                        setRebuildList(!rebuildList);
+                    } else {
+                        messageApi.open({
+                            type: "error",
+                            content: t("fileBrowser.messages.migrationFailed") + ": " + data,
+                        });
+                    }
+                })
+            */
                 .then(() => {
                     messageApi.destroy();
                     messageApi.open({
@@ -215,6 +256,55 @@ export const FileBrowser: React.FC<{
             messageApi.open({
                 type: "error",
                 content: t("fileBrowser.messages.migrationFailed") + ": " + error,
+            });
+        }
+    };
+
+    const deleteFile = (path: string, apiCall: string) => {
+        try {
+            messageApi.open({
+                type: "loading",
+                content: t("fileBrowser.messages.deleting"),
+                duration: 0,
+            });
+
+            const body = path;
+            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/fileDelete" + apiCall, {
+                method: "POST",
+                body: body,
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            })
+                .then((response) => response.text())
+                .then((data) => {
+                    messageApi.destroy();
+                    if (data === "OK") {
+                        messageApi.open({
+                            type: "success",
+                            content: t("fileBrowser.messages.deleteSuccessful"),
+                        });
+                        // now the page shall reload
+                        setRebuildList(!rebuildList);
+                    } else {
+                        messageApi.open({
+                            type: "error",
+                            content: t("fileBrowser.messages.deleteFailed") + ": " + data,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    messageApi.destroy();
+                    messageApi.open({
+                        type: "error",
+                        content: t("fileBrowser.messages.deleteFailed") + ": " + error,
+                    });
+                });
+        } catch (error) {
+            messageApi.destroy();
+            messageApi.open({
+                type: "error",
+                content: t("fileBrowser.messages.deleteFailed") + ": " + error,
             });
         }
     };
@@ -271,52 +361,86 @@ export const FileBrowser: React.FC<{
             showOnDirOnly: true,
         },
         {
-            title: "",
+            title: t("fileBrowser.actions"),
             dataIndex: "name",
             key: "controls",
             sorter: undefined,
-            render: (name: string, record: any) =>
-                record.tafHeader
-                    ? [
-                          special !== "library" ? (
-                              <Tooltip title={t("fileBrowser.migrateContentToLib")}>
-                                  <CloudServerOutlined
-                                      onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
-                                      style={{ margin: "0 16px 0 0" }}
-                                  />
-                              </Tooltip>
-                          ) : (
-                              ""
-                          ),
-                          special !== "library" ? (
-                              <Tooltip title={t("fileBrowser.migrateContentToLibRoot")}>
-                                  <TruckOutlined
-                                      onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
-                                      style={{ margin: "0 16px 0 0" }}
-                                  />
-                              </Tooltip>
-                          ) : (
-                              ""
-                          ),
-                          <Tooltip title={t("fileBrowser.playFile")}>
-                              <PlayCircleOutlined
-                                  onClick={() =>
-                                      playAudio(
-                                          process.env.REACT_APP_TEDDYCLOUD_API_URL +
-                                              "/content" +
-                                              path +
-                                              "/" +
-                                              name +
-                                              "?ogg=true&special=" +
-                                              special +
-                                              (overlay ? `&overlay=${overlay}` : ""),
-                                          record.tonieInfo
-                                      )
-                                  }
-                              />
-                          </Tooltip>,
-                      ]
-                    : "",
+            render: (name: string, record: any) => {
+                let actions = [];
+
+                // taf file
+                if (record.tafHeader) {
+                    // migration to lib possible
+                    if (special !== "library") {
+                        actions.push(
+                            <Tooltip title={t("fileBrowser.migrateContentToLib")}>
+                                <CloudServerOutlined
+                                    onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
+                                    style={{ margin: "0 16px 0 0" }}
+                                />
+                            </Tooltip>
+                        );
+                        actions.push(
+                            <Tooltip title={t("fileBrowser.migrateContentToLibRoot")}>
+                                <TruckOutlined
+                                    onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
+                                    style={{ margin: "0 16px 0 0" }}
+                                />
+                            </Tooltip>
+                        );
+                    }
+                    actions.push(
+                        <Tooltip title={t("fileBrowser.playFile")}>
+                            <PlayCircleOutlined
+                                style={{ margin: "0 16px 0 0" }}
+                                onClick={() =>
+                                    playAudio(
+                                        process.env.REACT_APP_TEDDYCLOUD_API_URL +
+                                            "/content" +
+                                            path +
+                                            "/" +
+                                            name +
+                                            "?ogg=true&special=" +
+                                            special +
+                                            (overlay ? `&overlay=${overlay}` : ""),
+                                        record.tonieInfo
+                                    )
+                                }
+                            />
+                        </Tooltip>
+                    );
+                }
+                // tap file
+                if (isTapList && record.name.includes(".tap")) {
+                    actions.push(
+                        <Tooltip title={t("fileBrowser.tap.edit")}>
+                            <EditOutlined style={{ margin: "0 16px 0 0" }} />
+                        </Tooltip>
+                    );
+                    actions.push(
+                        <Tooltip title={t("fileBrowser.tap.copy")}>
+                            <CopyOutlined style={{ margin: "0 16px 0 0" }} />
+                        </Tooltip>
+                    );
+                }
+                // include the delete action
+                if (record.name !== ".." && maxSelectedRows === 0) {
+                    actions.push(
+                        <Tooltip title={t("fileBrowser.delete")}>
+                            <DeleteOutlined
+                                onClick={() =>
+                                    deleteFile(
+                                        path + "/" + name,
+                                        "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
+                                    )
+                                }
+                                style={{ margin: "0 16px 0 0" }}
+                            />
+                        </Tooltip>
+                    );
+                }
+                return actions;
+            },
             showOnDirOnly: false,
         },
     ];
@@ -329,6 +453,27 @@ export const FileBrowser: React.FC<{
 
     if (showDirOnly) columns = columns.filter((column) => column.showOnDirOnly);
 
+    if (showColumns) {
+        columns = columns.filter((column) => {
+            if (typeof column.dataIndex === "string") {
+                // Check if the column's dataIndex matches any of the specified dataIndex values
+                return showColumns.includes(column.dataIndex);
+            }
+            return false;
+        });
+    }
+
+    function detectColorScheme() {
+        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const storedTheme = localStorage.getItem("theme");
+
+        if (storedTheme === "auto") {
+            return prefersDarkMode ? "dark" : "light";
+        } else {
+            return storedTheme;
+        }
+    }
+
     return (
         <>
             {contextHolder}
@@ -339,7 +484,22 @@ export const FileBrowser: React.FC<{
                 onCancel={handleJsonViewerModalClose}
                 onOk={handleJsonViewerModalClose}
             >
-                {jsonData ? <pre style={{ overflow: "auto" }}>{JSON.stringify(jsonData, null, 2)}</pre> : "Loading..."}
+                {jsonData ? (
+                    <SyntaxHighlighter
+                        language="json"
+                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                        customStyle={{
+                            padding: 0,
+                            borderRadius: 0,
+                            margin: 0,
+                            border: "none",
+                        }}
+                    >
+                        {JSON.stringify(jsonData, null, 2)}
+                    </SyntaxHighlighter>
+                ) : (
+                    "Loading..."
+                )}
             </Modal>
             <Table
                 dataSource={files}
@@ -350,8 +510,7 @@ export const FileBrowser: React.FC<{
                     onDoubleClick: () => {
                         if (record.isDir) {
                             handleDirClick(record.name);
-                        } else if (record.name.includes(".json")) {
-                            console.log("json");
+                        } else if (record.name.includes(".json") || record.name.includes(".tap")) {
                             showJsonViewer(path + "/" + record.name);
                         }
                     },

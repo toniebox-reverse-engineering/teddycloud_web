@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Switch, Typography, List, Divider, Button } from "antd";
+import { Switch, Typography, Divider, Button } from "antd";
 import {
     HiddenDesktop,
     StyledBreadcrumb,
@@ -10,13 +10,13 @@ import {
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { useEffect, useRef, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const { Paragraph, Text } = Typography;
 
 export const RtnlPage = () => {
     const { t } = useTranslation();
-    const [logEntries, setLogEntries] = useState<string[]>([""]);
+    const [logEntries, setLogEntries] = useState<string[]>([]);
     const logListRef = useRef<HTMLDivElement>(null);
     const [rtnlActive, setRtnlActive] = useState(false);
 
@@ -162,8 +162,19 @@ export const RtnlPage = () => {
     };
 
     const clearRtnl = () => {
-        setLogEntries([""]);
+        setLogEntries([]);
     };
+
+    function detectColorScheme() {
+        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const storedTheme = localStorage.getItem("theme");
+
+        if (storedTheme === "auto") {
+            return prefersDarkMode ? "dark" : "light";
+        } else {
+            return storedTheme;
+        }
+    }
 
     return (
         <>
@@ -191,41 +202,21 @@ export const RtnlPage = () => {
                             style={{
                                 minHeight: "max(40vh, 333px)",
                                 maxHeight: "max(40vh, 333px)",
-                                overflowY: "auto",
-                                padding: 10,
-                                fontFamily: "monospace",
-                                background: "rgb(43, 43, 43)",
+                                overflow: "auto",
+                                padding: 1,
                             }}
                         >
-                            <List
-                                dataSource={logEntries}
-                                renderItem={(item, index) => (
-                                    <List.Item
-                                        key={index}
-                                        style={{
-                                            padding: 0,
-                                            margin: "-4px 0 -4px 0",
-                                            fontFamily: "monospace",
-                                            border: "none",
-                                            background: "rgb(43, 43, 43)",
-                                            width: "fit-content",
-                                        }}
-                                    >
-                                        <SyntaxHighlighter
-                                            language="log"
-                                            style={darcula}
-                                            customStyle={{
-                                                padding: 0,
-                                                borderRadius: 0,
-                                                margin: 0,
-                                                border: "none",
-                                            }}
-                                        >
-                                            {item}
-                                        </SyntaxHighlighter>
-                                    </List.Item>
-                                )}
-                            />
+                            <SyntaxHighlighter
+                                language="log"
+                                style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                                customStyle={{
+                                    borderRadius: 0,
+                                    margin: 0,
+                                    border: "none",
+                                }}
+                            >
+                                {logEntries.join("\n")}
+                            </SyntaxHighlighter>
                         </div>
                         <Button onClick={clearRtnl} style={{ marginTop: 8 }}>
                             {t("settings.rtnl.clear")}
