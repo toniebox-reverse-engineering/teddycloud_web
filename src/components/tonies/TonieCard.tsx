@@ -9,7 +9,7 @@ import {
     RetweetOutlined,
     SaveFilled,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Input, Modal, Typography, message, theme } from "antd";
+import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -476,13 +476,19 @@ export const TonieCard: React.FC<{
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                             {tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                         </div>
-                        <div style={{ height: 20, width: "auto" }}>
-                            {defaultLanguage !== tonieCard.tonieInfo.language ? (
-                                <LanguageFlagSVG countryCode={tonieCard.tonieInfo.language} height={20} />
-                            ) : (
-                                ""
-                            )}
-                        </div>
+                        {defaultLanguage !== tonieCard.tonieInfo.language ? (
+                            <Tooltip
+                                placement="top"
+                                zIndex={2}
+                                title={t("languageUtil." + tonieCard.tonieInfo.language)}
+                            >
+                                <div style={{ height: 20, width: "auto" }}>
+                                    <LanguageFlagSVG countryCode={tonieCard.tonieInfo.language} height={20} />
+                                </div>
+                            </Tooltip>
+                        ) : (
+                            ""
+                        )}
                     </div>
                 }
                 cover={

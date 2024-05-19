@@ -2,11 +2,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, Button, Alert } from "antd";
-import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import the TonieCardDisplayOnly component and its props type
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
-import { ToniesList } from "../../components/tonies/ToniesList";
-
 import {
     HiddenDesktop,
     StyledBreadcrumb,
@@ -15,10 +10,18 @@ import {
     StyledSider,
 } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
+import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import the TonieCardDisplayOnly component and its props type
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
+import { ToniesList } from "../../components/tonies/ToniesList";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Paragraph } = Typography;
+
+interface LanguageCounts {
+    [key: string]: number;
+}
 
 export const HomePage = () => {
     const { t } = useTranslation();
@@ -26,6 +29,8 @@ export const HomePage = () => {
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [displayIncidentAlert, setDisplayIncidentAlert] = useState(false);
+
+    const [defaultLanguage, setMaxTag] = useState<string>("");
 
     useEffect(() => {
         const fetchDisplayIncidentAlert = async () => {
@@ -52,6 +57,35 @@ export const HomePage = () => {
 
         fetchTonies();
     }, []);
+
+    // Update tagCounts state and find the language tag with the highest count when tags prop changes
+    useEffect(() => {
+        const counts: LanguageCounts = {};
+
+        // Iterate over the tags array and count occurrences of each language tag
+        tonies.forEach((tonies) => {
+            const language = tonies.tonieInfo.language;
+            // If the language tag already exists in the counts object, increment its count by 1
+            if (counts[language]) {
+                counts[language]++;
+            } else {
+                // If the language tag doesn't exist in the counts object, initialize its count to 1
+                counts[language] = 1;
+            }
+        });
+
+        // Find the language tag with the highest count
+        let maxCount = 0;
+        let maxLanguage = "";
+        for (const language in counts) {
+            if (counts.hasOwnProperty(language) && counts[language] > maxCount) {
+                maxCount = counts[language];
+                maxLanguage = language;
+            }
+        }
+        // Update maxTag state with the language tag with the highest count
+        setMaxTag(maxLanguage);
+    }, [tonies]);
 
     return (
         <>
@@ -96,6 +130,7 @@ export const HomePage = () => {
                             showFilter={false}
                             showPagination={false}
                             readOnly={true}
+                            defaultLanguage={defaultLanguage}
                         />
                         <Button>
                             <Link to="/tonies">
