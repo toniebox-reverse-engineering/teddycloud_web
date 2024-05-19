@@ -73,6 +73,8 @@
                 "searchLabel": "Suche",
                 "searchPlaceholder": "Suchkriterium eingeben",
                 "filterLabel": "Filter",
+                "languageLabel": "Sprache",
+                "languagePlaceholder": "Sprachen auswählen",
                 "seriesFilterPlaceholder": "Serie",
                 "episodeFilterPlaceholder": "Episode",
                 "valid": "Gültig",
@@ -283,5 +285,18 @@
         "boxineStatusOnline": "Mit Boxine/Toniecloud verbunden",
         "teddycloudStatusOnline": "Teddycloud Server online",
         "teddycloudStatusOffline": "Teddycloud Server offline"
+    },
+    "languageUtil": {
+        "en-gb": "Englisch (GB)",
+        "en-us": "Englisch (US)",
+        "es-es": "Spanisch",
+        "pt-pt": "Portugiesisch",
+        "pl-pl": "Polnisch",
+        "fr-fr": "Französisch",
+        "nl-nl": "Niederländisch (Niederlande)",
+        "nl-be": "Niederländisch (Belgien)",
+        "it-it": "Italienisch",
+        "de-de": "Deutsch",
+        "other": "Andere/undefiniert"
     }
 }

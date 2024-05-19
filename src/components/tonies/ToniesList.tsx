@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { List, Switch, Input, Button, Collapse } from "antd";
+import { List, Switch, Input, Button, Collapse, Select } from "antd";
 import { useTranslation } from "react-i18next";
 import { TonieCard, TonieCardProps } from "../../components/tonies/TonieCard";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import ToniesPagination from "./ToniesPagination";
+import { languageOptions } from "../../util/languageUtil";
 
 const { Panel } = Collapse;
+const { Option } = Select;
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
 
@@ -17,7 +19,8 @@ export const ToniesList: React.FC<{
     showPagination: boolean;
     overlay: string;
     readOnly: boolean;
-}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly }) => {
+    defaultLanguage?: string;
+}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "" }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
@@ -47,6 +50,7 @@ export const ToniesList: React.FC<{
     const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
     const location = useLocation();
 
@@ -122,6 +126,7 @@ export const ToniesList: React.FC<{
             (tonie) =>
                 tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase()) &&
                 tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase()) &&
+                (selectedLanguages.length === 0 || selectedLanguages.includes(tonie.tonieInfo.language)) &&
                 (!validFilter || tonie.valid) &&
                 (!invalidFilter || !tonie.valid) &&
                 (!existsFilter || tonie.exists) &&
@@ -161,6 +166,7 @@ export const ToniesList: React.FC<{
         setUnsetLiveFilter(false);
         setUnsetNocloudFilter(false);
         setFilterLastTonieboxRUIDs(false);
+        setSelectedLanguages([]);
         const urlWithoutParams = window.location.pathname;
         window.history.pushState({}, "", urlWithoutParams);
         location.search = "";
@@ -258,6 +264,19 @@ export const ToniesList: React.FC<{
                                 value={episodeFilter}
                                 onChange={(e) => setEpisodeFilter(e.target.value)}
                             />
+                            <Select
+                                mode="multiple"
+                                placeholder={t("tonies.tonies.filterBar.languagePlaceholder")}
+                                value={selectedLanguages}
+                                onChange={(values) => setSelectedLanguages(values)}
+                                style={{ width: "100%", margin: "8px 0" }}
+                            >
+                                {languageOptions.map(([label, key]) => (
+                                    <Option key={key} value={key}>
+                                        {key ? t("languageUtil." + key) : t("languageUtil.other")}
+                                    </Option>
+                                ))}
+                            </Select>
                             <div>
                                 <div
                                     style={{
@@ -424,6 +443,7 @@ export const ToniesList: React.FC<{
                             lastRUIDs={lastTonieboxRUIDs}
                             overlay={overlay}
                             readOnly={readOnly}
+                            defaultLanguage={defaultLanguage}
                         />
                     </List.Item>
                 )}

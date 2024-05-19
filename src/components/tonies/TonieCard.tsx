@@ -18,6 +18,7 @@ import { FileBrowser } from "./FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
 
 import { RadioStreamSearch } from "./RadioStreamSearch";
+import LanguageFlagSVG from "../../util/languageUtil";
 
 const { Meta } = Card;
 const { Text } = Typography;
@@ -29,6 +30,7 @@ export type TagsTonieCardList = {
 export type TonieInfo = {
     series: string;
     episode: string;
+    language: string;
     model: string;
     picture: string;
     tracks: string[];
@@ -52,7 +54,8 @@ export const TonieCard: React.FC<{
     lastRUIDs: Array<[string, string, string]>;
     overlay: string;
     readOnly: boolean;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly }) => {
+    defaultLanguage?: string;
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "" }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [messageApi, contextHolder] = message.useMessage();
@@ -468,7 +471,20 @@ export const TonieCard: React.FC<{
                         ? { background: token.colorBgContainerDisabled, borderTop: "3px #1677ff inset" }
                         : { background: token.colorBgContainerDisabled, paddingTop: "2px" }
                 }
-                title={tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
+                title={
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
+                        </div>
+                        <div style={{ height: 20, width: "auto" }}>
+                            {defaultLanguage !== tonieCard.tonieInfo.language ? (
+                                <LanguageFlagSVG countryCode={tonieCard.tonieInfo.language} height={20} />
+                            ) : (
+                                ""
+                            )}
+                        </div>
+                    </div>
+                }
                 cover={
                     <img
                         alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
