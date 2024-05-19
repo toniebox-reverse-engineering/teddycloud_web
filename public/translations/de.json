@@ -249,6 +249,9 @@
         "actions": "Aktionen",
         "playFile": "Abspielen",
         "delete": "Löschen",
+        "confirmDeleteModal": "Bestätige Löschvorgang",
+        "confirmDeleteDialog": "Möchtest du die Datei {{fileToDelete}} wirklich löschen?",
+        "cancel": "Cancel",
         "migrateContentToLib": "TAF-Datei in Library (by/audioId/) migrieren",
         "migrateContentToLibRoot": "TAF-Datei in Library (root) migrieren",
         "messages": {

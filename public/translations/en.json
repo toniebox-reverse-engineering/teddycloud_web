@@ -248,6 +248,9 @@
         "actions": "Actions",
         "playFile": "Play",
         "delete": "Delete",
+        "confirmDeleteModal": "Confirm delete",
+        "confirmDeleteDialog": "Are you sure you want to delete {{fileToDelete}}?",
+        "cancel": "Cancel",
         "migrateContentToLib": "Migrate TAF to library (by/audioId/)",
         "migrateContentToLibRoot": "Migrate TAF to library (root)",
         "messages": {
