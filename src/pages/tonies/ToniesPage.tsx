@@ -20,6 +20,10 @@ import { useTonieboxContent } from "../../components/tonies/OverlayContentDirect
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
 
+interface LanguageCounts {
+    [key: string]: number;
+}
+
 export const ToniesPage = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -30,6 +34,7 @@ export const ToniesPage = () => {
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent(linkOverlay);
+    const [defaultLanguage, setMaxTag] = useState<string>("");
 
     useEffect(() => {
         const fetchTonies = async () => {
@@ -56,6 +61,35 @@ export const ToniesPage = () => {
 
         fetchTonies();
     }, [overlay]);
+
+    // Update tagCounts state and find the language tag with the highest count when tags prop changes
+    useEffect(() => {
+        const counts: LanguageCounts = {};
+
+        // Iterate over the tags array and count occurrences of each language tag
+        tonies.forEach((tonies) => {
+            const language = tonies.tonieInfo.language;
+            // If the language tag already exists in the counts object, increment its count by 1
+            if (counts[language]) {
+                counts[language]++;
+            } else {
+                // If the language tag doesn't exist in the counts object, initialize its count to 1
+                counts[language] = 1;
+            }
+        });
+
+        // Find the language tag with the highest count
+        let maxCount = 0;
+        let maxLanguage = "";
+        for (const language in counts) {
+            if (counts.hasOwnProperty(language) && counts[language] > maxCount) {
+                maxCount = counts[language];
+                maxLanguage = language;
+            }
+        }
+        // Update maxTag state with the language tag with the highest count
+        setMaxTag(maxLanguage);
+    }, [tonies]);
 
     return (
         <>
@@ -107,6 +141,7 @@ export const ToniesPage = () => {
                         tonieCards={tonies.filter((tonie) => tonie.type === "tag")}
                         overlay={overlay}
                         readOnly={false}
+                        defaultLanguage={defaultLanguage}
                     />
                 </StyledContent>
             </StyledLayout>

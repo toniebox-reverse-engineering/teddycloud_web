@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message } from "antd";
+import { Modal, Table, Tooltip, message, Typography, Button } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 
@@ -19,6 +19,8 @@ import {
 import { humanFileSize } from "../../util/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+
+const { Paragraph } = Typography;
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -79,6 +81,28 @@ export const FileBrowser: React.FC<{
     const handleJsonViewerModalClose = () => {
         setJsonViewerModalOpened(false);
     };
+
+    const [isConfirmDeleteModalVisible, setIsConfirmDeleteModalVisible] = useState(false);
+    const [fileToDelete, setFileToDelete] = useState<string | null>(null);
+    const [deletePath, setDeletePath] = useState<string>("");
+    const [deleteApiCall, setDeleteApiCall] = useState<string>("");
+
+    const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
+        setFileToDelete(fileName);
+        setDeletePath(path);
+        setDeleteApiCall(apiCall);
+        setIsConfirmDeleteModalVisible(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteFile(deletePath, deleteApiCall);
+        setIsConfirmDeleteModalVisible(false);
+    };
+
+    const handleCancelDelete = () => {
+        setIsConfirmDeleteModalVisible(false);
+    };
+
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
     };
@@ -213,8 +237,7 @@ export const FileBrowser: React.FC<{
                     },
                 }
             )
-                /* prepared handling with response if response is added in backend
-            .then((response) => response.text())
+                .then((response) => response.text())
                 .then((data) => {
                     messageApi.destroy();
 
@@ -223,8 +246,6 @@ export const FileBrowser: React.FC<{
                             type: "success",
                             content: t("fileBrowser.messages.migrationSuccessful"),
                         });
-
-                        // now the page shall reload
                         setRebuildList(!rebuildList);
                     } else {
                         messageApi.open({
@@ -232,17 +253,6 @@ export const FileBrowser: React.FC<{
                             content: t("fileBrowser.messages.migrationFailed") + ": " + data,
                         });
                     }
-                })
-            */
-                .then(() => {
-                    messageApi.destroy();
-                    messageApi.open({
-                        type: "success",
-                        content: t("fileBrowser.messages.migrationSuccessful"),
-                    });
-
-                    // now the page shall reload
-                    setRebuildList(!rebuildList);
                 })
                 .catch((error) => {
                     messageApi.destroy();
@@ -284,7 +294,6 @@ export const FileBrowser: React.FC<{
                             type: "success",
                             content: t("fileBrowser.messages.deleteSuccessful"),
                         });
-                        // now the page shall reload
                         setRebuildList(!rebuildList);
                     } else {
                         messageApi.open({
@@ -429,7 +438,8 @@ export const FileBrowser: React.FC<{
                         <Tooltip title={t("fileBrowser.delete")}>
                             <DeleteOutlined
                                 onClick={() =>
-                                    deleteFile(
+                                    showDeleteConfirmDialog(
+                                        name,
                                         path + "/" + name,
                                         "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
                                     )
@@ -474,15 +484,31 @@ export const FileBrowser: React.FC<{
         }
     }
 
+    const jsonViewerModalFooter = (
+        <Button type="primary" onClick={() => setJsonViewerModalOpened(false)}>
+            {t("tonies.informationModal.ok")}
+        </Button>
+    );
+
     return (
         <>
             {contextHolder}
             <Modal
+                title={t("fileBrowser.confirmDeleteModal")}
+                open={isConfirmDeleteModalVisible}
+                onOk={handleConfirmDelete}
+                onCancel={handleCancelDelete}
+                okText={t("fileBrowser.delete")}
+                cancelText={t("fileBrowser.cancel")}
+            >
+                <Paragraph>{t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}</Paragraph>
+            </Modal>
+            <Modal
+                footer={jsonViewerModalFooter}
                 width={700}
                 title={"File: " + currentFile}
                 open={jsonViewerModalOpened}
                 onCancel={handleJsonViewerModalClose}
-                onOk={handleJsonViewerModalClose}
             >
                 {jsonData ? (
                     <SyntaxHighlighter

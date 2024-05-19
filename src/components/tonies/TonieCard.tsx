@@ -9,7 +9,7 @@ import {
     RetweetOutlined,
     SaveFilled,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Input, Modal, Typography, message, theme } from "antd";
+import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +18,7 @@ import { FileBrowser } from "./FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
 
 import { RadioStreamSearch } from "./RadioStreamSearch";
+import LanguageFlagSVG from "../../util/languageUtil";
 
 const { Meta } = Card;
 const { Text } = Typography;
@@ -29,6 +30,7 @@ export type TagsTonieCardList = {
 export type TonieInfo = {
     series: string;
     episode: string;
+    language: string;
     model: string;
     picture: string;
     tracks: string[];
@@ -52,7 +54,8 @@ export const TonieCard: React.FC<{
     lastRUIDs: Array<[string, string, string]>;
     overlay: string;
     readOnly: boolean;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly }) => {
+    defaultLanguage?: string;
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "" }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [messageApi, contextHolder] = message.useMessage();
@@ -468,7 +471,26 @@ export const TonieCard: React.FC<{
                         ? { background: token.colorBgContainerDisabled, borderTop: "3px #1677ff inset" }
                         : { background: token.colorBgContainerDisabled, paddingTop: "2px" }
                 }
-                title={tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
+                title={
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
+                        </div>
+                        {defaultLanguage !== tonieCard.tonieInfo.language ? (
+                            <Tooltip
+                                placement="top"
+                                zIndex={2}
+                                title={t("languageUtil." + tonieCard.tonieInfo.language)}
+                            >
+                                <Text style={{ height: 20, width: "auto" }}>
+                                    <LanguageFlagSVG countryCode={tonieCard.tonieInfo.language} height={20} />
+                                </Text>
+                            </Tooltip>
+                        ) : (
+                            ""
+                        )}
+                    </div>
+                }
                 cover={
                     <img
                         alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}

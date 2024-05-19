@@ -23,6 +23,9 @@ export const ChangelogPage = () => {
             changes: [
                 "Stabilization backend",
                 "store last played time of last played tag",
+                "extend getTagIndex API, provide language in tonieInfos",
+                "fixed bug not storing cloud auth in some circumstances",
+                "fixed bug not storing source in json file (tbc.) https://github.com/toniebox-reverse-engineering/teddycloud/issues/165",
                 "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
                 "new /web gui: Tonies - Content section - added Migrate Content to Lib button on TAF files",
                 "new /web gui: added RTNL Log Page",
@@ -31,6 +34,7 @@ export const ChangelogPage = () => {
                 "new /web gui: added Tonie Audio Playlist page (WIP - Implementation not yet finished), rearranged menu entries tonies section",
                 "new /web gui: added delete feature in content, library and audio playlist page",
                 "new /web gui: improved changelog page, parse links and open links in new tab",
+                "new /web gui: added language flag to tonies card if it's not the same as the most owned language ones, added language filter",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
