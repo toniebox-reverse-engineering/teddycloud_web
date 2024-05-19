@@ -152,15 +152,15 @@ const LanguageFlagSVG: React.FC<FlagSVGProps> = ({ countryCode, height }) => {
 export default LanguageFlagSVG;
 
 export const languageOptions: [string, string][] = [
+    [t("languageUtil.de-de"), "de-de"],
     [t("languageUtil.en-gb"), "en-gb"],
     [t("languageUtil.en-us"), "en-us"],
     [t("languageUtil.es-es"), "es-es"],
-    [t("languageUtil.pt-pt"), "pt-pt"],
-    [t("languageUtil.pl-pl"), "pl-pl"],
     [t("languageUtil.fr-fr"), "fr-fr"],
-    [t("languageUtil.nl-nl"), "nl-nl"],
-    [t("languageUtil.nl-be"), "nl-be"],
     [t("languageUtil.it-it"), "it-it"],
-    [t("languageUtil.de-de"), "de-de"],
+    [t("languageUtil.nl-be"), "nl-be"],
+    [t("languageUtil.nl-nl"), "nl-nl"],
+    [t("languageUtil.pl-pl"), "pl-pl"],
+    [t("languageUtil.pt-pt"), "pt-pt"],
     [t("languageUtil.other"), ""],
 ];
