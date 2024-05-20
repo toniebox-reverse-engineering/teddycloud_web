@@ -443,7 +443,7 @@ export const TonieboxCard: React.FC<{
                 duration: 0,
             });
 
-            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/tonieboxDelete" + tonieboxCard.ID, {
+            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/settings/removeOverlay?overlay=" + tonieboxCard.ID, {
                 method: "POST",
                 headers: {
                     "Content-Type": "text/plain",
@@ -457,6 +457,7 @@ export const TonieboxCard: React.FC<{
                             type: "success",
                             content: t("tonieboxes.messages.deleteSuccessful"),
                         });
+                        window.location.reload();
                     } else {
                         messageApi.open({
                             type: "error",

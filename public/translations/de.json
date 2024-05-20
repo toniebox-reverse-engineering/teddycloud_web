@@ -149,6 +149,9 @@
     "tonieboxes": {
         "accessApiDisabled": "Zugriff auf TeddyCloud APIs deaktiviert.",
         "accessApiEnabled": "Zugriff auf TeddyCloud APIs aktiviert.",
+        "boxWithoutAPIAccess": "Toniebox ohne TeddyCloud API Zugang!",
+        "boxWithoutAPIAccessText": "Folgende Tonieboxen haben keinen aktivierten API-Zugang:",
+        "boxWithoutAPIAccessGoToTonieboxes": "Falls du das ändern möchtest, aktiviere den API-Zugang bei den genannten ",
         "cancel": "Abbrechen",
         "confirmDeleteDialog": "Möchtest du die Toniebox {{tonieboxToDelete}} wirklich löschen?",
         "confirmDeleteModal": "Bestätige Löschvorgang",
