@@ -26,15 +26,18 @@ export const ToniesList: React.FC<{
     const [searchText, setSearchText] = useState("");
     const [seriesFilter, setSeriesFilter] = useState("");
     const [episodeFilter, setEpisodeFilter] = useState("");
-    const [validFilter, setValidFilter] = useState(false);
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
     const [filterLastTonieboxRUIDs, setFilterLastTonieboxRUIDs] = useState(false);
+    const [validFilter, setValidFilter] = useState(false);
     const [invalidFilter, setInvalidFilter] = useState(false);
     const [existsFilter, setExistsFilter] = useState(false);
     const [notExistsFilter, setNotExistsFilter] = useState(false);
     const [liveFilter, setLiveFilter] = useState(false);
-    const [nocloudFilter, setNocloudFilter] = useState(false);
     const [unsetLiveFilter, setUnsetLiveFilter] = useState(false);
+    const [nocloudFilter, setNocloudFilter] = useState(false);
     const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
+    const [hasCloudAuthFilter, setHasCloudAuthFilter] = useState(false);
+    const [unsetHasCloudAuthFilter, setUnsetHasCloudAuthFilter] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
@@ -50,7 +53,6 @@ export const ToniesList: React.FC<{
     const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
-    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
     const location = useLocation();
 
@@ -139,9 +141,11 @@ export const ToniesList: React.FC<{
                 (!existsFilter || tonie.exists) &&
                 (!notExistsFilter || !tonie.exists) &&
                 (!liveFilter || tonie.live) &&
-                (!nocloudFilter || tonie.nocloud) &&
                 (!unsetLiveFilter || !tonie.live) &&
-                (!unsetNocloudFilter || !tonie.nocloud)
+                (!nocloudFilter || tonie.nocloud) &&
+                (!unsetNocloudFilter || !tonie.nocloud) &&
+                (!hasCloudAuthFilter || tonie.hasCloudAuth) &&
+                (!unsetHasCloudAuthFilter || !tonie.hasCloudAuth)
         );
         if (searchText) {
             filtered = filtered.filter(
@@ -169,9 +173,11 @@ export const ToniesList: React.FC<{
         setExistsFilter(false);
         setNotExistsFilter(false);
         setLiveFilter(false);
-        setNocloudFilter(false);
         setUnsetLiveFilter(false);
+        setNocloudFilter(false);
         setUnsetNocloudFilter(false);
+        setHasCloudAuthFilter(false);
+        setUnsetHasCloudAuthFilter(false);
         setFilterLastTonieboxRUIDs(false);
         setSelectedLanguages([]);
         const urlWithoutParams = window.location.pathname;
@@ -394,6 +400,32 @@ export const ToniesList: React.FC<{
                                             style={{ margin: "8px 0 8px 0" }}
                                         />{" "}
                                         {t("tonies.tonies.filterBar.unsetNoCloud")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flexWrap: "nowrap",
+                                            marginRight: 16,
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={hasCloudAuthFilter}
+                                            onChange={(checked) => setHasCloudAuthFilter(checked)}
+                                            style={{ margin: "8px 0 8px 0" }}
+                                        />{" "}
+                                        {t("tonies.tonies.filterBar.hasCloudAuth")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flexWrap: "nowrap",
+                                            marginRight: 16,
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={unsetHasCloudAuthFilter}
+                                            onChange={(checked) => setUnsetHasCloudAuthFilter(checked)}
+                                            style={{ margin: "8px 0 8px 0" }}
+                                        />{" "}
+                                        {t("tonies.tonies.filterBar.unsetHasCloudAuth")}
                                     </div>
                                     <div
                                         style={{

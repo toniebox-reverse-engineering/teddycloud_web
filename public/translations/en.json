@@ -295,6 +295,8 @@
                 "lastPlayed": "Last played",
                 "live": "Live",
                 "noCloud": "Cloud disabled",
+                "hasCloudAuth": "Cloud auth",
+                "unsetHasCloudAuth": "No cloud auth",
                 "notExists": "Exists not",
                 "resetFilters": "Reset filter",
                 "searchLabel": "Search",

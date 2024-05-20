@@ -290,6 +290,7 @@
                 "episodeFilterPlaceholder": "Episode",
                 "exists": "Existiert",
                 "filterLabel": "Filter",
+                "hasCloudAuth": "Cloud auth",
                 "hideFilters": "Filter ausblenden",
                 "invalid": "Ungültig",
                 "languagePlaceholder": "Sprachen auswählen",
@@ -302,6 +303,7 @@
                 "searchPlaceholder": "Suchkriterium eingeben",
                 "seriesFilterPlaceholder": "Serie",
                 "showFilters": "Filter einblenden",
+                "unsetHasCloudAuth": "Keine cloud auth",
                 "unsetLive": "Live nicht gesetzt",
                 "unsetNoCloud": "Cloud aktiviert",
                 "valid": "Gültig"

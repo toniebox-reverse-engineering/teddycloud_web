@@ -43,6 +43,7 @@ export type TonieCardProps = {
     exists: boolean;
     live: boolean;
     nocloud: boolean;
+    hasCloudAuth: boolean;
     source: string;
     audioUrl: string;
     downloadTriggerUrl: string;
