@@ -17,8 +17,8 @@ import { useAudioContext } from "../audio/AudioContext";
 import { FileBrowser } from "./FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
 
-import { RadioStreamSearch } from "./RadioStreamSearch";
 import LanguageFlagSVG from "../../util/languageUtil";
+import { RadioStreamSearch } from "./RadioStreamSearch";
 
 const { Meta } = Card;
 const { Text } = Typography;

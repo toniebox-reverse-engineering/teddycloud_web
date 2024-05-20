@@ -308,6 +308,77 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * get toniebox API Access
+     */
+    async apiGetTonieboxApiAccessRaw(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<boolean>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/toniebox.api_access`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.JSONApiResponse<boolean>(response);
+    }
+
+    /**
+     * get toniebox API access
+     */
+    async apiGetTonieboxApiAccess(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<boolean> {
+        const response = await this.apiGetTonieboxApiAccessRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * get core.newBoxesAllowed
+     */
+    async apiGetNewBoxesAllowedRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<boolean>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const path = `/api/settings/get/core.allowNewBox`;
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.JSONApiResponse<boolean>(response);
+    }
+
+    /**
+     * get core.newBoxesAllowed
+     */
+    async apiGetNewBoxesAllowed(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.apiGetNewBoxesAllowedRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
      * get security mit alert
      */
     async apiGetSecurityMITAlertRaw(

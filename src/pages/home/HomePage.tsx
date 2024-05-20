@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Typography, Button, Alert } from "antd";
+import { Typography, Button, Alert, message } from "antd";
 import {
     HiddenDesktop,
     StyledBreadcrumb,
@@ -29,7 +29,7 @@ export const HomePage = () => {
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [displayIncidentAlert, setDisplayIncidentAlert] = useState(false);
-
+    const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
     const [defaultLanguage, setMaxTag] = useState<string>("");
 
     useEffect(() => {
@@ -39,6 +39,17 @@ export const HomePage = () => {
         };
 
         fetchDisplayIncidentAlert();
+
+        const fetchNewBoxesAllowed = async () => {
+            try {
+                const newBoxesAllowed = await api.apiGetNewBoxesAllowed();
+                setNewBoxesAllowed(newBoxesAllowed);
+            } catch (error) {
+                message.error("Error: " + error);
+            }
+        };
+
+        fetchNewBoxesAllowed();
 
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
@@ -87,6 +98,18 @@ export const HomePage = () => {
         setMaxTag(maxLanguage);
     }, [tonies]);
 
+    const newBoxesAllowedWarning = newBoxesAllowed ? (
+        <Alert
+            message={t("tonieboxes.newBoxesAllowed")}
+            description={t("tonieboxes.newBoxesAllowedText")}
+            type="warning"
+            showIcon
+            style={{ margin: "16px 0" }}
+        />
+    ) : (
+        ""
+    );
+
     return (
         <>
             <StyledSider>
@@ -112,6 +135,7 @@ export const HomePage = () => {
                             ""
                         )}
                         {t(`home.intro`)}
+                        {newBoxesAllowedWarning}
                     </Paragraph>
                     <Paragraph>
                         {t("home.forumIntroPart1")}
