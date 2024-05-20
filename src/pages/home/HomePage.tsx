@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Typography, Button, Alert } from "antd";
+import { Typography, Button, Alert, message } from "antd";
 import {
     HiddenDesktop,
     StyledBreadcrumb,
@@ -29,9 +29,9 @@ export const HomePage = () => {
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [displayIncidentAlert, setDisplayIncidentAlert] = useState(false);
-
+    const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
     const [defaultLanguage, setMaxTag] = useState<string>("");
-
+    const [accessApiEnabled, setAccessApiEnabled] = useState<[string, boolean][]>([]);
     useEffect(() => {
         const fetchDisplayIncidentAlert = async () => {
             const displayIncidentAlert = await api.apiGetSecurityMITAlert();
@@ -39,6 +39,30 @@ export const HomePage = () => {
         };
 
         fetchDisplayIncidentAlert();
+
+        const fetchNewBoxesAllowed = async () => {
+            try {
+                const newBoxesAllowed = await api.apiGetNewBoxesAllowed();
+                setNewBoxesAllowed(newBoxesAllowed);
+                if (newBoxesAllowed) {
+                    const fetchTonieboxes = async () => {
+                        const tonieboxData = await api.apiGetTonieboxesIndex();
+                        const accessApiEnabled = await Promise.all(
+                            tonieboxData.map(async (toniebox) => {
+                                const accessApiEnabled = await api.apiGetTonieboxApiAccess(toniebox.ID);
+                                return [toniebox.boxName, accessApiEnabled] as [string, boolean];
+                            })
+                        );
+                        setAccessApiEnabled(accessApiEnabled);
+                    };
+                    fetchTonieboxes();
+                }
+            } catch (error) {
+                message.error("Error: " + error);
+            }
+        };
+
+        fetchNewBoxesAllowed();
 
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
@@ -87,6 +111,40 @@ export const HomePage = () => {
         setMaxTag(maxLanguage);
     }, [tonies]);
 
+    const boxesApiAccessDisabled: [string, boolean][] = accessApiEnabled.filter((item) => !item[1]);
+
+    const newBoxesAllowedWarning = newBoxesAllowed ? (
+        <>
+            <Alert
+                message={t("tonieboxes.newBoxesAllowed")}
+                description={t("tonieboxes.newBoxesAllowedText")}
+                type="warning"
+                showIcon
+                style={{ margin: "16px 0" }}
+            />
+            {boxesApiAccessDisabled.length > 0 && (
+                <Alert
+                    message={t("tonieboxes.boxWithoutAPIAccess")}
+                    description={
+                        <>
+                            {t("tonieboxes.boxWithoutAPIAccessText")}
+                            <ul>
+                                {boxesApiAccessDisabled.map((item) => (
+                                    <li key={item[0]}>{item[0]}</li>
+                                ))}
+                            </ul>
+                            {t("tonieboxes.boxWithoutAPIAccessGoToTonieboxes")}
+                            <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>
+                        </>
+                    }
+                    type="info"
+                    showIcon
+                    style={{ margin: "16px 0" }}
+                />
+            )}
+        </>
+    ) : null;
+
     return (
         <>
             <StyledSider>
@@ -112,6 +170,7 @@ export const HomePage = () => {
                             ""
                         )}
                         {t(`home.intro`)}
+                        {newBoxesAllowedWarning}
                     </Paragraph>
                     <Paragraph>
                         {t("home.forumIntroPart1")}

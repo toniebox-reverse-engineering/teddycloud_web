@@ -9,6 +9,9 @@ import {
     SettingOutlined,
     WifiOutlined,
     SaveFilled,
+    DeleteOutlined,
+    LockOutlined,
+    UnlockOutlined,
 } from "@ant-design/icons";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
@@ -62,6 +65,8 @@ export const TonieboxCard: React.FC<{
     const [boxName, setBoxName] = useState(tonieboxCard.boxName);
     const [tonieboxName, setTonieBoxName] = useState(tonieboxCard.boxName);
     const [boxImage, setBoxImage] = useState<JSX.Element | null>(null);
+    const [isConfirmDeleteModalVisible, setIsConfirmDeleteModalVisible] = useState(false);
+    const [tonieboxAccessApi, setTonieboxAccessApi] = useState<boolean>(true);
 
     const boxModelImages = GetBoxModelImages();
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
@@ -69,6 +74,13 @@ export const TonieboxCard: React.FC<{
             return { label: v.name, value: v.id };
         })
     );
+    useEffect(() => {
+        const fetchTonieboxApiAccess = async () => {
+            const tonieboxApiAccess = await api.apiGetTonieboxApiAccess(tonieboxCard.ID);
+            setTonieboxAccessApi(tonieboxApiAccess);
+        };
+        fetchTonieboxApiAccess();
+    }, [tonieboxCard.ID]);
 
     useEffect(() => {
         const fetchTonieboxStatus = async () => {
@@ -423,6 +435,116 @@ export const TonieboxCard: React.FC<{
         </Modal>
     );
 
+    const deleteToniebox = () => {
+        try {
+            messageApi.open({
+                type: "loading",
+                content: t("tonieboxes.messages.deleting"),
+                duration: 0,
+            });
+
+            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/settings/removeOverlay?overlay=" + tonieboxCard.ID, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            })
+                .then((response) => response.text())
+                .then((data) => {
+                    messageApi.destroy();
+                    if (data === "OK") {
+                        messageApi.open({
+                            type: "success",
+                            content: t("tonieboxes.messages.deleteSuccessful"),
+                        });
+                        window.location.reload();
+                    } else {
+                        messageApi.open({
+                            type: "error",
+                            content: t("tonieboxes.messages.deleteFailed") + data,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    messageApi.destroy();
+                    messageApi.open({
+                        type: "error",
+                        content: t("tonieboxes.messages.deleteFailed") + error,
+                    });
+                });
+        } catch (error) {
+            messageApi.destroy();
+            messageApi.open({
+                type: "error",
+                content: t("tonieboxes.messages.deleteFailed") + error,
+            });
+        }
+    };
+
+    const showDeleteConfirmDialog = () => {
+        setIsConfirmDeleteModalVisible(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteToniebox();
+        setIsConfirmDeleteModalVisible(false);
+    };
+
+    const handleCancelDelete = () => {
+        setIsConfirmDeleteModalVisible(false);
+    };
+
+    const deleteTonieboxModal = (
+        <Modal
+            title={t("tonieboxes.confirmDeleteModal")}
+            open={isConfirmDeleteModalVisible}
+            onOk={handleConfirmDelete}
+            onCancel={handleCancelDelete}
+            okText={t("tonieboxes.delete")}
+            cancelText={t("tonieboxes.cancel")}
+        >
+            <Paragraph>{t("tonieboxes.confirmDeleteDialog", { tonieboxToDelete: tonieboxName })}</Paragraph>
+        </Modal>
+    );
+
+    const triggerWriteConfig = async () => {
+        try {
+            await api.apiTriggerWriteConfigGet();
+        } catch (error) {
+            message.error("Error while saving config to file.");
+        }
+    };
+
+    const handleApiAccessClick = async () => {
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/toniebox.api_access?overlay=${tonieboxCard.ID}`;
+        try {
+            fetch(url, {
+                method: "POST",
+                body: (!tonieboxAccessApi).toString(), // Send value only when setting
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            })
+                .then(() => {
+                    // Trigger write config only if setting was successfully updated
+                    triggerWriteConfig();
+
+                    setTonieboxAccessApi(!tonieboxAccessApi);
+
+                    if (tonieboxAccessApi) {
+                        message.success(t("tonieboxes.messages.apiAccessDisabled"));
+                    } else {
+                        message.success(t("tonieboxes.messages.apiAccessEnabled"));
+                    }
+                })
+                .catch((error) => {
+                    throw new Error(error.status + " " + error.statusText);
+                });
+        } catch (error) {
+            message.error(t("tonieboxes.messages.apiAccessNotChangedError") + error);
+        }
+    };
+
     return (
         <>
             {contextHolder}
@@ -478,12 +600,28 @@ export const TonieboxCard: React.FC<{
                         )}
                     </>,
                     <EditOutlined key="edit" onClick={() => showModelModal()} />,
-                    <span key="settings" onClick={handleUploadCertificatesClick}>
-                        <SafetyCertificateOutlined key="certificate" style={{ marginRight: 8 }} />
-                    </span>,
-                    <span key="settings" onClick={handleEditSettingsClick}>
-                        <SettingOutlined key="edit" style={{ marginRight: 8 }} />
-                    </span>,
+
+                    <SafetyCertificateOutlined
+                        key="certificate"
+                        style={{ marginRight: 8 }}
+                        onClick={handleUploadCertificatesClick}
+                    />,
+                    <SettingOutlined key="edit" style={{ marginRight: 8 }} onClick={handleEditSettingsClick} />,
+                    <>
+                        {!tonieboxAccessApi ? (
+                            <Tooltip title={t("tonieboxes.accessApiDisabled")}>
+                                <LockOutlined
+                                    style={{ color: "red", cursor: "default" }}
+                                    onClick={handleApiAccessClick}
+                                />
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title={t("tonieboxes.accessApiEnabled")}>
+                                <UnlockOutlined style={{ cursor: "default" }} onClick={handleApiAccessClick} />
+                            </Tooltip>
+                        )}
+                    </>,
+                    <DeleteOutlined key="delete" style={{ marginRight: 8 }} onClick={showDeleteConfirmDialog} />,
                 ]}
             >
                 <Meta
@@ -497,6 +635,7 @@ export const TonieboxCard: React.FC<{
             {editTonieboxOverlaySettingsModal}
             {editTonieboxCertificateModal}
             {editTonieboxModal}
+            {deleteTonieboxModal}
         </>
     );
 };

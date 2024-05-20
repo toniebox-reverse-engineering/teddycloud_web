@@ -26,15 +26,18 @@ export const ToniesList: React.FC<{
     const [searchText, setSearchText] = useState("");
     const [seriesFilter, setSeriesFilter] = useState("");
     const [episodeFilter, setEpisodeFilter] = useState("");
-    const [validFilter, setValidFilter] = useState(false);
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
     const [filterLastTonieboxRUIDs, setFilterLastTonieboxRUIDs] = useState(false);
+    const [validFilter, setValidFilter] = useState(false);
     const [invalidFilter, setInvalidFilter] = useState(false);
     const [existsFilter, setExistsFilter] = useState(false);
     const [notExistsFilter, setNotExistsFilter] = useState(false);
     const [liveFilter, setLiveFilter] = useState(false);
-    const [nocloudFilter, setNocloudFilter] = useState(false);
     const [unsetLiveFilter, setUnsetLiveFilter] = useState(false);
+    const [nocloudFilter, setNocloudFilter] = useState(false);
     const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
+    const [hasCloudAuthFilter, setHasCloudAuthFilter] = useState(false);
+    const [unsetHasCloudAuthFilter, setUnsetHasCloudAuthFilter] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
@@ -50,7 +53,6 @@ export const ToniesList: React.FC<{
     const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
-    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
     const location = useLocation();
 
@@ -139,9 +141,11 @@ export const ToniesList: React.FC<{
                 (!existsFilter || tonie.exists) &&
                 (!notExistsFilter || !tonie.exists) &&
                 (!liveFilter || tonie.live) &&
-                (!nocloudFilter || tonie.nocloud) &&
                 (!unsetLiveFilter || !tonie.live) &&
-                (!unsetNocloudFilter || !tonie.nocloud)
+                (!nocloudFilter || tonie.nocloud) &&
+                (!unsetNocloudFilter || !tonie.nocloud) &&
+                (!hasCloudAuthFilter || tonie.hasCloudAuth) &&
+                (!unsetHasCloudAuthFilter || !tonie.hasCloudAuth)
         );
         if (searchText) {
             filtered = filtered.filter(
@@ -169,9 +173,11 @@ export const ToniesList: React.FC<{
         setExistsFilter(false);
         setNotExistsFilter(false);
         setLiveFilter(false);
-        setNocloudFilter(false);
         setUnsetLiveFilter(false);
+        setNocloudFilter(false);
         setUnsetNocloudFilter(false);
+        setHasCloudAuthFilter(false);
+        setUnsetHasCloudAuthFilter(false);
         setFilterLastTonieboxRUIDs(false);
         setSelectedLanguages([]);
         const urlWithoutParams = window.location.pathname;
@@ -287,125 +293,191 @@ export const ToniesList: React.FC<{
                             <div>
                                 <div
                                     style={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
+                                        display: "grid",
+                                        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+                                        gap: "16px",
                                     }}
                                 >
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
-                                        <Switch
-                                            checked={validFilter}
-                                            onChange={(checked) => setValidFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        <Switch checked={validFilter} onChange={(checked) => setValidFilter(checked)} />
                                         {t("tonies.tonies.filterBar.valid")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={invalidFilter}
                                             onChange={(checked) => setInvalidFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.invalid")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={existsFilter}
                                             onChange={(checked) => setExistsFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
                                         />{" "}
                                         {t("tonies.tonies.filterBar.exists")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={notExistsFilter}
                                             onChange={(checked) => setNotExistsFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.notExists")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
-                                        <Switch
-                                            checked={liveFilter}
-                                            onChange={(checked) => setLiveFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        <Switch checked={liveFilter} onChange={(checked) => setLiveFilter(checked)} />{" "}
                                         {t("tonies.tonies.filterBar.live")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={unsetLiveFilter}
                                             onChange={(checked) => setUnsetLiveFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
                                         />{" "}
                                         {t("tonies.tonies.filterBar.unsetLive")}
                                     </div>
+
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
-                                        }}
-                                    >
-                                        <Switch
-                                            checked={nocloudFilter}
-                                            onChange={(checked) => setNocloudFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
-                                        {t("tonies.tonies.filterBar.noCloud")}
-                                    </div>
-                                    <div
-                                        style={{
-                                            flexWrap: "nowrap",
-                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={unsetNocloudFilter}
                                             onChange={(checked) => setUnsetNocloudFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.unsetNoCloud")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={nocloudFilter}
+                                            onChange={(checked) => setNocloudFilter(checked)}
+                                        />
+                                        {t("tonies.tonies.filterBar.noCloud")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
+                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={hasCloudAuthFilter}
+                                            onChange={(checked) => setHasCloudAuthFilter(checked)}
+                                        />
+                                        {t("tonies.tonies.filterBar.hasCloudAuth")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
+                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={unsetHasCloudAuthFilter}
+                                            onChange={(checked) => setUnsetHasCloudAuthFilter(checked)}
+                                        />
+                                        {t("tonies.tonies.filterBar.unsetHasCloudAuth")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
+                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={filterLastTonieboxRUIDs}
                                             onChange={(checked) => setFilterLastTonieboxRUIDs(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.lastPlayed")}
                                     </div>
                                 </div>

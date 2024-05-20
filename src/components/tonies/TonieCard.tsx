@@ -17,8 +17,8 @@ import { useAudioContext } from "../audio/AudioContext";
 import { FileBrowser } from "./FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
 
-import { RadioStreamSearch } from "./RadioStreamSearch";
 import LanguageFlagSVG from "../../util/languageUtil";
+import { RadioStreamSearch } from "./RadioStreamSearch";
 
 const { Meta } = Card;
 const { Text } = Typography;
@@ -43,6 +43,7 @@ export type TonieCardProps = {
     exists: boolean;
     live: boolean;
     nocloud: boolean;
+    hasCloudAuth: boolean;
     source: string;
     audioUrl: string;
     downloadTriggerUrl: string;
