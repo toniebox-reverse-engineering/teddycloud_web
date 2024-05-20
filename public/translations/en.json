@@ -190,7 +190,7 @@
         },
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "New Tonieboxes allowed",
-        "newBoxesAllowedText": "You can connect new Tonieboxes to TeddyCloud. Once you have connected all your boxes, please disable the \"Allow new Boxes\" setting for security reasons.",
+        "newBoxesAllowedText": "You can connect new Tonieboxes to TeddyCloud. Once you have connected all your boxes, please disable the \"Allow new boxes\" setting for security reasons.",
         "offline": "offline",
         "online": "online",
         "title": "Your Tonieboxes",

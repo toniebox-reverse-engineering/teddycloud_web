@@ -599,12 +599,13 @@ export const TonieboxCard: React.FC<{
                         )}
                     </>,
                     <EditOutlined key="edit" onClick={() => showModelModal()} />,
-                    <span key="settings" onClick={handleUploadCertificatesClick}>
-                        <SafetyCertificateOutlined key="certificate" style={{ marginRight: 8 }} />
-                    </span>,
-                    <span key="settings" onClick={handleEditSettingsClick}>
-                        <SettingOutlined key="edit" style={{ marginRight: 8 }} />
-                    </span>,
+
+                    <SafetyCertificateOutlined
+                        key="certificate"
+                        style={{ marginRight: 8 }}
+                        onClick={handleUploadCertificatesClick}
+                    />,
+                    <SettingOutlined key="edit" style={{ marginRight: 8 }} onClick={handleEditSettingsClick} />,
                     <>
                         {!tonieboxAccessApi ? (
                             <Tooltip title={t("tonieboxes.accessApiDisabled")}>
@@ -619,9 +620,7 @@ export const TonieboxCard: React.FC<{
                             </Tooltip>
                         )}
                     </>,
-                    <span key="delete" onClick={showDeleteConfirmDialog}>
-                        <DeleteOutlined key="delete" style={{ marginRight: 8 }} />
-                    </span>,
+                    <DeleteOutlined key="delete" style={{ marginRight: 8 }} onClick={showDeleteConfirmDialog} />,
                 ]}
             >
                 <Meta
