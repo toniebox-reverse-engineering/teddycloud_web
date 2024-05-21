@@ -150,8 +150,8 @@
         "accessApiDisabled": "Zugriff auf TeddyCloud APIs deaktiviert.",
         "accessApiEnabled": "Zugriff auf TeddyCloud APIs aktiviert.",
         "boxWithoutAPIAccess": "Toniebox ohne TeddyCloud API Zugang!",
-        "boxWithoutAPIAccessText": "Folgende Tonieboxen haben keinen aktivierten API-Zugang:",
         "boxWithoutAPIAccessGoToTonieboxes": "Falls du das ändern möchtest, aktiviere den API-Zugang bei den genannten ",
+        "boxWithoutAPIAccessText": "Folgende Tonieboxen haben keinen aktivierten API-Zugang:",
         "cancel": "Abbrechen",
         "confirmDeleteDialog": "Möchtest du die Toniebox {{tonieboxToDelete}} wirklich löschen?",
         "confirmDeleteModal": "Bestätige Löschvorgang",
@@ -207,6 +207,25 @@
         }
     },
     "tonies": {
+        "addNewCustomTonie": "WIP: Not working! Neues Modell anlegen",
+        "addNewCustomTonieHint": "Lege ein neues Modell an und weise es dem aktuellen Tag zu",
+        "addNewCustomTonieModal": {
+            "addAudioIdHash": "Audio ID und Hash hinzufügen",
+            "addTrack": "Track hinzufügen",
+            "audioId": "Audio ID",
+            "episode": "Episode",
+            "faifailedToCreate": "Modellerstellung fehlgeschlagen: ",
+            "hash": "Hash",
+            "language": "Sprache [Format: de-de]",
+            "model": "Modell",
+            "pic": "Url zum Bild",
+            "remove": "entfernen",
+            "save": "Speichern",
+            "series": "Serie",
+            "successfullyCreated": "Modell erfolgreich erstellt",
+            "title": "Neuen Custom Tonie/Tag anlegen",
+            "track": "Track"
+        },
         "content": {
             "navigationTitle": "Content",
             "showToniesOfBoxes": "Inhalte der folgenden Tonieboxen anzeigen",

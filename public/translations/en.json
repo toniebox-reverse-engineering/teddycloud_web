@@ -206,6 +206,25 @@
         }
     },
     "tonies": {
+        "addNewCustomTonie": "WIP: Not working! Create new model",
+        "addNewCustomTonieHint": "Create a new model and assign it to the current tag",
+        "addNewCustomTonieModal": {
+            "addAudioIdHash": "Add audio ID and hash",
+            "addTrack": "Add track",
+            "audioId": "Audio ID",
+            "episode": "Episode",
+            "failedToCreate": "Model creation failed: ",
+            "hash": "Hash",
+            "language": "Language [Format: de-de]",
+            "model": "Model",
+            "pic": "Url to picture",
+            "remove": "remove",
+            "save": "Save",
+            "series": "Serie",
+            "successfullyCreated": "Model created successful!",
+            "title": "Create new Custom Tonie/Tag",
+            "track": "Track"
+        },
         "content": {
             "navigationTitle": "Content",
             "showToniesOfBoxes": "Content of the following Tonieboxes",

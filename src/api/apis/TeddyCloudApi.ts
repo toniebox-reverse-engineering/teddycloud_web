@@ -23,7 +23,7 @@ import {
     StatsListToJSON,
 } from "../models";
 
-import { TagsTonieCardList, TonieCardProps } from "../../components/tonies/TonieCard";
+import { TagTonieCard, TagsTonieCardList, TonieCardProps } from "../../components/tonies/TonieCard";
 import { TonieboxCardList, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
 
 export interface ApiSetCloudCacheContentPostRequest {
@@ -446,6 +446,46 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<TonieCardProps[]> {
         const response = await this.apiGetTagIndexRaw(overlay, initOverrides);
         return (await response.value()).tags;
+    }
+
+    /**
+     * get tag info
+     */
+    async apiGetTagInfoRaw(
+        ruid: string,
+        overlay?: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<TagTonieCard>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/getTagInfo?ruid=${ruid}`;
+        if (overlay !== "") {
+            path = path + "&overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+        return new runtime.JSONApiResponse<TagTonieCard>(response);
+    }
+
+    /**
+     * get tag info
+     */
+    async apiGetTagInfo(
+        ruid: string,
+        overlay?: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<TonieCardProps> {
+        const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides);
+        return (await response.value()).tagInfo;
     }
 
     async apiGetTagIndexMergedAllOverlays(
