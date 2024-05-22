@@ -1,8 +1,6 @@
 import React from "react";
-import { Modal, Typography } from "antd";
+import { Modal } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
-
-const { Text } = Typography;
 
 interface ConfirmationDialogProps {
     title: string;
@@ -38,7 +36,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             cancelText={cancelText}
             className="warning"
         >
-            <Text>{content}</Text>
+            <div style={{ marginBottom: 24 }}>{content}</div>
         </Modal>
     );
 };
