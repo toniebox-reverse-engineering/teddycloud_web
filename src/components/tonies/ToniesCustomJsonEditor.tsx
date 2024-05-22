@@ -5,15 +5,15 @@ import { useTranslation } from "react-i18next";
 
 interface ToniesCustomJsonEditorProps {
     visible: boolean;
-    setValue?: (value: any) => void;
     onClose: () => void;
+    setValue?: (value: any) => void;
     props?: any;
     tonieCardProps?: TonieCardProps;
     audioId?: number;
     hash?: string;
 }
 
-const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible, setValue, onClose, props, tonieCardProps, audioId, hash }) => {
+const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible, onClose, setValue, props, tonieCardProps, audioId, hash }) => {
     const { t } = useTranslation();
     const [form] = Form.useForm();
 
@@ -96,7 +96,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
             onCancel={handleCancel}
             onOk={handleOk}
             okText={t("tonies.addNewCustomTonieModal.save")}
-            width={Math.max(window.innerWidth * 0.75, 500)}
+            width={Math.max(Math.min(window.innerWidth * 0.75, 800), 500)}
         >
             <Form form={form} layout="vertical" onFinish={handleFinish}>
                 <Row gutter={[16, 0]}>
