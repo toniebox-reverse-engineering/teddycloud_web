@@ -15,11 +15,11 @@ import {
     EditOutlined,
     PlayCircleOutlined,
     TruckOutlined,
-    WarningOutlined,
 } from "@ant-design/icons";
 import { humanFileSize } from "../../util/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import ConfirmationDialog from "../ConfirmationDialog";
 
 const { Paragraph } = Typography;
 
@@ -494,22 +494,15 @@ export const FileBrowser: React.FC<{
     return (
         <>
             {contextHolder}
-            <Modal
-                title={
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <WarningOutlined style={{ fontSize: 36, color: "orange", margin: 16 }} />
-                        <div style={{ marginBottom: 16 }}>{t("fileBrowser.confirmDeleteModal")}</div>
-                    </div>
-                }
-                open={isConfirmDeleteModalVisible}
-                onOk={handleConfirmDelete}
-                onCancel={handleCancelDelete}
+            <ConfirmationDialog
+                title={t("fileBrowser.confirmDeleteModal")}
+                isVisible={isConfirmDeleteModalVisible}
                 okText={t("fileBrowser.delete")}
                 cancelText={t("fileBrowser.cancel")}
-                className="warning"
-            >
-                <Paragraph>{t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}</Paragraph>
-            </Modal>
+                content={t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}
+                handleOk={handleConfirmDelete}
+                handleCancel={handleCancelDelete}
+            />
             <Modal
                 footer={jsonViewerModalFooter}
                 width={700}

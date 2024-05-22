@@ -11,7 +11,6 @@ import {
     SaveFilled,
     DeleteOutlined,
     LockOutlined,
-    WarningOutlined,
 } from "@ant-design/icons";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
@@ -19,6 +18,7 @@ import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
 import { TonieCardProps } from "../../components/tonies/TonieCard";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
 import GetBoxModelImages from "../../util/boxModels";
+import ConfirmationDialog from "../ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph, Text } = Typography;
@@ -497,22 +497,15 @@ export const TonieboxCard: React.FC<{
     };
 
     const deleteTonieboxModal = (
-        <Modal
-            title={
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <WarningOutlined style={{ fontSize: 36, color: "orange", margin: 16 }} />
-                    <div style={{ marginBottom: 16 }}>{t("tonieboxes.confirmDeleteModal")}</div>
-                </div>
-            }
-            open={isConfirmDeleteModalVisible}
-            onOk={handleConfirmDelete}
-            onCancel={handleCancelDelete}
+        <ConfirmationDialog
+            title={t("tonieboxes.confirmDeleteModal")}
+            isVisible={isConfirmDeleteModalVisible}
             okText={t("tonieboxes.delete")}
             cancelText={t("tonieboxes.cancel")}
-            className="warning"
-        >
-            <Paragraph>{t("tonieboxes.confirmDeleteDialog", { tonieboxToDelete: tonieboxName })}</Paragraph>
-        </Modal>
+            content={t("tonieboxes.confirmDeleteDialog", { tonieboxToDelete: tonieboxName })}
+            handleOk={handleConfirmDelete}
+            handleCancel={handleCancelDelete}
+        />
     );
 
     const triggerWriteConfig = async () => {

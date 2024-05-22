@@ -8,7 +8,6 @@ import {
     PlayCircleOutlined,
     RetweetOutlined,
     SaveFilled,
-    WarningOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import React, { useEffect, useState } from "react";
@@ -20,6 +19,7 @@ import LanguageFlagSVG from "../../util/languageUtil";
 import { RadioStreamSearch } from "./RadioStreamSearch";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
+import ConfirmationDialog from "../ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -325,26 +325,17 @@ export const TonieCard: React.FC<{
     };
 
     const hideTonieModal = (
-        <Modal
-            title={
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <WarningOutlined style={{ fontSize: 36, color: "orange", margin: 16 }} />
-                    <div style={{ marginBottom: 16 }}>{t("tonies.confirmHideModal.title")}</div>
-                </div>
-            }
-            open={isConfirmHideModalVisible}
-            onOk={handleConfirmHide}
-            onCancel={handleCancelHide}
+        <ConfirmationDialog
+            title={t("tonies.confirmHideModal.title")}
+            isVisible={isConfirmHideModalVisible}
             okText={t("tonies.confirmHideModal.hide")}
             cancelText={t("tonies.confirmHideModal.cancel")}
-            className="warning"
-        >
-            <Text>
-                {t("tonies.confirmHideModal.confirmHideDialog", {
-                    tonieToHide: localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "",
-                })}
-            </Text>
-        </Modal>
+            content={t("tonies.confirmHideModal.confirmHideDialog", {
+                tonieToHide: localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "",
+            })}
+            handleOk={handleConfirmHide}
+            handleCancel={handleCancelHide}
+        />
     );
 
     const hideTag = async () => {
