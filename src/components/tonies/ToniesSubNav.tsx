@@ -6,20 +6,32 @@ import {
     SoundOutlined,
     CloudUploadOutlined,
     UnorderedListOutlined,
+    UserAddOutlined,
 } from "@ant-design/icons";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
+import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
 
 export const ToniesSubNav = () => {
     const { t } = useTranslation();
+    const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
+
+    const handleAddNewCustomButtonClick = () => {
+        setShowAddCustomTonieModal(true);
+    };
 
     const subnav: MenuProps["items"] = [
         {
             key: "tonies",
             label: <Link to="/tonies">{t("tonies.tonies.navigationTitle")}</Link>,
             icon: React.createElement(UserOutlined),
+        },
+        {
+            key: "custom-json",
+            label: <label onClick={handleAddNewCustomButtonClick}>{t("tonies.addToniesCustomJsonEntry")}</label>,
+            icon: React.createElement(UserAddOutlined),
         },
         {
             key: "encoder",
@@ -45,15 +57,20 @@ export const ToniesSubNav = () => {
             key: "system-sounds",
             label: <Link to="/tonies/system-sounds">{t("tonies.system-sounds.navigationTitle")}</Link>,
             icon: React.createElement(SettingOutlined),
-        },
+        }
     ];
 
-    return (
+    return (<>
         <StyledSubMenu
             mode="inline"
             //defaultSelectedKeys={["1"]}
             defaultOpenKeys={["sub"]}
             items={subnav}
         />
+        <ToniesCustomJsonEditor
+            visible={showAddCustomTonieModal}
+            onClose={() => setShowAddCustomTonieModal(false)}
+        />
+    </>
     );
 };

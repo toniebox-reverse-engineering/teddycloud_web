@@ -7,7 +7,7 @@ interface ToniesCustomJsonEditorProps {
     visible: boolean;
     setValue?: (value: any) => void;
     onClose: () => void;
-    props: any;
+    props?: any;
     tonieCardProps?: TonieCardProps;
     audioId?: number;
     hash?: string;

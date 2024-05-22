@@ -207,6 +207,7 @@
         }
     },
     "tonies": {
+        "addToniesCustomJsonEntry": "Modell anlegen (WIP)",
         "addNewCustomTonie": "WIP: Not working! Neues Modell anlegen",
         "addNewCustomTonieHint": "Lege ein neues Modell an und weise es dem aktuellen Tag zu",
         "addNewCustomTonieModal": {
@@ -223,7 +224,7 @@
             "save": "Speichern",
             "series": "Serie",
             "successfullyCreated": "Modell erfolgreich erstellt",
-            "title": "Neuen Custom Tonie/Tag anlegen",
+            "title": "WIP: Not working! Neuen Custom Tonie/Tag anlegen",
             "track": "Track"
         },
         "content": {
