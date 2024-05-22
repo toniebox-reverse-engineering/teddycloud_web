@@ -86,6 +86,8 @@ export const TonieCard: React.FC<{
     const [activeSource, setActiveSource] = useState(localTonieCard.source);
     const [selectedSource, setSelectedSource] = useState("");
 
+    const [isConfirmHideModalVisible, setIsConfirmHideModalVisible] = useState(false);
+
     useEffect(() => {
         // Update states when localTonieCard prop changes
         setIsValid(localTonieCard.valid);
@@ -307,10 +309,62 @@ export const TonieCard: React.FC<{
         </>
     );
 
+    const showHideConfirmDialog = () => {
+        setIsConfirmHideModalVisible(true);
+    };
+
+    const handleConfirmHide = () => {
+        hideTag();
+        setIsConfirmHideModalVisible(false);
+    };
+
+    const handleCancelHide = () => {
+        setIsConfirmHideModalVisible(false);
+    };
+
+    const hideTonieModal = (
+        <Modal
+            title={t("tonies.confirmHideModal.title")}
+            open={isConfirmHideModalVisible}
+            onOk={handleConfirmHide}
+            onCancel={handleCancelHide}
+            okText={t("tonies.confirmHideModal.hide")}
+            cancelText={t("tonies.confirmHideModal.cancel")}
+        >
+            <Text>{t("tonies.confirmHideModal.confirmHideDialog", { tonieToHide: localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "" })}</Text>
+        </Modal>
+    );
+
+    const hideTag = async () => {
+        const url =
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
+            (overlay ? `?overlay=${overlay}` : "");
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: "hide=true",
+            });
+            if (!response.ok) {
+                throw new Error(response.status + " " + response.statusText);
+            }
+
+            message.success(
+                t("tonies.messages.hideTonieSuccessful")
+            );
+        } catch (error) {
+            message.error(t("tonies.messages.hideTonieFailed") + error);
+        }
+    };
+
     const informationModalFooter = (
-        <Button type="primary" onClick={() => setInformationModalOpen(false)}>
-            {t("tonies.informationModal.ok")}
-        </Button>
+        <>
+            <Button onClick={showHideConfirmDialog}>
+                {t("tonies.informationModal.hideTag")}
+            </Button>
+            <Button type="primary" onClick={() => setInformationModalOpen(false)}>
+                {t("tonies.informationModal.ok")}
+            </Button>
+        </>
     );
 
     const informationModal = (
@@ -530,6 +584,7 @@ export const TonieCard: React.FC<{
             {selectFileModal}
             {editModal}
             {informationModal}
+            {hideTonieModal}
         </>
     );
 };

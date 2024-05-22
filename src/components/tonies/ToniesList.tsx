@@ -54,6 +54,7 @@ export const ToniesList: React.FC<{
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
 
+    const [listKey, setListKey] = useState(0); // Key for modal rendering
     const location = useLocation();
 
     useEffect(() => {
@@ -204,6 +205,7 @@ export const ToniesList: React.FC<{
 
     const handlePageSizeChange = (current: number, size: number) => {
         setPageSize(size as number);
+        setListKey(prevKey => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
     };
@@ -490,6 +492,7 @@ export const ToniesList: React.FC<{
                                         display: "flex",
                                         flexWrap: "wrap",
                                         justifyContent: "flex-end",
+                                        marginTop: 8
                                     }}
                                 >
                                     <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>
@@ -519,6 +522,7 @@ export const ToniesList: React.FC<{
                     xxl: 6,
                 }}
                 dataSource={getCurrentPageData()}
+                key={listKey}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>
                         <TonieCard

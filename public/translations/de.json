@@ -254,6 +254,12 @@
             "uploading": "Lädt hoch",
             "uploadSuccessful": "Die Datei wurde der Bibliothek hinzugefügt"
         },
+        "confirmHideModal": {
+            "title": "Tonie/Tag ausblenden",
+            "hide": "Ausblenden",
+            "cancel": "Abbrechen",
+            "confirmHideDialog": "Möchtest du den Tonie/Tag {{tonieToHide}} wirklich ausblenden? Nach dem Ausblenden taucht der Tonie/Tag nach Neuladen der Liste nicht mehr auf. Um ihn wieder einzublenden musst du den Tonie/Tag auf eine Toniebox platzieren."
+        },
         "infoModal": {
             "exists": "Existiert:",
             "model": "Modell:",
@@ -264,7 +270,8 @@
         },
         "informationModal": {
             "ok": "OK",
-            "unknownModel": "Unbekanntes Model"
+            "unknownModel": "Unbekanntes Model",
+            "hideTag": "Tonie/Tag ausblenden"
         },
         "lastPlayedOnModal": {
             "lastPlayedOn": "Zuletzt gepielter Tonie",
@@ -292,7 +299,9 @@
             "setTonieToModelSuccessful": "Setze Tonie-Modell auf {{selectedModel}}!",
             "setTonieToSourceFailed": "Konnte die Tonie-Quelle nicht ändern!",
             "setTonieToSourceSuccessful": "Setze Tonie-Quelle auf {{selectedSource}}!",
-            "sourceSetSuccessful": "Quelle auf {{selectedFile}} gesetzt!"
+            "sourceSetSuccessful": "Quelle auf {{selectedFile}} gesetzt!",
+            "hideTonieSuccessful": "Tonie/Tag erfolgreich als ausgeblendet markiert!",
+            "hideTonieFailed": "Tonie/Tag ausblenden fehlgeschlagen: "
         },
         "navigationTitle": "Tonies",
         "selectFileModal": {
