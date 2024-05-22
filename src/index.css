@@ -32,6 +32,10 @@ code {
     background: transparent !important;
 }
 
+.warning .ant-modal-content {
+    border-top: 8px solid orange;
+}
+
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */

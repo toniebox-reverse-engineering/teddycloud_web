@@ -15,6 +15,7 @@ import {
     EditOutlined,
     PlayCircleOutlined,
     TruckOutlined,
+    WarningOutlined,
 } from "@ant-design/icons";
 import { humanFileSize } from "../../util/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -494,12 +495,18 @@ export const FileBrowser: React.FC<{
         <>
             {contextHolder}
             <Modal
-                title={t("fileBrowser.confirmDeleteModal")}
+                title={
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <WarningOutlined style={{ fontSize: 36, color: "orange", margin: 16 }} />
+                        <div style={{ marginBottom: 16 }}>{t("fileBrowser.confirmDeleteModal")}</div>
+                    </div>
+                }
                 open={isConfirmDeleteModalVisible}
                 onOk={handleConfirmDelete}
                 onCancel={handleCancelDelete}
                 okText={t("fileBrowser.delete")}
                 cancelText={t("fileBrowser.cancel")}
+                className="warning"
             >
                 <Paragraph>{t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}</Paragraph>
             </Modal>

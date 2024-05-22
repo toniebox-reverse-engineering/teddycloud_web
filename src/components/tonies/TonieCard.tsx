@@ -8,6 +8,7 @@ import {
     PlayCircleOutlined,
     RetweetOutlined,
     SaveFilled,
+    WarningOutlined,
 } from "@ant-design/icons";
 import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import React, { useEffect, useState } from "react";
@@ -289,7 +290,8 @@ export const TonieCard: React.FC<{
         .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }));
 
     const title =
-        `${localTonieCard.tonieInfo.series}` + (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
+        `${localTonieCard.tonieInfo.series}` +
+        (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
 
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
@@ -324,14 +326,24 @@ export const TonieCard: React.FC<{
 
     const hideTonieModal = (
         <Modal
-            title={t("tonies.confirmHideModal.title")}
+            title={
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <WarningOutlined style={{ fontSize: 36, color: "orange", margin: 16 }} />
+                    <div style={{ marginBottom: 16 }}>{t("tonies.confirmHideModal.title")}</div>
+                </div>
+            }
             open={isConfirmHideModalVisible}
             onOk={handleConfirmHide}
             onCancel={handleCancelHide}
             okText={t("tonies.confirmHideModal.hide")}
             cancelText={t("tonies.confirmHideModal.cancel")}
+            className="warning"
         >
-            <Text>{t("tonies.confirmHideModal.confirmHideDialog", { tonieToHide: localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "" })}</Text>
+            <Text>
+                {t("tonies.confirmHideModal.confirmHideDialog", {
+                    tonieToHide: localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "",
+                })}
+            </Text>
         </Modal>
     );
 
@@ -348,9 +360,7 @@ export const TonieCard: React.FC<{
                 throw new Error(response.status + " " + response.statusText);
             }
 
-            message.success(
-                t("tonies.messages.hideTonieSuccessful")
-            );
+            message.success(t("tonies.messages.hideTonieSuccessful"));
         } catch (error) {
             message.error(t("tonies.messages.hideTonieFailed") + error);
         }
@@ -358,9 +368,7 @@ export const TonieCard: React.FC<{
 
     const informationModalFooter = (
         <>
-            <Button onClick={showHideConfirmDialog}>
-                {t("tonies.informationModal.hideTag")}
-            </Button>
+            <Button onClick={showHideConfirmDialog}>{t("tonies.informationModal.hideTag")}</Button>
             <Button type="primary" onClick={() => setInformationModalOpen(false)}>
                 {t("tonies.informationModal.ok")}
             </Button>
@@ -501,42 +509,42 @@ export const TonieCard: React.FC<{
 
     const actions = readOnly
         ? [
-            <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
-            isValid ? (
-                <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
-            ) : (
-                <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
-            ),
-            <CloudSyncOutlined
-                key="nocloud"
-                style={{ cursor: "default", color: isNoCloud ? "red" : token.colorTextDisabled }}
-            />,
-            <RetweetOutlined
-                key="live"
-                style={{ cursor: "default", color: isLive ? "red" : token.colorTextDisabled }}
-            />,
-        ]
+              <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
+              isValid ? (
+                  <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
+              ) : (
+                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+              ),
+              <CloudSyncOutlined
+                  key="nocloud"
+                  style={{ cursor: "default", color: isNoCloud ? "red" : token.colorTextDisabled }}
+              />,
+              <RetweetOutlined
+                  key="live"
+                  style={{ cursor: "default", color: isLive ? "red" : token.colorTextDisabled }}
+              />,
+          ]
         : [
-            <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
-            <EditOutlined key="edit" onClick={showModelModal} />,
-            isValid ? (
-                <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
-            ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
-                <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
-            ) : (
-                <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
-            ),
-            <CloudSyncOutlined
-                key="nocloud"
-                style={{ color: isNoCloud ? "red" : token.colorTextDescription }}
-                onClick={handleNoCloudClick}
-            />,
-            <RetweetOutlined
-                key="live"
-                style={{ color: isLive ? "red" : token.colorTextDescription }}
-                onClick={handleLiveClick}
-            />,
-        ];
+              <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
+              <EditOutlined key="edit" onClick={showModelModal} />,
+              isValid ? (
+                  <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
+              ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
+                  <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
+              ) : (
+                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+              ),
+              <CloudSyncOutlined
+                  key="nocloud"
+                  style={{ color: isNoCloud ? "red" : token.colorTextDescription }}
+                  onClick={handleNoCloudClick}
+              />,
+              <RetweetOutlined
+                  key="live"
+                  style={{ color: isLive ? "red" : token.colorTextDescription }}
+                  onClick={handleLiveClick}
+              />,
+          ];
 
     return (
         <>
