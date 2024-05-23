@@ -13,7 +13,15 @@ interface ToniesCustomJsonEditorProps {
     hash?: string;
 }
 
-const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible, onClose, setValue, props, tonieCardProps, audioId, hash }) => {
+const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
+    visible,
+    onClose,
+    setValue,
+    props,
+    tonieCardProps,
+    audioId,
+    hash,
+}) => {
     const { t } = useTranslation();
     const [form] = Form.useForm();
 
@@ -40,7 +48,10 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
                 .map((track: { track: string }) => track.track);
         }
         if (values.ids) {
-            values.ids = values.ids.filter((ids: { "audio-id": string, hash: string }) => ids["audio-id"] && ids["audio-id"].trim() && ids.hash && ids.hash.trim());
+            values.ids = values.ids.filter(
+                (ids: { "audio-id": string; hash: string }) =>
+                    ids["audio-id"] && ids["audio-id"].trim() && ids.hash && ids.hash.trim()
+            );
         }
         const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/doSomething/`;
         try {
@@ -66,11 +77,9 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
             resetForm();
             message.success(t("tonies.addNewCustomTonieModal.successfullyCreated"));
             onClose();
-
         } catch (error) {
             message.error(t("tonies.addNewCustomTonieModal.failedToCreate") + error);
         }
-
     };
 
     const handleOk = () => {
@@ -80,14 +89,14 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
     const handleCancel = () => {
         resetForm();
         onClose();
-    }
+    };
     const resetForm = () => {
         form.resetFields();
         form.setFieldsValue({
-            ids: [{ "audio-id": audioId ? audioId : '', "hash": hash ? hash : '' }],
-            "track-desc": [{ "track": '' }],
+            ids: [{ "audio-id": audioId ? audioId : "", hash: hash ? hash : "" }],
+            "track-desc": [{ track: "" }],
         });
-    }
+    };
 
     return (
         <Modal
@@ -103,18 +112,24 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
                     <Col span={24}>
                         <Row gutter={[16, 0]}>
                             <Col span={8}>
-                                <Form.Item label={t("tonies.addNewCustomTonieModal.series")} name="series" required>
-                                    <Input style={{ width: '100%' }} />
+                                <Form.Item
+                                    label={t("tonies.addNewCustomTonieModal.series")}
+                                    name="series"
+                                    rules={[
+                                        { required: true, message: t("tonies.addNewCustomTonieModal.seriesRequired") },
+                                    ]}
+                                >
+                                    <Input style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
                             <Col span={10}>
                                 <Form.Item label={t("tonies.addNewCustomTonieModal.episode")} name="episode">
-                                    <Input style={{ width: '100%' }} />
+                                    <Input style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
                             <Col span={6}>
                                 <Form.Item label={t("tonies.addNewCustomTonieModal.language")} name="language">
-                                    <Input style={{ width: '100%' }} />
+                                    <Input style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -122,13 +137,19 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
                     <Col span={24}>
                         <Row gutter={[16, 0]}>
                             <Col span={8}>
-                                <Form.Item label={t("tonies.addNewCustomTonieModal.model")} name="article">
-                                    <Input style={{ width: '100%' }} />
+                                <Form.Item
+                                    label={t("tonies.addNewCustomTonieModal.model")}
+                                    name="article"
+                                    rules={[
+                                        { required: true, message: t("tonies.addNewCustomTonieModal.modelRequired") },
+                                    ]}
+                                >
+                                    <Input style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
                             <Col span={16}>
                                 <Form.Item label={t("tonies.addNewCustomTonieModal.pic")} name="image">
-                                    <Input style={{ width: '100%' }} />
+                                    <Input style={{ width: "100%" }} />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -144,25 +165,38 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
                                                     <Col span={8}>
                                                         <Form.Item
                                                             {...restField}
-                                                            name={[name, 'audio-id']}
-                                                            label={index === 0 ? t("tonies.addNewCustomTonieModal.audioId") : ''}
+                                                            name={[name, "audio-id"]}
+                                                            label={
+                                                                index === 0
+                                                                    ? t("tonies.addNewCustomTonieModal.audioId")
+                                                                    : ""
+                                                            }
                                                         >
-                                                            <Input style={{ width: '100%' }} />
+                                                            <Input style={{ width: "100%" }} />
                                                         </Form.Item>
                                                     </Col>
                                                     <Col span={16}>
                                                         <Form.Item
                                                             {...restField}
-                                                            name={[name, 'hash']}
-                                                            label={index === 0 ? t("tonies.addNewCustomTonieModal.hash") : ''}
+                                                            name={[name, "hash"]}
+                                                            label={
+                                                                index === 0
+                                                                    ? t("tonies.addNewCustomTonieModal.hash")
+                                                                    : ""
+                                                            }
                                                         >
-                                                            <Input style={{ width: '100%' }} addonAfter={<Button
-                                                                type="link"
-                                                                onClick={() => remove(name)}
-                                                                style={{ height: "auto", margin: -2 }}
-                                                            >
-                                                                {t("tonies.addNewCustomTonieModal.remove")}
-                                                            </Button>} />
+                                                            <Input
+                                                                style={{ width: "100%" }}
+                                                                addonAfter={
+                                                                    <Button
+                                                                        type="link"
+                                                                        onClick={() => remove(name)}
+                                                                        style={{ height: "auto", margin: -2 }}
+                                                                    >
+                                                                        {t("tonies.addNewCustomTonieModal.remove")}
+                                                                    </Button>
+                                                                }
+                                                            />
                                                         </Form.Item>
                                                     </Col>
                                                 </Row>
@@ -187,19 +221,23 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({ visible
                                             <Col span={24}>
                                                 <Form.Item
                                                     {...restField}
-                                                    name={[name, 'track']}
-                                                    label={index === 0 ? t("tonies.addNewCustomTonieModal.track") : ''}
+                                                    name={[name, "track"]}
+                                                    label={index === 0 ? t("tonies.addNewCustomTonieModal.track") : ""}
                                                 >
-                                                    <Input style={{ width: '100%' }} addonAfter={<Button
-                                                        type="link"
-                                                        onClick={() => remove(name)}
-                                                        style={{ height: "auto", margin: -2 }}
-                                                    >
-                                                        {t("tonies.addNewCustomTonieModal.remove")}
-                                                    </Button>} />
+                                                    <Input
+                                                        style={{ width: "100%" }}
+                                                        addonAfter={
+                                                            <Button
+                                                                type="link"
+                                                                onClick={() => remove(name)}
+                                                                style={{ height: "auto", margin: -2 }}
+                                                            >
+                                                                {t("tonies.addNewCustomTonieModal.remove")}
+                                                            </Button>
+                                                        }
+                                                    />
                                                 </Form.Item>
                                             </Col>
-
                                         </Row>
                                     ))}
                                     <Form.Item>
