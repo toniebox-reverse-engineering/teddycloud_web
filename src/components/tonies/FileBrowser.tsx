@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Typography, Button } from "antd";
+import { Modal, Table, Tooltip, message, Button } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 
@@ -19,8 +19,7 @@ import {
 import { humanFileSize } from "../../util/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-
-const { Paragraph } = Typography;
+import ConfirmationDialog from "../ConfirmationDialog";
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -493,16 +492,15 @@ export const FileBrowser: React.FC<{
     return (
         <>
             {contextHolder}
-            <Modal
+            <ConfirmationDialog
                 title={t("fileBrowser.confirmDeleteModal")}
-                open={isConfirmDeleteModalVisible}
-                onOk={handleConfirmDelete}
-                onCancel={handleCancelDelete}
+                isVisible={isConfirmDeleteModalVisible}
                 okText={t("fileBrowser.delete")}
                 cancelText={t("fileBrowser.cancel")}
-            >
-                <Paragraph>{t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}</Paragraph>
-            </Modal>
+                content={t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}
+                handleOk={handleConfirmDelete}
+                handleCancel={handleCancelDelete}
+            />
             <Modal
                 footer={jsonViewerModalFooter}
                 width={700}

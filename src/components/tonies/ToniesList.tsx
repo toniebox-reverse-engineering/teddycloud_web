@@ -54,6 +54,7 @@ export const ToniesList: React.FC<{
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
 
+    const [listKey, setListKey] = useState(0); // Key for modal rendering
     const location = useLocation();
 
     useEffect(() => {
@@ -77,25 +78,15 @@ export const ToniesList: React.FC<{
     }, []);
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
-        const tonieRUID = searchParams.get("tonieRUID");
-        if (tonieRUID) {
-            setSearchText(tonieRUID);
-            setCollapsed(false);
-            const prefilteredTonies = tonieCards.filter((tonie) => tonie.ruid.toLowerCase() === tonieRUID);
-            setFilteredTonies(prefilteredTonies);
-        } else {
-            setFilteredTonies(tonieCards);
-        }
-        const fetchTonieboxLastRUID = async (id: string) => {
-            const ruid = await api.apiGetTonieboxLastRUID(id);
-            return ruid;
-        };
-        const fetchTonieboxLastRUIDTime = async (id: string) => {
-            const ruidTime = await api.apiGetTonieboxLastRUIDTime(id);
-            return ruidTime;
-        };
         const fetchTonieboxes = async () => {
+            const fetchTonieboxLastRUID = async (id: string) => {
+                const ruid = await api.apiGetTonieboxLastRUID(id);
+                return ruid;
+            };
+            const fetchTonieboxLastRUIDTime = async (id: string) => {
+                const ruidTime = await api.apiGetTonieboxLastRUIDTime(id);
+                return ruidTime;
+            };
             const tonieboxData = await api.apiGetTonieboxesIndex();
             const tonieboxLastRUIDs = await Promise.all(
                 tonieboxData.map(async (toniebox) => {
@@ -107,6 +98,20 @@ export const ToniesList: React.FC<{
             setLastTonieboxRUIDs(tonieboxLastRUIDs);
         };
         fetchTonieboxes();
+    }, []);
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        const tonieRUID = searchParams.get("tonieRUID");
+        if (tonieRUID) {
+            setSearchText(tonieRUID);
+            setCollapsed(false);
+            const prefilteredTonies = tonieCards.filter((tonie) => tonie.ruid.toLowerCase() === tonieRUID);
+            setFilteredTonies(prefilteredTonies);
+        } else {
+            setFilteredTonies(tonieCards);
+        }
+
         setLoading(false); // Set loading to false when tonieCards are available
     }, [location.search, tonieCards]);
 
@@ -200,6 +205,7 @@ export const ToniesList: React.FC<{
 
     const handlePageSizeChange = (current: number, size: number) => {
         setPageSize(size as number);
+        setListKey(prevKey => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
     };
@@ -486,6 +492,7 @@ export const ToniesList: React.FC<{
                                         display: "flex",
                                         flexWrap: "wrap",
                                         justifyContent: "flex-end",
+                                        marginTop: 8
                                     }}
                                 >
                                     <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>
@@ -515,6 +522,7 @@ export const ToniesList: React.FC<{
                     xxl: 6,
                 }}
                 dataSource={getCurrentPageData()}
+                key={listKey}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>
                         <TonieCard

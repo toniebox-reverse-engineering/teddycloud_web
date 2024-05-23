@@ -27,6 +27,7 @@ export const ChangelogPage = () => {
                 "PoC Toniebox api access (explicitly allow access to teddy cloud api on tonebox level)",
                 "Added enable/disable new Tonieboxes: prohibit registration of new tonieboxes if not enabled",
                 "Added removal of overlays (= removal of Tonieboxes from TeddyCloud)",
+                "add hide tonie/tag functionality",
                 "fixed bug not storing cloud auth in some circumstances",
                 "fixed bug not storing source in json file: https://github.com/toniebox-reverse-engineering/teddycloud/issues/165",
                 "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
@@ -41,6 +42,8 @@ export const ChangelogPage = () => {
                 "new /web gui: deletion of tonieboxes",
                 "new /web gui: info if add new boxes is enabled on homepage and tonieboxes page",
                 "new /web gui: enable/disable API access for toniebox added on tonieboxes page",
+                "new /web gui: add hide tonie/tag in tonies list (in info modal)",
+                "new /web gui: PoC (WiP, not working) Tonies Custom Json Editor"
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",

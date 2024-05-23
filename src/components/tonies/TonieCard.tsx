@@ -12,13 +12,16 @@ import {
 import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-
 import { useAudioContext } from "../audio/AudioContext";
 import { FileBrowser } from "./FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
-
 import LanguageFlagSVG from "../../util/languageUtil";
 import { RadioStreamSearch } from "./RadioStreamSearch";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
+import ConfirmationDialog from "../ConfirmationDialog";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Meta } = Card;
 const { Text } = Typography;
@@ -27,6 +30,11 @@ const { useToken } = theme;
 export type TagsTonieCardList = {
     tags: TonieCardProps[];
 };
+
+export type TagTonieCard = {
+    tagInfo: TonieCardProps;
+};
+
 export type TonieInfo = {
     series: string;
     episode: string;
@@ -41,6 +49,8 @@ export type TonieCardProps = {
     type: string;
     valid: boolean;
     exists: boolean;
+    claimed: boolean;
+    hide: boolean;
     live: boolean;
     nocloud: boolean;
     hasCloudAuth: boolean;
@@ -59,32 +69,44 @@ export const TonieCard: React.FC<{
 }> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "" }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
     const [messageApi, contextHolder] = message.useMessage();
-    const [isValid, setIsValid] = useState(tonieCard.valid);
-    const [isNoCloud, setIsNoCloud] = useState(tonieCard.nocloud);
-    const [isLive, setIsLive] = useState(tonieCard.live);
-    const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(tonieCard.downloadTriggerUrl);
+    const [isValid, setIsValid] = useState(localTonieCard.valid);
+    const [isNoCloud, setIsNoCloud] = useState(localTonieCard.nocloud);
+    const [isLive, setIsLive] = useState(localTonieCard.live);
+    const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(localTonieCard.downloadTriggerUrl);
     const { playAudio } = useAudioContext();
 
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isSelectFileModalOpen, seSelectFileModalOpen] = useState(false);
 
-    const [activeModel, setActiveModel] = useState(tonieCard.tonieInfo.model);
+    const [activeModel, setActiveModel] = useState(localTonieCard.tonieInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
 
-    const [activeSource, setActiveSource] = useState(tonieCard.source);
+    const [activeSource, setActiveSource] = useState(localTonieCard.source);
     const [selectedSource, setSelectedSource] = useState("");
 
+    const [isConfirmHideModalVisible, setIsConfirmHideModalVisible] = useState(false);
+
     useEffect(() => {
-        // Update states when tonieCard prop changes
-        setIsValid(tonieCard.valid);
-        setIsLive(tonieCard.live);
-        setIsNoCloud(tonieCard.nocloud);
-        setActiveSource(tonieCard.source);
-        setActiveModel(tonieCard.tonieInfo.model);
-        setDownloadTriggerUrl(tonieCard.downloadTriggerUrl);
-    }, [tonieCard]);
+        // Update states when localTonieCard prop changes
+        setIsValid(localTonieCard.valid);
+        setIsLive(localTonieCard.live);
+        setIsNoCloud(localTonieCard.nocloud);
+        setActiveSource(localTonieCard.source);
+        setActiveModel(localTonieCard.tonieInfo.model);
+        setDownloadTriggerUrl(localTonieCard.downloadTriggerUrl);
+    }, [localTonieCard]);
+
+    const fetchUpdatedTonieCard = async () => {
+        try {
+            const updatedTonieCard = await api.apiGetTagInfo(localTonieCard.ruid, overlay);
+            setLocalTonieCard(updatedTonieCard);
+        } catch (error) {
+            message.error("Error fetching updated card: " + error);
+        }
+    };
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
         if (files && files.length === 1) {
@@ -111,17 +133,22 @@ export const TonieCard: React.FC<{
 
         setIsEditModalOpen(true);
     };
-
     const handleSaveChanges = async () => {
         setIsEditModalOpen(false);
-        if (activeSource !== selectedSource) handleSourceSave();
-
-        if (activeModel !== selectedModel) handleModelSave();
+        const promises = [];
+        if (activeSource !== selectedSource) {
+            promises.push(handleSourceSave());
+        }
+        if (activeModel !== selectedModel) {
+            promises.push(handleModelSave());
+        }
+        await Promise.all(promises);
+        fetchUpdatedTonieCard();
     };
 
     const handleLiveClick = async () => {
         const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
             (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
@@ -144,7 +171,7 @@ export const TonieCard: React.FC<{
 
     const handleNoCloudClick = async () => {
         const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
             (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
@@ -166,12 +193,12 @@ export const TonieCard: React.FC<{
     };
 
     const handlePlayPauseClick = async () => {
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl;
-        playAudio(url, tonieCard.tonieInfo);
+        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl;
+        playAudio(url, localTonieCard.tonieInfo);
     };
 
     const handleBackgroundDownload = async () => {
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + tonieCard.downloadTriggerUrl;
+        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.downloadTriggerUrl;
         setDownloadTriggerUrl("");
         try {
             messageApi.open({
@@ -206,7 +233,7 @@ export const TonieCard: React.FC<{
 
     const handleModelSave = async () => {
         const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
             (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
@@ -229,7 +256,7 @@ export const TonieCard: React.FC<{
 
     const handleSourceSave = async () => {
         const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCard.ruid}` +
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
             (overlay ? `?overlay=${overlay}` : "");
         try {
             const response = await fetch(url, {
@@ -259,11 +286,12 @@ export const TonieCard: React.FC<{
     };
 
     const toniePlayedOn = lastRUIDs
-        .filter(([ruid]) => ruid === tonieCard.ruid)
+        .filter(([ruid]) => ruid === localTonieCard.ruid)
         .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }));
 
     const title =
-        `${tonieCard.tonieInfo.series}` + (tonieCard.tonieInfo.episode ? ` - ${tonieCard.tonieInfo.episode}` : "");
+        `${localTonieCard.tonieInfo.series}` +
+        (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
 
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
@@ -278,15 +306,64 @@ export const TonieCard: React.FC<{
             <h3>
                 {title ? title : t("tonies.informationModal.unknownModel")}
                 <br />
-                <Text type="secondary">{tonieCard.uid}</Text>
+                <Text type="secondary">{localTonieCard.uid}</Text>
             </h3>
         </>
     );
 
+    const showHideConfirmDialog = () => {
+        setIsConfirmHideModalVisible(true);
+    };
+
+    const handleConfirmHide = () => {
+        hideTag();
+        setIsConfirmHideModalVisible(false);
+    };
+
+    const handleCancelHide = () => {
+        setIsConfirmHideModalVisible(false);
+    };
+
+    const hideTonieModal = (
+        <ConfirmationDialog
+            title={t("tonies.confirmHideModal.title")}
+            isVisible={isConfirmHideModalVisible}
+            okText={t("tonies.confirmHideModal.hide")}
+            cancelText={t("tonies.confirmHideModal.cancel")}
+            content={t("tonies.confirmHideModal.confirmHideDialog", {
+                tonieToHide: localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "",
+            })}
+            handleOk={handleConfirmHide}
+            handleCancel={handleCancelHide}
+        />
+    );
+
+    const hideTag = async () => {
+        const url =
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
+            (overlay ? `?overlay=${overlay}` : "");
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                body: "hide=true",
+            });
+            if (!response.ok) {
+                throw new Error(response.status + " " + response.statusText);
+            }
+
+            message.success(t("tonies.messages.hideTonieSuccessful"));
+        } catch (error) {
+            message.error(t("tonies.messages.hideTonieFailed") + error);
+        }
+    };
+
     const informationModalFooter = (
-        <Button type="primary" onClick={() => setInformationModalOpen(false)}>
-            {t("tonies.informationModal.ok")}
-        </Button>
+        <>
+            <Button onClick={showHideConfirmDialog}>{t("tonies.informationModal.hideTag")}</Button>
+            <Button type="primary" onClick={() => setInformationModalOpen(false)}>
+                {t("tonies.informationModal.ok")}
+            </Button>
+        </>
     );
 
     const informationModal = (
@@ -317,17 +394,17 @@ export const TonieCard: React.FC<{
             <div>
                 <p>
                     <strong>{t("tonies.infoModal.valid")}</strong>{" "}
-                    {tonieCard.valid ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}
+                    {localTonieCard.valid ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}
                 </p>
                 <p>
                     <strong>{t("tonies.infoModal.exists")}</strong>{" "}
-                    {tonieCard.exists ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}
+                    {localTonieCard.exists ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}
                 </p>
-                {tonieCard.tonieInfo.tracks && tonieCard.tonieInfo.tracks.length > 0 ? (
+                {localTonieCard.tonieInfo.tracks && localTonieCard.tonieInfo.tracks.length > 0 ? (
                     <>
                         <strong>{t("tonies.infoModal.tracklist")}</strong>
                         <ol>
-                            {tonieCard.tonieInfo.tracks.map((track, index) => (
+                            {localTonieCard.tonieInfo.tracks.map((track, index) => (
                                 <li key={index}>{track}</li>
                             ))}
                         </ol>
@@ -343,9 +420,9 @@ export const TonieCard: React.FC<{
         <>
             <h3 style={{ lineHeight: 0 }}>
                 {t("tonies.editModal.title")}
-                {tonieCard.tonieInfo.model ? " (" + tonieCard.tonieInfo.model + ")" : ""}
+                {localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : ""}
             </h3>
-            {tonieCard.tonieInfo.series ? <Text type="secondary">{title}</Text> : " "}
+            {localTonieCard.tonieInfo.series ? <Text type="secondary">{title}</Text> : " "}
         </>
     );
 
@@ -465,7 +542,7 @@ export const TonieCard: React.FC<{
             {contextHolder}
             <Card
                 hoverable={false}
-                key={tonieCard.ruid}
+                key={localTonieCard.ruid}
                 size="small"
                 style={
                     toniePlayedOn && toniePlayedOn.length > 0
@@ -475,16 +552,16 @@ export const TonieCard: React.FC<{
                 title={
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {tonieCard.tonieInfo.series ? tonieCard.tonieInfo.series : t("tonies.unsetTonie")}
+                            {localTonieCard.tonieInfo.series ? localTonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                         </div>
-                        {defaultLanguage !== tonieCard.tonieInfo.language ? (
+                        {defaultLanguage !== localTonieCard.tonieInfo.language ? (
                             <Tooltip
                                 placement="top"
                                 zIndex={2}
-                                title={t("languageUtil." + tonieCard.tonieInfo.language)}
+                                title={t("languageUtil." + localTonieCard.tonieInfo.language)}
                             >
                                 <Text style={{ height: 20, width: "auto" }}>
-                                    <LanguageFlagSVG countryCode={tonieCard.tonieInfo.language} height={20} />
+                                    <LanguageFlagSVG countryCode={localTonieCard.tonieInfo.language} height={20} />
                                 </Text>
                             </Tooltip>
                         ) : (
@@ -494,18 +571,19 @@ export const TonieCard: React.FC<{
                 }
                 cover={
                     <img
-                        alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
-                        src={tonieCard.tonieInfo.picture}
-                        style={tonieCard.tonieInfo.picture.includes("unknown") ? { paddingTop: "10px" } : {}}
+                        alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
+                        src={localTonieCard.tonieInfo.picture}
+                        style={localTonieCard.tonieInfo.picture.includes("unknown") ? { paddingTop: "10px" } : {}}
                     />
                 }
                 actions={actions}
             >
-                <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
+                <Meta title={`${localTonieCard.tonieInfo.episode}`} description={localTonieCard.uid} />
             </Card>
             {selectFileModal}
             {editModal}
             {informationModal}
+            {hideTonieModal}
         </>
     );
 };
