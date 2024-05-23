@@ -36,6 +36,20 @@ code {
     border-top: 8px solid orange;
 }
 
+.ant-form-item .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+    display: none;
+}
+
+.ant-form-item .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+    color: #ff4d4f !important;
+    display: inline-block;
+    margin-inline-end: 4px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+    content: "*";
+    visibility: visible !important;
+}
+
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */

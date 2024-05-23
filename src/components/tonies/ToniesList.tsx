@@ -53,6 +53,7 @@ export const ToniesList: React.FC<{
     const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
+    const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
 
     const [listKey, setListKey] = useState(0); // Key for modal rendering
     const location = useLocation();
@@ -166,7 +167,19 @@ export const ToniesList: React.FC<{
             // Filter by RUID part of the lastTonieboxRUIDs array
             filtered = filtered.filter((tonie) => lastTonieboxRUIDs.some(([ruid]) => ruid === tonie.ruid));
         }
+
+        if (hiddenRuids) {
+            // filter hidden RUIDs always
+            filtered = filtered.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
+        }
         setFilteredTonies(filtered);
+        setListKey((prevKey) => prevKey + 1);
+    };
+
+    const handleHideTonieCard = (ruid: string) => {
+        setFilteredTonies(filteredTonies.filter((tonie) => tonie.ruid !== ruid));
+        setHiddenRuids((prevHiddenRuids) => [...prevHiddenRuids, ruid]);
+        setListKey((prevKey) => prevKey + 1);
     };
 
     const handleResetFilters = () => {
@@ -188,7 +201,12 @@ export const ToniesList: React.FC<{
         const urlWithoutParams = window.location.pathname;
         window.history.pushState({}, "", urlWithoutParams);
         location.search = "";
+        if (hiddenRuids) {
+            // filter hidden RUIDs always
+            tonieCards = tonieCards.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
+        }
         setFilteredTonies(tonieCards);
+        setListKey((prevKey) => prevKey + 1);
     };
 
     const handleShowAll = () => {
@@ -205,7 +223,7 @@ export const ToniesList: React.FC<{
 
     const handlePageSizeChange = (current: number, size: number) => {
         setPageSize(size as number);
-        setListKey(prevKey => prevKey + 1);
+        setListKey((prevKey) => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
     };
@@ -492,7 +510,7 @@ export const ToniesList: React.FC<{
                                         display: "flex",
                                         flexWrap: "wrap",
                                         justifyContent: "flex-end",
-                                        marginTop: 8
+                                        marginTop: 8,
                                     }}
                                 >
                                     <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>
@@ -531,6 +549,7 @@ export const ToniesList: React.FC<{
                             overlay={overlay}
                             readOnly={readOnly}
                             defaultLanguage={defaultLanguage}
+                            onHide={handleHideTonieCard}
                         />
                     </List.Item>
                 )}

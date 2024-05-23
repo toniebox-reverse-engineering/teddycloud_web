@@ -66,7 +66,8 @@ export const TonieCard: React.FC<{
     overlay: string;
     readOnly: boolean;
     defaultLanguage?: string;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "" }) => {
+    onHide: (ruid: string) => void;
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
@@ -76,7 +77,6 @@ export const TonieCard: React.FC<{
     const [isLive, setIsLive] = useState(localTonieCard.live);
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(localTonieCard.downloadTriggerUrl);
     const { playAudio } = useAudioContext();
-
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isSelectFileModalOpen, seSelectFileModalOpen] = useState(false);
@@ -88,16 +88,6 @@ export const TonieCard: React.FC<{
     const [selectedSource, setSelectedSource] = useState("");
 
     const [isConfirmHideModalVisible, setIsConfirmHideModalVisible] = useState(false);
-
-    useEffect(() => {
-        // Update states when localTonieCard prop changes
-        setIsValid(localTonieCard.valid);
-        setIsLive(localTonieCard.live);
-        setIsNoCloud(localTonieCard.nocloud);
-        setActiveSource(localTonieCard.source);
-        setActiveModel(localTonieCard.tonieInfo.model);
-        setDownloadTriggerUrl(localTonieCard.downloadTriggerUrl);
-    }, [localTonieCard]);
 
     const fetchUpdatedTonieCard = async () => {
         try {
@@ -331,7 +321,10 @@ export const TonieCard: React.FC<{
             okText={t("tonies.confirmHideModal.hide")}
             cancelText={t("tonies.confirmHideModal.cancel")}
             content={t("tonies.confirmHideModal.confirmHideDialog", {
-                tonieToHide: localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "",
+                tonieToHide:
+                    localTonieCard.tonieInfo.series +
+                    (localTonieCard.tonieInfo.episode ? " - " + localTonieCard.tonieInfo.episode : "") +
+                    (localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : ""),
             })}
             handleOk={handleConfirmHide}
             handleCancel={handleCancelHide}
@@ -352,18 +345,25 @@ export const TonieCard: React.FC<{
             }
 
             message.success(t("tonies.messages.hideTonieSuccessful"));
+            onHide(localTonieCard.ruid);
         } catch (error) {
             message.error(t("tonies.messages.hideTonieFailed") + error);
         }
     };
 
     const informationModalFooter = (
-        <>
-            <Button onClick={showHideConfirmDialog}>{t("tonies.informationModal.hideTag")}</Button>
+        <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+            <div>
+                {!readOnly ? (
+                    <Button onClick={showHideConfirmDialog}>{t("tonies.informationModal.hideTag")}</Button>
+                ) : (
+                    ""
+                )}
+            </div>
             <Button type="primary" onClick={() => setInformationModalOpen(false)}>
                 {t("tonies.informationModal.ok")}
             </Button>
-        </>
+        </div>
     );
 
     const informationModal = (
