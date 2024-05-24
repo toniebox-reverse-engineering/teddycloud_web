@@ -79,7 +79,7 @@ export const TonieCard: React.FC<{
     const { playAudio } = useAudioContext();
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isSelectFileModalOpen, seSelectFileModalOpen] = useState(false);
+    const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
 
     const [activeModel, setActiveModel] = useState(localTonieCard.tonieInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
@@ -109,12 +109,12 @@ export const TonieCard: React.FC<{
     };
 
     const showFileSelectModal = () => {
-        seSelectFileModalOpen(true);
+        setSelectFileModalOpen(true);
     };
 
     const handleCancelSelectFile = () => {
         setSelectedSource(activeSource);
-        seSelectFileModalOpen(false);
+        setSelectFileModalOpen(false);
     };
 
     const showModelModal = () => {
@@ -485,7 +485,7 @@ export const TonieCard: React.FC<{
         <Modal
             title={t("tonies.selectFileModal.selectFile")}
             open={isSelectFileModalOpen}
-            onOk={() => seSelectFileModalOpen(false)}
+            onOk={() => setSelectFileModalOpen(false)}
             onCancel={handleCancelSelectFile}
             width="auto"
         >

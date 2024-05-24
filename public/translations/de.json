@@ -317,6 +317,22 @@
             "navigationTitle": "Audio Playlists",
             "title": "Tonie Audio Playlists"
         },
+        "tapEditor": {
+            "titleEdit": "TAP bearbeiten",
+            "titleCreate": "Neue TAP erstellen",
+            "save": "Speichern",
+            "create": "Anlegen",
+            "cancel": "Abbrechen",
+            "filePath": "Dateipfad Playlist",
+            "filePathRequired": "Der Dateipfad Playlist muss ausgefüllt werden",
+            "name": "TAP Name",
+            "nameRequired": "Der TAP Name muss ausgefüllt werden",
+            "filePathContentFile": "Dateipfad",
+            "filePathContentFileRequired": "Der Dateipfad muss ausgefüllt werden",
+            "fileNameContentFile": "Dateiname",
+            "fileNameContentFileRequired": "Der Dateiname muss ausgefüllt werden",
+            "addFile": "Datei hinzufügen"
+        },
         "title": "Tonies",
         "tonies": {
             "filterBar": {
