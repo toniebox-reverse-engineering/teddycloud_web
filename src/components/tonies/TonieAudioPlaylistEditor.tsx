@@ -34,12 +34,9 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     const [form] = Form.useForm<FormValues>();
     const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
-    const [filebrowserKey, setFilebrowserKey] = useState(0); // Key for modal rendering
+    const [filebrowserKey, setFilebrowserKey] = useState(0);
     const [selectedFileIndex, setSelectedFileIndex] = useState<number>(-1);
 
-    const resetForm = () => {
-        form.resetFields();
-    };
     useEffect(() => {
         setSelectedFiles([]);
     }, []);
@@ -55,6 +52,10 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
             }
         }
     }, [form, initialValuesJson]);
+
+    const resetForm = () => {
+        form.resetFields();
+    };
 
     const handleSourceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         form.setFieldsValue({ filepath: e.target.value });
@@ -120,7 +121,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
             open={open}
             title={initialValuesJson ? t("tonies.tapEditor.titleEdit") : t("tonies.tapEditor.titleCreate")}
             okText={initialValuesJson ? t("tonies.tapEditor.save") : t("tonies.tapEditor.create")}
-            cancelText="Cancel"
+            cancelText={t("tonies.tapEditor.cancel")}
             onCancel={() => {
                 onCancel();
                 resetForm();
@@ -165,7 +166,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     {(fields, { add, remove }) => (
                         <>
                             {fields.map(({ key, name }, index) => (
-                                <div className="playlistTitle" style={{ padding: 8, border: "solid" }}>
+                                <div className="playlistTitle">
                                     <Space
                                         key={key}
                                         style={{
@@ -205,12 +206,6 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                         <Form.Item
                                             name={[name, "name"]}
                                             label={t("tonies.tapEditor.fileNameContentFile")}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: t("tonies.tapEditor.fileNameContentFileRequired"),
-                                                },
-                                            ]}
                                         >
                                             <Input placeholder="Name" />
                                         </Form.Item>

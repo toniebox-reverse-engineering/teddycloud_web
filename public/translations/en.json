@@ -328,8 +328,7 @@
             "nameRequired": "TAP Name  must be set",
             "filePathContentFile": "File path",
             "filePathContentFileRequired": "File path must be set",
-            "fileNameContentFile": "File name",
-            "fileNameContentFileRequired": "file name must be set",
+            "fileNameContentFile": "Description",
             "addFile": "Add file"
         },
         "title": "Tonies",

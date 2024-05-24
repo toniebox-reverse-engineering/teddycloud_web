@@ -329,8 +329,7 @@
             "nameRequired": "Der TAP Name muss ausgefüllt werden",
             "filePathContentFile": "Dateipfad",
             "filePathContentFileRequired": "Der Dateipfad muss ausgefüllt werden",
-            "fileNameContentFile": "Dateiname",
-            "fileNameContentFileRequired": "Der Dateiname muss ausgefüllt werden",
+            "fileNameContentFile": "Beschreibung",
             "addFile": "Datei hinzufügen"
         },
         "title": "Tonies",
