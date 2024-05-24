@@ -20,6 +20,7 @@ import { humanFileSize } from "../../util/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ConfirmationDialog from "../ConfirmationDialog";
+import TonieAudioPlaylistEditor from "./TonieAudioPlaylistEditor";
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -57,9 +58,15 @@ export const FileBrowser: React.FC<{
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-    const [jsonData, setJsonData] = useState(null);
+    const [jsonData, setJsonData] = useState<string>("");
     const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState(false);
+    const [showTAPEditor, setShowTAPEditor] = useState(false);
+    const [tapEditorKey, setTapEditorKey] = useState(0);
 
+    const onCreate = (values: any) => {
+        console.log("Received values of form: ", values);
+        setShowTAPEditor(false);
+    };
     const fetchJsonData = async (url: string) => {
         try {
             const response = await fetch(url);
@@ -422,7 +429,10 @@ export const FileBrowser: React.FC<{
                 if (isTapList && record.name.includes(".tap")) {
                     actions.push(
                         <Tooltip title={t("fileBrowser.tap.edit")}>
-                            <EditOutlined style={{ margin: "0 16px 0 0" }} />
+                            <EditOutlined
+                                style={{ margin: "0 16px 0 0" }}
+                                onClick={() => handleEditTapClick(path + "/" + record.name)}
+                            />
                         </Tooltip>
                     );
                     actions.push(
@@ -489,6 +499,16 @@ export const FileBrowser: React.FC<{
         </Button>
     );
 
+    const handleEditTapClick = (file: string) => {
+        if (file.includes(".tap")) {
+            const folder = special === "library" ? "/library" : "/content";
+            fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
+            setCurrentFile(file);
+            setTapEditorKey((prevKey) => prevKey + 1);
+            setShowTAPEditor(true);
+        }
+    };
+
     return (
         <>
             {contextHolder}
@@ -548,6 +568,15 @@ export const FileBrowser: React.FC<{
                           }
                         : undefined
                 }
+            />
+            <TonieAudioPlaylistEditor
+                open={showTAPEditor}
+                key={tapEditorKey}
+                initialValuesJson={jsonData ? JSON.stringify(jsonData, null, 2) : undefined}
+                onCreate={onCreate}
+                onCancel={() => {
+                    setShowTAPEditor(false);
+                }}
             />
         </>
     );

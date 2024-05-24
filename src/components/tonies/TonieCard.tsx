@@ -10,7 +10,7 @@ import {
     SaveFilled,
 } from "@ant-design/icons";
 import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAudioContext } from "../audio/AudioContext";
 import { FileBrowser } from "./FileBrowser";
@@ -79,7 +79,7 @@ export const TonieCard: React.FC<{
     const { playAudio } = useAudioContext();
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const [isSelectFileModalOpen, seSelectFileModalOpen] = useState(false);
+    const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
 
     const [activeModel, setActiveModel] = useState(localTonieCard.tonieInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
@@ -109,12 +109,12 @@ export const TonieCard: React.FC<{
     };
 
     const showFileSelectModal = () => {
-        seSelectFileModalOpen(true);
+        setSelectFileModalOpen(true);
     };
 
     const handleCancelSelectFile = () => {
         setSelectedSource(activeSource);
-        seSelectFileModalOpen(false);
+        setSelectFileModalOpen(false);
     };
 
     const showModelModal = () => {
@@ -485,7 +485,7 @@ export const TonieCard: React.FC<{
         <Modal
             title={t("tonies.selectFileModal.selectFile")}
             open={isSelectFileModalOpen}
-            onOk={() => seSelectFileModalOpen(false)}
+            onOk={() => setSelectFileModalOpen(false)}
             onCancel={handleCancelSelectFile}
             width="auto"
         >

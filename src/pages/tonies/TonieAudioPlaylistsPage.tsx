@@ -7,13 +7,21 @@ import {
     StyledSider,
 } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { Alert, Typography } from "antd";
+import { Alert, Button, Typography } from "antd";
 import { FileBrowser } from "../../components/tonies/FileBrowser";
+import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
+import { useState } from "react";
 
 const { Paragraph } = Typography;
 
 export const TonieAudioPlaylistsPage = () => {
     const { t } = useTranslation();
+    const [visible, setVisible] = useState(false);
+
+    const onCreate = (values: any) => {
+        console.log("Received values of form: ", values);
+        setVisible(false);
+    };
 
     return (
         <>
@@ -50,6 +58,25 @@ export const TonieAudioPlaylistsPage = () => {
                             showColumns={["name", "size", "date", "controls"]}
                             isTapList={true}
                         />
+                    </Paragraph>
+                    <Paragraph>
+                        <div>
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    setVisible(true);
+                                }}
+                            >
+                                {t("tonies.tapEditor.titleCreate")}
+                            </Button>
+                            <TonieAudioPlaylistEditor
+                                open={visible}
+                                onCreate={onCreate}
+                                onCancel={() => {
+                                    setVisible(false);
+                                }}
+                            />
+                        </div>
                     </Paragraph>
                 </StyledContent>
             </StyledLayout>
