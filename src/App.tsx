@@ -8,6 +8,7 @@ import { SettingsPage } from "./pages/settings/SettingsPage";
 import { RtnlPage } from "./pages/settings/RtnlPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
 import { HomePage } from "./pages/home/HomePage";
+import { HelloToniesPage } from "./pages/home/HelloToniesPage";
 import { StatsPage } from "./pages/home/StatsPage";
 import { StyledHeader } from "./components/header/StyledHeader";
 import { StyledFooter } from "./components/footer/StyledFooter";
@@ -84,6 +85,7 @@ function App() {
                             <Layout>
                                 <Routes>
                                     <Route path="/" element={<HomePage />} />
+                                    <Route path="/home/hellotonies" element={<HelloToniesPage />} />
                                     <Route path="/home/stats" element={<StatsPage />} />
                                     <Route path="/tonies" element={<ToniesPage />} />
                                     <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />

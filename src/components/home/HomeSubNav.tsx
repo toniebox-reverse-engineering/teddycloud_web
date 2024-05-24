@@ -1,5 +1,5 @@
 import { MenuProps } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, QqOutlined } from "@ant-design/icons";
 import { WifiOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -14,6 +14,11 @@ export const HomeSubNav = () => {
             key: "home",
             label: <Link to="/">{t("home.navigationTitle")}</Link>,
             icon: React.createElement(HomeOutlined),
+        },
+        {
+            key: "helloTonies",
+            label: <Link to="/home/hellotonies">{t("home.helloTonies.navigationTitle")}</Link>,
+            icon: React.createElement(QqOutlined),
         },
         {
             key: "statistics",
