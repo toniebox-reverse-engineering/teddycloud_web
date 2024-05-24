@@ -206,7 +206,7 @@
         }
     },
     "tonies": {
-        "addToniesCustomJsonEntry": "(WIP) Add Model",
+        "addToniesCustomJsonEntry": "WIP: Add Model",
         "addNewCustomTonie": "WIP: Not working! Create new model",
         "addNewCustomTonieHint": "Create a new model and assign it to the current tag",
         "addNewCustomTonieModal": {
