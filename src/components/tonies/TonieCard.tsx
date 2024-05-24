@@ -10,7 +10,7 @@ import {
     SaveFilled,
 } from "@ant-design/icons";
 import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAudioContext } from "../audio/AudioContext";
 import { FileBrowser } from "./FileBrowser";

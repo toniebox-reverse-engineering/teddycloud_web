@@ -165,49 +165,58 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     {(fields, { add, remove }) => (
                         <>
                             {fields.map(({ key, name }, index) => (
-                                <Space
-                                    key={key}
-                                    style={{ display: "flex", marginBottom: 8, alignItems: "center", width: "100%" }}
-                                    align="baseline"
-                                >
-                                    <Form.Item
-                                        name={[name, "filepath"]}
-                                        label={t("tonies.tapEditor.filePathContentFile")}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: t("tonies.tapEditor.filePathContentFileRequired"),
-                                            },
-                                        ]}
+                                <div className="playlistTitle" style={{ padding: 8, border: "solid" }}>
+                                    <Space
+                                        key={key}
+                                        style={{
+                                            display: "flex",
+                                            marginBottom: 8,
+                                            alignItems: "center",
+                                            width: "100%",
+                                        }}
+                                        align="baseline"
                                     >
-                                        <Input
-                                            width="auto"
-                                            addonBefore={
-                                                <CloseOutlined
-                                                    onClick={() => {
-                                                        const newValues = [...form.getFieldsValue().files];
-                                                        newValues[index].filepath = "";
-                                                        form.setFieldsValue({ files: newValues });
-                                                    }}
-                                                />
-                                            }
-                                            addonAfter={<FolderOpenOutlined onClick={() => handleEditFile(index)} />}
-                                        />
-                                    </Form.Item>
-                                    <Form.Item
-                                        name={[name, "name"]}
-                                        label={t("tonies.tapEditor.fileNameContentFile")}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: t("tonies.tapEditor.fileNameContentFileRequired"),
-                                            },
-                                        ]}
-                                    >
-                                        <Input placeholder="Name" />
-                                    </Form.Item>
-                                    <MinusCircleOutlined onClick={() => remove(name)} />
-                                </Space>
+                                        <Form.Item
+                                            name={[name, "filepath"]}
+                                            label={t("tonies.tapEditor.filePathContentFile")}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: t("tonies.tapEditor.filePathContentFileRequired"),
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                width="auto"
+                                                addonBefore={
+                                                    <CloseOutlined
+                                                        onClick={() => {
+                                                            const newValues = [...form.getFieldsValue().files];
+                                                            newValues[index].filepath = "";
+                                                            form.setFieldsValue({ files: newValues });
+                                                        }}
+                                                    />
+                                                }
+                                                addonAfter={
+                                                    <FolderOpenOutlined onClick={() => handleEditFile(index)} />
+                                                }
+                                            />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name={[name, "name"]}
+                                            label={t("tonies.tapEditor.fileNameContentFile")}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: t("tonies.tapEditor.fileNameContentFileRequired"),
+                                                },
+                                            ]}
+                                        >
+                                            <Input placeholder="Name" />
+                                        </Form.Item>
+                                        <MinusCircleOutlined onClick={() => remove(name)} />
+                                    </Space>
+                                </div>
                             ))}
                             <Form.Item>
                                 <Button
@@ -234,6 +243,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     maxSelectedRows={99}
                     special="library"
                     trackUrl={false}
+                    selectTafOnly={false}
                     key={filebrowserKey}
                     onFileSelectChange={handleFileSelectChange}
                 />

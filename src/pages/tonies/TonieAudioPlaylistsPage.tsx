@@ -17,7 +17,6 @@ const { Paragraph } = Typography;
 export const TonieAudioPlaylistsPage = () => {
     const { t } = useTranslation();
     const [visible, setVisible] = useState(false);
-    const [filebrowserKey, setFilebrowserKey] = useState(0); // Key for modal rendering
 
     const onCreate = (values: any) => {
         console.log("Received values of form: ", values);
