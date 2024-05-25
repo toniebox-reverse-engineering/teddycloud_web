@@ -25,7 +25,7 @@ export const TonieMeetingPage = () => {
                     <HomeSubNav />
                 </HiddenDesktop>
                 <StyledBreadcrumb
-                    items={[{ title: t("home.navigationTitle") }, { title: t("home.tonieParty.navigationTitle") }]}
+                    items={[{ title: t("home.navigationTitle") }, { title: t("home.tonieMeeting.navigationTitle") }]}
                 />
                 <StyledContent>
                     <Paragraph>
