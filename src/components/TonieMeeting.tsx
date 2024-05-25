@@ -129,7 +129,12 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
         <div
             id="collage-container"
             className="collage-container"
-            style={{ display: "flex", position: "relative", width: "100%", height: "550px" }}
+            style={{
+                display: "flex",
+                position: "relative",
+                width: width ? `${width}px` : "100%",
+                height: height ? `${height}px` : "60vh",
+            }}
         >
             {title && description && (
                 <div
