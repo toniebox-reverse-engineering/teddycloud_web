@@ -67,15 +67,16 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                 if (title && description) {
                     const centerVertical = 50;
                     const centerHorizontal = 50;
-                    const centerWidth = (document.getElementById("central-text")?.clientWidth || 0) / 2;
-                    const centerHeight = (document.getElementById("central-text")?.clientHeight || 0) / 2;
+                    const centerWidth =
+                        (document.getElementById("central-text")?.clientWidth || 0) / (parentWidth < 400 ? 3 : 2);
+                    const centerHeight =
+                        (document.getElementById("central-text")?.clientHeight || 0) / (parentHeight < 600 ? 3 : 2);
 
                     let top, left;
                     do {
                         top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
                         left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
                     } while (
-                        parentWidth > 500 &&
                         top >
                             centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
                         top < centerVertical + (centerHeight / parentHeight) * 100 &&
@@ -129,10 +130,10 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                         left: "50%",
                         transform: "translate(-50%, -50%)",
                         zIndex: 1,
-                        padding: "10px",
+                        padding: "8px",
                         textAlign: "center",
                         pointerEvents: "none",
-                        background: token.colorBgBase,
+                        borderRadius: 24,
                     }}
                 >
                     <h1>{title}</h1>
