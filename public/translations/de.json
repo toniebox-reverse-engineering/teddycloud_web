@@ -53,14 +53,14 @@
             "edit": "(WIP - not implemented yet) Tonie Audio Playlist editieren"
         }
     },
+    "404": {
+        "navigationTitle": "404 - Seite nicht gefunden",
+        "title": "404",
+        "description": "Hups - Seite nicht gefunden"
+    },
     "home": {
         "forumIntroPart1": "Entdecke mehr Erkenntnisse, tausch dich mit Gleichgesinnten aus und bleib über die neuesten Diskussionen in unserem Forum informiert: ",
         "forumIntroPart2": ". Vertief dich in Themen, teile deine Erfahrungen und vernetze dich mit unserer Community. Tritt noch heute in die Diskussion ein!",
-        "404": {
-            "navigationTitle": "404 - Seite nicht gefunden",
-            "title": "404",
-            "description": "Hups - Seite nicht gefunden"
-        },
         "helpfulLinks": "Hilfreiche Links",
         "intro": "TeddyCloud ist eine alternative Serverlösung für deine Toniebox, die es dir ermöglicht, Cloud-Dienste lokal zu hosten. Dadurch behältst du die Kontrolle darüber, welche Daten an die Cloud des Originalherstellers gesendet werden, und kannst deine eigenen Hörspiel-Dateien für die Figuren selbst hosten.",
         "navigationTitle": "Home",
@@ -76,7 +76,10 @@
         "title": "Willkommen auf der TeddyCloud!",
         "toAllYourTonies": "Zu allen Tonies",
         "yourCustomTonies": "Deine Custom Tonies",
-        "yourTonies": "Deine Tonies"
+        "yourTonies": "Deine Tonies",
+        "tonieParty": {
+            "navigationTitle": "Tonie Meeting"
+        }
     },
     "language": {
         "change": "Sprache ändern",

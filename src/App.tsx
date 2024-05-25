@@ -28,6 +28,7 @@ import { useState, useEffect } from "react";
 import { ConfigProvider, theme } from "antd";
 import { SunOutlined, MoonOutlined, BulbOutlined } from "@ant-design/icons";
 import { ESP32BoxFlashing } from "./pages/tonieboxes/ESP32BoxFlashing";
+import { TonieMeetingPage } from "./pages/home/TonieMeeting";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -86,6 +87,7 @@ function App() {
                                 <Routes>
                                     <Route path="/" element={<HomePage />} />
                                     <Route path="/home/stats" element={<StatsPage />} />
+                                    <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
                                     <Route path="/tonies" element={<ToniesPage />} />
                                     <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
                                     <Route path="/tonies/content" element={<ContentPage />} />

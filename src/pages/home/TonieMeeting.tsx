@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
-
 import {
     HiddenDesktop,
     StyledBreadcrumb,
@@ -8,39 +7,32 @@ import {
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { TonieMeetingElement } from "../../components/TonieMeeting";
 
 const { Paragraph } = Typography;
 
-export const ContributorsPage = () => {
+export const TonieMeetingPage = () => {
     const { t } = useTranslation();
 
     return (
         <>
             <StyledSider>
-                <CommunitySubNav />
+                <HomeSubNav />
             </StyledSider>
             <StyledLayout>
                 <HiddenDesktop>
-                    <CommunitySubNav />
+                    <HomeSubNav />
                 </HiddenDesktop>
                 <StyledBreadcrumb
-                    items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
-                        { title: t("community.contributors.navigationTitle") },
-                    ]}
+                    items={[{ title: t("home.navigationTitle") }, { title: t("home.tonieParty.navigationTitle") }]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.contributors.title`)}</h1>
-                    <Paragraph>tbd.</Paragraph>
                     <Paragraph>
                         <TonieMeetingElement
-                            maxNoOfGuests={100}
+                            maxNoOfGuests={500}
                             toniesSize={150}
                             showQuestionMark={false}
-                            height={150}
                         ></TonieMeetingElement>
                     </Paragraph>
                 </StyledContent>

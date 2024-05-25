@@ -45,6 +45,9 @@ export const ChangelogPage = () => {
                 "new /web gui: enable/disable API access for toniebox added on tonieboxes page",
                 "new /web gui: add hide tonie/tag in tonies list (in info modal)",
                 "new /web gui: PoC (WiP, not working) Tonies Custom Json Editor",
+                "new /web gui: PoC (WiP, not working) Tonie Audio Playlist Editor",
+                "new /web gui: New 404 page",
+                "new /web gui: hidden feature Tonie meeting. Search for it!",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
