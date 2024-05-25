@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { TeddyCloudApi } from "../api";
 import QuestionMarkSVG from "../util/questionMarkIcon";
+import { theme } from "antd";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
+const { useToken } = theme;
 
 interface Image {
     src: string;
@@ -32,6 +34,8 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
     width,
 }) => {
     const [randomizedImages, setRandomizedImages] = useState<Image[]>([]);
+
+    const { token } = useToken();
 
     useEffect(() => {
         const fetchTonies = async () => {
@@ -71,6 +75,7 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                         top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
                         left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
                     } while (
+                        parentWidth > 500 &&
                         top >
                             centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
                         top < centerVertical + (centerHeight / parentHeight) * 100 &&
@@ -127,6 +132,7 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                         padding: "10px",
                         textAlign: "center",
                         pointerEvents: "none",
+                        background: token.colorBgBase,
                     }}
                 >
                     <h1>{title}</h1>
