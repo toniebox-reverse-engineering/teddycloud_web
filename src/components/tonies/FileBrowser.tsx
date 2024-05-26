@@ -610,7 +610,7 @@ export const FileBrowser: React.FC<{
                             handleDirClick(record.name);
                         } else if (record.name.includes(".json") || record.name.includes(".tap")) {
                             showJsonViewer(path + "/" + record.name);
-                        } else if (record.name.includes(".taf")) {
+                        } else if (record.tafHeader) {
                             showTafHeader(record.name, record.tafHeader);
                         }
                     },
