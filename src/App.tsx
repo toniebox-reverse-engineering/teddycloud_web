@@ -8,6 +8,7 @@ import { SettingsPage } from "./pages/settings/SettingsPage";
 import { RtnlPage } from "./pages/settings/RtnlPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
 import { HomePage } from "./pages/home/HomePage";
+import { Error404Page } from "./pages/Error404Page";
 import { StatsPage } from "./pages/home/StatsPage";
 import { StyledHeader } from "./components/header/StyledHeader";
 import { StyledFooter } from "./components/footer/StyledFooter";
@@ -27,6 +28,7 @@ import { useState, useEffect } from "react";
 import { ConfigProvider, theme } from "antd";
 import { SunOutlined, MoonOutlined, BulbOutlined } from "@ant-design/icons";
 import { ESP32BoxFlashing } from "./pages/tonieboxes/ESP32BoxFlashing";
+import { TonieMeetingPage } from "./pages/home/TonieMeeting";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -85,6 +87,7 @@ function App() {
                                 <Routes>
                                     <Route path="/" element={<HomePage />} />
                                     <Route path="/home/stats" element={<StatsPage />} />
+                                    <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
                                     <Route path="/tonies" element={<ToniesPage />} />
                                     <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
                                     <Route path="/tonies/content" element={<ContentPage />} />
@@ -105,6 +108,7 @@ function App() {
                                     <Route path="/community/contributors" element={<ContributorsPage />} />
                                     <Route path="/community/changelog" element={<ChangelogPage />} />
                                     <Route path="/uitest" element={<UiTest />} />
+                                    <Route path="/*" element={<Error404Page />} />
                                 </Routes>
                             </Layout>
                             <StyledFooter />

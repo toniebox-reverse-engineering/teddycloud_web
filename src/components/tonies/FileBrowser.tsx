@@ -22,6 +22,13 @@ import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/pris
 import ConfirmationDialog from "../ConfirmationDialog";
 import TonieAudioPlaylistEditor from "./TonieAudioPlaylistEditor";
 
+interface RecordTafHeader {
+    audioId?: any;
+    sha1Hash?: any;
+    size?: number;
+    tracks?: any;
+}
+
 export const FileBrowser: React.FC<{
     special: string;
     filetypeFilter?: string[];
@@ -60,8 +67,12 @@ export const FileBrowser: React.FC<{
 
     const [jsonData, setJsonData] = useState<string>("");
     const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState(false);
+
     const [showTAPEditor, setShowTAPEditor] = useState(false);
     const [tapEditorKey, setTapEditorKey] = useState(0);
+
+    const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
+    const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
 
     const onCreate = (values: any) => {
         console.log("Received values of form: ", values);
@@ -509,6 +520,20 @@ export const FileBrowser: React.FC<{
         }
     };
 
+    const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
+        const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
+
+        const { tracks, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
+
+        setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
+        setCurrentFile(file);
+        setTafHeaderModalOpened(true);
+    };
+
+    const handleTafModelClose = () => {
+        setTafHeaderModalOpened(false);
+    };
+
     return (
         <>
             {contextHolder}
@@ -522,6 +547,7 @@ export const FileBrowser: React.FC<{
                 handleCancel={handleCancelDelete}
             />
             <Modal
+                className="json-viewer"
                 footer={jsonViewerModalFooter}
                 width={700}
                 title={"File: " + currentFile}
@@ -545,6 +571,34 @@ export const FileBrowser: React.FC<{
                     "Loading..."
                 )}
             </Modal>
+            <Modal
+                className="taf-header-viewer"
+                footer={
+                    <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
+                        {t("tonies.informationModal.ok")}
+                    </Button>
+                }
+                title={t("tonies.tafHeaderOf") + currentFile}
+                open={tafHeaderModalOpened}
+                onCancel={handleTafModelClose}
+            >
+                {currentRecordTafHeader ? (
+                    <SyntaxHighlighter
+                        language="json"
+                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                        customStyle={{
+                            padding: 0,
+                            borderRadius: 0,
+                            margin: 0,
+                            border: "none",
+                        }}
+                    >
+                        {JSON.stringify(currentRecordTafHeader, null, 2)}
+                    </SyntaxHighlighter>
+                ) : (
+                    "Loading..."
+                )}
+            </Modal>
             <Table
                 dataSource={files}
                 columns={columns}
@@ -556,6 +610,8 @@ export const FileBrowser: React.FC<{
                             handleDirClick(record.name);
                         } else if (record.name.includes(".json") || record.name.includes(".tap")) {
                             showJsonViewer(path + "/" + record.name);
+                        } else if (record.tafHeader) {
+                            showTafHeader(record.name, record.tafHeader);
                         }
                     },
                 })}
