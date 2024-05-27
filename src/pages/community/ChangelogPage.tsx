@@ -50,6 +50,7 @@ export const ChangelogPage = () => {
                 "new /web gui: PoC Tonie Audio Playlist Editor (WiP, not working, but you get the json to copy and save as a TAP file) ",
                 "new /web gui: New 404 page",
                 "new /web gui: hidden feature Tonie meeting. Search for it!",
+                "new /web gui: added link to Toniebox if the box is version cc3200, an ip is available and cfw is installed.",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
