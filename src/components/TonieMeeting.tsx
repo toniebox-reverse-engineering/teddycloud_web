@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { TeddyCloudApi } from "../api";
 import QuestionMarkSVG from "../util/questionMarkIcon";
+import { theme } from "antd";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
+const { useToken } = theme;
 
 interface Image {
     src: string;
@@ -28,10 +30,17 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
     showQuestionMark,
     title,
     description,
-    height,
-    width,
+    height = document.getElementById("collage-container")?.clientHeight || 0,
+    width = document.getElementById("collage-container")?.clientWidth || 0,
 }) => {
+    const { token } = useToken();
     const [randomizedImages, setRandomizedImages] = useState<Image[]>([]);
+    const parentWidth = width;
+    const parentHeight = height;
+    const centerVertical = 50;
+    const centerHorizontal = 50;
+    const centerWidth = (document.getElementById("central-text")?.clientWidth || 0) / (parentWidth < 450 ? 3 : 2);
+    const centerHeight = (document.getElementById("central-text")?.clientHeight || 0) / (parentHeight < 500 ? 3 : 2);
 
     useEffect(() => {
         const fetchTonies = async () => {
@@ -56,23 +65,15 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
 
             const allImages = tonieData.flatMap((item) => item.tonieInfo.picture);
 
-            const parentWidth = width ? width : document.getElementById("collage-container")?.clientWidth || 0;
-            const parentHeight = height ? height : document.getElementById("collage-container")?.clientHeight || 0;
-
             const shuffledImages = allImages.map((src, index) => {
                 if (title && description) {
-                    const centerVertical = 50;
-                    const centerHorizontal = 50;
-                    const centerWidth =
-                        (document.getElementById("central-text")?.clientWidth || 0) / (parentWidth < 400 ? 3 : 2);
-                    const centerHeight =
-                        (document.getElementById("central-text")?.clientHeight || 0) / (parentHeight < 600 ? 3 : 2);
-
                     let top, left;
                     do {
                         top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
                         left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
                     } while (
+                        0 < centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
+                        0 < centerHorizontal - (centerWidth / parentWidth) * 100 - (toniesSize / parentWidth) * 100 &&
                         top >
                             centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
                         top < centerVertical + (centerHeight / parentHeight) * 100 &&
@@ -103,7 +104,18 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
         };
 
         fetchTonies();
-    }, [description, height, maxNoOfGuests, title, toniesSize, width]);
+    }, [
+        centerHeight,
+        centerWidth,
+        description,
+        height,
+        maxNoOfGuests,
+        parentHeight,
+        parentWidth,
+        title,
+        toniesSize,
+        width,
+    ]);
 
     return (
         <div
@@ -130,6 +142,8 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                         textAlign: "center",
                         pointerEvents: "none",
                         borderRadius: 24,
+                        textShadow: token.colorBgContainer + " 0 0 8px",
+                        background: token.colorBgContainer + "99",
                     }}
                 >
                     <h1>{title}</h1>
