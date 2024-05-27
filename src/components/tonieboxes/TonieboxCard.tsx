@@ -11,6 +11,7 @@ import {
     SaveFilled,
     DeleteOutlined,
     LockOutlined,
+    LinkOutlined,
 } from "@ant-design/icons";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
@@ -55,6 +56,8 @@ export const TonieboxCard: React.FC<{
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
     const [lastOnline, setLastOnline] = useState<string>("");
+    const [lastIp, setLastIp] = useState<string>("");
+    const [cfwInstalled, setCFWInstalled] = useState<boolean>(false);
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
@@ -132,10 +135,38 @@ export const TonieboxCard: React.FC<{
             fetchTonieboxLastOnline();
         }
 
+        const fetchTonieboxLastIp = async () => {
+            const lastIp = await api.apiGetTonieboxLastIp(tonieboxCard.ID);
+            setLastIp(lastIp);
+        };
+        fetchTonieboxLastIp();
+
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tonieboxCard.ID, tonieboxCard.boxModel]);
+
+    useEffect(() => {
+        if (lastIp && tonieboxVersion === "CC3200") {
+            // only if lastIp is set and box version is CC3200
+            // we check for CFW using battery status API call
+            try {
+                fetch(`http://${lastIp}api/ajax?cmd=box-battery&sub=stats`)
+                    .then((response) => response.text())
+                    .then((value) => {
+                        console.log("Battery Stats fetched --> assume CFW active");
+                        setCFWInstalled(true);
+                    })
+                    .catch((error) => {
+                        console.log("No Battery Stats fetched --> assume CFW not active");
+                        setCFWInstalled(false);
+                    });
+            } catch (error) {
+                console.log("No Battery Stats fetched --> assume CFW not active");
+                setCFWInstalled(false);
+            }
+        }
+    }, [lastIp, tonieboxVersion]);
 
     const selectBoxImage = (id: string) => {
         const selectedImage = tonieboxImages.find((item: { id: string }) => item.id === id);
@@ -618,11 +649,20 @@ export const TonieboxCard: React.FC<{
                 ]}
             >
                 <Meta
-                    description={
-                        <div>
-                            {(tonieboxVersion !== "UNKNOWN" ? tonieboxVersion : "MAC") + " " + getTonieboxIdFormatted()}
-                        </div>
-                    }
+                    description={[
+                        (tonieboxVersion !== "UNKNOWN" && tonieboxVersion !== undefined && tonieboxVersion !== null
+                            ? tonieboxVersion
+                            : "MAC") + " ",
+                        cfwInstalled ? (
+                            <Tooltip title={t("tonieboxes.linkToBoxCFW")}>
+                                <Link to={"http://" + lastIp} target="_blank">
+                                    {getTonieboxIdFormatted()} <LinkOutlined />
+                                </Link>
+                            </Tooltip>
+                        ) : (
+                            getTonieboxIdFormatted()
+                        ),
+                    ]}
                 />
             </Card>
             {editTonieboxOverlaySettingsModal}

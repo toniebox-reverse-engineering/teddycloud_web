@@ -1,4 +1,9 @@
 {
+    "404": {
+        "description": "Hups - Seite nicht gefunden",
+        "navigationTitle": "404 - Seite nicht gefunden",
+        "title": "404"
+    },
     "community": {
         "changelog": {
             "navigationTitle": "Changelog",
@@ -53,11 +58,6 @@
             "edit": "(WIP - not implemented yet) Tonie Audio Playlist editieren"
         }
     },
-    "404": {
-        "navigationTitle": "404 - Seite nicht gefunden",
-        "title": "404",
-        "description": "Hups - Seite nicht gefunden"
-    },
     "home": {
         "forumIntroPart1": "Entdecke mehr Erkenntnisse, tausch dich mit Gleichgesinnten aus und bleib über die neuesten Diskussionen in unserem Forum informiert: ",
         "forumIntroPart2": ". Vertief dich in Themen, teile deine Erfahrungen und vernetze dich mit unserer Community. Tritt noch heute in die Diskussion ein!",
@@ -75,11 +75,11 @@
         },
         "title": "Willkommen auf der TeddyCloud!",
         "toAllYourTonies": "Zu allen Tonies",
-        "yourCustomTonies": "Deine Custom Tonies",
-        "yourTonies": "Deine Tonies",
         "tonieMeeting": {
             "navigationTitle": "Tonie Meeting"
-        }
+        },
+        "yourCustomTonies": "Deine Custom Tonies",
+        "yourTonies": "Deine Tonies"
     },
     "language": {
         "change": "Sprache ändern",
@@ -192,6 +192,7 @@
         },
         "lastOnline": "zuletzt online",
         "lastPlayedTonie": "Zuletzt gespielter Tonie: ",
+        "linkToBoxCFW": "Öffne Web Frontend deiner Toniebox",
         "messages": {
             "apiAccessDisabled": "Zugriff auf TeddyCloud APIs deaktiviert!",
             "apiAccessEnabled": "Zugriff auf TeddyCloud APIs aktiviert!",

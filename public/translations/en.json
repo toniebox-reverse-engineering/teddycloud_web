@@ -1,4 +1,9 @@
 {
+    "404": {
+        "description": "Oops - Page not found",
+        "navigationTitle": "404 - Page not found",
+        "title": "404"
+    },
     "community": {
         "changelog": {
             "navigationTitle": "Changelog",
@@ -53,11 +58,6 @@
             "edit": "(WIP - not implemented yet) Edit Tonie Audio Playlist"
         }
     },
-    "404": {
-        "navigationTitle": "404 - Page not found",
-        "title": "404",
-        "description": "Oops - Page not found"
-    },
     "home": {
         "forumIntroPart1": "Discover more insights, engage with like-minded individuals, and stay updated on the latest discussions at our forum: ",
         "forumIntroPart2": ". Dive deeper into topics, share your experiences, and connect with our community. Join the conversation today!",
@@ -75,10 +75,10 @@
         },
         "title": "Welcome to TeddyCloud!",
         "toAllYourTonies": "To all Tonies",
-        "yourTonies": "Your Tonies",
         "tonieMeeting": {
             "navigationTitle": "Tonie Meeting"
-        }
+        },
+        "yourTonies": "Your Tonies"
     },
     "language": {
         "change": "Change language",
@@ -191,6 +191,7 @@
         },
         "lastOnline": "last online",
         "lastPlayedTonie": "Last played Tonie: ",
+        "linkToBoxCFW": "Open web interface of Toniebox",
         "messages": {
             "apiAccessDisabled": "Disabled access to TeddyCloud APIs!",
             "apiAccessEnabled": "Enabled access to TeddyCloud APIs!",
