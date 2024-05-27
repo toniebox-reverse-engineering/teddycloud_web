@@ -151,7 +151,7 @@ export const TonieboxCard: React.FC<{
             // only if lastIp is set and box version is CC3200
             // we check for CFW using battery status API call
             try {
-                fetch(`http://${lastIp}api/ajax?cmd=box-battery&sub=stats`)
+                fetch(`http://${lastIp}/api/ajax?cmd=box-battery&sub=stats`)
                     .then((response) => response.text())
                     .then((value) => {
                         console.log("Battery Stats fetched --> assume CFW active");
