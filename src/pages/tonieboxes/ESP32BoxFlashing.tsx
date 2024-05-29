@@ -106,7 +106,7 @@ export const ESP32BoxFlashing = () => {
                 message={t("settings.information")}
                 description=<div>
                     Development still in progress - Please use legacy{" "}
-                    <Link to={process.env.REACT_APP_TEDDYCLOUD_API_URL + ""} target="_blank">
+                    <Link to={process.env.REACT_APP_TEDDYCLOUD_API_URL?.replace("http", "https") + ""} target="_blank">
                         TeddyCloud Administration GUI
                     </Link>{" "}
                     till development is completed.
