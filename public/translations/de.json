@@ -182,12 +182,15 @@
         },
         "esp32BoxFlashing": {
             "attention": "Achtung",
-            "disableHttpOnlyForFlashing": "Bitte deaktiviere \"Webinterface http only\" und öffne diese Seite mit https.",
+            "disableHttpOnlyForFlashing": "Bitte deaktiviere \"Webinterface http only\" und öffne diese Seite mit HTTPS.",
             "enabledWebHttpOnly": "\"Webinterface HTTP only\" aktiv",
+            "enabledWebHttpsClientCertAuth": "\"HTTPS client cert auth\" aktiv",
             "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird. Wenn du deine ESP32 Toniebox flashen willst, dann deaktiviern bitte vorübergehend die Option \"Webinterface HTTP only\".",
+            "httpsSettings": "HTTPS Settings",
             "navigationTitle": "ESP32 Box Flashing",
-            "redirectToHttpAfterActivation": "Bei Aktivierung wird auf HTTP weitergeleitet (falls HTTPS aktiv).",
-            "redirectToHttpsAfterDeactivation": "Bei Deaktivierung  auf HTTPS weitergeleitet.",
+            "redirectToHttpAfterActivation": "Bei Aktivierung \"Webinterface HTTP only\" wird nach Speichern auf HTTP Seite weitergeleitet (falls HTTPS aktiv).",
+            "redirectToHttpsAfterDeactivation": "Bei Deaktivierung \"Webinterface HTTP only\" wird nach Speichern auf HTTPS Seite weitergeleitet.",
+            "save": "Settings speichern",
             "title": "ESP32 Box Flashing"
         },
         "lastOnline": "zuletzt online",
