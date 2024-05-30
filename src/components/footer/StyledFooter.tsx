@@ -54,7 +54,7 @@ export const StyledFooter = () => {
                     <AudioPlayerFooter />
                 </StyledCenterPart>
                 <StyledCenterPart>
-                    <div style={{ marginTop: "8px" }}>
+                    <div>
                         <small>
                             <Link
                                 to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/"

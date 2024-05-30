@@ -99,7 +99,17 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = () => {
     };
 
     return (
-        <div style={styles.container}>
+        <div
+            style={{
+                ...styles.container,
+                visibility: !songArtist ? "hidden" : "visible",
+                height: !songArtist ? "0" : "auto",
+                margin: !songArtist ? "-24px" : "0",
+                marginBottom: !songArtist ? "0" : "8px",
+                overflow: "hidden",
+                transition: "height 0.3s ease",
+            }}
+        >
             <div style={styles.controls}>
                 <StepBackwardOutlined style={styles.controlButton} />
                 {isPlaying ? (
