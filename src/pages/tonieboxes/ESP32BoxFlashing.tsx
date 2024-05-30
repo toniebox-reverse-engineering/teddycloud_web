@@ -191,12 +191,16 @@ export const ESP32BoxFlashing = () => {
                 <StyledContent>
                     <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
                     <Paragraph>
-                        <Alert
-                            message={t("tonieboxes.esp32BoxFlashing.attention")}
-                            description={t("tonieboxes.esp32BoxFlashing.hint")}
-                            type="warning"
-                            showIcon
-                        />
+                        {!httpsActive ? (
+                            <Alert
+                                message={t("tonieboxes.esp32BoxFlashing.attention")}
+                                description={t("tonieboxes.esp32BoxFlashing.hint")}
+                                type="warning"
+                                showIcon
+                            />
+                        ) : (
+                            ""
+                        )}
                     </Paragraph>
                     <Divider>{t("tonieboxes.esp32BoxFlashing.httpsSettings")}</Divider>
                     <Paragraph style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
