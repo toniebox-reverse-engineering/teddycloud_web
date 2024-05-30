@@ -187,8 +187,8 @@
             "hint": "This section is only available if HTTPS is used. If you want to flash your ESP32 Toniebox, then please temporarily disable the \"Webinterface HTTP only\" option.",
             "httpsSettings": "HTTPS Settings",
             "navigationTitle": "ESP32 Box Flashing",
-            "redirectToHttpAfterActivation": "After Activation \"Webinterface HTTP only\" and saving, you will be redirected to HTTP page (if HTTPS is active).",
-            "redirectToHttpsAfterDeactivation": "After Deactivation \"Webinterface HTTP only\" and saving, you will be redirected to HTTPS page.",
+            "redirectToHttpAfterActivation": "After enabling \"Webinterface HTTP only\" and saving, you will be redirected to HTTP page (if HTTPS is active).",
+            "redirectToHttpsAfterDeactivation": "After disabling \"Webinterface HTTP only\" and saving, you will be redirected to HTTPS page.",
             "save": "Save settings",
             "title": "ESP32 Box Flashing"
         },
