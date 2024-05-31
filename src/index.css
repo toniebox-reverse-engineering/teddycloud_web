@@ -54,6 +54,15 @@ code {
     visibility: visible !important;
 }
 
+/* tonie article search - in searchfield display none, but in dropdown displayed */
+.ant-select-dropdown img {
+    height: 64px !important;
+    width: 64px !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin: 8px;
+}
+
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */

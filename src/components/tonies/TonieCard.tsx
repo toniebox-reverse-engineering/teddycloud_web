@@ -444,6 +444,7 @@ export const TonieCard: React.FC<{
             onCancel={() => setIsEditModalOpen(false)}
             title={editModalTitel}
             footer={editModalFooter}
+            width={700}
         >
             <Divider orientation="left" orientationMargin="0">
                 {t("tonies.editModal.source")}
