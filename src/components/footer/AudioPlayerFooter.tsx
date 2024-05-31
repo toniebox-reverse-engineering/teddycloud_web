@@ -1,10 +1,20 @@
 import React from "react";
-import { PlayCircleOutlined, PauseCircleOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
+import {
+    PlayCircleOutlined,
+    PauseCircleOutlined,
+    StepBackwardOutlined,
+    StepForwardOutlined,
+    CloseCircleOutlined,
+    SoundOutlined,
+    MutedOutlined,
+} from "@ant-design/icons";
 import { useAudioContext } from "../audio/AudioContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import MediaSession from "@mebtte/react-media-session";
-import { Progress } from "antd";
+import { Progress, Slider, theme } from "antd";
 
+const { useToken } = theme;
+const useThemeToken = () => useToken().token;
 interface AudioPlayerFooterProps {
     /*
     isPlaying?: boolean;
@@ -32,6 +42,58 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }>({ left: 0, top: 0, visible: false });
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
+    const [volume, setVolume] = useState<number | null>(100);
+    const [lastVolume, setLastVolume] = useState<number | null>(100);
+    const [isVolumeVisible, setVolumeVisible] = useState(false);
+    const volumeIconRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (volumeIconRef.current && !volumeIconRef.current.contains(event.target as Node)) {
+                setVolumeVisible(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (globalAudio) {
+            if (volume === null) {
+                globalAudio.volume = 0;
+            } else {
+                globalAudio.volume = volume / 100;
+            }
+        }
+    }, [volume, globalAudio]);
+
+    const toggleVolumeVisible = () => {
+        setVolumeVisible(!isVolumeVisible);
+    };
+
+    const handleSliderChange = (value: number | [number, number]) => {
+        if (Array.isArray(value)) {
+            return;
+        }
+        setVolume(value);
+    };
+
+    const handleVolumeIconClick = () => {
+        toggleVolumeVisible();
+    };
+
+    const handleMuteClick = () => {
+        setLastVolume(volume);
+        setVolume(0);
+    };
+
+    const handleUnMuteClick = () => {
+        setVolume(lastVolume);
+    };
+
     const handleAudioPlay = () => {
         setIsPlaying(true);
     };
@@ -49,6 +111,14 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     };
     const handlePauseButton = () => {
         globalAudio.pause();
+    };
+
+    const handleClosePlayer = () => {
+        globalAudio.volume = 20;
+        globalAudio.src = "";
+        globalAudio.removeAttribute("src");
+        globalAudio.load();
+        onVisibilityChange();
     };
 
     useEffect(() => {
@@ -179,7 +249,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     </div>
                 </div>
             </div>
-            <div>
+            <div style={{ display: "none" }}>
                 <audio
                     id="globalAudioPlayer"
                     controls={true}
@@ -204,6 +274,31 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         },
                     ]}
                 ></MediaSession>
+            </div>
+            <div ref={volumeIconRef} style={{ ...styles.controls, ...styles.controlButton }}>
+                <MutedOutlined
+                    style={{
+                        ...styles.volumeIcon,
+                        display: (volume || 0) === 0 ? "block" : "none",
+                    }}
+                    onClick={!isVolumeVisible ? handleVolumeIconClick : handleUnMuteClick}
+                />
+                <SoundOutlined
+                    style={{
+                        ...styles.volumeIcon,
+                        display: (volume || 0) > 0 ? "block" : "none",
+                    }}
+                    onClick={!isVolumeVisible ? handleVolumeIconClick : handleMuteClick}
+                />
+
+                {isVolumeVisible && (
+                    <div style={styles.volumeSlider}>
+                        <Slider min={0} max={100} value={volume || 0} onChange={handleSliderChange} />
+                    </div>
+                )}
+            </div>
+            <div>
+                <CloseCircleOutlined style={styles.controlButton} onClick={handleClosePlayer} />
             </div>
         </div>
     );
@@ -250,6 +345,27 @@ const styles = {
     playPositionContainer: {
         marginLeft: "10px",
         marginRight: "10px",
+    },
+    volumeControl: {
+        position: "absolute" as "absolute",
+        top: "60px",
+        right: "20px",
+        zIndex: 1000,
+        backgroundColor: `${() => useThemeToken().colorBgContainer}`,
+        padding: "10px",
+    },
+    volumeSlider: {
+        width: "100px",
+        position: "releative" as "relative",
+        marginLeft: 8,
+        top: "calc(100% + 10px)",
+        zIndex: 1000,
+        backgroundColor: `${() => useThemeToken().colorBgContainer}`,
+        padding: 0,
+    },
+    volumeIcon: {
+        fontSize: "24px",
+        cursor: "pointer",
     },
 };
 
