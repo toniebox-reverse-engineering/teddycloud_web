@@ -326,8 +326,8 @@
         },
         "tafHeaderOf": "TAF-Header of ",
         "tap": {
-            "navigationTitle": "Audio Playlists",
-            "title": "Tonie Audio Playlists"
+            "navigationTitle": "WIP: Audio Playlists",
+            "title": "WIP: Tonie Audio Playlists"
         },
         "tapEditor": {
             "addFile": "Add file",
