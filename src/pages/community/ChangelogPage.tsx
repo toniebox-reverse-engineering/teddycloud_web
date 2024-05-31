@@ -48,6 +48,7 @@ export const ChangelogPage = () => {
                 "new /web gui: add hide tonie/tag in tonies list (in info modal)",
                 "new /web gui: PoC Tonies Custom Json Editor (WiP, not working, but you get the json part to copy into the tonies.custom.json)",
                 "new /web gui: PoC Tonie Audio Playlist Editor (WiP, not working, but you get the json to copy and save as a TAP file) ",
+                "new /web gui: Allow TAP files to be selected on Edit Tag Modal",
                 "new /web gui: New 404 page",
                 "new /web gui: hidden feature Tonie meeting. Search for it!",
                 "new /web gui: added link to Toniebox if the box is version cc3200, an ip is available and cfw is installed: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/28",

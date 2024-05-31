@@ -297,7 +297,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         maxSelectedRows={99}
                         special="library"
                         trackUrl={false}
-                        selectTafOnly={false}
+                        selectTafOrTapOnly={false}
                         key={filebrowserKey}
                         onFileSelectChange={handleFileSelectChange}
                     />

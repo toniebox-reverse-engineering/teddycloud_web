@@ -50,7 +50,7 @@
         "model": "Model",
         "name": "Name",
         "playFile": "Play",
-        "selectTafOnly": "You can only select TAF files!",
+        "selectTafOrTapOnly": "You can only select TAF or TAP files!",
         "series": "Series",
         "size": "Size",
         "tap": {
@@ -318,7 +318,7 @@
         },
         "navigationTitle": "Tonies",
         "selectFileModal": {
-            "selectFile": "Select TAF-file"
+            "selectFile": "Select TAF/TAP-file"
         },
         "system-sounds": {
             "navigationTitle": "System Sounds",
