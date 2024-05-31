@@ -19,7 +19,7 @@ import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
 import { TonieCardProps } from "../../components/tonies/TonieCard";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
 import GetBoxModelImages from "../../util/boxModels";
-import ConfirmationDialog from "../ConfirmationDialog";
+import ConfirmationDialog from "../utils/ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph, Text } = Typography;

@@ -9,8 +9,8 @@ import {
 } from "../../components/StyledComponents";
 
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/tonies/FileBrowser";
-import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
+import { FileBrowser } from "../../components/utils/FileBrowser";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
 const { Option } = Select;
 

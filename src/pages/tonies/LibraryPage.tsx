@@ -8,7 +8,7 @@ import {
 } from "../../components/StyledComponents";
 
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/tonies/FileBrowser";
+import { FileBrowser } from "../../components/utils/FileBrowser";
 
 export const LibraryPage = () => {
     const { t } = useTranslation();

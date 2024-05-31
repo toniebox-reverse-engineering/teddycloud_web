@@ -13,13 +13,13 @@ import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, them
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAudioContext } from "../audio/AudioContext";
-import { FileBrowser } from "./FileBrowser";
+import { FileBrowser } from "../utils/FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
 import LanguageFlagSVG from "../../util/languageUtil";
-import { RadioStreamSearch } from "./RadioStreamSearch";
+import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
-import ConfirmationDialog from "../ConfirmationDialog";
+import ConfirmationDialog from "../utils/ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

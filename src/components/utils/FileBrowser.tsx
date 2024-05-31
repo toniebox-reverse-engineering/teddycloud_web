@@ -19,8 +19,8 @@ import {
 import { humanFileSize } from "../../util/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import ConfirmationDialog from "../ConfirmationDialog";
-import TonieAudioPlaylistEditor from "./TonieAudioPlaylistEditor";
+import ConfirmationDialog from "./ConfirmationDialog";
+import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
 
 interface RecordTafHeader {
     audioId?: any;
