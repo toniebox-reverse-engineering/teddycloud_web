@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useAudioContext } from "../audio/AudioContext";
 import { FileBrowser } from "../utils/FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
-import LanguageFlagSVG from "../../util/languageUtil";
+import LanguageFlagSVG from "../../utils/languageUtil";
 import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";

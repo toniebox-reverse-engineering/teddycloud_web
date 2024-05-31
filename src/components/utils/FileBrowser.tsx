@@ -16,7 +16,7 @@ import {
     PlayCircleOutlined,
     TruckOutlined,
 } from "@ant-design/icons";
-import { humanFileSize } from "../../util/humanFileSize";
+import { humanFileSize } from "../../utils/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ConfirmationDialog from "./ConfirmationDialog";

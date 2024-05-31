@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
 import { StyledSubMenu } from "../StyledComponents";
-import { TonieboxIcon } from "../../util/tonieboxIcon";
+import { TonieboxIcon } from "../../utils/tonieboxIcon";
 import { DeliveredProcedureOutlined } from "@ant-design/icons";
 
 export const TonieboxesSubNav = () => {

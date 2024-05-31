@@ -1,10 +1,10 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Typography } from "antd";
 import React from "react";
-import { humanFileSize } from "../../util/humanFileSize";
+import { humanFileSize } from "../../utils/humanFileSize";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { MyUploadFile } from "../../util/encoder";
+import { MyUploadFile } from "../../utils/encoder";
 import { useTranslation } from "react-i18next";
 
 const { Text } = Typography;

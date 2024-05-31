@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { TeddyCloudApi } from "../api";
-import QuestionMarkSVG from "../util/questionMarkIcon";
+import QuestionMarkSVG from "../utils/questionMarkIcon";
 import { theme } from "antd";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
