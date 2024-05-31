@@ -128,7 +128,7 @@ export const FileBrowser: React.FC<{
             const rowCount = newSelectedRowKeys.length;
             newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
                 const file = files.find((f: any) => f.name === key) as any;
-                return (file && file.tafHeader !== undefined) || (file && file.name.lower.endsWith(".tap"));
+                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
             });
             if (rowCount !== newSelectedRowKeys.length) {
                 message.warning(t("fileBrowser.selectTafOrTapOnly"));
