@@ -102,10 +102,10 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = () => {
         <div
             style={{
                 ...styles.container,
-                visibility: !songArtist ? "hidden" : "visible",
-                height: !songArtist ? "0" : "auto",
-                margin: !songArtist ? "-24px" : "0",
-                marginBottom: !songArtist ? "0" : "8px",
+                visibility: !globalAudio?.src ? "hidden" : "visible",
+                height: !globalAudio?.src ? "0" : "auto",
+                margin: !globalAudio?.src ? "-24px" : "0",
+                marginBottom: !globalAudio?.src ? "0" : "8px",
                 overflow: "hidden",
                 transition: "height 0.3s ease",
             }}

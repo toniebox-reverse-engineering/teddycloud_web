@@ -21,6 +21,14 @@ interface AudioProviderProps {
     children: React.ReactNode; // Define the children prop
 }
 
+const extractFilename = (url: string) => {
+    // Remove query parameters if any
+    const urlWithoutParams = url.split("?")[0];
+    // Extract the filename from the URL
+    const parts = urlWithoutParams.split("/");
+    return parts[parts.length - 1];
+};
+
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const [songImage, setSongImage] = useState<string>("");
     const [songArtist, setSongArtist] = useState<string>("");
@@ -34,6 +42,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             setSongImage(meta.picture);
             setSongArtist(meta.series);
             setSongTitle(meta.episode);
+        } else {
+            setSongImage("");
+            setSongArtist("");
+            setSongTitle(extractFilename(url));
         }
         globalAudio.play();
     };
