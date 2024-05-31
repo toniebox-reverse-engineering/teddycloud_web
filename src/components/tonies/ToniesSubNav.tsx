@@ -57,20 +57,23 @@ export const ToniesSubNav = () => {
             key: "system-sounds",
             label: <Link to="/tonies/system-sounds">{t("tonies.system-sounds.navigationTitle")}</Link>,
             icon: React.createElement(SettingOutlined),
-        }
+        },
     ];
 
-    return (<>
-        <StyledSubMenu
-            mode="inline"
-            //defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub"]}
-            items={subnav}
-        />
-        <ToniesCustomJsonEditor
-            visible={showAddCustomTonieModal}
-            onClose={() => setShowAddCustomTonieModal(false)}
-        />
-    </>
+    return (
+        <>
+            <StyledSubMenu
+                mode="inline"
+                //defaultSelectedKeys={["1"]}
+                defaultOpenKeys={["sub"]}
+                items={subnav}
+            />
+            {showAddCustomTonieModal && (
+                <ToniesCustomJsonEditor
+                    open={showAddCustomTonieModal}
+                    onClose={() => setShowAddCustomTonieModal(false)}
+                />
+            )}
+        </>
     );
 };

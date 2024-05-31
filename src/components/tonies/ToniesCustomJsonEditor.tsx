@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface ToniesCustomJsonEditorProps {
-    visible: boolean;
+    open: boolean;
     onClose: () => void;
     setValue?: (value: any) => void;
     props?: any;
@@ -16,7 +16,7 @@ interface ToniesCustomJsonEditorProps {
 }
 
 const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
-    visible,
+    open,
     onClose,
     setValue,
     props,
@@ -30,18 +30,19 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     useEffect(() => {
         resetForm();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        if (tonieCardProps) {
+        if (open && tonieCardProps) {
             // to do prefill form
-            form.setFieldsValue({ series: tonieCardProps.tonieInfo.series });
-            form.setFieldsValue({ episode: tonieCardProps.tonieInfo.episode });
-            form.setFieldsValue({ article: tonieCardProps.tonieInfo.model });
-            form.setFieldsValue({ language: tonieCardProps.tonieInfo.language });
-            form.setFieldsValue({ image: tonieCardProps.tonieInfo.picture });
-            form.setFieldsValue({ article: tonieCardProps.tonieInfo.model });
-            form.setFieldsValue({ "tracks-desc": tonieCardProps.tonieInfo.tracks });
+            form.setFieldsValue({
+                series: tonieCardProps.tonieInfo.series,
+                episode: tonieCardProps.tonieInfo.episode,
+                article: tonieCardProps.tonieInfo.model,
+                language: tonieCardProps.tonieInfo.language,
+                image: tonieCardProps.tonieInfo.picture,
+                "tracks-desc": tonieCardProps.tonieInfo.tracks,
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [form]);
+    }, [open, tonieCardProps, form]);
 
     const handleFinish = async (values: any) => {
         if (values["track-desc"]) {
@@ -162,7 +163,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         <>
             <Modal
                 title={t("tonies.addNewCustomTonieModal.title")}
-                open={visible}
+                open={open}
                 onCancel={handleCancel}
                 onOk={handleOk}
                 okText={t("tonies.addNewCustomTonieModal.save")}

@@ -75,16 +75,13 @@ export const TonieArticleSearch: React.FC<{
                 }))}
             />
             <ToniesCustomJsonEditor
-                visible={showAddCustomTonieModal}
+                open={showAddCustomTonieModal}
                 props={props}
                 setValue={setValue}
                 onClose={() => setShowAddCustomTonieModal(false)}
             />
             <Tooltip title={t("tonies.addNewCustomTonieHint")}>
-                <Button
-                    onClick={handleAddNewCustomButtonClick}
-                    style={{ marginTop: 8 }}
-                >
+                <Button onClick={handleAddNewCustomButtonClick} style={{ marginTop: 8 }}>
                     {t("tonies.addNewCustomTonie")}
                 </Button>
             </Tooltip>
