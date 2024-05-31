@@ -14,9 +14,10 @@ interface AudioPlayerFooterProps {
     currentPlayPosition?: string;
     songImage?: string;
     */
+    onVisibilityChange: () => void;
 }
 
-const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = () => {
+const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { songImage, songArtist, songTitle } = useAudioContext(); // Access the songImage from the audio context
     const [isPlaying, setIsPlaying] = useState(false);
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
@@ -49,6 +50,10 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = () => {
     const handlePauseButton = () => {
         globalAudio.pause();
     };
+
+    useEffect(() => {
+        onVisibilityChange();
+    }, [globalAudio?.src, onVisibilityChange]);
 
     const handleTimeUpdate = (event: React.SyntheticEvent<HTMLAudioElement, Event>) => {
         const audioElement = event.target as HTMLAudioElement;
