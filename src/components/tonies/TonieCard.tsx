@@ -574,7 +574,11 @@ export const TonieCard: React.FC<{
                     <img
                         alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
                         src={localTonieCard.tonieInfo.picture}
-                        style={localTonieCard.tonieInfo.picture.includes("unknown") ? { paddingTop: "10px" } : {}}
+                        style={
+                            localTonieCard.tonieInfo.picture.includes("unknown")
+                                ? { padding: 8, paddingTop: 10 }
+                                : { padding: 8 }
+                        }
                     />
                 }
                 actions={actions}
