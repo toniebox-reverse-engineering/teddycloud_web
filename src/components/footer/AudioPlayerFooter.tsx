@@ -344,8 +344,7 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        marginRight: 16,
-        minWidth: 250,
+        minWidth: Math.min(window.innerWidth * 0.5, 350),
     },
     songImage: {
         width: "auto",
