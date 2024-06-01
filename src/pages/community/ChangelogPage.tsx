@@ -54,7 +54,7 @@ export const ChangelogPage = () => {
                 "new /web gui: added link to Toniebox if the box is version cc3200, an ip is available and cfw is installed: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/28",
                 "new /web gui: hide audioplayer if no source is set, when clicking on play icon of a tonie/taf/... the player is shown: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/40",
                 "new /web gui: show Tonie on tonie article search",
-                "new /web gui: improved audioplayer, added volume control to xutom one, hide doubled audioplayer",
+                "new /web gui: improved audioplayer, added volume control to custom one, hide doubled audioplayer",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
