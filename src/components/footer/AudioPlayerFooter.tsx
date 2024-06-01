@@ -29,8 +29,10 @@ interface AudioPlayerFooterProps {
 
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { songImage, songArtist, songTitle } = useAudioContext(); // Access the songImage from the audio context
-    const [isPlaying, setIsPlaying] = useState(false);
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
+
+    const [audioPlayerDisplay, setAudioPlayerDisplay] = useState<string>("none");
+    const [isPlaying, setIsPlaying] = useState(false);
     const [currentPlayPosition, setCurrentPlayPosition] = useState(0);
     const [currentPlayPositionFormat, setCurrentPlayPositionFormat] = useState("0:00");
     const [audioDurationFormat, setAudioDurationFormat] = useState("0:00");
@@ -41,7 +43,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         visible: boolean;
     }>({ left: 0, top: 0, visible: false });
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
-
     const [volume, setVolume] = useState<number | null>(100);
     const [lastVolume, setLastVolume] = useState<number | null>(100);
     const [isVolumeVisible, setVolumeVisible] = useState(false);
@@ -117,12 +118,16 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         globalAudio.src = "";
         globalAudio.removeAttribute("src");
         globalAudio.load();
+        setAudioPlayerDisplay("none");
         onVisibilityChange();
     };
 
     useEffect(() => {
         onVisibilityChange();
-    }, [globalAudio?.src, onVisibilityChange]);
+        if (globalAudio?.src && audioPlayerDisplay === "none") {
+            setAudioPlayerDisplay("flex");
+        }
+    }, [audioPlayerDisplay, globalAudio?.src, onVisibilityChange]);
 
     const handleTimeUpdate = (event: React.SyntheticEvent<HTMLAudioElement, Event>) => {
         const audioElement = event.target as HTMLAudioElement;
@@ -193,6 +198,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         <div
             style={{
                 ...containerStyle,
+                display: audioPlayerDisplay,
                 visibility: !globalAudio?.src ? "hidden" : "visible",
                 height: !globalAudio?.src ? "0" : "auto",
                 margin: !globalAudio?.src ? "-24px" : "0",
@@ -200,7 +206,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 overflow: "hidden",
             }}
         >
-            <div style={controlsStyle}>
+            <div id="audioPlayer" style={controlsStyle}>
                 <StepBackwardOutlined style={styles.controlButton} />
                 {isPlaying ? (
                     <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
@@ -259,7 +265,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     )}
                 </div>
             </div>
-            <div style={styles.volumeControl}>
+            <div style={styles.controls2}>
                 <div ref={volumeIconRef} style={{ ...controlsStyle, position: "relative" }}>
                     <MutedOutlined
                         style={{
@@ -319,7 +325,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
 const styles = {
     container: {
-        display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         padding: 10,
@@ -369,7 +374,7 @@ const styles = {
         marginLeft: 10,
         marginRight: 10,
     },
-    volumeControl: {
+    controls2: {
         display: "flex",
         alignItems: "center",
         width: "100%",
