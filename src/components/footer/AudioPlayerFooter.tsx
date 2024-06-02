@@ -45,21 +45,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [volume, setVolume] = useState<number | null>(100);
     const [lastVolume, setLastVolume] = useState<number | null>(100);
-    const [isVolumeVisible, setVolumeVisible] = useState(false);
-    const volumeIconRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (volumeIconRef.current && !volumeIconRef.current.contains(event.target as Node)) {
-                setVolumeVisible(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
 
     useEffect(() => {
         if (globalAudio) {
@@ -71,19 +56,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         }
     }, [volume, globalAudio]);
 
-    const toggleVolumeVisible = () => {
-        setVolumeVisible(!isVolumeVisible);
-    };
-
     const handleSliderChange = (value: number | [number, number]) => {
         if (Array.isArray(value)) {
             return;
         }
         setVolume(value);
-    };
-
-    const handleVolumeIconClick = () => {
-        toggleVolumeVisible();
     };
 
     const handleMuteClick = () => {
@@ -266,14 +243,14 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 </div>
             </div>
             <div style={styles.controls2}>
-                <div ref={volumeIconRef} style={{ ...controlsStyle, position: "relative" }}>
+                <div style={{ ...controlsStyle, position: "relative" }}>
                     <MutedOutlined
                         style={{
                             ...styles.controlButton,
                             ...styles.volumeIcon,
                             display: (volume || 0) === 0 ? "block" : "none",
                         }}
-                        onClick={!isVolumeVisible ? handleVolumeIconClick : handleUnMuteClick}
+                        onClick={handleUnMuteClick}
                     />
                     <SoundOutlined
                         style={{
@@ -281,14 +258,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                             ...styles.volumeIcon,
                             display: (volume || 0) > 0 ? "block" : "none",
                         }}
-                        onClick={!isVolumeVisible ? handleVolumeIconClick : handleMuteClick}
+                        onClick={handleMuteClick}
                     />
-
-                    {isVolumeVisible && (
-                        <div style={styles.volumeSlider}>
-                            <Slider min={0} max={100} value={volume || 0} onChange={handleSliderChange} />
-                        </div>
-                    )}
+                    <div style={styles.volumeSlider}>
+                        <Slider min={0} max={100} dotSize={4} value={volume || 0} onChange={handleSliderChange} />
+                    </div>
                 </div>
                 <div>
                     <CloseCircleOutlined style={styles.controlButton} onClick={handleClosePlayer} />
@@ -376,7 +350,6 @@ const styles = {
     controls2: {
         display: "flex",
         alignItems: "center",
-        width: "100%",
         justifyContent: "space-between",
         height: 32,
     },
