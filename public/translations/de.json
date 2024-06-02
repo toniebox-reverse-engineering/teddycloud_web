@@ -84,7 +84,8 @@
     "language": {
         "change": "Sprache ändern",
         "english": "EN",
-        "german": "DE"
+        "german": "DE",
+        "french": "FR"
     },
     "languageUtil": {
         "de-de": "Deutsch",

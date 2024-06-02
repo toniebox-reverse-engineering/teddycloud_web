@@ -83,7 +83,8 @@
     "language": {
         "change": "Change language",
         "english": "EN",
-        "german": "DE"
+        "german": "DE",
+        "french": "FR"
     },
     "languageUtil": {
         "de-de": "German",
