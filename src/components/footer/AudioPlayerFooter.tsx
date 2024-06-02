@@ -9,7 +9,7 @@ import {
     MutedOutlined,
 } from "@ant-design/icons";
 import { useAudioContext } from "../audio/AudioContext";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import MediaSession from "@mebtte/react-media-session";
 import { Progress, Slider, theme } from "antd";
 
@@ -261,7 +261,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         onClick={handleMuteClick}
                     />
                     <div style={styles.volumeSlider}>
-                        <Slider min={0} max={100} dotSize={4} value={volume || 0} onChange={handleSliderChange} />
+                        <Slider min={0} max={100} value={volume || 0} onChange={handleSliderChange} />
                     </div>
                 </div>
                 <div>
