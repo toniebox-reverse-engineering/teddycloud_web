@@ -13,13 +13,13 @@ import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, them
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAudioContext } from "../audio/AudioContext";
-import { FileBrowser } from "./FileBrowser";
+import { FileBrowser } from "../utils/FileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
-import LanguageFlagSVG from "../../util/languageUtil";
-import { RadioStreamSearch } from "./RadioStreamSearch";
+import LanguageFlagSVG from "../../utils/languageUtil";
+import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
-import ConfirmationDialog from "../ConfirmationDialog";
+import ConfirmationDialog from "../utils/ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -444,6 +444,7 @@ export const TonieCard: React.FC<{
             onCancel={() => setIsEditModalOpen(false)}
             title={editModalTitel}
             footer={editModalFooter}
+            width={700}
         >
             <Divider orientation="left" orientationMargin="0">
                 {t("tonies.editModal.source")}
@@ -573,7 +574,11 @@ export const TonieCard: React.FC<{
                     <img
                         alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
                         src={localTonieCard.tonieInfo.picture}
-                        style={localTonieCard.tonieInfo.picture.includes("unknown") ? { paddingTop: "10px" } : {}}
+                        style={
+                            localTonieCard.tonieInfo.picture.includes("unknown")
+                                ? { padding: 8, paddingTop: 10 }
+                                : { padding: 8 }
+                        }
                     />
                 }
                 actions={actions}

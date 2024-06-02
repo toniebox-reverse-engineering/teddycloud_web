@@ -8,7 +8,7 @@ import {
 } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { Alert, Button, Typography } from "antd";
-import { FileBrowser } from "../../components/tonies/FileBrowser";
+import { FileBrowser } from "../../components/utils/FileBrowser";
 import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
 import { useState } from "react";
 

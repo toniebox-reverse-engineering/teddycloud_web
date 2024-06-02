@@ -15,7 +15,7 @@ import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { Select, Tooltip } from "antd";
 import { useLocation } from "react-router-dom";
-import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
@@ -39,7 +39,7 @@ export const ToniesPage = () => {
     useEffect(() => {
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
-            const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "")).filter(item => !item.hide);
+            const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "")).filter((item) => !item.hide);
             setTonies(
                 tonieData.sort((a, b) => {
                     if (a.tonieInfo.series < b.tonieInfo.series) {

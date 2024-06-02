@@ -10,6 +10,10 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+.ant-layout .ant-layout-sider-children {
+    margin: 0 !important;
+}
+
 .ant-select {
     width: -webkit-fill-available !important;
     width: -moz-available !important;
@@ -48,6 +52,15 @@ code {
     line-height: 1;
     content: "*";
     visibility: visible !important;
+}
+
+/* tonie article search - in searchfield display none, but in dropdown displayed */
+.ant-select-dropdown img {
+    height: 64px !important;
+    width: 64px !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin: 8px;
 }
 
 /* workaround to set same card height within a row,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Button, Space } from "antd";
 import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { FileBrowser } from "./FileBrowser";
+import { FileBrowser } from "../utils/FileBrowser";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -297,7 +297,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         maxSelectedRows={99}
                         special="library"
                         trackUrl={false}
-                        selectTafOnly={false}
+                        selectTafOrTapOnly={false}
                         key={filebrowserKey}
                         onFileSelectChange={handleFileSelectChange}
                     />

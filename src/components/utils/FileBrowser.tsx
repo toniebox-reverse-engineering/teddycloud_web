@@ -16,11 +16,11 @@ import {
     PlayCircleOutlined,
     TruckOutlined,
 } from "@ant-design/icons";
-import { humanFileSize } from "../../util/humanFileSize";
+import { humanFileSize } from "../../utils/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import ConfirmationDialog from "../ConfirmationDialog";
-import TonieAudioPlaylistEditor from "./TonieAudioPlaylistEditor";
+import ConfirmationDialog from "./ConfirmationDialog";
+import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
 
 interface RecordTafHeader {
     audioId?: any;
@@ -36,7 +36,7 @@ export const FileBrowser: React.FC<{
     overlay?: string;
     maxSelectedRows?: number;
     trackUrl?: boolean;
-    selectTafOnly?: boolean;
+    selectTafOrTapOnly?: boolean;
     showDirOnly?: boolean;
     showColumns?: string[];
     onFileSelectChange?: (files: any[], path: string, special: string) => void;
@@ -46,7 +46,7 @@ export const FileBrowser: React.FC<{
     isTapList = false,
     overlay = "",
     maxSelectedRows = 0,
-    selectTafOnly = true,
+    selectTafOrTapOnly = true,
     trackUrl = true,
     showDirOnly = false,
     showColumns = undefined,
@@ -124,14 +124,14 @@ export const FileBrowser: React.FC<{
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
     };
     const onSelectChange = (newSelectedRowKeys: Key[]) => {
-        if (selectTafOnly) {
+        if (selectTafOrTapOnly) {
             const rowCount = newSelectedRowKeys.length;
             newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
                 const file = files.find((f: any) => f.name === key) as any;
-                return file && file.tafHeader !== undefined;
+                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
             });
             if (rowCount !== newSelectedRowKeys.length) {
-                message.warning(t("fileBrowser.selectTafOnly"));
+                message.warning(t("fileBrowser.selectTafOrTapOnly"));
             }
         }
         if (newSelectedRowKeys.length > maxSelectedRows) {

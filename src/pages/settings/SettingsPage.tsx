@@ -13,7 +13,7 @@ import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
-import OptionItem from "../../components/settings/OptionItem";
+import OptionItem from "../../components/utils/OptionItem";
 import { Formik } from "formik";
 
 const api = new TeddyCloudApi(defaultAPIConfig());

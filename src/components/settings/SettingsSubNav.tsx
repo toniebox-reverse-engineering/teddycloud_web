@@ -4,7 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
-import { restartServer } from "../../util/restartServer";
+import { restartServer } from "../../utils/restartServer";
 
 export const SettingsSubNav = () => {
     const { t } = useTranslation();

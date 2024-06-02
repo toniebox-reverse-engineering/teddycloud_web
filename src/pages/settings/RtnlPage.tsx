@@ -16,6 +16,7 @@ const { Paragraph, Text } = Typography;
 
 export const RtnlPage = () => {
     const { t } = useTranslation();
+
     const [logEntries, setLogEntries] = useState<string[]>([]);
     const logListRef = useRef<HTMLDivElement>(null);
     const [rtnlActive, setRtnlActive] = useState(false);
@@ -204,6 +205,8 @@ export const RtnlPage = () => {
                                 maxHeight: "max(40vh, 333px)",
                                 overflow: "auto",
                                 padding: 1,
+                                // the colors are taken from the SyntaxHighlighter oneDark and oneLight Style
+                                background: detectColorScheme() === "dark" ? "hsl(220, 13%, 18%)" : "hsl(230, 1%, 98%)",
                             }}
                         >
                             <SyntaxHighlighter

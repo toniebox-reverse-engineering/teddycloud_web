@@ -27,14 +27,18 @@ const StyledCenterPart = styled.div`
 
 export const StyledFooter = () => {
     const [footerHeight, setFooterHeight] = useState(0);
+
     const [version, setVersion] = useState("");
     const [versionShort, setVersionShort] = useState("");
 
-    useEffect(() => {
+    const handleAudioPlayerVisibilityChange = () => {
         const footer = document.querySelector("footer");
         if (footer) {
             setFooterHeight(footer.offsetHeight);
         }
+    };
+
+    useEffect(() => {
         fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/internal.version.v_long`)
             .then((response) => response.text()) // Parse response as text
             .then((data) => setVersion(data)) // Set fetched data to state
@@ -51,10 +55,10 @@ export const StyledFooter = () => {
 
             <StyledFooterComponent>
                 <StyledCenterPart>
-                    <AudioPlayerFooter />
+                    <AudioPlayerFooter onVisibilityChange={handleAudioPlayerVisibilityChange} />
                 </StyledCenterPart>
                 <StyledCenterPart>
-                    <div style={{ marginTop: "8px" }}>
+                    <div>
                         <small>
                             <Link
                                 to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/"

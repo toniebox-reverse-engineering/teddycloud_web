@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { List } from "antd";
 import { TonieboxCard, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
-import GetBoxModelImages from "../../util/boxModels";
+import GetBoxModelImages from "../../utils/boxModels";
 
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];

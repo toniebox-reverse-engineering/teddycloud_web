@@ -40,6 +40,7 @@ export const TonieArticleSearch: React.FC<{
             const result = data.map((item: TonieInfo) => ({
                 value: item.model,
                 text: "[" + item.model + "] " + item.series + " - " + item.episode,
+                picture: item.picture,
             }));
             setData(result);
         } catch (error) {
@@ -71,20 +72,22 @@ export const TonieArticleSearch: React.FC<{
                 notFoundContent={null}
                 options={(data || []).map((d) => ({
                     value: d.value,
-                    label: d.text,
+                    label: (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <img src={d.picture} alt={d.text} style={{ display: "none" }} />
+                            {d.text}
+                        </div>
+                    ),
                 }))}
             />
             <ToniesCustomJsonEditor
-                visible={showAddCustomTonieModal}
+                open={showAddCustomTonieModal}
                 props={props}
                 setValue={setValue}
                 onClose={() => setShowAddCustomTonieModal(false)}
             />
             <Tooltip title={t("tonies.addNewCustomTonieHint")}>
-                <Button
-                    onClick={handleAddNewCustomButtonClick}
-                    style={{ marginTop: 8 }}
-                >
+                <Button onClick={handleAddNewCustomButtonClick} style={{ marginTop: 8 }}>
                     {t("tonies.addNewCustomTonie")}
                 </Button>
             </Tooltip>

@@ -6,7 +6,7 @@ import { TonieCard, TonieCardProps } from "../../components/tonies/TonieCard";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import ToniesPagination from "./ToniesPagination";
-import { languageOptions } from "../../util/languageUtil";
+import { languageOptions } from "../../utils/languageUtil";
 
 const { Panel } = Collapse;
 const { Option } = Select;

@@ -269,6 +269,45 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * get last IP of toniebox
+     */
+    async apiGetTonieboxLastIpRaw(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.ip`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.TextApiResponse(response);
+    }
+
+    /**
+     * get last IP of toniebox
+     */
+    async apiGetTonieboxLastIp(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTonieboxLastIpRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * get toniebox content dir
      */
     async apiGetTonieboxContentDirRaw(

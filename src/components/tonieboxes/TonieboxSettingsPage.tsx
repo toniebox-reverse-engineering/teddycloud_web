@@ -4,7 +4,7 @@ import { Alert, Divider, Form, Radio, message } from "antd";
 import { Formik } from "formik";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import OptionItem from "../../components/settings/OptionItem";
+import OptionItem from "../utils/OptionItem";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

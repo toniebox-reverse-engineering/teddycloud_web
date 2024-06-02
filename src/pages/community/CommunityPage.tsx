@@ -43,7 +43,7 @@ export const CommunityPage = () => {
                                     GitHub
                                 </Link>
                                 <li>
-                                    the place where all sources are stored for this and related projects. Where you can
+                                    The place where all sources are stored for this and related projects. Where you can
                                     fork the repositories, contribute new or improved features, create issues or just
                                     give some feedback on already existing issues.
                                 </li>
