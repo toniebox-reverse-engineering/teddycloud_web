@@ -241,6 +241,9 @@
             "track": "Piste"
         },
         "addToniesCustomJsonEntry": "WIP: Ajouter un modèle",
+        "cancel": "Annuler",
+        "closeAudioPlayer": "Fermer le lecteur audio",
+        "closeAudioPlayerPopover": "Fermer arrête la lecture!",
         "confirmHideModal": {
             "cancel": "Annuler",
             "confirmHideDialog": "Voulez-vous vraiment masquer le Tonie/Tag \"{{tonieToHide}}\" dans la vue d'ensemble des Tonies? Pour le rendre visible à nouveau, vous devez placer le Tonie/Tag sur l'une de vos Tonieboxes.",

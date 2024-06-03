@@ -7,11 +7,13 @@ import {
     CloseCircleOutlined,
     SoundOutlined,
     MutedOutlined,
+    WarningOutlined,
 } from "@ant-design/icons";
 import { useAudioContext } from "../audio/AudioContext";
 import { useEffect, useState } from "react";
 import MediaSession from "@mebtte/react-media-session";
-import { Progress, Slider, theme } from "antd";
+import { Button, Popover, Progress, Slider, theme } from "antd";
+import { useTranslation } from "react-i18next";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
@@ -28,6 +30,7 @@ interface AudioPlayerFooterProps {
 }
 
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
+    const { t } = useTranslation();
     const { songImage, songArtist, songTitle } = useAudioContext(); // Access the songImage from the audio context
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
 
@@ -45,6 +48,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [volume, setVolume] = useState<number | null>(100);
     const [lastVolume, setLastVolume] = useState<number | null>(100);
+    const [closePlayerPopoverOpen, setClosePlayerPopoverOpen] = useState(false);
 
     useEffect(() => {
         if (globalAudio) {
@@ -92,6 +96,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     };
 
     const handleClosePlayer = () => {
+        closeClosePlayerPopOver();
         globalAudio.src = "";
         globalAudio.removeAttribute("src");
         globalAudio.load();
@@ -154,6 +159,14 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setIsMouseDown(false);
     };
 
+    const closeClosePlayerPopOver = () => {
+        setClosePlayerPopoverOpen(false);
+    };
+
+    const openClosePlayerPopOver = () => {
+        setClosePlayerPopoverOpen(true);
+    };
+
     // rearrange player for mobile
     const isMobile = window.innerWidth <= 768;
     const containerStyle: React.CSSProperties = isMobile
@@ -165,7 +178,19 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
               gap: 8,
           }
         : styles.container;
-    const controlsStyle: React.CSSProperties = isMobile ? { ...styles.controls } : styles.controls;
+    const control2Style: React.CSSProperties = isMobile
+        ? {
+              ...styles.controls2,
+              width: "100%",
+          }
+        : styles.controls2;
+    const progressBarStyle: React.CSSProperties = isMobile
+        ? {
+              ...styles.progressBar,
+              width: 200,
+              marginRight: 0,
+          }
+        : styles.progressBar;
 
     useEffect(() => {
         onVisibilityChange();
@@ -183,7 +208,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 overflow: "hidden",
             }}
         >
-            <div id="audioPlayer" style={controlsStyle}>
+            <div id="audioPlayer" style={styles.controls}>
                 <StepBackwardOutlined style={styles.controlButton} />
                 {isPlaying ? (
                     <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
@@ -206,7 +231,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     </div>
                 </div>
                 <div
-                    style={styles.progressBar}
+                    style={progressBarStyle}
                     onMouseMove={handleMouseMove}
                     onMouseLeave={handleMouseLeave}
                     onClick={handleClick}
@@ -242,8 +267,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     )}
                 </div>
             </div>
-            <div style={styles.controls2}>
-                <div style={{ ...controlsStyle, position: "relative" }}>
+            <div style={control2Style}>
+                <div style={{ ...styles.controls, position: "relative" }}>
                     <MutedOutlined
                         style={{
                             ...styles.controlButton,
@@ -265,7 +290,30 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     </div>
                 </div>
                 <div>
-                    <CloseCircleOutlined style={styles.controlButton} onClick={handleClosePlayer} />
+                    <Popover
+                        title={
+                            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                <div>
+                                    <WarningOutlined /> {t("tonies.closeAudioPlayerPopover")}
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+                                    <Button onClick={closeClosePlayerPopOver}>{t("tonies.cancel")}</Button>
+                                    <Button onClick={handleClosePlayer}>{t("tonies.closeAudioPlayer")}</Button>
+                                </div>
+                            </div>
+                        }
+                        open={closePlayerPopoverOpen}
+                        trigger="click"
+                        onOpenChange={closeClosePlayerPopOver}
+                        className="closePlayerPopover"
+                        placement="topRight"
+                        style={{ right: 8 }}
+                    >
+                        <CloseCircleOutlined
+                            style={{ ...styles.controlButton, margin: "0 0 0 10px", width: 32 }}
+                            onClick={openClosePlayerPopOver}
+                        />
+                    </Popover>
                 </div>
             </div>
             <audio
@@ -304,6 +352,7 @@ const styles = {
         padding: 10,
         backgroundColor: "#333",
         borderRadius: 8,
+        gap: 8,
     },
     controls: {
         display: "flex",
@@ -318,7 +367,6 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minWidth: Math.min(window.innerWidth * 0.5, 350),
     },
     songImage: {
         width: "auto",
@@ -336,7 +384,7 @@ const styles = {
     progressBar: {
         display: "block",
         position: "relative" as "relative",
-        width: "200px",
+        width: 150,
         marginRight: "10px",
     },
     playPosition: {
@@ -351,7 +399,7 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        height: 32,
+        height: 24,
     },
     volumeSlider: {
         width: 100,

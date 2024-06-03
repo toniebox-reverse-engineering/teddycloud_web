@@ -241,6 +241,9 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Add Model",
+        "cancel": "Cancel",
+        "closeAudioPlayer": "Close player",
+        "closeAudioPlayerPopover": "Close stops playback!",
         "confirmHideModal": {
             "cancel": "Cancel",
             "confirmHideDialog": "Do you really want to hide the Tonie/Tag \"{{tonieToHide}}\" in the Tonies overview? To make it visible again, you need to place the Tonie/Tag on one of your Tonieboxes.",

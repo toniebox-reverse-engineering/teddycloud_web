@@ -76,6 +76,17 @@ function App() {
         <ConfigProvider
             theme={{
                 algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+                components: {
+                    Slider: {
+                        dotSize: 3,
+                        handleSize: 6,
+                        handleSizeHover: 8,
+                        railSize: 4,
+                    },
+                    Popover: {
+                        titleMinWidth: 0,
+                    },
+                },
             }}
         >
             <div className="App">

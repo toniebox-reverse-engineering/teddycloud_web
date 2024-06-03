@@ -242,6 +242,9 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Modell anlegen",
+        "cancel": "Abbrechen",
+        "closeAudioPlayer": "Player schließen",
+        "closeAudioPlayerPopover": "Schließen stoppt die Wiedergabe!",
         "confirmHideModal": {
             "cancel": "Abbrechen",
             "confirmHideDialog": "Möchtest du den Tonie/Tag \"{{tonieToHide}}\" wirklich aus der Toniesübersicht ausblenden? Um ihn wieder einzublenden musst du den Tonie/Tag auf eine deiner Tonieboxen platzieren.",
