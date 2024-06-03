@@ -404,7 +404,7 @@ const styles = {
     volumeSlider: {
         width: 100,
         position: "releative" as "relative",
-        marginLeft: 8,
+        marginRight: 16,
         top: "calc(100% + 10px)",
         zIndex: 1000,
         backgroundColor: `${() => useThemeToken().colorBgContainer}`,
