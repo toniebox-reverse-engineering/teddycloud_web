@@ -31,7 +31,7 @@ interface AudioPlayerFooterProps {
 
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { t } = useTranslation();
-    const { songImage, songArtist, songTitle } = useAudioContext(); // Access the songImage from the audio context
+    const { songImage, songArtist, songTitle, songTracks } = useAudioContext(); // Access the songImage from the audio context
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
 
     const [audioPlayerDisplay, setAudioPlayerDisplay] = useState<string>("none");
@@ -167,6 +167,34 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setClosePlayerPopoverOpen(true);
     };
 
+    const handlePrevTrackButton = () => {
+        let i = 0;
+        while (globalAudio.currentTime > songTracks[i] / 3.15) {
+            i++;
+            if (i > songTracks.length) {
+                break;
+            }
+        }
+        if (i > 1 && i <= songTracks.length) {
+            globalAudio.currentTime = songTracks[i - 2] / 3.15;
+        } else if (i === 1) {
+            globalAudio.currentTime = 0;
+        }
+    };
+
+    const handleNextTrackButton = () => {
+        let i = 0;
+        while (globalAudio.currentTime > songTracks[i] / 3.15) {
+            i++;
+            if (i > songTracks.length) {
+                break;
+            }
+        }
+        if (i < songTracks.length) {
+            globalAudio.currentTime = songTracks[i] / 3.15;
+        }
+    };
+
     // rearrange player for mobile
     const isMobile = window.innerWidth <= 768;
     const containerStyle: React.CSSProperties = isMobile
@@ -209,13 +237,13 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             }}
         >
             <div id="audioPlayer" style={styles.controls}>
-                <StepBackwardOutlined style={styles.controlButton} />
+                <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
                 {isPlaying ? (
                     <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
                 ) : (
                     <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
                 )}
-                <StepForwardOutlined style={styles.controlButton} />
+                <StepForwardOutlined style={styles.controlButton} onClick={handleNextTrackButton} />
             </div>
             <div style={styles.trackInfo}>
                 {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
