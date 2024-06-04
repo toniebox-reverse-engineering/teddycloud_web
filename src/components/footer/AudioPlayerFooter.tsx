@@ -37,7 +37,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
 
     const [audioPlayerDisplay, setAudioPlayerDisplay] = useState<string>("none");
-    const [audioPlayerMinimal, setAudioPlayerMinimal] = useState<boolean>(false);
+    const [showAudioPlayerMinimal, setShowAudioPlayerMinimal] = useState<boolean>(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentPlayPosition, setCurrentPlayPosition] = useState(0);
     const [currentPlayPositionFormat, setCurrentPlayPositionFormat] = useState("0:00");
@@ -163,7 +163,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     };
 
     const togglePlayerMinimal = () => {
-        setAudioPlayerMinimal(!audioPlayerMinimal);
+        setShowAudioPlayerMinimal(!showAudioPlayerMinimal);
         onVisibilityChange();
     };
 
@@ -234,7 +234,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     const minMaximizerClose = (
         <>
-            {audioPlayerMinimal ? (
+            {showAudioPlayerMinimal ? (
                 <ArrowsAltOutlined onClick={togglePlayerMinimal} />
             ) : (
                 <ShrinkOutlined onClick={togglePlayerMinimal} />
@@ -295,11 +295,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         </>
     );
 
-    const minimalPlayer = audioPlayerMinimal ? (
+    const minimalPlayer = showAudioPlayerMinimal ? (
         <>
             <span
                 id="minimalAudioPlayer"
-                style={{ ...innerContainerStyle, display: audioPlayerMinimal ? "flex" : "none", padding: 0 }}
+                style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "flex" : "none", padding: 0 }}
             >
                 <div style={styles.trackInfo}>
                     {isPlaying ? (
@@ -333,7 +333,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         ""
     );
 
-    const normalPlayer = !audioPlayerMinimal ? (
+    const normalPlayer = !showAudioPlayerMinimal ? (
         <>
             <span
                 id="normalAudioPlayer"
@@ -341,13 +341,13 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     margin: 0,
                     marginLeft: 16,
                     textAlign: "right",
-                    display: audioPlayerMinimal ? "none" : "flex",
+                    display: showAudioPlayerMinimal ? "none" : "flex",
                     position: "absolute",
                 }}
             >
                 {minMaximizerClose}
             </span>
-            <span style={{ ...innerContainerStyle, display: audioPlayerMinimal ? "none" : "flex" }}>
+            <span style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "none" : "flex" }}>
                 <div id="audioPlayer" style={styles.controls}>
                     <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
                     {isPlaying ? (
