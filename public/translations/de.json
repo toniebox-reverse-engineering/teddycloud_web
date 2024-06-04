@@ -149,6 +149,9 @@
         "saved": "Einstellung gespeichert!",
         "title": "Einstellungen",
         "tonieboxes": "Tonieboxen",
+        "updateToniesJson": "Update Tonies.json",
+        "tonieJsonUpdateTriggered": "Tonies.json Aktualisierung angetriggert!",
+        "tonieJsonUpdateFailed": "Tonies.json Aktualisierung fehlgeschlagen!",
         "warning": "Achtung! Speicherbutton + Settings level",
         "warningHint": "Texteingaben müssen derzeit explizit gespeichert werden, bis eine bessere Lösung implementiert ist. Klicke dazu auf das Speichersymbol am Ende des Feldes. Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
     },
