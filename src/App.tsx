@@ -44,6 +44,14 @@ function detectColorScheme() {
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
 
+    const updateMetaThemeColor = (themeColor: string) => {
+        const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeColorMeta) {
+            themeColorMeta.setAttribute("content", themeColor);
+        }
+        document.body.style.backgroundColor = themeColor;
+    };
+
     // State for managing theme mode
     const [themeMode, setThemeMode] = useState(() => {
         const savedTheme = localStorage.getItem("theme");
@@ -65,6 +73,11 @@ function App() {
     useEffect(() => {
         localStorage.setItem("theme", themeMode);
         setIsDarkMode(detectColorScheme() === "dark");
+        if (detectColorScheme() === "dark") {
+            updateMetaThemeColor("#000000");
+        } else {
+            updateMetaThemeColor("#f5f5f5");
+        }
     }, [themeMode]);
 
     let themeSwitchIcon;
