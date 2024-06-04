@@ -4,10 +4,12 @@ import {
     PauseCircleOutlined,
     StepBackwardOutlined,
     StepForwardOutlined,
-    CloseCircleOutlined,
     SoundOutlined,
     MutedOutlined,
     WarningOutlined,
+    ShrinkOutlined,
+    ArrowsAltOutlined,
+    CloseOutlined,
 } from "@ant-design/icons";
 import { useAudioContext } from "../audio/AudioContext";
 import { useEffect, useState } from "react";
@@ -35,6 +37,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
 
     const [audioPlayerDisplay, setAudioPlayerDisplay] = useState<string>("none");
+    const [audioPlayerMinimal, setAudioPlayerMinimal] = useState<boolean>(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentPlayPosition, setCurrentPlayPosition] = useState(0);
     const [currentPlayPositionFormat, setCurrentPlayPositionFormat] = useState("0:00");
@@ -159,6 +162,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setIsMouseDown(false);
     };
 
+    const togglePlayerMinimal = () => {
+        setAudioPlayerMinimal(!audioPlayerMinimal);
+        onVisibilityChange();
+    };
+
     const closeClosePlayerPopOver = () => {
         setClosePlayerPopoverOpen(false);
     };
@@ -197,15 +205,15 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     // rearrange player for mobile
     const isMobile = window.innerWidth <= 768;
-    const containerStyle: React.CSSProperties = isMobile
+    const innerContainerStyle: React.CSSProperties = isMobile
         ? {
-              ...styles.container,
+              ...styles.innerContainer,
               flexDirection: "column",
               alignItems: "center",
               width: "100%",
               gap: 8,
           }
-        : styles.container;
+        : styles.innerContainer;
     const control2Style: React.CSSProperties = isMobile
         ? {
               ...styles.controls2,
@@ -224,125 +232,213 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         onVisibilityChange();
     }, [onVisibilityChange, isMobile]);
 
-    return (
-        <div
-            style={{
-                ...containerStyle,
-                display: audioPlayerDisplay,
-                visibility: !globalAudio?.src ? "hidden" : "visible",
-                height: !globalAudio?.src ? "0" : "auto",
-                margin: !globalAudio?.src ? "-24px" : "0",
-                marginBottom: !globalAudio?.src ? "0" : "8px",
-                overflow: "hidden",
-            }}
-        >
-            <div id="audioPlayer" style={styles.controls}>
-                <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
-                {isPlaying ? (
-                    <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
-                ) : (
-                    <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
-                )}
-                <StepForwardOutlined style={styles.controlButton} onClick={handleNextTrackButton} />
-            </div>
-            <div style={styles.trackInfo}>
-                {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
-                <div style={styles.songContainer}>
-                    <div>{songTitle}</div>
-                    <div>{songArtist}</div>
-                </div>
-            </div>
-            <div style={styles.playPositionContainer}>
-                <div>
-                    <div style={{ textAlign: "center" }}>
-                        {currentPlayPositionFormat} / {audioDurationFormat}
+    const minMaximizerClose = (
+        <>
+            {audioPlayerMinimal ? (
+                <ArrowsAltOutlined onClick={togglePlayerMinimal} />
+            ) : (
+                <ShrinkOutlined onClick={togglePlayerMinimal} />
+            )}
+            <Popover
+                title={
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        <div>
+                            <WarningOutlined /> {t("tonies.closeAudioPlayerPopover")}
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+                            <Button onClick={closeClosePlayerPopOver}>{t("tonies.cancel")}</Button>
+                            <Button onClick={handleClosePlayer}>{t("tonies.closeAudioPlayer")}</Button>
+                        </div>
                     </div>
-                </div>
-                <div
-                    style={progressBarStyle}
-                    onMouseMove={handleMouseMove}
-                    onMouseLeave={handleMouseLeave}
-                    onClick={handleClick}
-                    onMouseDown={handleMouseDown}
-                    onMouseUp={handleMouseUp}
+                }
+                open={closePlayerPopoverOpen}
+                trigger="click"
+                onOpenChange={closeClosePlayerPopOver}
+                className="closePlayerPopover"
+                placement="top"
+                style={{ right: 8 }}
+            >
+                <CloseOutlined style={{ margin: "0 0 0 10px" }} onClick={openClosePlayerPopOver} />
+            </Popover>
+        </>
+    );
+
+    const progressBar = (
+        <>
+            <Progress
+                type="line"
+                success={{
+                    percent: currentPlayPosition,
+                    strokeColor: "#1677ff",
+                }}
+                percent={downloadProgress}
+                strokeColor="#272727"
+                format={() => ""}
+                status="active"
+                showInfo={false}
+            />
+            {cyclePosition.visible && (
+                <svg
+                    style={{
+                        position: "absolute",
+                        left: cyclePosition.left,
+                        top: cyclePosition.top,
+                        transform: "translate(-50%, -50%)",
+                    }}
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
                 >
-                    <Progress
-                        type="line"
-                        success={{
-                            percent: currentPlayPosition,
-                            strokeColor: "#1677ff",
-                        }}
-                        percent={downloadProgress}
-                        strokeColor="#272727"
-                        format={() => ""}
-                        status="active"
-                        showInfo={false}
-                    />
-                    {cyclePosition.visible && (
-                        <svg
-                            style={{
-                                position: "absolute",
-                                left: cyclePosition.left,
-                                top: cyclePosition.top,
-                                transform: "translate(-50%, -50%)",
-                            }}
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                        >
-                            <circle cx="8" cy="8" r="8" fill="rgba(0,0,0,0.5)" />
-                        </svg>
+                    <circle cx="8" cy="8" r="8" fill="rgba(0,0,0,0.5)" />
+                </svg>
+            )}
+        </>
+    );
+
+    const minimalPlayer = audioPlayerMinimal ? (
+        <>
+            <span
+                id="minimalAudioPlayer"
+                style={{ ...innerContainerStyle, display: audioPlayerMinimal ? "flex" : "none", padding: 0 }}
+            >
+                <div style={styles.trackInfo}>
+                    {isPlaying ? (
+                        <PauseCircleOutlined style={{ fontSize: 24 }} onClick={handlePauseButton} />
+                    ) : (
+                        <PlayCircleOutlined style={{ fontSize: 24 }} onClick={handlePlayButton} />
                     )}
-                </div>
-            </div>
-            <div style={control2Style}>
-                <div style={{ ...styles.controls, position: "relative" }}>
-                    <MutedOutlined
-                        style={{
-                            ...styles.controlButton,
-                            ...styles.volumeIcon,
-                            display: (volume || 0) === 0 ? "block" : "none",
-                        }}
-                        onClick={handleUnMuteClick}
-                    />
-                    <SoundOutlined
-                        style={{
-                            ...styles.controlButton,
-                            ...styles.volumeIcon,
-                            display: (volume || 0) > 0 ? "block" : "none",
-                        }}
-                        onClick={handleMuteClick}
-                    />
-                    <div style={styles.volumeSlider}>
-                        <Slider min={0} max={100} value={volume || 0} onChange={handleSliderChange} />
+                    {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
+                    <div style={{ ...styles.playPositionContainer, marginRight: 0 }}>
+                        <div style={{ display: "flex" }}>
+                            <div style={{ textAlign: "center", marginBottom: 0 }}>
+                                {currentPlayPositionFormat} / {audioDurationFormat}
+                            </div>
+                            <span style={{ margin: 0, marginLeft: 16, textAlign: "right" }}>{minMaximizerClose}</span>
+                        </div>
+                        <div
+                            style={{ ...progressBarStyle, width: 100 }}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                            onClick={handleClick}
+                            onMouseDown={handleMouseDown}
+                            onMouseUp={handleMouseUp}
+                        >
+                            {progressBar}
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <Popover
-                        title={
-                            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                                <div>
-                                    <WarningOutlined /> {t("tonies.closeAudioPlayerPopover")}
-                                </div>
-                                <div style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-                                    <Button onClick={closeClosePlayerPopOver}>{t("tonies.cancel")}</Button>
-                                    <Button onClick={handleClosePlayer}>{t("tonies.closeAudioPlayer")}</Button>
-                                </div>
-                            </div>
-                        }
-                        open={closePlayerPopoverOpen}
-                        trigger="click"
-                        onOpenChange={closeClosePlayerPopOver}
-                        className="closePlayerPopover"
-                        placement="topRight"
-                        style={{ right: 8 }}
-                    >
-                        <CloseCircleOutlined
-                            style={{ ...styles.controlButton, margin: "0 0 0 10px", width: 32 }}
-                            onClick={openClosePlayerPopOver}
-                        />
-                    </Popover>
+            </span>
+        </>
+    ) : (
+        ""
+    );
+
+    const normalPlayer = !audioPlayerMinimal ? (
+        <>
+            <span
+                id="normalAudioPlayer"
+                style={{
+                    margin: 0,
+                    marginLeft: 16,
+                    textAlign: "right",
+                    display: audioPlayerMinimal ? "none" : "flex",
+                    position: "absolute",
+                }}
+            >
+                {minMaximizerClose}
+            </span>
+            <span style={{ ...innerContainerStyle, display: audioPlayerMinimal ? "none" : "flex" }}>
+                <div id="audioPlayer" style={styles.controls}>
+                    <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
+                    {isPlaying ? (
+                        <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
+                    ) : (
+                        <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
+                    )}
+                    <StepForwardOutlined style={styles.controlButton} onClick={handleNextTrackButton} />
                 </div>
+                <div style={styles.trackInfo}>
+                    {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
+                    <div style={styles.songContainer}>
+                        <div>{songTitle}</div>
+                        <div>{songArtist}</div>
+                    </div>
+                </div>
+                <div style={styles.playPositionContainer}>
+                    <div>
+                        <div style={{ textAlign: "center" }}>
+                            {currentPlayPositionFormat} / {audioDurationFormat}
+                        </div>
+                    </div>
+                    <div
+                        style={progressBarStyle}
+                        onMouseMove={handleMouseMove}
+                        onMouseLeave={handleMouseLeave}
+                        onClick={handleClick}
+                        onMouseDown={handleMouseDown}
+                        onMouseUp={handleMouseUp}
+                    >
+                        {progressBar}
+                    </div>
+                </div>
+                <div style={control2Style}>
+                    <div style={{ ...styles.controls, position: "relative" }}>
+                        <MutedOutlined
+                            style={{
+                                ...styles.controlButton,
+                                ...styles.volumeIcon,
+                                display: (volume || 0) === 0 ? "block" : "none",
+                            }}
+                            onClick={handleUnMuteClick}
+                        />
+                        <SoundOutlined
+                            style={{
+                                ...styles.controlButton,
+                                ...styles.volumeIcon,
+                                display: (volume || 0) > 0 ? "block" : "none",
+                            }}
+                            onClick={handleMuteClick}
+                        />
+                        <div style={styles.volumeSlider}>
+                            <Slider min={0} max={100} value={volume || 0} onChange={handleSliderChange} />
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </>
+    ) : (
+        ""
+    );
+
+    return (
+        <>
+            <div
+                style={{
+                    ...styles.container,
+                    display: audioPlayerDisplay,
+                    visibility: !globalAudio?.src ? "hidden" : "visible",
+                    height: !globalAudio?.src ? "0" : "auto",
+                    margin: !globalAudio?.src ? "-24px" : "0",
+                    marginBottom: !globalAudio?.src ? "0" : "8px",
+                    overflow: "hidden",
+                }}
+            >
+                {minimalPlayer}
+                {normalPlayer}
+                <MediaSession
+                    title={songTitle}
+                    artist={songArtist}
+                    artwork={[
+                        {
+                            src: songImage,
+                            sizes: "256x256,384x384,512x512",
+                        },
+                        {
+                            src: songImage,
+                            sizes: "96x96,128x128,192x192",
+                        },
+                    ]}
+                ></MediaSession>
             </div>
             <audio
                 id="globalAudioPlayer"
@@ -355,26 +451,21 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             >
                 Your browser does not support the audio element.
             </audio>
-            <MediaSession
-                title={songTitle}
-                artist={songArtist}
-                artwork={[
-                    {
-                        src: songImage,
-                        sizes: "256x256,384x384,512x512",
-                    },
-                    {
-                        src: songImage,
-                        sizes: "96x96,128x128,192x192",
-                    },
-                ]}
-            ></MediaSession>
-        </div>
+        </>
     );
 };
 
 const styles = {
     container: {
+        flexDirection: "column" as "column",
+        alignItems: "flex-end",
+        objectPosition: "top",
+        padding: 10,
+        backgroundColor: "#333",
+        borderRadius: 8,
+        gap: 8,
+    },
+    innerContainer: {
         justifyContent: "space-between",
         alignItems: "center",
         padding: 10,
@@ -387,7 +478,7 @@ const styles = {
         alignItems: "center",
     },
     controlButton: {
-        fontSize: "24px",
+        fontSize: 24,
         margin: "0 10px",
         cursor: "pointer",
     },
@@ -413,10 +504,10 @@ const styles = {
         display: "block",
         position: "relative" as "relative",
         width: 150,
-        marginRight: "10px",
+        marginRight: 10,
     },
     playPosition: {
-        fontSize: "14px",
+        fontSize: 14,
         width: "100%",
     },
     playPositionContainer: {
@@ -439,7 +530,7 @@ const styles = {
         padding: 0,
     },
     volumeIcon: {
-        fontSize: "24px",
+        fontSize: 24,
         cursor: "pointer",
         marginBottom: 0,
     },

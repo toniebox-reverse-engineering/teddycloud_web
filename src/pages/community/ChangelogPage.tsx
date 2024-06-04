@@ -54,6 +54,7 @@ export const ChangelogPage = () => {
                 "new /web gui: hidden feature Tonie meeting. Search for it!",
                 "new /web gui: added link to Toniebox if the box is version cc3200, an ip is available and cfw is installed: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/28",
                 "new /web gui: hide audioplayer if no source is set, when clicking on play icon of a tonie/taf/... the player is shown: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/40",
+                "new /web gui: added minimize/maximize audioplayer https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/40",
                 "new /web gui: show Tonie on tonie article search",
                 "new /web gui: improved audioplayer, added volume control to custom one, hide doubled audioplayer",
                 "new /web gui: added French translation. Feel free to check if chatGPT is a good translator. If something is wrong, give us a shout at telegram!",
