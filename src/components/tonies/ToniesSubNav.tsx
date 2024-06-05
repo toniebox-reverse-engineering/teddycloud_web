@@ -17,9 +17,11 @@ import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
 export const ToniesSubNav = () => {
     const { t } = useTranslation();
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
+    const [selectedKey, setSelectedKey] = useState("");
 
     const handleAddNewCustomButtonClick = () => {
         setShowAddCustomTonieModal(true);
+        setSelectedKey("");
     };
 
     const subnav: MenuProps["items"] = [
@@ -30,11 +32,8 @@ export const ToniesSubNav = () => {
         },
         {
             key: "custom-json",
-            label: (
-                <label onClick={handleAddNewCustomButtonClick} style={{ cursor: "pointer" }}>
-                    {t("tonies.addToniesCustomJsonEntry")}
-                </label>
-            ),
+            label: <label style={{ cursor: "pointer" }}>{t("tonies.addToniesCustomJsonEntry")}</label>,
+            onClick: handleAddNewCustomButtonClick,
             icon: React.createElement(UserAddOutlined),
         },
         {
@@ -66,7 +65,7 @@ export const ToniesSubNav = () => {
 
     return (
         <>
-            <StyledSubMenu mode="inline" defaultOpenKeys={["sub"]} items={subnav} />
+            <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />
             {showAddCustomTonieModal && (
                 <ToniesCustomJsonEditor
                     open={showAddCustomTonieModal}

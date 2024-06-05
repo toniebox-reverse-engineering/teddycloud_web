@@ -56,20 +56,14 @@ export const SettingsSubNav = () => {
         },
         {
             key: "update_toniesJson",
-            label: (
-                <label onClick={handleUpdateToniesJson} style={{ cursor: "pointer" }}>
-                    {t("settings.updateToniesJson")}
-                </label>
-            ),
+            label: <label style={{ cursor: "pointer" }}>{t("settings.updateToniesJson")}</label>,
+            onClick: handleUpdateToniesJson,
             icon: React.createElement(SyncOutlined),
         },
         {
             key: "restart_server",
-            label: (
-                <label onClick={handleRestartServer} style={{ cursor: "pointer" }}>
-                    {t("settings.restartServer")}
-                </label>
-            ),
+            label: <label style={{ cursor: "pointer" }}>{t("settings.restartServer")}</label>,
+            onClick: handleRestartServer,
             icon: React.createElement(PoweroffOutlined),
         },
     ];
