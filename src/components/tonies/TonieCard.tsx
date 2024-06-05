@@ -314,6 +314,11 @@ export const TonieCard: React.FC<{
         setIsConfirmHideModalVisible(false);
     };
 
+    const tonieInfoString =
+        localTonieCard.tonieInfo.series +
+        (localTonieCard.tonieInfo.episode ? " - " + localTonieCard.tonieInfo.episode : "") +
+        (localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "");
+
     const hideTonieModal = (
         <ConfirmationDialog
             title={t("tonies.confirmHideModal.title")}
@@ -321,10 +326,7 @@ export const TonieCard: React.FC<{
             okText={t("tonies.confirmHideModal.hide")}
             cancelText={t("tonies.confirmHideModal.cancel")}
             content={t("tonies.confirmHideModal.confirmHideDialog", {
-                tonieToHide:
-                    localTonieCard.tonieInfo.series +
-                    (localTonieCard.tonieInfo.episode ? " - " + localTonieCard.tonieInfo.episode : "") +
-                    (localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : ""),
+                tonieToHide: tonieInfoString ? tonieInfoString : localTonieCard.uid,
             })}
             handleOk={handleConfirmHide}
             handleCancel={handleCancelHide}
