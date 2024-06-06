@@ -244,7 +244,7 @@ export const ToniesList: React.FC<{
     };
 
     const listPagination = (
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
             {!paginationEnabled ? (
                 <Button onClick={handleShowPagination}>{t("tonies.tonies.showPagination")}</Button>
             ) : (
