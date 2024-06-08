@@ -172,6 +172,7 @@ export const ToniesList: React.FC<{
             // filter hidden RUIDs always
             filtered = filtered.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
         }
+        setCurrentPage(1);
         setFilteredTonies(filtered);
         setListKey((prevKey) => prevKey + 1);
     };
