@@ -112,9 +112,15 @@ export const ToniesList: React.FC<{
         } else {
             setFilteredTonies(tonieCards);
         }
-
+        setListKey((prevKey) => prevKey + 1);
         setLoading(false); // Set loading to false when tonieCards are available
     }, [location.search, tonieCards]);
+
+    useEffect(() => {
+        // reset currentPage to 1 if the number of Tonies has changed.
+        setCurrentPage(1);
+        setListKey((prevKey) => prevKey + 1);
+    }, [tonieCards]);
 
     useEffect(() => {
         const stateToStore = JSON.stringify({
@@ -172,6 +178,7 @@ export const ToniesList: React.FC<{
             // filter hidden RUIDs always
             filtered = filtered.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
         }
+        setCurrentPage(1);
         setFilteredTonies(filtered);
         setListKey((prevKey) => prevKey + 1);
     };
@@ -244,7 +251,7 @@ export const ToniesList: React.FC<{
     };
 
     const listPagination = (
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
             {!paginationEnabled ? (
                 <Button onClick={handleShowPagination}>{t("tonies.tonies.showPagination")}</Button>
             ) : (

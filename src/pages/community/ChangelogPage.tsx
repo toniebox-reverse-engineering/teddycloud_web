@@ -31,6 +31,7 @@ export const ChangelogPage = () => {
                 "fixed locking bug, reworked locking.",
                 "fixed bug not storing cloud auth in some circumstances",
                 "fixed bug not storing source in json file: https://github.com/toniebox-reverse-engineering/teddycloud/issues/165",
+                "added limit to tempfile creation for radiostreams, default: 240mb (~6h) (configurable if expert mode is activated) https://github.com/toniebox-reverse-engineering/teddycloud/issues/180",
                 "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
                 "new /web gui: Tonies - Content section - added Migrate Content to Lib button on TAF files",
                 "new /web gui: added RTNL Log Page: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/48",
@@ -53,8 +54,10 @@ export const ChangelogPage = () => {
                 "new /web gui: hidden feature Tonie meeting. Search for it!",
                 "new /web gui: added link to Toniebox if the box is version cc3200, an ip is available and cfw is installed: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/28",
                 "new /web gui: hide audioplayer if no source is set, when clicking on play icon of a tonie/taf/... the player is shown: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/40",
+                "new /web gui: added minimize/maximize audioplayer https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/40",
                 "new /web gui: show Tonie on tonie article search",
                 "new /web gui: improved audioplayer, added volume control to custom one, hide doubled audioplayer",
+                "new /web gui: added French translation. Feel free to check if chatGPT is a good translator. If something is wrong, give us a shout at telegram!",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
