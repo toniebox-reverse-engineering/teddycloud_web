@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Col, Row, message } from "antd";
+import { Modal, Form, Input, Button, Col, Row, message, Tooltip } from "antd";
 import { TonieCardProps } from "./TonieCard";
 import { useTranslation } from "react-i18next";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { InfoCircleOutlined, ToolFilled } from "@ant-design/icons";
 
 interface ToniesCustomJsonEditorProps {
     open: boolean;
@@ -175,7 +176,12 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                             <Row gutter={[16, 0]}>
                                 <Col span={8}>
                                     <Form.Item
-                                        label={t("tonies.addNewCustomTonieModal.series")}
+                                        label={[
+                                            t("tonies.addNewCustomTonieModal.series"),
+                                            <Tooltip title={t("tonies.addNewCustomTonieModal.seriesHint")}>
+                                                <InfoCircleOutlined style={{ marginLeft: 2 }} />
+                                            </Tooltip>,
+                                        ]}
                                         name="series"
                                         rules={[
                                             {
@@ -188,12 +194,28 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                     </Form.Item>
                                 </Col>
                                 <Col span={10}>
-                                    <Form.Item label={t("tonies.addNewCustomTonieModal.episode")} name="episode">
+                                    <Form.Item
+                                        label={[
+                                            t("tonies.addNewCustomTonieModal.episode"),
+                                            <Tooltip title={t("tonies.addNewCustomTonieModal.episodeHint")}>
+                                                <InfoCircleOutlined style={{ marginLeft: 2 }} />
+                                            </Tooltip>,
+                                        ]}
+                                        name="episode"
+                                    >
                                         <Input style={{ width: "100%" }} />
                                     </Form.Item>
                                 </Col>
                                 <Col span={6}>
-                                    <Form.Item label={t("tonies.addNewCustomTonieModal.language")} name="language">
+                                    <Form.Item
+                                        label={[
+                                            t("tonies.addNewCustomTonieModal.language"),
+                                            <Tooltip title={t("tonies.addNewCustomTonieModal.languageHint")}>
+                                                <InfoCircleOutlined style={{ marginLeft: 2 }} />
+                                            </Tooltip>,
+                                        ]}
+                                        name="language"
+                                    >
                                         <Input style={{ width: "100%" }} />
                                     </Form.Item>
                                 </Col>
