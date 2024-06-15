@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Button } from "antd";
+import { Modal, Table, Tooltip, message, Button, Input } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 
@@ -73,6 +73,9 @@ export const FileBrowser: React.FC<{
 
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
     const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
+
+    const [createDirectoryModalOpened, setCreateDirectoryModalOpened] = useState<boolean>(false);
+    const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
 
     const onCreate = (values: any) => {
         console.log("Received values of form: ", values);
@@ -226,6 +229,7 @@ export const FileBrowser: React.FC<{
             return 0;
         }
     };
+
     const dirNameSorter = (a: any, b: any) => {
         if (a.isDir === b.isDir) {
             return defaultSorter(a, b, "name");
@@ -530,9 +534,129 @@ export const FileBrowser: React.FC<{
         setTafHeaderModalOpened(true);
     };
 
-    const handleTafModelClose = () => {
+    const handleTafModalClose = () => {
         setTafHeaderModalOpened(false);
     };
+
+    const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setInputValueCreateDirectory(e.target.value);
+    };
+
+    const createDirectory = () => {
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/dirCreate?special=library`;
+
+        try {
+            fetch(url, {
+                method: "POST",
+                body: path + "/" + inputValueCreateDirectory,
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            })
+                .then((response) => {
+                    return response.text(); // Expecting a text response
+                })
+                .then((text) => {
+                    if (text !== "OK") {
+                        throw new Error(text);
+                    }
+                    message.success(t("tonies.createDirectory.directoryCreated"));
+                    setCreateDirectoryModalOpened(false);
+                    setRebuildList(!rebuildList);
+                    setInputValueCreateDirectory("");
+                })
+                .catch((error) => {
+                    message.error(error.message);
+                });
+        } catch (error) {
+            message.error(`Error while creating directory`);
+        }
+    };
+
+    const handleCreateDirectoryModalClose = () => {
+        setCreateDirectoryModalOpened(false);
+        setInputValueCreateDirectory("");
+    };
+
+    const openCreateDirectoryModal = () => {
+        setCreateDirectoryModalOpened(true);
+    };
+
+    const jsonViewerModal = (
+        <Modal
+            className="json-viewer"
+            footer={jsonViewerModalFooter}
+            width={700}
+            title={"File: " + currentFile}
+            open={jsonViewerModalOpened}
+            onCancel={handleJsonViewerModalClose}
+        >
+            {jsonData ? (
+                <SyntaxHighlighter
+                    language="json"
+                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                    customStyle={{
+                        padding: 0,
+                        borderRadius: 0,
+                        margin: 0,
+                        border: "none",
+                    }}
+                >
+                    {JSON.stringify(jsonData, null, 2)}
+                </SyntaxHighlighter>
+            ) : (
+                "Loading..."
+            )}
+        </Modal>
+    );
+
+    const tafHeaderViewerModal = (
+        <Modal
+            className="taf-header-viewer"
+            footer={
+                <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
+                    {t("tonies.informationModal.ok")}
+                </Button>
+            }
+            title={t("tonies.tafHeaderOf") + currentFile}
+            open={tafHeaderModalOpened}
+            onCancel={handleTafModalClose}
+        >
+            {currentRecordTafHeader ? (
+                <SyntaxHighlighter
+                    language="json"
+                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                    customStyle={{
+                        padding: 0,
+                        borderRadius: 0,
+                        margin: 0,
+                        border: "none",
+                    }}
+                >
+                    {JSON.stringify(currentRecordTafHeader, null, 2)}
+                </SyntaxHighlighter>
+            ) : (
+                "Loading..."
+            )}
+        </Modal>
+    );
+
+    const createDirectoryModal = (
+        <Modal
+            title={t("tonies.createDirectory.modalTitle")}
+            open={createDirectoryModalOpened}
+            onCancel={handleCreateDirectoryModalClose}
+            onOk={createDirectory}
+            okText={t("tonies.createDirectory.create")}
+            cancelText={t("tonies.createDirectory.cancel")}
+        >
+            <Input
+                placeholder={t("tonies.createDirectory.placeholder")}
+                value={inputValueCreateDirectory}
+                onChange={handleInputChange}
+            />
+        </Modal>
+    );
 
     return (
         <>
@@ -546,59 +670,22 @@ export const FileBrowser: React.FC<{
                 handleOk={handleConfirmDelete}
                 handleCancel={handleCancelDelete}
             />
-            <Modal
-                className="json-viewer"
-                footer={jsonViewerModalFooter}
-                width={700}
-                title={"File: " + currentFile}
-                open={jsonViewerModalOpened}
-                onCancel={handleJsonViewerModalClose}
-            >
-                {jsonData ? (
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(jsonData, null, 2)}
-                    </SyntaxHighlighter>
-                ) : (
-                    "Loading..."
-                )}
-            </Modal>
-            <Modal
-                className="taf-header-viewer"
-                footer={
-                    <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
-                        {t("tonies.informationModal.ok")}
+            {jsonViewerModal}
+            {tafHeaderViewerModal}
+            {createDirectoryModal}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                <div style={{ marginBottom: 8 }}>
+                    {t("tonies.currentPath")}
+                    {path ? path : "/"}
+                </div>
+                {special === "library" ? (
+                    <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
+                        {t("tonies.createDirectory.createDirectory")}
                     </Button>
-                }
-                title={t("tonies.tafHeaderOf") + currentFile}
-                open={tafHeaderModalOpened}
-                onCancel={handleTafModelClose}
-            >
-                {currentRecordTafHeader ? (
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(currentRecordTafHeader, null, 2)}
-                    </SyntaxHighlighter>
                 ) : (
-                    "Loading..."
+                    ""
                 )}
-            </Modal>
+            </div>
             <Table
                 dataSource={files}
                 columns={columns}

@@ -4,7 +4,7 @@ import { TonieCardProps } from "./TonieCard";
 import { useTranslation } from "react-i18next";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { InfoCircleOutlined, ToolFilled } from "@ant-design/icons";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 interface ToniesCustomJsonEditorProps {
     open: boolean;
