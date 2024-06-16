@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Button } from "antd";
+import { Modal, Table, Tooltip, message, Button, Input } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
-
 import { useAudioContext } from "../audio/AudioContext";
-
 import {
     CloudServerOutlined,
     CopyOutlined,
@@ -19,8 +16,10 @@ import {
 import { humanFileSize } from "../../utils/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { TonieInfo } from "../tonies/TonieCard";
 import ConfirmationDialog from "./ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
+import TonieInformationModal from "./TonieInformationModal";
 
 interface RecordTafHeader {
     audioId?: any;
@@ -28,6 +27,14 @@ interface RecordTafHeader {
     size?: number;
     tracks?: any;
 }
+
+export type Record = {
+    date: number;
+    isDir: boolean;
+    name: string;
+    tafHeader: RecordTafHeader;
+    tonieInfo: TonieInfo;
+};
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -74,6 +81,12 @@ export const FileBrowser: React.FC<{
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
     const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
 
+    const [createDirectoryModalOpened, setCreateDirectoryModalOpened] = useState<boolean>(false);
+    const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
+
+    const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
+    const [currentRecord, setCurrentRecord] = useState<Record>();
+
     const onCreate = (values: any) => {
         console.log("Received values of form: ", values);
         setShowTAPEditor(false);
@@ -103,50 +116,6 @@ export const FileBrowser: React.FC<{
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
     const [deletePath, setDeletePath] = useState<string>("");
     const [deleteApiCall, setDeleteApiCall] = useState<string>("");
-
-    const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
-        setFileToDelete(fileName);
-        setDeletePath(path);
-        setDeleteApiCall(apiCall);
-        setIsConfirmDeleteModalVisible(true);
-    };
-
-    const handleConfirmDelete = () => {
-        deleteFile(deletePath, deleteApiCall);
-        setIsConfirmDeleteModalVisible(false);
-    };
-
-    const handleCancelDelete = () => {
-        setIsConfirmDeleteModalVisible(false);
-    };
-
-    const rowClassName = (record: any) => {
-        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
-    };
-    const onSelectChange = (newSelectedRowKeys: Key[]) => {
-        if (selectTafOrTapOnly) {
-            const rowCount = newSelectedRowKeys.length;
-            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
-                const file = files.find((f: any) => f.name === key) as any;
-                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
-            });
-            if (rowCount !== newSelectedRowKeys.length) {
-                message.warning(t("fileBrowser.selectTafOrTapOnly"));
-            }
-        }
-        if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning(
-                t("fileBrowser.maxSelectedRows", {
-                    maxSelectedRows: maxSelectedRows,
-                })
-            );
-        } else {
-            setSelectedRowKeys(newSelectedRowKeys);
-        }
-
-        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
-        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
-    };
 
     useEffect(() => {
         // Function to parse the query parameters from the URL
@@ -187,6 +156,51 @@ export const FileBrowser: React.FC<{
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
 
+    const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
+        setFileToDelete(fileName);
+        setDeletePath(path);
+        setDeleteApiCall(apiCall);
+        setIsConfirmDeleteModalVisible(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteFile(deletePath, deleteApiCall);
+        setIsConfirmDeleteModalVisible(false);
+    };
+
+    const handleCancelDelete = () => {
+        setIsConfirmDeleteModalVisible(false);
+    };
+
+    const rowClassName = (record: any) => {
+        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
+    };
+
+    const onSelectChange = (newSelectedRowKeys: Key[]) => {
+        if (selectTafOrTapOnly) {
+            const rowCount = newSelectedRowKeys.length;
+            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
+                const file = files.find((f: any) => f.name === key) as any;
+                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
+            });
+            if (rowCount !== newSelectedRowKeys.length) {
+                message.warning(t("fileBrowser.selectTafOrTapOnly"));
+            }
+        }
+        if (newSelectedRowKeys.length > maxSelectedRows) {
+            message.warning(
+                t("fileBrowser.maxSelectedRows", {
+                    maxSelectedRows: maxSelectedRows,
+                })
+            );
+        } else {
+            setSelectedRowKeys(newSelectedRowKeys);
+        }
+
+        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
+        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
+    };
+
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
@@ -203,6 +217,7 @@ export const FileBrowser: React.FC<{
             return undefined;
         }, obj);
     };
+
     const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
         // Get the values of the fields
         const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
@@ -226,6 +241,7 @@ export const FileBrowser: React.FC<{
             return 0;
         }
     };
+
     const dirNameSorter = (a: any, b: any) => {
         if (a.isDir === b.isDir) {
             return defaultSorter(a, b, "name");
@@ -335,14 +351,27 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    var columns = [
+    var columns: any[] = [
         {
             title: "",
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
-            render: (picture: string) =>
-                picture && <img src={picture} alt={t("tonies.content.toniePicture")} style={{ width: 100 }} />,
+            width: 10,
+            render: (picture: string, record: any) =>
+                record && record.tonieInfo?.picture ? (
+                    <img
+                        src={record.tonieInfo.picture}
+                        alt={t("tonies.content.toniePicture")}
+                        onClick={() => showInformationModal(record)}
+                        style={{
+                            width: 100,
+                            cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
+                        }}
+                    />
+                ) : (
+                    <></>
+                ),
             showOnDirOnly: false,
         },
         {
@@ -351,7 +380,32 @@ export const FileBrowser: React.FC<{
             key: "name",
             sorter: dirNameSorter,
             defaultSortOrder: "ascend" as SortOrder,
-            render: (name: string, record: any) => (record.isDir ? "[" + name + "]" : name),
+            render: (picture: string, record: any) =>
+                record && (
+                    <>
+                        <div className="showSmallDevicesOnly">
+                            <div>
+                                {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                            </div>
+
+                            <div>{record.tonieInfo?.model}</div>
+                            <div style={{ wordBreak: "break-word" }}>
+                                {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+                                    (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                            </div>
+                            <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
+                        </div>
+                        <div className="showMediumDevicesOnly">
+                            <div>
+                                {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                            </div>
+                            <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
+                        </div>
+                        <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
+                    </>
+                ),
             showOnDirOnly: true,
         },
         {
@@ -360,24 +414,47 @@ export const FileBrowser: React.FC<{
             key: "size",
             render: (size: number, record: any) => (record.isDir ? "<DIR>" : humanFileSize(size)),
             showOnDirOnly: false,
+            responsive: ["xl"],
         },
         {
             title: t("fileBrowser.model"),
             dataIndex: ["tonieInfo", "model"],
             key: "model",
             showOnDirOnly: false,
+            responsive: ["xl"],
         },
         {
-            title: t("fileBrowser.series"),
+            title: (
+                <>
+                    <div className="showMediumDevicesOnly">
+                        {t("fileBrowser.model")}/{t("fileBrowser.series")}/{t("fileBrowser.episode")}
+                    </div>
+                    <div className="showBigDevicesOnly">{t("fileBrowser.series")}</div>
+                </>
+            ),
             dataIndex: ["tonieInfo", "series"],
             key: "series",
+            render: (series: string, record: any) => (
+                <>
+                    <div className="showMediumDevicesOnly">
+                        <div>{record.tonieInfo?.model}</div>
+                        <div style={{ wordBreak: "break-word" }}>
+                            {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+                                (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                        </div>
+                    </div>
+                    <div className="showBigDevicesOnly">{record.tonieInfo?.series ? record.tonieInfo?.series : ""}</div>
+                </>
+            ),
             showOnDirOnly: false,
+            responsive: ["md"],
         },
         {
             title: t("fileBrowser.episode"),
             dataIndex: ["tonieInfo", "episode"],
             key: "episode",
             showOnDirOnly: false,
+            responsive: ["xl"],
         },
         {
             title: t("fileBrowser.date"),
@@ -385,6 +462,7 @@ export const FileBrowser: React.FC<{
             key: "date",
             render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
             showOnDirOnly: true,
+            responsive: ["xl"],
         },
         {
             title: t("fileBrowser.actions"),
@@ -530,8 +608,135 @@ export const FileBrowser: React.FC<{
         setTafHeaderModalOpened(true);
     };
 
-    const handleTafModelClose = () => {
+    const handleTafModalClose = () => {
         setTafHeaderModalOpened(false);
+    };
+
+    const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setInputValueCreateDirectory(e.target.value);
+    };
+
+    const createDirectory = () => {
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/dirCreate?special=library`;
+
+        try {
+            fetch(url, {
+                method: "POST",
+                body: path + "/" + inputValueCreateDirectory,
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            })
+                .then((response) => {
+                    return response.text(); // Expecting a text response
+                })
+                .then((text) => {
+                    if (text !== "OK") {
+                        throw new Error(text);
+                    }
+                    message.success(t("tonies.createDirectory.directoryCreated"));
+                    setCreateDirectoryModalOpened(false);
+                    setRebuildList(!rebuildList);
+                    setInputValueCreateDirectory("");
+                })
+                .catch((error) => {
+                    message.error(error.message);
+                });
+        } catch (error) {
+            message.error(`Error while creating directory`);
+        }
+    };
+
+    const handleCreateDirectoryModalClose = () => {
+        setCreateDirectoryModalOpened(false);
+        setInputValueCreateDirectory("");
+    };
+
+    const openCreateDirectoryModal = () => {
+        setCreateDirectoryModalOpened(true);
+    };
+
+    const jsonViewerModal = (
+        <Modal
+            className="json-viewer"
+            footer={jsonViewerModalFooter}
+            width={700}
+            title={"File: " + currentFile}
+            open={jsonViewerModalOpened}
+            onCancel={handleJsonViewerModalClose}
+        >
+            {jsonData ? (
+                <SyntaxHighlighter
+                    language="json"
+                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                    customStyle={{
+                        padding: 0,
+                        borderRadius: 0,
+                        margin: 0,
+                        border: "none",
+                    }}
+                >
+                    {JSON.stringify(jsonData, null, 2)}
+                </SyntaxHighlighter>
+            ) : (
+                "Loading..."
+            )}
+        </Modal>
+    );
+
+    const tafHeaderViewerModal = (
+        <Modal
+            className="taf-header-viewer"
+            footer={
+                <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
+                    {t("tonies.informationModal.ok")}
+                </Button>
+            }
+            title={t("tonies.tafHeaderOf") + currentFile}
+            open={tafHeaderModalOpened}
+            onCancel={handleTafModalClose}
+        >
+            {currentRecordTafHeader ? (
+                <SyntaxHighlighter
+                    language="json"
+                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                    customStyle={{
+                        padding: 0,
+                        borderRadius: 0,
+                        margin: 0,
+                        border: "none",
+                    }}
+                >
+                    {JSON.stringify(currentRecordTafHeader, null, 2)}
+                </SyntaxHighlighter>
+            ) : (
+                "Loading..."
+            )}
+        </Modal>
+    );
+
+    const createDirectoryModal = (
+        <Modal
+            title={t("tonies.createDirectory.modalTitle")}
+            open={createDirectoryModalOpened}
+            onCancel={handleCreateDirectoryModalClose}
+            onOk={createDirectory}
+            okText={t("tonies.createDirectory.create")}
+            cancelText={t("tonies.createDirectory.cancel")}
+        >
+            <Input
+                placeholder={t("tonies.createDirectory.placeholder")}
+                value={inputValueCreateDirectory}
+                onChange={handleInputChange}
+            />
+        </Modal>
+    );
+
+    const showInformationModal = (record: any) => {
+        if (!record.isDir && record.tonieInfo?.tracks) {
+            setCurrentRecord(record);
+            setInformationModalOpen(true);
+        }
     };
 
     return (
@@ -546,62 +751,36 @@ export const FileBrowser: React.FC<{
                 handleOk={handleConfirmDelete}
                 handleCancel={handleCancelDelete}
             />
-            <Modal
-                className="json-viewer"
-                footer={jsonViewerModalFooter}
-                width={700}
-                title={"File: " + currentFile}
-                open={jsonViewerModalOpened}
-                onCancel={handleJsonViewerModalClose}
-            >
-                {jsonData ? (
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(jsonData, null, 2)}
-                    </SyntaxHighlighter>
-                ) : (
-                    "Loading..."
-                )}
-            </Modal>
-            <Modal
-                className="taf-header-viewer"
-                footer={
-                    <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
-                        {t("tonies.informationModal.ok")}
+            {jsonViewerModal}
+            {tafHeaderViewerModal}
+            {createDirectoryModal}
+            {currentRecord ? (
+                <TonieInformationModal
+                    isOpen={isInformationModalOpen}
+                    tonieCardOrTAFRecord={currentRecord}
+                    onClose={() => setInformationModalOpen(false)}
+                    overlay={overlay}
+                />
+            ) : (
+                ""
+            )}
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                <div style={{ marginBottom: 8 }}>
+                    {t("tonies.currentPath")}
+                    {path ? path + "/" : "/"}
+                </div>
+                {maxSelectedRows === 0 && special === "library" ? (
+                    <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
+                        {t("tonies.createDirectory.createDirectory")}
                     </Button>
-                }
-                title={t("tonies.tafHeaderOf") + currentFile}
-                open={tafHeaderModalOpened}
-                onCancel={handleTafModelClose}
-            >
-                {currentRecordTafHeader ? (
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(currentRecordTafHeader, null, 2)}
-                    </SyntaxHighlighter>
                 ) : (
-                    "Loading..."
+                    ""
                 )}
-            </Modal>
+            </div>
             <Table
                 dataSource={files}
                 columns={columns}
+                style={{ padding: 8 }}
                 rowKey="name"
                 pagination={false}
                 onRow={(record) => ({
