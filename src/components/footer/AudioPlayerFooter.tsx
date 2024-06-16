@@ -303,9 +303,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             >
                 <div style={styles.trackInfo}>
                     {isPlaying ? (
-                        <PauseCircleOutlined style={{ fontSize: 24 }} onClick={handlePauseButton} />
+                        <PauseCircleOutlined style={{ fontSize: 24, marginRight: 8 }} onClick={handlePauseButton} />
                     ) : (
-                        <PlayCircleOutlined style={{ fontSize: 24 }} onClick={handlePlayButton} />
+                        <PlayCircleOutlined style={{ fontSize: 24, marginRight: 8 }} onClick={handlePlayButton} />
                     )}
                     {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
                     <div style={{ ...styles.playPositionContainer, marginRight: 0 }}>

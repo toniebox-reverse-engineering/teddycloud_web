@@ -19,7 +19,7 @@ import LanguageFlagSVG from "../../utils/languageUtil";
 import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
-import ConfirmationDialog from "../utils/ConfirmationDialog";
+import TonieInformationModal from "../utils/TonieInformationModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -86,8 +86,6 @@ export const TonieCard: React.FC<{
 
     const [activeSource, setActiveSource] = useState(localTonieCard.source);
     const [selectedSource, setSelectedSource] = useState("");
-
-    const [isConfirmHideModalVisible, setIsConfirmHideModalVisible] = useState(false);
 
     const fetchUpdatedTonieCard = async () => {
         try {
@@ -291,133 +289,6 @@ export const TonieCard: React.FC<{
         setSelectedSource(newValue);
     };
 
-    const informationModalTitel = (
-        <>
-            <h3>
-                {title ? title : t("tonies.informationModal.unknownModel")}
-                <br />
-                <Text type="secondary">{localTonieCard.uid}</Text>
-            </h3>
-        </>
-    );
-
-    const showHideConfirmDialog = () => {
-        setIsConfirmHideModalVisible(true);
-    };
-
-    const handleConfirmHide = () => {
-        hideTag();
-        setIsConfirmHideModalVisible(false);
-    };
-
-    const handleCancelHide = () => {
-        setIsConfirmHideModalVisible(false);
-    };
-
-    const tonieInfoString =
-        localTonieCard.tonieInfo.series +
-        (localTonieCard.tonieInfo.episode ? " - " + localTonieCard.tonieInfo.episode : "") +
-        (localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : "");
-
-    const hideTonieModal = (
-        <ConfirmationDialog
-            title={t("tonies.confirmHideModal.title")}
-            isVisible={isConfirmHideModalVisible}
-            okText={t("tonies.confirmHideModal.hide")}
-            cancelText={t("tonies.confirmHideModal.cancel")}
-            content={t("tonies.confirmHideModal.confirmHideDialog", {
-                tonieToHide: tonieInfoString ? tonieInfoString : localTonieCard.uid,
-            })}
-            handleOk={handleConfirmHide}
-            handleCancel={handleCancelHide}
-        />
-    );
-
-    const hideTag = async () => {
-        const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
-            (overlay ? `?overlay=${overlay}` : "");
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                body: "hide=true",
-            });
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
-
-            message.success(t("tonies.messages.hideTonieSuccessful"));
-            onHide(localTonieCard.ruid);
-        } catch (error) {
-            message.error(t("tonies.messages.hideTonieFailed") + error);
-        }
-    };
-
-    const informationModalFooter = (
-        <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-            <div>
-                {!readOnly ? (
-                    <Button onClick={showHideConfirmDialog}>{t("tonies.informationModal.hideTag")}</Button>
-                ) : (
-                    ""
-                )}
-            </div>
-            <Button type="primary" onClick={() => setInformationModalOpen(false)}>
-                {t("tonies.informationModal.ok")}
-            </Button>
-        </div>
-    );
-
-    const informationModal = (
-        <Modal
-            title={informationModalTitel}
-            footer={informationModalFooter}
-            open={isInformationModalOpen}
-            keyboard={true}
-            closable={false}
-            maskClosable={true}
-            onCancel={() => setInformationModalOpen(false)}
-        >
-            {toniePlayedOn && toniePlayedOn.length > 0 ? (
-                <>
-                    <strong>{t("tonies.lastPlayedOnModal.lastPlayedOnMessage")}:</strong>
-                    <ul>
-                        {toniePlayedOn.map(({ ruidTime, boxName }, index) => (
-                            <li key={index}>
-                                {boxName}
-                                {ruidTime ? " (" + ruidTime + ")" : ""}
-                            </li>
-                        ))}
-                    </ul>
-                </>
-            ) : (
-                <></>
-            )}
-            <div>
-                <p>
-                    <strong>{t("tonies.infoModal.valid")}</strong>{" "}
-                    {localTonieCard.valid ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}
-                </p>
-                <p>
-                    <strong>{t("tonies.infoModal.exists")}</strong>{" "}
-                    {localTonieCard.exists ? t("tonies.infoModal.yes") : t("tonies.infoModal.no")}
-                </p>
-                {localTonieCard.tonieInfo.tracks && localTonieCard.tonieInfo.tracks.length > 0 ? (
-                    <>
-                        <strong>{t("tonies.infoModal.tracklist")}</strong>
-                        <ol>
-                            {localTonieCard.tonieInfo.tracks.map((track, index) => (
-                                <li key={index}>{track}</li>
-                            ))}
-                        </ol>
-                    </>
-                ) : (
-                    <></>
-                )}
-            </div>
-        </Modal>
-    );
-
     const editModalTitel = (
         <>
             <h3 style={{ lineHeight: 0 }}>
@@ -587,10 +458,17 @@ export const TonieCard: React.FC<{
             >
                 <Meta title={`${localTonieCard.tonieInfo.episode}`} description={localTonieCard.uid} />
             </Card>
+            <TonieInformationModal
+                isOpen={isInformationModalOpen}
+                onClose={() => setInformationModalOpen(false)}
+                tonieCardOrTAFRecord={localTonieCard}
+                readOnly={readOnly}
+                lastRUIDs={lastRUIDs}
+                onHide={onHide}
+                overlay={overlay}
+            />
             {selectFileModal}
             {editModal}
-            {informationModal}
-            {hideTonieModal}
         </>
     );
 };

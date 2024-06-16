@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { useTranslation } from "react-i18next";
 import { Modal, Table, Tooltip, message, Button, Input } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
-
 import { useAudioContext } from "../audio/AudioContext";
-
 import {
     CloudServerOutlined,
     CopyOutlined,
@@ -19,8 +16,10 @@ import {
 import { humanFileSize } from "../../utils/humanFileSize";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { TonieInfo } from "../tonies/TonieCard";
 import ConfirmationDialog from "./ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
+import TonieInformationModal from "./TonieInformationModal";
 
 interface RecordTafHeader {
     audioId?: any;
@@ -28,6 +27,14 @@ interface RecordTafHeader {
     size?: number;
     tracks?: any;
 }
+
+export type Record = {
+    date: number;
+    isDir: boolean;
+    name: string;
+    tafHeader: RecordTafHeader;
+    tonieInfo: TonieInfo;
+};
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -77,6 +84,9 @@ export const FileBrowser: React.FC<{
     const [createDirectoryModalOpened, setCreateDirectoryModalOpened] = useState<boolean>(false);
     const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
 
+    const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
+    const [currentRecord, setCurrentRecord] = useState<Record>();
+
     const onCreate = (values: any) => {
         console.log("Received values of form: ", values);
         setShowTAPEditor(false);
@@ -106,50 +116,6 @@ export const FileBrowser: React.FC<{
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
     const [deletePath, setDeletePath] = useState<string>("");
     const [deleteApiCall, setDeleteApiCall] = useState<string>("");
-
-    const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
-        setFileToDelete(fileName);
-        setDeletePath(path);
-        setDeleteApiCall(apiCall);
-        setIsConfirmDeleteModalVisible(true);
-    };
-
-    const handleConfirmDelete = () => {
-        deleteFile(deletePath, deleteApiCall);
-        setIsConfirmDeleteModalVisible(false);
-    };
-
-    const handleCancelDelete = () => {
-        setIsConfirmDeleteModalVisible(false);
-    };
-
-    const rowClassName = (record: any) => {
-        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
-    };
-    const onSelectChange = (newSelectedRowKeys: Key[]) => {
-        if (selectTafOrTapOnly) {
-            const rowCount = newSelectedRowKeys.length;
-            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
-                const file = files.find((f: any) => f.name === key) as any;
-                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
-            });
-            if (rowCount !== newSelectedRowKeys.length) {
-                message.warning(t("fileBrowser.selectTafOrTapOnly"));
-            }
-        }
-        if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning(
-                t("fileBrowser.maxSelectedRows", {
-                    maxSelectedRows: maxSelectedRows,
-                })
-            );
-        } else {
-            setSelectedRowKeys(newSelectedRowKeys);
-        }
-
-        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
-        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
-    };
 
     useEffect(() => {
         // Function to parse the query parameters from the URL
@@ -190,6 +156,51 @@ export const FileBrowser: React.FC<{
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
 
+    const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
+        setFileToDelete(fileName);
+        setDeletePath(path);
+        setDeleteApiCall(apiCall);
+        setIsConfirmDeleteModalVisible(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteFile(deletePath, deleteApiCall);
+        setIsConfirmDeleteModalVisible(false);
+    };
+
+    const handleCancelDelete = () => {
+        setIsConfirmDeleteModalVisible(false);
+    };
+
+    const rowClassName = (record: any) => {
+        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
+    };
+
+    const onSelectChange = (newSelectedRowKeys: Key[]) => {
+        if (selectTafOrTapOnly) {
+            const rowCount = newSelectedRowKeys.length;
+            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
+                const file = files.find((f: any) => f.name === key) as any;
+                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
+            });
+            if (rowCount !== newSelectedRowKeys.length) {
+                message.warning(t("fileBrowser.selectTafOrTapOnly"));
+            }
+        }
+        if (newSelectedRowKeys.length > maxSelectedRows) {
+            message.warning(
+                t("fileBrowser.maxSelectedRows", {
+                    maxSelectedRows: maxSelectedRows,
+                })
+            );
+        } else {
+            setSelectedRowKeys(newSelectedRowKeys);
+        }
+
+        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
+        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
+    };
+
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
@@ -206,6 +217,7 @@ export const FileBrowser: React.FC<{
             return undefined;
         }, obj);
     };
+
     const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
         // Get the values of the fields
         const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
@@ -345,8 +357,16 @@ export const FileBrowser: React.FC<{
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
-            render: (picture: string) =>
-                picture && <img src={picture} alt={t("tonies.content.toniePicture")} style={{ width: 100 }} />,
+            render: (picture: string, record: any) =>
+                picture &&
+                record && (
+                    <img
+                        src={picture}
+                        alt={t("tonies.content.toniePicture")}
+                        onClick={() => showInformationModal(record)}
+                        style={{ width: 100, cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default" }}
+                    />
+                ),
             showOnDirOnly: false,
         },
         {
@@ -658,6 +678,13 @@ export const FileBrowser: React.FC<{
         </Modal>
     );
 
+    const showInformationModal = (record: any) => {
+        if (!record.isDir && record.tonieInfo?.tracks) {
+            setCurrentRecord(record);
+            setInformationModalOpen(true);
+        }
+    };
+
     return (
         <>
             {contextHolder}
@@ -673,10 +700,20 @@ export const FileBrowser: React.FC<{
             {jsonViewerModal}
             {tafHeaderViewerModal}
             {createDirectoryModal}
+            {currentRecord ? (
+                <TonieInformationModal
+                    isOpen={isInformationModalOpen}
+                    tonieCardOrTAFRecord={currentRecord}
+                    onClose={() => setInformationModalOpen(false)}
+                    overlay={overlay}
+                />
+            ) : (
+                ""
+            )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <div style={{ marginBottom: 8 }}>
                     {t("tonies.currentPath")}
-                    {path ? path : "/"}
+                    {path ? path + "/" : "/"}
                 </div>
                 {special === "library" ? (
                     <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
