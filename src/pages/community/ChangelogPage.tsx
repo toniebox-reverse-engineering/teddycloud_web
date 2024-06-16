@@ -58,6 +58,10 @@ export const ChangelogPage = () => {
                 "new /web gui: show Tonie on tonie article search",
                 "new /web gui: improved audioplayer, added volume control to custom one, hide doubled audioplayer",
                 "new /web gui: added French translation. Feel free to check if chatGPT is a good translator. If something is wrong, give us a shout at telegram!",
+                "new /weg gui: overworked filebrowser to be responsive",
+                "new /web gui: overworked tonie information modal, now also available in file browser (library + content)",
+                "new /web gui: added Create Directory functionality in file browser",
+                "new /web gui: fixed some bugs",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
