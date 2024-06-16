@@ -144,9 +144,10 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 maskClosable={true}
                 onCancel={onClose}
             >
-                {tonieCardOrTAFRecord.tonieInfo.picture && (
-                    <img src={tonieCardOrTAFRecord.tonieInfo.picture} alt="" style={{ width: "100%" }} />
-                )}
+                {tonieCardOrTAFRecord.tonieInfo.picture &&
+                    !tonieCardOrTAFRecord.tonieInfo.picture.endsWith("img_unknown.png") && (
+                        <img src={tonieCardOrTAFRecord.tonieInfo.picture} alt="" style={{ width: "100%" }} />
+                    )}
                 {toniePlayedOn && toniePlayedOn.length > 0 ? (
                     <>
                         <strong>{t("tonies.lastPlayedOnModal.lastPlayedOnMessage")}:</strong>
