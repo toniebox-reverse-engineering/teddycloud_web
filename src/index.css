@@ -63,6 +63,42 @@ code {
     margin: 8px;
 }
 
+.ant-table-cell {
+    padding: 8px !important;
+}
+
+/* workaround missing good responsiveness of antd tables... */
+
+.showBigDevicesOnly {
+    display: none;
+}
+
+.showMediumDevicesOnly {
+    display: none;
+}
+
+.showSmallDevicesOnly {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .showSmallDevicesOnly {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .showMediumDevicesOnly {
+        display: block;
+    }
+}
+
+@media (min-width: 1200px) {
+    .showBigDevicesOnly {
+        display: block;
+    }
+}
+
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */

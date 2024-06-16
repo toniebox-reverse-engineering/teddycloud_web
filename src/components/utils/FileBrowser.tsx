@@ -351,21 +351,26 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    var columns = [
+    var columns: any[] = [
         {
             title: "",
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
+            width: 10,
             render: (picture: string, record: any) =>
-                picture &&
-                record && (
+                record && record.tonieInfo?.picture ? (
                     <img
-                        src={picture}
+                        src={record.tonieInfo.picture}
                         alt={t("tonies.content.toniePicture")}
                         onClick={() => showInformationModal(record)}
-                        style={{ width: 100, cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default" }}
+                        style={{
+                            width: 100,
+                            cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
+                        }}
                     />
+                ) : (
+                    <></>
                 ),
             showOnDirOnly: false,
         },
@@ -375,7 +380,32 @@ export const FileBrowser: React.FC<{
             key: "name",
             sorter: dirNameSorter,
             defaultSortOrder: "ascend" as SortOrder,
-            render: (name: string, record: any) => (record.isDir ? "[" + name + "]" : name),
+            render: (picture: string, record: any) =>
+                record && (
+                    <>
+                        <div className="showSmallDevicesOnly">
+                            <div>
+                                {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                            </div>
+
+                            <div>{record.tonieInfo?.model}</div>
+                            <div>
+                                {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+                                    (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                            </div>
+                            <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
+                        </div>
+                        <div className="showMediumDevicesOnly">
+                            <div>
+                                {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                            </div>
+                            <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
+                        </div>
+                        <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
+                    </>
+                ),
             showOnDirOnly: true,
         },
         {
@@ -384,24 +414,47 @@ export const FileBrowser: React.FC<{
             key: "size",
             render: (size: number, record: any) => (record.isDir ? "<DIR>" : humanFileSize(size)),
             showOnDirOnly: false,
+            responsive: ["xl"],
         },
         {
             title: t("fileBrowser.model"),
             dataIndex: ["tonieInfo", "model"],
             key: "model",
             showOnDirOnly: false,
+            responsive: ["xl"],
         },
         {
-            title: t("fileBrowser.series"),
+            title: (
+                <>
+                    <div className="showMediumDevicesOnly">
+                        {t("fileBrowser.model")}/{t("fileBrowser.series")}/{t("fileBrowser.episode")}
+                    </div>
+                    <div className="showBigDevicesOnly">{t("fileBrowser.series")}</div>
+                </>
+            ),
             dataIndex: ["tonieInfo", "series"],
             key: "series",
+            render: (series: string, record: any) => (
+                <>
+                    <div className="showMediumDevicesOnly">
+                        <div>{record.tonieInfo?.model}</div>
+                        <div>
+                            {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+                                (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                        </div>
+                    </div>
+                    <div className="showBigDevicesOnly">{record.tonieInfo?.series ? record.tonieInfo?.series : ""}</div>
+                </>
+            ),
             showOnDirOnly: false,
+            responsive: ["md"],
         },
         {
             title: t("fileBrowser.episode"),
             dataIndex: ["tonieInfo", "episode"],
             key: "episode",
             showOnDirOnly: false,
+            responsive: ["xl"],
         },
         {
             title: t("fileBrowser.date"),
@@ -409,6 +462,7 @@ export const FileBrowser: React.FC<{
             key: "date",
             render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
             showOnDirOnly: true,
+            responsive: ["xl"],
         },
         {
             title: t("fileBrowser.actions"),
@@ -715,7 +769,7 @@ export const FileBrowser: React.FC<{
                     {t("tonies.currentPath")}
                     {path ? path + "/" : "/"}
                 </div>
-                {special === "library" ? (
+                {maxSelectedRows === 0 && special === "library" ? (
                     <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
                         {t("tonies.createDirectory.createDirectory")}
                     </Button>
@@ -726,6 +780,7 @@ export const FileBrowser: React.FC<{
             <Table
                 dataSource={files}
                 columns={columns}
+                style={{ padding: 8 }}
                 rowKey="name"
                 pagination={false}
                 onRow={(record) => ({
