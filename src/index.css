@@ -81,9 +81,17 @@ code {
     display: block;
 }
 
+.ant-table-cell img {
+    width: 75px !important;
+}
+
 @media (min-width: 768px) {
     .showSmallDevicesOnly {
         display: none;
+    }
+
+    .ant-table-cell img {
+        width: 100px !important;
     }
 }
 

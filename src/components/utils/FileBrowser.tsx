@@ -390,7 +390,7 @@ export const FileBrowser: React.FC<{
                             </div>
 
                             <div>{record.tonieInfo?.model}</div>
-                            <div>
+                            <div style={{ wordBreak: "break-word" }}>
                                 {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
                                     (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
                             </div>
@@ -438,7 +438,7 @@ export const FileBrowser: React.FC<{
                 <>
                     <div className="showMediumDevicesOnly">
                         <div>{record.tonieInfo?.model}</div>
-                        <div>
+                        <div style={{ wordBreak: "break-word" }}>
                             {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
                                 (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
                         </div>
