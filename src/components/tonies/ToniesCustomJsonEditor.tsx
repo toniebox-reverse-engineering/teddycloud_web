@@ -35,27 +35,45 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             // to do prefill form
             form.setFieldsValue({
                 series: tonieCardProps.tonieInfo.series,
-                episode: tonieCardProps.tonieInfo.episode,
-                article: tonieCardProps.tonieInfo.model,
+                episodes: tonieCardProps.tonieInfo.episode,
+                model: tonieCardProps.tonieInfo.model,
                 language: tonieCardProps.tonieInfo.language,
-                image: tonieCardProps.tonieInfo.picture,
-                "tracks-desc": tonieCardProps.tonieInfo.tracks,
+                pic: tonieCardProps.tonieInfo.picture,
+                tracks: tonieCardProps.tonieInfo.tracks,
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, tonieCardProps, form]);
 
     const handleFinish = async (values: any) => {
-        if (values["track-desc"]) {
-            values["track-desc"] = values["track-desc"]
+        if (values["tracks"]) {
+            values["tracks"] = values["tracks"]
                 .filter((track: { track: string }) => track.track && track.track.trim())
                 .map((track: { track: string }) => track.track);
         }
-        if (values.ids) {
-            values.ids = values.ids.filter(
-                (ids: { "audio-id": string; hash: string }) =>
-                    ids["audio-id"] && ids["audio-id"].trim() && ids.hash && ids.hash.trim()
+        if (values.audio_id) {
+            values.audio_id = values.audio_id.filter(
+                (audio_id: { audio_id: string; hash: string }) =>
+                    audio_id["audio_id"] && audio_id["audio_id"].trim() && audio_id.hash && audio_id.hash.trim()
             );
+
+            const audio_id = values.audio_id.map((item: { audio_id: string }) => item.audio_id);
+            const hash = values.audio_id.map((item: { hash: string }) => item.hash);
+
+            values = {
+                no: values.no,
+                model: values.model,
+                audio_id: audio_id,
+                hash: hash,
+                title: values.title,
+                series: values.series,
+                episodes: values.episodes,
+                tracks: values.tracks,
+                release: values.release,
+                language: values.language,
+                category: values.category,
+                pic: values.pic,
+            };
         }
 
         //remove that if the API is available
@@ -102,8 +120,8 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     const resetForm = () => {
         form.resetFields();
         form.setFieldsValue({
-            ids: [{ "audio-id": audioId ? audioId : "", hash: hash ? hash : "" }],
-            "track-desc": [{ track: "" }],
+            audio_id: [{ audio_id: audioId ? audioId : "", hash: hash ? hash : "" }],
+            tracks: [{ track: "" }],
         });
     };
 
@@ -201,7 +219,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                                 <InfoCircleOutlined style={{ marginLeft: 2 }} />
                                             </Tooltip>,
                                         ]}
-                                        name="episode"
+                                        name="episodes"
                                     >
                                         <Input style={{ width: "100%" }} />
                                     </Form.Item>
@@ -226,7 +244,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                 <Col span={8}>
                                     <Form.Item
                                         label={t("tonies.addNewCustomTonieModal.model")}
-                                        name="article"
+                                        name="model"
                                         rules={[
                                             {
                                                 required: true,
@@ -238,7 +256,43 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                     </Form.Item>
                                 </Col>
                                 <Col span={16}>
-                                    <Form.Item label={t("tonies.addNewCustomTonieModal.pic")} name="image">
+                                    <Form.Item label={t("tonies.addNewCustomTonieModal.pic")} name="pic">
+                                        <Input style={{ width: "100%" }} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col span={24}>
+                            <Row gutter={[16, 0]}>
+                                <Col span={8}>
+                                    <Form.Item label={t("tonies.addNewCustomTonieModal.no")} name="no">
+                                        <Input style={{ width: "100%" }} />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={16}>
+                                    <Form.Item
+                                        label={[
+                                            t("tonies.addNewCustomTonieModal.formfieldTitle"),
+                                            <Tooltip title={t("tonies.addNewCustomTonieModal.formfieldTitleHint")}>
+                                                <InfoCircleOutlined style={{ marginLeft: 2 }} />
+                                            </Tooltip>,
+                                        ]}
+                                        name="title"
+                                    >
+                                        <Input style={{ width: "100%" }} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col span={24}>
+                            <Row gutter={[16, 0]}>
+                                <Col span={8}>
+                                    <Form.Item label={t("tonies.addNewCustomTonieModal.release")} name="release">
+                                        <Input style={{ width: "100%" }} />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={16}>
+                                    <Form.Item label={t("tonies.addNewCustomTonieModal.category")} name="category">
                                         <Input style={{ width: "100%" }} />
                                     </Form.Item>
                                 </Col>
@@ -247,7 +301,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         <Col span={24}>
                             <Row gutter={[16, 0]}>
                                 <Col span={24}>
-                                    <Form.List name="ids">
+                                    <Form.List name="audio_id">
                                         {(fields, { add, remove }) => (
                                             <>
                                                 {fields.map(({ key, name, ...restField }, index) => (
@@ -255,7 +309,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                                         <Col span={8}>
                                                             <Form.Item
                                                                 {...restField}
-                                                                name={[name, "audio-id"]}
+                                                                name={[name, "audio_id"]}
                                                                 label={
                                                                     index === 0
                                                                         ? t("tonies.addNewCustomTonieModal.audioId")
@@ -303,7 +357,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                             </Row>
                         </Col>
                         <Col span={24}>
-                            <Form.List name="track-desc">
+                            <Form.List name="tracks">
                                 {(fields, { add, remove }) => (
                                     <>
                                         {fields.map(({ key, name, ...restField }, index) => (
