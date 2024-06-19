@@ -159,18 +159,33 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             onCancel={handleJsonViewerModalClose}
         >
             {jsonData ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {JSON.stringify(jsonData, null, 2)}
-                </SyntaxHighlighter>
+                <>
+                    <SyntaxHighlighter
+                        language="json"
+                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                        customStyle={{
+                            padding: 0,
+                            borderRadius: 0,
+                            margin: 0,
+                            border: "none",
+                        }}
+                    >
+                        {JSON.stringify(jsonData, null, 2)}
+                    </SyntaxHighlighter>
+                    <div style={{ margin: "16px 0 8px 0" }}>Minimized json:</div>
+                    <SyntaxHighlighter
+                        language="json"
+                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                        customStyle={{
+                            padding: 0,
+                            borderRadius: 0,
+                            margin: 0,
+                            border: "none",
+                        }}
+                    >
+                        {JSON.stringify(jsonData, null, 0)}
+                    </SyntaxHighlighter>
+                </>
             ) : (
                 "Loading..."
             )}
