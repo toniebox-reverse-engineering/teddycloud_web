@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
 
 interface AudioContextType {
     playAudio: (url: string, meta?: any) => void;
@@ -12,7 +12,7 @@ const AudioContext = React.createContext<AudioContextType | undefined>(undefined
 export const useAudioContext = () => {
     const context = useContext(AudioContext);
     if (!context) {
-        throw new Error('useAudioContext must be used within an AudioProvider');
+        throw new Error("useAudioContext must be used within an AudioProvider");
     }
     return context;
 };
@@ -28,7 +28,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
     const playAudio = (url: string, meta?: any) => {
         console.log("Play audio: " + url);
-        const globalAudio = document.getElementById('globalAudioPlayer') as HTMLAudioElement;
+        const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
         globalAudio.src = url;
         if (meta) {
             setSongImage(meta.picture);

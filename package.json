@@ -1,31 +1,32 @@
 {
-  "name": "teddycloud-web",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": "/web",
-  "dependencies": {
-    "@dnd-kit/core": "6.1.0",
-    "@dnd-kit/sortable": "8.0.0",
-    "@mebtte/react-media-session": "1.1.2",
-    "@openapitools/openapi-generator-cli": "2.13.4",
-    "@types/jest": "29.5.12",
-    "@types/node": "20.12.8",
-    "@types/react": "18.3.1",
-    "@types/react-dom": "18.3.0",
-    "antd": "5.17.0",
-    "dnd-kit": "0.0.2",
-    "formik": "2.4.6",
-    "i18next": "23.11.3",
-    "i18next-browser-languagedetector": "7.2.1",
-    "i18next-http-backend": "2.5.1",
-    "npm-check-updates": "^16.14.20",
+    "name": "teddycloud-web",
+    "version": "0.5.1",
+    "private": true,
+    "homepage": "/web",
+    "dependencies": {
+        "@dnd-kit/core": "6.1.0",
+        "@dnd-kit/sortable": "8.0.0",
+        "@mebtte/react-media-session": "1.1.2",
+        "@openapitools/openapi-generator-cli": "2.13.4",
+        "@types/jest": "29.5.12",
+        "@types/node": "20.12.8",
+        "@types/react": "18.3.1",
+        "@types/react-dom": "18.3.0",
+        "@ant-design/icons": "^5.3.7",
+        "antd": "5.17.0",
+        "dnd-kit": "0.0.2",
+        "formik": "2.4.6",
+        "i18next": "23.11.3",
+        "i18next-browser-languagedetector": "7.2.1",
+        "i18next-http-backend": "2.5.1",
+        "npm-check-updates": "^16.14.20",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-i18next": "14.1.1",
-    "react-router-dom": "6.23.0",
-    "styled-components": "6.1.9",
-    "typescript": "5.4.5",
-    "yup": "1.4.0"
+        "react-dom": "18.3.1",
+        "react-i18next": "14.1.1",
+        "react-router-dom": "6.23.0",
+        "styled-components": "6.1.9",
+        "typescript": "5.4.5",
+        "yup": "1.4.0"
   },
   "overrides": {
     "typescript": "5.4.5",
@@ -34,30 +35,34 @@
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "7.24.5",
     "react-scripts": "5.0.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
     "lint": "npx eslint --max-warnings=0 ."
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "printWidth": 120
+    }
 }

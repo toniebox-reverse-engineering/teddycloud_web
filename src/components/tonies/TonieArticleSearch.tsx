@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Select, message } from 'antd';
-import type { SelectProps } from 'antd';
-import { TonieInfo } from './TonieCard';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Select, message } from "antd";
+import type { SelectProps } from "antd";
+import { TonieInfo } from "./TonieCard";
 
-export const TonieArticleSearch: React.FC<{ placeholder: string; onChange: (newValue: string) => void }> = (props) => {
+export const TonieArticleSearch: React.FC<{
+    placeholder: string;
+    onChange: (newValue: string) => void;
+}> = (props) => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
-    const [data, setData] = useState<SelectProps['options']>([]);
+    const [data, setData] = useState<SelectProps["options"]>([]);
     const [value, setValue] = useState<string>();
     const [, setTonieInfos] = useState<TonieInfo[]>();
 
     const handleSearch = async (search: string) => {
         const searchEncode = encodeURIComponent(search);
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/toniesJsonSearch?" +
-            "searchModel=" + searchEncode
-            + "&searchSeries=" + searchEncode
-            + "&searchEpisode=" + searchEncode;
+        const url =
+            process.env.REACT_APP_TEDDYCLOUD_API_URL +
+            "/api/toniesJsonSearch?" +
+            "searchModel=" +
+            searchEncode +
+            "&searchSeries=" +
+            searchEncode +
+            "&searchEpisode=" +
+            searchEncode;
         try {
             const response = await fetch(url, {});
             if (!response.ok) {
@@ -33,8 +41,6 @@ export const TonieArticleSearch: React.FC<{ placeholder: string; onChange: (newV
             message.error(t("tonieArticleSearch.failedToFetchSearchResults") + error);
             return;
         }
-
-
     };
 
     const handleChange = (newValue: string) => {

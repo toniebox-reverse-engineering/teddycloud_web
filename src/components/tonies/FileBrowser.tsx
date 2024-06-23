@@ -1,50 +1,52 @@
-import React, {useEffect, useState} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import {Table, message} from 'antd';
-import {Key} from 'antd/es/table/interface'; // Import Key type from Ant Design
-import {SortOrder} from 'antd/es/table/interface';
+import { useTranslation } from "react-i18next";
+import { Table, message } from "antd";
+import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
+import { SortOrder } from "antd/es/table/interface";
 
-import {useAudioContext} from '../audio/AudioContext';
+import { useAudioContext } from "../audio/AudioContext";
 
-import {PlayCircleOutlined} from '@ant-design/icons';
-import {humanFileSize} from "../../util/humanFileSize";
-import {useTranslation} from "react-i18next";
-
+import { PlayCircleOutlined } from "@ant-design/icons";
+import { humanFileSize } from "../../util/humanFileSize";
 
 export const FileBrowser: React.FC<{
-    special: string,
-    maxSelectedRows?: number,
-    trackUrl?: boolean,
-    selectTafOnly?: boolean,
-    showDirOnly?: boolean,
-    onFileSelectChange?: (files: any[], path: string, special: string) => void
+    special: string;
+    overlay?: string;
+    maxSelectedRows?: number;
+    trackUrl?: boolean;
+    selectTafOnly?: boolean;
+    showDirOnly?: boolean;
+    onFileSelectChange?: (files: any[], path: string, special: string) => void;
 }> = ({
-          special,
-          maxSelectedRows = 0,
-          selectTafOnly = true,
-          trackUrl = true,
-          showDirOnly = false,
-          onFileSelectChange
-      }) => {
-    const {t} = useTranslation();
+    special,
+    overlay = "",
+    maxSelectedRows = 0,
+    selectTafOnly = true,
+    trackUrl = true,
+    showDirOnly = false,
+    onFileSelectChange,
+}) => {
+    const { t } = useTranslation();
 
-    const {playAudio} = useAudioContext();
+    const { playAudio } = useAudioContext();
 
     const [files, setFiles] = useState([]);
-    const [path, setPath] = useState('');
+    const [path, setPath] = useState("");
+    const [overlayChanged, setOverlayChanged] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const rowClassName = (record: any) => {
-        return selectedRowKeys.includes(record.key) ? 'highlight-row' : '';
+        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
     };
     const onSelectChange = (newSelectedRowKeys: Key[]) => {
         if (selectTafOnly) {
             const rowCount = newSelectedRowKeys.length;
-            newSelectedRowKeys = newSelectedRowKeys.filter(key => {
+            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
                 const file = files.find((f: any) => f.name === key) as any;
                 return file && file.tafHeader !== undefined;
             });
@@ -53,37 +55,51 @@ export const FileBrowser: React.FC<{
             }
         }
         if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning(t("fileBrowser.maxSelectedRows", {maxSelectedRows: maxSelectedRows}));
+            message.warning(
+                t("fileBrowser.maxSelectedRows", {
+                    maxSelectedRows: maxSelectedRows,
+                })
+            );
         } else {
             setSelectedRowKeys(newSelectedRowKeys);
         }
 
         const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
-        if (onFileSelectChange !== undefined)
-            onFileSelectChange(selectedFiles, path, special);
+        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
     };
 
     useEffect(() => {
         // Function to parse the query parameters from the URL
         const queryParams = new URLSearchParams(location.search);
-        const initialPath = queryParams.get('path') || ''; // Get the 'path' parameter from the URL, default to empty string if not present
+        const initialPath = queryParams.get("path") || ""; // Get the 'path' parameter from the URL, default to empty string if not present
 
         setPath(initialPath); // Set the initial path
     }, [location]);
 
     useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        queryParams.set("path", "");
+        setPath("");
+        const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+        window.history.replaceState(null, "", newUrl);
+        setOverlayChanged(!overlayChanged);
+    }, [overlay]);
+
+    useEffect(() => {
         // TODO: fetch option value with API Client generator
-        fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}`)
+        fetch(
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}` +
+                (overlay ? `&overlay=${overlay}` : "")
+        )
             .then((response) => response.json())
             .then((data) => {
                 var list: never[] = data.files;
 
-                if (showDirOnly)
-                    list = list.filter((file: any) => file.isDir);
+                if (showDirOnly) list = list.filter((file: any) => file.isDir);
 
                 setFiles(list);
             });
-    }, [path, special, showDirOnly]);
+    }, [path, special, showDirOnly, overlayChanged]);
 
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
@@ -92,7 +108,6 @@ export const FileBrowser: React.FC<{
         }
         setPath(newPath); // Update the path state
     };
-
 
     const getFieldValue = (obj: any, keys: string[]) => {
         return keys.reduce((acc, currentKey) => {
@@ -115,9 +130,9 @@ export const FileBrowser: React.FC<{
             return -1; // Field B is undefined, consider it greater than A
         }
 
-        if (typeof fieldA === 'string' && typeof fieldB === 'string') {
+        if (typeof fieldA === "string" && typeof fieldB === "string") {
             return fieldA.localeCompare(fieldB);
-        } else if (typeof fieldA === 'number' && typeof fieldB === 'number') {
+        } else if (typeof fieldA === "number" && typeof fieldB === "number") {
             return fieldA - fieldB;
         } else {
             console.log("Unsupported types for sorting:", a, b);
@@ -127,85 +142,98 @@ export const FileBrowser: React.FC<{
     };
     const dirNameSorter = (a: any, b: any) => {
         if (a.isDir === b.isDir) {
-            return defaultSorter(a, b, 'name');
+            return defaultSorter(a, b, "name");
         }
         return a.isDir ? -1 : 1;
-    }
+    };
 
     var columns = [
         {
-            title: '',
-            dataIndex: ['tonieInfo', 'picture'],
-            key: 'picture',
+            title: "",
+            dataIndex: ["tonieInfo", "picture"],
+            key: "picture",
             sorter: undefined,
-            render: (picture: string) => picture &&
-                <img src={picture} alt={t("tonies.content.toniePicture")} style={{width: 100}}/>,
-            showOnDirOnly: false
+            render: (picture: string) =>
+                picture && <img src={picture} alt={t("tonies.content.toniePicture")} style={{ width: 100 }} />,
+            showOnDirOnly: false,
         },
         {
             title: t("fileBrowser.name"),
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: "name",
+            key: "name",
             sorter: dirNameSorter,
-            defaultSortOrder: 'ascend' as SortOrder,
-            render: (name: string, record: any) => (record.isDir ? '[' + name + ']' : name),
-            showOnDirOnly: true
+            defaultSortOrder: "ascend" as SortOrder,
+            render: (name: string, record: any) => (record.isDir ? "[" + name + "]" : name),
+            showOnDirOnly: true,
         },
         {
             title: t("fileBrowser.size"),
-            dataIndex: 'size',
-            key: 'size',
-            render: (size: number, record: any) => (record.isDir ? '<DIR>' : humanFileSize(size)),
-            showOnDirOnly: false
+            dataIndex: "size",
+            key: "size",
+            render: (size: number, record: any) => (record.isDir ? "<DIR>" : humanFileSize(size)),
+            showOnDirOnly: false,
         },
         {
             title: t("fileBrowser.model"),
-            dataIndex: ['tonieInfo', 'model'],
-            key: 'model',
-            showOnDirOnly: false
+            dataIndex: ["tonieInfo", "model"],
+            key: "model",
+            showOnDirOnly: false,
         },
         {
             title: t("fileBrowser.series"),
-            dataIndex: ['tonieInfo', 'series'],
-            key: 'series',
-            showOnDirOnly: false
+            dataIndex: ["tonieInfo", "series"],
+            key: "series",
+            showOnDirOnly: false,
         },
         {
             title: t("fileBrowser.episode"),
-            dataIndex: ['tonieInfo', 'episode'],
-            key: 'episode',
-            showOnDirOnly: false
+            dataIndex: ["tonieInfo", "episode"],
+            key: "episode",
+            showOnDirOnly: false,
         },
         {
             title: t("fileBrowser.date"),
-            dataIndex: 'date',
-            key: 'date',
+            dataIndex: "date",
+            key: "date",
             render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
-            showOnDirOnly: true
+            showOnDirOnly: true,
         },
         {
-            title: '',
-            dataIndex: 'name',
-            key: 'controls',
+            title: "",
+            dataIndex: "name",
+            key: "controls",
             sorter: undefined,
             render: (name: string, record: any) =>
-                (record.tafHeader ?
-                    <PlayCircleOutlined onClick={() => playAudio(
-                        process.env.REACT_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + name + "?ogg=true&special=" + special,
-                        record.tonieInfo)}/>
-                    : ""),
-            showOnDirOnly: false
-        }
+                record.tafHeader ? (
+                    <PlayCircleOutlined
+                        onClick={() =>
+                            playAudio(
+                                process.env.REACT_APP_TEDDYCLOUD_API_URL +
+                                    "/content" +
+                                    path +
+                                    "/" +
+                                    name +
+                                    "?ogg=true&special=" +
+                                    special +
+                                    (overlay ? `&overlay=${overlay}` : ""),
+                                record.tonieInfo
+                            )
+                        }
+                    />
+                ) : (
+                    ""
+                ),
+            showOnDirOnly: false,
+        },
     ];
 
-    columns.forEach(column => {
-        if (!column.hasOwnProperty('sorter')) {
+    columns.forEach((column) => {
+        if (!column.hasOwnProperty("sorter")) {
             (column as any).sorter = (a: any, b: any) => defaultSorter(a, b, column.dataIndex);
         }
     });
 
-    if (showDirOnly)
-        columns = columns.filter((column) => column.showOnDirOnly);
+    if (showDirOnly) columns = columns.filter((column) => column.showOnDirOnly);
 
     return (
         <Table
@@ -221,10 +249,14 @@ export const FileBrowser: React.FC<{
                 },
             })}
             rowClassName={rowClassName}
-            rowSelection={maxSelectedRows > 0 ? {
-                selectedRowKeys,
-                onChange: onSelectChange,
-            } : undefined}
+            rowSelection={
+                maxSelectedRows > 0
+                    ? {
+                          selectedRowKeys,
+                          onChange: onSelectChange,
+                      }
+                    : undefined
+            }
         />
     );
 };
