@@ -264,6 +264,10 @@ export const TonieCard: React.FC<{
         } catch (error) {
             message.error(t("tonies.messages.setTonieToSourceFailed") + error);
         }
+
+        if (!isNoCloud) {
+            handleNoCloudClick();
+        }
     };
 
     const handleModelInputChange = (e: any) => {
