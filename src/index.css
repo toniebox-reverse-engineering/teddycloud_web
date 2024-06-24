@@ -82,6 +82,7 @@ code {
 }
 
 .ant-table-cell img {
+    margin: -7px !important;
     width: 75px !important;
 }
 
@@ -91,6 +92,7 @@ code {
     }
 
     .ant-table-cell img {
+        margin: unset !important;
         width: 100px !important;
     }
 }

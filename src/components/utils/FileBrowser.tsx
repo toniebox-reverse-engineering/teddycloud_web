@@ -397,7 +397,9 @@ export const FileBrowser: React.FC<{
                     <>
                         <div className="showSmallDevicesOnly">
                             <div>
-                                {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                <div style={{ wordBreak: "break-word" }}>
+                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                </div>
                                 {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
                             </div>
 
@@ -410,7 +412,9 @@ export const FileBrowser: React.FC<{
                         </div>
                         <div className="showMediumDevicesOnly">
                             <div>
-                                {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                <div style={{ wordBreak: "break-word" }}>
+                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                </div>
                                 {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
                             </div>
                             <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
@@ -477,7 +481,7 @@ export const FileBrowser: React.FC<{
             responsive: ["xl"],
         },
         {
-            title: t("fileBrowser.actions"),
+            title: <div className="showMediumDevicesOnly showBigDevicesOnly">{t("fileBrowser.actions")}</div>,
             dataIndex: "name",
             key: "controls",
             sorter: undefined,
@@ -492,7 +496,7 @@ export const FileBrowser: React.FC<{
                             <Tooltip title={t("fileBrowser.migrateContentToLib")}>
                                 <CloudServerOutlined
                                     onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
-                                    style={{ margin: "0 16px 0 0" }}
+                                    style={{ margin: "0 8px 0 0" }}
                                 />
                             </Tooltip>
                         );
@@ -500,7 +504,7 @@ export const FileBrowser: React.FC<{
                             <Tooltip title={t("fileBrowser.migrateContentToLibRoot")}>
                                 <TruckOutlined
                                     onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
-                                    style={{ margin: "0 16px 0 0" }}
+                                    style={{ margin: "0 8px 0 0" }}
                                 />
                             </Tooltip>
                         );
@@ -508,7 +512,7 @@ export const FileBrowser: React.FC<{
                     actions.push(
                         <Tooltip title={t("fileBrowser.playFile")}>
                             <PlayCircleOutlined
-                                style={{ margin: "0 16px 0 0" }}
+                                style={{ margin: "0 8px 0 0" }}
                                 onClick={() =>
                                     playAudio(
                                         process.env.REACT_APP_TEDDYCLOUD_API_URL +
@@ -531,14 +535,14 @@ export const FileBrowser: React.FC<{
                     actions.push(
                         <Tooltip title={t("fileBrowser.tap.edit")}>
                             <EditOutlined
-                                style={{ margin: "0 16px 0 0" }}
+                                style={{ margin: "0 8px 0 0" }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
                             />
                         </Tooltip>
                     );
                     actions.push(
                         <Tooltip title={t("fileBrowser.tap.copy")}>
-                            <CopyOutlined style={{ margin: "0 16px 0 0" }} />
+                            <CopyOutlined style={{ margin: "0 8px 0 0" }} />
                         </Tooltip>
                     );
                 }
@@ -554,7 +558,7 @@ export const FileBrowser: React.FC<{
                                         "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
                                     )
                                 }
-                                style={{ margin: "0 16px 0 0" }}
+                                style={{ margin: "0 8px 0 0" }}
                             />
                         </Tooltip>
                     );
@@ -819,7 +823,6 @@ export const FileBrowser: React.FC<{
             <Table
                 dataSource={files}
                 columns={columns}
-                style={{ padding: 8 }}
                 rowKey="name"
                 pagination={false}
                 onRow={(record) => ({
