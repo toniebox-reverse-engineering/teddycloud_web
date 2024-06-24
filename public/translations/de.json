@@ -50,6 +50,7 @@
         "model": "Modell",
         "name": "Name",
         "playFile": "Abspielen",
+        "root": "Stammverzeichnis",
         "selectTafOrTapOnly": "Du kannst nur TAF oder TAP Dateien auswählen!",
         "series": "Serie",
         "size": "Größe",

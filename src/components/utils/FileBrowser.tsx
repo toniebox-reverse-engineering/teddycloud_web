@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Button, Input } from "antd";
+import { Modal, Table, Tooltip, message, Button, Input, Breadcrumb } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 import { useAudioContext } from "../audio/AudioContext";
@@ -126,12 +126,14 @@ export const FileBrowser: React.FC<{
     }, [location]);
 
     useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        queryParams.set("path", "");
-        setPath("");
-        const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
-        window.history.replaceState(null, "", newUrl);
-        setRebuildList(!rebuildList);
+        if (overlay) {
+            const queryParams = new URLSearchParams(location.search);
+            queryParams.set("path", "");
+            setPath("");
+            const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+            window.history.replaceState(null, "", newUrl);
+            setRebuildList(!rebuildList);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [overlay]);
 
@@ -207,6 +209,16 @@ export const FileBrowser: React.FC<{
             navigate(`?path=${newPath}`); // Update the URL with the new path using navigate
         }
         setPath(newPath); // Update the path state
+    };
+
+    const handleBreadcrumbClick = (dirPath: string) => {
+        if (trackUrl) {
+            navigate(`?path=${dirPath}`); // Update the URL with the new path using navigate
+        }
+        if (path === dirPath) {
+            setRebuildList(!rebuildList);
+        }
+        setPath(dirPath); // Update the path state
     };
 
     const getFieldValue = (obj: any, keys: string[]) => {
@@ -739,6 +751,33 @@ export const FileBrowser: React.FC<{
         }
     };
 
+    const generateBreadcrumbs = (path: string) => {
+        const pathArray = path.split("/").filter((segment) => segment);
+
+        const breadcrumbs = [
+            <Breadcrumb.Item key="/">
+                <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick("")}>
+                    {t("fileBrowser.root")}
+                </span>
+            </Breadcrumb.Item>,
+        ];
+
+        pathArray.forEach((segment, index) => {
+            breadcrumbs.push(
+                <Breadcrumb.Item key={path}>
+                    <span
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleBreadcrumbClick(`${"/" + pathArray.slice(0, index + 1).join("/")}`)}
+                    >
+                        {segment}
+                    </span>
+                </Breadcrumb.Item>
+            );
+        });
+
+        return breadcrumbs;
+    };
+
     return (
         <>
             {contextHolder}
@@ -765,9 +804,9 @@ export const FileBrowser: React.FC<{
                 ""
             )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                <div style={{ marginBottom: 8 }}>
-                    {t("tonies.currentPath")}
-                    {path ? path + "/" : "/"}
+                <div style={{ display: "flex", flexDirection: "row", marginBottom: 8 }}>
+                    <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
+                    <Breadcrumb style={{ lineHeight: 1.5 }}>{generateBreadcrumbs(path)}</Breadcrumb>
                 </div>
                 {maxSelectedRows === 0 && special === "library" ? (
                     <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>

@@ -50,6 +50,7 @@
         "model": "Modèle",
         "name": "Nom",
         "playFile": "Lire",
+        "root": "Dossier racine",
         "selectTafOrTapOnly": "Vous ne pouvez sélectionner que des fichiers TAF ou TAP !",
         "series": "Série",
         "size": "Taille",

@@ -61,6 +61,8 @@ export const ChangelogPage = () => {
                 "new /weg gui: overworked filebrowser to be responsive",
                 "new /web gui: overworked tonie information modal, now also available in file browser (library + content)",
                 "new /web gui: added Create Directory functionality in file browser",
+                "new /web gui: added better breadcrumb to filebrowser (clickable for easy directory switching) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/78",
+                "new /web gui: set nocloud to true if source of a tag is changed https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/77",
                 "new /web gui: fixed some bugs",
             ],
             commits: [
