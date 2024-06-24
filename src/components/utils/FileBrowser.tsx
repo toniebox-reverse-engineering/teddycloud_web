@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Button, Input, Breadcrumb } from "antd";
+import { Modal, Table, Tooltip, message, Button, Input, Breadcrumb, InputRef } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 import { useAudioContext } from "../audio/AudioContext";
@@ -60,14 +60,15 @@ export const FileBrowser: React.FC<{
     onFileSelectChange,
 }) => {
     const { t } = useTranslation();
-
     const { playAudio } = useAudioContext();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const inputRef = useRef<InputRef>(null);
+
     const [messageApi, contextHolder] = message.useMessage();
     const [files, setFiles] = useState([]);
     const [path, setPath] = useState("");
     const [rebuildList, setRebuildList] = useState(false);
-    const location = useLocation();
-    const navigate = useNavigate();
     const [currentFile, setCurrentFile] = useState("");
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -81,7 +82,7 @@ export const FileBrowser: React.FC<{
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
     const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
 
-    const [createDirectoryModalOpened, setCreateDirectoryModalOpened] = useState<boolean>(false);
+    const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState<boolean>(false);
     const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
 
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
@@ -157,6 +158,16 @@ export const FileBrowser: React.FC<{
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
+
+    useEffect(() => {
+        if (isCreateDirectoryModalOpen) {
+            setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            }, 0);
+        }
+    }, [isCreateDirectoryModalOpen]);
 
     const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
         setFileToDelete(fileName);
@@ -651,7 +662,7 @@ export const FileBrowser: React.FC<{
                         throw new Error(text);
                     }
                     message.success(t("tonies.createDirectory.directoryCreated"));
-                    setCreateDirectoryModalOpened(false);
+                    setCreateDirectoryModalOpen(false);
                     setRebuildList(!rebuildList);
                     setInputValueCreateDirectory("");
                 })
@@ -664,12 +675,12 @@ export const FileBrowser: React.FC<{
     };
 
     const handleCreateDirectoryModalClose = () => {
-        setCreateDirectoryModalOpened(false);
+        setCreateDirectoryModalOpen(false);
         setInputValueCreateDirectory("");
     };
 
     const openCreateDirectoryModal = () => {
-        setCreateDirectoryModalOpened(true);
+        setCreateDirectoryModalOpen(true);
     };
 
     const jsonViewerModal = (
@@ -734,13 +745,14 @@ export const FileBrowser: React.FC<{
     const createDirectoryModal = (
         <Modal
             title={t("tonies.createDirectory.modalTitle")}
-            open={createDirectoryModalOpened}
+            open={isCreateDirectoryModalOpen}
             onCancel={handleCreateDirectoryModalClose}
             onOk={createDirectory}
             okText={t("tonies.createDirectory.create")}
             cancelText={t("tonies.createDirectory.cancel")}
         >
             <Input
+                ref={inputRef}
                 placeholder={t("tonies.createDirectory.placeholder")}
                 value={inputValueCreateDirectory}
                 onChange={handleInputChange}
