@@ -41,10 +41,10 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     useEffect(() => {
         if (
             "sourceInfo" in tonieCardOrTAFRecord &&
-            tonieCardOrTAFRecord.sourceInfo.picture !== tonieCardOrTAFRecord.tonieInfo.picture &&
-            tonieCardOrTAFRecord.sourceInfo.series !== tonieCardOrTAFRecord.tonieInfo.series &&
-            tonieCardOrTAFRecord.sourceInfo.episode !== tonieCardOrTAFRecord.tonieInfo.episode &&
-            tonieCardOrTAFRecord.sourceInfo.tracks !== tonieCardOrTAFRecord.tonieInfo.tracks
+            (tonieCardOrTAFRecord.sourceInfo.picture !== tonieCardOrTAFRecord.tonieInfo.picture ||
+                tonieCardOrTAFRecord.sourceInfo.series !== tonieCardOrTAFRecord.tonieInfo.series ||
+                tonieCardOrTAFRecord.sourceInfo.episode !== tonieCardOrTAFRecord.tonieInfo.episode ||
+                tonieCardOrTAFRecord.sourceInfo.tracks !== tonieCardOrTAFRecord.tonieInfo.tracks)
         ) {
             setInformationFromSource(true);
             setSourcePic(tonieCardOrTAFRecord.sourceInfo.picture);
