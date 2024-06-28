@@ -530,10 +530,12 @@ export class TeddyCloudApi extends runtime.BaseAPI {
                 const matchedFile = result.data.files.find(
                     (file: { name: any }) => tag.source === `lib://${result.path}/${file.name}`.replace("///", "//")
                 );
-                if (matchedFile && matchedFile.tonieInfo) {
+                if (matchedFile) {
                     return {
                         ...tag,
-                        sourceInfo: matchedFile.tonieInfo,
+                        sourceInfo: matchedFile.tonieInfo
+                            ? matchedFile.tonieInfo
+                            : { picture: "img_unknown.png", series: matchedFile.name },
                     };
                 }
             }
@@ -544,6 +546,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         // remove this if the api returns already the sourceInfo itself
         // end
 
+        console.log(updatedTags);
         // repace updatedTags with tags if the api returns already the sourceInfo itself
         return updatedTags;
     }
