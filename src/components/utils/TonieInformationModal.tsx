@@ -232,15 +232,19 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     ) : (
                         ""
                     )}
-                    {informationFromSource && sourceTracks && sourceTracks.length > 0 ? (
-                        <>
-                            <strong>{t("tonies.infoModal.tracklist")}</strong>
-                            <ol>
-                                {sourceTracks.map((track, index) => (
-                                    <li key={index}>{track}</li>
-                                ))}
-                            </ol>
-                        </>
+                    {informationFromSource ? (
+                        sourceTracks && sourceTracks.length > 0 ? (
+                            <>
+                                <strong>{t("tonies.infoModal.tracklist")}</strong>
+                                <ol>
+                                    {sourceTracks.map((track, index) => (
+                                        <li key={index}>{track}</li>
+                                    ))}
+                                </ol>
+                            </>
+                        ) : (
+                            <></>
+                        )
                     ) : tonieCardOrTAFRecord.tonieInfo.tracks && tonieCardOrTAFRecord.tonieInfo.tracks.length > 0 ? (
                         <>
                             <strong>{t("tonies.infoModal.tracklist")}</strong>
