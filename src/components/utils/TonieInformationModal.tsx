@@ -190,7 +190,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                     bottom: 0,
                                     padding: 8,
                                     position: "absolute",
-                                    right: 0,
+                                    right: 20,
                                     height: "50%",
                                     width: "auto",
                                 }}
