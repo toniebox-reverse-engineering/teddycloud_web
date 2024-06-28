@@ -188,7 +188,7 @@ export const TonieCard: React.FC<{
 
     const handlePlayPauseClick = async () => {
         const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl;
-        playAudio(url, localTonieCard.tonieInfo);
+        playAudio(url, localTonieCard.sourceInfo ? localTonieCard.sourceInfo : localTonieCard.tonieInfo);
     };
 
     const handleBackgroundDownload = async () => {
