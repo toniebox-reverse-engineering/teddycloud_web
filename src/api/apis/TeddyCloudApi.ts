@@ -546,7 +546,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         // remove this if the api returns already the sourceInfo itself
         // end
 
-        console.log(updatedTags);
         // repace updatedTags with tags if the api returns already the sourceInfo itself
         return updatedTags;
     }
