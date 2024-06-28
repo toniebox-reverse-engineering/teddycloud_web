@@ -253,6 +253,7 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Add Model",
+        "alternativeSource": "This Tonie \"{{originalTonie}}\" has an alternative content assigned: \"{{assignedContent}}\"!",
         "cancel": "Cancel",
         "closeAudioPlayer": "Close player",
         "closeAudioPlayerPopover": "Close stops playback!",

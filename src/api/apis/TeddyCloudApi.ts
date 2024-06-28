@@ -484,7 +484,68 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<TonieCardProps[]> {
         const response = await this.apiGetTagIndexRaw(overlay, initOverrides);
-        return (await response.value()).tags;
+        const tags = (await response.value()).tags;
+
+        // remove this if the api returns already the sourceInfo itself:
+        // start
+        const uniqueSourcePaths = Array.from(
+            new Set(
+                tags
+                    .map((tag) => {
+                        const { source } = tag;
+                        if (source.startsWith("lib://")) {
+                            const pathParts = source.split("/");
+                            pathParts.pop();
+                            return pathParts.join("/").replace("lib:/", "");
+                        }
+                        return null;
+                    })
+                    .filter((source) => source !== null)
+            )
+        );
+        const fetchDataForPath = async (path: any) => {
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=library`
+                );
+                const data = await response.json();
+                return { path, data };
+            } catch (error) {
+                console.error(`Error fetching data for path: ${path}`, error);
+                return { path, data: null };
+            }
+        };
+        const results = await Promise.all(uniqueSourcePaths.map(fetchDataForPath));
+        // Check for matches and append tonieInfo to tags as sourceInfo
+        const updatedTags = tags.map((tag) => {
+            const result = results.find((result) => {
+                if (result.data && result.data.files) {
+                    return result.data.files.some(
+                        (file: { name: any }) => tag.source === `lib://${result.path}/${file.name}`.replace("///", "//")
+                    );
+                }
+                return false;
+            });
+            if (result && result.data && result.data.files) {
+                const matchedFile = result.data.files.find(
+                    (file: { name: any }) => tag.source === `lib://${result.path}/${file.name}`.replace("///", "//")
+                );
+                if (matchedFile && matchedFile.tonieInfo) {
+                    return {
+                        ...tag,
+                        sourceInfo: matchedFile.tonieInfo,
+                    };
+                }
+            }
+            // If no match found, return the tag as is
+            return tag;
+        });
+
+        // remove this if the api returns already the sourceInfo itself
+        // end
+
+        // repace updatedTags with tags if the api returns already the sourceInfo itself
+        return updatedTags;
     }
 
     /**
@@ -524,7 +585,41 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<TonieCardProps> {
         const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides);
-        return (await response.value()).tagInfo;
+
+        const tag = (await response.value()).tagInfo;
+
+        // remove this if the api returns already the sourceInfo itself:
+        // start
+        if (tag.source.startsWith("lib://")) {
+            const pathParts = tag.source.split("/");
+            pathParts.pop();
+            const path = pathParts.join("/").replace("lib:/", "");
+
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=library`
+                );
+                const data = await response.json();
+                if (data && data.files) {
+                    console.log(data);
+                    const matchedFile = data.files.find(
+                        (file: { name: any }) => tag.source === `lib://${path}/${file.name}`.replace("///", "//")
+                    );
+                    if (matchedFile && matchedFile.tonieInfo) {
+                        return {
+                            ...tag,
+                            sourceInfo: matchedFile.tonieInfo,
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error(`Error fetching data for path: ${path}`, error);
+            }
+        }
+        // remove this if the api returns already the sourceInfo itself:
+        // end
+
+        return tag;
     }
 
     async apiGetTagIndexMergedAllOverlays(

@@ -253,6 +253,7 @@
             "track": "Piste"
         },
         "addToniesCustomJsonEntry": "WIP: Ajouter un modèle",
+        "alternativeSource": "Cette Tonie \"{{originalTonie}}\" est une autre source assignée: \"{{assignedContent}}\"!",
         "cancel": "Annuler",
         "closeAudioPlayer": "Fermer le lecteur audio",
         "closeAudioPlayerPopover": "Fermer arrête la lecture!",

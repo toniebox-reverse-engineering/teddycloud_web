@@ -58,6 +58,7 @@ export type TonieCardProps = {
     audioUrl: string;
     downloadTriggerUrl: string;
     tonieInfo: TonieInfo;
+    sourceInfo: TonieInfo;
 };
 
 export const TonieCard: React.FC<{
@@ -70,6 +71,7 @@ export const TonieCard: React.FC<{
 }> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
     const [messageApi, contextHolder] = message.useMessage();
     const [isValid, setIsValid] = useState(localTonieCard.valid);
@@ -169,6 +171,10 @@ export const TonieCard: React.FC<{
             if (!response.ok) {
                 throw new Error(response.status + " " + response.statusText);
             }
+            setLocalTonieCard({
+                ...localTonieCard,
+                nocloud: !isNoCloud,
+            });
             setIsNoCloud(!isNoCloud);
             if (!isNoCloud) {
                 message.success(t("tonies.messages.cloudAccessBlocked"));
@@ -378,7 +384,13 @@ export const TonieCard: React.FC<{
 
     const actions = readOnly
         ? [
-              <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
+              <InfoCircleOutlined
+                  key="info"
+                  onClick={() => {
+                      setKeyInfoModal(keyInfoModal + 1);
+                      setInformationModalOpen(true);
+                  }}
+              />,
               isValid ? (
                   <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
               ) : (
@@ -394,7 +406,13 @@ export const TonieCard: React.FC<{
               />,
           ]
         : [
-              <InfoCircleOutlined key="info" onClick={() => setInformationModalOpen(true)} />,
+              <InfoCircleOutlined
+                  key="info"
+                  onClick={() => {
+                      setKeyInfoModal(keyInfoModal + 1);
+                      setInformationModalOpen(true);
+                  }}
+              />,
               <EditOutlined key="edit" onClick={showModelModal} />,
               isValid ? (
                   <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
@@ -448,15 +466,49 @@ export const TonieCard: React.FC<{
                     </div>
                 }
                 cover={
-                    <img
-                        alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
-                        src={localTonieCard.tonieInfo.picture}
-                        style={
-                            localTonieCard.tonieInfo.picture.includes("unknown")
-                                ? { padding: 8, paddingTop: 10 }
-                                : { padding: 8 }
-                        }
-                    />
+                    <div style={{ position: "relative" }}>
+                        {localTonieCard.tonieInfo.picture &&
+                            !localTonieCard.tonieInfo.picture.endsWith("img_unknown.png") && (
+                                <img
+                                    alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
+                                    src={localTonieCard.tonieInfo.picture}
+                                    style={
+                                        localTonieCard.tonieInfo.picture.includes("unknown")
+                                            ? { padding: 8, paddingTop: 10, width: "100%" }
+                                            : { padding: 8, width: "100%" }
+                                    }
+                                />
+                            )}
+                        {"sourceInfo" in localTonieCard &&
+                        localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture ? (
+                            <Tooltip
+                                title={t("tonies.alternativeSource", {
+                                    originalTonie: title,
+                                    assignedContent:
+                                        localTonieCard.sourceInfo.series +
+                                        (localTonieCard.sourceInfo.episode
+                                            ? " - " + localTonieCard.sourceInfo.episode
+                                            : ""),
+                                })}
+                                placement="bottom"
+                            >
+                                <img
+                                    src={localTonieCard.sourceInfo.picture}
+                                    alt=""
+                                    style={{
+                                        bottom: 0,
+                                        padding: 8,
+                                        position: "absolute",
+                                        right: 0,
+                                        height: "50%",
+                                        width: "auto",
+                                    }}
+                                />
+                            </Tooltip>
+                        ) : (
+                            ""
+                        )}
+                    </div>
                 }
                 actions={actions}
             >
@@ -470,6 +522,7 @@ export const TonieCard: React.FC<{
                 lastRUIDs={lastRUIDs}
                 onHide={onHide}
                 overlay={overlay}
+                key={keyInfoModal}
             />
             {selectFileModal}
             {editModal}
