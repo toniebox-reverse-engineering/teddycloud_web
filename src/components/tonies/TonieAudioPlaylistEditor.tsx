@@ -152,18 +152,33 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
             onCancel={handleJsonViewerModalClose}
         >
             {jsonData ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {jsonData}
-                </SyntaxHighlighter>
+                <>
+                    <SyntaxHighlighter
+                        language="json"
+                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                        customStyle={{
+                            padding: 0,
+                            borderRadius: 0,
+                            margin: 0,
+                            border: "none",
+                        }}
+                    >
+                        {jsonData}
+                    </SyntaxHighlighter>
+                    <div style={{ margin: "16px 0 8px 0" }}>Minimized json:</div>
+                    <SyntaxHighlighter
+                        language="json"
+                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                        customStyle={{
+                            padding: 0,
+                            borderRadius: 0,
+                            margin: 0,
+                            border: "none",
+                        }}
+                    >
+                        {JSON.stringify(jsonData, null, 0)}
+                    </SyntaxHighlighter>
+                </>
             ) : (
                 "Loading..."
             )}

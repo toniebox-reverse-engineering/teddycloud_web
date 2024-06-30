@@ -51,14 +51,13 @@ export const TonieAudioPlaylistsPage = () => {
                         showIcon
                         style={{ marginBottom: 8 }}
                     />
-                    <Paragraph>
-                        <FileBrowser
-                            special="library"
-                            filetypeFilter={[".tap"]}
-                            showColumns={["name", "size", "date", "controls"]}
-                            isTapList={true}
-                        />
-                    </Paragraph>
+
+                    <FileBrowser
+                        special="library"
+                        filetypeFilter={[".tap"]}
+                        showColumns={["name", "size", "date", "controls"]}
+                        isTapList={true}
+                    />
                     <Paragraph>
                         <div>
                             <Button
