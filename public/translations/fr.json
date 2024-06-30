@@ -72,7 +72,7 @@
         },
         {
             "question": "Pourquoi mon étiquette RFID ne fonctionne-t-elle pas ?",
-            "answer": "Assure-toi que tu utilises le bon type d'étiquette. Seules les étiquettes NSP SLIX-L originales fonctionnent généralement. Consulte le guide 'Quels tags RFID utiliser pour créer des figurines personnalisées'. Si tu as la version CC3200 de la Toniebox, tu peux également activer d'autres étiquettes RFID. Consulte le wiki pour plus de détails. Assure-toi également qu'il y a une certaine distance entre l'étiquette et la Toniebox (au moins 2-3mm), car une étiquette RFID placée directement ne fonctionnera pas correctement."
+            "answer": "Assure-toi que tu utilises le bon type d'étiquette. Seules les étiquettes NSP SLIX-L originales fonctionnent généralement. Trouvez plus d'informations dans le forum. Si tu as la version CC3200 de la Toniebox, tu peux également activer d'autres étiquettes RFID. Consulte le wiki pour plus de détails. Assure-toi également qu'il y a une certaine distance entre l'étiquette et la Toniebox (au moins 2-3mm), car une étiquette RFID placée directement ne fonctionnera pas correctement."
         }
     ],
     "fileBrowser": {

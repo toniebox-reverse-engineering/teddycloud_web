@@ -72,7 +72,7 @@
         },
         {
             "question": "Why isn't my RFID tag working?",
-            "answer": "Make sure you're using the correct type of tag. Only original NSP SLIX-L tags are generally compatible. Refer to the 'Which RFID Tags to Use to Build Custom Figurines' guide. If you have the CC3200 version of the Toniebox, you can enable other RFID tags as well. Check the wiki for more details. Additionally, ensure there is a certain distance between the tag and the Toniebox (at least 2-3mm) as a directly placed RFID tag won't work properly."
+            "answer": "Make sure you're using the correct type of tag. Only original NSP SLIX-L tags are generally compatible. You will find more information about this in the forum. If you have the CC3200 version of the Toniebox, you can enable other RFID tags as well. Check the wiki for more details. Additionally, ensure there is a certain distance between the tag and the Toniebox (at least 2-3mm) as a directly placed RFID tag won't work properly."
         }
     ],
     "fileBrowser": {
