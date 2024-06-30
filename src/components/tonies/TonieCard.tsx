@@ -467,18 +467,15 @@ export const TonieCard: React.FC<{
                 }
                 cover={
                     <div style={{ position: "relative" }}>
-                        {localTonieCard.tonieInfo.picture &&
-                            !localTonieCard.tonieInfo.picture.endsWith("img_unknown.png") && (
-                                <img
-                                    alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
-                                    src={localTonieCard.tonieInfo.picture}
-                                    style={
-                                        localTonieCard.tonieInfo.picture.includes("unknown")
-                                            ? { padding: 8, paddingTop: 10, width: "100%" }
-                                            : { padding: 8, width: "100%" }
-                                    }
-                                />
-                            )}
+                        <img
+                            alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
+                            src={localTonieCard.tonieInfo.picture}
+                            style={
+                                localTonieCard.tonieInfo.picture.includes("unknown")
+                                    ? { padding: 8, paddingTop: 10, width: "100%" }
+                                    : { padding: 8, width: "100%" }
+                            }
+                        />
                         {"sourceInfo" in localTonieCard &&
                         localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture ? (
                             <Tooltip
