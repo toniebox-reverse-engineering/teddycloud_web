@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { Typography, List } from "antd";
+import { Typography } from "antd";
 
 import {
     HiddenDesktop,

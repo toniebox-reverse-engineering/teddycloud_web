@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Alert } from "antd";
+import { Form, Alert, Divider, Radio, message } from "antd";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { useTranslation } from "react-i18next";
 import {
@@ -13,13 +13,14 @@ import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
-import OptionItem from "../../components/settings/OptionItem";
+import OptionItem from "../../components/utils/OptionItem";
 import { Formik } from "formik";
-import * as Yup from "yup";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 /** TODO: Create validation schema for all settings before submitting them to backend
+import * as Yup from "yup";
+...
 const settingsValidationSchema = Yup.object().shape({
   test: Yup.string().required("Dies ist ein Pflichtfeld."),
   booleanToCheck: Yup.string()
@@ -32,16 +33,69 @@ export const SettingsPage = () => {
     const { t } = useTranslation();
     const [options, setOptions] = useState<OptionsList | undefined>();
 
+    const [settingsLevel, setSettingsLevel] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchSettingsLevel = async () => {
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.settings_level`,
+                    {
+                        method: "GET",
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setSettingsLevel(data.toString());
+            } catch (error) {
+                console.error("Error fetching settings level: ", error);
+            }
+        };
+
+        fetchSettingsLevel();
+    }, []);
+
     useEffect(() => {
         const fetchOptions = async () => {
+            setLoading(true);
             const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
             if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
                 setOptions(optionsRequest);
             }
+            setLoading(false);
         };
 
         fetchOptions();
-    }, []);
+    }, [settingsLevel]);
+
+    const triggerWriteConfig = async () => {
+        try {
+            await api.apiTriggerWriteConfigGet();
+        } catch (error) {
+            message.error("Error while saving config to file.");
+        }
+    };
+
+    const handleChange = async (value: any) => {
+        try {
+            await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.settings_level`, {
+                method: "POST",
+                body: value?.toString(),
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            });
+            triggerWriteConfig();
+            setSettingsLevel(value);
+        } catch (e) {
+            message.error("Error while sending data to server.");
+        }
+    };
 
     return (
         <>
@@ -72,6 +126,7 @@ export const SettingsPage = () => {
                         showIcon
                         style={{ margin: "8px 0" }}
                     />
+                    <Divider>{t("settings.title")}</Divider>
                     <Formik
                         //validationSchema={settingsValidationSchema}
                         initialValues={{
@@ -83,6 +138,9 @@ export const SettingsPage = () => {
                     >
                         <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
                             {options?.options?.map((option, index, array) => {
+                                if (option.iD.includes("core.settings_level")) {
+                                    return null;
+                                }
                                 const parts = option.iD.split(".");
                                 const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
                                 return (
@@ -124,6 +182,17 @@ export const SettingsPage = () => {
                             })}
                         </Form>
                     </Formik>
+                    <Divider>{t("settings.levelLabel")}</Divider>
+                    <Radio.Group
+                        value={settingsLevel}
+                        onChange={(e) => handleChange(e.target.value)}
+                        style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
+                        disabled={loading}
+                    >
+                        <Radio.Button value="1">Basic</Radio.Button>
+                        <Radio.Button value="2">Detail</Radio.Button>
+                        <Radio.Button value="3">Expert</Radio.Button>
+                    </Radio.Group>
                 </StyledContent>
             </StyledLayout>
         </>

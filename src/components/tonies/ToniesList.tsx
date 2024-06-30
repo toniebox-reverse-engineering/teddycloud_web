@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { List, Switch, Input, Button, Collapse } from "antd";
+import { List, Switch, Input, Button, Collapse, Select } from "antd";
 import { useTranslation } from "react-i18next";
 import { TonieCard, TonieCardProps } from "../../components/tonies/TonieCard";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import ToniesPagination from "./ToniesPagination";
+import { languageOptions } from "../../utils/languageUtil";
 
 const { Panel } = Collapse;
+const { Option } = Select;
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
 
@@ -17,24 +19,28 @@ export const ToniesList: React.FC<{
     showPagination: boolean;
     overlay: string;
     readOnly: boolean;
-}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly }) => {
+    defaultLanguage?: string;
+}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "" }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
     const [seriesFilter, setSeriesFilter] = useState("");
     const [episodeFilter, setEpisodeFilter] = useState("");
-    const [validFilter, setValidFilter] = useState(false);
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
     const [filterLastTonieboxRUIDs, setFilterLastTonieboxRUIDs] = useState(false);
+    const [validFilter, setValidFilter] = useState(false);
     const [invalidFilter, setInvalidFilter] = useState(false);
     const [existsFilter, setExistsFilter] = useState(false);
     const [notExistsFilter, setNotExistsFilter] = useState(false);
     const [liveFilter, setLiveFilter] = useState(false);
-    const [nocloudFilter, setNocloudFilter] = useState(false);
     const [unsetLiveFilter, setUnsetLiveFilter] = useState(false);
+    const [nocloudFilter, setNocloudFilter] = useState(false);
     const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
+    const [hasCloudAuthFilter, setHasCloudAuthFilter] = useState(false);
+    const [unsetHasCloudAuthFilter, setUnsetHasCloudAuthFilter] = useState(false);
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
-    const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string]>>([]);
+    const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
     const [pageSize, setPageSize] = useState<number>(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
         if (storedState) {
@@ -47,7 +53,9 @@ export const ToniesList: React.FC<{
     const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
+    const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
 
+    const [listKey, setListKey] = useState(0); // Key for modal rendering
     const location = useLocation();
 
     useEffect(() => {
@@ -67,6 +75,30 @@ export const ToniesList: React.FC<{
         } else {
             console.log("No stored state found.");
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        const fetchTonieboxes = async () => {
+            const fetchTonieboxLastRUID = async (id: string) => {
+                const ruid = await api.apiGetTonieboxLastRUID(id);
+                return ruid;
+            };
+            const fetchTonieboxLastRUIDTime = async (id: string) => {
+                const ruidTime = await api.apiGetTonieboxLastRUIDTime(id);
+                return ruidTime;
+            };
+            const tonieboxData = await api.apiGetTonieboxesIndex();
+            const tonieboxLastRUIDs = await Promise.all(
+                tonieboxData.map(async (toniebox) => {
+                    const lastRUID = await fetchTonieboxLastRUID(toniebox.ID);
+                    const lastRUIDTime = await fetchTonieboxLastRUIDTime(toniebox.ID);
+                    return [lastRUID, lastRUIDTime, toniebox.boxName] as [string, string, string];
+                })
+            );
+            setLastTonieboxRUIDs(tonieboxLastRUIDs);
+        };
+        fetchTonieboxes();
     }, []);
 
     useEffect(() => {
@@ -80,23 +112,15 @@ export const ToniesList: React.FC<{
         } else {
             setFilteredTonies(tonieCards);
         }
-        const fetchTonieboxLastRUID = async (id: string) => {
-            const ruid = await api.apiGetTonieboxLastRUID(id);
-            return ruid;
-        };
-        const fetchTonieboxes = async () => {
-            const tonieboxData = await api.apiGetTonieboxesIndex();
-            const tonieboxLastRUIDs = await Promise.all(
-                tonieboxData.map(async (toniebox) => {
-                    const lastRUID = await fetchTonieboxLastRUID(toniebox.ID);
-                    return [lastRUID, toniebox.boxName] as [string, string];
-                })
-            );
-            setLastTonieboxRUIDs(tonieboxLastRUIDs);
-        };
-        fetchTonieboxes();
+        setListKey((prevKey) => prevKey + 1);
         setLoading(false); // Set loading to false when tonieCards are available
     }, [location.search, tonieCards]);
+
+    useEffect(() => {
+        // reset currentPage to 1 if the number of Tonies has changed.
+        setCurrentPage(1);
+        setListKey((prevKey) => prevKey + 1);
+    }, [tonieCards]);
 
     useEffect(() => {
         const stateToStore = JSON.stringify({
@@ -116,14 +140,24 @@ export const ToniesList: React.FC<{
             (tonie) =>
                 tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase()) &&
                 tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase()) &&
+                (selectedLanguages.length === 0 ||
+                    selectedLanguages.includes(
+                        tonie.tonieInfo.language !== undefined
+                            ? languageOptions.includes(tonie.tonieInfo.language)
+                                ? tonie.tonieInfo.language
+                                : "undefined"
+                            : "undefined"
+                    )) &&
                 (!validFilter || tonie.valid) &&
                 (!invalidFilter || !tonie.valid) &&
                 (!existsFilter || tonie.exists) &&
                 (!notExistsFilter || !tonie.exists) &&
                 (!liveFilter || tonie.live) &&
-                (!nocloudFilter || tonie.nocloud) &&
                 (!unsetLiveFilter || !tonie.live) &&
-                (!unsetNocloudFilter || !tonie.nocloud)
+                (!nocloudFilter || tonie.nocloud) &&
+                (!unsetNocloudFilter || !tonie.nocloud) &&
+                (!hasCloudAuthFilter || tonie.hasCloudAuth) &&
+                (!unsetHasCloudAuthFilter || !tonie.hasCloudAuth)
         );
         if (searchText) {
             filtered = filtered.filter(
@@ -139,7 +173,20 @@ export const ToniesList: React.FC<{
             // Filter by RUID part of the lastTonieboxRUIDs array
             filtered = filtered.filter((tonie) => lastTonieboxRUIDs.some(([ruid]) => ruid === tonie.ruid));
         }
+
+        if (hiddenRuids) {
+            // filter hidden RUIDs always
+            filtered = filtered.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
+        }
+        setCurrentPage(1);
         setFilteredTonies(filtered);
+        setListKey((prevKey) => prevKey + 1);
+    };
+
+    const handleHideTonieCard = (ruid: string) => {
+        setFilteredTonies(filteredTonies.filter((tonie) => tonie.ruid !== ruid));
+        setHiddenRuids((prevHiddenRuids) => [...prevHiddenRuids, ruid]);
+        setListKey((prevKey) => prevKey + 1);
     };
 
     const handleResetFilters = () => {
@@ -151,14 +198,22 @@ export const ToniesList: React.FC<{
         setExistsFilter(false);
         setNotExistsFilter(false);
         setLiveFilter(false);
-        setNocloudFilter(false);
         setUnsetLiveFilter(false);
+        setNocloudFilter(false);
         setUnsetNocloudFilter(false);
+        setHasCloudAuthFilter(false);
+        setUnsetHasCloudAuthFilter(false);
         setFilterLastTonieboxRUIDs(false);
+        setSelectedLanguages([]);
         const urlWithoutParams = window.location.pathname;
         window.history.pushState({}, "", urlWithoutParams);
         location.search = "";
+        if (hiddenRuids) {
+            // filter hidden RUIDs always
+            tonieCards = tonieCards.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
+        }
         setFilteredTonies(tonieCards);
+        setListKey((prevKey) => prevKey + 1);
     };
 
     const handleShowAll = () => {
@@ -175,6 +230,7 @@ export const ToniesList: React.FC<{
 
     const handlePageSizeChange = (current: number, size: number) => {
         setPageSize(size as number);
+        setListKey((prevKey) => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
     };
@@ -195,7 +251,7 @@ export const ToniesList: React.FC<{
     };
 
     const listPagination = (
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
             {!paginationEnabled ? (
                 <Button onClick={handleShowPagination}>{t("tonies.tonies.showPagination")}</Button>
             ) : (
@@ -252,128 +308,207 @@ export const ToniesList: React.FC<{
                                 value={episodeFilter}
                                 onChange={(e) => setEpisodeFilter(e.target.value)}
                             />
+                            <Select
+                                mode="multiple"
+                                placeholder={t("tonies.tonies.filterBar.languagePlaceholder")}
+                                value={selectedLanguages}
+                                onChange={(values) => setSelectedLanguages(values)}
+                                style={{ width: "100%", margin: "8px 0" }}
+                            >
+                                {languageOptions.map((key) => (
+                                    <Option key={key} value={key}>
+                                        {key ? t("languageUtil." + key) : t("languageUtil.other")}
+                                    </Option>
+                                ))}
+                            </Select>
                             <div>
                                 <div
                                     style={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
+                                        display: "grid",
+                                        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+                                        gap: "16px",
                                     }}
                                 >
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
-                                        <Switch
-                                            checked={validFilter}
-                                            onChange={(checked) => setValidFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        <Switch checked={validFilter} onChange={(checked) => setValidFilter(checked)} />
                                         {t("tonies.tonies.filterBar.valid")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={invalidFilter}
                                             onChange={(checked) => setInvalidFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.invalid")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={existsFilter}
                                             onChange={(checked) => setExistsFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
                                         />{" "}
                                         {t("tonies.tonies.filterBar.exists")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={notExistsFilter}
                                             onChange={(checked) => setNotExistsFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.notExists")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
-                                        <Switch
-                                            checked={liveFilter}
-                                            onChange={(checked) => setLiveFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        <Switch checked={liveFilter} onChange={(checked) => setLiveFilter(checked)} />{" "}
                                         {t("tonies.tonies.filterBar.live")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={unsetLiveFilter}
                                             onChange={(checked) => setUnsetLiveFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
                                         />{" "}
                                         {t("tonies.tonies.filterBar.unsetLive")}
                                     </div>
+
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
-                                        }}
-                                    >
-                                        <Switch
-                                            checked={nocloudFilter}
-                                            onChange={(checked) => setNocloudFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
-                                        {t("tonies.tonies.filterBar.noCloud")}
-                                    </div>
-                                    <div
-                                        style={{
-                                            flexWrap: "nowrap",
-                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={unsetNocloudFilter}
                                             onChange={(checked) => setUnsetNocloudFilter(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.unsetNoCloud")}
                                     </div>
                                     <div
                                         style={{
-                                            flexWrap: "nowrap",
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
                                             marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={nocloudFilter}
+                                            onChange={(checked) => setNocloudFilter(checked)}
+                                        />
+                                        {t("tonies.tonies.filterBar.noCloud")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
+                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={hasCloudAuthFilter}
+                                            onChange={(checked) => setHasCloudAuthFilter(checked)}
+                                        />
+                                        {t("tonies.tonies.filterBar.hasCloudAuth")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
+                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Switch
+                                            checked={unsetHasCloudAuthFilter}
+                                            onChange={(checked) => setUnsetHasCloudAuthFilter(checked)}
+                                        />
+                                        {t("tonies.tonies.filterBar.unsetHasCloudAuth")}
+                                    </div>
+                                    <div
+                                        style={{
+                                            flex: "1 1 auto",
+                                            minWidth: 0,
+                                            marginRight: 16,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            whiteSpace: "nowrap",
                                         }}
                                     >
                                         <Switch
                                             checked={filterLastTonieboxRUIDs}
                                             onChange={(checked) => setFilterLastTonieboxRUIDs(checked)}
-                                            style={{ margin: "8px 0 8px 0" }}
-                                        />{" "}
+                                        />
                                         {t("tonies.tonies.filterBar.lastPlayed")}
                                     </div>
                                 </div>
@@ -382,6 +517,7 @@ export const ToniesList: React.FC<{
                                         display: "flex",
                                         flexWrap: "wrap",
                                         justifyContent: "flex-end",
+                                        marginTop: 8,
                                     }}
                                 >
                                     <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>
@@ -411,6 +547,7 @@ export const ToniesList: React.FC<{
                     xxl: 6,
                 }}
                 dataSource={getCurrentPageData()}
+                key={listKey}
                 renderItem={(tonie) => (
                     <List.Item id={tonie.ruid}>
                         <TonieCard
@@ -418,6 +555,8 @@ export const ToniesList: React.FC<{
                             lastRUIDs={lastTonieboxRUIDs}
                             overlay={overlay}
                             readOnly={readOnly}
+                            defaultLanguage={defaultLanguage}
+                            onHide={handleHideTonieCard}
                         />
                     </List.Item>
                 )}

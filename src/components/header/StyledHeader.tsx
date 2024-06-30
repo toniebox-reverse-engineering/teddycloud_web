@@ -6,9 +6,12 @@ import logoImg from "../../assets/logo.png";
 import { Button, Drawer, Menu, MenuProps } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { ServerStatus } from "./ServerStatus";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
+import { theme } from "antd";
+
+const { useToken } = theme;
 
 const StyledLogo = styled.img`
     height: 32px;
@@ -36,8 +39,21 @@ const StyledLeftPart = styled.div`
 
 export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
     const [navOpen, setNavOpen] = useState(false);
     const location = useLocation();
+
+    useEffect(() => {
+        const themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
+        if (themeColorMetaTag) {
+            themeColorMetaTag.setAttribute("content", token.colorBgBase);
+        } else {
+            const meta = document.createElement("meta");
+            meta.name = "theme-color";
+            meta.content = token.colorBgBase;
+            document.head.appendChild(meta);
+        }
+    }, [token.colorBgBase]);
 
     const mainNav: MenuProps["items"] = [
         {

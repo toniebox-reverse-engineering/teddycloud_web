@@ -23,7 +23,7 @@ import {
     StatsListToJSON,
 } from "../models";
 
-import { TagsTonieCardList, TonieCardProps } from "../../components/tonies/TonieCard";
+import { TagTonieCard, TagsTonieCardList, TonieCardProps } from "../../components/tonies/TonieCard";
 import { TonieboxCardList, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
 
 export interface ApiSetCloudCacheContentPostRequest {
@@ -228,6 +228,86 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * get last played tonie time
+     */
+    async apiGetTonieboxLastRUIDTimeRaw(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.last_ruid_time`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.TextApiResponse(response);
+    }
+
+    /**
+     * get last played tonie time
+     */
+    async apiGetTonieboxLastRUIDTime(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTonieboxLastRUIDTimeRaw(overlay, initOverrides);
+        const timestamp = await response.value();
+        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
+        return date.toLocaleString();
+    }
+
+    /**
+     * get last IP of toniebox
+     */
+    async apiGetTonieboxLastIpRaw(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/internal.ip`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.TextApiResponse(response);
+    }
+
+    /**
+     * get last IP of toniebox
+     */
+    async apiGetTonieboxLastIp(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTonieboxLastIpRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * get toniebox content dir
      */
     async apiGetTonieboxContentDirRaw(
@@ -263,6 +343,77 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<string> {
         const response = await this.apiGetTonieboxContentDirRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * get toniebox API Access
+     */
+    async apiGetTonieboxApiAccessRaw(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<boolean>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/settings/get/toniebox.api_access`;
+        if (overlay !== "") {
+            path = path + "?overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.JSONApiResponse<boolean>(response);
+    }
+
+    /**
+     * get toniebox API access
+     */
+    async apiGetTonieboxApiAccess(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<boolean> {
+        const response = await this.apiGetTonieboxApiAccessRaw(overlay, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * get core.newBoxesAllowed
+     */
+    async apiGetNewBoxesAllowedRaw(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<boolean>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const path = `/api/settings/get/core.allowNewBox`;
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        return new runtime.JSONApiResponse<boolean>(response);
+    }
+
+    /**
+     * get core.newBoxesAllowed
+     */
+    async apiGetNewBoxesAllowed(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.apiGetNewBoxesAllowedRaw(initOverrides);
         return await response.value();
     }
 
@@ -333,7 +484,144 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<TonieCardProps[]> {
         const response = await this.apiGetTagIndexRaw(overlay, initOverrides);
-        return (await response.value()).tags;
+        const tags = (await response.value()).tags;
+
+        // remove this if the api returns already the sourceInfo itself:
+        // start
+        const uniqueSourcePaths = Array.from(
+            new Set(
+                tags
+                    .map((tag) => {
+                        const { source } = tag;
+                        if (source.startsWith("lib://")) {
+                            const pathParts = source.split("/");
+                            pathParts.pop();
+                            return pathParts.join("/").replace("lib:/", "");
+                        }
+                        return null;
+                    })
+                    .filter((source) => source !== null)
+            )
+        );
+        const fetchDataForPath = async (path: any) => {
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=library`
+                );
+                const data = await response.json();
+                return { path, data };
+            } catch (error) {
+                console.error(`Error fetching data for path: ${path}`, error);
+                return { path, data: null };
+            }
+        };
+        const results = await Promise.all(uniqueSourcePaths.map(fetchDataForPath));
+        // Check for matches and append tonieInfo to tags as sourceInfo
+        const updatedTags = tags.map((tag) => {
+            const result = results.find((result) => {
+                if (result.data && result.data.files) {
+                    return result.data.files.some(
+                        (file: { name: any }) => tag.source === `lib://${result.path}/${file.name}`.replace("///", "//")
+                    );
+                }
+                return false;
+            });
+            if (result && result.data && result.data.files) {
+                const matchedFile = result.data.files.find(
+                    (file: { name: any }) => tag.source === `lib://${result.path}/${file.name}`.replace("///", "//")
+                );
+                if (matchedFile) {
+                    return {
+                        ...tag,
+                        sourceInfo: matchedFile.tonieInfo
+                            ? matchedFile.tonieInfo
+                            : { picture: "img_unknown.png", series: matchedFile.name },
+                    };
+                }
+            }
+            // If no match found, return the tag as is
+            return tag;
+        });
+
+        // remove this if the api returns already the sourceInfo itself
+        // end
+
+        // repace updatedTags with tags if the api returns already the sourceInfo itself
+        return updatedTags;
+    }
+
+    /**
+     * get tag info
+     */
+    async apiGetTagInfoRaw(
+        ruid: string,
+        overlay?: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<runtime.ApiResponse<TagTonieCard>> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        let path = `/api/getTagInfo?ruid=${ruid}`;
+        if (overlay !== "") {
+            path = path + "&overlay=" + overlay;
+        }
+
+        const response = await this.request(
+            {
+                path: path,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+        return new runtime.JSONApiResponse<TagTonieCard>(response);
+    }
+
+    /**
+     * get tag info
+     */
+    async apiGetTagInfo(
+        ruid: string,
+        overlay?: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<TonieCardProps> {
+        const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides);
+
+        const tag = (await response.value()).tagInfo;
+
+        // remove this if the api returns already the sourceInfo itself:
+        // start
+        if (tag.source.startsWith("lib://")) {
+            const pathParts = tag.source.split("/");
+            pathParts.pop();
+            const path = pathParts.join("/").replace("lib:/", "");
+
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=library`
+                );
+                const data = await response.json();
+                if (data && data.files) {
+                    console.log(data);
+                    const matchedFile = data.files.find(
+                        (file: { name: any }) => tag.source === `lib://${path}/${file.name}`.replace("///", "//")
+                    );
+                    if (matchedFile && matchedFile.tonieInfo) {
+                        return {
+                            ...tag,
+                            sourceInfo: matchedFile.tonieInfo,
+                        };
+                    }
+                }
+            } catch (error) {
+                console.error(`Error fetching data for path: ${path}`, error);
+            }
+        }
+        // remove this if the api returns already the sourceInfo itself:
+        // end
+
+        return tag;
     }
 
     async apiGetTagIndexMergedAllOverlays(

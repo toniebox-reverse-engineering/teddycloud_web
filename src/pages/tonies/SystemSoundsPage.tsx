@@ -13,7 +13,7 @@ import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { Select } from "antd";
-import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;

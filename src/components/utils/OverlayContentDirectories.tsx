@@ -24,14 +24,12 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
     useEffect(() => {
         const fetchContentDirs = async () => {
             const tonieboxData = await api.apiGetTonieboxesIndex();
-
             const tonieboxContentDirs = await Promise.all(
                 tonieboxData.map(async (toniebox) => {
                     const contentDir = await api.apiGetTonieboxContentDir(toniebox.ID);
                     return [contentDir, toniebox.boxName, toniebox.ID] as [string, string, string];
                 })
             );
-
             const groupedContentDirs: [string, string[], string][] = tonieboxContentDirs.reduce(
                 (acc: [string, string[], string][], [contentDir, boxName, boxID]) => {
                     const existingGroupIndex = acc.findIndex((group) => group[0] === contentDir);
@@ -47,7 +45,6 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
                 },
                 []
             );
-
             const contentDir = await api.apiGetTonieboxContentDir("");
             const existingGroupIndex = groupedContentDirs.findIndex((group) => group[0] === contentDir);
             if (existingGroupIndex === -1) {
@@ -66,6 +63,7 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
             setTonieboxContentDirs(updatedContentDirs);
         };
         fetchContentDirs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSelectChange = (overlay: string) => {

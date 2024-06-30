@@ -53,7 +53,11 @@ export const CommunitySubNav = () => {
         },
         {
             key: "Forum",
-            label: <Link to="https://forum.revvox.de/">{t("community.forum.navigationTitle")}</Link>,
+            label: (
+                <Link to="https://forum.revvox.de/" target="_blank">
+                    {t("community.forum.navigationTitle")}
+                </Link>
+            ),
             icon: React.createElement(CommentOutlined),
         },
     ];

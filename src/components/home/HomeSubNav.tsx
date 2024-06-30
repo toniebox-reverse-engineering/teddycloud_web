@@ -20,6 +20,10 @@ export const HomeSubNav = () => {
             label: <Link to="/home/stats">{t("home.stats.navigationTitle")}</Link>,
             icon: React.createElement(WifiOutlined),
         },
+        {
+            key: "hiddenMeeting",
+            label: <Link to="/home/tonieMeeting"></Link>,
+        },
     ];
 
     return (

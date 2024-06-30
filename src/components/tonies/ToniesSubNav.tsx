@@ -1,12 +1,28 @@
 import { MenuProps } from "antd";
-import { UserOutlined, SettingOutlined, BookOutlined, SoundOutlined, CloudUploadOutlined } from "@ant-design/icons";
-import React from "react";
+import {
+    UserOutlined,
+    SettingOutlined,
+    BookOutlined,
+    SoundOutlined,
+    CloudUploadOutlined,
+    UnorderedListOutlined,
+    UserAddOutlined,
+} from "@ant-design/icons";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
+import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
 
 export const ToniesSubNav = () => {
     const { t } = useTranslation();
+    const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
+    const [selectedKey, setSelectedKey] = useState("");
+
+    const handleAddNewCustomButtonClick = () => {
+        setShowAddCustomTonieModal(true);
+        setSelectedKey("");
+    };
 
     const subnav: MenuProps["items"] = [
         {
@@ -15,14 +31,20 @@ export const ToniesSubNav = () => {
             icon: React.createElement(UserOutlined),
         },
         {
-            key: "system-sounds",
-            label: <Link to="/tonies/system-sounds">{t("tonies.system-sounds.navigationTitle")}</Link>,
-            icon: React.createElement(SettingOutlined),
+            key: "custom-json",
+            label: <label style={{ cursor: "pointer" }}>{t("tonies.addToniesCustomJsonEntry")}</label>,
+            onClick: handleAddNewCustomButtonClick,
+            icon: React.createElement(UserAddOutlined),
         },
         {
-            key: "content",
-            label: <Link to="/tonies/content">{t("tonies.content.navigationTitle")}</Link>,
-            icon: React.createElement(SoundOutlined),
+            key: "encoder",
+            label: <Link to="/tonies/encoder">{t("tonies.encoder.navigationTitle")}</Link>,
+            icon: React.createElement(CloudUploadOutlined),
+        },
+        {
+            key: "tap",
+            label: <Link to="/tonies/tap">{t("tonies.tap.navigationTitle")}</Link>,
+            icon: React.createElement(UnorderedListOutlined),
         },
         {
             key: "library",
@@ -30,18 +52,26 @@ export const ToniesSubNav = () => {
             icon: React.createElement(BookOutlined),
         },
         {
-            key: "encoder",
-            label: <Link to="/tonies/encoder">{t("tonies.encoder.navigationTitle")}</Link>,
-            icon: React.createElement(CloudUploadOutlined),
+            key: "content",
+            label: <Link to="/tonies/content">{t("tonies.content.navigationTitle")}</Link>,
+            icon: React.createElement(SoundOutlined),
+        },
+        {
+            key: "system-sounds",
+            label: <Link to="/tonies/system-sounds">{t("tonies.system-sounds.navigationTitle")}</Link>,
+            icon: React.createElement(SettingOutlined),
         },
     ];
 
     return (
-        <StyledSubMenu
-            mode="inline"
-            //defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub"]}
-            items={subnav}
-        />
+        <>
+            <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />
+            {showAddCustomTonieModal && (
+                <ToniesCustomJsonEditor
+                    open={showAddCustomTonieModal}
+                    onClose={() => setShowAddCustomTonieModal(false)}
+                />
+            )}
+        </>
     );
 };

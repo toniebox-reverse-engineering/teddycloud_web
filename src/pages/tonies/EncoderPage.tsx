@@ -13,10 +13,10 @@ import {
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { DraggableUploadListItem } from "../../components/tonies/DraggableUploadListItem";
+import { DraggableUploadListItem } from "../../components/utils/DraggableUploadListItem";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { MyUploadFile, upload } from "../../util/encoder";
-import { createQueryString } from "../../util/url";
+import { MyUploadFile, upload } from "../../utils/encoder";
+import { createQueryString } from "../../utils/url";
 import { DefaultOptionType } from "antd/es/select";
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };

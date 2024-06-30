@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { Typography, List, Collapse } from "antd";
 
 import {
@@ -28,7 +27,6 @@ interface TonieJsonEntry {
 export const ContributionToniesJsonPage = () => {
     const { t } = useTranslation();
 
-    const [tonieJsonEntries, setTonieJsonEntries] = useState<TonieJsonEntry[]>([]);
     const [groupedTonieJsonEntries, setGroupedTonieJsonEntries] = useState<{
         [key: string]: TonieJsonEntry[];
     }>({});
@@ -59,8 +57,6 @@ export const ContributionToniesJsonPage = () => {
                     category: item.category, // Include category
                     language: item.language, // Include language
                 }));
-
-                setTonieJsonEntries(dataArray);
 
                 // Group tonieJsonEntries by language and category
                 const groupedData: { [key: string]: TonieJsonEntry[] } = {};
