@@ -110,6 +110,43 @@ token.*
 // e.g. token.colorTextDisabled
 ```
 
+### Missing img_unknown.png
+
+As the img_unknown.png is part of the teddycloud server, normally it's not shown in the running de environment. To solve that you can do the following:
+
+1. Add img*unknown.png to the */public\_ folder.
+2. Create the file _setupProxy.js_ in _/src_ with the following content:
+
+```javascript
+const { createProxyMiddleware } = require("http-proxy-middleware");
+module.exports = function (app) {
+    app.use(
+        "/img_unknown.png",
+        createProxyMiddleware({
+            target: "http://localhost:" + process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP,
+            changeOrigin: true,
+            pathRewrite: {
+                "^/img_unknown.png": process.env.REACT_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
+            },
+        })
+    );
+    app.use(
+        "/img_unknown.png",
+        createProxyMiddleware({
+            target: "https://localhost:" + process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS,
+            changeOrigin: true,
+            pathRewrite: {
+                "^/img_unknown.png": process.env.REACT_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
+            },
+        })
+    );
+};
+```
+
+3. Restart the dev environment.
+
+After these steps, the img*unknown.png should be shown. Both files are already part of the file *.gitignore\_.
+
 ### Use translations
 
 Please use always t("...") instead of hard coded text. Add the strings both in the german and english translation.json.
