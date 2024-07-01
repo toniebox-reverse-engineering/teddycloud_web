@@ -112,9 +112,9 @@ token.*
 
 ### Missing img_unknown.png
 
-As the img_unknown.png is part of the teddycloud server, normally it's not shown in the running de environment. To solve that you can do the following:
+As the _img_unknown.png_ is part of the teddycloud server, normally it's not shown in the running de environment. To solve that you can do the following:
 
-1. Add img*unknown.png to the */public\_ folder.
+1. Add _img_unknown.png_ to the _\/public_ folder.
 2. Create the file _setupProxy.js_ in _/src_ with the following content:
 
 ```javascript
@@ -145,7 +145,7 @@ module.exports = function (app) {
 
 3. Restart the dev environment.
 
-After these steps, the img*unknown.png should be shown. Both files are already part of the file *.gitignore\_.
+After these steps, the _img_unknown.png_ should be shown. Both files are already part of the file _.gitignore_ so you do not have to care about accidentially committing them.
 
 ### Use translations
 
