@@ -64,7 +64,7 @@ export const ChangelogPage = () => {
                 "new /web gui: added better breadcrumb to filebrowser (clickable for easy directory switching) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/78",
                 "new /web gui: set nocloud to true if source of a tag is changed https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/77",
                 "new /web gui: show image and information from set source if different from model https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/80",
-                "new /web gui: filter now also searchs within sources info",
+                "new /web gui: tonie overview: filter now also considers information from set source",
                 "new /web gui: fixed bugs after updating tonies in tonies overview",
                 "new /web gui: fixed some bugs",
             ],
