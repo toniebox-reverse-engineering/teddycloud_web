@@ -159,16 +159,18 @@ export const ToniesList: React.FC<{
                     tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())) &&
                 (selectedLanguages.length === 0 ||
                     selectedLanguages.includes(
-                        (tonie.tonieInfo.language !== undefined
+                        tonie.tonieInfo.language !== undefined
                             ? languageOptions.includes(tonie.tonieInfo.language)
                                 ? tonie.tonieInfo.language
                                 : "undefined"
-                            : "undefined") ||
-                            (tonie.sourceInfo && tonie.sourceInfo.language !== undefined
-                                ? languageOptions.includes(tonie.sourceInfo.language)
-                                    ? tonie.sourceInfo.language
-                                    : "undefined"
-                                : "undefined")
+                            : "undefined"
+                    ) ||
+                    selectedLanguages.includes(
+                        tonie.sourceInfo && tonie.sourceInfo.language !== undefined
+                            ? languageOptions.includes(tonie.sourceInfo.language)
+                                ? tonie.sourceInfo.language
+                                : "undefined"
+                            : "undefined"
                     )) &&
                 (!validFilter || tonie.valid) &&
                 (!invalidFilter || !tonie.valid) &&
