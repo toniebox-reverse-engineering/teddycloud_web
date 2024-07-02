@@ -23,6 +23,8 @@ export const ToniesList: React.FC<{
     onToniesCardUpdate?: (updatedTonieCard: TonieCardProps) => void;
 }> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "", onToniesCardUpdate }) => {
     const { t } = useTranslation();
+    const location = useLocation();
+
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
     const [seriesFilter, setSeriesFilter] = useState("");
@@ -55,18 +57,7 @@ export const ToniesList: React.FC<{
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
     const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
-
     const [listKey, setListKey] = useState(0); // Key for modal rendering
-    const location = useLocation();
-
-    const handleUpdate = (updatedTonieCard: TonieCardProps) => {
-        if (onToniesCardUpdate) {
-            onToniesCardUpdate(updatedTonieCard);
-        }
-        setFilteredTonies((prevTonies) =>
-            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
-        );
-    };
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -133,7 +124,7 @@ export const ToniesList: React.FC<{
         // reset currentPage to 1 if the number of Tonies has changed.
         setCurrentPage(1);
         setListKey((prevKey) => prevKey + 1);
-    }, [tonieCards]);
+    }, [ruidHash]);
 
     useEffect(() => {
         const stateToStore = JSON.stringify({
@@ -146,6 +137,15 @@ export const ToniesList: React.FC<{
 
     const storeLocalStorage = () => {
         setLocalStore(!doLocalStore);
+    };
+
+    const handleUpdate = (updatedTonieCard: TonieCardProps) => {
+        if (onToniesCardUpdate) {
+            onToniesCardUpdate(updatedTonieCard);
+        }
+        setFilteredTonies((prevTonies) =>
+            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+        );
     };
 
     const handleFilter = () => {
