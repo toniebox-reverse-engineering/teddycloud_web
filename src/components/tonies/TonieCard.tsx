@@ -68,7 +68,8 @@ export const TonieCard: React.FC<{
     readOnly: boolean;
     defaultLanguage?: string;
     onHide: (ruid: string) => void;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide }) => {
+    onUpdate: (updatedTonieCard: TonieCardProps) => void;
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide, onUpdate }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
@@ -93,6 +94,7 @@ export const TonieCard: React.FC<{
         try {
             const updatedTonieCard = await api.apiGetTagInfo(localTonieCard.ruid, overlay);
             setLocalTonieCard(updatedTonieCard);
+            onUpdate(updatedTonieCard);
         } catch (error) {
             message.error("Error fetching updated card: " + error);
         }
@@ -154,6 +156,7 @@ export const TonieCard: React.FC<{
             } else {
                 message.success(t("tonies.messages.liveDisabled"));
             }
+            fetchUpdatedTonieCard();
         } catch (error) {
             message.error(t("tonies.messages.sourceCouldNotChangeLiveFlag") + error);
         }
@@ -181,6 +184,7 @@ export const TonieCard: React.FC<{
             } else {
                 message.success(t("tonies.messages.cloudAccessEnabled"));
             }
+            fetchUpdatedTonieCard();
         } catch (error) {
             message.error(t("tonies.messages.sourceCouldNotChangeCloudFlag") + error);
         }
@@ -467,18 +471,15 @@ export const TonieCard: React.FC<{
                 }
                 cover={
                     <div style={{ position: "relative" }}>
-                        {localTonieCard.tonieInfo.picture &&
-                            !localTonieCard.tonieInfo.picture.endsWith("img_unknown.png") && (
-                                <img
-                                    alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
-                                    src={localTonieCard.tonieInfo.picture}
-                                    style={
-                                        localTonieCard.tonieInfo.picture.includes("unknown")
-                                            ? { padding: 8, paddingTop: 10, width: "100%" }
-                                            : { padding: 8, width: "100%" }
-                                    }
-                                />
-                            )}
+                        <img
+                            alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
+                            src={localTonieCard.tonieInfo.picture}
+                            style={
+                                localTonieCard.tonieInfo.picture.includes("unknown")
+                                    ? { padding: 8, paddingTop: 10, width: "100%" }
+                                    : { padding: 8, width: "100%" }
+                            }
+                        />
                         {"sourceInfo" in localTonieCard &&
                         localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture ? (
                             <Tooltip

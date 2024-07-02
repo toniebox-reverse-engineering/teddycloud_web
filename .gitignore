@@ -24,3 +24,5 @@ yarn-debug.log*
 yarn-error.log*
 localhost-key.pem
 localhost.pem
+src/setupProxy.js
+public/img_unknown.png

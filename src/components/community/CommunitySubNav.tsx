@@ -6,6 +6,7 @@ import {
     FireOutlined,
     BranchesOutlined,
     FileTextOutlined,
+    QuestionCircleOutlined,
 } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -20,6 +21,11 @@ export const CommunitySubNav = () => {
             key: "community",
             label: <Link to="/community">{t("community.navigationTitle")}</Link>,
             icon: React.createElement(LikeOutlined),
+        },
+        {
+            key: "faq",
+            label: <Link to="/community/faq">{t("community.faq.navigationTitle")}</Link>,
+            icon: React.createElement(QuestionCircleOutlined),
         },
         {
             key: "contribution",

@@ -66,7 +66,7 @@ export const HomePage = () => {
 
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
-            const tonieData = (await api.apiGetTagIndexMergedAllOverlays()).filter(item => !item.hide);;
+            const tonieData = (await api.apiGetTagIndexMergedAllOverlays()).filter((item) => !item.hide);
             // sort random
             setTonies(
                 tonieData.sort((a, b) => {
@@ -200,6 +200,9 @@ export const HomePage = () => {
                     <Paragraph>
                         <h2>{t("home.helpfulLinks")}</h2>
                         <ul>
+                            <li>
+                                <Link to="/community/faq">FAQ</Link>
+                            </li>
                             <li>
                                 <Link to="https://github.com/toniebox-reverse-engineering" target="_blank">
                                     GitHub

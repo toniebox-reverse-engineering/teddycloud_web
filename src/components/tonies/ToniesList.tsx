@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { List, Switch, Input, Button, Collapse, Select } from "antd";
 import { useTranslation } from "react-i18next";
@@ -20,7 +20,8 @@ export const ToniesList: React.FC<{
     overlay: string;
     readOnly: boolean;
     defaultLanguage?: string;
-}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "" }) => {
+    onToniesCardUpdate?: (updatedTonieCard: TonieCardProps) => void;
+}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "", onToniesCardUpdate }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
@@ -57,6 +58,15 @@ export const ToniesList: React.FC<{
 
     const [listKey, setListKey] = useState(0); // Key for modal rendering
     const location = useLocation();
+
+    const handleUpdate = (updatedTonieCard: TonieCardProps) => {
+        if (onToniesCardUpdate) {
+            onToniesCardUpdate(updatedTonieCard);
+        }
+        setFilteredTonies((prevTonies) =>
+            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+        );
+    };
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -101,6 +111,8 @@ export const ToniesList: React.FC<{
         fetchTonieboxes();
     }, []);
 
+    const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
+
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get("tonieRUID");
@@ -114,7 +126,8 @@ export const ToniesList: React.FC<{
         }
         setListKey((prevKey) => prevKey + 1);
         setLoading(false); // Set loading to false when tonieCards are available
-    }, [location.search, tonieCards]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.search, ruidHash]);
 
     useEffect(() => {
         // reset currentPage to 1 if the number of Tonies has changed.
@@ -138,13 +151,24 @@ export const ToniesList: React.FC<{
     const handleFilter = () => {
         let filtered = tonieCards.filter(
             (tonie) =>
-                tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase()) &&
-                tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase()) &&
+                ((tonie.sourceInfo?.series &&
+                    tonie.sourceInfo.series.toLowerCase().includes(seriesFilter.toLowerCase())) ||
+                    tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase())) &&
+                ((tonie.sourceInfo?.episode &&
+                    tonie.sourceInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())) ||
+                    tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())) &&
                 (selectedLanguages.length === 0 ||
                     selectedLanguages.includes(
                         tonie.tonieInfo.language !== undefined
                             ? languageOptions.includes(tonie.tonieInfo.language)
                                 ? tonie.tonieInfo.language
+                                : "undefined"
+                            : "undefined"
+                    ) ||
+                    selectedLanguages.includes(
+                        tonie.sourceInfo && tonie.sourceInfo.language !== undefined
+                            ? languageOptions.includes(tonie.sourceInfo.language)
+                                ? tonie.sourceInfo.language
                                 : "undefined"
                             : "undefined"
                     )) &&
@@ -163,8 +187,14 @@ export const ToniesList: React.FC<{
             filtered = filtered.filter(
                 (tonie) =>
                     tonie.tonieInfo.series.toLowerCase().includes(searchText.toLowerCase()) ||
+                    (tonie.sourceInfo?.series &&
+                        tonie.sourceInfo.series.toLowerCase().includes(searchText.toLowerCase())) ||
                     tonie.tonieInfo.episode.toLowerCase().includes(searchText.toLowerCase()) ||
+                    (tonie.sourceInfo?.episode &&
+                        tonie.sourceInfo.episode.toLowerCase().includes(searchText.toLowerCase())) ||
                     tonie.tonieInfo.model.toLowerCase().includes(searchText.toLowerCase()) ||
+                    (tonie.sourceInfo?.model &&
+                        tonie.sourceInfo.model.toLowerCase().includes(searchText.toLowerCase())) ||
                     tonie.ruid.toLowerCase().includes(searchText.toLowerCase()) ||
                     tonie.uid.toLowerCase().includes(searchText.toLowerCase())
             );
@@ -557,6 +587,7 @@ export const ToniesList: React.FC<{
                             readOnly={readOnly}
                             defaultLanguage={defaultLanguage}
                             onHide={handleHideTonieCard}
+                            onUpdate={handleUpdate}
                         />
                     </List.Item>
                 )}
