@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { List, Switch, Input, Button, Collapse, Select } from "antd";
 import { useTranslation } from "react-i18next";
@@ -20,7 +20,8 @@ export const ToniesList: React.FC<{
     overlay: string;
     readOnly: boolean;
     defaultLanguage?: string;
-}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "" }) => {
+    onToniesCardUpdate?: (updatedTonieCard: TonieCardProps) => void;
+}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "", onToniesCardUpdate }) => {
     const { t } = useTranslation();
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
@@ -57,6 +58,15 @@ export const ToniesList: React.FC<{
 
     const [listKey, setListKey] = useState(0); // Key for modal rendering
     const location = useLocation();
+
+    const handleUpdate = (updatedTonieCard: TonieCardProps) => {
+        if (onToniesCardUpdate) {
+            onToniesCardUpdate(updatedTonieCard);
+        }
+        setFilteredTonies((prevTonies) =>
+            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+        );
+    };
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -101,6 +111,8 @@ export const ToniesList: React.FC<{
         fetchTonieboxes();
     }, []);
 
+    const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
+
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get("tonieRUID");
@@ -114,7 +126,8 @@ export const ToniesList: React.FC<{
         }
         setListKey((prevKey) => prevKey + 1);
         setLoading(false); // Set loading to false when tonieCards are available
-    }, [location.search, tonieCards]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.search, ruidHash]);
 
     useEffect(() => {
         // reset currentPage to 1 if the number of Tonies has changed.
@@ -557,6 +570,7 @@ export const ToniesList: React.FC<{
                             readOnly={readOnly}
                             defaultLanguage={defaultLanguage}
                             onHide={handleHideTonieCard}
+                            onUpdate={handleUpdate}
                         />
                     </List.Item>
                 )}

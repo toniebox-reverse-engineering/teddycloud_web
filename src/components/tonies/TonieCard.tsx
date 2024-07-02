@@ -68,7 +68,8 @@ export const TonieCard: React.FC<{
     readOnly: boolean;
     defaultLanguage?: string;
     onHide: (ruid: string) => void;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide }) => {
+    onUpdate: (updatedTonieCard: TonieCardProps) => void;
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide, onUpdate }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
@@ -93,6 +94,7 @@ export const TonieCard: React.FC<{
         try {
             const updatedTonieCard = await api.apiGetTagInfo(localTonieCard.ruid, overlay);
             setLocalTonieCard(updatedTonieCard);
+            onUpdate(updatedTonieCard);
         } catch (error) {
             message.error("Error fetching updated card: " + error);
         }
@@ -154,6 +156,7 @@ export const TonieCard: React.FC<{
             } else {
                 message.success(t("tonies.messages.liveDisabled"));
             }
+            fetchUpdatedTonieCard();
         } catch (error) {
             message.error(t("tonies.messages.sourceCouldNotChangeLiveFlag") + error);
         }
@@ -181,6 +184,7 @@ export const TonieCard: React.FC<{
             } else {
                 message.success(t("tonies.messages.cloudAccessEnabled"));
             }
+            fetchUpdatedTonieCard();
         } catch (error) {
             message.error(t("tonies.messages.sourceCouldNotChangeCloudFlag") + error);
         }

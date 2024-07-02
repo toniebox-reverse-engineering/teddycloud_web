@@ -36,6 +36,12 @@ export const ToniesPage = () => {
     const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent(linkOverlay);
     const [defaultLanguage, setMaxTag] = useState<string>("");
 
+    const handleUpdate = (updatedTonieCard: TonieCardProps) => {
+        setTonies((prevTonies) =>
+            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+        );
+    };
+
     useEffect(() => {
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
@@ -142,6 +148,7 @@ export const ToniesPage = () => {
                         overlay={overlay}
                         readOnly={false}
                         defaultLanguage={defaultLanguage}
+                        onToniesCardUpdate={handleUpdate}
                     />
                 </StyledContent>
             </StyledLayout>
