@@ -151,15 +151,24 @@ export const ToniesList: React.FC<{
     const handleFilter = () => {
         let filtered = tonieCards.filter(
             (tonie) =>
-                tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase()) &&
-                tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase()) &&
+                ((tonie.sourceInfo?.series &&
+                    tonie.sourceInfo.series.toLowerCase().includes(seriesFilter.toLowerCase())) ||
+                    tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase())) &&
+                ((tonie.sourceInfo?.episode &&
+                    tonie.sourceInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())) ||
+                    tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())) &&
                 (selectedLanguages.length === 0 ||
                     selectedLanguages.includes(
-                        tonie.tonieInfo.language !== undefined
+                        (tonie.tonieInfo.language !== undefined
                             ? languageOptions.includes(tonie.tonieInfo.language)
                                 ? tonie.tonieInfo.language
                                 : "undefined"
-                            : "undefined"
+                            : "undefined") ||
+                            (tonie.sourceInfo && tonie.sourceInfo.language !== undefined
+                                ? languageOptions.includes(tonie.sourceInfo.language)
+                                    ? tonie.sourceInfo.language
+                                    : "undefined"
+                                : "undefined")
                     )) &&
                 (!validFilter || tonie.valid) &&
                 (!invalidFilter || !tonie.valid) &&
@@ -176,8 +185,14 @@ export const ToniesList: React.FC<{
             filtered = filtered.filter(
                 (tonie) =>
                     tonie.tonieInfo.series.toLowerCase().includes(searchText.toLowerCase()) ||
+                    (tonie.sourceInfo?.series &&
+                        tonie.sourceInfo.series.toLowerCase().includes(searchText.toLowerCase())) ||
                     tonie.tonieInfo.episode.toLowerCase().includes(searchText.toLowerCase()) ||
+                    (tonie.sourceInfo?.episode &&
+                        tonie.sourceInfo.episode.toLowerCase().includes(searchText.toLowerCase())) ||
                     tonie.tonieInfo.model.toLowerCase().includes(searchText.toLowerCase()) ||
+                    (tonie.sourceInfo?.model &&
+                        tonie.sourceInfo.model.toLowerCase().includes(searchText.toLowerCase())) ||
                     tonie.ruid.toLowerCase().includes(searchText.toLowerCase()) ||
                     tonie.uid.toLowerCase().includes(searchText.toLowerCase())
             );
