@@ -66,6 +66,7 @@ export const ChangelogPage = () => {
                 "new /web gui: show image and information from set source if different from model https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/80",
                 "new /web gui: tonie overview: filter now also considers information from set source",
                 "new /web gui: fixed bugs after updating tonies in tonies overview",
+                "new /web gui: added FAQ page in community section",
                 "new /web gui: fixed some bugs",
             ],
             commits: [
