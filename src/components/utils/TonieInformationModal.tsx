@@ -36,12 +36,14 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     const [informationFromSource, setInformationFromSource] = useState<boolean>(false);
     const [sourcePic, setSourcePic] = useState<string>("");
     const [sourceTracks, setSourceTracks] = useState<string[]>([]);
-    const [sourceTitle, setSourceTitle] = useState<string>("");
 
     useEffect(() => {
         if (
             "sourceInfo" in tonieCardOrTAFRecord &&
-            (tonieCardOrTAFRecord.sourceInfo.picture !== tonieCardOrTAFRecord.tonieInfo.picture ||
+            ((tonieCardOrTAFRecord.sourceInfo.picture !== tonieCardOrTAFRecord.tonieInfo.picture &&
+                modelTitle !== sourceTitle) ||
+                (tonieCardOrTAFRecord.sourceInfo.picture === tonieCardOrTAFRecord.tonieInfo.picture &&
+                    modelTitle !== sourceTitle) ||
                 tonieCardOrTAFRecord.sourceInfo.series !== tonieCardOrTAFRecord.tonieInfo.series ||
                 tonieCardOrTAFRecord.sourceInfo.episode !== tonieCardOrTAFRecord.tonieInfo.episode ||
                 tonieCardOrTAFRecord.sourceInfo.tracks.join(".") !== tonieCardOrTAFRecord.tonieInfo.tracks.join("."))
@@ -49,11 +51,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             setInformationFromSource(true);
             setSourcePic(tonieCardOrTAFRecord.sourceInfo.picture);
             setSourceTracks(tonieCardOrTAFRecord.sourceInfo.tracks);
-            setSourceTitle(
-                tonieCardOrTAFRecord.sourceInfo.series +
-                    (tonieCardOrTAFRecord.sourceInfo.episode ? " - " + tonieCardOrTAFRecord.sourceInfo.episode : "")
-            );
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tonieCardOrTAFRecord, isOpen]);
 
     const toniePlayedOn =
@@ -81,11 +80,17 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         setIsConfirmHideModalVisible(false);
     };
 
-    const originalTonie =
+    const modelTitle =
         `${tonieCardOrTAFRecord.tonieInfo.series}` +
         (tonieCardOrTAFRecord.tonieInfo.episode ? ` - ${tonieCardOrTAFRecord.tonieInfo.episode}` : "");
 
-    const title = informationFromSource ? sourceTitle : originalTonie;
+    const sourceTitle =
+        "sourceInfo" in tonieCardOrTAFRecord
+            ? `${tonieCardOrTAFRecord.sourceInfo.series}` +
+              (tonieCardOrTAFRecord.sourceInfo.episode ? ` - ${tonieCardOrTAFRecord.sourceInfo.episode}` : "")
+            : "";
+
+    const title = informationFromSource ? sourceTitle : modelTitle;
 
     const informationModalTitle = (
         <>
@@ -171,14 +176,13 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 onCancel={onClose}
             >
                 <div style={{ position: "relative" }}>
-                    {tonieCardOrTAFRecord.tonieInfo.picture &&
-                        !tonieCardOrTAFRecord.tonieInfo.picture.endsWith("img_unknown.png") && (
-                            <img src={tonieCardOrTAFRecord.tonieInfo.picture} alt="" style={{ width: "100%" }} />
-                        )}
+                    {tonieCardOrTAFRecord.tonieInfo.picture && (
+                        <img src={tonieCardOrTAFRecord.tonieInfo.picture} alt="" style={{ width: "100%" }} />
+                    )}
                     {informationFromSource && "source" in tonieCardOrTAFRecord && sourcePic ? (
                         <Tooltip
                             title={t("tonies.alternativeSource", {
-                                originalTonie: originalTonie,
+                                originalTonie: modelTitle,
                                 assignedContent: sourceTitle,
                             })}
                             placement="bottom"

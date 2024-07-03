@@ -291,7 +291,7 @@ export const TonieCard: React.FC<{
         .filter(([ruid]) => ruid === localTonieCard.ruid)
         .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }));
 
-    const title =
+    const modelTitle =
         `${localTonieCard.tonieInfo.series}` +
         (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
 
@@ -315,7 +315,7 @@ export const TonieCard: React.FC<{
                 {t("tonies.editModal.title")}
                 {localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : ""}
             </h3>
-            {localTonieCard.tonieInfo.series ? <Text type="secondary">{title}</Text> : " "}
+            {localTonieCard.tonieInfo.series ? <Text type="secondary">{modelTitle}</Text> : " "}
         </>
     );
 
@@ -487,10 +487,13 @@ export const TonieCard: React.FC<{
                             }
                         />
                         {"sourceInfo" in localTonieCard &&
-                        localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture ? (
+                        ((localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture &&
+                            modelTitle !== sourceTitle) ||
+                            (localTonieCard.sourceInfo.picture === localTonieCard.tonieInfo.picture &&
+                                modelTitle !== sourceTitle)) ? (
                             <Tooltip
                                 title={t("tonies.alternativeSource", {
-                                    originalTonie: title,
+                                    originalTonie: modelTitle,
                                     assignedContent: sourceTitle,
                                 })}
                                 placement="bottom"
