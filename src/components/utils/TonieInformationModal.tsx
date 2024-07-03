@@ -176,10 +176,18 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 onCancel={onClose}
             >
                 <div style={{ position: "relative" }}>
-                    {tonieCardOrTAFRecord.tonieInfo.picture && (
-                        <img src={tonieCardOrTAFRecord.tonieInfo.picture} alt="" style={{ width: "100%" }} />
-                    )}
-                    {informationFromSource && "source" in tonieCardOrTAFRecord && sourcePic ? (
+                    {
+                        <img
+                            src={
+                                tonieCardOrTAFRecord.tonieInfo.picture
+                                    ? tonieCardOrTAFRecord.tonieInfo.picture
+                                    : "/img_unknown.png"
+                            }
+                            alt=""
+                            style={{ width: "100%" }}
+                        />
+                    }
+                    {informationFromSource ? (
                         <Tooltip
                             title={t("tonies.alternativeSource", {
                                 originalTonie: modelTitle,

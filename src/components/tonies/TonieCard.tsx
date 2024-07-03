@@ -443,6 +443,11 @@ export const TonieCard: React.FC<{
               />,
           ];
 
+    const showSourceInfoPicture =
+        "sourceInfo" in localTonieCard &&
+        ((localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle) ||
+            (localTonieCard.sourceInfo.picture === localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle));
+
     return (
         <>
             {contextHolder}
@@ -479,18 +484,16 @@ export const TonieCard: React.FC<{
                     <div style={{ position: "relative" }}>
                         <img
                             alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
-                            src={localTonieCard.tonieInfo.picture}
+                            src={
+                                localTonieCard.tonieInfo.picture ? localTonieCard.tonieInfo.picture : "/img_unknown.png"
+                            }
                             style={
-                                localTonieCard.tonieInfo.picture.includes("unknown")
+                                localTonieCard.tonieInfo.picture.endsWith("img_unknown.png")
                                     ? { padding: 8, paddingTop: 10, width: "100%" }
                                     : { padding: 8, width: "100%" }
                             }
                         />
-                        {"sourceInfo" in localTonieCard &&
-                        ((localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture &&
-                            modelTitle !== sourceTitle) ||
-                            (localTonieCard.sourceInfo.picture === localTonieCard.tonieInfo.picture &&
-                                modelTitle !== sourceTitle)) ? (
+                        {showSourceInfoPicture ? (
                             <Tooltip
                                 title={t("tonies.alternativeSource", {
                                     originalTonie: modelTitle,
