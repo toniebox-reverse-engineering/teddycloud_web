@@ -295,6 +295,12 @@ export const TonieCard: React.FC<{
         `${localTonieCard.tonieInfo.series}` +
         (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
 
+    const sourceTitle =
+        "sourceInfo" in localTonieCard
+            ? `${localTonieCard.sourceInfo.series}` +
+              (localTonieCard.sourceInfo.episode ? ` - ${localTonieCard.sourceInfo.episode}` : "")
+            : "";
+
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
     };
@@ -485,11 +491,7 @@ export const TonieCard: React.FC<{
                             <Tooltip
                                 title={t("tonies.alternativeSource", {
                                     originalTonie: title,
-                                    assignedContent:
-                                        localTonieCard.sourceInfo.series +
-                                        (localTonieCard.sourceInfo.episode
-                                            ? " - " + localTonieCard.sourceInfo.episode
-                                            : ""),
+                                    assignedContent: sourceTitle,
                                 })}
                                 placement="bottom"
                             >
