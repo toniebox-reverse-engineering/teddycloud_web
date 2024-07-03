@@ -301,7 +301,7 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Modell anlegen",
-        "alternativeSource": "Der Toniefigur \"{{originalTonie}}\" ist ein alternativer Inhalt zugeordnet: \"{{assignedContent}}\"!",
+        "alternativeSource": "Der Toniefigur \"{{originalTonie}}\" ist der Inhalt \"{{assignedContent}}\" zugeordnet!",
         "cancel": "Abbrechen",
         "closeAudioPlayer": "Player schließen",
         "closeAudioPlayerPopover": "Schließen stoppt die Wiedergabe!",
