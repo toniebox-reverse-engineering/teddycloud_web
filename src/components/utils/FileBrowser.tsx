@@ -381,9 +381,10 @@ export const FileBrowser: React.FC<{
             key: "picture",
             sorter: undefined,
             width: 10,
-            render: (picture: string, record: any) =>
+            render: (picture: string, record: any, index: number) =>
                 record && record.tonieInfo?.picture ? (
                     <img
+                        key={`picture-${record.name}`}
                         src={record.tonieInfo.picture}
                         alt={t("tonies.content.toniePicture")}
                         onClick={() => showInformationModal(record)}
@@ -405,7 +406,7 @@ export const FileBrowser: React.FC<{
             defaultSortOrder: "ascend" as SortOrder,
             render: (picture: string, record: any) =>
                 record && (
-                    <>
+                    <div key={`name-${record.name}`}>
                         <div className="showSmallDevicesOnly">
                             <div>
                                 <div style={{ wordBreak: "break-word" }}>
@@ -431,7 +432,7 @@ export const FileBrowser: React.FC<{
                             <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
                         </div>
                         <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
-                    </>
+                    </div>
                 ),
             showOnDirOnly: true,
         },
@@ -439,7 +440,9 @@ export const FileBrowser: React.FC<{
             title: t("fileBrowser.size"),
             dataIndex: "size",
             key: "size",
-            render: (size: number, record: any) => (record.isDir ? "<DIR>" : humanFileSize(size)),
+            render: (size: number, record: any) => (
+                <div key={`size-${record.name}`}>{record.isDir ? "<DIR>" : humanFileSize(size)}</div>
+            ),
             showOnDirOnly: false,
             responsive: ["xl"],
         },
@@ -449,6 +452,7 @@ export const FileBrowser: React.FC<{
             key: "model",
             showOnDirOnly: false,
             responsive: ["xl"],
+            render: (model: string, record: any) => <div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>,
         },
         {
             title: (
@@ -462,7 +466,7 @@ export const FileBrowser: React.FC<{
             dataIndex: ["tonieInfo", "series"],
             key: "series",
             render: (series: string, record: any) => (
-                <>
+                <div key={`series-${record.name}`}>
                     <div className="showMediumDevicesOnly">
                         <div>{record.tonieInfo?.model}</div>
                         <div style={{ wordBreak: "break-word" }}>
@@ -471,7 +475,7 @@ export const FileBrowser: React.FC<{
                         </div>
                     </div>
                     <div className="showBigDevicesOnly">{record.tonieInfo?.series ? record.tonieInfo?.series : ""}</div>
-                </>
+                </div>
             ),
             showOnDirOnly: false,
             responsive: ["md"],
@@ -482,12 +486,17 @@ export const FileBrowser: React.FC<{
             key: "episode",
             showOnDirOnly: false,
             responsive: ["xl"],
+            render: (episode: string, record: any) => (
+                <div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>
+            ),
         },
         {
             title: t("fileBrowser.date"),
             dataIndex: "date",
             key: "date",
-            render: (timestamp: number) => new Date(timestamp * 1000).toLocaleString(),
+            render: (timestamp: number, record: any) => (
+                <div key={`date-${record.name}`}>{new Date(timestamp * 1000).toLocaleString()}</div>
+            ),
             showOnDirOnly: true,
             responsive: ["xl"],
         },
@@ -504,7 +513,7 @@ export const FileBrowser: React.FC<{
                     // migration to lib possible
                     if (special !== "library") {
                         actions.push(
-                            <Tooltip title={t("fileBrowser.migrateContentToLib")}>
+                            <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
                                 <CloudServerOutlined
                                     onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
                                     style={{ margin: "0 8px 0 0" }}
@@ -512,7 +521,10 @@ export const FileBrowser: React.FC<{
                             </Tooltip>
                         );
                         actions.push(
-                            <Tooltip title={t("fileBrowser.migrateContentToLibRoot")}>
+                            <Tooltip
+                                key={`action-migrate-root-${record.name}`}
+                                title={t("fileBrowser.migrateContentToLibRoot")}
+                            >
                                 <TruckOutlined
                                     onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
                                     style={{ margin: "0 8px 0 0" }}
@@ -521,7 +533,7 @@ export const FileBrowser: React.FC<{
                         );
                     }
                     actions.push(
-                        <Tooltip title={t("fileBrowser.playFile")}>
+                        <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
                             <PlayCircleOutlined
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() =>
@@ -544,7 +556,7 @@ export const FileBrowser: React.FC<{
                 // tap file
                 if (isTapList && record.name.includes(".tap")) {
                     actions.push(
-                        <Tooltip title={t("fileBrowser.tap.edit")}>
+                        <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tap.edit")}>
                             <EditOutlined
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
@@ -552,7 +564,7 @@ export const FileBrowser: React.FC<{
                         </Tooltip>
                     );
                     actions.push(
-                        <Tooltip title={t("fileBrowser.tap.copy")}>
+                        <Tooltip key={`action-copy-${record.name}`} title={t("fileBrowser.tap.copy")}>
                             <CopyOutlined style={{ margin: "0 8px 0 0" }} />
                         </Tooltip>
                     );
@@ -560,7 +572,7 @@ export const FileBrowser: React.FC<{
                 // include the delete action
                 if (record.name !== ".." && maxSelectedRows === 0) {
                     actions.push(
-                        <Tooltip title={t("fileBrowser.delete")}>
+                        <Tooltip key={`action-delete-${record.name}`} title={t("fileBrowser.delete")}>
                             <DeleteOutlined
                                 onClick={() =>
                                     showDeleteConfirmDialog(
@@ -767,31 +779,33 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    const generateBreadcrumbs = (path: string) => {
+    const generateBreadcrumbs = (path: string, handleBreadcrumbClick: { (dirPath: string): void }) => {
         const pathArray = path.split("/").filter((segment) => segment);
 
-        const breadcrumbs = [
-            <Breadcrumb.Item key="/">
-                <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick("")}>
-                    {t("fileBrowser.root")}
-                </span>
-            </Breadcrumb.Item>,
+        const breadcrumbItems = [
+            {
+                title: (
+                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick("")}>
+                        {t("fileBrowser.root")}
+                    </span>
+                ),
+                key: "/",
+            },
         ];
 
         pathArray.forEach((segment, index) => {
-            breadcrumbs.push(
-                <Breadcrumb.Item key={path}>
-                    <span
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleBreadcrumbClick(`${"/" + pathArray.slice(0, index + 1).join("/")}`)}
-                    >
+            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
+            breadcrumbItems.push({
+                title: (
+                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
                         {segment}
                     </span>
-                </Breadcrumb.Item>
-            );
+                ),
+                key: segmentPath,
+            });
         });
 
-        return breadcrumbs;
+        return <Breadcrumb items={breadcrumbItems} />;
     };
 
     return (
@@ -822,7 +836,7 @@ export const FileBrowser: React.FC<{
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", flexDirection: "row", marginBottom: 8 }}>
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
-                    <Breadcrumb style={{ lineHeight: 1.5 }}>{generateBreadcrumbs(path)}</Breadcrumb>
+                    {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
                 {maxSelectedRows === 0 && special === "library" ? (
                     <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
@@ -835,7 +849,7 @@ export const FileBrowser: React.FC<{
             <Table
                 dataSource={files}
                 columns={columns}
-                rowKey="name"
+                rowKey={(record) => record.name}
                 pagination={false}
                 onRow={(record) => ({
                     onDoubleClick: () => {

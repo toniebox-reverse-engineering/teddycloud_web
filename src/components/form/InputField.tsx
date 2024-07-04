@@ -122,6 +122,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
             disabled={overlayed ? false : true}
             style={{ cursor: overlayed ? "pointer" : "default", margin: overlayed !== undefined ? "0 16px 0 0" : "0" }}
             onClick={handleSaveIconClick}
+            key="saveIcon"
         />,
         overlayed === undefined ? (
             ""
@@ -132,6 +133,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
                     setOverlayed(e.target.checked);
                     handleOverlayChange(e.target.checked);
                 }}
+                key="overlayCheckBox"
             >
                 {t("settings.overlayed")}
             </Checkbox>
