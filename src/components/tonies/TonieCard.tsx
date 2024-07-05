@@ -100,6 +100,21 @@ export const TonieCard: React.FC<{
         }
     };
 
+    const modelTitle =
+        `${localTonieCard.tonieInfo.series}` +
+        (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
+
+    const sourceTitle =
+        "sourceInfo" in localTonieCard
+            ? `${localTonieCard.sourceInfo.series}` +
+              (localTonieCard.sourceInfo.episode ? ` - ${localTonieCard.sourceInfo.episode}` : "")
+            : "";
+
+    const showSourceInfoPicture =
+        "sourceInfo" in localTonieCard &&
+        ((localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle) ||
+            (localTonieCard.sourceInfo.picture === localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle));
+
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
         if (files && files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
@@ -192,7 +207,7 @@ export const TonieCard: React.FC<{
 
     const handlePlayPauseClick = async () => {
         const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl;
-        playAudio(url, localTonieCard.sourceInfo ? localTonieCard.sourceInfo : localTonieCard.tonieInfo);
+        playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo);
     };
 
     const handleBackgroundDownload = async () => {
@@ -290,16 +305,6 @@ export const TonieCard: React.FC<{
     const toniePlayedOn = lastRUIDs
         .filter(([ruid]) => ruid === localTonieCard.ruid)
         .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }));
-
-    const modelTitle =
-        `${localTonieCard.tonieInfo.series}` +
-        (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
-
-    const sourceTitle =
-        "sourceInfo" in localTonieCard
-            ? `${localTonieCard.sourceInfo.series}` +
-              (localTonieCard.sourceInfo.episode ? ` - ${localTonieCard.sourceInfo.episode}` : "")
-            : "";
 
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
@@ -442,11 +447,6 @@ export const TonieCard: React.FC<{
                   onClick={handleLiveClick}
               />,
           ];
-
-    const showSourceInfoPicture =
-        "sourceInfo" in localTonieCard &&
-        ((localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle) ||
-            (localTonieCard.sourceInfo.picture === localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle));
 
     return (
         <>
