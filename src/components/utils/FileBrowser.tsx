@@ -381,7 +381,7 @@ export const FileBrowser: React.FC<{
             key: "picture",
             sorter: undefined,
             width: 10,
-            render: (picture: string, record: any, index: number) =>
+            render: (picture: string, record: any) =>
                 record && record.tonieInfo?.picture ? (
                     <img
                         key={`picture-${record.name}`}
