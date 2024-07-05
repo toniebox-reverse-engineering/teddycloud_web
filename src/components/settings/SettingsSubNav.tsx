@@ -14,8 +14,8 @@ import { restartServer } from "../../utils/restartServer";
 
 export const SettingsSubNav = () => {
     const { t } = useTranslation();
-
     const [selectedKey, setSelectedKey] = useState("");
+    const [messageApi, contextHolder] = message.useMessage();
 
     const handleRestartServer = async () => {
         await restartServer(true);
@@ -27,14 +27,23 @@ export const SettingsSubNav = () => {
             const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/toniesJsonUpdate`);
             const data = await response.text();
             setSelectedKey("");
+
             if (data.toString() !== "Triggered tonies.json update") {
-                message.error(t("settings.tonieJsonUpdateFailed"));
-                return;
+                messageApi.open({
+                    type: "error",
+                    content: t("settings.tonieJsonUpdateFailed"),
+                });
+            } else {
+                messageApi.open({
+                    type: "success",
+                    content: t("settings.tonieJsonUpdateTriggered"),
+                });
             }
-            message.success(t("settings.tonieJsonUpdateTriggered"));
         } catch (error) {
-            message.error(t("settings.tonieJsonUpdateFailed"));
-            return;
+            messageApi.open({
+                type: "error",
+                content: t("settings.tonieJsonUpdateFailed"),
+            });
         }
     };
 
@@ -70,6 +79,7 @@ export const SettingsSubNav = () => {
 
     return (
         <>
+            {contextHolder}
             <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />
         </>
     );
