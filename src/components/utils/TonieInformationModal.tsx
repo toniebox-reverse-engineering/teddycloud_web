@@ -190,9 +190,9 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     {informationFromSource ? (
                         <Tooltip
                             title={t("tonies.alternativeSource", {
-                                originalTonie: modelTitle,
-                                assignedContent: sourceTitle,
-                            })}
+                                originalTonie: '"' + modelTitle + '"',
+                                assignedContent: '"' + sourceTitle + '"',
+                            }).replace(' "" ', " ")}
                             placement="bottom"
                         >
                             <img
