@@ -112,7 +112,7 @@ token.*
 
 ### Missing img_unknown.png
 
-As the _img_unknown.png_ is part of the teddycloud server, normally it's not shown in the running de environment. To solve that you can do the following:
+As the _img_unknown.png_ is part of the teddycloud server, normally it's not shown in the running dev environment. To solve that you can do the following:
 
 1. Add _img_unknown.png_ to the _\/public_ folder.
 2. Create the file _setupProxy.js_ in _/src_ with the following content:
