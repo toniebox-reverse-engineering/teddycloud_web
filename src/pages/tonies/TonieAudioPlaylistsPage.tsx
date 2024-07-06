@@ -16,11 +16,11 @@ const { Paragraph } = Typography;
 
 export const TonieAudioPlaylistsPage = () => {
     const { t } = useTranslation();
-    const [visible, setVisible] = useState(false);
+    const [TAPEditorOpen, setTAPEditorOpen] = useState(false);
 
     const onCreate = (values: any) => {
         console.log("Received values of form: ", values);
-        setVisible(false);
+        setTAPEditorOpen(false);
     };
 
     return (
@@ -62,17 +62,18 @@ export const TonieAudioPlaylistsPage = () => {
                         <div>
                             <Button
                                 type="primary"
+                                style={{ marginTop: 8 }}
                                 onClick={() => {
-                                    setVisible(true);
+                                    setTAPEditorOpen(true);
                                 }}
                             >
                                 {t("tonies.tapEditor.titleCreate")}
                             </Button>
                             <TonieAudioPlaylistEditor
-                                open={visible}
+                                open={TAPEditorOpen}
                                 onCreate={onCreate}
                                 onCancel={() => {
-                                    setVisible(false);
+                                    setTAPEditorOpen(false);
                                 }}
                             />
                         </div>

@@ -142,7 +142,16 @@ const LanguageFlagSVG: React.FC<FlagSVGProps> = ({ countryCode, height }) => {
                     <path y="256" fill="#D80027" width="512" height="170.663" d="M0 50H100V83.333H0V50z" />
                 </svg>
             );
-
+        case "tr-tr":
+            return (
+                <svg xmlns="http://www.w3.org/2000/svg" height={height} viewBox="0 -5000 15000 10000">
+                    <path fill="#E30A17" d="M0-5000h15000V5000H0z" />
+                    <path
+                        fill="#FFFFFF"
+                        d="m6958.333 0 2261.333-734.667-1397.667 1923.5v-2377.666l1397.667 1923.5zM7112.5 1336.833a2500 2500 0 1 1 0-2673.667 2000 2000 0 1 0 0 2673.667"
+                    />
+                </svg>
+            );
         default:
             return null; // Return null for unsupported country codes
     }
@@ -161,5 +170,6 @@ export const languageOptions: string[] = [
     "nl-nl",
     "pl-pl",
     "pt-pt",
+    "tr-tr",
     "undefined",
 ];

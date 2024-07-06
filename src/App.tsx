@@ -29,6 +29,7 @@ import { ConfigProvider, theme } from "antd";
 import { SunOutlined, MoonOutlined, BulbOutlined } from "@ant-design/icons";
 import { ESP32BoxFlashing } from "./pages/tonieboxes/ESP32BoxFlashing";
 import { TonieMeetingPage } from "./pages/home/TonieMeeting";
+import { FAQPage } from "./pages/community/FAQPage";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -124,6 +125,7 @@ function App() {
                                     <Route path="/settings/certificates" element={<CertificatesPage />} />
                                     <Route path="/settings/rtnl" element={<RtnlPage />} />
                                     <Route path="/community" element={<CommunityPage />} />
+                                    <Route path="/community/faq" element={<FAQPage />} />
                                     <Route path="/community/contribution" element={<ContributionPage />} />
                                     <Route
                                         path="/community/contribution/tonies-json"

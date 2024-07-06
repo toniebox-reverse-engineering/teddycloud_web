@@ -42,38 +42,46 @@ export const CommunityPage = () => {
                                 <Link to="https://github.com/toniebox-reverse-engineering" target="_blank">
                                     GitHub
                                 </Link>
-                                <li>
-                                    The place where all sources are stored for this and related projects. Where you can
-                                    fork the repositories, contribute new or improved features, create issues or just
-                                    give some feedback on already existing issues.
-                                </li>
+                                <ul>
+                                    <li>
+                                        The place where all sources are stored for this and related projects. Where you
+                                        can fork the repositories, contribute new or improved features, create issues or
+                                        just give some feedback on already existing issues.
+                                    </li>
+                                </ul>
                             </li>
                             <li>
                                 <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
                                     Telegram Chat
                                 </Link>
-                                <li>
-                                    The first level support if you need help or if you are interested in getting
-                                    involved in the development of TeddyCloud.
-                                </li>
+                                <ul>
+                                    <li>
+                                        The first level support if you need help or if you are interested in getting
+                                        involved in the development of TeddyCloud.
+                                    </li>
+                                </ul>
                             </li>
                             <li>
                                 <Link to="https://forum.revvox.de/" target="_blank">
                                     Discourse Forum
                                 </Link>
-                                <li>
-                                    The lively knowledge base for the project, a place to ask questions whose answers
-                                    can be helpful for others.
-                                </li>
+                                <ul>
+                                    <li>
+                                        The lively knowledge base for the project, a place to ask questions whose
+                                        answers can be helpful for others.
+                                    </li>
+                                </ul>
                             </li>
                             <li>
                                 <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
                                     TeddyCloud Wiki
                                 </Link>
-                                <li>
-                                    A Wiki contains, among other things, how to install TeddyCloud and how to solve
-                                    possible problems.
-                                </li>
+                                <ul>
+                                    <li>
+                                        A Wiki contains, among other things, how to install TeddyCloud and how to solve
+                                        possible problems.
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </Paragraph>

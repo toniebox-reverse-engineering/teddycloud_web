@@ -68,7 +68,8 @@ export const TonieCard: React.FC<{
     readOnly: boolean;
     defaultLanguage?: string;
     onHide: (ruid: string) => void;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide }) => {
+    onUpdate: (updatedTonieCard: TonieCardProps) => void;
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide, onUpdate }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
@@ -93,10 +94,26 @@ export const TonieCard: React.FC<{
         try {
             const updatedTonieCard = await api.apiGetTagInfo(localTonieCard.ruid, overlay);
             setLocalTonieCard(updatedTonieCard);
+            onUpdate(updatedTonieCard);
         } catch (error) {
             message.error("Error fetching updated card: " + error);
         }
     };
+
+    const modelTitle =
+        `${localTonieCard.tonieInfo.series}` +
+        (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
+
+    const sourceTitle =
+        "sourceInfo" in localTonieCard
+            ? `${localTonieCard.sourceInfo.series}` +
+              (localTonieCard.sourceInfo.episode ? ` - ${localTonieCard.sourceInfo.episode}` : "")
+            : "";
+
+    const showSourceInfoPicture =
+        "sourceInfo" in localTonieCard &&
+        ((localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle) ||
+            (localTonieCard.sourceInfo.picture === localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle));
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
         if (files && files.length === 1) {
@@ -154,6 +171,7 @@ export const TonieCard: React.FC<{
             } else {
                 message.success(t("tonies.messages.liveDisabled"));
             }
+            fetchUpdatedTonieCard();
         } catch (error) {
             message.error(t("tonies.messages.sourceCouldNotChangeLiveFlag") + error);
         }
@@ -181,6 +199,7 @@ export const TonieCard: React.FC<{
             } else {
                 message.success(t("tonies.messages.cloudAccessEnabled"));
             }
+            fetchUpdatedTonieCard();
         } catch (error) {
             message.error(t("tonies.messages.sourceCouldNotChangeCloudFlag") + error);
         }
@@ -188,7 +207,7 @@ export const TonieCard: React.FC<{
 
     const handlePlayPauseClick = async () => {
         const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl;
-        playAudio(url, localTonieCard.sourceInfo ? localTonieCard.sourceInfo : localTonieCard.tonieInfo);
+        playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo);
     };
 
     const handleBackgroundDownload = async () => {
@@ -287,10 +306,6 @@ export const TonieCard: React.FC<{
         .filter(([ruid]) => ruid === localTonieCard.ruid)
         .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }));
 
-    const title =
-        `${localTonieCard.tonieInfo.series}` +
-        (localTonieCard.tonieInfo.episode ? ` - ${localTonieCard.tonieInfo.episode}` : "");
-
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
     };
@@ -305,7 +320,7 @@ export const TonieCard: React.FC<{
                 {t("tonies.editModal.title")}
                 {localTonieCard.tonieInfo.model ? " (" + localTonieCard.tonieInfo.model + ")" : ""}
             </h3>
-            {localTonieCard.tonieInfo.series ? <Text type="secondary">{title}</Text> : " "}
+            {localTonieCard.tonieInfo.series ? <Text type="secondary">{modelTitle}</Text> : " "}
         </>
     );
 
@@ -467,29 +482,23 @@ export const TonieCard: React.FC<{
                 }
                 cover={
                     <div style={{ position: "relative" }}>
-                        {localTonieCard.tonieInfo.picture &&
-                            !localTonieCard.tonieInfo.picture.endsWith("img_unknown.png") && (
-                                <img
-                                    alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
-                                    src={localTonieCard.tonieInfo.picture}
-                                    style={
-                                        localTonieCard.tonieInfo.picture.includes("unknown")
-                                            ? { padding: 8, paddingTop: 10, width: "100%" }
-                                            : { padding: 8, width: "100%" }
-                                    }
-                                />
-                            )}
-                        {"sourceInfo" in localTonieCard &&
-                        localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture ? (
+                        <img
+                            alt={`${localTonieCard.tonieInfo.series} - ${localTonieCard.tonieInfo.episode}`}
+                            src={
+                                localTonieCard.tonieInfo.picture ? localTonieCard.tonieInfo.picture : "/img_unknown.png"
+                            }
+                            style={
+                                localTonieCard.tonieInfo.picture.endsWith("img_unknown.png")
+                                    ? { padding: 8, paddingTop: 10, width: "100%" }
+                                    : { padding: 8, width: "100%" }
+                            }
+                        />
+                        {showSourceInfoPicture ? (
                             <Tooltip
                                 title={t("tonies.alternativeSource", {
-                                    originalTonie: title,
-                                    assignedContent:
-                                        localTonieCard.sourceInfo.series +
-                                        (localTonieCard.sourceInfo.episode
-                                            ? " - " + localTonieCard.sourceInfo.episode
-                                            : ""),
-                                })}
+                                    originalTonie: '"' + modelTitle + '"',
+                                    assignedContent: '"' + sourceTitle + '"',
+                                }).replace(' "" ', " ")}
                                 placement="bottom"
                             >
                                 <img

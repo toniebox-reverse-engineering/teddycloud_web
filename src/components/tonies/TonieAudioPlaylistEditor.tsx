@@ -240,9 +240,9 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         {(fields, { add, remove }) => (
                             <>
                                 {fields.map(({ key, name }, index) => (
-                                    <div className="playlistTitle">
+                                    <div key={`files-${key}`} className="playlistTitle">
                                         <Space
-                                            key={key}
+                                            key={`space-${key}`}
                                             style={{
                                                 display: "flex",
                                                 marginBottom: 8,

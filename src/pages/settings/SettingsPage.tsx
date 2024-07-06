@@ -189,9 +189,15 @@ export const SettingsPage = () => {
                         style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
                         disabled={loading}
                     >
-                        <Radio.Button value="1">Basic</Radio.Button>
-                        <Radio.Button value="2">Detail</Radio.Button>
-                        <Radio.Button value="3">Expert</Radio.Button>
+                        <Radio.Button value="1" key="1">
+                            Basic
+                        </Radio.Button>
+                        <Radio.Button value="2" key="2">
+                            Detail
+                        </Radio.Button>
+                        <Radio.Button value="3" key="3">
+                            Expert
+                        </Radio.Button>
                     </Radio.Group>
                 </StyledContent>
             </StyledLayout>

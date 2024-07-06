@@ -436,7 +436,6 @@ export const TonieboxCard: React.FC<{
             title={t("tonieboxes.uploadTonieboxCertificatesModal.uploadTonieboxCertificates", {
                 name: tonieboxCard.boxName,
             })}
-            width="auto"
             open={isUploadCertificatesModalOpen}
             onOk={handleUploadCertificatesOk}
             onCancel={handleUploadCertificatesCancel}
