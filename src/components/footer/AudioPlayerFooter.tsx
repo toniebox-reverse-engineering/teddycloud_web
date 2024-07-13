@@ -308,24 +308,36 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         <PlayCircleOutlined style={{ fontSize: 24, marginRight: 8 }} onClick={handlePlayButton} />
                     )}
                     {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
-                    <div style={{ ...styles.playPositionContainer, marginRight: 0 }}>
-                        <div style={{ display: "flex" }}>
-                            <div style={{ textAlign: "center", marginBottom: 0 }}>
-                                {currentPlayPositionFormat} / {audioDurationFormat}
+
+                    {!audioDurationFormat.startsWith("Infinity") ? (
+                        <div style={{ ...styles.playPositionContainer, marginRight: 0 }}>
+                            <div style={{ display: "flex" }}>
+                                <div style={{ textAlign: "center", marginBottom: 0 }}>
+                                    {currentPlayPositionFormat} / {audioDurationFormat}
+                                </div>
+                                <span style={{ margin: 0, marginLeft: 16, textAlign: "right" }}>
+                                    {minMaximizerClose}
+                                </span>
                             </div>
-                            <span style={{ margin: 0, marginLeft: 16, textAlign: "right" }}>{minMaximizerClose}</span>
+                            <div
+                                style={{ ...progressBarStyle, width: 100 }}
+                                onMouseMove={handleMouseMove}
+                                onMouseLeave={handleMouseLeave}
+                                onClick={handleClick}
+                                onMouseDown={handleMouseDown}
+                                onMouseUp={handleMouseUp}
+                            >
+                                {progressBar}
+                            </div>
                         </div>
-                        <div
-                            style={{ ...progressBarStyle, width: 100 }}
-                            onMouseMove={handleMouseMove}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={handleClick}
-                            onMouseDown={handleMouseDown}
-                            onMouseUp={handleMouseUp}
-                        >
-                            {progressBar}
+                    ) : (
+                        <div style={{ ...styles.playPositionContainer, marginRight: 0 }}>
+                            <div style={{ display: "flex" }}>
+                                <div style={{ textAlign: "center", marginBottom: 0 }}> </div>
+                                <span>{minMaximizerClose}</span>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </span>
         </>
@@ -364,23 +376,27 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         <div>{songArtist}</div>
                     </div>
                 </div>
-                <div style={styles.playPositionContainer}>
-                    <div>
-                        <div style={{ textAlign: "center" }}>
-                            {currentPlayPositionFormat} / {audioDurationFormat}
+                {!audioDurationFormat.startsWith("Infinity") ? (
+                    <div style={styles.playPositionContainer}>
+                        <div>
+                            <div style={{ textAlign: "center" }}>
+                                {currentPlayPositionFormat} / {audioDurationFormat}
+                            </div>
+                        </div>
+                        <div
+                            style={progressBarStyle}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                            onClick={handleClick}
+                            onMouseDown={handleMouseDown}
+                            onMouseUp={handleMouseUp}
+                        >
+                            {progressBar}
                         </div>
                     </div>
-                    <div
-                        style={progressBarStyle}
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={handleMouseLeave}
-                        onClick={handleClick}
-                        onMouseDown={handleMouseDown}
-                        onMouseUp={handleMouseUp}
-                    >
-                        {progressBar}
-                    </div>
-                </div>
+                ) : (
+                    ""
+                )}
                 <div style={control2Style}>
                     <div style={{ ...styles.controls, position: "relative" }}>
                         <MutedOutlined

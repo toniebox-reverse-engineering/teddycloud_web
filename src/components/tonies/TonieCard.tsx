@@ -75,7 +75,6 @@ export const TonieCard: React.FC<{
     const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
     const [messageApi, contextHolder] = message.useMessage();
-    const [isValid, setIsValid] = useState(localTonieCard.valid);
     const [isNoCloud, setIsNoCloud] = useState(localTonieCard.nocloud);
     const [isLive, setIsLive] = useState(localTonieCard.live);
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(localTonieCard.downloadTriggerUrl);
@@ -205,8 +204,7 @@ export const TonieCard: React.FC<{
         }
     };
 
-    const handlePlayPauseClick = async () => {
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl;
+    const handlePlayPauseClick = async (url: string) => {
         playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo);
     };
 
@@ -233,7 +231,7 @@ export const TonieCard: React.FC<{
                 type: "success",
                 content: t("tonies.messages.downloadedFile"),
             });
-            setIsValid(true);
+            fetchUpdatedTonieCard();
         } catch (error) {
             messageApi.destroy();
             messageApi.open({
@@ -280,7 +278,6 @@ export const TonieCard: React.FC<{
                 throw new Error(response.status + " " + response.statusText);
             }
             setActiveSource(selectedSource);
-            selectedSource ? setIsValid(true) : setIsValid(false);
             message.success(
                 t("tonies.messages.setTonieToSourceSuccessful", {
                     selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
@@ -406,8 +403,17 @@ export const TonieCard: React.FC<{
                       setInformationModalOpen(true);
                   }}
               />,
-              isValid ? (
-                  <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
+              localTonieCard.valid || activeSource.startsWith("http") ? (
+                  <PlayCircleOutlined
+                      key="playpause"
+                      onClick={() =>
+                          handlePlayPauseClick(
+                              localTonieCard.valid
+                                  ? process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
+                                  : activeSource
+                          )
+                      }
+                  />
               ) : (
                   <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
               ),
@@ -429,8 +435,17 @@ export const TonieCard: React.FC<{
                   }}
               />,
               <EditOutlined key="edit" onClick={showModelModal} />,
-              isValid ? (
-                  <PlayCircleOutlined key="playpause" onClick={handlePlayPauseClick} />
+              localTonieCard.valid || activeSource.startsWith("http") ? (
+                  <PlayCircleOutlined
+                      key="playpause"
+                      onClick={() =>
+                          handlePlayPauseClick(
+                              localTonieCard.valid
+                                  ? process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
+                                  : activeSource
+                          )
+                      }
+                  />
               ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
                   <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
               ) : (
