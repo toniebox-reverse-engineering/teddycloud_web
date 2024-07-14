@@ -6,6 +6,7 @@ import { Key } from "antd/es/table/interface"; // Import Key type from Ant Desig
 import { SortOrder } from "antd/es/table/interface";
 import { useAudioContext } from "../audio/AudioContext";
 import {
+    CloseOutlined,
     CloudServerOutlined,
     CopyOutlined,
     DeleteOutlined,
@@ -64,19 +65,19 @@ export const FileBrowser: React.FC<{
     const location = useLocation();
     const navigate = useNavigate();
     const inputRef = useRef<InputRef>(null);
-
+    const inputRefSearch = useRef<InputRef>(null);
     const [messageApi, contextHolder] = message.useMessage();
+
     const [files, setFiles] = useState([]);
     const [path, setPath] = useState("");
     const [rebuildList, setRebuildList] = useState(false);
     const [currentFile, setCurrentFile] = useState("");
-
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const [jsonData, setJsonData] = useState<string>("");
     const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState(false);
 
-    const [showTAPEditor, setShowTAPEditor] = useState(false);
+    const [tapEditorModalOpen, setTapEditorModalOpen] = useState(false);
     const [tapEditorKey, setTapEditorKey] = useState(0);
 
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
@@ -88,32 +89,10 @@ export const FileBrowser: React.FC<{
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
 
-    const onCreate = (values: any) => {
-        console.log("Received values of form: ", values);
-        setShowTAPEditor(false);
-    };
-    const fetchJsonData = async (url: string) => {
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            setJsonData(data);
-        } catch (error) {
-            console.error("Error fetching JSON data:", error);
-        }
-    };
+    const [filterText, setFilterText] = useState("");
+    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(true);
 
-    const showJsonViewer = (file: string) => {
-        const folder = special === "library" ? "/library" : "/content";
-        fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
-        setCurrentFile(file);
-        setJsonViewerModalOpened(true);
-    };
-
-    const handleJsonViewerModalClose = () => {
-        setJsonViewerModalOpened(false);
-    };
-
-    const [isConfirmDeleteModalVisible, setIsConfirmDeleteModalVisible] = useState(false);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
     const [deletePath, setDeletePath] = useState<string>("");
     const [deleteApiCall, setDeleteApiCall] = useState<string>("");
@@ -169,59 +148,278 @@ export const FileBrowser: React.FC<{
         }
     }, [isCreateDirectoryModalOpen]);
 
+    // general functions
+    function detectColorScheme() {
+        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const storedTheme = localStorage.getItem("theme");
+
+        if (storedTheme === "auto") {
+            return prefersDarkMode ? "dark" : "light";
+        } else {
+            return storedTheme;
+        }
+    }
+
+    // Json Viewer functions
+    const fetchJsonData = async (url: string) => {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            setJsonData(data);
+        } catch (error) {
+            console.error("Error fetching JSON data:", error);
+        }
+    };
+
+    const showJsonViewer = (file: string) => {
+        const folder = special === "library" ? "/library" : "/content";
+        fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
+        setFilterFieldAutoFocus(false);
+        setCurrentFile(file);
+        setJsonViewerModalOpened(true);
+    };
+
+    const closeJsonViewer = () => {
+        setJsonViewerModalOpened(false);
+    };
+
+    const jsonViewerModalFooter = (
+        <Button type="primary" onClick={() => setJsonViewerModalOpened(false)}>
+            {t("tonies.informationModal.ok")}
+        </Button>
+    );
+
+    const jsonViewerModal = (
+        <Modal
+            className="json-viewer"
+            footer={jsonViewerModalFooter}
+            width={700}
+            title={"File: " + currentFile}
+            open={jsonViewerModalOpened}
+            onCancel={closeJsonViewer}
+        >
+            {jsonData ? (
+                <SyntaxHighlighter
+                    language="json"
+                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                    customStyle={{
+                        padding: 0,
+                        borderRadius: 0,
+                        margin: 0,
+                        border: "none",
+                    }}
+                >
+                    {JSON.stringify(jsonData, null, 2)}
+                </SyntaxHighlighter>
+            ) : (
+                "Loading..."
+            )}
+        </Modal>
+    );
+
+    // taf header viewer functions
+    const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
+        const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
+
+        const { tracks, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
+        setFilterFieldAutoFocus(false);
+        setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
+        setCurrentFile(file);
+        setTafHeaderModalOpened(true);
+    };
+
+    const closeTafHeader = () => {
+        setTafHeaderModalOpened(false);
+    };
+
+    const tafHeaderViewerModal = (
+        <Modal
+            className="taf-header-viewer"
+            footer={
+                <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
+                    {t("tonies.informationModal.ok")}
+                </Button>
+            }
+            title={t("tonies.tafHeaderOf") + currentFile}
+            open={tafHeaderModalOpened}
+            onCancel={closeTafHeader}
+        >
+            {currentRecordTafHeader ? (
+                <SyntaxHighlighter
+                    language="json"
+                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                    customStyle={{
+                        padding: 0,
+                        borderRadius: 0,
+                        margin: 0,
+                        border: "none",
+                    }}
+                >
+                    {JSON.stringify(currentRecordTafHeader, null, 2)}
+                </SyntaxHighlighter>
+            ) : (
+                "Loading..."
+            )}
+        </Modal>
+    );
+
+    // tap functions
+    const onTAPCreate = (values: any) => {
+        console.log("Received values of form: ", values);
+        setTapEditorModalOpen(false);
+    };
+
+    const handleEditTapClick = (file: string) => {
+        if (file.includes(".tap")) {
+            const folder = special === "library" ? "/library" : "/content";
+            fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
+            setFilterFieldAutoFocus(false);
+            setCurrentFile(file);
+            setTapEditorKey((prevKey) => prevKey + 1);
+            setTapEditorModalOpen(true);
+        }
+    };
+
+    // delete functions
     const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
+        setFilterFieldAutoFocus(false);
         setFileToDelete(fileName);
         setDeletePath(path);
         setDeleteApiCall(apiCall);
-        setIsConfirmDeleteModalVisible(true);
+        setIsConfirmDeleteModalOpen(true);
     };
 
     const handleConfirmDelete = () => {
         deleteFile(deletePath, deleteApiCall);
-        setIsConfirmDeleteModalVisible(false);
+        setIsConfirmDeleteModalOpen(false);
     };
 
     const handleCancelDelete = () => {
-        setIsConfirmDeleteModalVisible(false);
+        setIsConfirmDeleteModalOpen(false);
     };
 
-    const rowClassName = (record: any) => {
-        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
-    };
-
-    const onSelectChange = (newSelectedRowKeys: Key[]) => {
-        if (selectTafOrTapOnly) {
-            const rowCount = newSelectedRowKeys.length;
-            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
-                const file = files.find((f: any) => f.name === key) as any;
-                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
+    const deleteFile = (path: string, apiCall: string) => {
+        try {
+            messageApi.open({
+                type: "loading",
+                content: t("fileBrowser.messages.deleting"),
+                duration: 0,
             });
-            if (rowCount !== newSelectedRowKeys.length) {
-                message.warning(t("fileBrowser.selectTafOrTapOnly"));
-            }
-        }
-        if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning(
-                t("fileBrowser.maxSelectedRows", {
-                    maxSelectedRows: maxSelectedRows,
+
+            const body = path;
+            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/fileDelete" + apiCall, {
+                method: "POST",
+                body: body,
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            })
+                .then((response) => response.text())
+                .then((data) => {
+                    messageApi.destroy();
+                    if (data === "OK") {
+                        messageApi.open({
+                            type: "success",
+                            content: t("fileBrowser.messages.deleteSuccessful"),
+                        });
+                        setRebuildList(!rebuildList);
+                    } else {
+                        messageApi.open({
+                            type: "error",
+                            content: t("fileBrowser.messages.deleteFailed") + ": " + data,
+                        });
+                    }
                 })
-            );
-        } else {
-            setSelectedRowKeys(newSelectedRowKeys);
+                .catch((error) => {
+                    messageApi.destroy();
+                    messageApi.open({
+                        type: "error",
+                        content: t("fileBrowser.messages.deleteFailed") + ": " + error,
+                    });
+                });
+        } catch (error) {
+            messageApi.destroy();
+            messageApi.open({
+                type: "error",
+                content: t("fileBrowser.messages.deleteFailed") + ": " + error,
+            });
         }
-
-        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
-        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
     };
 
-    const handleDirClick = (dirPath: string) => {
-        const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
-        if (trackUrl) {
-            navigate(`?path=${newPath}`); // Update the URL with the new path using navigate
-        }
-        setPath(newPath); // Update the path state
+    // create directory functions
+    const openCreateDirectoryModal = () => {
+        setFilterFieldAutoFocus(false);
+        setCreateDirectoryModalOpen(true);
     };
 
+    const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setInputValueCreateDirectory(e.target.value);
+    };
+
+    const createDirectory = () => {
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/dirCreate?special=library`;
+
+        try {
+            fetch(url, {
+                method: "POST",
+                body: path + "/" + inputValueCreateDirectory,
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+            })
+                .then((response) => {
+                    return response.text(); // Expecting a text response
+                })
+                .then((text) => {
+                    if (text !== "OK") {
+                        throw new Error(text);
+                    }
+                    message.success(t("tonies.createDirectory.directoryCreated"));
+                    setCreateDirectoryModalOpen(false);
+                    setRebuildList(!rebuildList);
+                    setInputValueCreateDirectory("");
+                })
+                .catch((error) => {
+                    message.error(error.message);
+                });
+        } catch (error) {
+            message.error(`Error while creating directory`);
+        }
+    };
+
+    const closeCreateDirectoryModal = () => {
+        setFilterFieldAutoFocus(false);
+        setCreateDirectoryModalOpen(false);
+        setInputValueCreateDirectory("");
+    };
+
+    const createDirectoryModal = (
+        <Modal
+            title={t("tonies.createDirectory.modalTitle")}
+            open={isCreateDirectoryModalOpen}
+            onCancel={closeCreateDirectoryModal}
+            onOk={createDirectory}
+            okText={t("tonies.createDirectory.create")}
+            cancelText={t("tonies.createDirectory.cancel")}
+        >
+            <Input
+                ref={inputRef}
+                placeholder={t("tonies.createDirectory.placeholder")}
+                value={inputValueCreateDirectory}
+                onChange={handleCreateDirectoryInputChange}
+            />
+        </Modal>
+    );
+
+    // information model functions
+    const showInformationModal = (record: any) => {
+        if (!record.isDir && record.tonieInfo?.tracks) {
+            setCurrentRecord(record);
+            setInformationModalOpen(true);
+        }
+    };
+
+    // breadcrumb functions
     const handleBreadcrumbClick = (dirPath: string) => {
         if (trackUrl) {
             navigate(`?path=${dirPath}`); // Update the URL with the new path using navigate
@@ -229,49 +427,40 @@ export const FileBrowser: React.FC<{
         if (path === dirPath) {
             setRebuildList(!rebuildList);
         }
-        setPath(dirPath); // Update the path state
+        setFilterFieldAutoFocus(false);
+        setPath(dirPath);
     };
 
-    const getFieldValue = (obj: any, keys: string[]) => {
-        return keys.reduce((acc, currentKey) => {
-            if (acc && acc[currentKey] !== undefined) {
-                return acc[currentKey];
-            }
-            return undefined;
-        }, obj);
+    const generateBreadcrumbs = (path: string, handleBreadcrumbClick: { (dirPath: string): void }) => {
+        const pathArray = path.split("/").filter((segment) => segment);
+
+        const breadcrumbItems = [
+            {
+                title: (
+                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick("")}>
+                        {t("fileBrowser.root")}
+                    </span>
+                ),
+                key: "/",
+            },
+        ];
+
+        pathArray.forEach((segment, index) => {
+            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
+            breadcrumbItems.push({
+                title: (
+                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
+                        {segment}
+                    </span>
+                ),
+                key: segmentPath,
+            });
+        });
+
+        return <Breadcrumb items={breadcrumbItems} />;
     };
 
-    const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
-        // Get the values of the fields
-        const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
-        const fieldB = Array.isArray(dataIndex) ? getFieldValue(b, dataIndex) : b[dataIndex];
-
-        if (fieldA === undefined && fieldB === undefined) {
-            return 0; // Both values are undefined, consider them equal
-        } else if (fieldA === undefined) {
-            return 1; // Field A is undefined, consider it greater than B
-        } else if (fieldB === undefined) {
-            return -1; // Field B is undefined, consider it greater than A
-        }
-
-        if (typeof fieldA === "string" && typeof fieldB === "string") {
-            return fieldA.localeCompare(fieldB);
-        } else if (typeof fieldA === "number" && typeof fieldB === "number") {
-            return fieldA - fieldB;
-        } else {
-            console.log("Unsupported types for sorting:", a, b);
-            console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
-            return 0;
-        }
-    };
-
-    const dirNameSorter = (a: any, b: any) => {
-        if (a.isDir === b.isDir) {
-            return defaultSorter(a, b, "name");
-        }
-        return a.isDir ? -1 : 1;
-    };
-
+    // migrate Content functions
     const migrateContent2Lib = (ruid: string, libroot: boolean, overlay?: string) => {
         try {
             messageApi.open({
@@ -326,52 +515,97 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    const deleteFile = (path: string, apiCall: string) => {
-        try {
-            messageApi.open({
-                type: "loading",
-                content: t("fileBrowser.messages.deleting"),
-                duration: 0,
-            });
+    // filter functions
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFilterText(e.target.value);
+        setFilterFieldAutoFocus(true);
+    };
 
-            const body = path;
-            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/fileDelete" + apiCall, {
-                method: "POST",
-                body: body,
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
-                .then((response) => response.text())
-                .then((data) => {
-                    messageApi.destroy();
-                    if (data === "OK") {
-                        messageApi.open({
-                            type: "success",
-                            content: t("fileBrowser.messages.deleteSuccessful"),
-                        });
-                        setRebuildList(!rebuildList);
-                    } else {
-                        messageApi.open({
-                            type: "error",
-                            content: t("fileBrowser.messages.deleteFailed") + ": " + data,
-                        });
-                    }
-                })
-                .catch((error) => {
-                    messageApi.destroy();
-                    messageApi.open({
-                        type: "error",
-                        content: t("fileBrowser.messages.deleteFailed") + ": " + error,
-                    });
-                });
-        } catch (error) {
-            messageApi.destroy();
-            messageApi.open({
-                type: "error",
-                content: t("fileBrowser.messages.deleteFailed") + ": " + error,
+    const clearFilterField = () => {
+        setFilterText("");
+    };
+
+    const handleFilterFieldInputFocus = () => {
+        setFilterFieldAutoFocus(true); // Enable autofocus when input is focused
+    };
+
+    // table functions
+    const rowClassName = (record: any) => {
+        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
+    };
+
+    const onSelectChange = (newSelectedRowKeys: Key[]) => {
+        if (selectTafOrTapOnly) {
+            const rowCount = newSelectedRowKeys.length;
+            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
+                const file = files.find((f: any) => f.name === key) as any;
+                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
             });
+            if (rowCount !== newSelectedRowKeys.length) {
+                message.warning(t("fileBrowser.selectTafOrTapOnly"));
+            }
         }
+        if (newSelectedRowKeys.length > maxSelectedRows) {
+            message.warning(
+                t("fileBrowser.maxSelectedRows", {
+                    maxSelectedRows: maxSelectedRows,
+                })
+            );
+        } else {
+            setSelectedRowKeys(newSelectedRowKeys);
+        }
+
+        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
+        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
+    };
+
+    const handleDirClick = (dirPath: string) => {
+        const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
+        if (trackUrl) {
+            navigate(`?path=${newPath}`); // Update the URL with the new path using navigate
+        }
+        setFilterFieldAutoFocus(false);
+        setPath(newPath);
+    };
+
+    const getFieldValue = (obj: any, keys: string[]) => {
+        return keys.reduce((acc, currentKey) => {
+            if (acc && acc[currentKey] !== undefined) {
+                return acc[currentKey];
+            }
+            return undefined;
+        }, obj);
+    };
+
+    const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
+        // Get the values of the fields
+        const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
+        const fieldB = Array.isArray(dataIndex) ? getFieldValue(b, dataIndex) : b[dataIndex];
+
+        if (fieldA === undefined && fieldB === undefined) {
+            return 0; // Both values are undefined, consider them equal
+        } else if (fieldA === undefined) {
+            return 1; // Field A is undefined, consider it greater than B
+        } else if (fieldB === undefined) {
+            return -1; // Field B is undefined, consider it greater than A
+        }
+
+        if (typeof fieldA === "string" && typeof fieldB === "string") {
+            return fieldA.localeCompare(fieldB);
+        } else if (typeof fieldA === "number" && typeof fieldB === "number") {
+            return fieldA - fieldB;
+        } else {
+            console.log("Unsupported types for sorting:", a, b);
+            console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
+            return 0;
+        }
+    };
+
+    const dirNameSorter = (a: any, b: any) => {
+        if (a.isDir === b.isDir) {
+            return defaultSorter(a, b, "name");
+        }
+        return a.isDir ? -1 : 1;
     };
 
     var columns: any[] = [
@@ -434,6 +668,22 @@ export const FileBrowser: React.FC<{
                         <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
                     </div>
                 ),
+            filteredValue: [filterText],
+            onFilter: (value: string, record: Record) => {
+                const text = value.toLowerCase();
+                return (
+                    record.name === ".." ||
+                    record.name.toLowerCase().includes(text) ||
+                    (!record.isDir &&
+                        "tafHeader" in record &&
+                        record.tafHeader.size &&
+                        humanFileSize(record.tafHeader.size).toString().includes(text)) ||
+                    ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
+                    ("tonieInfo" in record && record.tonieInfo?.model.toLowerCase().includes(text)) ||
+                    ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
+                    ("tonieInfo" in record && record.tonieInfo?.episode.toLowerCase().includes(text))
+                );
+            },
             showOnDirOnly: true,
         },
         {
@@ -610,210 +860,12 @@ export const FileBrowser: React.FC<{
         });
     }
 
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
-
-    const jsonViewerModalFooter = (
-        <Button type="primary" onClick={() => setJsonViewerModalOpened(false)}>
-            {t("tonies.informationModal.ok")}
-        </Button>
-    );
-
-    const handleEditTapClick = (file: string) => {
-        if (file.includes(".tap")) {
-            const folder = special === "library" ? "/library" : "/content";
-            fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
-            setCurrentFile(file);
-            setTapEditorKey((prevKey) => prevKey + 1);
-            setShowTAPEditor(true);
-        }
-    };
-
-    const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
-        const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
-
-        const { tracks, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
-
-        setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
-        setCurrentFile(file);
-        setTafHeaderModalOpened(true);
-    };
-
-    const handleTafModalClose = () => {
-        setTafHeaderModalOpened(false);
-    };
-
-    const handleInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        setInputValueCreateDirectory(e.target.value);
-    };
-
-    const createDirectory = () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/dirCreate?special=library`;
-
-        try {
-            fetch(url, {
-                method: "POST",
-                body: path + "/" + inputValueCreateDirectory,
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
-                .then((response) => {
-                    return response.text(); // Expecting a text response
-                })
-                .then((text) => {
-                    if (text !== "OK") {
-                        throw new Error(text);
-                    }
-                    message.success(t("tonies.createDirectory.directoryCreated"));
-                    setCreateDirectoryModalOpen(false);
-                    setRebuildList(!rebuildList);
-                    setInputValueCreateDirectory("");
-                })
-                .catch((error) => {
-                    message.error(error.message);
-                });
-        } catch (error) {
-            message.error(`Error while creating directory`);
-        }
-    };
-
-    const handleCreateDirectoryModalClose = () => {
-        setCreateDirectoryModalOpen(false);
-        setInputValueCreateDirectory("");
-    };
-
-    const openCreateDirectoryModal = () => {
-        setCreateDirectoryModalOpen(true);
-    };
-
-    const jsonViewerModal = (
-        <Modal
-            className="json-viewer"
-            footer={jsonViewerModalFooter}
-            width={700}
-            title={"File: " + currentFile}
-            open={jsonViewerModalOpened}
-            onCancel={handleJsonViewerModalClose}
-        >
-            {jsonData ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {JSON.stringify(jsonData, null, 2)}
-                </SyntaxHighlighter>
-            ) : (
-                "Loading..."
-            )}
-        </Modal>
-    );
-
-    const tafHeaderViewerModal = (
-        <Modal
-            className="taf-header-viewer"
-            footer={
-                <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
-                    {t("tonies.informationModal.ok")}
-                </Button>
-            }
-            title={t("tonies.tafHeaderOf") + currentFile}
-            open={tafHeaderModalOpened}
-            onCancel={handleTafModalClose}
-        >
-            {currentRecordTafHeader ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {JSON.stringify(currentRecordTafHeader, null, 2)}
-                </SyntaxHighlighter>
-            ) : (
-                "Loading..."
-            )}
-        </Modal>
-    );
-
-    const createDirectoryModal = (
-        <Modal
-            title={t("tonies.createDirectory.modalTitle")}
-            open={isCreateDirectoryModalOpen}
-            onCancel={handleCreateDirectoryModalClose}
-            onOk={createDirectory}
-            okText={t("tonies.createDirectory.create")}
-            cancelText={t("tonies.createDirectory.cancel")}
-        >
-            <Input
-                ref={inputRef}
-                placeholder={t("tonies.createDirectory.placeholder")}
-                value={inputValueCreateDirectory}
-                onChange={handleInputChange}
-            />
-        </Modal>
-    );
-
-    const showInformationModal = (record: any) => {
-        if (!record.isDir && record.tonieInfo?.tracks) {
-            setCurrentRecord(record);
-            setInformationModalOpen(true);
-        }
-    };
-
-    const generateBreadcrumbs = (path: string, handleBreadcrumbClick: { (dirPath: string): void }) => {
-        const pathArray = path.split("/").filter((segment) => segment);
-
-        const breadcrumbItems = [
-            {
-                title: (
-                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick("")}>
-                        {t("fileBrowser.root")}
-                    </span>
-                ),
-                key: "/",
-            },
-        ];
-
-        pathArray.forEach((segment, index) => {
-            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
-            breadcrumbItems.push({
-                title: (
-                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
-                        {segment}
-                    </span>
-                ),
-                key: segmentPath,
-            });
-        });
-
-        return <Breadcrumb items={breadcrumbItems} />;
-    };
-
     return (
         <>
             {contextHolder}
             <ConfirmationDialog
                 title={t("fileBrowser.confirmDeleteModal")}
-                isVisible={isConfirmDeleteModalVisible}
+                open={isConfirmDeleteModalOpen}
                 okText={t("fileBrowser.delete")}
                 cancelText={t("fileBrowser.cancel")}
                 content={t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}
@@ -825,7 +877,7 @@ export const FileBrowser: React.FC<{
             {createDirectoryModal}
             {currentRecord ? (
                 <TonieInformationModal
-                    isOpen={isInformationModalOpen}
+                    open={isInformationModalOpen}
                     tonieCardOrTAFRecord={currentRecord}
                     onClose={() => setInformationModalOpen(false)}
                     overlay={overlay}
@@ -871,14 +923,46 @@ export const FileBrowser: React.FC<{
                           }
                         : undefined
                 }
+                components={{
+                    // Override the header to include custom search row
+                    header: {
+                        wrapper: (props: any) => {
+                            return <thead {...props} />;
+                        },
+                        row: (props: any) => {
+                            return (
+                                <>
+                                    <tr {...props} />
+                                    <tr>
+                                        <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
+                                            <Input
+                                                placeholder={t("fileBrowser.filter")}
+                                                value={filterText}
+                                                onChange={handleFilterChange}
+                                                onFocus={handleFilterFieldInputFocus}
+                                                ref={inputRefSearch} // Assign ref to input element
+                                                style={{ width: "100%" }}
+                                                autoFocus={filterFieldAutoFocus}
+                                                addonAfter={<CloseOutlined onClick={clearFilterField} />}
+                                            />
+                                        </th>
+                                    </tr>
+                                </>
+                            );
+                        },
+                        cell: (props: any) => {
+                            return <th {...props} />;
+                        },
+                    },
+                }}
             />
             <TonieAudioPlaylistEditor
-                open={showTAPEditor}
+                open={tapEditorModalOpen}
                 key={tapEditorKey}
                 initialValuesJson={jsonData ? JSON.stringify(jsonData, null, 2) : undefined}
-                onCreate={onCreate}
+                onCreate={onTAPCreate}
                 onCancel={() => {
-                    setShowTAPEditor(false);
+                    setTapEditorModalOpen(false);
                 }}
             />
         </>

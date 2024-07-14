@@ -83,6 +83,7 @@
         "date": "Date",
         "delete": "Delete",
         "episode": "Episode",
+        "filter": "Filter within current folder",
         "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files",
         "messages": {
             "deleteFailed": "Delete failed",

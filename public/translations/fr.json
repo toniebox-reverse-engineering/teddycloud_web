@@ -83,6 +83,7 @@
         "date": "Date",
         "delete": "Supprimer",
         "episode": "Épisode",
+        "filter": "Filtrer dans le dossier actuel",
         "maxSelectedRows": "Vous ne pouvez sélectionner que jusqu'à {{maxSelectedRows}} fichiers",
         "messages": {
             "deleteFailed": "Échec de la suppression",

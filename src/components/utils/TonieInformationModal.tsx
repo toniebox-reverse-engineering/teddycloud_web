@@ -10,7 +10,7 @@ const { Text } = Typography;
 export type TonieCardTAFRecord = TonieCardProps | Record;
 
 export type InformationModalProps = {
-    isOpen: boolean;
+    open: boolean;
     onClose: () => void;
     tonieCardOrTAFRecord: TonieCardTAFRecord;
     readOnly?: boolean;
@@ -20,7 +20,7 @@ export type InformationModalProps = {
 };
 
 const TonieInformationModal: React.FC<InformationModalProps> = ({
-    isOpen,
+    open,
     onClose,
     tonieCardOrTAFRecord,
     readOnly,
@@ -30,7 +30,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
 }) => {
     const { t } = useTranslation();
 
-    const [isConfirmHideModalVisible, setIsConfirmHideModalVisible] = useState(false);
+    const [isConfirmHideModalOpen, setIsConfirmHideModalOpen] = useState(false);
 
     // show source information if alternative source is set
     const [informationFromSource, setInformationFromSource] = useState<boolean>(false);
@@ -53,7 +53,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             setSourceTracks(tonieCardOrTAFRecord.sourceInfo.tracks);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tonieCardOrTAFRecord, isOpen]);
+    }, [tonieCardOrTAFRecord, open]);
 
     const toniePlayedOn =
         lastRUIDs && "ruid" in tonieCardOrTAFRecord
@@ -62,23 +62,10 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                   .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }))
             : null;
 
-    const handleCancelHide = () => {
-        setIsConfirmHideModalVisible(false);
-    };
-
     const tonieInfoString =
         tonieCardOrTAFRecord.tonieInfo.series +
         (tonieCardOrTAFRecord?.tonieInfo.episode ? " - " + tonieCardOrTAFRecord.tonieInfo.episode : "") +
         (tonieCardOrTAFRecord.tonieInfo.model ? " (" + tonieCardOrTAFRecord.tonieInfo.model + ")" : "");
-
-    const showHideConfirmDialog = () => {
-        setIsConfirmHideModalVisible(true);
-    };
-
-    const handleConfirmHide = () => {
-        hideTag();
-        setIsConfirmHideModalVisible(false);
-    };
 
     const modelTitle =
         `${tonieCardOrTAFRecord.tonieInfo.series}` +
@@ -91,6 +78,59 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             : "";
 
     const title = informationFromSource ? sourceTitle : modelTitle;
+
+    // hide tag functions
+    const showHideConfirmDialog = () => {
+        setIsConfirmHideModalOpen(true);
+    };
+
+    const handleConfirmHide = () => {
+        hideTag();
+        setIsConfirmHideModalOpen(false);
+    };
+
+    const handleCancelHide = () => {
+        setIsConfirmHideModalOpen(false);
+    };
+
+    const hideTag = async () => {
+        if (onHide && "ruid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.ruid) {
+            const url =
+                `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCardOrTAFRecord.ruid}` +
+                (overlay ? `?overlay=${overlay}` : "");
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    body: "hide=true",
+                });
+                if (!response.ok) {
+                    throw new Error(response.status + " " + response.statusText);
+                }
+                message.success(t("tonies.messages.hideTonieSuccessful"));
+                onHide(tonieCardOrTAFRecord.ruid);
+            } catch (error) {
+                message.error(t("tonies.messages.hideTonieFailed") + error);
+            }
+        }
+    };
+
+    const confirmHideTonieModal = (
+        <ConfirmationDialog
+            title={t("tonies.confirmHideModal.title")}
+            open={isConfirmHideModalOpen}
+            okText={t("tonies.confirmHideModal.hide")}
+            cancelText={t("tonies.confirmHideModal.cancel")}
+            content={t("tonies.confirmHideModal.confirmHideDialog", {
+                tonieToHide: tonieInfoString
+                    ? tonieInfoString
+                    : "uid" in tonieCardOrTAFRecord
+                    ? tonieCardOrTAFRecord.uid
+                    : "",
+            })}
+            handleOk={handleConfirmHide}
+            handleCancel={handleCancelHide}
+        />
+    );
 
     const informationModalTitle = (
         <>
@@ -125,51 +165,12 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         </div>
     );
 
-    const hideTonieModal = (
-        <ConfirmationDialog
-            title={t("tonies.confirmHideModal.title")}
-            isVisible={isConfirmHideModalVisible}
-            okText={t("tonies.confirmHideModal.hide")}
-            cancelText={t("tonies.confirmHideModal.cancel")}
-            content={t("tonies.confirmHideModal.confirmHideDialog", {
-                tonieToHide: tonieInfoString
-                    ? tonieInfoString
-                    : "uid" in tonieCardOrTAFRecord
-                    ? tonieCardOrTAFRecord.uid
-                    : "",
-            })}
-            handleOk={handleConfirmHide}
-            handleCancel={handleCancelHide}
-        />
-    );
-
-    const hideTag = async () => {
-        if (onHide && "ruid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.ruid) {
-            const url =
-                `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCardOrTAFRecord.ruid}` +
-                (overlay ? `?overlay=${overlay}` : "");
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    body: "hide=true",
-                });
-                if (!response.ok) {
-                    throw new Error(response.status + " " + response.statusText);
-                }
-                message.success(t("tonies.messages.hideTonieSuccessful"));
-                onHide(tonieCardOrTAFRecord.ruid);
-            } catch (error) {
-                message.error(t("tonies.messages.hideTonieFailed") + error);
-            }
-        }
-    };
-
-    return (
+    const informationModal = (
         <>
             <Modal
                 title={informationModalTitle}
                 footer={informationModalFooter}
-                open={isOpen}
+                open={open}
                 keyboard={true}
                 closable={false}
                 maskClosable={true}
@@ -271,9 +272,11 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     )}
                 </div>
             </Modal>
-            {hideTonieModal}
+            {confirmHideTonieModal}
         </>
     );
+
+    return informationModal;
 };
 
 export default TonieInformationModal;

@@ -68,7 +68,8 @@ export const ChangelogPage = () => {
                 "new /web gui: fixed bugs after updating tonies in tonies overview",
                 "new /web gui: added FAQ page in community section",
                 "new /web gui: support web streams in audioplayer",
-                "new /web gui: fixed some bugs",
+                "new /web gui: improved filebrowser, added filter field and made buttons sticky",
+                "new /web gui: fixed some bugs and minor refactoring",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",

@@ -379,6 +379,7 @@ export const TonieCard: React.FC<{
 
     const selectFileModal = (
         <Modal
+            className="sticky-footer"
             title={t("tonies.selectFileModal.selectFile")}
             open={isSelectFileModalOpen}
             onOk={() => setSelectFileModalOpen(false)}
@@ -539,7 +540,7 @@ export const TonieCard: React.FC<{
                 <Meta title={`${localTonieCard.tonieInfo.episode}`} description={localTonieCard.uid} />
             </Card>
             <TonieInformationModal
-                isOpen={isInformationModalOpen}
+                open={isInformationModalOpen}
                 onClose={() => setInformationModalOpen(false)}
                 tonieCardOrTAFRecord={localTonieCard}
                 readOnly={readOnly}
