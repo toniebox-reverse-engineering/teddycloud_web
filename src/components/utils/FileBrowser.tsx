@@ -65,7 +65,8 @@ export const FileBrowser: React.FC<{
     const location = useLocation();
     const navigate = useNavigate();
     const inputRef = useRef<InputRef>(null);
-    const inputRefSearch = useRef<InputRef>(null);
+    const inputRefFilter = useRef<InputRef>(null);
+    const cursorPositionFilterRef = useRef<number | null>(null);
     const [messageApi, contextHolder] = message.useMessage();
 
     const [files, setFiles] = useState([]);
@@ -147,6 +148,12 @@ export const FileBrowser: React.FC<{
             }, 0);
         }
     }, [isCreateDirectoryModalOpen]);
+
+    useEffect(() => {
+        if (cursorPositionFilterRef.current !== null && inputRefFilter.current) {
+            inputRefFilter.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
+        }
+    }, [filterText]);
 
     // general functions
     function detectColorScheme() {
@@ -518,15 +525,17 @@ export const FileBrowser: React.FC<{
     // filter functions
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterText(e.target.value);
+        cursorPositionFilterRef.current = e.target.selectionStart;
         setFilterFieldAutoFocus(true);
     };
 
     const clearFilterField = () => {
         setFilterText("");
+        cursorPositionFilterRef.current = 0;
     };
 
     const handleFilterFieldInputFocus = () => {
-        setFilterFieldAutoFocus(true); // Enable autofocus when input is focused
+        setFilterFieldAutoFocus(true);
     };
 
     // table functions
@@ -940,7 +949,7 @@ export const FileBrowser: React.FC<{
                                                 value={filterText}
                                                 onChange={handleFilterChange}
                                                 onFocus={handleFilterFieldInputFocus}
-                                                ref={inputRefSearch} // Assign ref to input element
+                                                ref={inputRefFilter} // Assign ref to input element
                                                 style={{ width: "100%" }}
                                                 autoFocus={filterFieldAutoFocus}
                                                 addonAfter={<CloseOutlined onClick={clearFilterField} />}
