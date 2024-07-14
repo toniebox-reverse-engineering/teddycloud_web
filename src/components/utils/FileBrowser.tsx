@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Button, Input, Breadcrumb, InputRef } from "antd";
+import { Modal, Table, Tooltip, message, Button, Input, Breadcrumb, InputRef, theme } from "antd";
 import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
 import { SortOrder } from "antd/es/table/interface";
 import { useAudioContext } from "../audio/AudioContext";
@@ -21,6 +21,8 @@ import { TonieInfo } from "../tonies/TonieCard";
 import ConfirmationDialog from "./ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
 import TonieInformationModal from "./TonieInformationModal";
+
+const { useToken } = theme;
 
 interface RecordTafHeader {
     audioId?: any;
@@ -62,6 +64,7 @@ export const FileBrowser: React.FC<{
 }) => {
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
+    const { token } = useToken();
     const location = useLocation();
     const navigate = useNavigate();
     const inputRef = useRef<InputRef>(null);
@@ -952,7 +955,19 @@ export const FileBrowser: React.FC<{
                                                 ref={inputRefFilter} // Assign ref to input element
                                                 style={{ width: "100%" }}
                                                 autoFocus={filterFieldAutoFocus}
-                                                addonAfter={<CloseOutlined onClick={clearFilterField} />}
+                                                addonAfter={
+                                                    <CloseOutlined
+                                                        onClick={clearFilterField}
+                                                        disabled={filterText.length === 0}
+                                                        style={{
+                                                            color:
+                                                                filterText.length === 0
+                                                                    ? token.colorTextDisabled
+                                                                    : token.colorText,
+                                                            cursor: filterText.length === 0 ? "default" : "pointer",
+                                                        }}
+                                                    />
+                                                }
                                             />
                                         </th>
                                     </tr>

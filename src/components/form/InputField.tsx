@@ -120,7 +120,10 @@ const InputField = (props: InputFieldProps & InputProps) => {
     const addonAfter = [
         <SaveOutlined
             disabled={overlayed ? false : true}
-            style={{ cursor: overlayed ? "pointer" : "default", margin: overlayed !== undefined ? "0 16px 0 0" : "0" }}
+            style={{
+                cursor: overlayed || overlayed === undefined ? "pointer" : "default",
+                margin: overlayed !== undefined ? "0 16px 0 0" : "0",
+            }}
             onClick={handleSaveIconClick}
             key="saveIcon"
         />,

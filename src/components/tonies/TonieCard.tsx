@@ -349,7 +349,15 @@ export const TonieCard: React.FC<{
                     value={selectedSource}
                     width="auto"
                     onChange={handleSourceInputChange}
-                    addonBefore={<CloseOutlined onClick={() => setSelectedSource(activeSource)} />}
+                    addonBefore={
+                        <CloseOutlined
+                            onClick={() => setSelectedSource(activeSource)}
+                            style={{
+                                color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
+                                cursor: activeSource === selectedSource ? "default" : "pointer",
+                            }}
+                        />
+                    }
                     addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
                 />
                 <RadioStreamSearch
@@ -366,7 +374,15 @@ export const TonieCard: React.FC<{
                         value={selectedModel}
                         width="auto"
                         onChange={handleModelInputChange}
-                        addonBefore={<CloseOutlined onClick={() => setSelectedModel(activeModel)} />}
+                        addonBefore={
+                            <CloseOutlined
+                                onClick={() => setSelectedModel(activeModel)}
+                                style={{
+                                    color: activeModel === selectedModel ? token.colorTextDisabled : token.colorText,
+                                    cursor: activeModel === selectedModel ? "default" : "pointer",
+                                }}
+                            />
+                        }
                     />
                 </p>
                 <TonieArticleSearch

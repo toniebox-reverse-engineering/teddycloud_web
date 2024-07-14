@@ -419,7 +419,8 @@ export const TonieboxCard: React.FC<{
                         <CloseOutlined
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
-                                color: boxName === tonieboxName ? token.colorTextDisabled : "",
+                                color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,
+                                cursor: boxName === tonieboxName ? "default" : "pointer",
                             }}
                         />
                     }
