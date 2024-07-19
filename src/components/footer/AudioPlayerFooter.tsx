@@ -153,7 +153,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setCyclePosition({ left: 0, top: 0, visible: false });
     };
     const handleClick = () => {
-        globalAudio.currentTime = (cyclePosition.left / 200) * globalAudio.duration;
+        globalAudio.currentTime = (cyclePosition.left / (showAudioPlayerMinimal ? 100 : 150)) * globalAudio.duration;
     };
     const handleMouseDown = (event: React.MouseEvent) => {
         setIsMouseDown(true);
