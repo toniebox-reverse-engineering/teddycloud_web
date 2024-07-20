@@ -37,11 +37,11 @@
         "chipMAC": "MAC du chip",
         "chipType": "Type de chip",
         "connected": "Connecté",
-        "connectingReadFlash": "Connexion pour lire le flash",
-        "connectingReadMac": "Connexion pour lire l'adresse MAC",
+        "connectingReadFlash": "Connexion pour lire le flash...",
+        "connectingReadMac": "Connexion pour lire l'adresse MAC...",
         "connectingTo": "Connexion à",
-        "connectingToESP": "Connexion à l'ESP",
-        "connectingWriteFlash": "Connexion pour écrire le flash",
+        "connectingToESP": "Connexion à l'ESP...",
+        "connectingWriteFlash": "Connexion pour écrire le flash...",
         "error": "Erreur",
         "failedToCommunicate": "Échec de la communication :",
         "failedToConnect": "Échec de la connexion :",
@@ -80,7 +80,8 @@
         "uploadFailed": "Échec du téléchargement",
         "uploading": "Téléchargement en cours...",
         "uploadSuccessful": "Téléchargement réussi, enregistré sous",
-        "writingFinished": "Écriture terminée"
+        "writingFinished": "Écriture terminée",
+        "writingFlash": "Écriture de {{size}} MiB de mémoire flash"
     },
     "faq": [
         {

@@ -37,11 +37,11 @@
         "chipMAC": "Chip-MAC",
         "chipType": "Chip-Typ",
         "connected": "Verbunden",
-        "connectingReadFlash": "Verbinde zum Lesen des Flash",
-        "connectingReadMac": "Verbinde zum Lesen der MAC-Adresse",
+        "connectingReadFlash": "Verbinde zum Lesen des Flash...",
+        "connectingReadMac": "Verbinde zum Lesen der MAC-Adresse...",
         "connectingTo": "Verbinde zu",
-        "connectingToESP": "Verbinde zum ESP",
-        "connectingWriteFlash": "Verbinde zum Schreiben des Flash",
+        "connectingToESP": "Verbinde zum ESP...",
+        "connectingWriteFlash": "Verbinde zum Schreiben des Flash...",
         "error": "Fehler",
         "failedToCommunicate": "Kommunikation fehlgeschlagen:",
         "failedToConnect": "Verbindung fehlgeschlagen:",
@@ -80,7 +80,8 @@
         "uploadFailed": "Upload fehlgeschlagen",
         "uploading": "Upload läuft...",
         "uploadSuccessful": "Upload erfolgreich, gespeichert als",
-        "writingFinished": "Schreiben abgeschlossen"
+        "writingFinished": "Schreiben abgeschlossen",
+        "writingFlash": "Schreibe {{size}}  MiB Flash"
     },
     "faq": [
         {

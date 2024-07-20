@@ -37,11 +37,11 @@
         "chipMAC": "Chip MAC",
         "chipType": "Chip Type",
         "connected": "Connected",
-        "connectingReadFlash": "Connecting to read Flash",
-        "connectingReadMac": "Connecting to read MAC-Address",
+        "connectingReadFlash": "Connecting to read Flash...",
+        "connectingReadMac": "Connecting to read MAC-Address...",
         "connectingTo": "Connecting to",
-        "connectingToESP": "Connecting to ESP",
-        "connectingWriteFlash": "Connecting to write Flash",
+        "connectingToESP": "Connecting to ESP...",
+        "connectingWriteFlash": "Connecting to write Flash...",
         "error": "Error",
         "failedToCommunicate": "Failed to communicate:",
         "failedToConnect": "Failed to connect:",
@@ -80,7 +80,8 @@
         "uploadFailed": "Upload failed",
         "uploading": "Uploading...",
         "uploadSuccessful": "Upload successful, saved as",
-        "writingFinished": "Writing finished"
+        "writingFinished": "Writing finished",
+        "writingFlash": "Writing {{size}}  MiB flash"
     },
     "faq": [
         {

@@ -773,7 +773,9 @@ export const ESP32BoxFlashing = () => {
 
             setState((prevState) => ({
                 ...prevState,
-                state: `Writing ${(state.patchedFlash.byteLength / 1024 / 1024).toFixed(0)} MiB flash`,
+                state: t("esp32flasher.writingFlash", {
+                    size: (state.patchedFlash.byteLength / 1024 / 1024).toFixed(0),
+                }),
             }));
 
             // ##############################################################
