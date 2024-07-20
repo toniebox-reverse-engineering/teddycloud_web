@@ -42,6 +42,8 @@
         "connectingTo": "Verbinde zu",
         "connectingToESP": "Verbinde zum ESP...",
         "connectingWriteFlash": "Verbinde zum Schreiben des Flash...",
+        "downloadLink": "Download ungepachte Firmware",
+        "downloadLinkPatched": "Download gepachte Firmware",
         "error": "Fehler",
         "failedToCommunicate": "Kommunikation fehlgeschlagen:",
         "failedToConnect": "Verbindung fehlgeschlagen:",

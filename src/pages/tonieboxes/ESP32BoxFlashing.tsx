@@ -15,7 +15,6 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import FormItem from "antd/es/form/FormItem";
-import language from "react-syntax-highlighter/dist/esm/languages/hljs/1c";
 import i18n from "../../i18n";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -43,6 +42,8 @@ interface ESP32Flasher {
     proceed: boolean;
     disableButtons: boolean;
     warningText: string;
+    downloadLink: string;
+    downloadLinkPatched: string;
 }
 
 const { Paragraph, Text } = Typography;
@@ -84,6 +85,8 @@ export const ESP32BoxFlashing = () => {
         proceed: false,
         disableButtons: false,
         warningText: "",
+        downloadLink: "",
+        downloadLinkPatched: "",
     });
 
     const baudRate = 921600;
@@ -386,6 +389,10 @@ export const ESP32BoxFlashing = () => {
                 const arrayBuffer = e.target?.result as ArrayBuffer;
                 const flashData = new Uint8Array(arrayBuffer);
                 const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
+
+                const blob = new Blob([flashData], { type: "application/octet-stream" });
+                const url = URL.createObjectURL(blob);
+
                 await uploadFlashData(flashData, sanitizedName);
 
                 if (e.target) {
@@ -395,6 +402,7 @@ export const ESP32BoxFlashing = () => {
                         showFlash: true,
                         connected: false,
                         flashName: "from file",
+                        downloadLink: url,
                     }));
                 }
                 console.log("Done");
@@ -548,6 +556,15 @@ export const ESP32BoxFlashing = () => {
         }
 
         const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
+
+        const blob = new Blob([flashData], { type: "application/octet-stream" });
+        const url = URL.createObjectURL(blob);
+
+        setState((prevState) => ({
+            ...prevState,
+            downloadLink: url,
+        }));
+
         await uploadFlashData(flashData, sanitizedName);
         console.log("Done");
     };
@@ -628,11 +645,16 @@ export const ESP32BoxFlashing = () => {
                 showFlash: true,
                 flashName: "patched",
             }));
+
+            const blob2 = new Blob([arrayBuffer], { type: "application/octet-stream" });
+            const url2 = URL.createObjectURL(blob2);
+
             setState((prevState) => ({
                 ...prevState,
                 state: t("esp32flasher.patchingSuccessful", {
                     size: (arrayBuffer.byteLength / 1024 / 1024).toFixed(0),
                 }),
+                downloadLinkPatched: url2,
             }));
             next();
         } else {
@@ -898,6 +920,16 @@ export const ESP32BoxFlashing = () => {
         <>
             <h3>{t("esp32flasher.titlePatchFlash")}</h3>
             {stepStatusText}
+            {state.downloadLink ? (
+                <div style={{ marginBottom: 16 }}>
+                    {" "}
+                    <a href={state.downloadLink} download={state.filename}>
+                        Download Unpatched Firmware
+                    </a>
+                </div>
+            ) : (
+                ""
+            )}
             <Paragraph>{t("esp32flasher.hintPatchFlash")}</Paragraph>
             <div>
                 <FormItem label={t("esp32flasher.hostname")}>
@@ -932,6 +964,16 @@ export const ESP32BoxFlashing = () => {
         <>
             <h3>{t("esp32flasher.titleFlashESP32")}</h3>
             {stepStatusText}
+            {state.downloadLinkPatched ? (
+                <div style={{ marginBottom: 16 }}>
+                    {" "}
+                    <a href={state.downloadLinkPatched} download={"patched_" + state.filename}>
+                        {t("esp32flasher.downloadLinkPatched")}
+                    </a>
+                </div>
+            ) : (
+                ""
+            )}
             <Paragraph>{t("esp32flasher.hintFlashESP32")}</Paragraph>
             {contentRaw}
         </>

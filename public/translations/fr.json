@@ -42,6 +42,8 @@
         "connectingTo": "Connexion à",
         "connectingToESP": "Connexion à l'ESP...",
         "connectingWriteFlash": "Connexion pour écrire le flash...",
+        "downloadLink": "Télécharger le firmware non patché",
+        "downloadLinkPatched": "Télécharger le firmware patché",
         "error": "Erreur",
         "failedToCommunicate": "Échec de la communication :",
         "failedToConnect": "Échec de la connexion :",

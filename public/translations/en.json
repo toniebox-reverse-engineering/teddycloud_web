@@ -42,6 +42,8 @@
         "connectingTo": "Connecting to",
         "connectingToESP": "Connecting to ESP...",
         "connectingWriteFlash": "Connecting to write Flash...",
+        "downloadLink": "Download unpatched firmware",
+        "downloadLinkPatched": "Download patched firmware",
         "error": "Error",
         "failedToCommunicate": "Failed to communicate:",
         "failedToConnect": "Failed to connect:",
