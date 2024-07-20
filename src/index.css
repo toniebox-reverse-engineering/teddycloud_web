@@ -43,10 +43,13 @@ code {
 .sticky-footer .ant-modal-footer {
     position: sticky;
     bottom: 0;
-    background: #fff;
     padding: 12px 24px;
     margin-bottom: 0px;
     z-index: 10;
+}
+
+.sticky-footer .ant-modal-content {
+    padding: 20px 24px 0;
 }
 
 .ant-form-item .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {

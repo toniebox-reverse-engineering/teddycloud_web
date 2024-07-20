@@ -445,6 +445,8 @@
         },
         "navigationTitle": "Tonies",
         "selectFileModal": {
+            "cancel": "Cancel",
+            "ok": "OK",
             "selectFile": "Select TAF/TAP-file"
         },
         "system-sounds": {
