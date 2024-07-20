@@ -68,16 +68,10 @@ export const TonieboxCard: React.FC<{
     const [boxName, setBoxName] = useState(tonieboxCard.boxName);
     const [tonieboxName, setTonieBoxName] = useState(tonieboxCard.boxName);
     const [boxImage, setBoxImage] = useState<JSX.Element | null>(null);
-    const [isConfirmDeleteModalVisible, setIsConfirmDeleteModalVisible] = useState(false);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [tonieboxAccessApi, setTonieboxAccessApi] = useState<boolean>(true);
     const [modalKey, setModalKey] = useState(0); // Key for modal rendering
 
-    const boxModelImages = GetBoxModelImages();
-    const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
-        boxModelImages.map((v) => {
-            return { label: v.name, value: v.id };
-        })
-    );
     useEffect(() => {
         const fetchTonieboxApiAccess = async () => {
             const tonieboxApiAccess = await api.apiGetTonieboxApiAccess(tonieboxCard.ID);
@@ -168,6 +162,14 @@ export const TonieboxCard: React.FC<{
         }
     }, [lastIp, tonieboxVersion]);
 
+    const boxModelImages = GetBoxModelImages();
+
+    const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
+        boxModelImages.map((v) => {
+            return { label: v.name, value: v.id };
+        })
+    );
+
     const selectBoxImage = (id: string) => {
         const selectedImage = tonieboxImages.find((item: { id: string }) => item.id === id);
         if (selectedImage) {
@@ -257,10 +259,7 @@ export const TonieboxCard: React.FC<{
     };
 
     // Settings
-    const handleEditSettingsClick = () => {
-        setModalKey((prevKey) => prevKey + 1);
-        showEditSettingsModal();
-    };
+
     const showEditSettingsModal = () => {
         setIsEditSettingsModalOpen(true);
     };
@@ -269,6 +268,10 @@ export const TonieboxCard: React.FC<{
     };
     const handleEditSettingsCancel = () => {
         setIsEditSettingsModalOpen(false);
+    };
+    const handleEditSettingsClick = () => {
+        setModalKey((prevKey) => prevKey + 1);
+        showEditSettingsModal();
     };
 
     // Model (name + box Model)
@@ -371,7 +374,7 @@ export const TonieboxCard: React.FC<{
         if (activeModel !== selectedModel) handleModelSave();
     };
 
-    const editModalFooter = (
+    const editTonieboxModalFooter = (
         <>
             <Button
                 type="primary"
@@ -401,7 +404,7 @@ export const TonieboxCard: React.FC<{
                 </>
             }
             open={isModelModalOpen}
-            footer={editModalFooter}
+            footer={editTonieboxModalFooter}
             onCancel={handleModelCancel}
         >
             <Divider orientation="left" orientationMargin="0">
@@ -416,7 +419,8 @@ export const TonieboxCard: React.FC<{
                         <CloseOutlined
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
-                                color: boxName === tonieboxName ? token.colorTextDisabled : "",
+                                color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,
+                                cursor: boxName === tonieboxName ? "default" : "pointer",
                             }}
                         />
                     }
@@ -514,22 +518,22 @@ export const TonieboxCard: React.FC<{
     };
 
     const showDeleteConfirmDialog = () => {
-        setIsConfirmDeleteModalVisible(true);
+        setIsConfirmDeleteModalOpen(true);
     };
 
     const handleConfirmDelete = () => {
         deleteToniebox();
-        setIsConfirmDeleteModalVisible(false);
+        setIsConfirmDeleteModalOpen(false);
     };
 
     const handleCancelDelete = () => {
-        setIsConfirmDeleteModalVisible(false);
+        setIsConfirmDeleteModalOpen(false);
     };
 
     const deleteTonieboxModal = (
         <ConfirmationDialog
             title={t("tonieboxes.confirmDeleteModal")}
-            isVisible={isConfirmDeleteModalVisible}
+            open={isConfirmDeleteModalOpen}
             okText={t("tonieboxes.delete")}
             cancelText={t("tonieboxes.cancel")}
             content={t("tonieboxes.confirmDeleteDialog", { tonieboxToDelete: tonieboxName })}

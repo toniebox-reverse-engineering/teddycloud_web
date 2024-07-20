@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Col, Row, message, Tooltip } from "antd";
+import { Modal, Form, Input, Button, Col, Row, message, Tooltip, Alert } from "antd";
 import { TonieCardProps } from "./TonieCard";
 import { useTranslation } from "react-i18next";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -131,13 +131,14 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState(false);
 
     const jsonViewerModalFooter = (
-        <Button type="primary" onClick={() => setJsonViewerModalOpened(false)}>
+        <Button type="primary" onClick={() => handleJsonViewerModalClose()}>
             {t("tonies.informationModal.ok")}
         </Button>
     );
 
     const handleJsonViewerModalClose = () => {
         setJsonViewerModalOpened(false);
+        handleCancel();
     };
 
     function detectColorScheme() {
@@ -206,6 +207,13 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 okText={t("tonies.addNewCustomTonieModal.save")}
                 width={Math.max(Math.min(window.innerWidth * 0.75, 800), 500)}
             >
+                <Alert
+                    type="info"
+                    showIcon={true}
+                    message="Work in progress - be aware!"
+                    description="Currently, only the generated json fragment is displayed when saving the new model. This is not automatically inserted into the tonies.custom.json. You have to copy this into the file yourself."
+                    style={{ marginBottom: 8 }}
+                />
                 <Form form={form} layout="vertical" onFinish={handleFinish}>
                     <Row gutter={[16, 0]}>
                         <Col span={24}>

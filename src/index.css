@@ -40,6 +40,15 @@ code {
     border-top: 8px solid orange;
 }
 
+.sticky-footer .ant-modal-footer {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 12px 24px;
+    margin-bottom: 0px;
+    z-index: 10;
+}
+
 .ant-form-item .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
     display: none;
 }
@@ -65,6 +74,10 @@ code {
 
 .ant-table-cell {
     padding: 8px !important;
+}
+
+.ant-steps-item-active .ant-steps-item-title {
+    font-weight: 500;
 }
 
 /* workaround missing good responsiveness of antd tables... */

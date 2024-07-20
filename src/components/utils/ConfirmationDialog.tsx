@@ -7,7 +7,7 @@ interface ConfirmationDialogProps {
     okText: string;
     cancelText: string;
     content: string;
-    isVisible: boolean;
+    open: boolean;
     handleOk: () => void;
     handleCancel: () => void;
 }
@@ -17,7 +17,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     okText,
     cancelText,
     content,
-    isVisible,
+    open,
     handleOk,
     handleCancel,
 }) => {
@@ -29,7 +29,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                     <div style={{ marginBottom: 16 }}>{title}</div>
                 </div>
             }
-            open={isVisible}
+            open={open}
             onOk={handleOk}
             onCancel={handleCancel}
             okText={okText}
