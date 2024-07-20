@@ -297,7 +297,7 @@
             "redirectToHttpAfterActivation": "Bei Aktivierung \"Webinterface HTTP only\" wird nach Speichern auf HTTP Seite weitergeleitet (falls HTTPS aktiv).",
             "redirectToHttpsAfterDeactivation": "Bei Deaktivierung \"Webinterface HTTP only\" wird nach Speichern auf HTTPS Seite weitergeleitet.",
             "save": "Settings speichern",
-            "title": "ESP32 Box Flashing"
+            "title": "ESP32 Box Flashing (WiP - Do Not Use Yet! - Final flash is disabled)"
         },
         "lastOnline": "zuletzt online",
         "lastPlayedTonie": "Zuletzt gespielter Tonie: ",

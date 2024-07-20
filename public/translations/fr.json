@@ -296,7 +296,7 @@
             "redirectToHttpAfterActivation": "Après avoir activé \"Interface web uniquement HTTP\" et sauvegardé, vous serez redirigé vers la page HTTP (si HTTPS est actif).",
             "redirectToHttpsAfterDeactivation": "Après avoir désactivé \"Interface web uniquement HTTP\" et sauvegardé, vous serez redirigé vers la page HTTPS.",
             "save": "Enregistrer les paramètres",
-            "title": "Flashage de la boîte ESP32"
+            "title": "Flashage de la boîte ESP32 (WiP - Do Not Use Yet! - Final flash is disabled)"
         },
         "lastOnline": "dernière connexion",
         "lastPlayedTonie": "Dernier Tonie joué: ",
