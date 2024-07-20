@@ -276,20 +276,20 @@ export const ESP32BoxFlashing = () => {
             if (err === "NetworkError") {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.portOpenFailedInUse"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.portOpenFailedInUse"),
                 }));
-                alert(t("esp32flasher.portOpenFailedInUse"));
+                alert(t("tonieboxes.esp32BoxFlashing.esp32flasher.portOpenFailedInUse"));
             } else if (err === "NotFoundError") {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.noPortAvailable"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.noPortAvailable"),
                 }));
             } else {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.error") + err,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.error") + err,
                 }));
-                alert(t("esp32flasher.error") + ` ${err}`);
+                alert(t("tonieboxes.esp32BoxFlashing.esp32flasher.error") + ` ${err}`);
             }
             return null;
         }
@@ -297,7 +297,7 @@ export const ESP32BoxFlashing = () => {
         if (!port) {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.invalidSerialPort"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidSerialPort"),
             }));
             return null;
         }
@@ -330,7 +330,7 @@ export const ESP32BoxFlashing = () => {
         const reader = new FileReader();
         reader.onload = async (e) => {
             console.log("Connecting to ESP32");
-            const port = await getPort(t("esp32flasher.connectingReadMac"));
+            const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingReadMac"));
 
             if (port === null || state.connected) {
                 setState((prevState) => ({
@@ -342,7 +342,7 @@ export const ESP32BoxFlashing = () => {
 
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.connectingTo") + ` ${state.port}`,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${state.port}`,
                 showFlash: false,
                 connected: true,
             }));
@@ -359,7 +359,7 @@ export const ESP32BoxFlashing = () => {
             } catch (err) {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.failedToConnect") + ` ${err}`,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
                     connected: false,
                     disableButtons: false,
                 }));
@@ -372,7 +372,7 @@ export const ESP32BoxFlashing = () => {
             try {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.retrievingMac"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.retrievingMac"),
                 }));
 
                 await esploader.main();
@@ -409,7 +409,7 @@ export const ESP32BoxFlashing = () => {
             } catch (err) {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.failedToCommunicate") + ` ${err}`,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
                     connected: false,
                     disableButtons: false,
                 }));
@@ -435,7 +435,7 @@ export const ESP32BoxFlashing = () => {
 
         flashData = new Uint8Array(1024);
 
-        const port = await getPort(t("esp32flasher.connectingReadFlash"));
+        const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingReadFlash"));
 
         if (port === null || state.connected) {
             return;
@@ -443,7 +443,7 @@ export const ESP32BoxFlashing = () => {
 
         setState((prevState) => ({
             ...prevState,
-            state: t("esp32flasher.connectingTo") + ` ${port.getInfo()}`,
+            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${port.getInfo()}`,
             showFlash: false,
             connected: true,
             disableButtons: true,
@@ -460,7 +460,7 @@ export const ESP32BoxFlashing = () => {
         } catch (err) {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.failedToConnect") + ` ${err}`,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
                 connected: false,
                 disableButtons: false,
             }));
@@ -472,12 +472,12 @@ export const ESP32BoxFlashing = () => {
         try {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.connectingToESP"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
             }));
             await esploader.main();
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.connected"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connected"),
             }));
 
             mac = await esploader.chip.readMac(esploader);
@@ -512,7 +512,7 @@ export const ESP32BoxFlashing = () => {
             if (flash_size < 0 || flash_size > 16384) {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.flashSizeError"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError"),
                     connected: false,
                     disableButtons: false,
                 }));
@@ -521,7 +521,7 @@ export const ESP32BoxFlashing = () => {
             }
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.readingFlash"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFlash"),
                 showProgress: true,
                 progress: 0,
             }));
@@ -537,7 +537,7 @@ export const ESP32BoxFlashing = () => {
             await port.close();
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.readingFinished"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFinished"),
                 progress: 100,
                 originalFlash: flashData,
                 connected: false,
@@ -545,7 +545,7 @@ export const ESP32BoxFlashing = () => {
         } catch (err) {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.failedToCommunicate") + ` ${err}`,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
                 connected: false,
                 disableButtons: false,
             }));
@@ -573,7 +573,7 @@ export const ESP32BoxFlashing = () => {
         try {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.uploading"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploading"),
             }));
 
             const formData = new FormData();
@@ -590,14 +590,14 @@ export const ESP32BoxFlashing = () => {
                     ...prevState,
                     showDownload: true,
                     filename: filename,
-                    state: t("esp32flasher.uploadSuccessful") + ` ${filename}`,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadSuccessful") + ` ${filename}`,
                     proceed: true,
                     disableButtons: false,
                 }));
             } else {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.uploadFailed"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadFailed"),
                     disableButtons: false,
                 }));
             }
@@ -605,7 +605,7 @@ export const ESP32BoxFlashing = () => {
             console.error("There was an error when uploading!", err);
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.uploadFailed"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadFailed"),
                 disableButtons: false,
             }));
         }
@@ -621,7 +621,7 @@ export const ESP32BoxFlashing = () => {
             ...prevState,
             showProgress: false,
             showFlash: false,
-            state: t("esp32flasher.patchingFlashImage"),
+            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
         }));
 
         const response = await fetch(
@@ -634,7 +634,7 @@ export const ESP32BoxFlashing = () => {
             ...prevState,
             showProgress: false,
             showFlash: false,
-            state: t("esp32flasher.patchingFlashImage"),
+            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
         }));
 
         if (response.ok && response.status === 200) {
@@ -651,7 +651,7 @@ export const ESP32BoxFlashing = () => {
 
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.patchingSuccessful", {
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingSuccessful", {
                     size: (arrayBuffer.byteLength / 1024 / 1024).toFixed(0),
                 }),
                 downloadLinkPatched: url2,
@@ -660,7 +660,7 @@ export const ESP32BoxFlashing = () => {
         } else {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.patchingFailed"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFailed"),
             }));
         }
         setState((prevState) => ({
@@ -670,7 +670,7 @@ export const ESP32BoxFlashing = () => {
     };
 
     const writeFlash = async () => {
-        const port = await getPort(t("esp32flasher.connectingWriteFlash"));
+        const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"));
 
         if (port == null || state.connected) {
             return;
@@ -683,7 +683,7 @@ export const ESP32BoxFlashing = () => {
 
         setState((prevState) => ({
             ...prevState,
-            state: t("esp32flasher.connectingTo") + ` ${port.getInfo()}`,
+            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${port.getInfo()}`,
             connected: true,
         }));
 
@@ -700,7 +700,7 @@ export const ESP32BoxFlashing = () => {
         } catch (err) {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.failedToConnect") + ` ${err}`,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
                 connected: false,
                 disableButtons: false,
             }));
@@ -712,12 +712,12 @@ export const ESP32BoxFlashing = () => {
         try {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.connectingToESP"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
             }));
             await esploader.main();
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.connected"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connected"),
                 progress: 0,
                 showProgress: true,
             }));
@@ -761,7 +761,7 @@ export const ESP32BoxFlashing = () => {
             if (flash_size < 0 || flash_size > 16384) {
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("esp32flasher.flashSizeError"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError"),
                     connected: false,
                     disableButtons: false,
                 }));
@@ -770,7 +770,7 @@ export const ESP32BoxFlashing = () => {
             }
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.preparingFlash", {
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.preparingFlash", {
                     size: (state.patchedFlash.byteLength / 1024 / 1024).toFixed(0),
                 }),
             }));
@@ -795,7 +795,7 @@ export const ESP32BoxFlashing = () => {
 
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.writingFlash", {
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
                     size: (state.patchedFlash.byteLength / 1024 / 1024).toFixed(0),
                 }),
             }));
@@ -811,7 +811,7 @@ export const ESP32BoxFlashing = () => {
             await port.close();
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.writingFinished"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFinished"),
                 connected: false,
                 disableButtons: false,
                 proceed: true,
@@ -819,7 +819,7 @@ export const ESP32BoxFlashing = () => {
         } catch (err) {
             setState((prevState) => ({
                 ...prevState,
-                state: t("esp32flasher.failedToCommunicate") + ` ${err}`,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
                 connected: false,
                 disableButtons: false,
             }));
@@ -842,16 +842,16 @@ export const ESP32BoxFlashing = () => {
 
     const steps = [
         {
-            title: t("esp32flasher.titleReadESP32ImportFlash"),
+            title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash"),
         },
         {
-            title: t("esp32flasher.titlePatchFlash"),
+            title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash"),
         },
         {
-            title: t("esp32flasher.titleFlashESP32"),
+            title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32"),
         },
         {
-            title: t("esp32flasher.titleESP32FirmwareFlashed"),
+            title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleESP32FirmwareFlashed"),
         },
     ];
 
@@ -862,27 +862,27 @@ export const ESP32BoxFlashing = () => {
                     <table className="info-table">
                         <tbody>
                             <tr>
-                                <td>{t("esp32flasher.chipType")}</td>
+                                <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.chipType")}</td>
                                 <td>{state.chipType}</td>
                             </tr>
                             <tr>
-                                <td>{t("esp32flasher.chipMAC")}</td>
+                                <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.chipMAC")}</td>
                                 <td>{state.chipMac}</td>
                             </tr>
                             <tr>
-                                <td>{t("esp32flasher.flashId")}</td>
+                                <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashId")}</td>
                                 <td>0x{state.flashId.toString()}</td>
                             </tr>
                             <tr>
-                                <td>{t("esp32flasher.flashManuf")}</td>
+                                <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashManuf")}</td>
                                 <td>0x{state.flashManuf.toString()}</td>
                             </tr>
                             <tr>
-                                <td>{t("esp32flasher.flashDevice")}</td>
+                                <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashDevice")}</td>
                                 <td>0x{state.flashDevice.toString()}</td>
                             </tr>
                             <tr>
-                                <td>{t("esp32flasher.flashSize")}</td>
+                                <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSize")}</td>
                                 <td>{state.flashSize} KiB</td>
                             </tr>
                         </tbody>
@@ -909,16 +909,16 @@ export const ESP32BoxFlashing = () => {
 
     const contentStep0 = (
         <>
-            <h3>{t("esp32flasher.titleReadESP32ImportFlash")}</h3>
+            <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash")}</h3>
             {stepStatusText}
-            <Paragraph>{t("esp32flasher.hintReadESP32ImportFlash")}</Paragraph>
+            <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}</Paragraph>
             <input type="file" style={{ display: "none" }} ref={fileInputRef} onChange={loadFlashFile} />
             {contentRaw}
         </>
     );
     const contentStep1 = (
         <>
-            <h3>{t("esp32flasher.titlePatchFlash")}</h3>
+            <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash")}</h3>
             {stepStatusText}
             {state.downloadLink ? (
                 <div style={{ marginBottom: 16 }}>
@@ -930,9 +930,9 @@ export const ESP32BoxFlashing = () => {
             ) : (
                 ""
             )}
-            <Paragraph>{t("esp32flasher.hintPatchFlash")}</Paragraph>
+            <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")}</Paragraph>
             <div>
-                <FormItem label={t("esp32flasher.hostname")}>
+                <FormItem label={t("tonieboxes.esp32BoxFlashing.esp32flasher.hostname")}>
                     <Input
                         type="text"
                         defaultValue={state.hostname}
@@ -941,7 +941,7 @@ export const ESP32BoxFlashing = () => {
                             let warningText = "";
 
                             if (value.length > 12) {
-                                warningText = t("esp32flasher.hostnameToLong");
+                                warningText = t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong");
                             } else {
                                 warningText = "";
                             }
@@ -962,28 +962,28 @@ export const ESP32BoxFlashing = () => {
 
     const contentStep2 = (
         <>
-            <h3>{t("esp32flasher.titleFlashESP32")}</h3>
+            <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32")}</h3>
             {stepStatusText}
             {state.downloadLinkPatched ? (
                 <div style={{ marginBottom: 16 }}>
                     {" "}
                     <a href={state.downloadLinkPatched} download={"patched_" + state.filename}>
-                        {t("esp32flasher.downloadLinkPatched")}
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
                     </a>
                 </div>
             ) : (
                 ""
             )}
-            <Paragraph>{t("esp32flasher.hintFlashESP32")}</Paragraph>
+            <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")}</Paragraph>
             {contentRaw}
         </>
     );
 
     const contentStep3 = (
         <>
-            <h3>{t("esp32flasher.titleESP32FirmwareFlashed")}</h3>
+            <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleESP32FirmwareFlashed")}</h3>
             {stepStatusText}
-            <Paragraph>{t("esp32flasher.hintESP32FirmwareFlashed")}</Paragraph>
+            <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareFlashed")}</Paragraph>
             {contentRaw}
         </>
     );
@@ -1033,7 +1033,7 @@ export const ESP32BoxFlashing = () => {
     // the page
     const previousButton = (
         <Button disabled={disableButtons} onClick={() => prev()}>
-            {t("esp32flasher.previous")}
+            {t("tonieboxes.esp32BoxFlashing.esp32flasher.previous")}
         </Button>
     );
 
@@ -1063,14 +1063,14 @@ export const ESP32BoxFlashing = () => {
                         <div></div>
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button disabled={disableButtons} onClick={() => loadFile()}>
-                                {t("esp32flasher.loadFile")}
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
                             </Button>
                             <Button disabled={disableButtons} type="primary" onClick={() => readFirmware()}>
-                                {t("esp32flasher.readFlash")}
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.readFlash")}
                             </Button>
                         </div>
                         <Button disabled={(!state.proceed && !state.filename) || disableButtons} onClick={() => next()}>
-                            {t("esp32flasher.next")}
+                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
                         </Button>
                     </div>
                 )}
@@ -1079,11 +1079,11 @@ export const ESP32BoxFlashing = () => {
                         {previousButton}
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button disabled={disableButtons} type="primary" onClick={() => patchImage()}>
-                                {t("esp32flasher.patchImage")}
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.patchImage")}
                             </Button>
                         </div>
                         <Button disabled={disableButtons || !state.showFlash} onClick={() => next()}>
-                            {t("esp32flasher.next")}
+                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
                         </Button>
                     </div>
                 )}
@@ -1092,7 +1092,7 @@ export const ESP32BoxFlashing = () => {
                         {previousButton}
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button disabled={disableButtons} type="primary" onClick={() => flashESP32()}>
-                                {t("esp32flasher.flashEsp32")}
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
                             </Button>
                         </div>
                         <div></div>
