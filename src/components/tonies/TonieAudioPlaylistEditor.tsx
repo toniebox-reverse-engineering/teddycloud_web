@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Space } from "antd";
+import { Modal, Form, Input, Button, Space, Alert } from "antd";
 import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { FileBrowser } from "../utils/FileBrowser";
@@ -211,6 +211,13 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         });
                 }}
             >
+                <Alert
+                    type="info"
+                    showIcon={true}
+                    message="Work in progress - be aware!"
+                    description="Currently, only the generated json is displayed when saving the new tap. This is not automatically saved to your library. You have to create a *.tap file manually and copy this into the file yourself."
+                    style={{ marginBottom: 8 }}
+                />
                 <Form
                     form={form}
                     layout="vertical"

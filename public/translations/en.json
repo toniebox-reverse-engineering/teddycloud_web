@@ -272,7 +272,7 @@
         }
     },
     "tonies": {
-        "addNewCustomTonie": "WIP: Not working! Create new model",
+        "addNewCustomTonie": "Create new model",
         "addNewCustomTonieHint": "Create a new model and assign it to the current tag",
         "addNewCustomTonieModal": {
             "addAudioIdHash": "Add audio ID and hash",
@@ -298,7 +298,7 @@
             "seriesHint": "Will be displayed as the title of the Toniecard",
             "seriesRequired": "The series must be filled.",
             "successfullyCreated": "Model created successful!",
-            "title": "WIP: Not working! Create new Custom Tonie/Tag",
+            "title": "Create new Custom Tonie/Tag",
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Add Model",
