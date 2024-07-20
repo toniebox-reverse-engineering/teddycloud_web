@@ -69,6 +69,7 @@ export const ChangelogPage = () => {
                 "new /web gui: added FAQ page in community section",
                 "new /web gui: support web streams in audioplayer",
                 "new /web gui: improved filebrowser, added filter field and made buttons sticky",
+                "new /web gui: integrated ESP32 Firmware Flashing https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/46",
                 "new /web gui: fixed some bugs and minor refactoring",
             ],
             commits: [

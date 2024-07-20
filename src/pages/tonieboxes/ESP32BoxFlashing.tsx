@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import {
     HiddenDesktop,
@@ -9,25 +9,96 @@ import {
     StyledSider,
 } from "../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
-import { Alert, Button, Divider, Switch, Typography, message } from "antd";
-import { Link } from "react-router-dom";
+import { Alert, Button, Divider, Input, Progress, Steps, Switch, Typography, message } from "antd";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { JSX } from "react/jsx-runtime";
+import { ESPLoader, Transport } from "esptool-js";
+import FormItem from "antd/es/form/FormItem";
+import language from "react-syntax-highlighter/dist/esm/languages/hljs/1c";
+import i18n from "../../i18n";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
+interface ESP32Flasher {
+    progress: number;
+    chipMac: string;
+    chipType: string;
+    flashId: string;
+    flashManuf: string;
+    flashDevice: string;
+    flashSize: string;
+    state: string;
+    filename: string;
+    flashName: string;
+    port: SerialPort | null; // Adjust based on the type you're using
+    originalFlash: any | null;
+    patchedFlash: any | null;
+    showStatus: boolean;
+    showProgress: boolean;
+    showDownload: boolean;
+    showFlash: boolean;
+    connected: boolean;
+    hostname: string;
+    proceed: boolean;
+    disableButtons: boolean;
+    warningText: string;
+}
+
 const { Paragraph, Text } = Typography;
+const { Step } = Steps;
 
 export const ESP32BoxFlashing = () => {
     const { t } = useTranslation();
 
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [webHttpOnly, setWebHttpOnly] = useState(false);
     const [httpsClientCertAuth, setHttpsClientCertAuth] = useState(false);
-
     const [newWebHttpOnly, setNewWebHttpOnly] = useState(false);
     const [newHttpsClientCertAuth, setNewHttpsClientCertAuth] = useState(false);
-
     const [httpsActive, setHttpsActive] = useState(false);
+
+    const [content, setContent] = useState([<></>, <></>, <></>, <></>]);
+    const [currentStep, setCurrent] = useState(0);
+    const [disableButtons, setDisableButtons] = useState<boolean>(false);
+    const [state, setState] = useState<ESP32Flasher>({
+        progress: 0,
+        chipMac: "",
+        chipType: "",
+        flashId: "",
+        flashManuf: "",
+        flashDevice: "",
+        flashSize: "",
+        state: "",
+        filename: "",
+        flashName: "",
+        port: null,
+        originalFlash: null,
+        patchedFlash: null,
+        showStatus: false,
+        showProgress: false,
+        showDownload: false,
+        showFlash: false,
+        connected: false,
+        hostname: window.location.hostname,
+        proceed: false,
+        disableButtons: false,
+        warningText: "",
+    });
+
+    const baudRate = 921600;
+    const romBaudRate = 115200;
+
+    const currentLanguage = i18n.language;
+
+    function arrayBufferToBstr(arrayBuffer: any) {
+        const u8Array = new Uint8Array(arrayBuffer);
+        let binaryString = "";
+        for (let i = 0; i < u8Array.length; i++) {
+            binaryString += String.fromCharCode(u8Array[i]);
+        }
+        return binaryString;
+    }
 
     useEffect(() => {
         if (window.location.protocol === "https:") {
@@ -81,6 +152,38 @@ export const ESP32BoxFlashing = () => {
         fetchHttpsClientCertAuth();
     }, []);
 
+    useEffect(() => {
+        const getContentForStep = () => {
+            switch (currentStep) {
+                case 0:
+                    return contentStep0;
+                case 1:
+                    return contentStep1;
+                case 2:
+                    return contentStep2;
+                case 3:
+                    return contentStep3;
+                default:
+                    return <div></div>;
+            }
+        };
+
+        updateContent(currentStep, getContentForStep());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state, currentLanguage]);
+
+    useEffect(() => {
+        if (state.proceed) {
+            next();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.proceed]);
+
+    useEffect(() => {
+        setDisableButtons(state.disableButtons);
+    }, [state.disableButtons]);
+
+    // http / https stuff
     const triggerWriteConfig = async () => {
         try {
             await api.apiTriggerWriteConfigGet();
@@ -146,21 +249,819 @@ export const ESP32BoxFlashing = () => {
         }
     };
 
+    // flash functionality
+
+    const getPort = async (message: string) => {
+        if (state.port) {
+            console.log(state.port.getInfo);
+            return state.port;
+        }
+        setState((prevState) => ({
+            ...prevState,
+            showStatus: true,
+            showProgress: false,
+            progress: 0,
+            state: message || "Open serial port",
+        }));
+
+        let port: SerialPort | null = null;
+        try {
+            port = await navigator.serial.requestPort();
+            await port.open({ baudRate: 115200 });
+            await port.close();
+        } catch (err) {
+            if (err === "NetworkError") {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.portOpenFailedInUse"),
+                }));
+                alert(t("esp32flasher.portOpenFailedInUse"));
+            } else if (err === "NotFoundError") {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.noPortAvailable"),
+                }));
+            } else {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.error") + err,
+                }));
+                alert(t("esp32flasher.error") + ` ${err}`);
+            }
+            return null;
+        }
+
+        if (!port) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.invalidSerialPort"),
+            }));
+            return null;
+        }
+
+        console.log("port done");
+        setState((prevState) => ({
+            ...prevState,
+            port: port,
+        }));
+        return port;
+    };
+
+    const loadFlashFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("loadFlashFile");
+        if (!e.target.files) {
+            return;
+        }
+        const file = e.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        setState((prevState) => ({
+            ...prevState,
+            disableButtons: true,
+        }));
+
+        console.log("Read file '" + file + "'");
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            console.log("Connecting to ESP32");
+            const port = await getPort(t("esp32flasher.connectingReadMac"));
+
+            if (port === null || state.connected) {
+                setState((prevState) => ({
+                    ...prevState,
+                    disableButtons: false,
+                }));
+                return;
+            }
+
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.connectingTo") + ` ${state.port}`,
+                showFlash: false,
+                connected: true,
+            }));
+
+            let esploader: ESPLoader | null = null;
+
+            try {
+                const transport = new Transport(port);
+                esploader = new ESPLoader({
+                    transport: transport,
+                    baudrate: baudRate,
+                    romBaudrate: romBaudRate,
+                });
+            } catch (err) {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.failedToConnect") + ` ${err}`,
+                    connected: false,
+                    disableButtons: false,
+                }));
+
+                alert(err);
+                await port.close();
+                return;
+            }
+
+            try {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.retrievingMac"),
+                }));
+
+                await esploader.main();
+
+                var mac = await esploader.chip.readMac(esploader);
+                setState((prevState) => ({
+                    ...prevState,
+                    chipMac: mac,
+                }));
+
+                console.log("Chip MAC: " + mac);
+                await port.close();
+
+                const arrayBuffer = e.target?.result as ArrayBuffer;
+                const flashData = new Uint8Array(arrayBuffer);
+                const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
+                await uploadFlashData(flashData, sanitizedName);
+
+                if (e.target) {
+                    setState((prevState) => ({
+                        ...prevState,
+                        patchedFlash: e.target?.result,
+                        showFlash: true,
+                        connected: false,
+                        flashName: "from file",
+                    }));
+                }
+                console.log("Done");
+            } catch (err) {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.failedToCommunicate") + ` ${err}`,
+                    connected: false,
+                    disableButtons: false,
+                }));
+                console.error(err);
+                alert(err);
+                await port.close();
+                return;
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+        setState((prevState) => ({
+            ...prevState,
+            disableButtons: false,
+        }));
+        e.target.value = "";
+    };
+
+    const readFlash = async () => {
+        var esploader = null;
+        var flashData: Uint8Array | null = null;
+        var mac = "";
+
+        flashData = new Uint8Array(1024);
+
+        const port = await getPort(t("esp32flasher.connectingReadFlash"));
+
+        if (port === null || state.connected) {
+            return;
+        }
+
+        setState((prevState) => ({
+            ...prevState,
+            state: t("esp32flasher.connectingTo") + ` ${port.getInfo()}`,
+            showFlash: false,
+            connected: true,
+            disableButtons: true,
+        }));
+
+        try {
+            const transport = new Transport(port);
+
+            esploader = new ESPLoader({
+                transport: transport,
+                baudrate: baudRate,
+                romBaudrate: romBaudRate, // Ensure this matches documentation
+            });
+        } catch (err) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.failedToConnect") + ` ${err}`,
+                connected: false,
+                disableButtons: false,
+            }));
+            alert(err);
+            await port.close();
+            return;
+        }
+
+        try {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.connectingToESP"),
+            }));
+            await esploader.main();
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.connected"),
+            }));
+
+            mac = await esploader.chip.readMac(esploader);
+            setState((prevState) => ({
+                ...prevState,
+                chipMac: mac,
+            }));
+
+            console.log("Chip MAC: " + mac);
+
+            const type = await esploader.chip.getChipDescription(esploader);
+            setState((prevState) => ({
+                ...prevState,
+                chipType: type,
+            }));
+
+            var flash_id = await esploader.readFlashId();
+            /* maybe parse from https://github.com/jhcloos/flashrom/blob/master/flashchips.h */
+            setState((prevState) => ({
+                ...prevState,
+                flashId: "" + flash_id,
+                flashManuf: "" + (flash_id & 0xff),
+                flashDevice: "" + ((flash_id >> 8) & 0xff),
+            }));
+
+            var flash_size = await esploader.getFlashSize();
+            setState((prevState) => ({
+                ...prevState,
+                flashSize: "" + flash_size,
+            }));
+
+            if (flash_size < 0 || flash_size > 16384) {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.flashSizeError"),
+                    connected: false,
+                    disableButtons: false,
+                }));
+                await port.close();
+                return;
+            }
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.readingFlash"),
+                showProgress: true,
+                progress: 0,
+            }));
+
+            flashData = await esploader.readFlash(0, flash_size * 1024, (packet, progress, totalSize) => {
+                const prog = (100 * progress) / totalSize;
+                setState((prevState) => ({
+                    ...prevState,
+                    progress: prog,
+                }));
+            });
+
+            await port.close();
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.readingFinished"),
+                progress: 100,
+                originalFlash: flashData,
+                connected: false,
+            }));
+        } catch (err) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.failedToCommunicate") + ` ${err}`,
+                connected: false,
+                disableButtons: false,
+            }));
+            console.error(err);
+            alert(err);
+            await port.close();
+            return;
+        }
+
+        const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
+        await uploadFlashData(flashData, sanitizedName);
+        console.log("Done");
+    };
+
+    const uploadFlashData = async (flashData: Uint8Array, sanitizedName: string) => {
+        try {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.uploading"),
+            }));
+
+            const formData = new FormData();
+            formData.append(sanitizedName, new Blob([flashData.buffer]), sanitizedName);
+
+            const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/uploadFirmware`, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (response.ok && response.status === 200) {
+                const filename = await response.text();
+                setState((prevState) => ({
+                    ...prevState,
+                    showDownload: true,
+                    filename: filename,
+                    state: t("esp32flasher.uploadSuccessful") + ` ${filename}`,
+                    proceed: true,
+                    disableButtons: false,
+                }));
+            } else {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.uploadFailed"),
+                    disableButtons: false,
+                }));
+            }
+        } catch (err) {
+            console.error("There was an error when uploading!", err);
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.uploadFailed"),
+                disableButtons: false,
+            }));
+        }
+    };
+
+    const patchFlash = async () => {
+        setState((prevState) => ({
+            ...prevState,
+            disableButtons: true,
+        }));
+
+        setState((prevState) => ({
+            ...prevState,
+            showProgress: false,
+            showFlash: false,
+            state: t("esp32flasher.patchingFlashImage"),
+        }));
+
+        const response = await fetch(
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}`,
+            {
+                method: "GET",
+            }
+        );
+        setState((prevState) => ({
+            ...prevState,
+            showProgress: false,
+            showFlash: false,
+            state: t("esp32flasher.patchingFlashImage"),
+        }));
+
+        if (response.ok && response.status === 200) {
+            const arrayBuffer = await response.arrayBuffer();
+            setState((prevState) => ({
+                ...prevState,
+                patchedFlash: arrayBuffer,
+                showFlash: true,
+                flashName: "patched",
+            }));
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.patchingSuccessful", {
+                    size: (arrayBuffer.byteLength / 1024 / 1024).toFixed(0),
+                }),
+            }));
+            next();
+        } else {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.patchingFailed"),
+            }));
+        }
+        setState((prevState) => ({
+            ...prevState,
+            disableButtons: false,
+        }));
+    };
+
+    const writeFlash = async () => {
+        const port = await getPort(t("esp32flasher.connectingWriteFlash"));
+
+        if (port == null || state.connected) {
+            return;
+        }
+
+        setState((prevState) => ({
+            ...prevState,
+            disableButtons: true,
+        }));
+
+        setState((prevState) => ({
+            ...prevState,
+            state: t("esp32flasher.connectingTo") + ` ${port.getInfo()}`,
+            connected: true,
+        }));
+
+        var esploader = null;
+        var flashData = null;
+
+        try {
+            const transport = new Transport(port);
+            esploader = new ESPLoader({
+                transport: transport,
+                baudrate: baudRate,
+                romBaudrate: romBaudRate, // Ensure this matches documentation
+            });
+        } catch (err) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.failedToConnect") + ` ${err}`,
+                connected: false,
+                disableButtons: false,
+            }));
+            alert(err);
+            await port.close();
+            return;
+        }
+
+        try {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.connectingToESP"),
+            }));
+            await esploader.main();
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.connected"),
+                progress: 0,
+                showProgress: true,
+            }));
+
+            var mac = await esploader.chip.readMac(esploader);
+            setState((prevState) => ({
+                ...prevState,
+                chipMac: mac,
+            }));
+            console.log("Chip MAC: " + mac);
+
+            const type = await esploader.chip.getChipDescription(esploader);
+            setState((prevState) => ({
+                ...prevState,
+                chipType: type,
+            }));
+
+            var flash_id = await esploader.readFlashId();
+            /* maybe parse from https://github.com/jhcloos/flashrom/blob/master/flashchips.h */
+            setState((prevState) => ({
+                ...prevState,
+                flashId: "" + flash_id,
+                flashManuf: "" + (flash_id & 0xff),
+                flashDevice: "" + ((flash_id >> 8) & 0xff),
+            }));
+
+            var flash_size = await esploader.getFlashSize();
+            setState((prevState) => ({
+                ...prevState,
+                flashSize: "" + flash_size,
+            }));
+
+            const cbr = (packet: any, progress: number, totalSize: number) => {
+                const prog = (100 * progress) / totalSize;
+                setState((prevState) => ({
+                    ...prevState,
+                    progress: prog,
+                }));
+            };
+
+            if (flash_size < 0 || flash_size > 16384) {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("esp32flasher.flashSizeError"),
+                    connected: false,
+                    disableButtons: false,
+                }));
+                await port.close();
+                return;
+            }
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.preparingFlash", {
+                    size: (state.patchedFlash.byteLength / 1024 / 1024).toFixed(0),
+                }),
+            }));
+
+            var fileArray = [];
+            fileArray.push({ data: arrayBufferToBstr(state.patchedFlash), address: 0 });
+            var opts = {
+                fileArray: fileArray,
+                flashSize: "keep",
+                flashMode: "keep",
+                flashFreq: "keep",
+                eraseAll: false,
+                compress: true,
+                reportProgress: (fileIndex: any, written: number, total: number) => {
+                    const prog = (100 * written) / total;
+                    setState((prevState) => ({
+                        ...prevState,
+                        progress: prog,
+                    }));
+                },
+            };
+
+            setState((prevState) => ({
+                ...prevState,
+                state: `Writing ${(state.patchedFlash.byteLength / 1024 / 1024).toFixed(0)} MiB flash`,
+            }));
+
+            // ##############################################################
+            // this writes the flash! outcommented for testing ^^
+
+            // await esploader.writeFlash(opts);
+
+            //
+            // ##############################################################
+
+            await port.close();
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.writingFinished"),
+                connected: false,
+                disableButtons: false,
+                proceed: true,
+            }));
+        } catch (err) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("esp32flasher.failedToCommunicate") + ` ${err}`,
+                connected: false,
+                disableButtons: false,
+            }));
+            console.error(err);
+            alert(err);
+            await port.close();
+            return;
+        }
+    };
+
+    // step content functionality
+
+    const updateContent = (index: number, newContent: JSX.Element) => {
+        setContent((prevContent) => {
+            const updatedContent = [...prevContent];
+            updatedContent[index] = newContent;
+            return updatedContent;
+        });
+    };
+
+    const steps = [
+        {
+            title: t("esp32flasher.titleReadESP32ImportFlash"),
+        },
+        {
+            title: t("esp32flasher.titlePatchFlash"),
+        },
+        {
+            title: t("esp32flasher.titleFlashESP32"),
+        },
+        {
+            title: t("esp32flasher.titleESP32FirmwareFlashed"),
+        },
+    ];
+
+    const contentRaw = (
+        <>
+            {state.showProgress && (
+                <div>
+                    <table className="info-table">
+                        <tbody>
+                            <tr>
+                                <td>{t("esp32flasher.chipType")}</td>
+                                <td>{state.chipType}</td>
+                            </tr>
+                            <tr>
+                                <td>{t("esp32flasher.chipMAC")}</td>
+                                <td>{state.chipMac}</td>
+                            </tr>
+                            <tr>
+                                <td>{t("esp32flasher.flashId")}</td>
+                                <td>0x{state.flashId.toString()}</td>
+                            </tr>
+                            <tr>
+                                <td>{t("esp32flasher.flashManuf")}</td>
+                                <td>0x{state.flashManuf.toString()}</td>
+                            </tr>
+                            <tr>
+                                <td>{t("esp32flasher.flashDevice")}</td>
+                                <td>0x{state.flashDevice.toString()}</td>
+                            </tr>
+                            <tr>
+                                <td>{t("esp32flasher.flashSize")}</td>
+                                <td>{state.flashSize} KiB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        <Progress percent={state.progress || 0} format={(percent) => `${(percent ?? 0).toFixed(2)}%`} />
+                    </div>
+                </div>
+            )}
+        </>
+    );
+
+    const sanitizeHostname = (input: string) => {
+        return input.replace(/[^a-zA-Z0-9-.]/g, "").trim();
+    };
+
+    const stepStatusText = state.showStatus && (
+        <div className="status">
+            <p>
+                <i>{state.state}</i>
+            </p>
+        </div>
+    );
+
+    const contentStep0 = (
+        <>
+            <h3>{t("esp32flasher.titleReadESP32ImportFlash")}</h3>
+            {stepStatusText}
+            <Paragraph>{t("esp32flasher.hintReadESP32ImportFlash")}</Paragraph>
+            <input type="file" style={{ display: "none" }} ref={fileInputRef} onChange={loadFlashFile} />
+            {contentRaw}
+        </>
+    );
+    const contentStep1 = (
+        <>
+            <h3>{t("esp32flasher.titlePatchFlash")}</h3>
+            {stepStatusText}
+            <Paragraph>{t("esp32flasher.hintPatchFlash")}</Paragraph>
+            <div>
+                <FormItem label={t("esp32flasher.hostname")}>
+                    <Input
+                        type="text"
+                        defaultValue={state.hostname}
+                        onChange={(e) => {
+                            let value = sanitizeHostname(e.target.value);
+                            let warningText = "";
+
+                            if (value.length > 12) {
+                                warningText = t("esp32flasher.hostnameToLong");
+                            } else {
+                                warningText = "";
+                            }
+
+                            setState((prevState) => ({
+                                ...prevState,
+                                hostname: value,
+                                warningText: warningText,
+                            }));
+                        }}
+                    />
+                    {state.warningText && <p style={{ color: "#CC3010" }}>{state.warningText}</p>}
+                </FormItem>
+            </div>
+            {contentRaw}
+        </>
+    );
+
+    const contentStep2 = (
+        <>
+            <h3>{t("esp32flasher.titleFlashESP32")}</h3>
+            {stepStatusText}
+            <Paragraph>{t("esp32flasher.hintFlashESP32")}</Paragraph>
+            {contentRaw}
+        </>
+    );
+
+    const contentStep3 = (
+        <>
+            <h3>{t("esp32flasher.titleESP32FirmwareFlashed")}</h3>
+            {stepStatusText}
+            <Paragraph>{t("esp32flasher.hintESP32FirmwareFlashed")}</Paragraph>
+            {contentRaw}
+        </>
+    );
+
+    // button functions
+    const readFirmware = () => {
+        readFlash();
+    };
+
+    const loadFile = () => {
+        openFile();
+    };
+
+    const openFile = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const patchImage = () => {
+        patchFlash();
+        updateContent(currentStep + 1, <>Patch applied</>);
+    };
+
+    const flashESP32 = () => {
+        writeFlash();
+        updateContent(currentStep + 1, <>ESP32 patched</>);
+    };
+
+    const next = () => {
+        setState((prevState) => ({
+            ...prevState,
+            proceed: false,
+        }));
+        setCurrent(currentStep + 1);
+    };
+
+    const prev = () => {
+        setState((prevState) => ({
+            ...prevState,
+            state: "",
+            showProgress: false,
+        }));
+        setCurrent(currentStep - 1);
+    };
+
+    // the page
+    const previousButton = (
+        <Button disabled={disableButtons} onClick={() => prev()}>
+            {t("esp32flasher.previous")}
+        </Button>
+    );
+
     const ESP32BoxFlashingForm = httpsActive ? (
         <>
-            <Alert
-                message={t("settings.information")}
-                description=<div>
-                    Development still in progress - Please use legacy{" "}
-                    <Link to={process.env.REACT_APP_TEDDYCLOUD_API_URL?.replace("http", "https") + ""} target="_blank">
-                        TeddyCloud Administration GUI
-                    </Link>{" "}
-                    till development is completed.
-                </div>
-                type="info"
-                showIcon
-            />
-            <Paragraph>Somewhen in future you will be able to do the flashing here.</Paragraph>
+            <Steps current={currentStep}>
+                {steps.map((step, index) => (
+                    <Step
+                        key={index}
+                        title={step.title}
+                        status={
+                            index === currentStep && index === steps.length - 1
+                                ? "finish"
+                                : index === currentStep
+                                ? "process"
+                                : index < currentStep
+                                ? "finish"
+                                : "wait"
+                        }
+                    />
+                ))}
+            </Steps>
+            <div style={{ marginTop: 24 }}>{content[currentStep]}</div>
+            <div style={{ marginTop: 24 }}>
+                {currentStep === 0 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div></div>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Button disabled={disableButtons} onClick={() => loadFile()}>
+                                {t("esp32flasher.loadFile")}
+                            </Button>
+                            <Button disabled={disableButtons} type="primary" onClick={() => readFirmware()}>
+                                {t("esp32flasher.readFlash")}
+                            </Button>
+                        </div>
+                        <Button disabled={(!state.proceed && !state.filename) || disableButtons} onClick={() => next()}>
+                            {t("esp32flasher.next")}
+                        </Button>
+                    </div>
+                )}
+                {currentStep === 1 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {previousButton}
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Button disabled={disableButtons} type="primary" onClick={() => patchImage()}>
+                                {t("esp32flasher.patchImage")}
+                            </Button>
+                        </div>
+                        <Button disabled={disableButtons || !state.showFlash} onClick={() => next()}>
+                            {t("esp32flasher.next")}
+                        </Button>
+                    </div>
+                )}
+                {currentStep === 2 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {previousButton}
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Button disabled={disableButtons} type="primary" onClick={() => flashESP32()}>
+                                {t("esp32flasher.flashEsp32")}
+                            </Button>
+                        </div>
+                        <div></div>
+                    </div>
+                )}
+                {currentStep === 3 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {previousButton}
+                        <div></div>
+                        <div></div>
+                    </div>
+                )}
+            </div>
         </>
     ) : (
         <>

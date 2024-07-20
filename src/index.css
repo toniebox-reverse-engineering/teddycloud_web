@@ -76,6 +76,10 @@ code {
     padding: 8px !important;
 }
 
+.ant-steps-item-active .ant-steps-item-title {
+    font-weight: 500;
+}
+
 /* workaround missing good responsiveness of antd tables... */
 
 .showBigDevicesOnly {
