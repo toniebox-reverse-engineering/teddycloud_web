@@ -294,11 +294,11 @@
                 "writingFinished": "Writing finished",
                 "writingFlash": "Writing {{size}}  MiB flash"
             },
-            "hint": "This section is only available if HTTPS is used. If you want to flash your ESP32 Toniebox, then please temporarily disable the \"Webinterface HTTP only\" option. If you don't have certificates for TeddyCloud, then also disable the \"HTTPS client cert auth\" option.",
+            "hint": "This section is only available if HTTPS is used. If you want to flash your ESP32 Toniebox, then please temporarily disable the \"Webinterface HTTP only\" and \"HTTPS client cert auth\" options.",
             "httpsSettings": "HTTPS Settings",
             "navigationTitle": "ESP32 Box Flashing",
             "redirectToHttpAfterActivation": "After enabling \"Webinterface HTTP only\" and saving, you will be redirected to HTTP page (if HTTPS is active).",
-            "redirectToHttpsAfterDeactivation": "After disabling \"Webinterface HTTP only\" and saving, you will be redirected to HTTPS page.",
+            "redirectToHttpsAfterDeactivation": "After disabling \"Webinterface HTTP only\" and \"HTTPS client cert auth\" and saving, you will be redirected to HTTPS page.",
             "save": "Save settings",
             "title": "ESP32 Box Flashing"
         },

@@ -208,15 +208,6 @@ export const ESP32BoxFlashing = () => {
 
     const handleSaveHttpsSettings = async () => {
         try {
-            if (newWebHttpOnly !== webHttpOnly) {
-                await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.webHttpOnly`, {
-                    method: "POST",
-                    body: newWebHttpOnly?.toString(),
-                    headers: {
-                        "Content-Type": "text/plain",
-                    },
-                });
-            }
             if (newHttpsClientCertAuth !== httpsClientCertAuth) {
                 await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.webHttpsCertAuth`, {
                     method: "POST",
@@ -226,18 +217,27 @@ export const ESP32BoxFlashing = () => {
                     },
                 });
             }
+            if (newWebHttpOnly !== webHttpOnly) {
+                await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.webHttpOnly`, {
+                    method: "POST",
+                    body: newWebHttpOnly?.toString(),
+                    headers: {
+                        "Content-Type": "text/plain",
+                    },
+                });
+            }
 
             if (newWebHttpOnly !== webHttpOnly || newHttpsClientCertAuth !== httpsClientCertAuth) {
                 triggerWriteConfig();
 
-                setWebHttpOnly(newWebHttpOnly);
                 setHttpsClientCertAuth(newHttpsClientCertAuth);
+                setWebHttpOnly(newWebHttpOnly);
             }
 
             const httpsPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS || "";
             const httpPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP || "";
 
-            if (!newWebHttpOnly && !httpsActive) {
+            if (!newWebHttpOnly && !newHttpsClientCertAuth && !httpsActive) {
                 // Redirect to the HTTPS URL
                 const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${
                     window.location.pathname
@@ -1038,6 +1038,7 @@ export const ESP32BoxFlashing = () => {
 
     const ESP32BoxFlashingForm = httpsActive ? (
         <>
+            <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
             <ConfirmationDialog
                 title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
                 open={isConfirmFlashModalOpen}
@@ -1120,14 +1121,7 @@ export const ESP32BoxFlashing = () => {
             </div>
         </>
     ) : (
-        <>
-            <Alert
-                message={t("settings.information")}
-                description={t("tonieboxes.esp32BoxFlashing.disableHttpOnlyForFlashing")}
-                type="info"
-                showIcon
-            />
-        </>
+        ""
     );
 
     return (
@@ -1159,6 +1153,7 @@ export const ESP32BoxFlashing = () => {
                             ""
                         )}
                     </Paragraph>
+                    {ESP32BoxFlashingForm}
                     <Divider>{t("tonieboxes.esp32BoxFlashing.httpsSettings")}</Divider>
                     <Paragraph style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <Paragraph>
@@ -1185,7 +1180,7 @@ export const ESP32BoxFlashing = () => {
                         </Paragraph>
 
                         <Text>
-                            {webHttpOnly
+                            {webHttpOnly || httpsClientCertAuth
                                 ? t("tonieboxes.esp32BoxFlashing.redirectToHttpsAfterDeactivation")
                                 : t("tonieboxes.esp32BoxFlashing.redirectToHttpAfterActivation")}
                         </Text>
@@ -1197,8 +1192,6 @@ export const ESP32BoxFlashing = () => {
                             {t("tonieboxes.esp32BoxFlashing.save")}
                         </Button>
                     </Paragraph>
-                    <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
-                    {ESP32BoxFlashingForm}
                 </StyledContent>
             </StyledLayout>
         </>
