@@ -239,8 +239,11 @@
             "enabledWebHttpOnly": "\"Interface web uniquement HTTP\" activée",
             "enabledWebHttpsClientCertAuth": "\"Authentification du certificat client HTTPS\" activée",
             "esp32flasher": {
+                "cancel": "Annuler",
                 "chipMAC": "MAC du chip",
                 "chipType": "Type de chip",
+                "confirmFlashDialog": "Voulez-vous vraiment flasher votre Toniebox? Veuillez assurer une connexion stable et ne pas interrompre le processus !",
+                "confirmFlashModal": "Flasher la Toniebox avec le firmware patché",
                 "connected": "Connecté",
                 "connectingReadFlash": "Connexion pour lire le flash...",
                 "connectingReadMac": "Connexion pour lire l'adresse MAC...",
@@ -252,6 +255,7 @@
                 "error": "Erreur",
                 "failedToCommunicate": "Échec de la communication :",
                 "failedToConnect": "Échec de la connexion :",
+                "flash": "Flasher",
                 "flashDevice": "Périphérique flash",
                 "flashEsp32": "Flasher l'ESP32",
                 "flashId": "ID du flash",
@@ -280,6 +284,7 @@
                 "readingFinished": "Lecture terminée",
                 "readingFlash": "Lecture du flash...",
                 "retrievingMac": "Récupération de l'adresse MAC...",
+                "title": "Flashage de la boîte ESP32",
                 "titleESP32FirmwareFlashed": "ESP32 flashé",
                 "titleFlashESP32": "Flasher l'ESP32",
                 "titlePatchFlash": "Patch Flash",
@@ -296,7 +301,7 @@
             "redirectToHttpAfterActivation": "Après avoir activé \"Interface web uniquement HTTP\" et sauvegardé, vous serez redirigé vers la page HTTP (si HTTPS est actif).",
             "redirectToHttpsAfterDeactivation": "Après avoir désactivé \"Interface web uniquement HTTP\" et sauvegardé, vous serez redirigé vers la page HTTPS.",
             "save": "Enregistrer les paramètres",
-            "title": "Flashage de la boîte ESP32 (WiP - Do Not Use Yet! - Final flash is disabled)"
+            "title": "Flashage de la boîte ESP32"
         },
         "lastOnline": "dernière connexion",
         "lastPlayedTonie": "Dernier Tonie joué: ",

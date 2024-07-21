@@ -240,8 +240,11 @@
             "enabledWebHttpOnly": "\"Webinterface HTTP only\" aktiv",
             "enabledWebHttpsClientCertAuth": "\"HTTPS client cert auth\" aktiv",
             "esp32flasher": {
+                "cancel": "Abbrechen",
                 "chipMAC": "Chip-MAC",
                 "chipType": "Chip-Typ",
+                "confirmFlashDialog": "Möchtest du deine Toniebox wirklich flashen? Bitte achte auf eine stabile Verbindung und unterbreche den Vorgang nicht!",
+                "confirmFlashModal": "Toniebox mit gepatchter Firmware flashen",
                 "connected": "Verbunden",
                 "connectingReadFlash": "Verbinde zum Lesen des Flash...",
                 "connectingReadMac": "Verbinde zum Lesen der MAC-Adresse...",
@@ -253,6 +256,7 @@
                 "error": "Fehler",
                 "failedToCommunicate": "Kommunikation fehlgeschlagen:",
                 "failedToConnect": "Verbindung fehlgeschlagen:",
+                "flash": "Flashen",
                 "flashDevice": "Flash-Gerät",
                 "flashEsp32": "ESP32 flashen",
                 "flashId": "Flash-ID",
@@ -297,7 +301,7 @@
             "redirectToHttpAfterActivation": "Bei Aktivierung \"Webinterface HTTP only\" wird nach Speichern auf HTTP Seite weitergeleitet (falls HTTPS aktiv).",
             "redirectToHttpsAfterDeactivation": "Bei Deaktivierung \"Webinterface HTTP only\" wird nach Speichern auf HTTPS Seite weitergeleitet.",
             "save": "Settings speichern",
-            "title": "ESP32 Box Flashing (WiP - Do Not Use Yet! - Final flash is disabled)"
+            "title": "ESP32 Box Flashing"
         },
         "lastOnline": "zuletzt online",
         "lastPlayedTonie": "Zuletzt gespielter Tonie: ",

@@ -16,6 +16,7 @@ import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import FormItem from "antd/es/form/FormItem";
 import i18n from "../../i18n";
+import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -800,13 +801,7 @@ export const ESP32BoxFlashing = () => {
                 }),
             }));
 
-            // ##############################################################
-            // this writes the flash! outcommented for testing ^^
-
-            // await esploader.writeFlash(opts);
-
-            //
-            // ##############################################################
+            await esploader.writeFlash(opts);
 
             await port.close();
             setState((prevState) => ({
@@ -1037,8 +1032,27 @@ export const ESP32BoxFlashing = () => {
         </Button>
     );
 
+    const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState<boolean>(false);
+    const handleConfirmFlash = () => {
+        setIsConfirmFlashModalOpen(false);
+        flashESP32();
+    };
+
+    const handleCancelFlash = () => {
+        setIsConfirmFlashModalOpen(false);
+    };
+
     const ESP32BoxFlashingForm = httpsActive ? (
         <>
+            <ConfirmationDialog
+                title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
+                open={isConfirmFlashModalOpen}
+                okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
+                cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
+                content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
+                handleOk={handleConfirmFlash}
+                handleCancel={handleCancelFlash}
+            />
             <Steps current={currentStep}>
                 {steps.map((step, index) => (
                     <Step
@@ -1091,7 +1105,11 @@ export const ESP32BoxFlashing = () => {
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         {previousButton}
                         <div style={{ display: "flex", gap: 8 }}>
-                            <Button disabled={disableButtons} type="primary" onClick={() => flashESP32()}>
+                            <Button
+                                disabled={disableButtons}
+                                type="primary"
+                                onClick={() => setIsConfirmFlashModalOpen(true)}
+                            >
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
                             </Button>
                         </div>
