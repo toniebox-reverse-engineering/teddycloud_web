@@ -295,7 +295,7 @@
                 "writingFinished": "Écriture terminée",
                 "writingFlash": "Écriture de {{size}} MiB de mémoire flash"
             },
-            "hint": "Cette section n'est disponible que si HTTPS est utilisé. Si vous souhaitez flasher votre Toniebox ESP32, veuillez désactiver temporairement l'option \"Interface web uniquement HTTP\".",
+            "hint": "Cette section n'est disponible que si HTTPS est utilisé. Si vous souhaitez flasher votre Toniebox ESP32, veuillez désactiver temporairement l'option \"Interface web uniquement HTTP\". Si vous n'avez pas de certificats pour TeddyCloud, désactivez également l'option \"HTTPS client cert auth\".",
             "httpsSettings": "Paramètres HTTPS",
             "navigationTitle": "Flashage de la boîte ESP32",
             "redirectToHttpAfterActivation": "Après avoir activé \"Interface web uniquement HTTP\" et sauvegardé, vous serez redirigé vers la page HTTP (si HTTPS est actif).",
