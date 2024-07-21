@@ -243,7 +243,7 @@
                 "cancel": "Abbrechen",
                 "chipMAC": "Chip-MAC",
                 "chipType": "Chip-Typ",
-                "confirmFlashDialog": "Möchtest du deine Toniebox wirklich flashen? Bitte achte auf eine stabile Verbindung und unterbreche den Vorgang nicht!",
+                "confirmFlashDialog": "Möchtest du deine Toniebox wirklich flashen? Für eine korrekte Funktionsweise deiner Toniebox ist die angegebene TeddyCloud-Instanz unbedingt notwendig. Falls deine TeddyCloud offline ist, kann deine Toniebox keine neuen Inhalte mehr abrufen! Bitte achte auf eine stabile Verbindung und unterbreche den Vorgang nicht!",
                 "confirmFlashModal": "Toniebox mit gepatchter Firmware flashen",
                 "connected": "Verbunden",
                 "connectingReadFlash": "Verbinde zum Lesen des Flash...",
