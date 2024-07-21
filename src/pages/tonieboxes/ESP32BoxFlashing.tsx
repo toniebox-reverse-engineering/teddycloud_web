@@ -1,6 +1,12 @@
-import { useTranslation } from "react-i18next";
 import { useEffect, useState, useRef } from "react";
-
+import { JSX } from "react/jsx-runtime";
+import { ESPLoader, Transport } from "esptool-js";
+import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
+import { Alert, Button, Divider, Input, Progress, Steps, Switch, Typography, message } from "antd";
+import FormItem from "antd/es/form/FormItem";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import {
     HiddenDesktop,
     StyledBreadcrumb,
@@ -9,13 +15,6 @@ import {
     StyledSider,
 } from "../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
-import { Alert, Button, Divider, Input, Progress, Steps, Switch, Typography, message } from "antd";
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { JSX } from "react/jsx-runtime";
-import { ESPLoader, Transport } from "esptool-js";
-import FormItem from "antd/es/form/FormItem";
-import i18n from "../../i18n";
 import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -31,7 +30,7 @@ interface ESP32Flasher {
     state: string;
     filename: string;
     flashName: string;
-    port: SerialPort | null; // Adjust based on the type you're using
+    port: SerialPort | null;
     originalFlash: any | null;
     patchedFlash: any | null;
     showStatus: boolean;
@@ -52,8 +51,10 @@ const { Step } = Steps;
 
 export const ESP32BoxFlashing = () => {
     const { t } = useTranslation();
+    const currentLanguage = i18n.language;
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+
     const [webHttpOnly, setWebHttpOnly] = useState(false);
     const [httpsClientCertAuth, setHttpsClientCertAuth] = useState(false);
     const [newWebHttpOnly, setNewWebHttpOnly] = useState(false);
@@ -63,6 +64,7 @@ export const ESP32BoxFlashing = () => {
     const [content, setContent] = useState([<></>, <></>, <></>, <></>]);
     const [currentStep, setCurrent] = useState(0);
     const [disableButtons, setDisableButtons] = useState<boolean>(false);
+
     const [state, setState] = useState<ESP32Flasher>({
         progress: 0,
         chipMac: "",
@@ -90,10 +92,10 @@ export const ESP32BoxFlashing = () => {
         downloadLinkPatched: "",
     });
 
+    const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState<boolean>(false);
+
     const baudRate = 921600;
     const romBaudRate = 115200;
-
-    const currentLanguage = i18n.language;
 
     function arrayBufferToBstr(arrayBuffer: any) {
         const u8Array = new Uint8Array(arrayBuffer);
@@ -254,7 +256,6 @@ export const ESP32BoxFlashing = () => {
     };
 
     // flash functionality
-
     const getPort = async (message: string) => {
         if (state.port) {
             console.log(state.port.getInfo);
@@ -378,7 +379,7 @@ export const ESP32BoxFlashing = () => {
 
                 await esploader.main();
 
-                var mac = await esploader.chip.readMac(esploader);
+                let mac = await esploader.chip.readMac(esploader);
                 setState((prevState) => ({
                     ...prevState,
                     chipMac: mac,
@@ -430,9 +431,9 @@ export const ESP32BoxFlashing = () => {
     };
 
     const readFlash = async () => {
-        var esploader = null;
-        var flashData: Uint8Array | null = null;
-        var mac = "";
+        let esploader: ESPLoader | null = null;
+        let flashData: Uint8Array | null = null;
+        let mac = "";
 
         flashData = new Uint8Array(1024);
 
@@ -495,7 +496,7 @@ export const ESP32BoxFlashing = () => {
                 chipType: type,
             }));
 
-            var flash_id = await esploader.readFlashId();
+            let flash_id = await esploader.readFlashId();
             /* maybe parse from https://github.com/jhcloos/flashrom/blob/master/flashchips.h */
             setState((prevState) => ({
                 ...prevState,
@@ -504,7 +505,7 @@ export const ESP32BoxFlashing = () => {
                 flashDevice: "" + ((flash_id >> 8) & 0xff),
             }));
 
-            var flash_size = await esploader.getFlashSize();
+            let flash_size = await esploader.getFlashSize();
             setState((prevState) => ({
                 ...prevState,
                 flashSize: "" + flash_size,
@@ -688,8 +689,7 @@ export const ESP32BoxFlashing = () => {
             connected: true,
         }));
 
-        var esploader = null;
-        var flashData = null;
+        let esploader: ESPLoader | null = null;
 
         try {
             const transport = new Transport(port);
@@ -723,7 +723,7 @@ export const ESP32BoxFlashing = () => {
                 showProgress: true,
             }));
 
-            var mac = await esploader.chip.readMac(esploader);
+            let mac = await esploader.chip.readMac(esploader);
             setState((prevState) => ({
                 ...prevState,
                 chipMac: mac,
@@ -736,7 +736,7 @@ export const ESP32BoxFlashing = () => {
                 chipType: type,
             }));
 
-            var flash_id = await esploader.readFlashId();
+            let flash_id = await esploader.readFlashId();
             /* maybe parse from https://github.com/jhcloos/flashrom/blob/master/flashchips.h */
             setState((prevState) => ({
                 ...prevState,
@@ -745,19 +745,11 @@ export const ESP32BoxFlashing = () => {
                 flashDevice: "" + ((flash_id >> 8) & 0xff),
             }));
 
-            var flash_size = await esploader.getFlashSize();
+            let flash_size = await esploader.getFlashSize();
             setState((prevState) => ({
                 ...prevState,
                 flashSize: "" + flash_size,
             }));
-
-            const cbr = (packet: any, progress: number, totalSize: number) => {
-                const prog = (100 * progress) / totalSize;
-                setState((prevState) => ({
-                    ...prevState,
-                    progress: prog,
-                }));
-            };
 
             if (flash_size < 0 || flash_size > 16384) {
                 setState((prevState) => ({
@@ -776,9 +768,9 @@ export const ESP32BoxFlashing = () => {
                 }),
             }));
 
-            var fileArray = [];
+            let fileArray = [];
             fileArray.push({ data: arrayBufferToBstr(state.patchedFlash), address: 0 });
-            var opts = {
+            let opts = {
                 fileArray: fileArray,
                 flashSize: "keep",
                 flashMode: "keep",
@@ -826,7 +818,6 @@ export const ESP32BoxFlashing = () => {
     };
 
     // step content functionality
-
     const updateContent = (index: number, newContent: JSX.Element) => {
         setContent((prevContent) => {
             const updatedContent = [...prevContent];
@@ -902,6 +893,7 @@ export const ESP32BoxFlashing = () => {
         </div>
     );
 
+    // step 0 - start the process, select between read flash and load file
     const contentStep0 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash")}</h3>
@@ -911,6 +903,8 @@ export const ESP32BoxFlashing = () => {
             {contentRaw}
         </>
     );
+
+    // step 1 - the flash is read, now set the hostname and provide patch functionality
     const contentStep1 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash")}</h3>
@@ -918,8 +912,8 @@ export const ESP32BoxFlashing = () => {
             {state.downloadLink ? (
                 <div style={{ marginBottom: 16 }}>
                     {" "}
-                    <a href={state.downloadLink} download={state.filename}>
-                        Download Unpatched Firmware
+                    <a href={state.downloadLink} download={state.filename} title={state.filename}>
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
                     </a>
                 </div>
             ) : (
@@ -955,6 +949,7 @@ export const ESP32BoxFlashing = () => {
         </>
     );
 
+    // step 2 - the firmware is now prepared, now flash the box
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32")}</h3>
@@ -962,7 +957,11 @@ export const ESP32BoxFlashing = () => {
             {state.downloadLinkPatched ? (
                 <div style={{ marginBottom: 16 }}>
                     {" "}
-                    <a href={state.downloadLinkPatched} download={"patched_" + state.filename}>
+                    <a
+                        href={state.downloadLinkPatched}
+                        download={"patched_" + state.filename}
+                        title={"patched_" + state.filename}
+                    >
                         {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
                     </a>
                 </div>
@@ -974,6 +973,7 @@ export const ESP32BoxFlashing = () => {
         </>
     );
 
+    // step 3 - the flashing was successful!
     const contentStep3 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleESP32FirmwareFlashed")}</h3>
@@ -989,10 +989,6 @@ export const ESP32BoxFlashing = () => {
     };
 
     const loadFile = () => {
-        openFile();
-    };
-
-    const openFile = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
@@ -1000,12 +996,10 @@ export const ESP32BoxFlashing = () => {
 
     const patchImage = () => {
         patchFlash();
-        updateContent(currentStep + 1, <>Patch applied</>);
     };
 
     const flashESP32 = () => {
         writeFlash();
-        updateContent(currentStep + 1, <>ESP32 patched</>);
     };
 
     const next = () => {
@@ -1025,14 +1019,7 @@ export const ESP32BoxFlashing = () => {
         setCurrent(currentStep - 1);
     };
 
-    // the page
-    const previousButton = (
-        <Button disabled={disableButtons} onClick={() => prev()}>
-            {t("tonieboxes.esp32BoxFlashing.esp32flasher.previous")}
-        </Button>
-    );
-
-    const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState<boolean>(false);
+    // confirm flashing
     const handleConfirmFlash = () => {
         setIsConfirmFlashModalOpen(false);
         flashESP32();
@@ -1041,6 +1028,13 @@ export const ESP32BoxFlashing = () => {
     const handleCancelFlash = () => {
         setIsConfirmFlashModalOpen(false);
     };
+
+    // the flashing step form itself
+    const previousButton = (
+        <Button disabled={disableButtons} onClick={() => prev()}>
+            {t("tonieboxes.esp32BoxFlashing.esp32flasher.previous")}
+        </Button>
+    );
 
     const ESP32BoxFlashingForm = httpsActive ? (
         <>
