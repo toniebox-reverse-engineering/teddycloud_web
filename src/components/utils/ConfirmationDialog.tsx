@@ -1,12 +1,15 @@
 import React from "react";
-import { Modal } from "antd";
+import { Alert, Modal } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmationDialogProps {
     title: string;
     okText: string;
     cancelText: string;
     content: string;
+    contentHint?: string;
+    contentHintTitle?: string;
     open: boolean;
     handleOk: () => void;
     handleCancel: () => void;
@@ -17,10 +20,14 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     okText,
     cancelText,
     content,
+    contentHint = "",
+    contentHintTitle = "",
     open,
     handleOk,
     handleCancel,
 }) => {
+    const { t } = useTranslation();
+
     return (
         <Modal
             title={
@@ -37,6 +44,16 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             className="warning"
         >
             <div style={{ marginBottom: 24 }}>{content}</div>
+            {contentHint && (
+                <div>
+                    <Alert
+                        type="warning"
+                        showIcon
+                        message={contentHintTitle || t("confirmDialog.contentHintTitle")}
+                        description={contentHint}
+                    />
+                </div>
+            )}
         </Modal>
     );
 };

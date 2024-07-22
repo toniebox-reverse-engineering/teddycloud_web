@@ -33,6 +33,9 @@
         "navigationTitle": "Community",
         "title": "Community"
     },
+    "confirmDialog": {
+        "contentHintTitle": "Denk dran"
+    },
     "faq": [
         {
             "answer": "Um ein Update zu erzwingen, mach einen Freshness-Check auf deinem Toniebox. Drücke ein Ohr für ca. 3 Sekunden, bis du einen Ton hörst. Warte, bis ein zweiter Ton die Fertigstellung des Updates bestätigt.",
@@ -243,7 +246,8 @@
                 "cancel": "Abbrechen",
                 "chipMAC": "Chip-MAC",
                 "chipType": "Chip-Typ",
-                "confirmFlashDialog": "Möchtest du deine Toniebox wirklich flashen? Für eine korrekte Funktionsweise deiner Toniebox ist die angegebene TeddyCloud-Instanz unbedingt notwendig. Falls deine TeddyCloud offline ist, kann deine Toniebox keine neuen Inhalte mehr abrufen! Bitte achte auf eine stabile Verbindung und unterbreche den Vorgang nicht!",
+                "confirmFlashDialog": "Möchtest du deine Toniebox wirklich flashen? Bitte achte auf eine stabile Verbindung und unterbreche den Vorgang nicht!",
+                "confirmFlashDialogHint": "Für eine korrekte Funktionsweise deiner Toniebox ist die angegebene TeddyCloud-Instanz unbedingt notwendig. Falls deine TeddyCloud offline ist, kann deine Toniebox keine neuen Inhalte mehr abrufen!",
                 "confirmFlashModal": "Toniebox mit gepatchter Firmware flashen",
                 "connected": "Verbunden",
                 "connectingReadFlash": "Verbinde zum Lesen des Flash...",

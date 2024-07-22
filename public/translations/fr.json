@@ -33,6 +33,9 @@
         "navigationTitle": "Communauté",
         "title": "Communauté"
     },
+    "confirmDialog": {
+        "contentHintTitle": "Garde à l'esprit"
+    },
     "faq": [
         {
             "answer": "Pour forcer une mise à jour, fais un contrôle de fraîcheur sur ton Toniebox. Appuie sur une oreille pendant environ 3 secondes jusqu'à ce que tu entendes un son. Attends jusqu'à ce qu'un second son confirme la fin de la mise à jour.",
@@ -242,7 +245,8 @@
                 "cancel": "Annuler",
                 "chipMAC": "MAC du chip",
                 "chipType": "Type de chip",
-                "confirmFlashDialog": "Voulez-vous vraiment flasher votre Toniebox? Pour que ta Toniebox fonctionne correctement, l'instance TeddyCloud spécifiée est absolument nécessaire. Si ta TeddyCloud est hors ligne, ta Toniebox ne pourra plus accéder à de nouveaux contenus ! Veuillez assurer une connexion stable et ne pas interrompre le processus !",
+                "confirmFlashDialog": "Voulez-vous vraiment flasher votre Toniebox Veuillez assurer une connexion stable et ne pas interrompre le processus !",
+                "confirmFlashDialogHint": "Pour que ta Toniebox fonctionne correctement, l'instance TeddyCloud spécifiée est absolument nécessaire. Si ta TeddyCloud est hors ligne, ta Toniebox ne pourra plus accéder à de nouveaux contenus !",
                 "confirmFlashModal": "Flasher la Toniebox avec le firmware patché",
                 "connected": "Connecté",
                 "connectingReadFlash": "Connexion pour lire le flash...",

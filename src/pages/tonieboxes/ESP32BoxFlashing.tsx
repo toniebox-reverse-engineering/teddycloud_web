@@ -1045,6 +1045,7 @@ export const ESP32BoxFlashing = () => {
                 okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
                 cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
                 content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
+                contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
                 handleOk={handleConfirmFlash}
                 handleCancel={handleCancelFlash}
             />
