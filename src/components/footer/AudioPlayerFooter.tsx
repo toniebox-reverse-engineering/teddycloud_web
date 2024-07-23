@@ -53,6 +53,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [lastVolume, setLastVolume] = useState<number | null>(100);
     const [closePlayerPopoverOpen, setClosePlayerPopoverOpen] = useState(false);
 
+    const [isTouching, setIsTouching] = useState<boolean>(false);
+
     useEffect(() => {
         if (globalAudio) {
             if (volume === null) {
@@ -139,21 +141,38 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         });
     }, []);
 
-    const handleMouseMove = (event: React.MouseEvent) => {
-        const progressBarRect = event.currentTarget.getBoundingClientRect();
-        const offsetX = event.clientX - progressBarRect.left;
-        const offsetY = progressBarRect.height / 2;
-        setCyclePosition({ left: offsetX, top: offsetY, visible: true });
+    const handleMouseOrTouchMove = (event: React.MouseEvent | React.TouchEvent) => {
+        if ("touches" in event) {
+            const touch = event.touches[0];
+            const progressBarRect = event.currentTarget.getBoundingClientRect();
+            const offsetX = touch.clientX - progressBarRect.left;
+            const offsetY = progressBarRect.height / 2;
+            setCyclePosition({ left: offsetX, top: offsetY, visible: true });
+            globalAudio.currentTime = (offsetX / (showAudioPlayerMinimal ? 100 : 150)) * globalAudio.duration;
+            // prevent default Click!
+            setIsTouching(true);
+        } else {
+            const progressBarRect = event.currentTarget.getBoundingClientRect();
+            const offsetX = event.clientX - progressBarRect.left;
+            const offsetY = progressBarRect.height / 2;
+            setCyclePosition({ left: offsetX, top: offsetY, visible: true });
 
-        if (isMouseDown) {
-            handleClick();
+            if (isMouseDown) {
+                handleClick();
+            }
         }
     };
     const handleMouseLeave = () => {
         setCyclePosition({ left: 0, top: 0, visible: false });
     };
     const handleClick = () => {
-        globalAudio.currentTime = (cyclePosition.left / (showAudioPlayerMinimal ? 100 : 150)) * globalAudio.duration;
+        if (isTouching) {
+            setIsTouching(false);
+            handleMouseLeave();
+        } else {
+            globalAudio.currentTime =
+                (cyclePosition.left / (showAudioPlayerMinimal ? 100 : 150)) * globalAudio.duration;
+        }
     };
     const handleMouseDown = (event: React.MouseEvent) => {
         setIsMouseDown(true);
@@ -321,11 +340,13 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                             </div>
                             <div
                                 style={{ ...progressBarStyle, width: 100 }}
-                                onMouseMove={handleMouseMove}
-                                onMouseLeave={handleMouseLeave}
-                                onClick={handleClick}
                                 onMouseDown={handleMouseDown}
+                                onMouseMove={handleMouseOrTouchMove}
                                 onMouseUp={handleMouseUp}
+                                onMouseLeave={handleMouseLeave}
+                                onTouchStart={handleMouseOrTouchMove}
+                                onTouchMove={handleMouseOrTouchMove}
+                                onClick={handleClick}
                             >
                                 {progressBar}
                             </div>
@@ -385,11 +406,13 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         </div>
                         <div
                             style={progressBarStyle}
-                            onMouseMove={handleMouseMove}
-                            onMouseLeave={handleMouseLeave}
-                            onClick={handleClick}
                             onMouseDown={handleMouseDown}
+                            onMouseMove={handleMouseOrTouchMove}
                             onMouseUp={handleMouseUp}
+                            onMouseLeave={handleMouseLeave}
+                            onTouchStart={handleMouseOrTouchMove}
+                            onTouchMove={handleMouseOrTouchMove}
+                            onClick={handleClick}
                         >
                             {progressBar}
                         </div>
