@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 const DotAnimation = () => {
     const [dots, setDots] = useState(0);
-    const dotFrames = ['.', '..', '...', '....', '.....'];
+    const dotFrames = ['', '.', '..', '...', '....', '.....'];
 
     useEffect(() => {
         const interval = setInterval(() => {
