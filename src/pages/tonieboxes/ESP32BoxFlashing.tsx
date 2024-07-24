@@ -16,6 +16,7 @@ import {
 } from "../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
+import DotAnimation from "../../utils/dotAnimation";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -239,15 +240,13 @@ export const ESP32BoxFlashing = () => {
 
             if (!newWebHttpOnly && !newHttpsClientCertAuth && !httpsActive) {
                 // Redirect to the HTTPS URL
-                const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${
-                    window.location.pathname
-                }${window.location.search}`;
+                const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${window.location.pathname
+                    }${window.location.search}`;
                 window.location.replace(httpsURL);
             } else if (newWebHttpOnly && httpsActive) {
                 // Redirect to the HTTP URL
-                const httpURL = `http://${window.location.host.replace(httpsPort, httpPort)}${
-                    window.location.pathname
-                }${window.location.search}`;
+                const httpURL = `http://${window.location.host.replace(httpsPort, httpPort)}${window.location.pathname
+                    }${window.location.search}`;
                 window.location.replace(httpURL);
             }
         } catch (e) {
@@ -391,7 +390,6 @@ export const ESP32BoxFlashing = () => {
                 const arrayBuffer = e.target?.result as ArrayBuffer;
                 const flashData = new Uint8Array(arrayBuffer);
                 const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
-
                 const blob = new Blob([flashData], { type: "application/octet-stream" });
                 const url = URL.createObjectURL(blob);
 
@@ -885,10 +883,24 @@ export const ESP32BoxFlashing = () => {
         return input.replace(/[^a-zA-Z0-9-.]/g, "").trim();
     };
 
+    const renderStateWithAnimation = (text: string) => {
+        if (text.endsWith("...")) {
+            const baseText = text.slice(0, -3);
+            return (
+                <div style={{ display: "flex" }}>
+                    {baseText}<DotAnimation />
+                </div>
+            );
+        }
+        return text;
+    };
+
     const stepStatusText = state.showStatus && (
         <div className="status">
             <p>
-                <i>{state.state}</i>
+                <i>
+                    {renderStateWithAnimation(state.state)}
+                </i>
             </p>
         </div>
     );
@@ -1058,10 +1070,10 @@ export const ESP32BoxFlashing = () => {
                             index === currentStep && index === steps.length - 1
                                 ? "finish"
                                 : index === currentStep
-                                ? "process"
-                                : index < currentStep
-                                ? "finish"
-                                : "wait"
+                                    ? "process"
+                                    : index < currentStep
+                                        ? "finish"
+                                        : "wait"
                         }
                     />
                 ))}
