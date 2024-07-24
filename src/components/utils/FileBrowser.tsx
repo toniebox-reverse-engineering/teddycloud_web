@@ -94,7 +94,7 @@ export const FileBrowser: React.FC<{
     const [currentRecord, setCurrentRecord] = useState<Record>();
 
     const [filterText, setFilterText] = useState("");
-    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(true);
+    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
 
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
@@ -655,14 +655,14 @@ export const FileBrowser: React.FC<{
                     <div key={`name-${record.name}`}>
                         <div className="showSmallDevicesOnly">
                             <div>
-                                <div style={{ wordBreak: "break-word" }}>
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                     {record.isDir ? "[" + record.name + "]" : record.name}{" "}
                                 </div>
                                 {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
                             </div>
 
                             <div>{record.tonieInfo?.model}</div>
-                            <div style={{ wordBreak: "break-word" }}>
+                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                 {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
                                     (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
                             </div>
@@ -670,7 +670,7 @@ export const FileBrowser: React.FC<{
                         </div>
                         <div className="showMediumDevicesOnly">
                             <div>
-                                <div style={{ wordBreak: "break-word" }}>
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                     {record.isDir ? "[" + record.name + "]" : record.name}{" "}
                                 </div>
                                 {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
