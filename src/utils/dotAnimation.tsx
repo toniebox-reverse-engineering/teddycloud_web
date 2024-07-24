@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const DotAnimation = () => {
     const [dots, setDots] = useState(0);
@@ -7,9 +7,10 @@ const DotAnimation = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setDots(prevDots => (prevDots + 1) % dotFrames.length);
-        }, 500); // Adjust the speed of the animation here (500ms)
+        }, 666);
 
-        return () => clearInterval(interval); // Cleanup on unmount
+        return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
