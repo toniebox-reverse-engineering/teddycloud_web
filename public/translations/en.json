@@ -7,7 +7,7 @@
     "community": {
         "changelog": {
             "navigationTitle": "Changelog",
-            "title": "Changelog / Release notes"
+            "title": "Changelog/Release notes"
         },
         "contribution": {
             "navigationTitle": "Contribution",
@@ -507,7 +507,7 @@
                 "valid": "Valid Yes"
             },
             "navigationTitle": "Tonies",
-            "pageSelector": " tonies / page",
+            "pageSelector": " tonies/page",
             "showAll": "Show all",
             "showPagination": "Show pagination",
             "title": "Tonies"

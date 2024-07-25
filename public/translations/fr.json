@@ -7,7 +7,7 @@
     "community": {
         "changelog": {
             "navigationTitle": "Journal des modifications",
-            "title": "Journal des modifications / Notes de version"
+            "title": "Journal des modifications/Notes de version"
         },
         "contribution": {
             "navigationTitle": "Contribution",
@@ -292,7 +292,7 @@
                 "titleESP32FirmwareFlashed": "ESP32 flashé",
                 "titleFlashESP32": "Flasher l'ESP32",
                 "titlePatchFlash": "Patch Flash",
-                "titleReadESP32ImportFlash": "Lire l'ESP32 / Importer le Flash",
+                "titleReadESP32ImportFlash": "Lire l'ESP32/Importer le Flash",
                 "uploadFailed": "Échec du téléchargement",
                 "uploading": "Téléchargement en cours...",
                 "uploadSuccessful": "Téléchargement réussi, enregistré sous",
@@ -508,7 +508,7 @@
                 "valid": "Valide Oui"
             },
             "navigationTitle": "Tonies",
-            "pageSelector": " tonies / page",
+            "pageSelector": " tonies/page",
             "showAll": "Afficher tout",
             "showPagination": "Afficher la pagination",
             "title": "Tonies"

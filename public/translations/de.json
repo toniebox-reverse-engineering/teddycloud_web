@@ -7,7 +7,7 @@
     "community": {
         "changelog": {
             "navigationTitle": "Changelog",
-            "title": "Changelog / Release notes"
+            "title": "Changelog/Release notes"
         },
         "contribution": {
             "navigationTitle": "Contribution",
@@ -292,7 +292,7 @@
                 "titleESP32FirmwareFlashed": "ESP32 geflasht",
                 "titleFlashESP32": "ESP32 flashen",
                 "titlePatchFlash": "Flash patchen",
-                "titleReadESP32ImportFlash": "ESP32 lesen / Flash importieren",
+                "titleReadESP32ImportFlash": "ESP32 lesen/Flash importieren",
                 "uploadFailed": "Upload fehlgeschlagen",
                 "uploading": "Upload läuft...",
                 "uploadSuccessful": "Upload erfolgreich, gespeichert als",
@@ -508,7 +508,7 @@
                 "valid": "Gültig Ja"
             },
             "navigationTitle": "Tonies",
-            "pageSelector": " Tonies / Seite",
+            "pageSelector": " Tonies/Seite",
             "showAll": "Zeige alle",
             "showPagination": "Paginierung einblenden",
             "title": "Tonies"
