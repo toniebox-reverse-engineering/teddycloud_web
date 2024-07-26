@@ -1093,7 +1093,7 @@ export const ESP32BoxFlashing = () => {
                             index === currentStep && index === steps.length - 1
                                 ? "finish"
                                 : index === currentStep
-                                    ? "process"
+                                    ? (state.error ? "error" : "process")
                                     : index < currentStep
                                         ? "finish"
                                         : "wait"
