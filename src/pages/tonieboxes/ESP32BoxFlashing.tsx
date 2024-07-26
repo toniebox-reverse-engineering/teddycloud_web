@@ -1098,6 +1098,7 @@ export const ESP32BoxFlashing = () => {
                                         ? "finish"
                                         : "wait"
                         }
+                        className={index === currentStep && state.disableButtons ? "ant-steps-item-in-progress" : ""}
                     />
                 ))}
             </Steps>

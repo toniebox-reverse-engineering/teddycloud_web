@@ -83,6 +83,37 @@ code {
     font-weight: 500;
 }
 
+/* Spining for running step */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ant-steps .ant-steps-item-process.ant-steps-item-in-progress .ant-steps-item-icon {
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.ant-steps .ant-steps-item-process.ant-steps-item-in-progress .ant-steps-item-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #e6f4ff;
+    animation: spin 1s linear infinite;
+    transform-origin: center;
+}
+
 /* workaround missing good responsiveness of antd tables... */
 
 .showBigDevicesOnly {
