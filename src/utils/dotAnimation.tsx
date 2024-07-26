@@ -14,9 +14,7 @@ const DotAnimation = () => {
     }, []);
 
     return (
-        <div>
-            {dotFrames[dots]}
-        </div>
+        <>{dotFrames[dots]}</>
     );
 };
 
