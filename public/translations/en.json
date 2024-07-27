@@ -254,6 +254,7 @@
                 "connectingTo": "Connecting to",
                 "connectingToESP": "Connecting to ESP...",
                 "connectingWriteFlash": "Connecting to write Flash...",
+                "downloadFlashFilesHint": "The firmware images are stored in your server's data directory in case you want to reflash them. In case you want to save your firmware images somewhere else, you can download them and move them to a safe place:",
                 "downloadLink": "Download unpatched firmware",
                 "downloadLinkPatched": "Download patched firmware",
                 "error": "Error",

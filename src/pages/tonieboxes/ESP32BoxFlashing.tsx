@@ -985,7 +985,7 @@ export const ESP32BoxFlashing = () => {
             <div>
                 {!state.actionInProgress && (<Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")}</Paragraph>)}
                 {stepStatusText}
-                {state.downloadLink ? (
+                {!state.actionInProgress && state.downloadLink ? (
                     <div style={{ marginBottom: 16 }}>
                         {" "}
                         <a href={state.downloadLink} download={state.filename} title={state.filename}>
@@ -1087,7 +1087,7 @@ export const ESP32BoxFlashing = () => {
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32")}</h3>
             {!state.actionInProgress && (<Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")}</Paragraph>)}
             {stepStatusText}
-            {state.downloadLinkPatched ? (
+            {!state.actionInProgress && state.downloadLinkPatched ? (
                 <div style={{ marginBottom: 16 }}>
                     {" "}
                     <a
@@ -1112,6 +1112,22 @@ export const ESP32BoxFlashing = () => {
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareFlashed")}</Paragraph>
             {stepStatusText}
             {contentProgress}
+            {(state.downloadLink || state.downloadLinkPatched) && (
+                <Paragraph style={{ marginTop: 16 }}>
+                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHint")}
+                    <ul style={{ marginTop: 8 }}>
+                        {state.downloadLink && (<li><a href={state.downloadLink} download={state.filename} title={state.filename}>
+                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
+                        </a></li>)}
+                        {state.downloadLinkPatched && (<li><a
+                            href={state.downloadLinkPatched}
+                            download={"patched_" + state.filename}
+                            title={"patched_" + state.filename}
+                        >
+                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
+                        </a></li>)}
+                    </ul>
+                </Paragraph>)}
         </>
     );
 

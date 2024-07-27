@@ -255,6 +255,7 @@
                 "connectingTo": "Verbinde zu",
                 "connectingToESP": "Verbinde zum ESP...",
                 "connectingWriteFlash": "Verbinde zum Schreiben des Flash...",
+                "downloadFlashFilesHint": "Die Firmware Images sind im Datenverzeichnis deines Servers gespeichert, falls du sie nochmal flashen möchtest. Wenn du deine Firmware Images woanders speichern willst, kannst du sie herunterladen und an einem sicheren Ort ablegen:",
                 "downloadLink": "Download ungepachte Firmware",
                 "downloadLinkPatched": "Download gepachte Firmware",
                 "error": "Fehler",
