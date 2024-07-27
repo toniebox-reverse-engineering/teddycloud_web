@@ -3,8 +3,7 @@ import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Divider, Input, Progress, Steps, Switch, Typography, message } from "antd";
-import FormItem from "antd/es/form/FormItem";
+import { Alert, Button, Col, Divider, Form, Input, Progress, Row, Steps, Switch, Typography, message } from "antd";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import {
@@ -41,9 +40,12 @@ interface ESP32Flasher {
     showFlash: boolean;
     connected: boolean;
     hostname: string;
+    wifi_ssid: string;
+    wifi_pass: string;
     proceed: boolean;
     disableButtons: boolean;
-    warningText: string;
+    warningTextHostname: string;
+    warningTextWifi: string;
     downloadLink: string;
     downloadLinkPatched: string;
     error: boolean;
@@ -65,7 +67,7 @@ export const ESP32BoxFlashing = () => {
     const [httpsActive, setHttpsActive] = useState(false);
 
     const [content, setContent] = useState([<></>, <></>, <></>, <></>]);
-    const [currentStep, setCurrent] = useState(0);
+    const [currentStep, setCurrent] = useState(1);
     const [disableButtons, setDisableButtons] = useState<boolean>(false);
 
     const [state, setState] = useState<ESP32Flasher>({
@@ -88,9 +90,12 @@ export const ESP32BoxFlashing = () => {
         showFlash: false,
         connected: false,
         hostname: window.location.hostname,
+        wifi_ssid: "",
+        wifi_pass: "",
         proceed: false,
         disableButtons: false,
-        warningText: "",
+        warningTextHostname: "",
+        warningTextWifi: "",
         downloadLink: "",
         downloadLinkPatched: "",
         error: false,
@@ -628,6 +633,17 @@ export const ESP32BoxFlashing = () => {
     };
 
     const patchFlash = async () => {
+        if ((state.wifi_ssid && !state.wifi_pass) || (!state.wifi_ssid && state.wifi_pass)) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                showStatus: true,
+                warningTextWifi: t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                error: true,
+            }));
+            return;
+        }
+
         setState((prevState) => ({
             ...prevState,
             disableButtons: true,
@@ -642,7 +658,7 @@ export const ESP32BoxFlashing = () => {
         }));
 
         const response = await fetch(
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}`,
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}` + (state.wifi_ssid && state.wifi_pass ? `&wifi_ssid=${state.wifi_ssid}&wifi_pass=${state.wifi_pass}` : ""),
             {
                 method: "GET",
             }
@@ -953,31 +969,95 @@ export const ESP32BoxFlashing = () => {
             ) : (
                 ""
             )}
-            <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")}</Paragraph>
+
             <div>
-                <FormItem label={t("tonieboxes.esp32BoxFlashing.esp32flasher.hostname")}>
-                    <Input
-                        type="text"
-                        defaultValue={state.hostname}
-                        onChange={(e) => {
-                            let value = sanitizeHostname(e.target.value);
-                            let warningText = "";
+                <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")}</Paragraph>
+                <Form>
+                    <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameSettings")}</Divider>
+                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchHost")}</Paragraph>
+                    <Form.Item>
+                        <Row align="middle" style={{ display: 'flex', alignItems: 'center' }}>
+                            <Col style={{ flex: '0 0 200px', color: state.warningTextHostname ? '#CC3010' : 'unset' }}>
+                                <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostname")}</label>
+                            </Col>
 
-                            if (value.length > 12) {
-                                warningText = t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong");
-                            } else {
-                                warningText = "";
-                            }
 
-                            setState((prevState) => ({
-                                ...prevState,
-                                hostname: value,
-                                warningText: warningText,
-                            }));
-                        }}
-                    />
-                    {state.warningText && <p style={{ color: "#CC3010" }}>{state.warningText}</p>}
-                </FormItem>
+                            <Col style={{ flex: '1 1 auto' }}>
+                                <Input
+                                    type="text"
+                                    value={state.hostname}
+                                    onChange={(e) => {
+                                        let value = sanitizeHostname(e.target.value);
+                                        let warningText = "";
+
+                                        if (value.length > 12) {
+                                            warningText = t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong");
+                                        } else {
+                                            warningText = "";
+                                        }
+
+                                        setState((prevState) => ({
+                                            ...prevState,
+                                            hostname: value,
+                                            warningTextHostname: warningText,
+                                        }));
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                        {state.warningTextHostname && (
+                            <p style={{ color: '#CC3010' }}>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong")}</p>
+                        )}
+                    </Form.Item>
+
+                    <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiSettings")}</Divider>
+                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchWifi")}</Paragraph>
+                    <Form.Item>
+                        <Row align="middle" style={{ display: 'flex', alignItems: 'center' }}>
+                            <Col style={{ flex: '0 0 200px', color: state.warningTextWifi ? '#CC3010' : 'unset' }}>
+                                <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiSSID")}</label>
+                            </Col>
+
+                            <Col style={{ flex: '1 1 auto' }}>
+                                <Input
+                                    type="text"
+                                    defaultValue={state.wifi_ssid}
+                                    onChange={(e) => {
+                                        let value = e.target.value;
+                                        setState((prevState) => ({
+                                            ...prevState,
+                                            wifi_ssid: value,
+                                            warningTextWifi: e.target.value && state.wifi_pass ? "" : t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                                        }));
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                    </Form.Item>
+                    <Form.Item>
+                        <Row align="middle" style={{ display: 'flex', alignItems: 'center' }}>
+                            <Col style={{ flex: '0 0 200px', color: state.warningTextWifi ? '#CC3010' : 'unset' }}>
+                                <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiPassword")}</label>
+                            </Col>
+                            <Col style={{ flex: '1 1 auto' }}>
+                                <Input.Password
+                                    defaultValue={state.wifi_pass}
+                                    onChange={(e) => {
+                                        let value = e.target.value;
+                                        setState((prevState) => ({
+                                            ...prevState,
+                                            wifi_pass: value,
+                                            warningTextWifi: e.target.value && state.wifi_ssid ? "" : t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                                        }));
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                        {state.warningTextWifi && (
+                            <p style={{ color: '#CC3010' }}>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete")}</p>
+                        )}
+                    </Form.Item>
+                </Form>
             </div>
             {contentRaw}
         </>
@@ -1103,7 +1183,7 @@ export const ESP32BoxFlashing = () => {
                 ))}
             </Steps>
             <div style={{ marginTop: 24 }}>{content[currentStep]}</div>
-            <div style={{ marginTop: 24 }}>
+            <div style={{ marginTop: 24, marginBottom: 24 }}>
                 {currentStep === 0 && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div></div>
