@@ -67,7 +67,7 @@ export const ESP32BoxFlashing = () => {
     const [httpsActive, setHttpsActive] = useState(false);
 
     const [content, setContent] = useState([<></>, <></>, <></>, <></>]);
-    const [currentStep, setCurrent] = useState(1);
+    const [currentStep, setCurrent] = useState(0);
     const [disableButtons, setDisableButtons] = useState<boolean>(false);
 
     const [state, setState] = useState<ESP32Flasher>({
