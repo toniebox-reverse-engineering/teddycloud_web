@@ -111,6 +111,78 @@
         }
     },
     "home": {
+        "features": {
+            "currentlyImplementedFeatures": "Fonctionnalités actuellement implémentées",
+            "description": "TeddyCloud est un serveur alternatif pour votre Toniebox, vous permettant d'héberger les services cloud localement. Cela vous donne le contrôle sur les données envoyées au cloud du fabricant d'origine et vous permet d'héberger vos propres fichiers audio de figurines sur par exemple votre NAS ou tout autre serveur.",
+            "features": {
+                "01contentProvision": {
+                    "items": {
+                        "01provideAudioContent": "fournir du contenu audio par les airs",
+                        "02passtroughAudio": "transmission du contenu audio tonie original",
+                        "03provideCustomAudio": "fournir du contenu audio personnalisé",
+                        "04simulateLiveContent": "simuler du contenu en direct",
+                        "05convertAudio": "convertir des flux audio à la volée via ffmpeg pour la webradio et les flux",
+                        "06definePlaylists": "définir des playlists audio tonie (PoC dans le WebFrontend)",
+                        "07cacheAudio": "mettre en cache le contenu audio tonie original",
+                        "08filterTags": "filtrer les tags personnalisés pour éviter la suppression"
+                    },
+                    "title": "Provision de contenu pour votre Toniebox"
+                },
+                "02webUI": "WebUI",
+                "03manageTonies": {
+                    "items": {
+                        "01assignContent": "attribuer du contenu et d'autres propriétés à chaque tag",
+                        "02searchStreams": "rechercher et attribuer des flux de webradio à chaque tag",
+                        "03defineMetaData": "définir les métadonnées de vos tags personnalisés (PoC dans le WebFrontend)",
+                        "04filterTonies": "filtrer les Tonies/Tags",
+                        "05hideTonies": "masquer les Tonies/Tags non disponibles",
+                        "06showLastPlayed": "afficher les derniers Tonies/Tags joués"
+                    },
+                    "title": "Gérez tous vos Tonies/Tags"
+                },
+                "04manageLibrary": "Gérez votre bibliothèque de contenu",
+                "05managePlaylists": "Gérez votre bibliothèque de playlists audio Tonie (PoC dans le WebFrontend)",
+                "06convertAudioFile": "Convertir n'importe quel fichier audio en fichier audio tonie",
+                "07manageTonieboxes": {
+                    "items": {
+                        "01singleBoxManagement": "gestion de boîtes individuelles, gérer toutes comme une, grouper les boîtes pour la gestion comme vous le souhaitez",
+                        "02cloudAccess": "désactiver/activer l'accès au cloud et d'autres propriétés liées au cloud",
+                        "03maxVolume": "configurer le volume maximal pour le haut-parleur et les écouteurs",
+                        "04configureLED": "configurer la LED",
+                        "05configureSlapping": "configurer la gifle",
+                        "06customizeSounds": "personnaliser les sons originaux de la boîte (ex. jingle) par les airs"
+                    },
+                    "title": "Gérez jusqu'à 16 tonieboxes"
+                },
+                "08esp32Flashing": {
+                    "items": {
+                        "01certificates": "extraire/injecter des certificats sur un dump de firmware esp32",
+                        "02newServerHost": "définir un nouvel hôte de serveur",
+                        "03wifiCredentials": "définir les identifiants WiFi"
+                    },
+                    "title": "Flashage de la Box ESP32"
+                },
+                "09decodeLogs": "Décrypter les journaux RTNL",
+                "10mqttClient": {
+                    "items": {
+                        "01homeAssistantIntegration": "Intégration Home Assistant (MQTT)"
+                    },
+                    "title": "Client MQTT"
+                }
+            },
+            "futureFeatures": {
+                "01firmwareUpdate": "Mise à jour du firmware via TeddyCloud",
+                "02improvedFlashing": "Amélioration du flashage de la Box ESP32 (entièrement via Web GUI, plus aucune étape backend)",
+                "03reportUnknownTonies": "Signaler les Tonies inconnus",
+                "04completeTAPIntegration": "Achèvement de l'intégration de TAP WebFrontend",
+                "05completeCustomToniesIntegration": "Achèvement de l'intégration des Tonies personnalisés dans le WebFront JSON (\"Métadonnées des tags personnalisés\")",
+                "06moreStats": "Plus de statistiques sur vos Tonies/Tags joués",
+                "07securityImprovements": "Améliorations de la sécurité comme le contrôle d'accès (tonieboxes et utilisateur)"
+            },
+            "navigationTitle": "Fonctionnalités",
+            "title": "Fonctionnalités TeddyCloud",
+            "yetToCome": "À venir"
+        },
         "forumIntroPart1": "Découvrez plus d'informations, engagez-vous avec des personnes partageant les mêmes idées et restez à jour sur les dernières discussions sur notre forum : ",
         "forumIntroPart2": ". Plongez plus profondément dans les sujets, partagez vos expériences et connectez-vous avec notre communauté. Rejoignez la conversation aujourd'hui !",
         "helpfulLinks": "Liens utiles",
