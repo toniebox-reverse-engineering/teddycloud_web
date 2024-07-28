@@ -1165,6 +1165,7 @@ export const ESP32BoxFlashing = () => {
                 <>
                     <Alert
                         type="info"
+                        style={{ marginTop: 16 }}
                         showIcon={true}
                         message={t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificates")}
                         description={
