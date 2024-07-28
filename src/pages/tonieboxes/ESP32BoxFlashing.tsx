@@ -1162,29 +1162,66 @@ export const ESP32BoxFlashing = () => {
             {stepStatusText}
             {contentProgress}
             {(state.downloadLink || state.downloadLinkPatched) && (
-                <Paragraph style={{ marginTop: 16 }}>
-                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHint")}
-                    <ul style={{ marginTop: 8 }}>
-                        {state.downloadLink && (
-                            <li>
-                                <a href={state.downloadLink} download={state.filename} title={state.filename}>
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
-                                </a>
-                            </li>
-                        )}
-                        {state.downloadLinkPatched && (
-                            <li>
-                                <a
-                                    href={state.downloadLinkPatched}
-                                    download={"patched_" + state.filename}
-                                    title={"patched_" + state.filename}
-                                >
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
-                                </a>
-                            </li>
-                        )}
-                    </ul>
-                </Paragraph>
+                <>
+                    <Alert
+                        type="info"
+                        showIcon={true}
+                        message={t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificates")}
+                        description={
+                            <div>
+                                <Typography>
+                                    <Paragraph>
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP1")}{" "}
+                                        <Text code>docker exec -it &lt;container-name&gt; bash</Text>.
+                                    </Paragraph>
+                                    <Paragraph>
+                                        <pre style={{ fontSize: 12 }}>
+                                            {`# Please check the filename of your backup
+# Be sure you are in the teddycloud directory
+# cd /teddycloud/ # just for docker
+teddycloud --esp32-extract data/firmware/` +
+                                                (state.filename ? state.filename : "ESP32_<mac>.bin") +
+                                                ` --destination certs/client`}
+                                        </pre>
+                                    </Paragraph>
+                                    <Paragraph>
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP2")}
+                                    </Paragraph>
+                                    <Paragraph>
+                                        <pre style={{ fontSize: 12 }}>
+                                            {`mv certs/client/CLIENT.DER certs/client/client.der
+mv certs/client/PRIVATE.DER certs/client/private.der
+mv certs/client/CA.DER certs/client/ca.der`}
+                                        </pre>
+                                    </Paragraph>
+                                </Typography>
+                            </div>
+                        }
+                    ></Alert>
+                    <Paragraph style={{ marginTop: 16 }}>
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHint")}
+                        <ul style={{ marginTop: 8 }}>
+                            {state.downloadLink && (
+                                <li>
+                                    <a href={state.downloadLink} download={state.filename} title={state.filename}>
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
+                                    </a>
+                                </li>
+                            )}
+                            {state.downloadLinkPatched && (
+                                <li>
+                                    <a
+                                        href={state.downloadLinkPatched}
+                                        download={"patched_" + state.filename}
+                                        title={"patched_" + state.filename}
+                                    >
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
+                                    </a>
+                                </li>
+                            )}
+                        </ul>
+                    </Paragraph>
+                </>
             )}
         </>
     );
