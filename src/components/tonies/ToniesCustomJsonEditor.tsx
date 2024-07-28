@@ -77,7 +77,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             };
         }
 
-        //remove that if the API is available
+        // remove that if the API is available
         setJsonData(values);
         setJsonViewerModalOpened(true);
 

@@ -33,7 +33,7 @@ interface AudioPlayerFooterProps {
 
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { t } = useTranslation();
-    const { songImage, songArtist, songTitle, songTracks } = useAudioContext(); // Access the songImage from the audio context
+    const { songImage, songArtist, songTitle, songTracks } = useAudioContext();
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
 
     const [audioPlayerDisplay, setAudioPlayerDisplay] = useState<string>("none");
@@ -226,25 +226,25 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const isMobile = window.innerWidth <= 768;
     const innerContainerStyle: React.CSSProperties = isMobile
         ? {
-              ...styles.innerContainer,
-              flexDirection: "column",
-              alignItems: "center",
-              width: "100%",
-              gap: 8,
-          }
+            ...styles.innerContainer,
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+            gap: 8,
+        }
         : styles.innerContainer;
     const control2Style: React.CSSProperties = isMobile
         ? {
-              ...styles.controls2,
-              width: "100%",
-          }
+            ...styles.controls2,
+            width: "100%",
+        }
         : styles.controls2;
     const progressBarStyle: React.CSSProperties = isMobile
         ? {
-              ...styles.progressBar,
-              width: 200,
-              marginRight: 0,
-          }
+            ...styles.progressBar,
+            width: 200,
+            marginRight: 0,
+        }
         : styles.progressBar;
 
     useEffect(() => {

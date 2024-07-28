@@ -70,7 +70,7 @@ export const TonieboxCard: React.FC<{
     const [boxImage, setBoxImage] = useState<JSX.Element | null>(null);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [tonieboxAccessApi, setTonieboxAccessApi] = useState<boolean>(true);
-    const [modalKey, setModalKey] = useState(0); // Key for modal rendering
+    const [modalKey, setModalKey] = useState(0);
 
     useEffect(() => {
         const fetchTonieboxApiAccess = async () => {
@@ -259,7 +259,6 @@ export const TonieboxCard: React.FC<{
     };
 
     // Settings
-
     const showEditSettingsModal = () => {
         setIsEditSettingsModalOpen(true);
     };
@@ -555,13 +554,12 @@ export const TonieboxCard: React.FC<{
         try {
             fetch(url, {
                 method: "POST",
-                body: (!tonieboxAccessApi).toString(), // Send value only when setting
+                body: (!tonieboxAccessApi).toString(),
                 headers: {
                     "Content-Type": "text/plain",
                 },
             })
                 .then(() => {
-                    // Trigger write config only if setting was successfully updated
                     triggerWriteConfig();
 
                     setTonieboxAccessApi(!tonieboxAccessApi);

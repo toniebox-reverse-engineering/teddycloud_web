@@ -34,7 +34,6 @@ export const HomeSubNav = () => {
     return (
         <StyledSubMenu
             mode="inline"
-            //defaultSelectedKeys={["1"]}
             defaultOpenKeys={["sub"]}
             items={subnav}
         />
