@@ -16,7 +16,14 @@ import {
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
 import DotAnimation from "../../utils/dotAnimation";
-import { CodeOutlined, DownloadOutlined, FileAddOutlined, LeftOutlined, RightOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+    CodeOutlined,
+    DownloadOutlined,
+    FileAddOutlined,
+    LeftOutlined,
+    RightOutlined,
+    UploadOutlined,
+} from "@ant-design/icons";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -249,13 +256,15 @@ export const ESP32BoxFlashing = () => {
 
             if (!newWebHttpOnly && !newHttpsClientCertAuth && !httpsActive) {
                 // Redirect to the HTTPS URL
-                const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${window.location.pathname
-                    }${window.location.search}`;
+                const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${
+                    window.location.pathname
+                }${window.location.search}`;
                 window.location.replace(httpsURL);
             } else if (newWebHttpOnly && httpsActive) {
                 // Redirect to the HTTP URL
-                const httpURL = `http://${window.location.host.replace(httpsPort, httpPort)}${window.location.pathname
-                    }${window.location.search}`;
+                const httpURL = `http://${window.location.host.replace(httpsPort, httpPort)}${
+                    window.location.pathname
+                }${window.location.search}`;
                 window.location.replace(httpURL);
             }
         } catch (e) {
@@ -626,7 +635,10 @@ export const ESP32BoxFlashing = () => {
                     ...prevState,
                     showDownload: true,
                     filename: filename,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadSuccessful") + ` ${filename}` + t("tonieboxes.esp32BoxFlashing.esp32flasher.readyToProceed"),
+                    state:
+                        t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadSuccessful") +
+                        ` ${filename}` +
+                        t("tonieboxes.esp32BoxFlashing.esp32flasher.readyToProceed"),
                     proceed: true,
                     actionInProgress: false,
                 }));
@@ -675,7 +687,10 @@ export const ESP32BoxFlashing = () => {
         }));
 
         const response = await fetch(
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}` + (state.wifi_ssid && state.wifi_pass ? `&wifi_ssid=${state.wifi_ssid}&wifi_pass=${state.wifi_pass}` : ""),
+            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}` +
+                (state.wifi_ssid && state.wifi_pass
+                    ? `&wifi_ssid=${state.wifi_ssid}&wifi_pass=${state.wifi_pass}`
+                    : ""),
             {
                 method: "GET",
             }
@@ -908,37 +923,50 @@ export const ESP32BoxFlashing = () => {
 
     const contentRaw = (
         <>
-            {(state.chipType || state.chipMac) && (<div>
-                <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.infoTable")}</Divider>
-                <table className="info-table">
-                    <tbody>
-                        {state.chipType && (<tr>
-                            <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.chipType")}</td>
-                            <td>{state.chipType}</td>
-                        </tr>)}
-                        {state.chipMac && (<tr>
-                            <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.chipMAC")}</td>
-                            <td>{state.chipMac}</td>
-                        </tr>)}
-                        {state.flashId && (<tr>
-                            <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashId")}</td>
-                            <td>0x{state.flashId.toString()}</td>
-                        </tr>)}
-                        {state.flashManuf && (<tr>
-                            <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashManuf")}</td>
-                            <td>0x{state.flashManuf.toString()}</td>
-                        </tr>)}
-                        {state.flashDevice && (<tr>
-                            <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashDevice")}</td>
-                            <td>0x{state.flashDevice.toString()}</td>
-                        </tr>)}
-                        {state.flashSize && (<tr>
-                            <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSize")}</td>
-                            <td>{state.flashSize} KiB</td>
-                        </tr>)}
-                    </tbody>
-                </table>
-            </div>
+            {(state.chipType || state.chipMac) && (
+                <div>
+                    <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.infoTable")}</Divider>
+                    <table className="info-table">
+                        <tbody>
+                            {state.chipType && (
+                                <tr>
+                                    <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.chipType")}</td>
+                                    <td>{state.chipType}</td>
+                                </tr>
+                            )}
+                            {state.chipMac && (
+                                <tr>
+                                    <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.chipMAC")}</td>
+                                    <td>{state.chipMac}</td>
+                                </tr>
+                            )}
+                            {state.flashId && (
+                                <tr>
+                                    <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashId")}</td>
+                                    <td>0x{state.flashId.toString()}</td>
+                                </tr>
+                            )}
+                            {state.flashManuf && (
+                                <tr>
+                                    <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashManuf")}</td>
+                                    <td>0x{state.flashManuf.toString()}</td>
+                                </tr>
+                            )}
+                            {state.flashDevice && (
+                                <tr>
+                                    <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashDevice")}</td>
+                                    <td>0x{state.flashDevice.toString()}</td>
+                                </tr>
+                            )}
+                            {state.flashSize && (
+                                <tr>
+                                    <td>{t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSize")}</td>
+                                    <td>{state.flashSize} KiB</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </>
     );
@@ -952,7 +980,8 @@ export const ESP32BoxFlashing = () => {
             const baseText = text.slice(0, -3);
             return (
                 <div style={{ display: "flex" }}>
-                    {baseText}<DotAnimation />
+                    {baseText}
+                    <DotAnimation />
                 </div>
             );
         }
@@ -961,9 +990,7 @@ export const ESP32BoxFlashing = () => {
 
     const stepStatusText = state.showStatus && (
         <div className="status" style={{ marginBottom: 16, color: state.error ? "#CC3010" : "unset" }}>
-            <i>
-                {renderStateWithAnimation(state.state)}
-            </i>
+            <i>{renderStateWithAnimation(state.state)}</i>
         </div>
     );
 
@@ -971,7 +998,9 @@ export const ESP32BoxFlashing = () => {
     const contentStep0 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash")}</h3>
-            {!state.actionInProgress && (<Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}</Paragraph>)}
+            {!state.actionInProgress && (
+                <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}</Paragraph>
+            )}
             {stepStatusText}
             <input type="file" style={{ display: "none" }} ref={fileInputRef} onChange={loadFlashFile} />
             {contentProgress}
@@ -983,7 +1012,9 @@ export const ESP32BoxFlashing = () => {
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash")}</h3>
             <div>
-                {!state.actionInProgress && (<Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")}</Paragraph>)}
+                {!state.actionInProgress && (
+                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")}</Paragraph>
+                )}
                 {stepStatusText}
                 {!state.actionInProgress && state.downloadLink ? (
                     <div style={{ marginBottom: 16 }}>
@@ -999,11 +1030,11 @@ export const ESP32BoxFlashing = () => {
                     <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameSettings")}</Divider>
                     <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchHost")}</Paragraph>
                     <Form.Item>
-                        <Row align="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                            <Col style={{ flex: '0 0 200px', color: state.warningTextHostname ? '#CC3010' : 'unset' }}>
+                        <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
+                            <Col style={{ flex: "0 0 200px", color: state.warningTextHostname ? "#CC3010" : "unset" }}>
                                 <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostname")}</label>
                             </Col>
-                            <Col style={{ flex: '1 1 auto' }}>
+                            <Col style={{ flex: "1 1 auto" }}>
                                 <Input
                                     type="text"
                                     value={state.hostname}
@@ -1025,18 +1056,20 @@ export const ESP32BoxFlashing = () => {
                             </Col>
                         </Row>
                         {state.warningTextHostname && (
-                            <p style={{ color: '#CC3010' }}>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong")}</p>
+                            <p style={{ color: "#CC3010" }}>
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong")}
+                            </p>
                         )}
                     </Form.Item>
 
                     <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiSettings")}</Divider>
                     <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchWifi")}</Paragraph>
                     <Form.Item>
-                        <Row align="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                            <Col style={{ flex: '0 0 200px', color: state.warningTextWifi ? '#CC3010' : 'unset' }}>
+                        <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
+                            <Col style={{ flex: "0 0 200px", color: state.warningTextWifi ? "#CC3010" : "unset" }}>
                                 <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiSSID")}</label>
                             </Col>
-                            <Col style={{ flex: '1 1 auto' }}>
+                            <Col style={{ flex: "1 1 auto" }}>
                                 <Input
                                     type="text"
                                     defaultValue={state.wifi_ssid}
@@ -1045,7 +1078,13 @@ export const ESP32BoxFlashing = () => {
                                         setState((prevState) => ({
                                             ...prevState,
                                             wifi_ssid: value,
-                                            warningTextWifi: ((e.target.value && state.wifi_pass) || (!e.target.value && !state.wifi_pass)) ? "" : t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                                            warningTextWifi:
+                                                (e.target.value && state.wifi_pass) ||
+                                                (!e.target.value && !state.wifi_pass)
+                                                    ? ""
+                                                    : t(
+                                                          "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"
+                                                      ),
                                         }));
                                     }}
                                 />
@@ -1053,11 +1092,11 @@ export const ESP32BoxFlashing = () => {
                         </Row>
                     </Form.Item>
                     <Form.Item>
-                        <Row align="middle" style={{ display: 'flex', alignItems: 'center' }}>
-                            <Col style={{ flex: '0 0 200px', color: state.warningTextWifi ? '#CC3010' : 'unset' }}>
+                        <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
+                            <Col style={{ flex: "0 0 200px", color: state.warningTextWifi ? "#CC3010" : "unset" }}>
                                 <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiPassword")}</label>
                             </Col>
-                            <Col style={{ flex: '1 1 auto' }}>
+                            <Col style={{ flex: "1 1 auto" }}>
                                 <Input.Password
                                     defaultValue={state.wifi_pass}
                                     onChange={(e) => {
@@ -1065,14 +1104,22 @@ export const ESP32BoxFlashing = () => {
                                         setState((prevState) => ({
                                             ...prevState,
                                             wifi_pass: value,
-                                            warningTextWifi: ((e.target.value && state.wifi_ssid) || (!e.target.value && !state.wifi_ssid)) ? "" : t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                                            warningTextWifi:
+                                                (e.target.value && state.wifi_ssid) ||
+                                                (!e.target.value && !state.wifi_ssid)
+                                                    ? ""
+                                                    : t(
+                                                          "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"
+                                                      ),
                                         }));
                                     }}
                                 />
                             </Col>
                         </Row>
                         {state.warningTextWifi && (
-                            <p style={{ color: '#CC3010' }}>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete")}</p>
+                            <p style={{ color: "#CC3010" }}>
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete")}
+                            </p>
                         )}
                     </Form.Item>
                 </Form>
@@ -1085,7 +1132,9 @@ export const ESP32BoxFlashing = () => {
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32")}</h3>
-            {!state.actionInProgress && (<Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")}</Paragraph>)}
+            {!state.actionInProgress && (
+                <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")}</Paragraph>
+            )}
             {stepStatusText}
             {!state.actionInProgress && state.downloadLinkPatched ? (
                 <div style={{ marginBottom: 16 }}>
@@ -1116,18 +1165,27 @@ export const ESP32BoxFlashing = () => {
                 <Paragraph style={{ marginTop: 16 }}>
                     {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHint")}
                     <ul style={{ marginTop: 8 }}>
-                        {state.downloadLink && (<li><a href={state.downloadLink} download={state.filename} title={state.filename}>
-                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
-                        </a></li>)}
-                        {state.downloadLinkPatched && (<li><a
-                            href={state.downloadLinkPatched}
-                            download={"patched_" + state.filename}
-                            title={"patched_" + state.filename}
-                        >
-                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
-                        </a></li>)}
+                        {state.downloadLink && (
+                            <li>
+                                <a href={state.downloadLink} download={state.filename} title={state.filename}>
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
+                                </a>
+                            </li>
+                        )}
+                        {state.downloadLinkPatched && (
+                            <li>
+                                <a
+                                    href={state.downloadLinkPatched}
+                                    download={"patched_" + state.filename}
+                                    title={"patched_" + state.filename}
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
+                                </a>
+                            </li>
+                        )}
                     </ul>
-                </Paragraph>)}
+                </Paragraph>
+            )}
         </>
     );
 
@@ -1207,10 +1265,12 @@ export const ESP32BoxFlashing = () => {
                             index === currentStep && index === steps.length - 1
                                 ? "finish"
                                 : index === currentStep
-                                    ? (state.error ? "error" : "process")
-                                    : index < currentStep
-                                        ? "finish"
-                                        : "wait"
+                                ? state.error
+                                    ? "error"
+                                    : "process"
+                                : index < currentStep
+                                ? "finish"
+                                : "wait"
                         }
                         className={index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : ""}
                     />
@@ -1225,11 +1285,21 @@ export const ESP32BoxFlashing = () => {
                             <Button icon={<FileAddOutlined />} disabled={disableButtons} onClick={() => loadFile()}>
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
                             </Button>
-                            <Button icon={<DownloadOutlined />} disabled={disableButtons} type="primary" onClick={() => readFirmware()}>
+                            <Button
+                                icon={<DownloadOutlined />}
+                                disabled={disableButtons}
+                                type="primary"
+                                onClick={() => readFirmware()}
+                            >
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.readFlash")}
                             </Button>
                         </div>
-                        <Button icon={<RightOutlined />} iconPosition="end" disabled={(!state.proceed && !state.filename) || disableButtons} onClick={() => next()}>
+                        <Button
+                            icon={<RightOutlined />}
+                            iconPosition="end"
+                            disabled={(!state.proceed && !state.filename) || disableButtons}
+                            onClick={() => next()}
+                        >
                             {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
                         </Button>
                     </div>
@@ -1238,11 +1308,21 @@ export const ESP32BoxFlashing = () => {
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         {previousButton}
                         <div style={{ display: "flex", gap: 8 }}>
-                            <Button icon={<CodeOutlined />} disabled={disableButtons} type="primary" onClick={() => patchImage()}>
+                            <Button
+                                icon={<CodeOutlined />}
+                                disabled={disableButtons}
+                                type="primary"
+                                onClick={() => patchImage()}
+                            >
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.patchImage")}
                             </Button>
                         </div>
-                        <Button icon={<RightOutlined />} iconPosition="end" disabled={disableButtons || !state.showFlash} onClick={() => next()}>
+                        <Button
+                            icon={<RightOutlined />}
+                            iconPosition="end"
+                            disabled={disableButtons || !state.showFlash}
+                            onClick={() => next()}
+                        >
                             {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
                         </Button>
                     </div>
@@ -1289,6 +1369,7 @@ export const ESP32BoxFlashing = () => {
                 <StyledBreadcrumb
                     items={[
                         { title: t("home.navigationTitle") },
+                        { title: t("tonieboxes.navigationTitle") },
                         { title: t("tonieboxes.esp32BoxFlashing.navigationTitle") },
                     ]}
                 />
@@ -1341,7 +1422,10 @@ export const ESP32BoxFlashing = () => {
                         <Button
                             onClick={handleSaveHttpsSettings}
                             style={{ margin: 8 }}
-                            disabled={disableButtons || (webHttpOnly === newWebHttpOnly && httpsClientCertAuth === newHttpsClientCertAuth)}
+                            disabled={
+                                disableButtons ||
+                                (webHttpOnly === newWebHttpOnly && httpsClientCertAuth === newHttpsClientCertAuth)
+                            }
                         >
                             {t("tonieboxes.esp32BoxFlashing.save")}
                         </Button>
