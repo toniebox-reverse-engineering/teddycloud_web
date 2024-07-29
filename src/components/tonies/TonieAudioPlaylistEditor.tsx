@@ -82,7 +82,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     const handleEditFile = (index: number) => {
         setFilebrowserKey((prevKey) => prevKey + 1);
         setSelectFileModalOpen(true);
-        setSelectedFileIndex(index); // Store the index of the selected file
+        setSelectedFileIndex(index);
         setSelectedFiles([form.getFieldValue(["files", index])]);
     };
 

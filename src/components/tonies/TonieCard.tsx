@@ -393,6 +393,24 @@ export const TonieCard: React.FC<{
         </Modal>
     );
 
+    const selectModalFooter = (
+        <div
+            style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                padding: "16px 0",
+                margin: "-24px -24px -12px -24px",
+                background: token.colorBgElevated,
+            }}
+        >
+            <Button onClick={handleCancelSelectFile}>{t("tonies.selectFileModal.cancel")}</Button>
+            <Button type="primary" onClick={() => setSelectFileModalOpen(false)}>
+                {t("tonies.selectFileModal.ok")}
+            </Button>
+        </div>
+    );
+
     const selectFileModal = (
         <Modal
             className="sticky-footer"
@@ -401,6 +419,7 @@ export const TonieCard: React.FC<{
             onOk={() => setSelectFileModalOpen(false)}
             onCancel={handleCancelSelectFile}
             width="auto"
+            footer={selectModalFooter}
         >
             <FileBrowser
                 special="library"

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Modal, Table, Tooltip, message, Button, Input, Breadcrumb, InputRef, theme } from "antd";
-import { Key } from "antd/es/table/interface"; // Import Key type from Ant Design
+import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
 import { useAudioContext } from "../audio/AudioContext";
 import {
@@ -94,7 +94,7 @@ export const FileBrowser: React.FC<{
     const [currentRecord, setCurrentRecord] = useState<Record>();
 
     const [filterText, setFilterText] = useState("");
-    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(true);
+    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
 
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
@@ -378,7 +378,7 @@ export const FileBrowser: React.FC<{
                 },
             })
                 .then((response) => {
-                    return response.text(); // Expecting a text response
+                    return response.text();
                 })
                 .then((text) => {
                     if (text !== "OK") {
@@ -432,7 +432,7 @@ export const FileBrowser: React.FC<{
     // breadcrumb functions
     const handleBreadcrumbClick = (dirPath: string) => {
         if (trackUrl) {
-            navigate(`?path=${dirPath}`); // Update the URL with the new path using navigate
+            navigate(`?path=${dirPath}`);
         }
         if (path === dirPath) {
             setRebuildList(!rebuildList);
@@ -574,7 +574,7 @@ export const FileBrowser: React.FC<{
     const handleDirClick = (dirPath: string) => {
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
-            navigate(`?path=${newPath}`); // Update the URL with the new path using navigate
+            navigate(`?path=${newPath}`);
         }
         setFilterFieldAutoFocus(false);
         setPath(newPath);
@@ -655,14 +655,14 @@ export const FileBrowser: React.FC<{
                     <div key={`name-${record.name}`}>
                         <div className="showSmallDevicesOnly">
                             <div>
-                                <div style={{ wordBreak: "break-word" }}>
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                     {record.isDir ? "[" + record.name + "]" : record.name}{" "}
                                 </div>
                                 {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
                             </div>
 
                             <div>{record.tonieInfo?.model}</div>
-                            <div style={{ wordBreak: "break-word" }}>
+                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                 {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
                                     (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
                             </div>
@@ -670,7 +670,7 @@ export const FileBrowser: React.FC<{
                         </div>
                         <div className="showMediumDevicesOnly">
                             <div>
-                                <div style={{ wordBreak: "break-word" }}>
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                     {record.isDir ? "[" + record.name + "]" : record.name}{" "}
                                 </div>
                                 {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}

@@ -30,6 +30,7 @@ import { SunOutlined, MoonOutlined, BulbOutlined } from "@ant-design/icons";
 import { ESP32BoxFlashing } from "./pages/tonieboxes/ESP32BoxFlashing";
 import { TonieMeetingPage } from "./pages/home/TonieMeeting";
 import { FAQPage } from "./pages/community/FAQPage";
+import { FeaturesPage } from "./pages/home/FeaturesPage";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -112,6 +113,7 @@ function App() {
                                 <Routes>
                                     <Route path="/" element={<HomePage />} />
                                     <Route path="/home/stats" element={<StatsPage />} />
+                                    <Route path="/home/features" element={<FeaturesPage />} />
                                     <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
                                     <Route path="/tonies" element={<ToniesPage />} />
                                     <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />

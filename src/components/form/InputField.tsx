@@ -19,7 +19,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
     const { t } = useTranslation();
     const { name, label, description, overlayed: initialOverlayed, overlayId, ...inputProps } = props;
     const [field, meta, helpers] = useField(name!);
-    const [overlayed, setOverlayed] = useState(initialOverlayed); // State to track overlayed boolean
+    const [overlayed, setOverlayed] = useState(initialOverlayed);
 
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
@@ -29,9 +29,8 @@ const InputField = (props: InputFieldProps & InputProps) => {
 
     const handleOverlayChange = (checked: boolean) => {
         const overlayRoute = `?overlay=${overlayId}`;
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${
-            checked ? "set" : "reset"
-        }/${name}${overlayRoute}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${checked ? "set" : "reset"
+            }/${name}${overlayRoute}`;
 
         try {
             fetch(url, {
@@ -44,7 +43,6 @@ const InputField = (props: InputFieldProps & InputProps) => {
                 .then(() => {
                     triggerWriteConfig();
                     if (!checked) {
-                        // Fetch field value if checkbox is unchecked
                         fetchFieldValue();
                         message.success(t("settings.overlayDisabled"));
                     } else {
@@ -60,7 +58,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
     };
 
     const handleFieldSave: MouseEventHandler<HTMLSpanElement> = (event) => {
-        const inputValue = field.value || ""; // Get input value from useField hook
+        const inputValue = field.value || "";
 
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
@@ -91,7 +89,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
     };
 
     const handleSaveIconClick: MouseEventHandler<HTMLSpanElement> = (event) => {
-        handleFieldSave(event); // Call handleFieldSave when the icon is clicked
+        handleFieldSave(event);
     };
 
     const fetchFieldValue = () => {
@@ -154,7 +152,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
                 {...inputProps}
                 {...field}
                 addonAfter={addonAfter}
-                disabled={!overlayed && overlayed !== undefined} // Disable if overlayed is false
+                disabled={!overlayed && overlayed !== undefined}
             />
         </FormItem>
     );

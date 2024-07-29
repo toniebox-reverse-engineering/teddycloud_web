@@ -1,5 +1,5 @@
 import { MenuProps } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { ContainerOutlined, HomeOutlined } from "@ant-design/icons";
 import { WifiOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,11 @@ export const HomeSubNav = () => {
             icon: React.createElement(HomeOutlined),
         },
         {
+            key: "features",
+            label: <Link to="/home/features">{t("home.features.navigationTitle")}</Link>,
+            icon: React.createElement(ContainerOutlined),
+        },
+        {
             key: "statistics",
             label: <Link to="/home/stats">{t("home.stats.navigationTitle")}</Link>,
             icon: React.createElement(WifiOutlined),
@@ -29,7 +34,6 @@ export const HomeSubNav = () => {
     return (
         <StyledSubMenu
             mode="inline"
-            //defaultSelectedKeys={["1"]}
             defaultOpenKeys={["sub"]}
             items={subnav}
         />

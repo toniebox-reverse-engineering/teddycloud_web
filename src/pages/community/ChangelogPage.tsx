@@ -19,7 +19,7 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
-            version: "0.5.3",
+            version: "0.6.0",
             changes: [
                 "Stabilization backend",
                 "store last played time of last played tag",
@@ -32,6 +32,7 @@ export const ChangelogPage = () => {
                 "fixed bug not storing cloud auth in some circumstances",
                 "fixed bug not storing source in json file: https://github.com/toniebox-reverse-engineering/teddycloud/issues/165",
                 "added limit to tempfile creation for radiostreams, default: 240mb (~6h) (configurable if expert mode is activated) https://github.com/toniebox-reverse-engineering/teddycloud/issues/180",
+                "added possibility to set WiFi Credentials on ESP32 Firmware patching",
                 "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
                 "new /web gui: Tonies - Content section - added Migrate Content to Lib button on TAF files",
                 "new /web gui: added RTNL Log Page: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/48",
@@ -70,14 +71,15 @@ export const ChangelogPage = () => {
                 "new /web gui: support web streams in audioplayer",
                 "new /web gui: improved filebrowser, added filter field and made buttons sticky",
                 "new /web gui: integrated ESP32 Firmware Flashing https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/46",
+                "new /web gui: integrated setting of WiFi credentials in ESP32 Firmware Flashing",
                 "new /web gui: fixed some bugs and minor refactoring",
             ],
             commits: [
-                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.5.3",
-                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.2...tcw_v0.5.3",
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.6.0",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.2...tcw_v0.6.0",
             ],
-            discussionLink: "https://forum.revvox.de/t/release-notes-0-5-3/468",
-            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.5.3",
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-0/468",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.0",
         },
         {
             version: "0.5.2",

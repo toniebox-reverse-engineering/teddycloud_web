@@ -52,11 +52,11 @@ export const ToniesList: React.FC<{
         return 24;
     });
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [paginationEnabled, setPaginationEnabled] = useState(true); // State to track pagination
+    const [paginationEnabled, setPaginationEnabled] = useState(true);
     const [showAll, setShowAll] = useState(false);
     const [doLocalStore, setLocalStore] = useState(true);
     const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
-    const [listKey, setListKey] = useState(0); // Key for modal rendering
+    const [listKey, setListKey] = useState(0);
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -115,7 +115,7 @@ export const ToniesList: React.FC<{
             setFilteredTonies(tonieCards);
         }
         setListKey((prevKey) => prevKey + 1);
-        setLoading(false); // Set loading to false when tonieCards are available
+        setLoading(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search, ruidHash]);
 

@@ -22,7 +22,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
     const { t } = useTranslation();
     const { name, label, valueConverter, description, overlayed: initialOverlayed, overlayId, ...switchProps } = props;
     const [field, meta, { setValue }] = useField(name!);
-    const [overlayed, setOverlayed] = useState(initialOverlayed); // State to track overlayed boolean
+    const [overlayed, setOverlayed] = useState(initialOverlayed);
 
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
@@ -34,14 +34,13 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
     const handleOverlayChange = (checked: boolean) => {
         const overlayRoute = `?overlay=${overlayId}`;
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${
-            checked ? "set" : "reset"
-        }/${name}${overlayRoute}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${checked ? "set" : "reset"
+            }/${name}${overlayRoute}`;
 
         try {
             fetch(url, {
                 method: "POST",
-                body: checked ? field.value?.toString() || "" : "", // Send value only when setting
+                body: checked ? field.value?.toString() || "" : "",
                 headers: {
                     "Content-Type": "text/plain",
                 },
@@ -78,7 +77,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
             const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`);
             const value = await response.text();
             const newValue = value === "" ? undefined : valueConverter?.fromValueToBoolean(value);
-            setValue(newValue); // Set the field value
+            setValue(newValue);
 
             // Set the switch value based on the fetched value
             const isChecked = valueConverter ? valueConverter.fromValueToBoolean(value) : value;
@@ -99,7 +98,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
                 {...switchProps}
                 {...field}
                 checked={isChecked}
-                disabled={!overlayed && overlayed !== undefined} // Disable if overlayed is false
+                disabled={!overlayed && overlayed !== undefined}
                 onChange={(value: boolean) => {
                     setValue(value);
                     const overlayRoute = overlayed ? `?overlay=` + overlayId : ``;
