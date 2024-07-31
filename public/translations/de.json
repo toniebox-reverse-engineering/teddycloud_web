@@ -311,6 +311,7 @@
         },
         "esp32BoxFlashing": {
             "attention": "Achtung",
+            "browserNotSupported": "ESP32 Box Flashing kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge.",
             "disableHttpOnlyForFlashing": "Bitte deaktiviere \"Webinterface http only\" und öffne diese Seite mit HTTPS.",
             "enabledWebHttpOnly": "\"Webinterface HTTP only\" aktiv",
             "enabledWebHttpsClientCertAuth": "\"HTTPS client cert auth\" aktiv",

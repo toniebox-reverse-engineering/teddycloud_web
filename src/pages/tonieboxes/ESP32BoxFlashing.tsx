@@ -24,6 +24,7 @@ import {
     RightOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
+import { isWebSerialSupported } from "../../utils/checkWebSerialSupport";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -111,6 +112,8 @@ export const ESP32BoxFlashing = () => {
         error: false,
     });
 
+    const [isSupported, setIsSupported] = useState(false);
+
     const baudRate = 921600;
     const romBaudRate = 115200;
 
@@ -122,6 +125,10 @@ export const ESP32BoxFlashing = () => {
         }
         return binaryString;
     }
+
+    useEffect(() => {
+        setIsSupported(isWebSerialSupported());
+    }, []);
 
     useEffect(() => {
         if (window.location.protocol === "https:") {
@@ -1413,61 +1420,75 @@ mv certs/client/CA.DER certs/client/ca.der`}
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
-                    <Paragraph>
-                        {!httpsActive ? (
+                    {isSupported ? (
+                        <>
+                            <Paragraph>
+                                {!httpsActive ? (
+                                    <Alert
+                                        message={t("tonieboxes.esp32BoxFlashing.attention")}
+                                        description={t("tonieboxes.esp32BoxFlashing.hint")}
+                                        type="warning"
+                                        showIcon
+                                    />
+                                ) : (
+                                    ""
+                                )}
+                            </Paragraph>
+                            {ESP32BoxFlashingForm}
+                            <Divider>{t("tonieboxes.esp32BoxFlashing.httpsSettings")}</Divider>
+                            <Paragraph style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <Paragraph>
+                                    <Switch
+                                        checked={newWebHttpOnly}
+                                        onChange={handleHttpOnlyChange}
+                                        style={{ marginRight: 8 }}
+                                        disabled={disableButtons}
+                                    />
+                                    <Text>
+                                        {t("tonieboxes.esp32BoxFlashing.enabledWebHttpOnly")}
+                                        {". "}
+                                    </Text>
+                                </Paragraph>
+                                <Paragraph>
+                                    <Switch
+                                        checked={newHttpsClientCertAuth}
+                                        onChange={handleHttpsClientCertAuthChange}
+                                        style={{ marginRight: 8 }}
+                                        disabled={disableButtons}
+                                    />
+                                    <Text>
+                                        {t("tonieboxes.esp32BoxFlashing.enabledWebHttpsClientCertAuth")}
+                                        {". "}
+                                    </Text>
+                                </Paragraph>
+                                <Text>
+                                    {webHttpOnly || httpsClientCertAuth
+                                        ? t("tonieboxes.esp32BoxFlashing.redirectToHttpsAfterDeactivation")
+                                        : t("tonieboxes.esp32BoxFlashing.redirectToHttpAfterActivation")}
+                                </Text>
+                                <Button
+                                    onClick={handleSaveHttpsSettings}
+                                    style={{ margin: 8 }}
+                                    disabled={
+                                        disableButtons ||
+                                        (webHttpOnly === newWebHttpOnly &&
+                                            httpsClientCertAuth === newHttpsClientCertAuth)
+                                    }
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.save")}
+                                </Button>
+                            </Paragraph>
+                        </>
+                    ) : (
+                        <Paragraph>
                             <Alert
                                 message={t("tonieboxes.esp32BoxFlashing.attention")}
-                                description={t("tonieboxes.esp32BoxFlashing.hint")}
+                                description={t("tonieboxes.esp32BoxFlashing.browserNotSupported")}
                                 type="warning"
                                 showIcon
                             />
-                        ) : (
-                            ""
-                        )}
-                    </Paragraph>
-                    {ESP32BoxFlashingForm}
-                    <Divider>{t("tonieboxes.esp32BoxFlashing.httpsSettings")}</Divider>
-                    <Paragraph style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <Paragraph>
-                            <Switch
-                                checked={newWebHttpOnly}
-                                onChange={handleHttpOnlyChange}
-                                style={{ marginRight: 8 }}
-                                disabled={disableButtons}
-                            />
-                            <Text>
-                                {t("tonieboxes.esp32BoxFlashing.enabledWebHttpOnly")}
-                                {". "}
-                            </Text>
                         </Paragraph>
-                        <Paragraph>
-                            <Switch
-                                checked={newHttpsClientCertAuth}
-                                onChange={handleHttpsClientCertAuthChange}
-                                style={{ marginRight: 8 }}
-                                disabled={disableButtons}
-                            />
-                            <Text>
-                                {t("tonieboxes.esp32BoxFlashing.enabledWebHttpsClientCertAuth")}
-                                {". "}
-                            </Text>
-                        </Paragraph>
-                        <Text>
-                            {webHttpOnly || httpsClientCertAuth
-                                ? t("tonieboxes.esp32BoxFlashing.redirectToHttpsAfterDeactivation")
-                                : t("tonieboxes.esp32BoxFlashing.redirectToHttpAfterActivation")}
-                        </Text>
-                        <Button
-                            onClick={handleSaveHttpsSettings}
-                            style={{ margin: 8 }}
-                            disabled={
-                                disableButtons ||
-                                (webHttpOnly === newWebHttpOnly && httpsClientCertAuth === newHttpsClientCertAuth)
-                            }
-                        >
-                            {t("tonieboxes.esp32BoxFlashing.save")}
-                        </Button>
-                    </Paragraph>
+                    )}
                 </StyledContent>
             </StyledLayout>
         </>
