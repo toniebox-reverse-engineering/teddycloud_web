@@ -55,7 +55,7 @@ export const TonieAudioPlaylistsPage = () => {
                     <FileBrowser
                         special="library"
                         filetypeFilter={[".tap"]}
-                        showColumns={["name", "size", "date", "controls"]}
+                        showColumns={["picture", "name", "size", "date", "controls"]}
                         isTapList={true}
                     />
                     <Paragraph>

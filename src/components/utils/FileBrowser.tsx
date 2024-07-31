@@ -97,6 +97,7 @@ export const FileBrowser: React.FC<{
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
 
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const [isConfirmMultipleDeleteModalOpen, setIsConfirmMultipleDeleteModalOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
     const [deletePath, setDeletePath] = useState<string>("");
     const [deleteApiCall, setDeleteApiCall] = useState<string>("");
@@ -301,58 +302,60 @@ export const FileBrowser: React.FC<{
 
     const handleConfirmDelete = () => {
         deleteFile(deletePath, deleteApiCall);
+        setRebuildList((prev) => !prev);
         setIsConfirmDeleteModalOpen(false);
     };
 
     const handleCancelDelete = () => {
         setIsConfirmDeleteModalOpen(false);
+        setIsConfirmMultipleDeleteModalOpen(false);
     };
 
-    const deleteFile = (path: string, apiCall: string) => {
-        try {
-            messageApi.open({
-                type: "loading",
-                content: t("fileBrowser.messages.deleting"),
-                duration: 0,
-            });
+    const handleMultipleDelete = () => {
+        setIsConfirmMultipleDeleteModalOpen(true);
+    };
 
-            const body = path;
-            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/fileDelete" + apiCall, {
+    const handleConfirmMultipleDelete = async () => {
+        if (selectedRowKeys.length > 0) {
+            for (const rowName of selectedRowKeys) {
+                const file = (files as Record[]).find((file) => file.name === rowName);
+                if (file) {
+                    const deletePath = path + "/" + file.name;
+                    const deleteApiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
+                    await deleteFile(deletePath, deleteApiCall);
+                }
+            }
+            setRebuildList((prev) => !prev);
+            setIsConfirmMultipleDeleteModalOpen(false);
+            setSelectedRowKeys([]);
+        } else {
+            message.warning("No rows selected for deletion.");
+        }
+    };
+
+    const deleteFile = async (path: string, apiCall: string) => {
+        const deleteUrl = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileDelete${apiCall}`;
+
+        const loadingMessage = message.loading(t("fileBrowser.messages.deleting"), 0);
+
+        try {
+            const response = await fetch(deleteUrl, {
                 method: "POST",
-                body: body,
+                body: path,
                 headers: {
                     "Content-Type": "text/plain",
                 },
-            })
-                .then((response) => response.text())
-                .then((data) => {
-                    messageApi.destroy();
-                    if (data === "OK") {
-                        messageApi.open({
-                            type: "success",
-                            content: t("fileBrowser.messages.deleteSuccessful"),
-                        });
-                        setRebuildList(!rebuildList);
-                    } else {
-                        messageApi.open({
-                            type: "error",
-                            content: t("fileBrowser.messages.deleteFailed") + ": " + data,
-                        });
-                    }
-                })
-                .catch((error) => {
-                    messageApi.destroy();
-                    messageApi.open({
-                        type: "error",
-                        content: t("fileBrowser.messages.deleteFailed") + ": " + error,
-                    });
-                });
-        } catch (error) {
-            messageApi.destroy();
-            messageApi.open({
-                type: "error",
-                content: t("fileBrowser.messages.deleteFailed") + ": " + error,
             });
+            const data = await response.text();
+            loadingMessage();
+            if (data === "OK") {
+                message.success(t("fileBrowser.messages.deleteSuccessful"));
+            } else {
+                message.error(`${t("fileBrowser.messages.deleteFailed")}: ${data}`);
+            }
+        } catch (error) {
+            loadingMessage();
+            message.error(`${t("fileBrowser.messages.deleteFailed")}: ${error}`);
         }
     };
 
@@ -547,26 +550,29 @@ export const FileBrowser: React.FC<{
     };
 
     const onSelectChange = (newSelectedRowKeys: Key[]) => {
-        if (selectTafOrTapOnly) {
-            const rowCount = newSelectedRowKeys.length;
-            newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
-                const file = files.find((f: any) => f.name === key) as any;
-                return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
-            });
-            if (rowCount !== newSelectedRowKeys.length) {
-                message.warning(t("fileBrowser.selectTafOrTapOnly"));
+        if (maxSelectedRows > 0) {
+            if (selectTafOrTapOnly) {
+                const rowCount = newSelectedRowKeys.length;
+                newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
+                    const file = files.find((f: any) => f.name === key) as any;
+                    return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
+                });
+                if (rowCount !== newSelectedRowKeys.length) {
+                    message.warning(t("fileBrowser.selectTafOrTapOnly"));
+                }
             }
-        }
-        if (newSelectedRowKeys.length > maxSelectedRows) {
-            message.warning(
-                t("fileBrowser.maxSelectedRows", {
-                    maxSelectedRows: maxSelectedRows,
-                })
-            );
+            if (newSelectedRowKeys.length > maxSelectedRows) {
+                message.warning(
+                    t("fileBrowser.maxSelectedRows", {
+                        maxSelectedRows: maxSelectedRows,
+                    })
+                );
+            } else {
+                setSelectedRowKeys(newSelectedRowKeys);
+            }
         } else {
             setSelectedRowKeys(newSelectedRowKeys);
         }
-
         const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
         if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
     };
@@ -577,6 +583,7 @@ export const FileBrowser: React.FC<{
             navigate(`?path=${newPath}`);
         }
         setFilterFieldAutoFocus(false);
+        setSelectedRowKeys([]);
         setPath(newPath);
     };
 
@@ -622,7 +629,18 @@ export const FileBrowser: React.FC<{
 
     var columns: any[] = [
         {
-            title: "",
+            title:
+                maxSelectedRows === 0 && selectedRowKeys.length > 0 ? (
+                    <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
+                        <Button
+                            icon={<DeleteOutlined />}
+                            onClick={handleMultipleDelete}
+                            disabled={selectedRowKeys.length === 0}
+                        />
+                    </Tooltip>
+                ) : (
+                    ""
+                ),
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
@@ -764,7 +782,7 @@ export const FileBrowser: React.FC<{
         },
         {
             title: <div className="showMediumDevicesOnly showBigDevicesOnly">{t("fileBrowser.actions")}</div>,
-            dataIndex: "name",
+            dataIndex: "controls",
             key: "controls",
             sorter: undefined,
             render: (name: string, record: any) => {
@@ -838,8 +856,8 @@ export const FileBrowser: React.FC<{
                             <DeleteOutlined
                                 onClick={() =>
                                     showDeleteConfirmDialog(
-                                        name,
-                                        path + "/" + name,
+                                        record.name,
+                                        path + "/" + record.name,
                                         "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
                                     )
                                 }
@@ -864,9 +882,9 @@ export const FileBrowser: React.FC<{
 
     if (showColumns) {
         columns = columns.filter((column) => {
-            if (typeof column.dataIndex === "string") {
+            if (typeof column.key === "string") {
                 // Check if the column's dataIndex matches any of the specified dataIndex values
-                return showColumns.includes(column.dataIndex);
+                return showColumns.includes(column.key);
             }
             return false;
         });
@@ -882,6 +900,15 @@ export const FileBrowser: React.FC<{
                 cancelText={t("fileBrowser.cancel")}
                 content={t("fileBrowser.confirmDeleteDialog", { fileToDelete: fileToDelete })}
                 handleOk={handleConfirmDelete}
+                handleCancel={handleCancelDelete}
+            />
+            <ConfirmationDialog
+                title={t("fileBrowser.confirmDeleteModal")}
+                open={isConfirmMultipleDeleteModalOpen}
+                okText={t("fileBrowser.delete")}
+                cancelText={t("fileBrowser.cancel")}
+                content={t("fileBrowser.confirmMultipleDeleteDialog")}
+                handleOk={handleConfirmMultipleDelete}
                 handleCancel={handleCancelDelete}
             />
             {jsonViewerModal}
@@ -933,7 +960,19 @@ export const FileBrowser: React.FC<{
                               selectedRowKeys,
                               onChange: onSelectChange,
                           }
-                        : undefined
+                        : {
+                              selectedRowKeys,
+                              onChange: onSelectChange,
+                              getCheckboxProps: (record: Record) => ({
+                                  disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                              }),
+                              onSelectAll: (selected: boolean, selectedRows: any[]) => {
+                                  const selectedKeys = selected
+                                      ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                      : [];
+                                  setSelectedRowKeys(selectedKeys);
+                              },
+                          }
                 }
                 components={{
                     // Override the header to include custom search row

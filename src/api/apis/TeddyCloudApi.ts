@@ -603,7 +603,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
                 );
                 const data = await response.json();
                 if (data && data.files) {
-                    console.log(data);
                     const matchedFile = data.files.find(
                         (file: { name: any }) => tag.source === `lib://${path}/${file.name}`.replace("///", "//")
                     );
