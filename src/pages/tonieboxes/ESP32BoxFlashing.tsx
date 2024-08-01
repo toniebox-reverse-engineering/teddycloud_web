@@ -258,21 +258,82 @@ export const ESP32BoxFlashing = () => {
                 setWebHttpOnly(newWebHttpOnly);
             }
 
-            const httpsPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS || "";
-            const httpPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP || "";
+            // now the possible automatic redirect
+            const fetchHttpsPort = async (): Promise<string | undefined> => {
+                // this is for develop only as the https port is defined separatly
+                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS) {
+                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS;
+                }
+
+                try {
+                    const response = await fetch(
+                        `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.server.https_port`,
+                        {
+                            method: "GET",
+                        }
+                    );
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.text();
+                } catch (error) {
+                    console.error("Error fetching https port: ", error);
+                }
+            };
+
+            const fetchHttpPort = async (): Promise<string | undefined> => {
+                // this is for develop only as the http port is defined separatly
+                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP) {
+                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP;
+                }
+
+                try {
+                    const response = await fetch(
+                        `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.server.http_port`,
+                        {
+                            method: "GET",
+                        }
+                    );
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                } catch (error) {
+                    console.error("Error fetching http port: ", error);
+                }
+            };
+
+            const httpsPort = (await fetchHttpsPort()) || "";
+            const httpPort = (await fetchHttpPort()) || "";
+
+            const redirectToHttps = async () => {
+                const currentURL = new URL(window.location.href);
+                currentURL.protocol = "https:";
+                if (currentURL.port) {
+                    currentURL.port = currentURL.port === httpPort ? httpsPort : currentURL.port;
+                } else {
+                    currentURL.port = httpsPort;
+                }
+                const httpsURL = currentURL.toString();
+                window.location.href = httpsURL;
+            };
+
+            const redirectToHttp = async () => {
+                const currentURL = new URL(window.location.href);
+                currentURL.protocol = "http:";
+                if (currentURL.port) {
+                    currentURL.port = currentURL.port === httpsPort ? httpPort : currentURL.port;
+                } else {
+                    currentURL.port = httpPort;
+                }
+                const httpURL = currentURL.toString();
+                window.location.href = httpURL;
+            };
 
             if (!newWebHttpOnly && !newHttpsClientCertAuth && !httpsActive) {
-                // Redirect to the HTTPS URL
-                const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${
-                    window.location.pathname
-                }${window.location.search}`;
-                window.location.replace(httpsURL);
+                redirectToHttps().catch((err) => console.error("Failed to redirect to HTTPS:", err));
             } else if (newWebHttpOnly && httpsActive) {
-                // Redirect to the HTTP URL
-                const httpURL = `http://${window.location.host.replace(httpsPort, httpPort)}${
-                    window.location.pathname
-                }${window.location.search}`;
-                window.location.replace(httpURL);
+                redirectToHttp().catch((err) => console.error("Failed to redirect to HTTP:", err));
             }
         } catch (e) {
             message.error("Error while sending data to server.");

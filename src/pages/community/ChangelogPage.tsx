@@ -72,6 +72,8 @@ export const ChangelogPage = () => {
                 "new /web gui: improved filebrowser, added filter field and made buttons sticky",
                 "new /web gui: integrated ESP32 Firmware Flashing https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/46",
                 "new /web gui: integrated setting of WiFi credentials in ESP32 Firmware Flashing",
+                "new /web gui: show hint on ESP32 Firmware Flashing page if browser does not support WebSerial",
+                "new /web gui: allow multiselection in file browser for file deletion",
                 "new /web gui: fixed some bugs and minor refactoring",
             ],
             commits: [
