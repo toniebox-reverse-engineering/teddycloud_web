@@ -44,18 +44,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiGetTonieboxesIndexRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<TonieboxCardList>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request(
-            {
-                path: `/api/getBoxes`,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
+        const response = await this.apiGetTeddyCloudApiRaw(`/api/getBoxes`, undefined, initOverrides);
         return new runtime.JSONApiResponse<TonieboxCardList>(response);
     }
 
@@ -303,20 +292,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         const queryParameters: any = {};
         const headerParameters: runtime.HTTPHeaders = {};
 
-        let path = `/api/getTagIndex`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
+        const response = await this.apiGetTeddyCloudApiRaw(`/api/getTagIndex`, overlay, initOverrides);
         return new runtime.JSONApiResponse<TagsTonieCardList>(response);
     }
 
@@ -403,23 +379,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay?: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<TagTonieCard>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/getTagInfo?ruid=${ruid}`;
-        if (overlay !== "") {
-            path = path + "&overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
+        const response = await this.apiGetTeddyCloudApiRaw(`/api/getTagInfo?ruid=${ruid}`, overlay, initOverrides);
         return new runtime.JSONApiResponse<TagTonieCard>(response);
     }
 
@@ -500,24 +460,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<OptionsList>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/getIndex`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiGetTeddyCloudApiRaw(`/api/settings/getIndex`, overlay, initOverrides);
         return new runtime.JSONApiResponse(response, (jsonValue) => OptionsListFromJSON(jsonValue));
     }
 
@@ -574,19 +517,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiStatsGetRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<StatsList>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request(
-            {
-                path: `/api/stats`,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiGetTeddyCloudApiRaw(`/api/stats`, undefined, initOverrides);
         return new runtime.JSONApiResponse(response, (jsonValue) => StatsListFromJSON(jsonValue));
     }
 
@@ -604,19 +535,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiTriggerWriteConfigGetRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request(
-            {
-                path: `/api/triggerWriteConfig`,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiGetTeddyCloudApiRaw(`/api/triggerWriteConfig`, undefined, initOverrides);
         if (this.isJsonMime(response.headers.get("content-type"))) {
             return new runtime.JSONApiResponse<string>(response);
         } else {
