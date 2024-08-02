@@ -11,6 +11,10 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
 import { restartServer } from "../../utils/restartServer";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SettingsSubNav = () => {
     const { t } = useTranslation();
@@ -24,7 +28,7 @@ export const SettingsSubNav = () => {
 
     const handleUpdateToniesJson = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/toniesJsonUpdate`);
+            const response = await api.apiFetchTeddyCloudApiRaw("/api/toniesJsonUpdate");
             const data = await response.text();
             setSelectedKey("");
 

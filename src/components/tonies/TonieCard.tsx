@@ -209,7 +209,7 @@ export const TonieCard: React.FC<{
     };
 
     const handleBackgroundDownload = async () => {
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.downloadTriggerUrl;
+        const path = localTonieCard.downloadTriggerUrl;
         setDownloadTriggerUrl("");
         try {
             messageApi.open({
@@ -217,10 +217,7 @@ export const TonieCard: React.FC<{
                 content: t("tonies.messages.downloading"),
                 duration: 0,
             });
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
+            const response = await api.apiFetchTeddyCloudApiRaw(path);
 
             // blob used that message is shown after download finished
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -238,7 +235,8 @@ export const TonieCard: React.FC<{
                 type: "error",
                 content: t("tonies.messages.errorDuringDownload") + error,
             });
-            setDownloadTriggerUrl(url);
+            // this could be a kind of problem if auth is necessary for accessing the API
+            setDownloadTriggerUrl(process.env.REACT_APP_TEDDYCLOUD_API_URL + path);
         }
     };
 

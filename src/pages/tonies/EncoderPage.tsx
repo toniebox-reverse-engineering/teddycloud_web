@@ -19,6 +19,11 @@ import { MyUploadFile, upload } from "../../utils/encoder";
 import { createQueryString } from "../../utils/url";
 import { DefaultOptionType } from "antd/es/select";
 
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
 
 export const EncoderPage = () => {
@@ -118,7 +123,7 @@ export const EncoderPage = () => {
     const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
         new Promise((resolve, reject) => {
             const newPath = pathFromNodeId(id);
-            fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiFetchTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     var list: any[] = data.files;

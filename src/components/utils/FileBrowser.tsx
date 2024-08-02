@@ -22,6 +22,11 @@ import ConfirmationDialog from "./ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
 import TonieInformationModal from "./TonieInformationModal";
 
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 const { useToken } = theme;
 
 interface RecordTafHeader {
@@ -123,10 +128,8 @@ export const FileBrowser: React.FC<{
     }, [overlay]);
 
     useEffect(() => {
-        // TODO: fetch option value with API Client generator
-        fetch(
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${path}&special=${special}` +
-                (overlay ? `&overlay=${overlay}` : "")
+        api.apiFetchTeddyCloudApiRaw(
+            `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
             .then((response) => response.json())
             .then((data) => {
@@ -172,9 +175,9 @@ export const FileBrowser: React.FC<{
     }
 
     // Json Viewer functions
-    const fetchJsonData = async (url: string) => {
+    const fetchJsonData = async (path: string) => {
         try {
-            const response = await fetch(url);
+            const response = await api.apiFetchTeddyCloudApiRaw(path);
             const data = await response.json();
             setJsonData(data);
         } catch (error) {
@@ -184,7 +187,7 @@ export const FileBrowser: React.FC<{
 
     const showJsonViewer = (file: string) => {
         const folder = special === "library" ? "/library" : "/content";
-        fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
+        fetchJsonData(folder + file);
         setFilterFieldAutoFocus(false);
         setCurrentFile(file);
         setJsonViewerModalOpened(true);
@@ -283,7 +286,7 @@ export const FileBrowser: React.FC<{
     const handleEditTapClick = (file: string) => {
         if (file.includes(".tap")) {
             const folder = special === "library" ? "/library" : "/content";
-            fetchJsonData(process.env.REACT_APP_TEDDYCLOUD_API_URL + folder + file);
+            fetchJsonData(folder + file);
             setFilterFieldAutoFocus(false);
             setCurrentFile(file);
             setTapEditorKey((prevKey) => prevKey + 1);

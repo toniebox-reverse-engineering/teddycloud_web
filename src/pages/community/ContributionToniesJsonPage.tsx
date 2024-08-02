@@ -11,6 +11,11 @@ import {
 } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 const { Paragraph } = Typography;
 const { Panel } = Collapse;
 
@@ -35,7 +40,7 @@ export const ContributionToniesJsonPage = () => {
         async function fetchData() {
             try {
                 // Fetch the JSON data
-                const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/toniesJson`);
+                const response = await api.apiFetchTeddyCloudApiRaw(`/api/toniesJson`);
                 const jsonData = await response.json();
 
                 // Filter the JSON data to include only entries with non-empty audio_id arrays
@@ -71,7 +76,6 @@ export const ContributionToniesJsonPage = () => {
                 console.error("Error fetching and transforming data:", error);
             }
         }
-
         fetchData();
     }, []);
 
