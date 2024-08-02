@@ -393,7 +393,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             // remove this if the api returns already the sourceInfo itself
             // end
         }
-        // repace updatedTags with tags if the api returns already the sourceInfo itself
+
         return tags;
     }
 
@@ -471,6 +471,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     async apiGetTagIndexMergedAllOverlays(
+        fetchSourceInfo?: boolean,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<TonieCardProps[]> {
         const tonieboxData = await this.apiGetTonieboxesIndex();
@@ -478,10 +479,10 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         // Fetch tag index for each toniebox and merge the results into one array
         const mergedTonieCards: TonieCardProps[][] = await Promise.all([
             ...tonieboxData.map(async (toniebox) => {
-                const tonieCards = await this.apiGetTagIndex(toniebox.ID, false, initOverrides);
+                const tonieCards = await this.apiGetTagIndex(toniebox.ID, fetchSourceInfo, initOverrides);
                 return tonieCards;
             }),
-            this.apiGetTagIndex("", false, initOverrides),
+            this.apiGetTagIndex("", fetchSourceInfo, initOverrides),
         ]);
 
         const flattenedTonieCards = mergedTonieCards.flat();
@@ -738,8 +739,9 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
         headerParameters: runtime.HTTPHeaders = {}
     ): Promise<Response> {
-        headerParameters["Content-Type"] = "text/json";
-
+        if (!headerParameters["Content-Type"]) {
+            headerParameters["Content-Type"] = "text/plain";
+        }
         // we need to transform the string to a blob, if not, request quotes the body value through using stringify
         const stringToBlob = (str: string) => {
             const blob = new Blob([str], { type: "text/plain" });
@@ -752,9 +754,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
                     overlay ? "?overlay=" + overlay : ""
                 }`,
                 method: "POST",
-                headers: {
-                    "Content-Type": "text/plain",
-                },
+                headers: headerParameters,
                 body: stringToBlob(value?.toString() || ""),
             },
             initOverrides
@@ -787,6 +787,47 @@ export class TeddyCloudApi extends runtime.BaseAPI {
                 method: "GET",
                 headers: headerParameters,
                 query: queryParameters,
+            },
+            initOverrides
+        );
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response;
+    }
+
+    /**
+     *
+     * @param ruid ruid of tonie/tag
+     * @param body body of api call, like live=false (optional)
+     * @param overlay overlay (optional)
+     * @param initOverrides  initOverides (optional)
+     * @param headerParameters headerParameters (optional)
+     * @returns
+     */
+    async apiSetTeddyCloudContentJson(
+        ruid: string,
+        body?: string,
+        overlay?: String,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        headerParameters: runtime.HTTPHeaders = {}
+    ): Promise<Response> {
+        if (!headerParameters["Content-Type"]) {
+            headerParameters["Content-Type"] = "text/plain";
+        }
+        // we need to transform the string to a blob, if not, request quotes the body value through using stringify
+        const stringToBlob = (str: string) => {
+            const blob = new Blob([str], { type: "text/plain" });
+            return blob;
+        };
+
+        const response = await this.request(
+            {
+                path: `/content/json/set/${ruid}${overlay ? "?overlay=" + overlay : ""}`,
+                method: "POST",
+                headers: headerParameters,
+                body: stringToBlob(body?.toString() || ""),
             },
             initOverrides
         );

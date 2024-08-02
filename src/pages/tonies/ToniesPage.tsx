@@ -45,7 +45,7 @@ export const ToniesPage = () => {
     useEffect(() => {
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
-            const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "")).filter((item) => !item.hide);
+            const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "", true)).filter((item) => !item.hide);
             setTonies(
                 tonieData.sort((a, b) => {
                     if (a.tonieInfo.series < b.tonieInfo.series) {

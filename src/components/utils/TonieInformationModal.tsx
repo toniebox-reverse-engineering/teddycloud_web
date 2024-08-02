@@ -5,6 +5,11 @@ import { TonieCardProps } from "../tonies/TonieCard";
 import { Record } from "./FileBrowser";
 import ConfirmationDialog from "./ConfirmationDialog";
 
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 const { Text } = Typography;
 
 export type TonieCardTAFRecord = TonieCardProps | Record;
@@ -95,17 +100,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
 
     const hideTag = async () => {
         if (onHide && "ruid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.ruid) {
-            const url =
-                `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${tonieCardOrTAFRecord.ruid}` +
-                (overlay ? `?overlay=${overlay}` : "");
             try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    body: "hide=true",
-                });
-                if (!response.ok) {
-                    throw new Error(response.status + " " + response.statusText);
-                }
+                await api.apiSetTeddyCloudContentJson(tonieCardOrTAFRecord.ruid, "hide=true", overlay);
                 message.success(t("tonies.messages.hideTonieSuccessful"));
                 onHide(tonieCardOrTAFRecord.ruid);
             } catch (error) {
