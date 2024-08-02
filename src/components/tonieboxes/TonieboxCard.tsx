@@ -294,15 +294,9 @@ export const TonieboxCard: React.FC<{
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
         };
+
         try {
-            const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/boxModel?overlay=${tonieboxCard.ID}`;
-            await fetch(url, {
-                method: "POST",
-                body: selectedModel.toString(),
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiSetTeddyCloudSetting("boxModel", selectedModel, tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
                 })
@@ -323,15 +317,9 @@ export const TonieboxCard: React.FC<{
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
         };
+
         try {
-            const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/boxName?overlay=${tonieboxCard.ID}`;
-            await fetch(url, {
-                method: "POST",
-                body: boxName.toString(),
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiSetTeddyCloudSetting("boxName", boxName.toString(), tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
                 })
@@ -477,13 +465,7 @@ export const TonieboxCard: React.FC<{
                 content: t("tonieboxes.messages.deleting"),
                 duration: 0,
             });
-
-            fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/settings/removeOverlay?overlay=" + tonieboxCard.ID, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiSetTeddyCloudSetting("removeOverlay", null, tonieboxCard.ID)
                 .then((response) => response.text())
                 .then((data) => {
                     messageApi.destroy();
@@ -550,15 +532,8 @@ export const TonieboxCard: React.FC<{
     };
 
     const handleApiAccessClick = async () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/toniebox.api_access?overlay=${tonieboxCard.ID}`;
         try {
-            fetch(url, {
-                method: "POST",
-                body: (!tonieboxAccessApi).toString(),
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiSetTeddyCloudSetting("toniebox.api_access", !tonieboxAccessApi, tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
 

@@ -78,13 +78,7 @@ export const SettingsPage = () => {
 
     const handleChange = async (value: any) => {
         try {
-            await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.settings_level`, {
-                method: "POST",
-                body: value?.toString(),
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            });
+            api.apiSetTeddyCloudSetting("core.settings_level", value);
             triggerWriteConfig();
             setSettingsLevel(value);
         } catch (e) {

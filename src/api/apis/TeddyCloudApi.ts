@@ -546,18 +546,12 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             );
         }
         const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters["Content-Type"] = "text/plain";
-
-        const response = await this.request(
-            {
-                path: `/api/settings/set/cloud.cacheContent`,
-                method: "POST",
-                headers: headerParameters,
-                query: queryParameters,
-                body: requestParameters.body as any,
-            },
+        const response = await this.apiSetTeddyCloudSetting(
+            "cloud.cacheContent",
+            requestParameters.body as any,
+            undefined,
+            undefined,
             initOverrides
         );
 
@@ -722,6 +716,45 @@ export class TeddyCloudApi extends runtime.BaseAPI {
                 method: "GET",
                 headers: headerParameters,
                 query: queryParameters,
+            },
+            initOverrides
+        );
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+        return response;
+    }
+
+    /**
+     * set setting
+     */
+    async apiSetTeddyCloudSetting(
+        settingKey: string,
+        value?: string | boolean | number | null | undefined,
+        overlay?: String,
+        reset?: boolean,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        headerParameters: runtime.HTTPHeaders = {}
+    ): Promise<Response> {
+        headerParameters["Content-Type"] = "text/json";
+
+        // we need to transform the string to a blob, if not, request quotes the body value through using stringify
+        const stringToBlob = (str: string) => {
+            const blob = new Blob([str], { type: "text/plain" });
+            return blob;
+        };
+
+        const response = await this.request(
+            {
+                path: `/api/settings/${reset && reset === true ? "reset" : "set"}/${settingKey}${
+                    overlay ? "?overlay=" + overlay : ""
+                }`,
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain",
+                },
+                body: stringToBlob(value?.toString() || ""),
             },
             initOverrides
         );

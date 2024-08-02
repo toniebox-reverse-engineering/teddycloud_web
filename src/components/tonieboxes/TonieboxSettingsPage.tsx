@@ -23,7 +23,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const data = response.json();
+                const data = await response.json();
                 setSettingsLevel(data.toString());
             } catch (error) {
                 console.error("Error fetching settings level: ", error);
@@ -57,13 +57,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
 
     const handleChange = async (value: any) => {
         try {
-            await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.settings_level`, {
-                method: "POST",
-                body: value?.toString(),
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            });
+            await api.apiSetTeddyCloudSetting("core.settings_level", value);
             triggerWriteConfig();
             setSettingsLevel(value);
         } catch (e) {
