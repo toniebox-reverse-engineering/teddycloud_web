@@ -17,18 +17,13 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
     useEffect(() => {
         const fetchSettingsLevel = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.settings_level`,
-                    {
-                        method: "GET",
-                    }
-                );
+                const response = await api.apiFetchTeddyCloudSettingRaw("core.settings_level");
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                const data = await response.json();
+                const data = response.json();
                 setSettingsLevel(data.toString());
             } catch (error) {
                 console.error("Error fetching settings level: ", error);

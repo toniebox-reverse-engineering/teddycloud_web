@@ -141,16 +141,11 @@ export const ESP32BoxFlashing = () => {
     useEffect(() => {
         const fetchWebHttpOnly = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.webHttpOnly`,
-                    {
-                        method: "GET",
-                    }
-                );
+                const response = await api.apiFetchTeddyCloudSettingRaw("core.webHttpOnly");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data = await response.json();
+                const data = response.json();
                 setWebHttpOnly(data.toString() === "true");
                 setNewWebHttpOnly(data.toString() === "true");
             } catch (error) {
@@ -162,16 +157,12 @@ export const ESP32BoxFlashing = () => {
 
         const fetchHttpsClientCertAuth = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.webHttpsCertAuth`,
-                    {
-                        method: "GET",
-                    }
-                );
+                const response = await api.apiFetchTeddyCloudSettingRaw("core.webHttpsCertAuth");
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const data = await response.json();
+                const data = response.json();
                 setHttpsClientCertAuth(data.toString() === "true");
                 setNewHttpsClientCertAuth(data.toString() === "true");
             } catch (error) {
@@ -266,16 +257,8 @@ export const ESP32BoxFlashing = () => {
                 }
 
                 try {
-                    const response = await fetch(
-                        `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.server.https_port`,
-                        {
-                            method: "GET",
-                        }
-                    );
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return await response.text();
+                    const response = await api.apiFetchTeddyCloudSettingRaw("core.server.https_port");
+                    return response.text();
                 } catch (error) {
                     console.error("Error fetching https port: ", error);
                 }
@@ -288,15 +271,7 @@ export const ESP32BoxFlashing = () => {
                 }
 
                 try {
-                    const response = await fetch(
-                        `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.server.http_port`,
-                        {
-                            method: "GET",
-                        }
-                    );
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    const response = await api.apiFetchTeddyCloudSettingRaw("core.server.http_port");
                     return response.text();
                 } catch (error) {
                     console.error("Error fetching http port: ", error);

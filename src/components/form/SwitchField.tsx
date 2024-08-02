@@ -34,8 +34,9 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
     const handleOverlayChange = (checked: boolean) => {
         const overlayRoute = `?overlay=${overlayId}`;
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${checked ? "set" : "reset"
-            }/${name}${overlayRoute}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${
+            checked ? "set" : "reset"
+        }/${name}${overlayRoute}`;
 
         try {
             fetch(url, {
@@ -74,7 +75,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
     const fetchFieldValue = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`);
+            const response = await api.apiFetchTeddyCloudSettingRaw(name);
             const value = await response.text();
             const newValue = value === "" ? undefined : valueConverter?.fromValueToBoolean(value);
             setValue(newValue);

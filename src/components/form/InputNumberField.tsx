@@ -75,7 +75,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
 
     const fetchFieldValue = () => {
         try {
-            fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`)
+            api.apiFetchTeddyCloudSettingRaw(name)
                 .then((response) => response.text())
                 .then((value) => {
                     helpers.setValue(value === "" ? undefined : Number(value));

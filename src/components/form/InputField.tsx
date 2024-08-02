@@ -29,8 +29,9 @@ const InputField = (props: InputFieldProps & InputProps) => {
 
     const handleOverlayChange = (checked: boolean) => {
         const overlayRoute = `?overlay=${overlayId}`;
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${checked ? "set" : "reset"
-            }/${name}${overlayRoute}`;
+        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${
+            checked ? "set" : "reset"
+        }/${name}${overlayRoute}`;
 
         try {
             fetch(url, {
@@ -94,7 +95,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
 
     const fetchFieldValue = () => {
         try {
-            fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`)
+            api.apiFetchTeddyCloudSettingRaw(name)
                 .then((response) => response.text())
                 .then((value) => {
                     helpers.setValue(value);

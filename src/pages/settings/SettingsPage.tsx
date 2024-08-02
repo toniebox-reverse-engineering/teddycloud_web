@@ -39,12 +39,7 @@ export const SettingsPage = () => {
     useEffect(() => {
         const fetchSettingsLevel = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.settings_level`,
-                    {
-                        method: "GET",
-                    }
-                );
+                const response = await api.apiFetchTeddyCloudSettingRaw("core.settings_level");
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

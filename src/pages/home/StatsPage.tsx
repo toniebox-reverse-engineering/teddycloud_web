@@ -28,6 +28,7 @@ export const StatsPage = () => {
     useEffect(() => {
         fetchStats();
     }, []);
+
     useEffect(() => {
         const interval = setInterval(() => {
             fetchStats();

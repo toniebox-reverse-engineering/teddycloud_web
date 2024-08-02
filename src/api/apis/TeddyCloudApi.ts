@@ -76,24 +76,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/internal.last_connection`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
         return new runtime.JSONApiResponse<string>(response);
     }
 
@@ -117,24 +100,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/internal.online`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("internal.online", overlay, initOverrides);
         return new runtime.JSONApiResponse<boolean>(response);
     }
 
@@ -156,24 +122,11 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/internal.toniebox_firmware.boxIC`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
+        const response = await this.apiFetchTeddyCloudSettingRaw(
+            "internal.toniebox_firmware.boxIC",
+            overlay,
             initOverrides
         );
-
         return new runtime.JSONApiResponse<string>(response);
     }
 
@@ -195,24 +148,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/internal.last_ruid`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("internal.last_ruid", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -234,24 +170,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/internal.last_ruid_time`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("internal.last_ruid_time", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -275,24 +194,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/internal.ip`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("internal.ip", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -314,24 +216,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/core.contentdir`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("core.contentdir", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -353,24 +238,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        let path = `/api/settings/get/toniebox.api_access`;
-        if (overlay !== "") {
-            path = path + "?overlay=" + overlay;
-        }
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("toniebox.api_access", overlay, initOverrides);
         return new runtime.JSONApiResponse<boolean>(response);
     }
 
@@ -391,21 +259,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiGetNewBoxesAllowedRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const path = `/api/settings/get/core.allowNewBox`;
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiFetchTeddyCloudSettingRaw("core.allowNewBox", undefined, initOverrides);
         return new runtime.JSONApiResponse<boolean>(response);
     }
 
@@ -423,21 +277,11 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiGetSecurityMITAlertRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const path = `/api/settings/get/internal.security_mit.incident`;
-
-        const response = await this.request(
-            {
-                path: path,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
+        const response = await this.apiFetchTeddyCloudSettingRaw(
+            "internal.security_mit.incident",
+            undefined,
             initOverrides
         );
-
         return new runtime.JSONApiResponse<boolean>(response);
     }
 
@@ -859,5 +703,32 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<string> {
         const response = await this.apiUploadCertPostRaw(requestParameters, overlay, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * fetch setting
+     */
+    async apiFetchTeddyCloudSettingRaw(
+        settingKey: string,
+        overlay?: String,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<Response> {
+        const queryParameters: any = {};
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request(
+            {
+                path: `/api/settings/get/${settingKey}${overlay ? "?overlay=" + overlay : ""}`,
+                method: "GET",
+                headers: headerParameters,
+                query: queryParameters,
+            },
+            initOverrides
+        );
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+        return response;
     }
 }

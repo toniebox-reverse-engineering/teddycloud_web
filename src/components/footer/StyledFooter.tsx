@@ -6,6 +6,8 @@ import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import AudioPlayerFooter from "./AudioPlayerFooter";
 
 import { useEffect, useState } from "react";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 const StyledFooterComponent = styled(Footer)`
     position: fixed;
@@ -25,6 +27,8 @@ const StyledCenterPart = styled.div`
     align-items: center;
 `;
 
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 export const StyledFooter = () => {
     const [footerHeight, setFooterHeight] = useState(0);
 
@@ -39,11 +43,11 @@ export const StyledFooter = () => {
     };
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/internal.version.v_long`)
+        api.apiFetchTeddyCloudSettingRaw("internal.version.v_long")
             .then((response) => response.text())
             .then((data) => setVersion(data))
             .catch((error) => console.error("Error fetching data:", error));
-        fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/internal.version.v_short`)
+        api.apiFetchTeddyCloudSettingRaw("internal.version.v_short")
             .then((response) => response.text())
             .then((data) => setVersionShort(data))
             .catch((error) => console.error("Error fetching data:", error));
