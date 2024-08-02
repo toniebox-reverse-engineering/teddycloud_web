@@ -154,7 +154,7 @@ export const TonieCard: React.FC<{
 
     const handleLiveClick = async () => {
         try {
-            await api.apiSetTeddyCloudContentJson(localTonieCard.ruid, "live=" + !isLive, overlay);
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "live=" + !isLive, overlay);
             setIsLive(!isLive);
             if (!isLive) {
                 message.success(t("tonies.messages.liveEnabled"));
@@ -163,13 +163,13 @@ export const TonieCard: React.FC<{
             }
             fetchUpdatedTonieCard();
         } catch (error) {
-            message.error(t("tonies.messages.sourceCouldNotChangeLiveFlag") + error);
+            message.error(t("tonies.messages.couldNotChangeLiveFlag") + error);
         }
     };
 
     const handleNoCloudClick = async () => {
         try {
-            await api.apiSetTeddyCloudContentJson(localTonieCard.ruid, "nocloud=" + !isNoCloud, overlay);
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "nocloud=" + !isNoCloud, overlay);
             setLocalTonieCard({
                 ...localTonieCard,
                 nocloud: !isNoCloud,
@@ -182,7 +182,7 @@ export const TonieCard: React.FC<{
             }
             fetchUpdatedTonieCard();
         } catch (error) {
-            message.error(t("tonies.messages.sourceCouldNotChangeCloudFlag") + error);
+            message.error(t("tonies.messages.couldNotChangeCloudFlag") + error);
         }
     };
 
@@ -199,7 +199,7 @@ export const TonieCard: React.FC<{
                 content: t("tonies.messages.downloading"),
                 duration: 0,
             });
-            const response = await api.apiFetchTeddyCloudApiRaw(path);
+            const response = await api.apiGetTeddyCloudApiRaw(path);
 
             // blob used that message is shown after download finished
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -224,7 +224,7 @@ export const TonieCard: React.FC<{
 
     const handleModelSave = async () => {
         try {
-            await api.apiSetTeddyCloudContentJson(localTonieCard.ruid, "tonie_model=" + selectedModel, overlay);
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "tonie_model=" + selectedModel, overlay);
             setActiveModel(selectedModel);
             message.success(
                 t("tonies.messages.setTonieToModelSuccessful", {
@@ -238,7 +238,7 @@ export const TonieCard: React.FC<{
 
     const handleSourceSave = async () => {
         try {
-            await api.apiSetTeddyCloudContentJson(localTonieCard.ruid, "source=" + selectedSource, overlay);
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "source=" + selectedSource, overlay);
             setActiveSource(selectedSource);
             message.success(
                 t("tonies.messages.setTonieToSourceSuccessful", {

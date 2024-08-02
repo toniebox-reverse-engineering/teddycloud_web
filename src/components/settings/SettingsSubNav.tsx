@@ -28,7 +28,7 @@ export const SettingsSubNav = () => {
 
     const handleUpdateToniesJson = async () => {
         try {
-            const response = await api.apiFetchTeddyCloudApiRaw("/api/toniesJsonUpdate");
+            const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonUpdate");
             const data = await response.text();
             setSelectedKey("");
 

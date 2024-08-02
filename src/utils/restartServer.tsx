@@ -10,7 +10,7 @@ const api = new BoxineApi(defaultAPIConfig());
 
 export const restartServer = async (redirectToBase = true) => {
     try {
-        const response = await apiTC.apiFetchTeddyCloudApiRaw(`/api/triggerRestart`);
+        const response = await apiTC.apiGetTeddyCloudApiRaw(`/api/triggerRestart`);
         const data = await response.text();
 
         if (data.toString() !== "OK") {

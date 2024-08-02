@@ -34,7 +34,7 @@ export const TonieArticleSearch: React.FC<{
             "&searchEpisode=" +
             searchEncode;
         try {
-            const response = await api.apiFetchTeddyCloudApiRaw(path);
+            const response = await api.apiGetTeddyCloudApiRaw(path);
             const data = await response.json();
             setTonieInfos(data);
             const result = data.map((item: TonieInfo) => ({

@@ -34,7 +34,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
     const handleOverlayChange = (checked: boolean) => {
         try {
-            api.apiSetTeddyCloudSetting(name, field.value, overlayId, !checked)
+            api.apiPostTeddyCloudSetting(name, field.value, overlayId, !checked)
                 .then(() => {
                     // Trigger write config only if setting was successfully updated
                     triggerWriteConfig();
@@ -64,7 +64,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
     const fetchFieldValue = async () => {
         try {
-            const response = await api.apiFetchTeddyCloudSettingRaw(name);
+            const response = await api.apiGetTeddyCloudSettingRaw(name);
             const value = await response.text();
             const newValue = value === "" ? undefined : valueConverter?.fromValueToBoolean(value);
             setValue(newValue);
@@ -91,7 +91,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
                 disabled={!overlayed && overlayed !== undefined}
                 onChange={(value: boolean) => {
                     try {
-                        api.apiSetTeddyCloudSetting(name, value, overlayId)
+                        api.apiPostTeddyCloudSetting(name, value, overlayId)
                             .then(() => {
                                 triggerWriteConfig();
                                 message.success(t("settings.saved"));

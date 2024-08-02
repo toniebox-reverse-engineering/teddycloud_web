@@ -39,7 +39,7 @@ export const SettingsPage = () => {
     useEffect(() => {
         const fetchSettingsLevel = async () => {
             try {
-                const response = await api.apiFetchTeddyCloudSettingRaw("core.settings_level");
+                const response = await api.apiGetTeddyCloudSettingRaw("core.settings_level");
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -78,7 +78,7 @@ export const SettingsPage = () => {
 
     const handleChange = async (value: any) => {
         try {
-            api.apiSetTeddyCloudSetting("core.settings_level", value);
+            api.apiPostTeddyCloudSetting("core.settings_level", value);
             triggerWriteConfig();
             setSettingsLevel(value);
         } catch (e) {

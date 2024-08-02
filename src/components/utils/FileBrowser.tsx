@@ -128,7 +128,7 @@ export const FileBrowser: React.FC<{
     }, [overlay]);
 
     useEffect(() => {
-        api.apiFetchTeddyCloudApiRaw(
+        api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
             .then((response) => response.json())
@@ -177,7 +177,7 @@ export const FileBrowser: React.FC<{
     // Json Viewer functions
     const fetchJsonData = async (path: string) => {
         try {
-            const response = await api.apiFetchTeddyCloudApiRaw(path);
+            const response = await api.apiGetTeddyCloudApiRaw(path);
             const data = await response.json();
             setJsonData(data);
         } catch (error) {
@@ -337,18 +337,11 @@ export const FileBrowser: React.FC<{
     };
 
     const deleteFile = async (path: string, apiCall: string) => {
-        const deleteUrl = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileDelete${apiCall}`;
-
         const loadingMessage = message.loading(t("fileBrowser.messages.deleting"), 0);
-
         try {
-            const response = await fetch(deleteUrl, {
-                method: "POST",
-                body: path,
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            });
+            const deleteUrl = `/api/fileDelete${apiCall}`;
+            const response = await api.apiPostTeddyCloudRaw(deleteUrl, path);
+
             const data = await response.text();
             loadingMessage();
             if (data === "OK") {
@@ -373,16 +366,8 @@ export const FileBrowser: React.FC<{
     };
 
     const createDirectory = () => {
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/dirCreate?special=library`;
-
         try {
-            fetch(url, {
-                method: "POST",
-                body: path + "/" + inputValueCreateDirectory,
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, path + "/" + inputValueCreateDirectory)
                 .then((response) => {
                     return response.text();
                 })
@@ -486,18 +471,8 @@ export const FileBrowser: React.FC<{
             });
 
             const body = `ruid=${ruid}&libroot=${libroot}`;
-            fetch(
-                process.env.REACT_APP_TEDDYCLOUD_API_URL +
-                    "/api/migrateContent2Lib" +
-                    (overlay ? "?overlay=" + overlay : ""),
-                {
-                    method: "POST",
-                    body: body,
-                    headers: {
-                        "Content-Type": "text/plain",
-                    },
-                }
-            )
+
+            api.apiPostTeddyCloudRaw("/api/migrateContent2Lib", body, overlay)
                 .then((response) => response.text())
                 .then((data) => {
                     messageApi.destroy();
@@ -798,7 +773,9 @@ export const FileBrowser: React.FC<{
                         actions.push(
                             <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
                                 <CloudServerOutlined
-                                    onClick={() => migrateContent2Lib(path.replace("/", "") + name, false, overlay)}
+                                    onClick={() =>
+                                        migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)
+                                    }
                                     style={{ margin: "0 8px 0 0" }}
                                 />
                             </Tooltip>
@@ -809,7 +786,9 @@ export const FileBrowser: React.FC<{
                                 title={t("fileBrowser.migrateContentToLibRoot")}
                             >
                                 <TruckOutlined
-                                    onClick={() => migrateContent2Lib(path.replace("/", "") + name, true, overlay)}
+                                    onClick={() =>
+                                        migrateContent2Lib(path.replace("/", "") + record.name, true, overlay)
+                                    }
                                     style={{ margin: "0 8px 0 0" }}
                                 />
                             </Tooltip>
@@ -825,7 +804,7 @@ export const FileBrowser: React.FC<{
                                             "/content" +
                                             path +
                                             "/" +
-                                            name +
+                                            record.name +
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),

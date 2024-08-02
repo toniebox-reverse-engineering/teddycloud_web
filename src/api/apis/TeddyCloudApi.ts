@@ -76,7 +76,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
         return new runtime.JSONApiResponse<string>(response);
     }
 
@@ -100,7 +100,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("internal.online", overlay, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.online", overlay, initOverrides);
         return new runtime.JSONApiResponse<boolean>(response);
     }
 
@@ -122,7 +122,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw(
+        const response = await this.apiGetTeddyCloudSettingRaw(
             "internal.toniebox_firmware.boxIC",
             overlay,
             initOverrides
@@ -148,7 +148,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("internal.last_ruid", overlay, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_ruid", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -170,7 +170,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("internal.last_ruid_time", overlay, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_ruid_time", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -194,7 +194,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("internal.ip", overlay, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.ip", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -216,7 +216,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("core.contentdir", overlay, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("core.contentdir", overlay, initOverrides);
         return new runtime.TextApiResponse(response);
     }
 
@@ -238,7 +238,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("toniebox.api_access", overlay, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("toniebox.api_access", overlay, initOverrides);
         return new runtime.JSONApiResponse<boolean>(response);
     }
 
@@ -259,7 +259,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiGetNewBoxesAllowedRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw("core.allowNewBox", undefined, initOverrides);
+        const response = await this.apiGetTeddyCloudSettingRaw("core.allowNewBox", undefined, initOverrides);
         return new runtime.JSONApiResponse<boolean>(response);
     }
 
@@ -277,7 +277,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiGetSecurityMITAlertRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiFetchTeddyCloudSettingRaw(
+        const response = await this.apiGetTeddyCloudSettingRaw(
             "internal.security_mit.incident",
             undefined,
             initOverrides
@@ -351,9 +351,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             );
             const fetchDataForPath = async (path: any) => {
                 try {
-                    const response = await this.apiFetchTeddyCloudApiRaw(
-                        `/api/fileIndexV2?path=${path}&special=library`
-                    );
+                    const response = await this.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${path}&special=library`);
                     const data = await response.json();
                     return { path, data };
                 } catch (error) {
@@ -445,7 +443,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             const path = pathParts.join("/").replace("lib:/", "");
 
             try {
-                const response = await this.apiFetchTeddyCloudApiRaw(`/api/fileIndexV2?path=${path}&special=library`);
+                const response = await this.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${path}&special=library`);
                 const data = await response.json();
                 if (data && data.files) {
                     const matchedFile = data.files.find(
@@ -549,7 +547,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         }
         const queryParameters: any = {};
 
-        const response = await this.apiSetTeddyCloudSetting(
+        const response = await this.apiPostTeddyCloudSetting(
             "cloud.cacheContent",
             requestParameters.body as any,
             undefined,
@@ -702,26 +700,20 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * fetch setting
+     * @description Fetch a setting from TeddyCloud
+     * @author manually created
+     *
+     * @param settingKey key to fetch
+     * @param overlay overlay (optional)
+     * @param initOverrides initOverrides (optional)
+     * @returns
      */
-    async apiFetchTeddyCloudSettingRaw(
+    async apiGetTeddyCloudSettingRaw(
         settingKey: string,
         overlay?: String,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<Response> {
-        const queryParameters: any = {};
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        const response = await this.request(
-            {
-                path: `/api/settings/get/${settingKey}${overlay ? "?overlay=" + overlay : ""}`,
-                method: "GET",
-                headers: headerParameters,
-                query: queryParameters,
-            },
-            initOverrides
-        );
-
+        const response = await this.apiGetTeddyCloudApiRaw(`/api/settings/get/${settingKey}`, overlay, initOverrides);
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
@@ -729,9 +721,18 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * set setting
+     * @description Post a setting to TeddyCloud
+     * @author manually created
+     *
+     * @param settingKey
+     * @param value
+     * @param overlay
+     * @param reset
+     * @param initOverrides
+     * @param headerParameters
+     * @returns
      */
-    async apiSetTeddyCloudSetting(
+    async apiPostTeddyCloudSetting(
         settingKey: string,
         value?: string | boolean | number | null | undefined,
         overlay?: String,
@@ -742,22 +743,13 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         if (!headerParameters["Content-Type"]) {
             headerParameters["Content-Type"] = "text/plain";
         }
-        // we need to transform the string to a blob, if not, request quotes the body value through using stringify
-        const stringToBlob = (str: string) => {
-            const blob = new Blob([str], { type: "text/plain" });
-            return blob;
-        };
 
-        const response = await this.request(
-            {
-                path: `/api/settings/${reset && reset === true ? "reset" : "set"}/${settingKey}${
-                    overlay ? "?overlay=" + overlay : ""
-                }`,
-                method: "POST",
-                headers: headerParameters,
-                body: stringToBlob(value?.toString() || ""),
-            },
-            initOverrides
+        const response = await this.apiPostTeddyCloudRaw(
+            `/api/settings/${reset && reset === true ? "reset" : "set"}/${settingKey}`,
+            value?.toString() || "",
+            overlay,
+            initOverrides,
+            headerParameters
         );
 
         if (!response.ok) {
@@ -767,13 +759,15 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * @description Fetch the given API Endpoint from TeddyCloud
+     * @author manually created
      *
      * @param apiPath endpoint path of API
      * @param overlay overlay (optional)
      * @param initOverrides initOverrides (optional)
      * @returns raw response
      */
-    async apiFetchTeddyCloudApiRaw(
+    async apiGetTeddyCloudApiRaw(
         apiPath: string,
         overlay?: String,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
@@ -798,6 +792,8 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * @description Post properties to tonie content json
+     * @author manually created
      *
      * @param ruid ruid of tonie/tag
      * @param body body of api call, like live=false (optional)
@@ -806,8 +802,39 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      * @param headerParameters headerParameters (optional)
      * @returns
      */
-    async apiSetTeddyCloudContentJson(
+    async apiPostTeddyCloudContentJson(
         ruid: string,
+        body?: string,
+        overlay?: String,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        headerParameters: runtime.HTTPHeaders = {}
+    ): Promise<Response> {
+        const response = await this.apiPostTeddyCloudRaw(
+            `/content/json/set/${ruid}`,
+            body,
+            overlay,
+            initOverrides,
+            headerParameters
+        );
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response;
+    }
+
+    /**
+     * @description Post data to endpoint path of TeddyCloud api
+     * @author manually created
+     *
+     * @param apiPath endpoint path of API
+     * @param body body of api call, like live=false (optional)
+     * @param overlay overlay (optional)
+     * @param initOverrides  initOverides (optional)
+     * @param headerParameters headerParameters (optional)
+     * @returns
+     */
+    async apiPostTeddyCloudRaw(
+        path: string,
         body?: string,
         overlay?: String,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -821,17 +848,15 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             const blob = new Blob([str], { type: "text/plain" });
             return blob;
         };
-
         const response = await this.request(
             {
-                path: `/content/json/set/${ruid}${overlay ? "?overlay=" + overlay : ""}`,
+                path: `${path}${overlay ? "?overlay=" + overlay : ""}`,
                 method: "POST",
                 headers: headerParameters,
                 body: stringToBlob(body?.toString() || ""),
             },
             initOverrides
         );
-
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }

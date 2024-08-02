@@ -101,7 +101,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     const hideTag = async () => {
         if (onHide && "ruid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.ruid) {
             try {
-                await api.apiSetTeddyCloudContentJson(tonieCardOrTAFRecord.ruid, "hide=true", overlay);
+                await api.apiPostTeddyCloudContentJson(tonieCardOrTAFRecord.ruid, "hide=true", overlay);
                 message.success(t("tonies.messages.hideTonieSuccessful"));
                 onHide(tonieCardOrTAFRecord.ruid);
             } catch (error) {

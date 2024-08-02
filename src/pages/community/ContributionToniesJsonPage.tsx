@@ -40,7 +40,7 @@ export const ContributionToniesJsonPage = () => {
         async function fetchData() {
             try {
                 // Fetch the JSON data
-                const response = await api.apiFetchTeddyCloudApiRaw(`/api/toniesJson`);
+                const response = await api.apiGetTeddyCloudApiRaw(`/api/toniesJson`);
                 const jsonData = await response.json();
 
                 // Filter the JSON data to include only entries with non-empty audio_id arrays

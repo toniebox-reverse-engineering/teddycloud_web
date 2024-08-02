@@ -141,7 +141,7 @@ export const ESP32BoxFlashing = () => {
     useEffect(() => {
         const fetchWebHttpOnly = async () => {
             try {
-                const response = await api.apiFetchTeddyCloudSettingRaw("core.webHttpOnly");
+                const response = await api.apiGetTeddyCloudSettingRaw("core.webHttpOnly");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -157,7 +157,7 @@ export const ESP32BoxFlashing = () => {
 
         const fetchHttpsClientCertAuth = async () => {
             try {
-                const response = await api.apiFetchTeddyCloudSettingRaw("core.webHttpsCertAuth");
+                const response = await api.apiGetTeddyCloudSettingRaw("core.webHttpsCertAuth");
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -224,10 +224,10 @@ export const ESP32BoxFlashing = () => {
     const handleSaveHttpsSettings = async () => {
         try {
             if (newHttpsClientCertAuth !== httpsClientCertAuth) {
-                api.apiSetTeddyCloudSetting("core.webHttpsCertAuth", newHttpsClientCertAuth);
+                api.apiPostTeddyCloudSetting("core.webHttpsCertAuth", newHttpsClientCertAuth);
             }
             if (newWebHttpOnly !== webHttpOnly) {
-                api.apiSetTeddyCloudSetting("core.webHttpOnly", newWebHttpOnly);
+                api.apiPostTeddyCloudSetting("core.webHttpOnly", newWebHttpOnly);
             }
 
             if (newWebHttpOnly !== webHttpOnly || newHttpsClientCertAuth !== httpsClientCertAuth) {
@@ -245,7 +245,7 @@ export const ESP32BoxFlashing = () => {
                 }
 
                 try {
-                    const response = await api.apiFetchTeddyCloudSettingRaw("core.server.https_port");
+                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_port");
                     return await response.text();
                 } catch (error) {
                     console.error("Error fetching https port: ", error);
@@ -259,7 +259,7 @@ export const ESP32BoxFlashing = () => {
                 }
 
                 try {
-                    const response = await api.apiFetchTeddyCloudSettingRaw("core.server.http_port");
+                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.http_port");
                     return await response.text();
                 } catch (error) {
                     console.error("Error fetching http port: ", error);
@@ -717,7 +717,7 @@ export const ESP32BoxFlashing = () => {
             error: false,
         }));
 
-        const response = await api.apiFetchTeddyCloudApiRaw(
+        const response = await api.apiGetTeddyCloudApiRaw(
             `/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}` +
                 (state.wifi_ssid && state.wifi_pass ? `&wifi_ssid=${state.wifi_ssid}&wifi_pass=${state.wifi_pass}` : "")
         );

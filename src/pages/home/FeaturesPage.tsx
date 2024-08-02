@@ -30,15 +30,15 @@ export const FeaturesPage = () => {
     const [commitGitShaShort, setCommitGitShaShort] = useState("");
 
     useEffect(() => {
-        api.apiFetchTeddyCloudSettingRaw("internal.version.v_long")
+        api.apiGetTeddyCloudSettingRaw("internal.version.v_long")
             .then((response) => response.text())
             .then((data) => setVersion(data))
             .catch((error) => console.error("Error fetching data:", error));
-        api.apiFetchTeddyCloudSettingRaw("internal.version.id")
+        api.apiGetTeddyCloudSettingRaw("internal.version.id")
             .then((response) => response.text())
             .then((data) => setVersionShort(data))
             .catch((error) => console.error("Error fetching data:", error));
-        api.apiFetchTeddyCloudSettingRaw("internal.version.git_sha_short")
+        api.apiGetTeddyCloudSettingRaw("internal.version.git_sha_short")
             .then((response) => response.text())
             .then((data) => setCommitGitShaShort(data))
             .catch((error) => console.error("Error fetching data:", error));

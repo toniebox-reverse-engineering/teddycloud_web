@@ -296,7 +296,7 @@ export const TonieboxCard: React.FC<{
         };
 
         try {
-            api.apiSetTeddyCloudSetting("boxModel", selectedModel, tonieboxCard.ID)
+            api.apiPostTeddyCloudSetting("boxModel", selectedModel, tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
                 })
@@ -319,7 +319,7 @@ export const TonieboxCard: React.FC<{
         };
 
         try {
-            api.apiSetTeddyCloudSetting("boxName", boxName.toString(), tonieboxCard.ID)
+            api.apiPostTeddyCloudSetting("boxName", boxName.toString(), tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
                 })
@@ -465,7 +465,7 @@ export const TonieboxCard: React.FC<{
                 content: t("tonieboxes.messages.deleting"),
                 duration: 0,
             });
-            api.apiSetTeddyCloudSetting("removeOverlay", null, tonieboxCard.ID)
+            api.apiPostTeddyCloudSetting("removeOverlay", null, tonieboxCard.ID)
                 .then((response) => response.text())
                 .then((data) => {
                     messageApi.destroy();
@@ -533,7 +533,7 @@ export const TonieboxCard: React.FC<{
 
     const handleApiAccessClick = async () => {
         try {
-            api.apiSetTeddyCloudSetting("toniebox.api_access", !tonieboxAccessApi, tonieboxCard.ID)
+            api.apiPostTeddyCloudSetting("toniebox.api_access", !tonieboxAccessApi, tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
 

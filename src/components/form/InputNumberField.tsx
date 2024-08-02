@@ -42,7 +42,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
 
     const handleOverlayChange = (checked: boolean) => {
         try {
-            api.apiSetTeddyCloudSetting(name, field.value, overlayId, !checked)
+            api.apiPostTeddyCloudSetting(name, field.value, overlayId, !checked)
                 .then(() => {
                     // Trigger write config only if setting was successfully updated
                     triggerWriteConfig();
@@ -64,7 +64,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
 
     const fetchFieldValue = () => {
         try {
-            api.apiFetchTeddyCloudSettingRaw(name)
+            api.apiGetTeddyCloudSettingRaw(name)
                 .then((response) => response.text())
                 .then((value) => {
                     helpers.setValue(value === "" ? undefined : Number(value));
@@ -99,7 +99,7 @@ const InputNumberField = (props: InputNumberFieldProps & InputNumberProps) => {
                 disabled={!overlayed && overlayed !== undefined} // Disable when overlayed is unset
                 onChange={(value: number | undefined | string | null) => {
                     try {
-                        api.apiSetTeddyCloudSetting(name, value, overlayId)
+                        api.apiPostTeddyCloudSetting(name, value, overlayId)
                             .then(() => {
                                 triggerWriteConfig();
                                 message.success(t("settings.saved"));

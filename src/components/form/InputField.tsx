@@ -29,7 +29,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
 
     const handleOverlayChange = (checked: boolean) => {
         try {
-            api.apiSetTeddyCloudSetting(name, field.value, overlayId, !checked)
+            api.apiPostTeddyCloudSetting(name, field.value, overlayId, !checked)
                 .then(() => {
                     triggerWriteConfig();
                     if (!checked) {
@@ -53,7 +53,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
         };
 
         try {
-            api.apiSetTeddyCloudSetting(name, field.value, overlayId)
+            api.apiPostTeddyCloudSetting(name, field.value, overlayId)
                 .then(() => {
                     triggerWriteConfig();
                     message.success(t("settings.saved"));
@@ -74,7 +74,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
 
     const fetchFieldValue = () => {
         try {
-            api.apiFetchTeddyCloudSettingRaw(name)
+            api.apiGetTeddyCloudSettingRaw(name)
                 .then((response) => response.text())
                 .then((value) => {
                     helpers.setValue(value);

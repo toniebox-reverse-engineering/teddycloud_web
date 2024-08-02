@@ -43,11 +43,11 @@ export const StyledFooter = () => {
     };
 
     useEffect(() => {
-        api.apiFetchTeddyCloudSettingRaw("internal.version.v_long")
+        api.apiGetTeddyCloudSettingRaw("internal.version.v_long")
             .then((response) => response.text())
             .then((data) => setVersion(data))
             .catch((error) => console.error("Error fetching data:", error));
-        api.apiFetchTeddyCloudSettingRaw("internal.version.v_short")
+        api.apiGetTeddyCloudSettingRaw("internal.version.v_short")
             .then((response) => response.text())
             .then((data) => setVersionShort(data))
             .catch((error) => console.error("Error fetching data:", error));
