@@ -130,7 +130,8 @@ export const TonieboxCard: React.FC<{
         }
 
         const fetchTonieboxLastIp = async () => {
-            const lastIp = await api.apiGetTonieboxLastIp(tonieboxCard.ID);
+            const response = await api.apiGetTeddyCloudSettingRaw("internal.ip", tonieboxCard.ID);
+            const lastIp = await response.text();
             setLastIp(lastIp);
         };
         fetchTonieboxLastIp();

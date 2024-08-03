@@ -32,7 +32,7 @@ export interface ApiUploadCertPostRequest {
  */
 export class TeddyCloudApi extends runtime.BaseAPI {
     /**
-     * get all tonieboxes
+     * get all tonieboxes RAW
      */
     async apiGetTonieboxesIndexRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
@@ -52,231 +52,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * get tonieBoxLastOnline
-     */
-    async apiGetLastOnlineRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
-        return new runtime.JSONApiResponse<string>(response);
-    }
-
-    /**
-     * get tonieBoxLastOnline
-     */
-    async apiGetLastOnline(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<string> {
-        const response = await this.apiGetLastOnlineRaw(overlay, initOverrides);
-        const timestamp = await response.value();
-        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
-        return date.toLocaleString();
-    }
-
-    /**
-     * get tonieBoxStatus
-     */
-    async apiGetTonieboxStatusRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("internal.online", overlay, initOverrides);
-        return new runtime.JSONApiResponse<boolean>(response);
-    }
-
-    /**
-     * get tonieBoxStatus
-     */
-    async apiGetTonieboxStatus(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<boolean> {
-        const response = await this.apiGetTonieboxStatusRaw(overlay, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * get tonieBoxVersion
-     */
-    async apiGetTonieboxVersionRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiGetTeddyCloudSettingRaw(
-            "internal.toniebox_firmware.boxIC",
-            overlay,
-            initOverrides
-        );
-        return new runtime.JSONApiResponse<string>(response);
-    }
-
-    /**
-     * get tonieBoxVersion
-     */
-    async apiGetTonieboxVersion(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<string> {
-        const response = await this.apiGetTonieboxVersionRaw(overlay, initOverrides);
-        return response.value();
-    }
-
-    /**
-     * get last played tonie ruid of toniebox
-     */
-    async apiGetTonieboxLastRUIDRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_ruid", overlay, initOverrides);
-        return new runtime.TextApiResponse(response);
-    }
-
-    /**
-     * get last played tonie ruid of toniebox
-     */
-    async apiGetTonieboxLastRUID(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<string> {
-        const response = await this.apiGetTonieboxLastRUIDRaw(overlay, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * get last played tonie time
-     */
-    async apiGetTonieboxLastRUIDTimeRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_ruid_time", overlay, initOverrides);
-        return new runtime.TextApiResponse(response);
-    }
-
-    /**
-     * get last played tonie time
-     */
-    async apiGetTonieboxLastRUIDTime(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<string> {
-        const response = await this.apiGetTonieboxLastRUIDTimeRaw(overlay, initOverrides);
-        const timestamp = await response.value();
-        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
-        return date.toLocaleString();
-    }
-
-    /**
-     * get last IP of toniebox
-     */
-    async apiGetTonieboxLastIpRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("internal.ip", overlay, initOverrides);
-        return new runtime.TextApiResponse(response);
-    }
-
-    /**
-     * get last IP of toniebox
-     */
-    async apiGetTonieboxLastIp(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<string> {
-        const response = await this.apiGetTonieboxLastIpRaw(overlay, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * get toniebox content dir
-     */
-    async apiGetTonieboxContentDirRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<string>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("core.contentdir", overlay, initOverrides);
-        return new runtime.TextApiResponse(response);
-    }
-
-    /**
-     * get toniebox content dir
-     */
-    async apiGetTonieboxContentDir(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<string> {
-        const response = await this.apiGetTonieboxContentDirRaw(overlay, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * get toniebox API Access
-     */
-    async apiGetTonieboxApiAccessRaw(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("toniebox.api_access", overlay, initOverrides);
-        return new runtime.JSONApiResponse<boolean>(response);
-    }
-
-    /**
-     * get toniebox API access
-     */
-    async apiGetTonieboxApiAccess(
-        overlay: string,
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<boolean> {
-        const response = await this.apiGetTonieboxApiAccessRaw(overlay, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * get core.newBoxesAllowed
-     */
-    async apiGetNewBoxesAllowedRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiGetTeddyCloudSettingRaw("core.allowNewBox", undefined, initOverrides);
-        return new runtime.JSONApiResponse<boolean>(response);
-    }
-
-    /**
-     * get core.newBoxesAllowed
-     */
-    async apiGetNewBoxesAllowed(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
-        const response = await this.apiGetNewBoxesAllowedRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * get security mit alert
-     */
-    async apiGetSecurityMITAlertRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<boolean>> {
-        const response = await this.apiGetTeddyCloudSettingRaw(
-            "internal.security_mit.incident",
-            undefined,
-            initOverrides
-        );
-        return new runtime.JSONApiResponse<boolean>(response);
-    }
-
-    /**
-     * get security mit alert
-     */
-    async apiGetSecurityMITAlert(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
-        const response = await this.apiGetSecurityMITAlertRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * get all tags
+     * get all tags RAW
      */
     async apiGetTagIndexRaw(
         overlay?: string,
@@ -365,7 +141,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * get tag info
+     * get tag info RAW
      */
     async apiGetTagInfoRaw(
         ruid: string,
@@ -385,7 +161,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction
     ): Promise<TonieCardProps> {
         const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides);
-
         const tag = (await response.value()).tagInfo;
 
         // remove this if the api returns already the sourceInfo itself:
@@ -421,6 +196,13 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         return tag;
     }
 
+    /**
+     * get Tags of all Tonieboxes / Overlays
+     *
+     * @param fetchSourceInfo
+     * @param initOverrides
+     * @returns
+     */
     async apiGetTagIndexMergedAllOverlays(
         fetchSourceInfo?: boolean,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
@@ -447,7 +229,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * get all options
+     * get all options RAW
      */
     async apiGetIndexGetRaw(
         overlay: string,
@@ -469,7 +251,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * Cache cloud content on local server
+     * Cache cloud content on local server RAW
      */
     async apiSetCloudCacheContentPostRaw(
         requestParameters: ApiSetCloudCacheContentPostRequest,
@@ -505,7 +287,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * Load all available stats.
+     * Load all available stats RAW
      */
     async apiStatsGetRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
@@ -523,7 +305,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * tell server to write to config file
+     * tell server to write to config file RAW
      */
     async apiTriggerWriteConfigGetRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
@@ -545,7 +327,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * upload certificates
+     * upload certificates RAW
      */
     async apiUploadCertPostRaw(
         requestParameters: ApiUploadCertPostRequest,
@@ -609,6 +391,122 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<string> {
         const response = await this.apiUploadCertPostRaw(requestParameters, overlay, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * get tonieBoxLastOnline
+     */
+    async apiGetLastOnline(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
+        const timestamp = await response.text();
+        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
+        return date.toLocaleString();
+    }
+
+    /**
+     * get tonieBoxStatus
+     */
+    async apiGetTonieboxStatus(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<boolean> {
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.online", overlay, initOverrides);
+        return (await response.text()) === "true" ? true : false;
+    }
+
+    /**
+     * get tonieBoxVersion
+     */
+    async apiGetTonieboxVersion(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTeddyCloudSettingRaw(
+            "internal.toniebox_firmware.boxIC",
+            overlay,
+            initOverrides
+        );
+        return await response.text();
+    }
+
+    /**
+     * get last played tonie ruid of toniebox
+     */
+    async apiGetTonieboxLastRUID(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_ruid", overlay, initOverrides);
+        return await response.text();
+    }
+
+    /**
+     * get last played tonie time
+     */
+    async apiGetTonieboxLastRUIDTime(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.last_ruid_time", overlay, initOverrides);
+        const timestamp = await response.text();
+        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
+        return date.toLocaleString();
+    }
+
+    /**
+     * get last IP of toniebox
+     */
+    async apiGetTonieboxLastIp(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTeddyCloudSettingRaw("internal.ip", overlay, initOverrides);
+        return await response.text();
+    }
+
+    /**
+     * get toniebox content dir
+     */
+    async apiGetTonieboxContentDir(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<string> {
+        const response = await this.apiGetTeddyCloudSettingRaw("core.contentdir", overlay, initOverrides);
+        return await response.text();
+    }
+
+    /**
+     * get toniebox API access
+     */
+    async apiGetTonieboxApiAccess(
+        overlay: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction
+    ): Promise<boolean> {
+        const response = await this.apiGetTeddyCloudSettingRaw("toniebox.api_access", overlay, initOverrides);
+        return (await response.text()) === "true" ? true : false;
+    }
+
+    /**
+     * get core.newBoxesAllowed
+     */
+    async apiGetNewBoxesAllowed(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.apiGetTeddyCloudSettingRaw("core.allowNewBox", undefined, initOverrides);
+        return (await response.text()) === "true" ? true : false;
+    }
+
+    /**
+     * get security mit alert
+     */
+    async apiGetSecurityMITAlert(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
+        const response = await this.apiGetTeddyCloudSettingRaw(
+            "internal.security_mit.incident",
+            undefined,
+            initOverrides
+        );
+        return (await response.text()) === "true" ? true : false;
     }
 
     /**
