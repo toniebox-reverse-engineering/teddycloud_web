@@ -494,7 +494,8 @@
             "upload": "Hochladen",
             "uploadFailed": "Das Hochladen ist fehlgeschlagen",
             "uploadFiles": "Datei(en) auswählen",
-            "uploading": "Lädt hoch",
+            "uploading": "Lädt hoch...",
+            "processing": "Verarbeitung läuft...",
             "uploadSuccessful": "Die Datei wurde der Bibliothek hinzugefügt"
         },
         "infoModal": {

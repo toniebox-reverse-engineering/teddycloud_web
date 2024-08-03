@@ -613,7 +613,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
     /**
      * @description Fetch a setting from TeddyCloud
-     * @author manually created
      *
      * @param settingKey key to fetch
      * @param overlay overlay (optional)
@@ -634,7 +633,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
     /**
      * @description Post a setting to TeddyCloud
-     * @author manually created
      *
      * @param settingKey
      * @param value
@@ -672,7 +670,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
     /**
      * @description Fetch the given API Endpoint from TeddyCloud
-     * @author manually created
      *
      * @param apiPath endpoint path of API
      * @param overlay overlay (optional)
@@ -705,7 +702,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
     /**
      * @description Post properties to tonie content json
-     * @author manually created
      *
      * @param ruid ruid of tonie/tag
      * @param body body of api call, like live=false (optional)
@@ -735,8 +731,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * @description Post data to endpoint path of TeddyCloud api
-     * @author manually created
+     * @description Post simple data to endpoint path of TeddyCloud api
      *
      * @param apiPath endpoint path of API
      * @param body body of api call, like live=false (optional)
@@ -769,6 +764,35 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             },
             initOverrides
         );
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response;
+    }
+
+    /**
+     * @description Post form data (including files) to endpoint path of TeddyCloud api
+     *
+     * @param path
+     * @param body
+     * @param overlay
+     * @param initOverrides
+     * @param headerParameters
+     * @returns
+     */
+    async apiPostTeddyCloudFormDataRaw(
+        path: string,
+        formData: FormData,
+        overlay?: String,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        headerParameters: runtime.HTTPHeaders = {}
+    ): Promise<Response> {
+        // To Do: Replace fetch with request
+        const response = await fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + path, {
+            method: "POST",
+            body: formData,
+        });
+
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }

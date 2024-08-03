@@ -494,6 +494,7 @@
             "uploadFailed": "The upload encountered an error",
             "uploadFiles": "Select File(s)",
             "uploading": "Uploading...",
+            "processing": "Processing...",
             "uploadSuccessful": "The file was added successfully to the library"
         },
         "infoModal": {

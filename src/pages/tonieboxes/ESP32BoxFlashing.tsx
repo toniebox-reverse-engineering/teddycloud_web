@@ -655,10 +655,7 @@ export const ESP32BoxFlashing = () => {
             const formData = new FormData();
             formData.append(sanitizedName, new Blob([flashData.buffer]), sanitizedName);
 
-            const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/uploadFirmware`, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/uploadFirmware`, formData);
 
             if (response.ok && response.status === 200) {
                 const filename = await response.text();

@@ -31,6 +31,7 @@ export const EncoderPage = () => {
 
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
+    const [processing, setProcessing] = useState(false);
     const [tafFilename, setTafFilename] = useState("");
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
@@ -75,12 +76,10 @@ export const EncoderPage = () => {
             path: pathFromNodeId(treeNodeId),
             special: "library",
         };
-
+        setProcessing(true);
         const queryString = createQueryString(queryParams);
-        const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/pcmUpload?${queryString}`, {
-            method: "POST",
-            body: formData,
-        });
+
+        const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
 
         const responseData = await response.text();
         if (response.ok) {
@@ -93,6 +92,7 @@ export const EncoderPage = () => {
             console.log("Upload failed:", responseData);
             message.error(t("tonies.encoder.uploadFailed"));
         }
+        setProcessing(false);
         setUploading(false);
     };
 
@@ -227,7 +227,11 @@ export const EncoderPage = () => {
                                         disabled={fileList.length === 0 || tafFilename === ""}
                                         loading={uploading}
                                     >
-                                        {uploading ? t("tonies.encoder.uploading") : t("tonies.encoder.upload")}
+                                        {uploading
+                                            ? processing
+                                                ? t("tonies.encoder.processing")
+                                                : t("tonies.encoder.uploading")
+                                            : t("tonies.encoder.upload")}
                                     </Button>
                                 </Space>
                             </>
