@@ -74,6 +74,7 @@ export const ChangelogPage = () => {
                 "new /web gui: integrated setting of WiFi credentials in ESP32 Firmware Flashing",
                 "new /web gui: show hint on ESP32 Firmware Flashing page if browser does not support WebSerial",
                 "new /web gui: allow multiselection in file browser for file deletion",
+                "new /web gui: fixed image fetch loop when playing a tonie",
                 "new /web gui: fixed some bugs and minor refactoring",
             ],
             commits: [

@@ -28,7 +28,7 @@ interface AudioPlayerFooterProps {
     onVisibilityChange: () => void;
 }
 
-const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onPlayPause, onVisibilityChange }) => {
+const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { t } = useTranslation();
     const { songImage, songArtist, songTitle, songTracks } = useAudioContext();
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
