@@ -487,6 +487,7 @@
         "encoder": {
             "filename": "Dateiname",
             "navigationTitle": "Audio Encoder",
+            "processing": "Verarbeitung läuft...",
             "removeFile": "Datei entfernen",
             "saveAs": "Datei speichern unter",
             "targetDirectory": "Zielpfad auswählen",
@@ -494,9 +495,10 @@
             "upload": "Hochladen",
             "uploadFailed": "Das Hochladen ist fehlgeschlagen",
             "uploadFiles": "Datei(en) auswählen",
+            "uploadHint": "Ziehe die Audiodateien hier her!",
             "uploading": "Lädt hoch...",
-            "processing": "Verarbeitung läuft...",
-            "uploadSuccessful": "Die Datei wurde der Bibliothek hinzugefügt"
+            "uploadSuccessful": "Die Datei wurde der Bibliothek hinzugefügt",
+            "uploadText": "Klicke oder ziehe die Audiodateien, die du in eine TAF-Datei konvertieren möchtest, zum Hochladen in diesen Bereich"
         },
         "infoModal": {
             "exists": "Existiert:",

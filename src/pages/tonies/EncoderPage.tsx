@@ -1,4 +1,4 @@
-import { FolderOpenOutlined } from "@ant-design/icons";
+import { FolderOpenOutlined, InboxOutlined } from "@ant-design/icons";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -174,12 +174,18 @@ export const EncoderPage = () => {
                     <h1>{t("tonies.encoder.title")}</h1>
                     <Space direction="vertical" style={{ display: "flex" }}>
                         <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
-                            <SortableContext items={fileList.map((i) => i.uid)} strategy={verticalListSortingStrategy}>
-                                <Upload {...props}>
-                                    <Button icon={<FolderOpenOutlined />} disabled={uploading}>
-                                        {t("tonies.encoder.uploadFiles")}
-                                    </Button>
-                                </Upload>
+                            <SortableContext
+                                items={fileList.map((i) => i.uid)}
+                                strategy={verticalListSortingStrategy}
+                                disabled={uploading}
+                            >
+                                <Upload.Dragger {...props} disabled={uploading}>
+                                    <p className="ant-upload-drag-icon">
+                                        <InboxOutlined />
+                                    </p>
+                                    <p className="ant-upload-text">{t("tonies.encoder.uploadText")}</p>
+                                    <p className="ant-upload-hint">{t("tonies.encoder.uploadHint")}</p>
+                                </Upload.Dragger>
                             </SortableContext>
                         </DndContext>
                         {fileList.length > 0 ? (

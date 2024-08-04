@@ -486,6 +486,7 @@
         "encoder": {
             "filename": "Filename",
             "navigationTitle": "Audio Encoder",
+            "processing": "Processing...",
             "removeFile": "Remove file",
             "saveAs": "Save file as",
             "targetDirectory": "Choose target directory",
@@ -493,9 +494,10 @@
             "upload": "Upload",
             "uploadFailed": "The upload encountered an error",
             "uploadFiles": "Select File(s)",
+            "uploadHint": "Drag the audio files here!",
             "uploading": "Uploading...",
-            "processing": "Processing...",
-            "uploadSuccessful": "The file was added successfully to the library"
+            "uploadSuccessful": "The file was added successfully to the library",
+            "uploadText": "Click or drag the audio files you want to convert to a taf file to upload them in this area"
         },
         "infoModal": {
             "exists": "Exists:",

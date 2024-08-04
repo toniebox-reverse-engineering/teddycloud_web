@@ -487,6 +487,7 @@
         "encoder": {
             "filename": "Nom du fichier",
             "navigationTitle": "Encodeur audio",
+            "processing": "Traitement...",
             "removeFile": "Supprimer le fichier",
             "saveAs": "Enregistrer le fichier sous",
             "targetDirectory": "Choisir le répertoire cible",
@@ -494,9 +495,10 @@
             "upload": "Télécharger",
             "uploadFailed": "Le téléchargement a rencontré une erreur",
             "uploadFiles": "Sélectionner le(s) fichier(s)",
+            "uploadHint": "Faites glisser les fichiers audio ici !",
             "uploading": "Téléchargement...",
-            "processing": "Traitement...",
-            "uploadSuccessful": "Le fichier a été ajouté avec succès à la bibliothèque"
+            "uploadSuccessful": "Le fichier a été ajouté avec succès à la bibliothèque",
+            "uploadText": "Cliquez ou faites glisser les fichiers audio que vous souhaitez convertir en fichier taf pour les télécharger dans cette zone"
         },
         "infoModal": {
             "exists": "Existe:",
