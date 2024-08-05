@@ -45,7 +45,7 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
     useEffect(() => {
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
-            const tonieData = (await api.apiGetTagIndexMergedAllOverlays())
+            const tonieData = (await api.apiGetTagIndexMergedAllOverlays(false))
                 .sort((a, b) => {
                     if (Math.random() > 0.5) {
                         return Math.floor(-100 * Math.random());

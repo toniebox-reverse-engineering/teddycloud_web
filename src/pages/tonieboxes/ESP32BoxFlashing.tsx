@@ -24,6 +24,7 @@ import {
     RightOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
+import { isWebSerialSupported } from "../../utils/checkWebSerialSupport";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -111,6 +112,8 @@ export const ESP32BoxFlashing = () => {
         error: false,
     });
 
+    const [isSupported, setIsSupported] = useState(false);
+
     const baudRate = 921600;
     const romBaudRate = 115200;
 
@@ -124,6 +127,10 @@ export const ESP32BoxFlashing = () => {
     }
 
     useEffect(() => {
+        setIsSupported(isWebSerialSupported());
+    }, []);
+
+    useEffect(() => {
         if (window.location.protocol === "https:") {
             setHttpsActive(true);
         } else {
@@ -134,12 +141,7 @@ export const ESP32BoxFlashing = () => {
     useEffect(() => {
         const fetchWebHttpOnly = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.webHttpOnly`,
-                    {
-                        method: "GET",
-                    }
-                );
+                const response = await api.apiGetTeddyCloudSettingRaw("core.webHttpOnly");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -155,12 +157,8 @@ export const ESP32BoxFlashing = () => {
 
         const fetchHttpsClientCertAuth = async () => {
             try {
-                const response = await fetch(
-                    `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/core.webHttpsCertAuth`,
-                    {
-                        method: "GET",
-                    }
-                );
+                const response = await api.apiGetTeddyCloudSettingRaw("core.webHttpsCertAuth");
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -226,22 +224,10 @@ export const ESP32BoxFlashing = () => {
     const handleSaveHttpsSettings = async () => {
         try {
             if (newHttpsClientCertAuth !== httpsClientCertAuth) {
-                await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.webHttpsCertAuth`, {
-                    method: "POST",
-                    body: newHttpsClientCertAuth?.toString(),
-                    headers: {
-                        "Content-Type": "text/plain",
-                    },
-                });
+                api.apiPostTeddyCloudSetting("core.webHttpsCertAuth", newHttpsClientCertAuth);
             }
             if (newWebHttpOnly !== webHttpOnly) {
-                await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/core.webHttpOnly`, {
-                    method: "POST",
-                    body: newWebHttpOnly?.toString(),
-                    headers: {
-                        "Content-Type": "text/plain",
-                    },
-                });
+                api.apiPostTeddyCloudSetting("core.webHttpOnly", newWebHttpOnly);
             }
 
             if (newWebHttpOnly !== webHttpOnly || newHttpsClientCertAuth !== httpsClientCertAuth) {
@@ -251,21 +237,66 @@ export const ESP32BoxFlashing = () => {
                 setWebHttpOnly(newWebHttpOnly);
             }
 
-            const httpsPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS || "";
-            const httpPort = process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP || "";
+            // now the possible automatic redirect
+            const fetchHttpsPort = async (): Promise<string | undefined> => {
+                // this is for develop only as the https port is defined separatly
+                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS) {
+                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS;
+                }
+
+                try {
+                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_port");
+                    return await response.text();
+                } catch (error) {
+                    console.error("Error fetching https port: ", error);
+                }
+            };
+
+            const fetchHttpPort = async (): Promise<string | undefined> => {
+                // this is for develop only as the http port is defined separatly
+                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP) {
+                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP;
+                }
+
+                try {
+                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.http_port");
+                    return await response.text();
+                } catch (error) {
+                    console.error("Error fetching http port: ", error);
+                }
+            };
+
+            const httpsPort = (await fetchHttpsPort()) || "";
+            const httpPort = (await fetchHttpPort()) || "";
+
+            const redirectToHttps = async () => {
+                const currentURL = new URL(window.location.href);
+                currentURL.protocol = "https:";
+                if (currentURL.port) {
+                    currentURL.port = currentURL.port === httpPort ? httpsPort : currentURL.port;
+                } else {
+                    currentURL.port = httpsPort;
+                }
+                const httpsURL = currentURL.toString();
+                window.location.href = httpsURL;
+            };
+
+            const redirectToHttp = async () => {
+                const currentURL = new URL(window.location.href);
+                currentURL.protocol = "http:";
+                if (currentURL.port) {
+                    currentURL.port = currentURL.port === httpsPort ? httpPort : currentURL.port;
+                } else {
+                    currentURL.port = httpPort;
+                }
+                const httpURL = currentURL.toString();
+                window.location.href = httpURL;
+            };
 
             if (!newWebHttpOnly && !newHttpsClientCertAuth && !httpsActive) {
-                // Redirect to the HTTPS URL
-                const httpsURL = `https://${window.location.host.replace(httpPort, httpsPort)}${
-                    window.location.pathname
-                }${window.location.search}`;
-                window.location.replace(httpsURL);
+                redirectToHttps().catch((err) => console.error("Failed to redirect to HTTPS:", err));
             } else if (newWebHttpOnly && httpsActive) {
-                // Redirect to the HTTP URL
-                const httpURL = `http://${window.location.host.replace(httpsPort, httpPort)}${
-                    window.location.pathname
-                }${window.location.search}`;
-                window.location.replace(httpURL);
+                redirectToHttp().catch((err) => console.error("Failed to redirect to HTTP:", err));
             }
         } catch (e) {
             message.error("Error while sending data to server.");
@@ -624,10 +655,7 @@ export const ESP32BoxFlashing = () => {
             const formData = new FormData();
             formData.append(sanitizedName, new Blob([flashData.buffer]), sanitizedName);
 
-            const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/uploadFirmware`, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/uploadFirmware`, formData);
 
             if (response.ok && response.status === 200) {
                 const filename = await response.text();
@@ -686,15 +714,11 @@ export const ESP32BoxFlashing = () => {
             error: false,
         }));
 
-        const response = await fetch(
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}` +
-                (state.wifi_ssid && state.wifi_pass
-                    ? `&wifi_ssid=${state.wifi_ssid}&wifi_pass=${state.wifi_pass}`
-                    : ""),
-            {
-                method: "GET",
-            }
+        const response = await api.apiGetTeddyCloudApiRaw(
+            `/api/patchFirmware?filename=${state.filename}&hostname=${state.hostname}` +
+                (state.wifi_ssid && state.wifi_pass ? `&wifi_ssid=${state.wifi_ssid}&wifi_pass=${state.wifi_pass}` : "")
         );
+
         setState((prevState) => ({
             ...prevState,
             showProgress: false,
@@ -1413,61 +1437,75 @@ mv certs/client/CA.DER certs/client/ca.der`}
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
-                    <Paragraph>
-                        {!httpsActive ? (
+                    {isSupported ? (
+                        <>
+                            <Paragraph>
+                                {!httpsActive ? (
+                                    <Alert
+                                        message={t("tonieboxes.esp32BoxFlashing.attention")}
+                                        description={t("tonieboxes.esp32BoxFlashing.hint")}
+                                        type="warning"
+                                        showIcon
+                                    />
+                                ) : (
+                                    ""
+                                )}
+                            </Paragraph>
+                            {ESP32BoxFlashingForm}
+                            <Divider>{t("tonieboxes.esp32BoxFlashing.httpsSettings")}</Divider>
+                            <Paragraph style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                <Paragraph>
+                                    <Switch
+                                        checked={newWebHttpOnly}
+                                        onChange={handleHttpOnlyChange}
+                                        style={{ marginRight: 8 }}
+                                        disabled={disableButtons}
+                                    />
+                                    <Text>
+                                        {t("tonieboxes.esp32BoxFlashing.enabledWebHttpOnly")}
+                                        {". "}
+                                    </Text>
+                                </Paragraph>
+                                <Paragraph>
+                                    <Switch
+                                        checked={newHttpsClientCertAuth}
+                                        onChange={handleHttpsClientCertAuthChange}
+                                        style={{ marginRight: 8 }}
+                                        disabled={disableButtons}
+                                    />
+                                    <Text>
+                                        {t("tonieboxes.esp32BoxFlashing.enabledWebHttpsClientCertAuth")}
+                                        {". "}
+                                    </Text>
+                                </Paragraph>
+                                <Text>
+                                    {webHttpOnly || httpsClientCertAuth
+                                        ? t("tonieboxes.esp32BoxFlashing.redirectToHttpsAfterDeactivation")
+                                        : t("tonieboxes.esp32BoxFlashing.redirectToHttpAfterActivation")}
+                                </Text>
+                                <Button
+                                    onClick={handleSaveHttpsSettings}
+                                    style={{ margin: 8 }}
+                                    disabled={
+                                        disableButtons ||
+                                        (webHttpOnly === newWebHttpOnly &&
+                                            httpsClientCertAuth === newHttpsClientCertAuth)
+                                    }
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.save")}
+                                </Button>
+                            </Paragraph>
+                        </>
+                    ) : (
+                        <Paragraph>
                             <Alert
                                 message={t("tonieboxes.esp32BoxFlashing.attention")}
-                                description={t("tonieboxes.esp32BoxFlashing.hint")}
+                                description={t("tonieboxes.esp32BoxFlashing.browserNotSupported")}
                                 type="warning"
                                 showIcon
                             />
-                        ) : (
-                            ""
-                        )}
-                    </Paragraph>
-                    {ESP32BoxFlashingForm}
-                    <Divider>{t("tonieboxes.esp32BoxFlashing.httpsSettings")}</Divider>
-                    <Paragraph style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <Paragraph>
-                            <Switch
-                                checked={newWebHttpOnly}
-                                onChange={handleHttpOnlyChange}
-                                style={{ marginRight: 8 }}
-                                disabled={disableButtons}
-                            />
-                            <Text>
-                                {t("tonieboxes.esp32BoxFlashing.enabledWebHttpOnly")}
-                                {". "}
-                            </Text>
                         </Paragraph>
-                        <Paragraph>
-                            <Switch
-                                checked={newHttpsClientCertAuth}
-                                onChange={handleHttpsClientCertAuthChange}
-                                style={{ marginRight: 8 }}
-                                disabled={disableButtons}
-                            />
-                            <Text>
-                                {t("tonieboxes.esp32BoxFlashing.enabledWebHttpsClientCertAuth")}
-                                {". "}
-                            </Text>
-                        </Paragraph>
-                        <Text>
-                            {webHttpOnly || httpsClientCertAuth
-                                ? t("tonieboxes.esp32BoxFlashing.redirectToHttpsAfterDeactivation")
-                                : t("tonieboxes.esp32BoxFlashing.redirectToHttpAfterActivation")}
-                        </Text>
-                        <Button
-                            onClick={handleSaveHttpsSettings}
-                            style={{ margin: 8 }}
-                            disabled={
-                                disableButtons ||
-                                (webHttpOnly === newWebHttpOnly && httpsClientCertAuth === newHttpsClientCertAuth)
-                            }
-                        >
-                            {t("tonieboxes.esp32BoxFlashing.save")}
-                        </Button>
-                    </Paragraph>
+                    )}
                 </StyledContent>
             </StyledLayout>
         </>

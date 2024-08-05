@@ -153,17 +153,8 @@ export const TonieCard: React.FC<{
     };
 
     const handleLiveClick = async () => {
-        const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
-            (overlay ? `?overlay=${overlay}` : "");
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                body: "live=" + !isLive,
-            });
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "live=" + !isLive, overlay);
             setIsLive(!isLive);
             if (!isLive) {
                 message.success(t("tonies.messages.liveEnabled"));
@@ -172,22 +163,13 @@ export const TonieCard: React.FC<{
             }
             fetchUpdatedTonieCard();
         } catch (error) {
-            message.error(t("tonies.messages.sourceCouldNotChangeLiveFlag") + error);
+            message.error(t("tonies.messages.couldNotChangeLiveFlag") + error);
         }
     };
 
     const handleNoCloudClick = async () => {
-        const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
-            (overlay ? `?overlay=${overlay}` : "");
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                body: "nocloud=" + !isNoCloud,
-            });
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "nocloud=" + !isNoCloud, overlay);
             setLocalTonieCard({
                 ...localTonieCard,
                 nocloud: !isNoCloud,
@@ -200,7 +182,7 @@ export const TonieCard: React.FC<{
             }
             fetchUpdatedTonieCard();
         } catch (error) {
-            message.error(t("tonies.messages.sourceCouldNotChangeCloudFlag") + error);
+            message.error(t("tonies.messages.couldNotChangeCloudFlag") + error);
         }
     };
 
@@ -209,7 +191,7 @@ export const TonieCard: React.FC<{
     };
 
     const handleBackgroundDownload = async () => {
-        const url = process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.downloadTriggerUrl;
+        const path = localTonieCard.downloadTriggerUrl;
         setDownloadTriggerUrl("");
         try {
             messageApi.open({
@@ -217,10 +199,7 @@ export const TonieCard: React.FC<{
                 content: t("tonies.messages.downloading"),
                 duration: 0,
             });
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
+            const response = await api.apiGetTeddyCloudApiRaw(path);
 
             // blob used that message is shown after download finished
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -238,22 +217,14 @@ export const TonieCard: React.FC<{
                 type: "error",
                 content: t("tonies.messages.errorDuringDownload") + error,
             });
-            setDownloadTriggerUrl(url);
+            // this could be a kind of problem if auth is necessary for accessing the API
+            setDownloadTriggerUrl(process.env.REACT_APP_TEDDYCLOUD_API_URL + path);
         }
     };
 
     const handleModelSave = async () => {
-        const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
-            (overlay ? `?overlay=${overlay}` : "");
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                body: "tonie_model=" + selectedModel,
-            });
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "tonie_model=" + selectedModel, overlay);
             setActiveModel(selectedModel);
             message.success(
                 t("tonies.messages.setTonieToModelSuccessful", {
@@ -266,17 +237,8 @@ export const TonieCard: React.FC<{
     };
 
     const handleSourceSave = async () => {
-        const url =
-            `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/content/json/set/${localTonieCard.ruid}` +
-            (overlay ? `?overlay=${overlay}` : "");
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                body: "source=" + selectedSource,
-            });
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
+            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "source=" + selectedSource, overlay);
             setActiveSource(selectedSource);
             message.success(
                 t("tonies.messages.setTonieToSourceSuccessful", {

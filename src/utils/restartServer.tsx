@@ -2,12 +2,15 @@ import { message } from "antd";
 import { t } from "i18next";
 import { BoxineApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
+import { TeddyCloudApi } from "../api";
+
+const apiTC = new TeddyCloudApi(defaultAPIConfig());
 
 const api = new BoxineApi(defaultAPIConfig());
 
 export const restartServer = async (redirectToBase = true) => {
     try {
-        const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/triggerRestart`);
+        const response = await apiTC.apiGetTeddyCloudApiRaw(`/api/triggerRestart`);
         const data = await response.text();
 
         if (data.toString() !== "OK") {

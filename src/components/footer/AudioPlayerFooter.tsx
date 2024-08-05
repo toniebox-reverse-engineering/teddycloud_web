@@ -13,21 +13,18 @@ import {
 } from "@ant-design/icons";
 import { useAudioContext } from "../audio/AudioContext";
 import { useEffect, useState } from "react";
-import MediaSession from "@mebtte/react-media-session";
 import { Button, Popover, Progress, Slider, theme } from "antd";
 import { useTranslation } from "react-i18next";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
 interface AudioPlayerFooterProps {
-    /*
     isPlaying?: boolean;
     onPlayPause?: () => void;
     onLast?: () => void;
     onNext?: () => void;
     currentPlayPosition?: string;
     songImage?: string;
-    */
     onVisibilityChange: () => void;
 }
 
@@ -65,7 +62,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         }
     }, [volume, globalAudio]);
 
-    const handleSliderChange = (value: number | [number, number]) => {
+    const handleVolumeSliderChange = (value: number | [number, number]) => {
         if (Array.isArray(value)) {
             return;
         }
@@ -204,7 +201,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         }
         if (i > 1 && i <= songTracks.length) {
             globalAudio.currentTime = songTracks[i - 2] / 3.15;
-        } else if (i === 1) {
+        } else if (i <= 1) {
             globalAudio.currentTime = 0;
         }
     };
@@ -222,29 +219,65 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         }
     };
 
+    // mediasession for lockscreen without re-rendering
+    useEffect(() => {
+        const handlePlayPause = (play: boolean) => {
+            if (play) {
+                globalAudio?.play();
+                setIsPlaying(true);
+            } else {
+                globalAudio?.pause();
+                setIsPlaying(false);
+            }
+        };
+
+        if (navigator.mediaSession) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: songTitle || "",
+                artist: songArtist || "",
+                artwork: [{ src: songImage || "", sizes: "96x96,128x128,192x192,256x256,384x384,512x512" }],
+            });
+
+            navigator.mediaSession.setActionHandler("play", () => {
+                handlePlayPause(true);
+            });
+
+            navigator.mediaSession.setActionHandler("pause", () => {
+                handlePlayPause(false);
+            });
+
+            navigator.mediaSession.setActionHandler("previoustrack", handlePrevTrackButton);
+
+            if (songTracks.length > 0) {
+                navigator.mediaSession.setActionHandler("nexttrack", handleNextTrackButton);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [songTitle, songArtist, songImage, songTracks, globalAudio]);
+
     // rearrange player for mobile
     const isMobile = window.innerWidth <= 768;
     const innerContainerStyle: React.CSSProperties = isMobile
         ? {
-            ...styles.innerContainer,
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-            gap: 8,
-        }
+              ...styles.innerContainer,
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
+              gap: 8,
+          }
         : styles.innerContainer;
     const control2Style: React.CSSProperties = isMobile
         ? {
-            ...styles.controls2,
-            width: "100%",
-        }
+              ...styles.controls2,
+              width: "100%",
+          }
         : styles.controls2;
     const progressBarStyle: React.CSSProperties = isMobile
         ? {
-            ...styles.progressBar,
-            width: 200,
-            marginRight: 0,
-        }
+              ...styles.progressBar,
+              width: 200,
+              marginRight: 0,
+          }
         : styles.progressBar;
 
     useEffect(() => {
@@ -388,7 +421,15 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     ) : (
                         <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
                     )}
-                    <StepForwardOutlined style={styles.controlButton} onClick={handleNextTrackButton} />
+                    <StepForwardOutlined
+                        style={{
+                            ...styles.controlButton,
+                            cursor: songTracks.length === 0 ? "default" : "pointer",
+                            opacity: songTracks.length === 0 ? 0.25 : 1.0,
+                        }}
+                        disabled={songTracks.length === 0}
+                        onClick={handleNextTrackButton}
+                    />
                 </div>
                 <div style={styles.trackInfo}>
                     {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
@@ -439,7 +480,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                             onClick={handleMuteClick}
                         />
                         <div style={styles.volumeSlider}>
-                            <Slider min={0} max={100} value={volume || 0} onChange={handleSliderChange} />
+                            <Slider min={0} max={100} value={volume || 0} onChange={handleVolumeSliderChange} />
                         </div>
                     </div>
                 </div>
@@ -464,20 +505,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             >
                 {minimalPlayer}
                 {normalPlayer}
-                <MediaSession
-                    title={songTitle}
-                    artist={songArtist}
-                    artwork={[
-                        {
-                            src: songImage,
-                            sizes: "256x256,384x384,512x512",
-                        },
-                        {
-                            src: songImage,
-                            sizes: "96x96,128x128,192x192",
-                        },
-                    ]}
-                ></MediaSession>
             </div>
             <audio
                 id="globalAudioPlayer"

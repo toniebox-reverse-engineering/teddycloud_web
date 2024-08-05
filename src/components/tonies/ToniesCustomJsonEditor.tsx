@@ -6,6 +6,11 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 interface ToniesCustomJsonEditorProps {
     open: boolean;
     onClose: () => void;
@@ -81,18 +86,10 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         setJsonData(values);
         setJsonViewerModalOpened(true);
 
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/doSomething/`;
         try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values),
+            await api.apiPostTeddyCloudRaw("/api/doSomething", JSON.stringify(values), undefined, undefined, {
+                "Content-Type": "application/json",
             });
-            if (!response.ok) {
-                throw new Error(response.status + " " + response.statusText);
-            }
 
             // if called from article search, we write back the article number
             if (values.article && setValue) {

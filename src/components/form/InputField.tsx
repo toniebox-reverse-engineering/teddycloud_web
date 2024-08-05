@@ -28,18 +28,8 @@ const InputField = (props: InputFieldProps & InputProps) => {
     const api = new TeddyCloudApi(defaultAPIConfig());
 
     const handleOverlayChange = (checked: boolean) => {
-        const overlayRoute = `?overlay=${overlayId}`;
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${checked ? "set" : "reset"
-            }/${name}${overlayRoute}`;
-
         try {
-            fetch(url, {
-                method: "POST",
-                body: checked ? field.value?.toString() || "" : "",
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiPostTeddyCloudSetting(name, field.value, overlayId, !checked)
                 .then(() => {
                     triggerWriteConfig();
                     if (!checked) {
@@ -58,22 +48,12 @@ const InputField = (props: InputFieldProps & InputProps) => {
     };
 
     const handleFieldSave: MouseEventHandler<HTMLSpanElement> = (event) => {
-        const inputValue = field.value || "";
-
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
         };
 
-        const overlayRoute = overlayed ? `?overlay=` + overlayId : ``;
-
         try {
-            fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/${name}${overlayRoute}`, {
-                method: "POST",
-                body: inputValue,
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiPostTeddyCloudSetting(name, field.value, overlayId)
                 .then(() => {
                     triggerWriteConfig();
                     message.success(t("settings.saved"));
@@ -85,7 +65,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
             message.error("Error while sending data to server.");
         }
 
-        helpers.setValue(inputValue);
+        helpers.setValue(field.value || "");
     };
 
     const handleSaveIconClick: MouseEventHandler<HTMLSpanElement> = (event) => {
@@ -94,7 +74,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
 
     const fetchFieldValue = () => {
         try {
-            fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`)
+            api.apiGetTeddyCloudSettingRaw(name)
                 .then((response) => response.text())
                 .then((value) => {
                     helpers.setValue(value);

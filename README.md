@@ -2,7 +2,7 @@
 
 Welcome to the next generation of the TeddyCloud Administration Frontend!
 
-If you are using this repo the first time, have a look in section General React Information first.
+If you are using this repository for the first time, please refer to the **General React Information** section first.
 
 ## TeddyCloud configuration
 
@@ -27,7 +27,7 @@ PORT_HTTPS and PORT_HTTP should match the ones entered in the package.json. If y
 
 _needed for ESP32 Box Flashing section_
 
-You need to provide certificates for https. Use mkcert. The generated certificates must be stored in projects root path (or adapt the 'env.development.local' file accordingly).
+You need to provide certificates for https. Use for example `mkcert`. The generated certificates must be stored in projects root path (or adapt the `env.development.local` file accordingly).
 
 ```shell
 mkcert -install
@@ -36,7 +36,7 @@ mkcert localhost
 
 You must also allow unsecure content in chrome ([HowTo](https://stackoverflow.com/questions/18321032/how-to-get-chrome-to-allow-mixed-content)) to be able to connect to teddycloud server in https context.
 
-If you don't need the ESP32 Box flashing section working, you can adapt the package.json and change the following:
+If you don't need the ESP32 Box flashing section working, you can adapt the `package.json` and change the following:
 
 ```json
 "scripts": {
@@ -85,7 +85,7 @@ More details about can be found here:
 
 ### Usage of Colors
 
-As we support dark and light theme, we ask you to refrain from using explicit color specifications (#000000) and to use the colors provided instead:
+As we support dark and light theme, we ask you to refrain from using explicit color specifications (`#000000`) and to use the colors provided instead:
 
 If not already added, extend the file with
 
@@ -110,12 +110,29 @@ token.*
 // e.g. token.colorTextDisabled
 ```
 
+### Usage of translations
+
+Please use always `t("...")` instead of hard coded text. Please add the strings in the English, German and French translation Json.
+
+### Adding new API request method
+
+If you need to add a new API request to the TeddyCloud API, please use one of the existing methods in `src/api/apis/TeddyCloudApi.ts`:
+
+-   `apiPostTeddyCloudRaw`
+-   `apiPostTeddyCloudFormDataRaw`
+-   `apiGetTeddyCloudApiRaw`
+-   or any other already existing method in `TeddyCloudApi.ts`
+
+If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`. We prefer to have all API requests centralized in this file. One reason is the upcoming authentication for accessing the API.
+
+## Tips and Tricks
+
 ### Missing img_unknown.png
 
-As the _img_unknown.png_ is part of the teddycloud server, normally it's not shown in the running dev environment. To solve that you can do the following:
+As the `img_unknown.png` is part of the teddycloud server, normally it's not shown in the running dev environment. To solve that you can do the following:
 
-1. Add _img_unknown.png_ to the _\/public_ folder.
-2. Create the file _setupProxy.js_ in _/src_ with the following content:
+1. Add `img_unknown.png` to the `/public` folder.
+2. Create the file `setupProxy.js` in `/src` with the following content:
 
 ```javascript
 const { createProxyMiddleware } = require("http-proxy-middleware");
@@ -145,11 +162,11 @@ module.exports = function (app) {
 
 3. Restart the dev environment.
 
-After these steps, the _img_unknown.png_ should be shown. Both files are already part of the file _.gitignore_ so you do not have to care about accidentially committing them.
+After these steps, the _img_unknown.png_ should be shown. Both files are already part of the file `.gitignore` so you do not have to care about accidentially committing them.
 
-### Use translations
+### Crashing Dev Environment
 
-Please use always t("...") instead of hard coded text. Add the strings both in the german and english translation.json.
+Sometimes it happens, that the dev environment unexpected crashes. Even after a new start it can crash immediatly. To solve that problem, you can delete the `node_modules` folder and call `npm install` again. Then the `node_modules` will be reloaded and you should be able to restart the dev environment.
 
 ## Known Weaknesses
 

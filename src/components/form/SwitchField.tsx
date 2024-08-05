@@ -33,18 +33,8 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
     const api = new TeddyCloudApi(defaultAPIConfig());
 
     const handleOverlayChange = (checked: boolean) => {
-        const overlayRoute = `?overlay=${overlayId}`;
-        const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/${checked ? "set" : "reset"
-            }/${name}${overlayRoute}`;
-
         try {
-            fetch(url, {
-                method: "POST",
-                body: checked ? field.value?.toString() || "" : "",
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiPostTeddyCloudSetting(name, field.value, overlayId, !checked)
                 .then(() => {
                     // Trigger write config only if setting was successfully updated
                     triggerWriteConfig();
@@ -74,7 +64,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
 
     const fetchFieldValue = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/${name}`);
+            const response = await api.apiGetTeddyCloudSettingRaw(name);
             const value = await response.text();
             const newValue = value === "" ? undefined : valueConverter?.fromValueToBoolean(value);
             setValue(newValue);
@@ -100,17 +90,8 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
                 checked={isChecked}
                 disabled={!overlayed && overlayed !== undefined}
                 onChange={(value: boolean) => {
-                    setValue(value);
-                    const overlayRoute = overlayed ? `?overlay=` + overlayId : ``;
-
                     try {
-                        fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/${name}${overlayRoute}`, {
-                            method: "POST",
-                            body: value?.toString(),
-                            headers: {
-                                "Content-Type": "text/plain",
-                            },
-                        })
+                        api.apiPostTeddyCloudSetting(name, value, overlayId)
                             .then(() => {
                                 triggerWriteConfig();
                                 message.success(t("settings.saved"));
@@ -121,6 +102,7 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
                     } catch (e) {
                         message.error("Error while sending data to server.");
                     }
+                    setValue(value);
                 }}
             />
             {overlayed === undefined ? (

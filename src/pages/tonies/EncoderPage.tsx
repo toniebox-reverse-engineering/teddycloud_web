@@ -1,4 +1,4 @@
-import { FolderOpenOutlined } from "@ant-design/icons";
+import { InboxOutlined } from "@ant-design/icons";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -19,6 +19,11 @@ import { MyUploadFile, upload } from "../../utils/encoder";
 import { createQueryString } from "../../utils/url";
 import { DefaultOptionType } from "antd/es/select";
 
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
 
 export const EncoderPage = () => {
@@ -26,6 +31,7 @@ export const EncoderPage = () => {
 
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
+    const [processing, setProcessing] = useState(false);
     const [tafFilename, setTafFilename] = useState("");
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
@@ -70,12 +76,10 @@ export const EncoderPage = () => {
             path: pathFromNodeId(treeNodeId),
             special: "library",
         };
-
+        setProcessing(true);
         const queryString = createQueryString(queryParams);
-        const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/pcmUpload?${queryString}`, {
-            method: "POST",
-            body: formData,
-        });
+
+        const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
 
         const responseData = await response.text();
         if (response.ok) {
@@ -88,6 +92,7 @@ export const EncoderPage = () => {
             console.log("Upload failed:", responseData);
             message.error(t("tonies.encoder.uploadFailed"));
         }
+        setProcessing(false);
         setUploading(false);
     };
 
@@ -118,7 +123,7 @@ export const EncoderPage = () => {
     const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
         new Promise((resolve, reject) => {
             const newPath = pathFromNodeId(id);
-            fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     var list: any[] = data.files;
@@ -169,12 +174,18 @@ export const EncoderPage = () => {
                     <h1>{t("tonies.encoder.title")}</h1>
                     <Space direction="vertical" style={{ display: "flex" }}>
                         <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
-                            <SortableContext items={fileList.map((i) => i.uid)} strategy={verticalListSortingStrategy}>
-                                <Upload {...props}>
-                                    <Button icon={<FolderOpenOutlined />} disabled={uploading}>
-                                        {t("tonies.encoder.uploadFiles")}
-                                    </Button>
-                                </Upload>
+                            <SortableContext
+                                items={fileList.map((i) => i.uid)}
+                                strategy={verticalListSortingStrategy}
+                                disabled={uploading}
+                            >
+                                <Upload.Dragger {...props} disabled={uploading}>
+                                    <p className="ant-upload-drag-icon">
+                                        <InboxOutlined />
+                                    </p>
+                                    <p className="ant-upload-text">{t("tonies.encoder.uploadText")}</p>
+                                    <p className="ant-upload-hint">{t("tonies.encoder.uploadHint")}</p>
+                                </Upload.Dragger>
                             </SortableContext>
                         </DndContext>
                         {fileList.length > 0 ? (
@@ -222,7 +233,11 @@ export const EncoderPage = () => {
                                         disabled={fileList.length === 0 || tafFilename === ""}
                                         loading={uploading}
                                     >
-                                        {uploading ? t("tonies.encoder.uploading") : t("tonies.encoder.upload")}
+                                        {uploading
+                                            ? processing
+                                                ? t("tonies.encoder.processing")
+                                                : t("tonies.encoder.uploading")
+                                            : t("tonies.encoder.upload")}
                                     </Button>
                                 </Space>
                             </>
