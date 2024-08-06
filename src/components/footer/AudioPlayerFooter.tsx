@@ -257,23 +257,19 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [songTitle, songArtist, songImage, songTracks, globalAudio, currentPlayPosition]);
 
     useEffect(() => {
-        if (navigator.mediaSession) {
-            if (globalAudio) {
-                const duration = globalAudio.duration || 0;
-                const position = (currentPlayPosition * duration) / 100 || 0;
-                const playbackRate = globalAudio.playbackRate || 1;
+        if (navigator.mediaSession && globalAudio) {
+            const duration = globalAudio.duration || 0;
+            const position = (currentPlayPosition * duration) / 100 || 0;
+            const playbackRate = globalAudio.playbackRate || 1;
 
-                if (duration > 0) {
-                    try {
-                        navigator.mediaSession.setPositionState({
-                            duration: duration,
-                            position: position,
-                            playbackRate: playbackRate,
-                        });
-                    } catch (e) {
-                        console.error("Error setting media session position state:", e);
-                    }
-                }
+            try {
+                navigator.mediaSession.setPositionState({
+                    duration: duration,
+                    position: position,
+                    playbackRate: playbackRate,
+                });
+            } catch (e) {
+                console.error("Error setting media session position state:", e);
             }
         }
     }, [currentPlayPosition, globalAudio]);
