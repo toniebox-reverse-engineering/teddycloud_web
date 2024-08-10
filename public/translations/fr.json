@@ -490,6 +490,7 @@
             "processing": "Traitement...",
             "removeFile": "Supprimer le fichier",
             "saveAs": "Enregistrer le fichier sous",
+            "sortAlphabetically": "Trier les fichiers par ordre alphabétique",
             "targetDirectory": "Choisir le répertoire cible",
             "title": "Encodeur audio",
             "upload": "Télécharger",

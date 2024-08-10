@@ -490,6 +490,7 @@
             "processing": "Verarbeitung läuft...",
             "removeFile": "Datei entfernen",
             "saveAs": "Datei speichern unter",
+            "sortAlphabetically": "Dateien alphabetisch sortieren",
             "targetDirectory": "Zielpfad auswählen",
             "title": "Audio Encoder",
             "upload": "Hochladen",

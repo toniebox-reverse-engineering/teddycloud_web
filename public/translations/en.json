@@ -489,6 +489,7 @@
             "processing": "Processing...",
             "removeFile": "Remove file",
             "saveAs": "Save file as",
+            "sortAlphabetically": "Sort files alphabetically",
             "targetDirectory": "Choose target directory",
             "title": "Audio Encoder",
             "upload": "Upload",
