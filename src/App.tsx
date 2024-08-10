@@ -31,6 +31,8 @@ import { ESP32BoxFlashing } from "./pages/tonieboxes/ESP32BoxFlashing";
 import { TonieMeetingPage } from "./pages/home/TonieMeeting";
 import { FAQPage } from "./pages/community/FAQPage";
 import { FeaturesPage } from "./pages/home/FeaturesPage";
+import { CC3235BoxFlashingPage } from "./pages/tonieboxes/CC3235BoxFlashing";
+import { CC3200BoxFlashingPage } from "./pages/tonieboxes/CC3200BoxFlashing";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -123,6 +125,8 @@ function App() {
                                     <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
                                     <Route path="/tonieboxes" element={<TonieboxesPage />} />
                                     <Route path="/tonieboxes/esp32boxflashing" element={<ESP32BoxFlashing />} />
+                                    <Route path="/tonieboxes/cc3200boxflashing" element={<CC3200BoxFlashingPage />} />
+                                    <Route path="/tonieboxes/cc3235boxflashing" element={<CC3235BoxFlashingPage />} />
                                     <Route path="/settings" element={<SettingsPage />} />
                                     <Route path="/settings/certificates" element={<CertificatesPage />} />
                                     <Route path="/settings/rtnl" element={<RtnlPage />} />

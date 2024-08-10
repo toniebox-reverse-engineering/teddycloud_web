@@ -24,13 +24,17 @@ export const TonieboxesSubNav = () => {
             label: <Link to="/tonieboxes/esp32boxflashing">{t("tonieboxes.esp32BoxFlashing.navigationTitle")}</Link>,
             icon: React.createElement(DeliveredProcedureOutlined),
         },
+        {
+            key: "cc3200boxflashing",
+            label: <Link to="/tonieboxes/cc3200boxflashing">{t("tonieboxes.cc3200BoxFlashing.navigationTitle")}</Link>,
+            icon: React.createElement(DeliveredProcedureOutlined),
+        },
+        {
+            key: "cc3235boxflashing",
+            label: <Link to="/tonieboxes/cc3235boxflashing">{t("tonieboxes.cc3235BoxFlashing.navigationTitle")}</Link>,
+            icon: React.createElement(DeliveredProcedureOutlined),
+        },
     ];
 
-    return (
-        <StyledSubMenu
-            mode="inline"
-            defaultOpenKeys={["sub"]}
-            items={subnav}
-        />
-    );
+    return <StyledSubMenu mode="inline" defaultOpenKeys={["sub"]} items={subnav} />;
 };

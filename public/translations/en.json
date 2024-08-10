@@ -291,6 +291,22 @@
         "boxWithoutAPIAccessGoToTonieboxes": "If you want to change that, enable API access for the mentioned ",
         "boxWithoutAPIAccessText": "The following Tonieboxes do not have API access enabled:",
         "cancel": "Cancel",
+        "cc3200BoxFlashing": {
+            "hint": "There is currently no direct support of flashing your CC3200 Toniebox with TeddyCloud, but you will find a step by step guidance here:",
+            "hint2": "Please follow then the CC3200 path:",
+            "linkGeneral": "Patching your Toniebox for using with TeddyCloud",
+            "linkSpecific": "CC3200 specific setup",
+            "navigationTitle": "CC3200 Box Flashing",
+            "title": "CC3200 Box Flashing"
+        },
+        "cc3235BoxFlashing": {
+            "hint": "There is currently no direct support of flashing your CC3235 Toniebox with TeddyCloud, but you will find a step by step guidance here:",
+            "hint2": "Please follow then the CC3235 path:",
+            "linkGeneral": "Patching your Toniebox for using with TeddyCloud",
+            "linkSpecific": "CC3235 specific setup",
+            "navigationTitle": "CC3235 Box Flashing",
+            "title": "CC3235 Box Flashing"
+        },
         "confirmDeleteDialog": "Do you really want to delete {{tonieboxToDelete}}?",
         "confirmDeleteModal": "Confirm delete",
         "delete": "Delete",
