@@ -471,6 +471,7 @@
             "create": "Create",
             "createDirectory": "Create New Directory",
             "directoryCreated": "New directory has been created!",
+            "inDirectory": "in directory ",
             "modalTitle": "Create New Directory",
             "placeholder": "Enter the folder name"
         },

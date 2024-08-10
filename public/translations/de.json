@@ -472,6 +472,7 @@
             "create": "Anlegen",
             "createDirectory": "Neuen Ordner anlegen",
             "directoryCreated": "Neuer Ordner wurde angelegt!",
+            "inDirectory": "im Pfad ",
             "modalTitle": "Neuen Ordner anlegen",
             "placeholder": "Gib den Ordnernamen an"
         },

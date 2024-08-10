@@ -1,9 +1,9 @@
-import { InboxOutlined, PlusOutlined } from "@ant-design/icons";
+import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { InputRef, TreeSelectProps, UploadProps } from "antd";
-import { Button, Divider, Input, Space, TreeSelect, Upload, message, Modal } from "antd";
+import { Button, Divider, Input, Space, TreeSelect, Upload, message, Modal, Tooltip } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -227,6 +227,9 @@ export const EncoderPage = () => {
             okText={t("tonies.createDirectory.create")}
             cancelText={t("tonies.createDirectory.cancel")}
         >
+            <p>
+                {t("tonies.createDirectory.inDirectory")} <b>{pathFromNodeId(treeNodeId)}/</b>
+            </p>
             <Input
                 ref={inputRef}
                 autoFocus={true}
@@ -277,7 +280,7 @@ export const EncoderPage = () => {
                                     {t("tonies.encoder.sortAlphabetically")}
                                 </Button>
                                 <Divider />
-                                <div style={{ width: "100%" }}>
+                                <div style={{ width: "100%" }} className="encoder">
                                     <Space direction="vertical" style={{ width: "100%" }}>
                                         <Space.Compact
                                             direction="horizontal"
@@ -292,47 +295,42 @@ export const EncoderPage = () => {
                                             <div style={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
                                                 <Input
                                                     type="text"
-                                                    style={{ maxWidth: 150 }}
+                                                    style={{
+                                                        maxWidth: 180,
+                                                        borderTopRightRadius: 0,
+                                                        borderBottomRightRadius: 0,
+                                                    }}
                                                     disabled
                                                     value={t("tonies.encoder.saveAs")}
                                                 ></Input>
                                                 <TreeSelect
                                                     treeLine
                                                     treeDataSimpleMode
-                                                    style={{ maxWidth: 300 }}
+                                                    style={{
+                                                        maxWidth: 250,
+                                                    }}
                                                     value={treeNodeId}
                                                     dropdownStyle={{
                                                         maxHeight: 400,
                                                         overflow: "auto",
-                                                        zIndex: "10001 !important",
                                                     }}
                                                     onChange={setTreeNodeId}
                                                     loadData={onLoadTreeData}
                                                     treeData={treeData}
-                                                    dropdownRender={(menu) => (
-                                                        <div style={{ position: "relative", paddingBottom: "0px" }}>
-                                                            {menu}
-                                                            <Divider style={{ margin: "8px 0" }} />
-                                                            <Space style={{ padding: "0 8px 4px", width: "100%" }}>
-                                                                <Button
-                                                                    type="text"
-                                                                    icon={<PlusOutlined />}
-                                                                    onClick={openCreateDirectoryModal}
-                                                                    style={{ width: "100%" }}
-                                                                >
-                                                                    {t("tonies.createDirectory.createDirectory")}
-                                                                </Button>
-                                                            </Space>
-                                                        </div>
-                                                    )}
-                                                    getPopupContainer={(triggerNode) =>
-                                                        triggerNode.parentNode as HTMLElement
-                                                    }
                                                 />
+                                                <Tooltip title={t("tonies.createDirectory.createDirectory")}>
+                                                    <Button
+                                                        icon={<FolderAddOutlined />}
+                                                        onClick={openCreateDirectoryModal}
+                                                        style={{ borderRadius: 0 }}
+                                                    ></Button>
+                                                </Tooltip>
                                                 <Input
                                                     addonAfter=".taf"
                                                     required
-                                                    style={{ maxWidth: 300 }}
+                                                    style={{
+                                                        maxWidth: 300,
+                                                    }}
                                                     status={fileList.length > 0 && tafFilename === "" ? "error" : ""}
                                                     onChange={(event) => setTafFilename(event.target.value)}
                                                     disabled={uploading}

@@ -472,6 +472,7 @@
             "create": "Créer",
             "createDirectory": "Créer un nouveau dossier",
             "directoryCreated": "Le nouveau dossier a été créé !",
+            "inDirectory": "dans le dossier ",
             "modalTitle": "Créer un nouveau dossier",
             "placeholder": "Entrez le nom du dossier"
         },
