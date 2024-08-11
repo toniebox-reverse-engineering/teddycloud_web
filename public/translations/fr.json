@@ -366,7 +366,7 @@
                 "hintPatchFlash": "Pour appliquer le flash sélectionné/lu avec le certificat CA de votre TeddyCloud et éventuellement effectuer d'autres ajustements tels que le nom d'hôte de TeddyCloud et/ou les identifiants WiFi, cliquez sur 'Patch' après avoir entré les informations ou passez à l'étape suivante sans patch.",
                 "hintPatchHost": "Entrez le nom d'hôte souhaité pour votre instance TeddyCloud.",
                 "hintPatchWifi": "Entrez optionnellement les identifiants WiFi pour votre Toniebox.",
-                "hintReadESP32ImportFlash": "Déconnecte l'alimentation de ta Toniebox. Assure-toi que l'UART fonctionne en mode 3.3V. Connecte ton UART à ton PC et à la Toniebox. Court-circuite les trous de broche J100. Clique sur \"Lire le Flash\" ou \"Charger le fichier\", puis choisis le port COM. Ensuite, connecte ta Toniebox à l'alimentation et attends que l'étape soit terminée !",
+                "hintReadESP32ImportFlash": "Déconnecte l'alimentation de ta Toniebox. Assure-toi que l'UART fonctionne en mode 3.3V. Connecte ton UART à ton PC et à la Toniebox (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND). Court-circuite les trous de broche J100. Clique sur \"Lire le Flash\" ou \"Charger le fichier\", puis choisis le port COM. Ensuite, connecte ta Toniebox à l'alimentation et attends que l'étape soit terminée !",
                 "hostname": "Nom d'hôte TeddyCloud:",
                 "hostnameSettings": "Nom d'hôte TeddyCloud",
                 "hostnameToLong": "Le nom d'hôte doit être inférieur à 13 caractères.",
