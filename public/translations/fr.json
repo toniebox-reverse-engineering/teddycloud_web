@@ -42,7 +42,7 @@
             "question": "Comment forcer une mise à jour d'un Tonie après avoir attribué du nouveau contenu dans TeddyCloud ?"
         },
         {
-            "answer": "Utilise l'outil Audioencoder et ajoute plusieurs fichiers audio. Chaque fichier sera assigné à une piste distincte dans le fichier TAF créé.",
+            "answer": "Utilisez l'outil Audioencoder et ajoutez jusqu'à 99 fichiers audio. Chaque fichier se verra attribuer sa propre piste dans le fichier TAF créé.",
             "question": "Comment créer un fichier TAF multi-pistes ?"
         },
         {

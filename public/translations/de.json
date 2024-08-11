@@ -42,7 +42,7 @@
             "question": "Wie kann ich ein Update eines Tonies nach der Zuweisung neuer Inhalte in TeddyCloud erzwingen?"
         },
         {
-            "answer": "Verwende das Audioencoder-Tool und füge mehrere Audiodateien hinzu. Jede Datei wird in der erstellten TAF-Datei einem eigenen Track zugewiesen.",
+            "answer": "Verwende das Audioencoder-Tool und füge bis zu 99 Audiodateien hinzu. Jede Datei wird in der erstellten TAF-Datei einem eigenen Track zugewiesen.",
             "question": "Wie kann ich eine Multi-Track-TAF-Datei erstellen?"
         },
         {

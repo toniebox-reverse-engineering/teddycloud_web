@@ -42,7 +42,7 @@
             "question": "How can I force an update of a Tonie after assigning new content in TeddyCloud?"
         },
         {
-            "answer": "Use the Audioencoder tool and add multiple audio files. Each file will be assigned its own track in the created TAF file.",
+            "answer": "Use the Audioencoder tool and add up to 99 audio files. Each file will be assigned its own track in the created TAF file.",
             "question": "How can I create a multi-track TAF file?"
         },
         {
