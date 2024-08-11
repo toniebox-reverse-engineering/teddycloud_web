@@ -114,14 +114,6 @@ code {
     transform-origin: center;
 }
 
-.encoder .ant-select-selector {
-    border-radius: 0 !important;
-}
-
-.encoder input.ant-input.ant-input-outlined:not(.ant-input-disabled) {
-    border-radius: 0 !important;
-}
-
 /* workaround missing good responsiveness of antd tables... */
 
 .showBigDevicesOnly {

@@ -501,7 +501,9 @@
             "title": "Edit model"
         },
         "encoder": {
+            "clearList": "Clear list",
             "filename": "Filename",
+            "maxFiles": "You can only add up to {{maxFiles}} files.",
             "navigationTitle": "Audio Encoder",
             "processing": "Processing...",
             "removeFile": "Remove file",
@@ -515,7 +517,7 @@
             "uploadHint": "Drag the audio files here!",
             "uploading": "Uploading...",
             "uploadSuccessful": "The file was added successfully to the library",
-            "uploadText": "Click or drag the audio files you want to convert to a taf file to upload them in this area"
+            "uploadText": "Click or drag up to {{maxFiles}} audio files you want to convert to a taf file to upload them in this area"
         },
         "infoModal": {
             "exists": "Exists:",

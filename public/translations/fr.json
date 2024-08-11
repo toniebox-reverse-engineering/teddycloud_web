@@ -502,7 +502,9 @@
             "title": "Modifier le modèle"
         },
         "encoder": {
+            "clearList": "Vider la liste",
             "filename": "Nom du fichier",
+            "maxFiles": "Vous ne pouvez ajouter que jusqu'à {{maxFiles}} fichiers.",
             "navigationTitle": "Encodeur audio",
             "processing": "Traitement...",
             "removeFile": "Supprimer le fichier",
@@ -516,7 +518,7 @@
             "uploadHint": "Faites glisser les fichiers audio ici !",
             "uploading": "Téléchargement...",
             "uploadSuccessful": "Le fichier a été ajouté avec succès à la bibliothèque",
-            "uploadText": "Cliquez ou faites glisser les fichiers audio que vous souhaitez convertir en fichier taf pour les télécharger dans cette zone"
+            "uploadText": "Cliquez ou faites glisser jusqu'à {{maxFiles}} fichiers audio que vous souhaitez convertir en fichier taf pour les télécharger dans cette zone"
         },
         "infoModal": {
             "exists": "Existe:",

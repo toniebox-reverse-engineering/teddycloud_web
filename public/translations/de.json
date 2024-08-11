@@ -502,7 +502,9 @@
             "title": "Modell bearbeiten"
         },
         "encoder": {
+            "clearList": "Liste leeren",
             "filename": "Dateiname",
+            "maxFiles": "Du kannst nur maximal {{maxFiles}} Dateien hinzufügen.",
             "navigationTitle": "Audio Encoder",
             "processing": "Verarbeitung läuft...",
             "removeFile": "Datei entfernen",
@@ -516,7 +518,7 @@
             "uploadHint": "Ziehe die Audiodateien hier her!",
             "uploading": "Lädt hoch...",
             "uploadSuccessful": "Die Datei wurde der Bibliothek hinzugefügt",
-            "uploadText": "Klicke oder ziehe die Audiodateien, die du in eine TAF-Datei konvertieren möchtest, zum Hochladen in diesen Bereich"
+            "uploadText": "Klicke oder ziehe bis zu {{maxFiles}} Audiodateien, die du in eine TAF-Datei konvertieren möchtest, zum Hochladen in diesen Bereich"
         },
         "infoModal": {
             "exists": "Existiert:",
