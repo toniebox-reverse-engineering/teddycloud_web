@@ -296,16 +296,16 @@
             "hint2": "Veuillez suivre ensuite le chemin CC3200 :",
             "linkGeneral": "Patch de votre Toniebox pour l'utiliser avec TeddyCloud",
             "linkSpecific": "Configuration spécifique CC3200",
-            "navigationTitle": "CC3200 Box Flashing",
-            "title": "CC3200 Box Flashing"
+            "navigationTitle": "CC3200 Flashage de la boîte",
+            "title": "CC3200 Flashage de la boîte"
         },
         "cc3235BoxFlashing": {
             "hint": "Il n'y a actuellement pas de support direct pour flasher votre CC3235 Toniebox avec TeddyCloud, mais vous trouverez ici un guide étape par étape :",
             "hint2": "Veuillez suivre ensuite le chemin CC3235 :",
             "linkGeneral": "Patch de votre Toniebox pour l'utiliser avec TeddyCloud",
             "linkSpecific": "Configuration spécifique CC3235",
-            "navigationTitle": "CC3235 Box Flashing",
-            "title": "CC3235 Box Flashing"
+            "navigationTitle": "CC3235 Flashage de la boîte",
+            "title": "CC3235 Flashage de la boîte"
         },
         "confirmDeleteDialog": "Voulez-vous vraiment supprimer {{tonieboxToDelete}}?",
         "confirmDeleteModal": "Confirmer la suppression",
@@ -405,11 +405,11 @@
             },
             "hint": "Cette section est uniquement disponible si HTTPS est utilisé. Si vous souhaitez flasher votre ESP32 Toniebox, veuillez temporairement désactiver les options \"Webinterface HTTP only\" et \"HTTPS client cert auth\".",
             "httpsSettings": "Paramètres HTTPS",
-            "navigationTitle": "Flashage de la boîte ESP32",
+            "navigationTitle": "ESP32 Flashage de la boîte",
             "redirectToHttpAfterActivation": "Après avoir activé \"Interface web uniquement HTTP\" et sauvegardé, vous serez redirigé vers la page HTTP (si HTTPS est actif).",
             "redirectToHttpsAfterDeactivation": "Après avoir désactivé \"Webinterface HTTP only\" et \"HTTPS client cert auth\" et enregistré, vous serez redirigé vers la page HTTPS.",
             "save": "Enregistrer les paramètres",
-            "title": "Flashage de la boîte ESP32"
+            "title": "ESP32 Flashage de la boîte"
         },
         "lastOnline": "dernière connexion",
         "lastPlayedTonie": "Dernier Tonie joué: ",

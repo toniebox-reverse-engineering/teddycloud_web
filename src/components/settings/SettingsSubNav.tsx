@@ -56,28 +56,33 @@ export const SettingsSubNav = () => {
             key: "general",
             label: <Link to="/settings">{t("settings.general.navigationTitle")}</Link>,
             icon: React.createElement(SettingOutlined),
+            title: t("settings.general.navigationTitle"),
         },
         {
             key: "certificates",
             label: <Link to="/settings/certificates">{t("settings.certificates.navigationTitle")}</Link>,
             icon: React.createElement(SafetyCertificateOutlined),
+            title: t("settings.certificates.navigationTitle"),
         },
         {
             key: "rtnl",
             label: <Link to="/settings/rtnl">{t("settings.rtnl.navigationTitle")}</Link>,
             icon: React.createElement(FileSearchOutlined),
+            title: t("settings.rtnl.navigationTitle"),
         },
         {
             key: "update_toniesJson",
             label: <label style={{ cursor: "pointer" }}>{t("settings.updateToniesJson")}</label>,
             onClick: handleUpdateToniesJson,
             icon: React.createElement(SyncOutlined),
+            title: t("settings.updateToniesJson"),
         },
         {
             key: "restart_server",
             label: <label style={{ cursor: "pointer" }}>{t("settings.restartServer")}</label>,
             onClick: handleRestartServer,
             icon: React.createElement(PoweroffOutlined),
+            title: t("settings.restartServer"),
         },
     ];
 
