@@ -120,6 +120,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setCurrentPlayPosition((audioElement.currentTime / globalAudio.duration) * 100);
         setCurrentPlayPositionFormat(`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
     };
+
     useEffect(() => {
         const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
         globalAudio.addEventListener("loadedmetadata", () => {
@@ -254,6 +255,24 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [songTitle, songArtist, songImage, songTracks, globalAudio]);
+
+    useEffect(() => {
+        if (navigator.mediaSession && globalAudio) {
+            const duration = globalAudio.duration || 0;
+            const position = (currentPlayPosition * duration) / 100 || 0;
+            const playbackRate = globalAudio.playbackRate || 1;
+
+            try {
+                navigator.mediaSession.setPositionState({
+                    duration: duration,
+                    position: position,
+                    playbackRate: playbackRate,
+                });
+            } catch (e) {
+                console.error("Error setting media session position state:", e);
+            }
+        }
+    }, [currentPlayPosition, globalAudio]);
 
     // rearrange player for mobile
     const isMobile = window.innerWidth <= 768;

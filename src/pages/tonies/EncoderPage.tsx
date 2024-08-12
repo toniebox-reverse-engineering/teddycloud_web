@@ -1,10 +1,10 @@
-import { InboxOutlined } from "@ant-design/icons";
+import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { TreeSelectProps, UploadProps } from "antd";
-import { Button, Divider, Input, Space, TreeSelect, Upload, message } from "antd";
-import { useState } from "react";
+import type { InputRef, TreeSelectProps, UploadProps } from "antd";
+import { Button, Divider, Input, Space, TreeSelect, Upload, message, Modal, Tooltip } from "antd";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
     HiddenDesktop,
@@ -26,8 +26,11 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
 
+const MAX_FILES = 99;
+
 export const EncoderPage = () => {
     const { t } = useTranslation();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
@@ -35,6 +38,25 @@ export const EncoderPage = () => {
     const [tafFilename, setTafFilename] = useState("");
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
+    const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState(false);
+    const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
+    const inputRef = useRef<InputRef>(null);
+    let uploadedFiles = 0;
+
+    useEffect(() => {
+        if (isCreateDirectoryModalOpen) {
+            setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            }, 0);
+        }
+    }, [isCreateDirectoryModalOpen]);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        uploadedFiles = fileList.length;
+    }, [fileList]);
 
     const sensor = useSensor(PointerSensor, {
         activationConstraint: { distance: 10 },
@@ -51,7 +73,17 @@ export const EncoderPage = () => {
     };
 
     const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
-        setFileList(newFileList as MyUploadFile[]);
+        uploadedFiles++;
+        if (uploadedFiles > MAX_FILES) {
+            messageApi.open({
+                type: "error",
+                content: t("tonies.encoder.maxFiles", {
+                    maxFiles: MAX_FILES,
+                }),
+            });
+        }
+
+        setFileList(newFileList.slice(0, MAX_FILES) as MyUploadFile[]);
     };
 
     const onRemove = (file: MyUploadFile) => {
@@ -154,8 +186,86 @@ export const EncoderPage = () => {
         return pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
     };
 
+    const sortFileListAlphabetically = () => {
+        setFileList((prev) => [...prev].sort((a, b) => a.name.localeCompare(b.name)));
+    };
+
+    const clearFileList = () => {
+        setFileList([]);
+    };
+
+    const openCreateDirectoryModal = () => {
+        setCreateDirectoryModalOpen(true);
+    };
+
+    const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setInputValueCreateDirectory(e.target.value);
+    };
+
+    const createDirectory = () => {
+        const path = pathFromNodeId(treeNodeId);
+        const newNodeId = `${treeNodeId}.${treeData.length}`; // Generate a unique ID for the new node
+        const newDir = {
+            id: newNodeId,
+            pId: treeNodeId,
+            value: newNodeId,
+            title: inputValueCreateDirectory,
+        };
+        try {
+            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, path + "/" + inputValueCreateDirectory)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((text) => {
+                    if (text !== "OK") {
+                        throw new Error(text);
+                    }
+                    // Update the tree data and select the new directory
+                    setTreeData([...treeData, newDir]);
+                    setTreeNodeId(newNodeId);
+
+                    message.success(t("tonies.createDirectory.directoryCreated"));
+                    setCreateDirectoryModalOpen(false);
+                    setInputValueCreateDirectory("");
+                })
+                .catch((error) => {
+                    message.error(error.message);
+                });
+        } catch (error) {
+            message.error(`Error while creating directory`);
+        }
+    };
+
+    const closeCreateDirectoryModal = () => {
+        setCreateDirectoryModalOpen(false);
+        setInputValueCreateDirectory("");
+    };
+
+    const createDirectoryModal = (
+        <Modal
+            title={t("tonies.createDirectory.modalTitle")}
+            open={isCreateDirectoryModalOpen}
+            onCancel={closeCreateDirectoryModal}
+            onOk={createDirectory}
+            okText={t("tonies.createDirectory.create")}
+            cancelText={t("tonies.createDirectory.cancel")}
+        >
+            <p>
+                {t("tonies.createDirectory.inDirectory")} <b>{pathFromNodeId(treeNodeId)}/</b>
+            </p>
+            <Input
+                ref={inputRef}
+                autoFocus={true}
+                placeholder={t("tonies.createDirectory.placeholder")}
+                value={inputValueCreateDirectory}
+                onChange={handleCreateDirectoryInputChange}
+            />
+        </Modal>
+    );
+
     return (
         <>
+            {contextHolder}
             <StyledSider>
                 <ToniesSubNav />
             </StyledSider>
@@ -183,63 +293,105 @@ export const EncoderPage = () => {
                                     <p className="ant-upload-drag-icon">
                                         <InboxOutlined />
                                     </p>
-                                    <p className="ant-upload-text">{t("tonies.encoder.uploadText")}</p>
+                                    <p className="ant-upload-text">
+                                        {t("tonies.encoder.uploadText", {
+                                            maxFiles: MAX_FILES,
+                                        })}
+                                    </p>
                                     <p className="ant-upload-hint">{t("tonies.encoder.uploadHint")}</p>
                                 </Upload.Dragger>
                             </SortableContext>
                         </DndContext>
                         {fileList.length > 0 ? (
                             <>
-                                <Divider />
                                 <Space
-                                    direction="vertical"
+                                    direction="horizontal"
                                     style={{
+                                        width: "100%",
                                         display: "flex",
-                                        alignItems: "flex-end",
+                                        alignItems: "flex-start",
                                     }}
                                 >
-                                    <Space.Compact
-                                        direction="horizontal"
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "flex-end",
-                                        }}
-                                    >
-                                        <Input type="text" disabled value={t("tonies.encoder.saveAs")}></Input>
-                                        <TreeSelect
-                                            treeLine
-                                            treeDataSimpleMode
-                                            style={{ width: "100%" }}
-                                            value={treeNodeId}
-                                            dropdownStyle={{
-                                                maxHeight: 400,
-                                                overflow: "auto",
-                                            }}
-                                            onChange={setTreeNodeId}
-                                            loadData={onLoadTreeData}
-                                            treeData={treeData}
-                                        />
-                                        <Input
-                                            addonAfter=".taf"
-                                            required
-                                            status={fileList.length > 0 && tafFilename === "" ? "error" : ""}
-                                            onChange={(event) => setTafFilename(event.target.value)}
-                                            disabled={uploading}
-                                        />
-                                    </Space.Compact>
-                                    <Button
-                                        type="primary"
-                                        onClick={handleUpload}
-                                        disabled={fileList.length === 0 || tafFilename === ""}
-                                        loading={uploading}
-                                    >
-                                        {uploading
-                                            ? processing
-                                                ? t("tonies.encoder.processing")
-                                                : t("tonies.encoder.uploading")
-                                            : t("tonies.encoder.upload")}
+                                    <Button type="default" onClick={sortFileListAlphabetically}>
+                                        {t("tonies.encoder.sortAlphabetically")}
+                                    </Button>
+                                    <Button type="default" style={{ marginRight: 16 }} onClick={clearFileList}>
+                                        {t("tonies.encoder.clearList")}
                                     </Button>
                                 </Space>
+                                <Divider />
+                                <div style={{ width: "100%" }} className="encoder">
+                                    <Space direction="vertical" style={{ width: "100%" }}>
+                                        <Space.Compact
+                                            direction="horizontal"
+                                            style={{
+                                                width: "100%",
+                                                marginBottom: "16px",
+                                                display: "flex",
+                                                alignItems: "flex-end",
+                                                justifyContent: "flex-end",
+                                            }}
+                                        >
+                                            <Input
+                                                type="text"
+                                                style={{
+                                                    maxWidth: 180,
+                                                    borderTopRightRadius: 0,
+                                                    borderBottomRightRadius: 0,
+                                                }}
+                                                disabled
+                                                value={t("tonies.encoder.saveAs")}
+                                            ></Input>
+                                            <TreeSelect
+                                                treeLine
+                                                treeDataSimpleMode
+                                                style={{
+                                                    maxWidth: 250,
+                                                }}
+                                                value={treeNodeId}
+                                                dropdownStyle={{
+                                                    maxHeight: 400,
+                                                    overflow: "auto",
+                                                }}
+                                                onChange={setTreeNodeId}
+                                                loadData={onLoadTreeData}
+                                                treeData={treeData}
+                                            />
+                                            <Tooltip title={t("tonies.createDirectory.createDirectory")}>
+                                                <Button
+                                                    icon={<FolderAddOutlined />}
+                                                    onClick={openCreateDirectoryModal}
+                                                    style={{ borderRadius: 0 }}
+                                                ></Button>
+                                            </Tooltip>
+                                            <Input
+                                                addonAfter=".taf"
+                                                required
+                                                style={{
+                                                    maxWidth: 300,
+                                                }}
+                                                status={fileList.length > 0 && tafFilename === "" ? "error" : ""}
+                                                onChange={(event) => setTafFilename(event.target.value)}
+                                                disabled={uploading}
+                                            />
+                                        </Space.Compact>
+
+                                        <Space.Compact style={{ display: "flex", justifyContent: "flex-end" }}>
+                                            <Button
+                                                type="primary"
+                                                onClick={handleUpload}
+                                                disabled={fileList.length === 0 || tafFilename === ""}
+                                                loading={uploading}
+                                            >
+                                                {uploading
+                                                    ? processing
+                                                        ? t("tonies.encoder.processing")
+                                                        : t("tonies.encoder.uploading")
+                                                    : t("tonies.encoder.upload")}
+                                            </Button>
+                                        </Space.Compact>
+                                    </Space>
+                                </div>
                             </>
                         ) : (
                             <></>
@@ -247,6 +399,7 @@ export const EncoderPage = () => {
                     </Space>
                 </StyledContent>
             </StyledLayout>
+            {createDirectoryModal}
         </>
     );
 };

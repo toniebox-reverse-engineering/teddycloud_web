@@ -14,16 +14,19 @@ export const HomeSubNav = () => {
             key: "home",
             label: <Link to="/">{t("home.navigationTitle")}</Link>,
             icon: React.createElement(HomeOutlined),
+            title: t("home.navigationTitle"),
         },
         {
             key: "features",
             label: <Link to="/home/features">{t("home.features.navigationTitle")}</Link>,
             icon: React.createElement(ContainerOutlined),
+            title: t("home.features.navigationTitle"),
         },
         {
             key: "statistics",
             label: <Link to="/home/stats">{t("home.stats.navigationTitle")}</Link>,
             icon: React.createElement(WifiOutlined),
+            title: t("home.stats.navigationTitle"),
         },
         {
             key: "hiddenMeeting",
@@ -31,11 +34,5 @@ export const HomeSubNav = () => {
         },
     ];
 
-    return (
-        <StyledSubMenu
-            mode="inline"
-            defaultOpenKeys={["sub"]}
-            items={subnav}
-        />
-    );
+    return <StyledSubMenu mode="inline" defaultOpenKeys={["sub"]} items={subnav} />;
 };
