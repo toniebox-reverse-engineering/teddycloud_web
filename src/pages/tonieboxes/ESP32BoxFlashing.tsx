@@ -157,7 +157,7 @@ export const ESP32BoxFlashing = () => {
 
         const fetchHttpsClientCertAuth = async () => {
             try {
-                const response = await api.apiGetTeddyCloudSettingRaw("core.webHttpsCertAuth");
+                const response = await api.apiGetTeddyCloudSettingRaw("core.boxCertAuth");
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -224,7 +224,7 @@ export const ESP32BoxFlashing = () => {
     const handleSaveHttpsSettings = async () => {
         try {
             if (newHttpsClientCertAuth !== httpsClientCertAuth) {
-                api.apiPostTeddyCloudSetting("core.webHttpsCertAuth", newHttpsClientCertAuth);
+                api.apiPostTeddyCloudSetting("core.boxCertAuth", newHttpsClientCertAuth);
             }
             if (newWebHttpOnly !== webHttpOnly) {
                 api.apiPostTeddyCloudSetting("core.webHttpOnly", newWebHttpOnly);
