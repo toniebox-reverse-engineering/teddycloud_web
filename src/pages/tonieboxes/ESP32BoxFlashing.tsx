@@ -3,7 +3,7 @@ import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Divider, Form, Input, Progress, Row, Steps, Switch, Typography, message } from "antd";
+import { Alert, Button, Col, Divider, Form, Input, Progress, Row, Steps, Typography } from "antd";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import {
@@ -22,6 +22,7 @@ import {
     FileAddOutlined,
     LeftOutlined,
     RightOutlined,
+    SyncOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
 import { isWebSerialSupported } from "../../utils/checkWebSerialSupport";
@@ -68,14 +69,8 @@ export const ESP32BoxFlashing = () => {
     const currentLanguage = i18n.language;
 
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const [webHttpOnly, setWebHttpOnly] = useState(false);
-    const [httpsClientCertAuth, setHttpsClientCertAuth] = useState(false);
-    const [newWebHttpOnly, setNewWebHttpOnly] = useState(false);
-    const [newHttpsClientCertAuth, setNewHttpsClientCertAuth] = useState(false);
-
     const [httpsActive, setHttpsActive] = useState(false);
-
+    const [httpsUrl, setHttpsUrl] = useState<string>("");
     const [disableButtons, setDisableButtons] = useState<boolean>(false);
 
     const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState<boolean>(false);
@@ -132,46 +127,55 @@ export const ESP32BoxFlashing = () => {
     }, []);
 
     useEffect(() => {
-        if (window.location.protocol === "https:") {
-            setHttpsActive(true);
-        } else {
+        if (window.location.protocol !== "https:") {
             setHttpsActive(false);
+            const fetchHttpsPort = async (): Promise<string | undefined> => {
+                // this is for develop only as the https port is defined separatly
+                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS) {
+                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS;
+                }
+
+                try {
+                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_port");
+                    return await response.text();
+                } catch (error) {
+                    console.error("Error fetching https port: ", error);
+                }
+            };
+
+            const fetchHttpPort = async (): Promise<string | undefined> => {
+                // this is for develop only as the http port is defined separatly
+                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP) {
+                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP;
+                }
+
+                try {
+                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.http_port");
+                    return await response.text();
+                } catch (error) {
+                    console.error("Error fetching http port: ", error);
+                }
+            };
+
+            const getHttpsUrl = async () => {
+                const httpsPort = (await fetchHttpsPort()) || "";
+                const httpPort = (await fetchHttpPort()) || "";
+
+                const currentURL = new URL(window.location.href);
+                currentURL.protocol = "https:";
+                if (currentURL.port) {
+                    currentURL.port = currentURL.port === httpPort ? httpsPort : currentURL.port;
+                } else {
+                    currentURL.port = httpsPort;
+                }
+
+                setHttpsUrl(currentURL.toString());
+            };
+
+            getHttpsUrl();
+        } else {
+            setHttpsActive(true);
         }
-    }, []);
-
-    useEffect(() => {
-        const fetchWebHttpOnly = async () => {
-            try {
-                const response = await api.apiGetTeddyCloudSettingRaw("core.webHttpOnly");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setWebHttpOnly(data.toString() === "true");
-                setNewWebHttpOnly(data.toString() === "true");
-            } catch (error) {
-                console.error("Error fetching web Http only: ", error);
-            }
-        };
-
-        fetchWebHttpOnly();
-
-        const fetchHttpsClientCertAuth = async () => {
-            try {
-                const response = await api.apiGetTeddyCloudSettingRaw("core.webHttpsCertAuth");
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setHttpsClientCertAuth(data.toString() === "true");
-                setNewHttpsClientCertAuth(data.toString() === "true");
-            } catch (error) {
-                console.error("Error fetching  Https Client Cert Auth: ", error);
-            }
-        };
-
-        fetchHttpsClientCertAuth();
     }, []);
 
     useEffect(() => {
@@ -205,102 +209,9 @@ export const ESP32BoxFlashing = () => {
         setDisableButtons(state.actionInProgress);
     }, [state.actionInProgress]);
 
-    // http / https stuff
-    const triggerWriteConfig = async () => {
-        try {
-            await api.apiTriggerWriteConfigGet();
-        } catch (error) {
-            message.error("Error while saving config to file.");
-        }
-    };
-
-    const handleHttpOnlyChange = (value: any) => {
-        setNewWebHttpOnly(value);
-    };
-
-    const handleHttpsClientCertAuthChange = (value: any) => {
-        setNewHttpsClientCertAuth(value);
-    };
-
-    const handleSaveHttpsSettings = async () => {
-        try {
-            if (newHttpsClientCertAuth !== httpsClientCertAuth) {
-                api.apiPostTeddyCloudSetting("core.webHttpsCertAuth", newHttpsClientCertAuth);
-            }
-            if (newWebHttpOnly !== webHttpOnly) {
-                api.apiPostTeddyCloudSetting("core.webHttpOnly", newWebHttpOnly);
-            }
-
-            if (newWebHttpOnly !== webHttpOnly || newHttpsClientCertAuth !== httpsClientCertAuth) {
-                triggerWriteConfig();
-
-                setHttpsClientCertAuth(newHttpsClientCertAuth);
-                setWebHttpOnly(newWebHttpOnly);
-            }
-
-            // now the possible automatic redirect
-            const fetchHttpsPort = async (): Promise<string | undefined> => {
-                // this is for develop only as the https port is defined separatly
-                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS) {
-                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS;
-                }
-
-                try {
-                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_port");
-                    return await response.text();
-                } catch (error) {
-                    console.error("Error fetching https port: ", error);
-                }
-            };
-
-            const fetchHttpPort = async (): Promise<string | undefined> => {
-                // this is for develop only as the http port is defined separatly
-                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP) {
-                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP;
-                }
-
-                try {
-                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.http_port");
-                    return await response.text();
-                } catch (error) {
-                    console.error("Error fetching http port: ", error);
-                }
-            };
-
-            const httpsPort = (await fetchHttpsPort()) || "";
-            const httpPort = (await fetchHttpPort()) || "";
-
-            const redirectToHttps = async () => {
-                const currentURL = new URL(window.location.href);
-                currentURL.protocol = "https:";
-                if (currentURL.port) {
-                    currentURL.port = currentURL.port === httpPort ? httpsPort : currentURL.port;
-                } else {
-                    currentURL.port = httpsPort;
-                }
-                const httpsURL = currentURL.toString();
-                window.location.href = httpsURL;
-            };
-
-            const redirectToHttp = async () => {
-                const currentURL = new URL(window.location.href);
-                currentURL.protocol = "http:";
-                if (currentURL.port) {
-                    currentURL.port = currentURL.port === httpsPort ? httpPort : currentURL.port;
-                } else {
-                    currentURL.port = httpPort;
-                }
-                const httpURL = currentURL.toString();
-                window.location.href = httpURL;
-            };
-
-            if (!newWebHttpOnly && !newHttpsClientCertAuth && !httpsActive) {
-                redirectToHttps().catch((err) => console.error("Failed to redirect to HTTPS:", err));
-            } else if (newWebHttpOnly && httpsActive) {
-                redirectToHttp().catch((err) => console.error("Failed to redirect to HTTP:", err));
-            }
-        } catch (e) {
-            message.error("Error while sending data to server.");
+    const openHttpsUrl = () => {
+        if (httpsUrl) {
+            window.location.href = httpsUrl;
         }
     };
 
@@ -1306,157 +1217,150 @@ mv certs/client/CA.DER certs/client/ca.der`}
         </Button>
     );
 
-    const ESP32BoxFlashingForm = httpsActive ? (
-        isSupported ? (
-            <>
-                <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
-                <ConfirmationDialog
-                    title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
-                    open={isConfirmFlashModalOpen}
-                    okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
-                    cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
-                    content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
-                    contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
-                    handleOk={handleConfirmFlash}
-                    handleCancel={handleCancelFlash}
-                />
-                <Steps current={currentStep}>
-                    {steps.map((step, index) => (
-                        <Step
-                            key={index}
-                            title={step.title}
-                            status={
-                                index === currentStep && index === steps.length - 1
-                                    ? "finish"
-                                    : index === currentStep
-                                    ? state.error
-                                        ? "error"
-                                        : "process"
-                                    : index < currentStep
-                                    ? "finish"
-                                    : "wait"
-                            }
-                            className={
-                                index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : ""
-                            }
-                        />
-                    ))}
-                </Steps>
-                <div style={{ marginTop: 24 }}>{content[currentStep]}</div>
-                <div style={{ marginTop: 24, marginBottom: 24 }}>
-                    {currentStep === 0 && (
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <div></div>
-                            <div style={{ display: "flex", gap: 8 }}>
-                                <Button icon={<FileAddOutlined />} disabled={disableButtons} onClick={() => loadFile()}>
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
-                                </Button>
-                                <Button
-                                    icon={<DownloadOutlined />}
-                                    disabled={disableButtons}
-                                    type="primary"
-                                    onClick={() => readFirmware()}
-                                >
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.readFlash")}
-                                </Button>
-                            </div>
-                            <Button
-                                icon={<RightOutlined />}
-                                iconPosition="end"
-                                disabled={(!state.proceed && !state.filename) || disableButtons}
-                                onClick={() => next()}
-                            >
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
-                            </Button>
-                        </div>
-                    )}
-                    {currentStep === 1 && (
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            {previousButton}
-                            <div style={{ display: "flex", gap: 8 }}>
-                                <Button
-                                    icon={<CodeOutlined />}
-                                    disabled={disableButtons}
-                                    type="primary"
-                                    onClick={() => patchImage()}
-                                >
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.patchImage")}
-                                </Button>
-                            </div>
-                            <Button
-                                icon={<RightOutlined />}
-                                iconPosition="end"
-                                disabled={disableButtons || !state.showFlash}
-                                onClick={() => next()}
-                            >
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
-                            </Button>
-                        </div>
-                    )}
-                    {currentStep === 2 && (
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            {previousButton}
-                            <div style={{ display: "flex", gap: 8 }}>
-                                <Button
-                                    icon={<UploadOutlined />}
-                                    disabled={disableButtons}
-                                    type="primary"
-                                    onClick={() => setIsConfirmFlashModalOpen(true)}
-                                >
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
-                                </Button>
-                            </div>
-                            <div></div>
-                        </div>
-                    )}
-                    {currentStep === 3 && (
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            {previousButton}
-                            <div></div>
-                            <div></div>
-                        </div>
-                    )}
-                    {contentRaw}
-                </div>
-            </>
-        ) : (
-            <>
-                {" "}
-                <Paragraph>
-                    <Alert
-                        message={t("tonieboxes.esp32BoxFlashing.attention")}
-                        description={t("tonieboxes.esp32BoxFlashing.browserNotSupported")}
-                        type="warning"
-                        showIcon
+    const ESP32BoxFlashingForm = isSupported ? (
+        <>
+            <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
+            <ConfirmationDialog
+                title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
+                open={isConfirmFlashModalOpen}
+                okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
+                cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
+                content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
+                contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
+                handleOk={handleConfirmFlash}
+                handleCancel={handleCancelFlash}
+            />
+            <Steps current={currentStep}>
+                {steps.map((step, index) => (
+                    <Step
+                        key={index}
+                        title={step.title}
+                        status={
+                            index === currentStep && index === steps.length - 1
+                                ? "finish"
+                                : index === currentStep
+                                ? state.error
+                                    ? "error"
+                                    : "process"
+                                : index < currentStep
+                                ? "finish"
+                                : "wait"
+                        }
+                        className={index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : ""}
                     />
-                </Paragraph>
-                <Paragraph>
-                    {t(`tonieboxes.esp32BoxFlashing.hintWiki`)}
-                    <ul>
-                        <li>
-                            <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
-                                {t(`tonieboxes.esp32BoxFlashing.linkWikiGeneral`)}
-                            </Link>
-                        </li>
-                    </ul>
-                </Paragraph>
-                <Paragraph>
-                    {t(`tonieboxes.esp32BoxFlashing.hintWiki2`)}
-                    <ul>
-                        <li>
-                            <Link
-                                to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/dump-certs/esp32/"
-                                target="_blank"
+                ))}
+            </Steps>
+            <div style={{ marginTop: 24 }}>{content[currentStep]}</div>
+            <div style={{ marginTop: 24, marginBottom: 24 }}>
+                {currentStep === 0 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div></div>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Button icon={<FileAddOutlined />} disabled={disableButtons} onClick={() => loadFile()}>
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
+                            </Button>
+                            <Button
+                                icon={<DownloadOutlined />}
+                                disabled={disableButtons}
+                                type="primary"
+                                onClick={() => readFirmware()}
                             >
-                                {t(`tonieboxes.esp32BoxFlashing.linkWikiSpecific`)}
-                            </Link>
-                        </li>
-                    </ul>
-                </Paragraph>
-            </>
-        )
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.readFlash")}
+                            </Button>
+                        </div>
+                        <Button
+                            icon={<RightOutlined />}
+                            iconPosition="end"
+                            disabled={(!state.proceed && !state.filename) || disableButtons}
+                            onClick={() => next()}
+                        >
+                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
+                        </Button>
+                    </div>
+                )}
+                {currentStep === 1 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {previousButton}
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Button
+                                icon={<CodeOutlined />}
+                                disabled={disableButtons}
+                                type="primary"
+                                onClick={() => patchImage()}
+                            >
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.patchImage")}
+                            </Button>
+                        </div>
+                        <Button
+                            icon={<RightOutlined />}
+                            iconPosition="end"
+                            disabled={disableButtons || !state.showFlash}
+                            onClick={() => next()}
+                        >
+                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
+                        </Button>
+                    </div>
+                )}
+                {currentStep === 2 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {previousButton}
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <Button
+                                icon={<UploadOutlined />}
+                                disabled={disableButtons}
+                                type="primary"
+                                onClick={() => setIsConfirmFlashModalOpen(true)}
+                            >
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
+                            </Button>
+                        </div>
+                        <div></div>
+                    </div>
+                )}
+                {currentStep === 3 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        {previousButton}
+                        <div></div>
+                        <div></div>
+                    </div>
+                )}
+                {contentRaw}
+            </div>
+        </>
     ) : (
-        ""
+        <>
+            <Paragraph>
+                <Alert
+                    message={t("tonieboxes.esp32BoxFlashing.attention")}
+                    description={t("tonieboxes.esp32BoxFlashing.browserNotSupported")}
+                    type="warning"
+                    showIcon
+                />
+            </Paragraph>
+            <Paragraph>
+                {t(`tonieboxes.esp32BoxFlashing.hintWiki`)}
+                <ul>
+                    <li>
+                        <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                            {t(`tonieboxes.esp32BoxFlashing.linkWikiGeneral`)}
+                        </Link>
+                    </li>
+                </ul>
+            </Paragraph>
+            <Paragraph>
+                {t(`tonieboxes.esp32BoxFlashing.hintWiki2`)}
+                <ul>
+                    <li>
+                        <Link
+                            to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/dump-certs/esp32/"
+                            target="_blank"
+                        >
+                            {t(`tonieboxes.esp32BoxFlashing.linkWikiSpecific`)}
+                        </Link>
+                    </li>
+                </ul>
+            </Paragraph>
+        </>
     );
 
     return (
@@ -1477,62 +1381,25 @@ mv certs/client/CA.DER certs/client/ca.der`}
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
-
-                    <Paragraph>
-                        {!httpsActive ? (
-                            <Alert
-                                message={t("tonieboxes.esp32BoxFlashing.attention")}
-                                description={t("tonieboxes.esp32BoxFlashing.hint")}
-                                type="warning"
-                                showIcon
-                            />
-                        ) : (
-                            ""
-                        )}
-                    </Paragraph>
-                    {ESP32BoxFlashingForm}
-                    <Divider>{t("tonieboxes.esp32BoxFlashing.httpsSettings")}</Divider>
-                    <Paragraph style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <Paragraph>
-                            <Switch
-                                checked={newWebHttpOnly}
-                                onChange={handleHttpOnlyChange}
-                                style={{ marginRight: 8 }}
-                                disabled={disableButtons}
-                            />
-                            <Text>
-                                {t("tonieboxes.esp32BoxFlashing.enabledWebHttpOnly")}
-                                {". "}
-                            </Text>
-                        </Paragraph>
-                        <Paragraph>
-                            <Switch
-                                checked={newHttpsClientCertAuth}
-                                onChange={handleHttpsClientCertAuthChange}
-                                style={{ marginRight: 8 }}
-                                disabled={disableButtons}
-                            />
-                            <Text>
-                                {t("tonieboxes.esp32BoxFlashing.enabledWebHttpsClientCertAuth")}
-                                {". "}
-                            </Text>
-                        </Paragraph>
-                        <Text>
-                            {webHttpOnly || httpsClientCertAuth
-                                ? t("tonieboxes.esp32BoxFlashing.redirectToHttpsAfterDeactivation")
-                                : t("tonieboxes.esp32BoxFlashing.redirectToHttpAfterActivation")}
-                        </Text>
-                        <Button
-                            onClick={handleSaveHttpsSettings}
-                            style={{ margin: 8 }}
-                            disabled={
-                                disableButtons ||
-                                (webHttpOnly === newWebHttpOnly && httpsClientCertAuth === newHttpsClientCertAuth)
+                    {!httpsActive ? (
+                        <Alert
+                            message={t("tonieboxes.esp32BoxFlashing.attention")}
+                            description={
+                                <>
+                                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.hint")}</Paragraph>
+                                    <Paragraph>
+                                        <Button icon={<SyncOutlined />} onClick={openHttpsUrl}>
+                                            {t("tonieboxes.esp32BoxFlashing.redirect")}
+                                        </Button>
+                                    </Paragraph>
+                                </>
                             }
-                        >
-                            {t("tonieboxes.esp32BoxFlashing.save")}
-                        </Button>
-                    </Paragraph>
+                            type="warning"
+                            showIcon
+                        />
+                    ) : (
+                        ESP32BoxFlashingForm
+                    )}
                 </StyledContent>
             </StyledLayout>
         </>

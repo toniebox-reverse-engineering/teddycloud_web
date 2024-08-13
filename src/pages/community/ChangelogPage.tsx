@@ -33,6 +33,7 @@ export const ChangelogPage = () => {
                 "fixed bug not storing source in json file: https://github.com/toniebox-reverse-engineering/teddycloud/issues/165",
                 "added limit to tempfile creation for radiostreams, default: 240mb (~6h) (configurable if expert mode is activated) https://github.com/toniebox-reverse-engineering/teddycloud/issues/180",
                 "added possibility to set WiFi Credentials on ESP32 Firmware patching",
+                "introduced second HTTPS port for WebFrontend only, which allows using https for webfrontend",
                 "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
                 "new /web gui: Tonies - Content section - added Migrate Content to Lib button on TAF files",
                 "new /web gui: added RTNL Log Page: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/48",
