@@ -32,6 +32,7 @@ export const EncoderPage = () => {
     const { t } = useTranslation();
     const [messageApi, contextHolder] = message.useMessage();
 
+    const [debugPCMObjects, setDebugPCMObjects] = useState(false);
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
     const [processing, setProcessing] = useState(false);
@@ -42,6 +43,26 @@ export const EncoderPage = () => {
     const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
     const inputRef = useRef<InputRef>(null);
     let uploadedFiles = 0;
+
+    useEffect(() => {
+        const fetchDebugPCM = async () => {
+            const api = new TeddyCloudApi(defaultAPIConfig());
+            let logPCMURLObject = false;
+            try {
+                const response = await api.apiGetTeddyCloudSettingRaw("encode.debug_browser_pcm");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                logPCMURLObject = data.toString() === "true";
+            } catch (error) {
+                console.error("Error fetching encode.debug_browser_pcm: ", error);
+            }
+            setDebugPCMObjects(logPCMURLObject);
+        };
+        fetchDebugPCM();
+    }, []);
 
     useEffect(() => {
         if (isCreateDirectoryModalOpen) {
@@ -98,7 +119,7 @@ export const EncoderPage = () => {
         const formData = new FormData();
 
         for (const file of fileList) {
-            await new Promise((resolve, reject) => upload(resolve, reject, formData, fileList, file));
+            await new Promise((resolve, reject) => upload(resolve, reject, formData, fileList, file, debugPCMObjects));
         }
 
         const currentUnixTime = Math.floor(Date.now() / 1000);
@@ -312,10 +333,15 @@ export const EncoderPage = () => {
                                         alignItems: "flex-start",
                                     }}
                                 >
-                                    <Button type="default" onClick={sortFileListAlphabetically}>
+                                    <Button type="default" disabled={uploading} onClick={sortFileListAlphabetically}>
                                         {t("tonies.encoder.sortAlphabetically")}
                                     </Button>
-                                    <Button type="default" style={{ marginRight: 16 }} onClick={clearFileList}>
+                                    <Button
+                                        type="default"
+                                        disabled={uploading}
+                                        style={{ marginRight: 16 }}
+                                        onClick={clearFileList}
+                                    >
                                         {t("tonies.encoder.clearList")}
                                     </Button>
                                 </Space>
@@ -345,6 +371,7 @@ export const EncoderPage = () => {
                                             <TreeSelect
                                                 treeLine
                                                 treeDataSimpleMode
+                                                disabled={uploading}
                                                 style={{
                                                     maxWidth: 250,
                                                 }}
@@ -359,6 +386,7 @@ export const EncoderPage = () => {
                                             />
                                             <Tooltip title={t("tonies.createDirectory.createDirectory")}>
                                                 <Button
+                                                    disabled={uploading}
                                                     icon={<FolderAddOutlined />}
                                                     onClick={openCreateDirectoryModal}
                                                     style={{ borderRadius: 0 }}
