@@ -49,7 +49,7 @@ export const EncoderPage = () => {
             const api = new TeddyCloudApi(defaultAPIConfig());
             let logPCMURLObject = false;
             try {
-                const response = await api.apiGetTeddyCloudSettingRaw("encode.debug_browser_pcm");
+                const response = await api.apiGetTeddyCloudSettingRaw("debug.web.pcm_encode_console_url");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -57,7 +57,7 @@ export const EncoderPage = () => {
 
                 logPCMURLObject = data.toString() === "true";
             } catch (error) {
-                console.error("Error fetching encode.debug_browser_pcm: ", error);
+                console.error("Error fetching debug.web.pcm_encode_console_url: ", error);
             }
             setDebugPCMObjects(logPCMURLObject);
         };
