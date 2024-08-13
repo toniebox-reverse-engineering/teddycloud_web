@@ -136,7 +136,7 @@ export const ESP32BoxFlashing = () => {
                 }
 
                 try {
-                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_port");
+                    const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_web_port");
                     return await response.text();
                 } catch (error) {
                     console.error("Error fetching https port: ", error);
