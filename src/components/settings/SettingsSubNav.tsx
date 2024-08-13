@@ -30,9 +30,9 @@ export const SettingsSubNav = () => {
     const handleLegacyGuiOpen = async () => {
         const response = await api.apiGetTeddyCloudSettingRaw("core.new_webgui_as_default");
         if ((await response.text()) === "true") {
-            window.location.href = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/legacy.html`;
+            window.open(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/legacy.html`, "_blank");
         } else {
-            window.location.href = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}`;
+            window.open(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}`, "_blank");
         }
     };
 
