@@ -257,6 +257,7 @@
         },
         "hint": "Ce sont les paramètres par défaut. Certains paramètres peuvent être remplacés par chacun de vos Tonieboxes. Pour modifier ces paramètres, allez à ",
         "information": "Informations",
+        "legacyGui": "Ancienne GUI Admin",
         "levelLabel": "Niveau des paramètres",
         "navigationTitle": "Paramètres",
         "overlayDisabled": "Superposition désactivée !",

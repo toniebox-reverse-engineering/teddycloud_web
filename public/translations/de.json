@@ -258,6 +258,7 @@
         },
         "hint": "Dies sind die Default-Einstellungen. Einige der Einstellungen können von deinen Toniebox spezifischen Einstellungen überschrieben werden. Um diese zu ändern, gehe zu ",
         "information": "Information",
+        "legacyGui": "Alte Admin-GUI",
         "levelLabel": "Settings level",
         "navigationTitle": "Einstellungen",
         "overlayDisabled": "Overlayed deaktiviert!",
