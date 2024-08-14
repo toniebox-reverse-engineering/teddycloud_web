@@ -34,6 +34,7 @@ export const StyledFooter = () => {
 
     const [version, setVersion] = useState("");
     const [versionShort, setVersionShort] = useState("");
+    const [gitShaShort, setGitShaShort] = useState("");
 
     const handleAudioPlayerVisibilityChange = () => {
         const footer = document.querySelector("footer");
@@ -50,6 +51,10 @@ export const StyledFooter = () => {
         api.apiGetTeddyCloudSettingRaw("internal.version.v_short")
             .then((response) => response.text())
             .then((data) => setVersionShort(data))
+            .catch((error) => console.error("Error fetching data:", error));
+        api.apiGetTeddyCloudSettingRaw("internal.version.git_sha_short")
+            .then((response) => response.text())
+            .then((data) => setGitShaShort(data))
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 
@@ -68,7 +73,9 @@ export const StyledFooter = () => {
                                 to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/"
                                 target="_blank"
                             >
-                                <HiddenDesktop>{versionShort}</HiddenDesktop>
+                                <HiddenDesktop>
+                                    {versionShort} ({gitShaShort})
+                                </HiddenDesktop>
                                 <HiddenMobile>{version}</HiddenMobile>
                             </Link>
                         </small>
