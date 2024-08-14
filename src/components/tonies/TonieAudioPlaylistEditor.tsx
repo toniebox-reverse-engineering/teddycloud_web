@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Space, Alert } from "antd";
+import { Modal, Form, Input, Button, Space, Alert, theme } from "antd";
 import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { FileBrowser } from "../utils/FileBrowser";
@@ -26,6 +26,8 @@ export interface TonieAudioPlaylistEditorProps {
     onCancel: () => void;
 }
 
+const { useToken } = theme;
+
 const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     open,
     initialValuesJson,
@@ -33,6 +35,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     onCancel,
 }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
     const [form] = Form.useForm<FormValues>();
     const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
@@ -120,6 +123,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
 
     // just for now, can be removed later when API is available
     const [jsonData, setJsonData] = useState<string>("");
+    const [jsonDataMinimized, setJsonDataMinimized] = useState<string>("");
     const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState(false);
 
     const jsonViewerModalFooter = (
@@ -176,7 +180,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                             border: "none",
                         }}
                     >
-                        {JSON.stringify(jsonData, null, 0)}
+                        {jsonDataMinimized}
                     </SyntaxHighlighter>
                 </>
             ) : (
@@ -185,6 +189,24 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
         </Modal>
     );
     // end removal json viewer
+
+    const selectModalFooter = (
+        <div
+            style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                padding: "16px 0",
+                margin: "-24px -24px -12px -24px",
+                background: token.colorBgElevated,
+            }}
+        >
+            <Button onClick={handleCancelSelectFile}>{t("tonies.selectFileModal.cancel")}</Button>
+            <Button type="primary" onClick={handleOkSelectFile}>
+                {t("tonies.selectFileModal.ok")}
+            </Button>
+        </div>
+    );
 
     return (
         <>
@@ -203,6 +225,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                             onCreate(form.getFieldsValue() as FormValues);
                             //remove that if the API is available
                             setJsonData(JSON.stringify(form.getFieldsValue(), null, 2));
+                            setJsonDataMinimized(JSON.stringify(form.getFieldsValue(), null, 0));
                             setJsonViewerModalOpened(true);
                             resetForm();
                         })
@@ -309,11 +332,13 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     </Form.List>
                 </Form>
                 <Modal
+                    className="sticky-footer"
                     title={t("tonies.selectFileModal.selectFile")}
                     open={isSelectFileModalOpen}
                     onOk={handleOkSelectFile}
                     onCancel={handleCancelSelectFile}
                     width="auto"
+                    footer={selectModalFooter}
                 >
                     <FileBrowser
                         maxSelectedRows={99}
