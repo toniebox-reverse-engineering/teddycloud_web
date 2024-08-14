@@ -686,7 +686,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         headerParameters: runtime.HTTPHeaders = {}
     ): Promise<Response> {
         // To Do: Replace fetch with request
-        const response = await fetch(process.env.REACT_APP_TEDDYCLOUD_API_URL + path, {
+        const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
             method: "POST",
             body: formData,
         });

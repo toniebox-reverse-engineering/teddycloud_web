@@ -14,7 +14,7 @@ i18n.use(Backend)
         debug: false,
         backend: {
             queryStringParams: { v: "2023072701" },
-            loadPath: `${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/translations/{{lng}}.json`,
+            loadPath: `${import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}/translations/{{lng}}.json`,
         },
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default

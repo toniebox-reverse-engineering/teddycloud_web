@@ -131,8 +131,8 @@ export const ESP32BoxFlashing = () => {
             setHttpsActive(false);
             const fetchHttpsPort = async (): Promise<string | undefined> => {
                 // this is for develop only as the https port is defined separatly
-                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS) {
-                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS;
+                if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS) {
+                    return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS;
                 }
 
                 try {
@@ -145,8 +145,8 @@ export const ESP32BoxFlashing = () => {
 
             const fetchHttpPort = async (): Promise<string | undefined> => {
                 // this is for develop only as the http port is defined separatly
-                if (process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP) {
-                    return process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP;
+                if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP) {
+                    return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP;
                 }
 
                 try {

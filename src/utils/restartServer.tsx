@@ -34,7 +34,7 @@ export const restartServer = async (redirectToBase = true) => {
                 hideLoading();
                 message.success(t("settings.restartComplete"));
                 if (redirectToBase) {
-                    window.location.href = `${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}`;
+                    window.location.href = `${import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}`;
                 }
                 return;
             }

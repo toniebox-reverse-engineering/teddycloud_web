@@ -108,7 +108,7 @@ function App() {
         >
             <div className="App">
                 <Layout style={{ minHeight: "100vh" }}>
-                    <Router basename={process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}>
+                    <Router basename={import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}>
                         <AudioProvider>
                             <StyledHeader themeSwitch={themeSwitchIcon} />
                             <Layout>

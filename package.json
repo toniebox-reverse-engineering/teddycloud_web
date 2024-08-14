@@ -13,8 +13,8 @@
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
         "@types/w3c-web-serial": "^1.0.6",
+        "@vitejs/plugin-react": "^4.3.1",
         "antd": "^5.20.1",
-        "dnd-kit": "^0.0.2",
         "esptool-js": "^0.4.5",
         "formik": "^2.4.6",
         "i18next": "^23.12.3",
@@ -24,20 +24,21 @@
         "react-dom": "^18.3.1",
         "react-i18next": "^15.0.1",
         "react-router-dom": "^6.26.0",
-        "react-scripts": "5.0.1",
         "react-syntax-highlighter": "^15.5.0",
         "styled-components": "^6.1.12",
         "typescript": "^4.9.5",
+        "vite": "^5.4.0",
+        "vite-plugin-svgr": "^4.2.0",
+        "vite-tsconfig-paths": "^5.0.1",
         "yup": "^1.4.0"
     },
     "scripts": {
-        "build": "react-scripts build",
-        "start-http": "cross-env PORT=3000 react-scripts start",
-        "start-https": "cross-env HTTPS=true PORT=3443 react-scripts start",
+        "start-http": "cross-env PORT=3000 vite",
+        "start-https": "cross-env HTTPS=true PORT=3443 vite",
         "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
-        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true"
     },
     "eslintConfig": {
         "extends": [
@@ -61,8 +62,10 @@
         "printWidth": 120
     },
     "devDependencies": {
-        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@babel/plugin-transform-private-property-in-object": "^7.24.7",
         "@types/react-syntax-highlighter": "^15.5.13",
+        "concurrently": "^8.2.2",
         "cross-env": "^7.0.3"
-    }
+    },
+    "type": "module"
 }
