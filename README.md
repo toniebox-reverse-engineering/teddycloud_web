@@ -13,8 +13,8 @@ You'll need to allow CORS for your teddyCloud instance used for development. The
 Please place an enviroment file '.env.development.local' in the teddycloud_web directory.
 
 ```
-REACT_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
-REACT_APP_TEDDYCLOUD_WEB_BASE=/web
+VITE_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
+VITE_APP_TEDDYCLOUD_WEB_BASE=/web
 PORT_HTTPS=3443
 PORT_HTTP=3000
 SSL_CRT_FILE=./localhost.pem
@@ -40,13 +40,12 @@ If you don't need the ESP32 Box flashing section working, you can adapt the `pac
 
 ```json
 "scripts": {
-        "build": "react-scripts build",
-        "start-http": "cross-env PORT=3000 react-scripts start",
-        "start-https": "cross-env HTTPS=true PORT=3443 react-scripts start",
+        "start-http": "cross-env PORT=3000 vite",
+        "start-https": "cross-env HTTPS=true PORT=3443 vite",
         "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
-        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true"
     },
 ```
 
@@ -54,12 +53,11 @@ to
 
 ```json
 "scripts": {
-        "build": "react-scripts build",
-        "start": "react-scripts start",
-        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
-    },
+        "start": "npm run start",
+        "build": "tsc && vite build",
+        "preview": "vite preview",
+        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true"
+     },
 ```
 
 ### Start NPM / teddyCloud
@@ -140,20 +138,20 @@ module.exports = function (app) {
     app.use(
         "/img_unknown.png",
         createProxyMiddleware({
-            target: "http://localhost:" + process.env.REACT_APP_TEDDYCLOUD_PORT_HTTP,
+            target: "http://localhost:" + import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP,
             changeOrigin: true,
             pathRewrite: {
-                "^/img_unknown.png": process.env.REACT_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
+                "^/img_unknown.png": import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
             },
         })
     );
     app.use(
         "/img_unknown.png",
         createProxyMiddleware({
-            target: "https://localhost:" + process.env.REACT_APP_TEDDYCLOUD_PORT_HTTPS,
+            target: "https://localhost:" + import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS,
             changeOrigin: true,
             pathRewrite: {
-                "^/img_unknown.png": process.env.REACT_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
+                "^/img_unknown.png": import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
             },
         })
     );
@@ -176,9 +174,9 @@ Ideally, the TeddyCloudApi.ts should be generated with swagger.yaml. However, it
 
 ## General React App information
 
-## Getting Started with Create React App
+## Getting Started with Vite
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Vite](https://vitejs.dev/).
 
 ## Typicale development workflow:
 
@@ -207,11 +205,6 @@ You will also see any lint errors in the console.
 
 If you changed the default ports, adapt the links above accordingly.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
@@ -220,20 +213,10 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+See the section about [deployment](https://vitejs.dev/guide/static-deploy.html) for more information.
 
 ## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can learn more in the [Vite documentation](https://vitejs.dev/guide/).
 
 To learn React, check out the [React documentation](https://reactjs.org/).

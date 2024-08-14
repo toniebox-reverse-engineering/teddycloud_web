@@ -218,7 +218,7 @@ export const TonieCard: React.FC<{
                 content: t("tonies.messages.errorDuringDownload") + error,
             });
             // this could be a kind of problem if auth is necessary for accessing the API
-            setDownloadTriggerUrl(process.env.REACT_APP_TEDDYCLOUD_API_URL + path);
+            setDownloadTriggerUrl(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path);
         }
     };
 
@@ -407,7 +407,7 @@ export const TonieCard: React.FC<{
                       onClick={() =>
                           handlePlayPauseClick(
                               localTonieCard.valid
-                                  ? process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
+                                  ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
                                   : activeSource
                           )
                       }
@@ -439,7 +439,7 @@ export const TonieCard: React.FC<{
                       onClick={() =>
                           handlePlayPauseClick(
                               localTonieCard.valid
-                                  ? process.env.REACT_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
+                                  ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
                                   : activeSource
                           )
                       }

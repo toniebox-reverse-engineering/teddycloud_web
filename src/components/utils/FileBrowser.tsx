@@ -800,7 +800,7 @@ export const FileBrowser: React.FC<{
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() =>
                                     playAudio(
-                                        process.env.REACT_APP_TEDDYCLOUD_API_URL +
+                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
                                             "/content" +
                                             path +
                                             "/" +

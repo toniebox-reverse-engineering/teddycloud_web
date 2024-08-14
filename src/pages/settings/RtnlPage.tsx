@@ -88,7 +88,7 @@ export const RtnlPage = () => {
 
     useEffect(() => {
         if (rtnlActive) {
-            const eventSource = new EventSource(process.env.REACT_APP_TEDDYCLOUD_API_URL + "/api/sse");
+            const eventSource = new EventSource(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + "/api/sse");
             eventSource.onopen = () => {
                 console.log("Connection established.");
             };
