@@ -23,8 +23,8 @@ export function upload(
 
             const originalAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
             const offlineAudioContext = new OfflineAudioContext({
-                numberOfChannels: 2,
-                length: (originalAudioBuffer.length * targetSampleRate) / originalAudioBuffer.sampleRate,
+                numberOfChannels: originalAudioBuffer.numberOfChannels,
+                length: Math.round((originalAudioBuffer.length * targetSampleRate) / originalAudioBuffer.sampleRate),
                 sampleRate: targetSampleRate,
             });
 
@@ -39,12 +39,24 @@ export function upload(
             const leftChannelData = new Float32Array(upsampledAudioBuffer.getChannelData(0));
             const rightChannelData = new Float32Array(upsampledAudioBuffer.getChannelData(1));
 
+            const applyHammingWindow = (data: Float32Array) => {
+                const window = new Float32Array(data.length);
+                for (let i = 0; i < data.length; i++) {
+                    window[i] = 0.54 - 0.46 * Math.cos((2 * Math.PI * i) / (data.length - 1));
+                }
+                return data.map((value, index) => value * window[index]);
+            };
+
+            const leftChannelDataWindowed = applyHammingWindow(leftChannelData);
+            const rightChannelDataWindowed = applyHammingWindow(rightChannelData);
+
             const interleavedData = new Int16Array(leftChannelData.length + rightChannelData.length);
             for (let i = 0, j = 0; i < leftChannelData.length; i++, j += 2) {
-                interleavedData[j] = leftChannelData[i] * 32767;
-                interleavedData[j + 1] = rightChannelData[i] * 32767;
+                interleavedData[j] = Math.max(-32767, Math.min(32767, leftChannelDataWindowed[i] * 32767));
+                interleavedData[j + 1] = Math.max(-32767, Math.min(32767, rightChannelDataWindowed[i] * 32767));
             }
 
+            // Debug and save PCM data if needed
             if (debugPCMObjects) {
                 console.log(`To download the file for debugging, copy and paste the following code into your browser's console:
 
@@ -67,6 +79,10 @@ export function upload(
             reject(error);
         }
     };
+
     reader.onerror = reject;
-    if (file.file) reader.readAsArrayBuffer(file.file);
+
+    if (file.file) {
+        reader.readAsArrayBuffer(file.file);
+    }
 }
