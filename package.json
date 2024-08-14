@@ -60,6 +60,7 @@
         "printWidth": 120
     },
     "devDependencies": {
+        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
         "@types/react-syntax-highlighter": "^15.5.13",
         "cross-env": "^7.0.3"
     }
