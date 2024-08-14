@@ -5,6 +5,7 @@ import {
     PoweroffOutlined,
     FileSearchOutlined,
     SyncOutlined,
+    HistoryOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,6 +25,15 @@ export const SettingsSubNav = () => {
     const handleRestartServer = async () => {
         await restartServer(true);
         setSelectedKey("");
+    };
+
+    const handleLegacyGuiOpen = async () => {
+        const response = await api.apiGetTeddyCloudSettingRaw("core.new_webgui_as_default");
+        if ((await response.text()) === "true") {
+            window.open(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/legacy.html`, "_blank");
+        } else {
+            window.open(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}`, "_blank");
+        }
     };
 
     const handleUpdateToniesJson = async () => {
@@ -83,6 +93,13 @@ export const SettingsSubNav = () => {
             onClick: handleRestartServer,
             icon: React.createElement(PoweroffOutlined),
             title: t("settings.restartServer"),
+        },
+        {
+            key: "legacy",
+            label: <label style={{ cursor: "pointer" }}>{t("settings.legacyGui")}</label>,
+            onClick: handleLegacyGuiOpen,
+            icon: React.createElement(HistoryOutlined),
+            title: t("settings.legacyGui"),
         },
     ];
 
