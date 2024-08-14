@@ -129,38 +129,11 @@ If none of the existing methods meet your needs, add the new request to `src/api
 
 As the `img_unknown.png` is part of the teddycloud server, normally it's not shown in the running dev environment. To solve that you can do the following:
 
-1. Add `img_unknown.png` to the `/public` folder.
-2. Create the file `setupProxy.js` in `/src` with the following content:
+1. Just add `img_unknown.png` to the `/public` folder.
 
-```javascript
-const { createProxyMiddleware } = require("http-proxy-middleware");
-module.exports = function (app) {
-    app.use(
-        "/img_unknown.png",
-        createProxyMiddleware({
-            target: "http://localhost:" + import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP,
-            changeOrigin: true,
-            pathRewrite: {
-                "^/img_unknown.png": import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
-            },
-        })
-    );
-    app.use(
-        "/img_unknown.png",
-        createProxyMiddleware({
-            target: "https://localhost:" + import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS,
-            changeOrigin: true,
-            pathRewrite: {
-                "^/img_unknown.png": import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE + "/img_unknown.png",
-            },
-        })
-    );
-};
-```
+2. Restart the dev environment.
 
-3. Restart the dev environment.
-
-After these steps, the _img_unknown.png_ should be shown. Both files are already part of the file `.gitignore` so you do not have to care about accidentially committing them.
+After these steps, the _img_unknown.png_ should be shown. The file is already part of the file `.gitignore` so you do not have to care about accidentially committing this file.
 
 ### Crashing Dev Environment
 
