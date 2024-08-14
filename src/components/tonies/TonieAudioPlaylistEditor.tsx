@@ -252,6 +252,9 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         files: [],
                     }}
                 >
+                    <Form.Item name="type" hidden label="type">
+                        <Input type="string" />
+                    </Form.Item>
                     <Form.Item name="audio_id" label="Audio ID">
                         <Input type="number" />
                     </Form.Item>
