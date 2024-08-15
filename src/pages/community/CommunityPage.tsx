@@ -73,7 +73,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/" target="_blank">
                                     TeddyCloud Wiki
                                 </Link>
                                 <ul>

@@ -38,7 +38,7 @@ export const CC3200BoxFlashingPage = () => {
                         {t(`tonieboxes.cc3200BoxFlashing.hint`)}
                         <ul>
                             <li>
-                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/" target="_blank">
                                     {t(`tonieboxes.cc3200BoxFlashing.linkGeneral`)}
                                 </Link>
                             </li>
@@ -50,7 +50,7 @@ export const CC3200BoxFlashingPage = () => {
                         <ul>
                             <li>
                                 <Link
-                                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/dump-certs/cc3200/"
+                                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/"
                                     target="_blank"
                                 >
                                     {t(`tonieboxes.cc3200BoxFlashing.linkSpecific`)}
