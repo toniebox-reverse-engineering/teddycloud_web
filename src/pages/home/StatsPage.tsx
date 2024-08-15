@@ -1,9 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -45,7 +44,7 @@ export const StatsPage = () => {
                 <HiddenDesktop>
                     <HomeSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("home.stats.navigationTitle") }]}
                 />
                 <StyledContent>

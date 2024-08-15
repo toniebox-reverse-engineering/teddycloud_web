@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, Button, Alert, message } from "antd";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -154,7 +153,7 @@ export const HomePage = () => {
                 <HiddenDesktop>
                     <HomeSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb items={[{ title: t("home.navigationTitle") }]} />
+                <BreadcrumbWrapper items={[{ title: t("home.navigationTitle") }]} />
                 <StyledContent>
                     <Paragraph>
                         <h1>{t(`home.title`)}</h1>

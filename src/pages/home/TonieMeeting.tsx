@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -24,7 +23,7 @@ export const TonieMeetingPage = () => {
                 <HiddenDesktop>
                     <HomeSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("home.tonieMeeting.navigationTitle") }]}
                 />
                 <StyledContent>

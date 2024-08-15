@@ -6,9 +6,8 @@ import { useTranslation } from "react-i18next";
 import { Alert, Button, Col, Divider, Form, Input, Progress, Row, Steps, Typography } from "antd";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -1372,7 +1371,7 @@ mv certs/client/CA.DER certs/client/ca.der`}
                 <HiddenDesktop>
                     <TonieboxesSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
