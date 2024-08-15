@@ -15,13 +15,13 @@ Please place an enviroment file '.env.development.local' in the teddycloud_web d
 ```
 VITE_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
 VITE_APP_TEDDYCLOUD_WEB_BASE=/web
-PORT_HTTPS=3443
-PORT_HTTP=3000
+VITE_APP_TEDDYCLOUD_PORT_HTTPS=3443
+VITE_APP_TEDDYCLOUD_PORT_HTTP=3000
 SSL_CRT_FILE=./localhost.pem
 SSL_KEY_FILE=./localhost-key.pem
 ```
 
-PORT_HTTPS and PORT_HTTP should match the ones entered in the package.json. If you don't change them, these are the ones from the example above.
+VITE_APP_TEDDYCLOUD_PORT_HTTPS and VITE_APP_TEDDYCLOUD_PORT_HTTP should match the ones entered in the package.json. If you don't change them, these are the ones from the example above.
 
 ### Parallel http/https setup
 
