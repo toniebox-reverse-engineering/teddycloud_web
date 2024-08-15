@@ -38,7 +38,7 @@ export const CC3235BoxFlashingPage = () => {
                         {t(`tonieboxes.cc3235BoxFlashing.hint`)}
                         <ul>
                             <li>
-                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/" target="_blank">
                                     Patching your Toniebox for using with TeddyCloud
                                 </Link>
                             </li>
@@ -50,7 +50,7 @@ export const CC3235BoxFlashingPage = () => {
                         <ul>
                             <li>
                                 <Link
-                                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/dump-certs/cc3235/"
+                                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3235/"
                                     target="_blank"
                                 >
                                     CC3235 specific setup

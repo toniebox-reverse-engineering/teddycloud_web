@@ -1341,7 +1341,7 @@ mv certs/client/CA.DER certs/client/ca.der`}
                 {t(`tonieboxes.esp32BoxFlashing.hintWiki`)}
                 <ul>
                     <li>
-                        <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                        <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/" target="_blank">
                             {t(`tonieboxes.esp32BoxFlashing.linkWikiGeneral`)}
                         </Link>
                     </li>
@@ -1352,7 +1352,7 @@ mv certs/client/CA.DER certs/client/ca.der`}
                 <ul>
                     <li>
                         <Link
-                            to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/dump-certs/esp32/"
+                            to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/esp32/"
                             target="_blank"
                         >
                             {t(`tonieboxes.esp32BoxFlashing.linkWikiSpecific`)}

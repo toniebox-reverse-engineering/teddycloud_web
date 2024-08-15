@@ -7,7 +7,7 @@ import {
     SyncOutlined,
     HistoryOutlined,
 } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
@@ -21,20 +21,19 @@ export const SettingsSubNav = () => {
     const { t } = useTranslation();
     const [selectedKey, setSelectedKey] = useState("");
     const [messageApi, contextHolder] = message.useMessage();
-
+    const [newWebGuiDefault, setNewWebGuiDefault] = useState<boolean>(false);
     const handleRestartServer = async () => {
         await restartServer(true);
         setSelectedKey("");
     };
 
-    const handleLegacyGuiOpen = async () => {
-        const response = await api.apiGetTeddyCloudSettingRaw("core.new_webgui_as_default");
-        if ((await response.text()) === "true") {
-            window.open(`${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}/legacy.html`, "_blank");
-        } else {
-            window.open(`${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}`, "_blank");
-        }
-    };
+    useEffect(() => {
+        const fetchNewWebGuiDefault = async () => {
+            const response = await api.apiGetTeddyCloudSettingRaw("core.new_webgui_as_default");
+            setNewWebGuiDefault((await response.text()) === "true");
+        };
+        fetchNewWebGuiDefault();
+    }, []);
 
     const handleUpdateToniesJson = async () => {
         try {
@@ -96,8 +95,18 @@ export const SettingsSubNav = () => {
         },
         {
             key: "legacy",
-            label: <label style={{ cursor: "pointer" }}>{t("settings.legacyGui")}</label>,
-            onClick: handleLegacyGuiOpen,
+            label: (
+                <Link
+                    to={
+                        newWebGuiDefault
+                            ? `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}/legacy.html`
+                            : `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}`
+                    }
+                    target="_blank"
+                >
+                    {t("settings.legacyGui")}
+                </Link>
+            ),
             icon: React.createElement(HistoryOutlined),
             title: t("settings.legacyGui"),
         },

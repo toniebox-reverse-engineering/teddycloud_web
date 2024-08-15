@@ -25,7 +25,7 @@ export default defineConfig(({ command, mode }) => {
         server: {
             open: true,
             port: useHttps ? portHttps : portHttp,
-            host: "localhost",
+            host: true,
             https: httpsOptions,
             proxy: {
                 "/img_unknown.png": {
