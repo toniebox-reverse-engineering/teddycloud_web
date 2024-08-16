@@ -21,7 +21,6 @@ export const SettingsSubNav = () => {
     const { t } = useTranslation();
     const [selectedKey, setSelectedKey] = useState("");
     const [messageApi, contextHolder] = message.useMessage();
-    const [baseUrl, setBaseUrl] = useState<string>("");
     const handleRestartServer = async () => {
         await restartServer(true);
         setSelectedKey("");
@@ -30,8 +29,7 @@ export const SettingsSubNav = () => {
     const extractBaseUrl = (fullUrl: URL) => {
         const url = new URL(fullUrl);
         const port = url.port ? `:${url.port}` : "";
-        const baseUrlWithPort = `${url.protocol}//${url.hostname}${port}`;
-        return baseUrlWithPort;
+        return `${url.protocol}//${url.hostname}${port}`;
     };
 
     const handleUpdateToniesJson = async () => {
