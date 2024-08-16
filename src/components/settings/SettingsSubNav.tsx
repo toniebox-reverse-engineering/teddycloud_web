@@ -21,27 +21,18 @@ export const SettingsSubNav = () => {
     const { t } = useTranslation();
     const [selectedKey, setSelectedKey] = useState("");
     const [messageApi, contextHolder] = message.useMessage();
-    const [newWebGuiDefault, setNewWebGuiDefault] = useState<boolean>(false);
     const [baseUrl, setBaseUrl] = useState<string>("");
     const handleRestartServer = async () => {
         await restartServer(true);
         setSelectedKey("");
     };
 
-    useEffect(() => {
-        const fetchNewWebGuiDefault = async () => {
-            const response = await api.apiGetTeddyCloudSettingRaw("core.new_webgui_as_default");
-            setNewWebGuiDefault((await response.text()) === "true");
-            const extractBaseUrl = (fullUrl: URL) => {
-                const url = new URL(fullUrl);
-                const port = url.port ? `:${url.port}` : "";
-                const baseUrlWithPort = `${url.protocol}//${url.hostname}${port}`;
-                return baseUrlWithPort;
-            };
-            setBaseUrl(extractBaseUrl(new URL(window.location.href)));
-        };
-        fetchNewWebGuiDefault();
-    }, []);
+    const extractBaseUrl = (fullUrl: URL) => {
+        const url = new URL(fullUrl);
+        const port = url.port ? `:${url.port}` : "";
+        const baseUrlWithPort = `${url.protocol}//${url.hostname}${port}`;
+        return baseUrlWithPort;
+    };
 
     const handleUpdateToniesJson = async () => {
         try {
@@ -104,7 +95,7 @@ export const SettingsSubNav = () => {
         {
             key: "legacy",
             label: (
-                <Link to={newWebGuiDefault ? `${baseUrl}/legacy.html` : `${baseUrl}`} target="_blank">
+                <Link to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`} target="_blank">
                     {t("settings.legacyGui")}
                 </Link>
             ),
