@@ -21,19 +21,16 @@ export const SettingsSubNav = () => {
     const { t } = useTranslation();
     const [selectedKey, setSelectedKey] = useState("");
     const [messageApi, contextHolder] = message.useMessage();
-    const [newWebGuiDefault, setNewWebGuiDefault] = useState<boolean>(false);
     const handleRestartServer = async () => {
         await restartServer(true);
         setSelectedKey("");
     };
 
-    useEffect(() => {
-        const fetchNewWebGuiDefault = async () => {
-            const response = await api.apiGetTeddyCloudSettingRaw("core.new_webgui_as_default");
-            setNewWebGuiDefault((await response.text()) === "true");
-        };
-        fetchNewWebGuiDefault();
-    }, []);
+    const extractBaseUrl = (fullUrl: URL) => {
+        const url = new URL(fullUrl);
+        const port = url.port ? `:${url.port}` : "";
+        return `${url.protocol}//${url.hostname}${port}`;
+    };
 
     const handleUpdateToniesJson = async () => {
         try {
@@ -96,14 +93,7 @@ export const SettingsSubNav = () => {
         {
             key: "legacy",
             label: (
-                <Link
-                    to={
-                        newWebGuiDefault
-                            ? `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}/legacy.html`
-                            : `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}`
-                    }
-                    target="_blank"
-                >
+                <Link to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`} target="_blank">
                     {t("settings.legacyGui")}
                 </Link>
             ),

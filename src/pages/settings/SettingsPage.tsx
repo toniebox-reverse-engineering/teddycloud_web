@@ -2,9 +2,8 @@ import React from "react";
 import { Form, Alert, Divider, Radio, message } from "antd";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { useTranslation } from "react-i18next";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -95,7 +94,7 @@ export const SettingsPage = () => {
                 <HiddenDesktop>
                     <SettingsSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("settings.navigationTitle") }]}
                 />
                 <StyledContent>

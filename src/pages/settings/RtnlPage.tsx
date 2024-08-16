@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Switch, Typography, Divider, Button } from "antd";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -186,7 +185,7 @@ export const RtnlPage = () => {
                 <HiddenDesktop>
                     <SettingsSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("settings.rtnl.navigationTitle") }]}
                 />
                 <StyledContent>

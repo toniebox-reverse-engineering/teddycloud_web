@@ -3,9 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, List } from "antd";
 
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -200,7 +199,7 @@ export const ChangelogPage = () => {
                 <HiddenDesktop>
                     <CommunitySubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("community.navigationTitle") },
