@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { Typography, List, Collapse } from "antd";
 
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Paragraph } = Typography;
 const { Panel } = Collapse;
@@ -28,7 +31,6 @@ interface TonieJsonEntry {
 export const ContributionToniesJsonPage = () => {
     const { t } = useTranslation();
 
-    const [tonieJsonEntries, setTonieJsonEntries] = useState<TonieJsonEntry[]>([]);
     const [groupedTonieJsonEntries, setGroupedTonieJsonEntries] = useState<{
         [key: string]: TonieJsonEntry[];
     }>({});
@@ -37,7 +39,7 @@ export const ContributionToniesJsonPage = () => {
         async function fetchData() {
             try {
                 // Fetch the JSON data
-                const response = await fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/toniesJson`);
+                const response = await api.apiGetTeddyCloudApiRaw(`/api/toniesJson`);
                 const jsonData = await response.json();
 
                 // Filter the JSON data to include only entries with non-empty audio_id arrays
@@ -60,8 +62,6 @@ export const ContributionToniesJsonPage = () => {
                     language: item.language, // Include language
                 }));
 
-                setTonieJsonEntries(dataArray);
-
                 // Group tonieJsonEntries by language and category
                 const groupedData: { [key: string]: TonieJsonEntry[] } = {};
                 dataArray.forEach((entry) => {
@@ -75,7 +75,6 @@ export const ContributionToniesJsonPage = () => {
                 console.error("Error fetching and transforming data:", error);
             }
         }
-
         fetchData();
     }, []);
 
@@ -88,7 +87,7 @@ export const ContributionToniesJsonPage = () => {
                 <HiddenDesktop>
                     <CommunitySubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("community.navigationTitle") },

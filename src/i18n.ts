@@ -7,14 +7,14 @@ i18n.use(Backend)
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-        supportedLngs: ["en", "de"],
+        supportedLngs: ["en", "de", "fr"],
         fallbackLng: "en",
         ns: ["teddycloud"],
         defaultNS: "teddycloud",
         debug: false,
         backend: {
             queryStringParams: { v: "2023072701" },
-            loadPath: `${process.env.REACT_APP_TEDDYCLOUD_WEB_BASE}/translations/{{lng}}.json`,
+            loadPath: `${import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}/translations/{{lng}}.json`,
         },
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default

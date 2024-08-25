@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -13,7 +12,7 @@ import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { Select } from "antd";
-import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
@@ -60,7 +59,7 @@ export const SystemSoundsPage = () => {
                 <HiddenDesktop>
                     <ToniesSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonies.navigationTitle") },

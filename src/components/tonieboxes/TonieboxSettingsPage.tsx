@@ -1,29 +1,69 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Form } from "antd";
+import { Alert, Divider, Form, Radio, message } from "antd";
 import { Formik } from "formik";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import OptionItem from "../../components/settings/OptionItem";
+import OptionItem from "../utils/OptionItem";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay }) => {
     const [options, setOptions] = useState<OptionsList | undefined>();
-
     const { t } = useTranslation();
+    const [settingsLevel, setSettingsLevel] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchSettingsLevel = async () => {
+            try {
+                const response = await api.apiGetTeddyCloudSettingRaw("core.settings_level");
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setSettingsLevel(data.toString());
+            } catch (error) {
+                console.error("Error fetching settings level: ", error);
+            }
+        };
+
+        fetchSettingsLevel();
+    }, []);
 
     useEffect(() => {
         const fetchOptions = async () => {
+            setLoading(true);
             const optionsRequest = (await api.apiGetIndexGet(overlay)) as OptionsList;
             if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
                 setOptions(optionsRequest);
             }
+
+            setLoading(false);
         };
 
         fetchOptions();
-    }, [overlay]);
+    }, [overlay, settingsLevel]);
+
+    const triggerWriteConfig = async () => {
+        try {
+            await api.apiTriggerWriteConfigGet();
+        } catch (error) {
+            message.error("Error while saving config to file.");
+        }
+    };
+
+    const handleChange = async (value: any) => {
+        try {
+            await api.apiPostTeddyCloudSetting("core.settings_level", value);
+            triggerWriteConfig();
+            setSettingsLevel(value);
+        } catch (e) {
+            message.error("Error while sending data to server.");
+        }
+    };
 
     return (
         <>
@@ -35,6 +75,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                 style={{ margin: "8px" }}
             />
 
+            <Divider>{t("settings.title")}</Divider>
             <Formik
                 // validationSchema={settingsValidationSchema}
                 initialValues={{
@@ -49,27 +90,28 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                         // to do change that to upcoming flag which indicates if overlaying make sense
                         options?.options?.map((option, index, array) => {
                             if (
-                                !option.iD.includes("core.certdir") &&
-                                !option.iD.includes("core.client_cert.") &&
-                                !option.iD.includes("core.flex_") &&
-                                !option.iD.includes("core.contentdir") &&
-                                !option.iD.includes("toniebox.") &&
-                                !option.iD.includes("cloud.enabled") &&
-                                !option.iD.includes("cloud.enableV1Claim") &&
-                                !option.iD.includes("cloud.enableV1CloudReset") &&
-                                !option.iD.includes("cloud.enableV1FreshnessCheck") &&
-                                !option.iD.includes("cloud.enableV1Log") &&
-                                !option.iD.includes("cloud.enableV1Time") &&
-                                !option.iD.includes("cloud.enableV1Ota") &&
-                                !option.iD.includes("cloud.enableV2Content") &&
-                                !option.iD.includes("cloud.cacheOta") &&
-                                !option.iD.includes("cloud.localOta") &&
-                                !option.iD.includes("cloud.cacheContent") &&
-                                !option.iD.includes("cloud.cacheToLibrary") &&
-                                !option.iD.includes("cloud.markCustomTagByPass") &&
-                                !option.iD.includes("cloud.prioCustomContent") &&
-                                !option.iD.includes("cloud.updateOnLowerAudioId") &&
-                                !option.iD.includes("cloud.dumpRuidAuthContentJson")
+                                option.iD.includes("core.settings_level") ||
+                                (!option.iD.includes("core.certdir") &&
+                                    !option.iD.includes("core.client_cert.") &&
+                                    !option.iD.includes("core.flex_") &&
+                                    !option.iD.includes("core.contentdir") &&
+                                    !option.iD.includes("toniebox.") &&
+                                    !option.iD.includes("cloud.enabled") &&
+                                    !option.iD.includes("cloud.enableV1Claim") &&
+                                    !option.iD.includes("cloud.enableV1CloudReset") &&
+                                    !option.iD.includes("cloud.enableV1FreshnessCheck") &&
+                                    !option.iD.includes("cloud.enableV1Log") &&
+                                    !option.iD.includes("cloud.enableV1Time") &&
+                                    !option.iD.includes("cloud.enableV1Ota") &&
+                                    !option.iD.includes("cloud.enableV2Content") &&
+                                    !option.iD.includes("cloud.cacheOta") &&
+                                    !option.iD.includes("cloud.localOta") &&
+                                    !option.iD.includes("cloud.cacheContent") &&
+                                    !option.iD.includes("cloud.cacheToLibrary") &&
+                                    !option.iD.includes("cloud.markCustomTagByPass") &&
+                                    !option.iD.includes("cloud.prioCustomContent") &&
+                                    !option.iD.includes("cloud.updateOnLowerAudioId") &&
+                                    !option.iD.includes("cloud.dumpRuidAuthContentJson"))
                             ) {
                                 return null; // Returning null instead of an empty string
                             }
@@ -116,6 +158,17 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                     }
                 </Form>
             </Formik>
+            <Divider>{t("settings.levelLabel")}</Divider>
+            <Radio.Group
+                value={settingsLevel}
+                onChange={(e) => handleChange(e.target.value)}
+                style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
+                disabled={loading}
+            >
+                <Radio.Button value="1">Basic</Radio.Button>
+                <Radio.Button value="2">Detail</Radio.Button>
+                <Radio.Button value="3">Expert</Radio.Button>
+            </Radio.Group>
         </>
     );
 };

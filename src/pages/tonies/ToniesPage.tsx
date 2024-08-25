@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -15,10 +14,14 @@ import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { Select, Tooltip } from "antd";
 import { useLocation } from "react-router-dom";
-import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
+
+interface LanguageCounts {
+    [key: string]: number;
+}
 
 export const ToniesPage = () => {
     const location = useLocation();
@@ -30,11 +33,18 @@ export const ToniesPage = () => {
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent(linkOverlay);
+    const [defaultLanguage, setMaxTag] = useState<string>("");
+
+    const handleUpdate = (updatedTonieCard: TonieCardProps) => {
+        setTonies((prevTonies) =>
+            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+        );
+    };
 
     useEffect(() => {
         const fetchTonies = async () => {
             // Perform API call to fetch Tonie data
-            const tonieData = await api.apiGetTagIndex(overlay ? overlay : "");
+            const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "", true)).filter((item) => !item.hide);
             setTonies(
                 tonieData.sort((a, b) => {
                     if (a.tonieInfo.series < b.tonieInfo.series) {
@@ -57,6 +67,35 @@ export const ToniesPage = () => {
         fetchTonies();
     }, [overlay]);
 
+    // Update tagCounts state and find the language tag with the highest count when tags prop changes
+    useEffect(() => {
+        const counts: LanguageCounts = {};
+
+        // Iterate over the tags array and count occurrences of each language tag
+        tonies.forEach((tonies) => {
+            const language = tonies.tonieInfo.language;
+            // If the language tag already exists in the counts object, increment its count by 1
+            if (counts[language]) {
+                counts[language]++;
+            } else {
+                // If the language tag doesn't exist in the counts object, initialize its count to 1
+                counts[language] = 1;
+            }
+        });
+
+        // Find the language tag with the highest count
+        let maxCount = 0;
+        let maxLanguage = "";
+        for (const language in counts) {
+            if (counts.hasOwnProperty(language) && counts[language] > maxCount) {
+                maxCount = counts[language];
+                maxLanguage = language;
+            }
+        }
+        // Update maxTag state with the language tag with the highest count
+        setMaxTag(maxLanguage);
+    }, [tonies]);
+
     return (
         <>
             <StyledSider>
@@ -66,7 +105,7 @@ export const ToniesPage = () => {
                 <HiddenDesktop>
                     <ToniesSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("tonies.navigationTitle") }]}
                 />
                 <StyledContent>
@@ -107,6 +146,8 @@ export const ToniesPage = () => {
                         tonieCards={tonies.filter((tonie) => tonie.type === "tag")}
                         overlay={overlay}
                         readOnly={false}
+                        defaultLanguage={defaultLanguage}
+                        onToniesCardUpdate={handleUpdate}
                     />
                 </StyledContent>
             </StyledLayout>

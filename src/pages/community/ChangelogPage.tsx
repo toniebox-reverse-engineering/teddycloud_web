@@ -1,11 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Typography, Alert, List } from "antd";
+import { Typography, List } from "antd";
 
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -18,6 +17,78 @@ export const ChangelogPage = () => {
     const { t } = useTranslation();
 
     const changelogData = [
+        {
+            version: "0.6.0",
+            changes: [
+                "Stabilization backend",
+                "store last played time of last played tag",
+                "extend getTagIndex API, provide language in tonieInfos",
+                "PoC Toniebox api access (explicitly allow access to teddy cloud api on tonebox level)",
+                "Added enable/disable new Tonieboxes: prohibit registration of new tonieboxes if not enabled",
+                "Added removal of overlays (= removal of Tonieboxes from TeddyCloud)",
+                "add hide tonie/tag functionality (hide using new /web gui, present to box to unhide)",
+                "fixed locking bug, reworked locking.",
+                "fixed bug not storing cloud auth in some circumstances",
+                "fixed bug not storing source in json file: https://github.com/toniebox-reverse-engineering/teddycloud/issues/165",
+                "added limit to tempfile creation for radiostreams, default: 240mb (~6h) (configurable if expert mode is activated) https://github.com/toniebox-reverse-engineering/teddycloud/issues/180",
+                "added possibility to set WiFi Credentials on ESP32 Firmware patching",
+                "introduced second HTTPS port for WebFrontend only, which allows using https for webfrontend (Default: 8443)",
+                "tonie images from boxine can now be cached locally (PoC)",
+                "new /web gui is now default web gui: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/47",
+                "new /web gui: enhanced Toniecard, added search for Radiostream in Edit Modal",
+                "new /web gui: Tonies - Content section - added Migrate Content to Lib button on TAF files",
+                "new /web gui: added RTNL Log Page: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/48",
+                "new /web gui: added show Json File when double click on json file (File browser view)",
+                "new /web gui: added show TAP File when double click on tap file (File browser view)",
+                "new /web gui: added show TAF Header (including AudioID + Hash) when double click on a taf file (File browser view)",
+                "new /web gui: show date time of last played tag (toniecard + toniboxcard)",
+                "new /web gui: added Tonie Audio Playlist page (WIP - Implementation not yet finished), rearranged menu entries tonies section: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/52",
+                "new /web gui: added delete feature in content, library and audio playlist page",
+                "new /web gui: improved changelog page, parse links and open links in new tab; completed contributors page: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/27",
+                "new /web gui: added language flag to tonies card if it's not the same as the most owned language ones, added language filter",
+                "new /web gui: deletion of tonieboxes",
+                "new /web gui: info if add new boxes is enabled on homepage and tonieboxes page",
+                "new /web gui: enable/disable API access for toniebox added on tonieboxes page",
+                "new /web gui: add hide tonie/tag in tonies list (in info modal)",
+                "new /web gui: PoC Tonies Custom Json Editor (WiP, not working, but you get the json part to copy into the tonies.custom.json)",
+                "new /web gui: PoC Tonie Audio Playlist Editor (WiP, not working, but you get the json to copy and save as a TAP file) ",
+                "new /web gui: allow TAP files to be selected on Edit Tag Modal",
+                "new /web gui: new 404 page",
+                "new /web gui: hidden feature Tonie meeting. Search for it!",
+                "new /web gui: added link to Toniebox if the box is version cc3200, an ip is available and cfw is installed: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/28",
+                "new /web gui: hide audioplayer if no source is set, when clicking on play icon of a tonie/taf/... the player is shown: https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/40",
+                "new /web gui: added minimize/maximize audioplayer https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/40",
+                "new /web gui: show Tonie on tonie article search",
+                "new /web gui: improved audioplayer, added volume control to custom one, hide doubled audioplayer",
+                "new /web gui: added French translation. Feel free to check if chatGPT is a good translator. If something is wrong, give us a shout at telegram!",
+                "new /weg gui: overworked filebrowser to be responsive",
+                "new /web gui: overworked tonie information modal, now also available in file browser (library + content)",
+                "new /web gui: added Create Directory functionality in file browser",
+                "new /web gui: added better breadcrumb to filebrowser (clickable for easy directory switching) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/78",
+                "new /web gui: set nocloud to true if source of a tag is changed https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/77",
+                "new /web gui: show image and information from set source if different from model https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/80",
+                "new /web gui: tonie overview: filter now also considers information from set source",
+                "new /web gui: fixed bugs after updating tonies in tonies overview",
+                "new /web gui: added FAQ page in community section",
+                "new /web gui: support web streams in audioplayer",
+                "new /web gui: improved filebrowser, added filter field and made buttons sticky",
+                "new /web gui: integrated ESP32 Firmware Flashing https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/46",
+                "new /web gui: integrated setting of WiFi credentials in ESP32 Firmware Flashing",
+                "new /web gui: show hint on ESP32 Firmware Flashing page if browser does not support WebSerial",
+                "new /web gui: allow multiselection in file browser for file deletion",
+                "new /web gui: limit audio encoder to 99 files (as Toniebox only supports 99 chapters)",
+                "new /web gui: fixed image fetch loop when playing a tonie",
+                "new /web gui: fixed poor audio quality in some case when using audio encoder",
+                "new /web gui: migrated gui from create-react-app to vite",
+                "new /web gui: fixed some bugs and minor refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.5.2...tc_v0.6.0",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.5.2...tcw_v0.6.0",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-0/468",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.0",
+        },
         {
             version: "0.5.2",
             changes: [
@@ -33,7 +104,7 @@ export const ChangelogPage = () => {
                 "new /web gui: enhanced Toniebox Card, improved UX",
                 "new /web gui: Dark theme (Last used Theme stored in localStorage in Browser)",
                 "new /web gui: Show All (Hide Pagination on Tonies List, stored in localStorage in Browser)",
-                "new /web gui: Support of overlayed content folder. More details can be found here: https://forum.revvox.de/t/teddycloud-supporting-multiple-tonieboxes/365/5",
+                "new /web gui: Support of overlayed content folder. More details can be found here: https://forum.revvox.de/t/teddycloud-supporting-multiple-tonieboxes/451/1",
                 "new /web gui: Text inputs in Settings must be saved explicitly. (only Textinputs, other types are still autosaved.) Expect changes in future releases.",
                 "new /web gui: fixed various state bugs",
                 "new /web gui: show last online date of offline tonieboxes",
@@ -104,6 +175,21 @@ export const ChangelogPage = () => {
         },
     ];
 
+    const renderChangeEntry = (entry: string) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const parts = entry.split(urlRegex);
+
+        return parts.map((part, index) =>
+            urlRegex.test(part) ? (
+                <Link key={index} to={part} target="_blank" rel="noopener noreferrer">
+                    {part}
+                </Link>
+            ) : (
+                part
+            )
+        );
+    };
+
     return (
         <>
             <StyledSider>
@@ -113,7 +199,7 @@ export const ChangelogPage = () => {
                 <HiddenDesktop>
                     <CommunitySubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("community.navigationTitle") },
@@ -132,7 +218,7 @@ export const ChangelogPage = () => {
                                         <h3>Changes</h3>
                                         <ul>
                                             {item.changes.map((change, index) => (
-                                                <li key={index}>{change}</li>
+                                                <li key={index}>{renderChangeEntry(change)}</li>
                                             ))}
                                         </ul>
                                     </Paragraph>
@@ -144,7 +230,9 @@ export const ChangelogPage = () => {
                                             <ul>
                                                 {item.commits.map((commit, index) => (
                                                     <li key={index}>
-                                                        <Link to={commit}>{commit}</Link>
+                                                        <Link to={commit} target="_blank">
+                                                            {commit}
+                                                        </Link>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -155,7 +243,9 @@ export const ChangelogPage = () => {
                                             <Text strong>Discussion:</Text>
                                             <ul>
                                                 <li>
-                                                    <Link to={item.discussionLink}>{item.discussionLink}</Link>
+                                                    <Link to={item.discussionLink} target="_blank">
+                                                        {item.discussionLink}
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </>
@@ -165,7 +255,9 @@ export const ChangelogPage = () => {
                                             <Text strong>GitHub Release:</Text>
                                             <ul>
                                                 <li>
-                                                    <Link to={item.githubReleaseLink}>{item.githubReleaseLink}</Link>
+                                                    <Link to={item.githubReleaseLink} target="_blank">
+                                                        {item.githubReleaseLink}
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </>

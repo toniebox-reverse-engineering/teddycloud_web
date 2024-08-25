@@ -1,21 +1,16 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Select } from "antd";
-import {
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
 
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/tonies/FileBrowser";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
-import { useTonieboxContent } from "../../components/tonies/OverlayContentDirectories";
+import { FileBrowser } from "../../components/utils/FileBrowser";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
-const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
 
 export const ContentPage = () => {
@@ -32,7 +27,7 @@ export const ContentPage = () => {
                 <HiddenDesktop>
                     <ToniesSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonies.navigationTitle") },

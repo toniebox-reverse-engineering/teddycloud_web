@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
+import { Alert, message } from "antd";
+import BreadcrumbWrapper, {
     HiddenDesktop,
-    StyledBreadcrumb,
     StyledContent,
     StyledLayout,
     StyledSider,
@@ -20,6 +20,7 @@ export const TonieboxesPage = () => {
 
     // Define the state with TonieCardProps[] type
     const [tonieboxes, setTonieboxes] = useState<TonieboxCardProps[]>([]);
+    const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
 
     useEffect(() => {
         const fetchTonieboxes = async () => {
@@ -29,7 +30,30 @@ export const TonieboxesPage = () => {
         };
 
         fetchTonieboxes();
+
+        const fetchNewBoxesAllowed = async () => {
+            try {
+                const newBoxesAllowed = await api.apiGetNewBoxesAllowed();
+                setNewBoxesAllowed(newBoxesAllowed);
+            } catch (error) {
+                message.error("Fetching new box allowed: " + error);
+            }
+        };
+
+        fetchNewBoxesAllowed();
     }, []);
+
+    const newBoxesAllowedWarning = newBoxesAllowed ? (
+        <Alert
+            message={t("tonieboxes.newBoxesAllowed")}
+            description={t("tonieboxes.newBoxesAllowedText")}
+            type="warning"
+            showIcon
+            style={{ margin: "16px 0" }}
+        />
+    ) : (
+        ""
+    );
 
     return (
         <>
@@ -40,11 +64,12 @@ export const TonieboxesPage = () => {
                 <HiddenDesktop>
                     <TonieboxesSubNav />
                 </HiddenDesktop>
-                <StyledBreadcrumb
+                <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("tonieboxes.navigationTitle") }]}
                 />
                 <StyledContent>
                     <h1>{t("tonieboxes.title")}</h1>
+                    {newBoxesAllowedWarning}
                     <TonieboxesList tonieboxCards={tonieboxes} />
                 </StyledContent>
             </StyledLayout>

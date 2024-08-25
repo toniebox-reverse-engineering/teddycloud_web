@@ -6,6 +6,8 @@ import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import AudioPlayerFooter from "./AudioPlayerFooter";
 
 import { useEffect, useState } from "react";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 const StyledFooterComponent = styled(Footer)`
     position: fixed;
@@ -25,23 +27,34 @@ const StyledCenterPart = styled.div`
     align-items: center;
 `;
 
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 export const StyledFooter = () => {
     const [footerHeight, setFooterHeight] = useState(0);
+
     const [version, setVersion] = useState("");
     const [versionShort, setVersionShort] = useState("");
+    const [gitShaShort, setGitShaShort] = useState("");
 
-    useEffect(() => {
+    const handleAudioPlayerVisibilityChange = () => {
         const footer = document.querySelector("footer");
         if (footer) {
             setFooterHeight(footer.offsetHeight);
         }
-        fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/internal.version.v_long`)
-            .then((response) => response.text()) // Parse response as text
-            .then((data) => setVersion(data)) // Set fetched data to state
+    };
+
+    useEffect(() => {
+        api.apiGetTeddyCloudSettingRaw("internal.version.v_long")
+            .then((response) => response.text())
+            .then((data) => setVersion(data))
             .catch((error) => console.error("Error fetching data:", error));
-        fetch(`${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/get/internal.version.v_short`)
-            .then((response) => response.text()) // Parse response as text
-            .then((data) => setVersionShort(data)) // Set fetched data to state
+        api.apiGetTeddyCloudSettingRaw("internal.version.v_short")
+            .then((response) => response.text())
+            .then((data) => setVersionShort(data))
+            .catch((error) => console.error("Error fetching data:", error));
+        api.apiGetTeddyCloudSettingRaw("internal.version.git_sha_short")
+            .then((response) => response.text())
+            .then((data) => setGitShaShort(data))
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 
@@ -51,16 +64,18 @@ export const StyledFooter = () => {
 
             <StyledFooterComponent>
                 <StyledCenterPart>
-                    <AudioPlayerFooter />
+                    <AudioPlayerFooter onVisibilityChange={handleAudioPlayerVisibilityChange} />
                 </StyledCenterPart>
                 <StyledCenterPart>
-                    <div style={{ marginTop: "8px" }}>
+                    <div>
                         <small>
                             <Link
                                 to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/"
                                 target="_blank"
                             >
-                                <HiddenDesktop>{versionShort}</HiddenDesktop>
+                                <HiddenDesktop>
+                                    {versionShort} ({gitShaShort})
+                                </HiddenDesktop>
                                 <HiddenMobile>{version}</HiddenMobile>
                             </Link>
                         </small>

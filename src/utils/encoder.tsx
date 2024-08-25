@@ -9,7 +9,8 @@ export function upload(
     reject: (reason?: any) => void,
     formData: FormData,
     fileList: MyUploadFile<any>[],
-    file: MyUploadFile<any>
+    file: MyUploadFile<any>,
+    debugPCMObjects?: boolean
 ) {
     const reader = new FileReader();
 
@@ -22,8 +23,8 @@ export function upload(
 
             const originalAudioBuffer = await audioContext.decodeAudioData(arrayBuffer);
             const offlineAudioContext = new OfflineAudioContext({
-                numberOfChannels: 2,
-                length: (originalAudioBuffer.length * targetSampleRate) / originalAudioBuffer.sampleRate,
+                numberOfChannels: originalAudioBuffer.numberOfChannels,
+                length: Math.round((originalAudioBuffer.length * targetSampleRate) / originalAudioBuffer.sampleRate),
                 sampleRate: targetSampleRate,
             });
 
@@ -40,8 +41,25 @@ export function upload(
 
             const interleavedData = new Int16Array(leftChannelData.length + rightChannelData.length);
             for (let i = 0, j = 0; i < leftChannelData.length; i++, j += 2) {
-                interleavedData[j] = leftChannelData[i] * 32767;
-                interleavedData[j + 1] = rightChannelData[i] * 32767;
+                interleavedData[j] = Math.max(-32767, Math.min(32767, leftChannelData[i] * 32767));
+                interleavedData[j + 1] = Math.max(-32767, Math.min(32767, rightChannelData[i] * 32767));
+            }
+
+            // Debug and save PCM data if needed
+            if (debugPCMObjects) {
+                console.log(`To download the file for debugging, copy and paste the following code into your browser's console:
+
+(function() {
+    const link = document.createElement('a');
+    link.href = '${URL.createObjectURL(new Blob([interleavedData.buffer], { type: "audio/pcm" }))}';
+    link.download = '${`pcmData.${fileList.indexOf(file)}.pcm`}';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+})(); 
+
+                `);
             }
 
             formData.append(file.name, new Blob([interleavedData.buffer]), `pcmData.${fileList.indexOf(file)}.pcm`);
@@ -50,6 +68,10 @@ export function upload(
             reject(error);
         }
     };
+
     reader.onerror = reject;
-    if (file.file) reader.readAsArrayBuffer(file.file);
+
+    if (file.file) {
+        reader.readAsArrayBuffer(file.file);
+    }
 }

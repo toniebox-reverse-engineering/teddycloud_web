@@ -9,13 +9,17 @@ import {
     SettingOutlined,
     WifiOutlined,
     SaveFilled,
+    DeleteOutlined,
+    LockOutlined,
+    LinkOutlined,
 } from "@ant-design/icons";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
 import { TonieCardProps } from "../../components/tonies/TonieCard";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
-import GetBoxModelImages from "../../util/boxModels";
+import GetBoxModelImages from "../../utils/boxModels";
+import ConfirmationDialog from "../utils/ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph, Text } = Typography;
@@ -47,10 +51,13 @@ export const TonieboxCard: React.FC<{
     const { t } = useTranslation();
     const { token } = useToken();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
     const [lastOnline, setLastOnline] = useState<string>("");
+    const [lastIp, setLastIp] = useState<string>("");
+    const [cfwInstalled, setCFWInstalled] = useState<boolean>(false);
     const [lastPlayedTonieName, setLastPlayedTonieName] = useState<React.ReactNode>(null);
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [isEditSettingsModalOpen, setIsEditSettingsModalOpen] = useState(false);
@@ -61,13 +68,17 @@ export const TonieboxCard: React.FC<{
     const [boxName, setBoxName] = useState(tonieboxCard.boxName);
     const [tonieboxName, setTonieBoxName] = useState(tonieboxCard.boxName);
     const [boxImage, setBoxImage] = useState<JSX.Element | null>(null);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const [tonieboxAccessApi, setTonieboxAccessApi] = useState<boolean>(true);
+    const [modalKey, setModalKey] = useState(0);
 
-    const boxModelImages = GetBoxModelImages();
-    const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
-        boxModelImages.map((v) => {
-            return { label: v.name, value: v.id };
-        })
-    );
+    useEffect(() => {
+        const fetchTonieboxApiAccess = async () => {
+            const tonieboxApiAccess = await api.apiGetTonieboxApiAccess(tonieboxCard.ID);
+            setTonieboxAccessApi(tonieboxApiAccess);
+        };
+        fetchTonieboxApiAccess();
+    }, [tonieboxCard.ID, isEditSettingsModalOpen]);
 
     useEffect(() => {
         const fetchTonieboxStatus = async () => {
@@ -96,11 +107,14 @@ export const TonieboxCard: React.FC<{
 
         const fetchTonieboxLastRUID = async () => {
             const ruid = await api.apiGetTonieboxLastRUID(tonieboxCard.ID);
-
             if (ruid !== "ffffffffffffffff" && ruid !== "") {
+                const ruidTime = await api.apiGetTonieboxLastRUIDTime(tonieboxCard.ID);
                 const fetchTonies = async () => {
                     const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
-                    setLastPlayedTonie(tonieData.filter((tonieData) => tonieData.ruid === ruid));
+                    setLastPlayedTonie(
+                        tonieData.filter((tonieData) => tonieData.ruid === ruid),
+                        ruidTime
+                    );
                 };
                 fetchTonies();
             }
@@ -115,9 +129,47 @@ export const TonieboxCard: React.FC<{
             fetchTonieboxLastOnline();
         }
 
+        const fetchTonieboxLastIp = async () => {
+            const response = await api.apiGetTeddyCloudSettingRaw("internal.ip", tonieboxCard.ID);
+            const lastIp = await response.text();
+            setLastIp(lastIp);
+        };
+        fetchTonieboxLastIp();
+
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tonieboxCard.ID, tonieboxCard.boxModel]);
+
+    useEffect(() => {
+        if (lastIp && tonieboxVersion === "CC3200") {
+            // only if lastIp is set and box version is CC3200
+            // we check for CFW using battery status API call
+            try {
+                fetch(`http://${lastIp}/api/ajax?cmd=box-battery&sub=stats`)
+                    .then((response) => response.text())
+                    .then((value) => {
+                        console.log("Battery Stats fetched --> assume CFW active");
+                        setCFWInstalled(true);
+                    })
+                    .catch((error) => {
+                        console.log("No Battery Stats fetched --> assume CFW not active");
+                        setCFWInstalled(false);
+                    });
+            } catch (error) {
+                console.log("No Battery Stats fetched --> assume CFW not active");
+                setCFWInstalled(false);
+            }
+        }
+    }, [lastIp, tonieboxVersion]);
+
+    const boxModelImages = GetBoxModelImages();
+
+    const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
+        boxModelImages.map((v) => {
+            return { label: v.name, value: v.id };
+        })
+    );
 
     const selectBoxImage = (id: string) => {
         const selectedImage = tonieboxImages.find((item: { id: string }) => item.id === id);
@@ -152,7 +204,7 @@ export const TonieboxCard: React.FC<{
         }
     };
 
-    const setLastPlayedTonie = (tonie: TonieCardProps[]) => {
+    const setLastPlayedTonie = (tonie: TonieCardProps[], time?: string) => {
         setLastPlayedTonieName(
             <>
                 <Link to={"/tonies?tonieRUID=" + tonie[0].ruid + "&overlay=" + tonieboxCard.ID}>
@@ -162,7 +214,8 @@ export const TonieboxCard: React.FC<{
                         title={
                             t("tonieboxes.lastPlayedTonie") +
                             tonie[0].tonieInfo.series +
-                            (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "")
+                            (tonie[0].tonieInfo.episode ? " - " + tonie[0].tonieInfo.episode : "") +
+                            (time ? " (" + time + ")" : "")
                         }
                     >
                         <img
@@ -207,9 +260,6 @@ export const TonieboxCard: React.FC<{
     };
 
     // Settings
-    const handleEditSettingsClick = () => {
-        showEditSettingsModal();
-    };
     const showEditSettingsModal = () => {
         setIsEditSettingsModalOpen(true);
     };
@@ -218,6 +268,10 @@ export const TonieboxCard: React.FC<{
     };
     const handleEditSettingsCancel = () => {
         setIsEditSettingsModalOpen(false);
+    };
+    const handleEditSettingsClick = () => {
+        setModalKey((prevKey) => prevKey + 1);
+        showEditSettingsModal();
     };
 
     // Model (name + box Model)
@@ -241,15 +295,9 @@ export const TonieboxCard: React.FC<{
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
         };
+
         try {
-            const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/boxModel?overlay=${tonieboxCard.ID}`;
-            await fetch(url, {
-                method: "POST",
-                body: selectedModel.toString(),
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiPostTeddyCloudSetting("boxModel", selectedModel, tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
                 })
@@ -270,15 +318,9 @@ export const TonieboxCard: React.FC<{
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
         };
+
         try {
-            const url = `${process.env.REACT_APP_TEDDYCLOUD_API_URL}/api/settings/set/boxName?overlay=${tonieboxCard.ID}`;
-            await fetch(url, {
-                method: "POST",
-                body: boxName.toString(),
-                headers: {
-                    "Content-Type": "text/plain",
-                },
-            })
+            api.apiPostTeddyCloudSetting("boxName", boxName.toString(), tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
                 })
@@ -320,7 +362,7 @@ export const TonieboxCard: React.FC<{
         if (activeModel !== selectedModel) handleModelSave();
     };
 
-    const editModalFooter = (
+    const editTonieboxModalFooter = (
         <>
             <Button
                 type="primary"
@@ -350,7 +392,7 @@ export const TonieboxCard: React.FC<{
                 </>
             }
             open={isModelModalOpen}
-            footer={editModalFooter}
+            footer={editTonieboxModalFooter}
             onCancel={handleModelCancel}
         >
             <Divider orientation="left" orientationMargin="0">
@@ -365,7 +407,8 @@ export const TonieboxCard: React.FC<{
                         <CloseOutlined
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
-                                color: boxName === tonieboxName ? token.colorTextDisabled : "",
+                                color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,
+                                cursor: boxName === tonieboxName ? "default" : "pointer",
                             }}
                         />
                     }
@@ -385,7 +428,6 @@ export const TonieboxCard: React.FC<{
             title={t("tonieboxes.uploadTonieboxCertificatesModal.uploadTonieboxCertificates", {
                 name: tonieboxCard.boxName,
             })}
-            width="auto"
             open={isUploadCertificatesModalOpen}
             onOk={handleUploadCertificatesOk}
             onCancel={handleUploadCertificatesCancel}
@@ -413,9 +455,104 @@ export const TonieboxCard: React.FC<{
             onOk={handleEditSettingsOk}
             onCancel={handleEditSettingsCancel}
         >
-            <TonieboxSettingsPage overlay={tonieboxCard.ID} />
+            <TonieboxSettingsPage overlay={tonieboxCard.ID} key={modalKey} />
         </Modal>
     );
+
+    const deleteToniebox = () => {
+        try {
+            messageApi.open({
+                type: "loading",
+                content: t("tonieboxes.messages.deleting"),
+                duration: 0,
+            });
+            api.apiPostTeddyCloudSetting("removeOverlay", null, tonieboxCard.ID)
+                .then((response) => response.text())
+                .then((data) => {
+                    messageApi.destroy();
+                    if (data === "OK") {
+                        messageApi.open({
+                            type: "success",
+                            content: t("tonieboxes.messages.deleteSuccessful"),
+                        });
+                        window.location.reload();
+                    } else {
+                        messageApi.open({
+                            type: "error",
+                            content: t("tonieboxes.messages.deleteFailed") + data,
+                        });
+                    }
+                })
+                .catch((error) => {
+                    messageApi.destroy();
+                    messageApi.open({
+                        type: "error",
+                        content: t("tonieboxes.messages.deleteFailed") + error,
+                    });
+                });
+        } catch (error) {
+            messageApi.destroy();
+            messageApi.open({
+                type: "error",
+                content: t("tonieboxes.messages.deleteFailed") + error,
+            });
+        }
+    };
+
+    const showDeleteConfirmDialog = () => {
+        setIsConfirmDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteToniebox();
+        setIsConfirmDeleteModalOpen(false);
+    };
+
+    const handleCancelDelete = () => {
+        setIsConfirmDeleteModalOpen(false);
+    };
+
+    const deleteTonieboxModal = (
+        <ConfirmationDialog
+            title={t("tonieboxes.confirmDeleteModal")}
+            open={isConfirmDeleteModalOpen}
+            okText={t("tonieboxes.delete")}
+            cancelText={t("tonieboxes.cancel")}
+            content={t("tonieboxes.confirmDeleteDialog", { tonieboxToDelete: tonieboxName })}
+            handleOk={handleConfirmDelete}
+            handleCancel={handleCancelDelete}
+        />
+    );
+
+    const triggerWriteConfig = async () => {
+        try {
+            await api.apiTriggerWriteConfigGet();
+        } catch (error) {
+            message.error("Error while saving config to file.");
+        }
+    };
+
+    const handleApiAccessClick = async () => {
+        try {
+            api.apiPostTeddyCloudSetting("toniebox.api_access", !tonieboxAccessApi, tonieboxCard.ID)
+                .then(() => {
+                    triggerWriteConfig();
+
+                    setTonieboxAccessApi(!tonieboxAccessApi);
+
+                    if (tonieboxAccessApi) {
+                        message.success(t("tonieboxes.messages.apiAccessDisabled"));
+                    } else {
+                        message.success(t("tonieboxes.messages.apiAccessEnabled"));
+                    }
+                })
+                .catch((error) => {
+                    throw new Error(error.status + " " + error.statusText);
+                });
+        } catch (error) {
+            message.error(t("tonieboxes.messages.apiAccessNotChangedError") + error);
+        }
+    };
 
     return (
         <>
@@ -451,7 +588,14 @@ export const TonieboxCard: React.FC<{
                 }
                 actions={[
                     <>
-                        {tonieboxStatus ? (
+                        {!tonieboxAccessApi ? (
+                            <Tooltip title={t("tonieboxes.accessApiDisabled")}>
+                                <LockOutlined
+                                    style={{ color: "red", cursor: "pointer" }}
+                                    onClick={handleApiAccessClick}
+                                />
+                            </Tooltip>
+                        ) : tonieboxStatus ? (
                             <Tooltip title={t("tonieboxes.online")}>
                                 <WifiOutlined style={{ color: "green", cursor: "default" }} />
                             </Tooltip>
@@ -472,27 +616,36 @@ export const TonieboxCard: React.FC<{
                         )}
                     </>,
                     <EditOutlined key="edit" onClick={() => showModelModal()} />,
-                    <span key="settings" onClick={handleUploadCertificatesClick}>
-                        <SafetyCertificateOutlined key="certificate" style={{ marginRight: 8 }} />
-                    </span>,
-                    <span key="settings" onClick={handleEditSettingsClick}>
-                        <SettingOutlined key="edit" style={{ marginRight: 8 }} />
-                    </span>,
+                    <SafetyCertificateOutlined
+                        key="certificate"
+                        style={{ marginRight: 8 }}
+                        onClick={handleUploadCertificatesClick}
+                    />,
+                    <SettingOutlined key="edit" style={{ marginRight: 8 }} onClick={handleEditSettingsClick} />,
+                    <DeleteOutlined key="delete" style={{ marginRight: 8 }} onClick={showDeleteConfirmDialog} />,
                 ]}
             >
                 <Meta
-                    description={
-                        <div>
-                            {(tonieboxVersion !== "UNKNOWN" ? tonieboxVersion : "MAC") +
-                                ": " +
-                                getTonieboxIdFormatted()}
-                        </div>
-                    }
+                    description={[
+                        (tonieboxVersion !== "UNKNOWN" && tonieboxVersion !== undefined && tonieboxVersion !== null
+                            ? tonieboxVersion
+                            : "MAC") + " ",
+                        cfwInstalled ? (
+                            <Tooltip title={t("tonieboxes.linkToBoxCFW")}>
+                                <Link to={"http://" + lastIp} target="_blank">
+                                    {getTonieboxIdFormatted()} <LinkOutlined />
+                                </Link>
+                            </Tooltip>
+                        ) : (
+                            getTonieboxIdFormatted()
+                        ),
+                    ]}
                 />
             </Card>
             {editTonieboxOverlaySettingsModal}
             {editTonieboxCertificateModal}
             {editTonieboxModal}
+            {deleteTonieboxModal}
         </>
     );
 };

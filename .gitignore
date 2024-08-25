@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 
+# build
+/dist
 # testing
 /coverage
 
@@ -22,3 +24,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+localhost-key.pem
+localhost.pem
+src/setupProxy.js
+public/img_unknown.png
