@@ -116,11 +116,17 @@ export const EncoderPage = () => {
     const handleUpload = async () => {
         setUploading(true);
         const formData = new FormData();
-
         for (const file of fileList) {
-            await new Promise((resolve, reject) => upload(resolve, reject, formData, fileList, file, debugPCMObjects));
+            try {
+                await new Promise((resolve, reject) =>
+                    upload(resolve, reject, formData, fileList, file, debugPCMObjects),
+                );
+            } catch (error) {
+                message.error(t("tonies.encoder.errorFileProcessing") + " " + error);
+                setUploading(false);
+                return;
+            }
         }
-
         const currentUnixTime = Math.floor(Date.now() / 1000);
         const queryParams = {
             name: tafFilename + ".taf",
