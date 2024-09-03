@@ -79,6 +79,7 @@ export const TonieArticleSearch: React.FC<{
                         </div>
                     ),
                 }))}
+                style={{ marginTop: "8px" }}
             />
             <ToniesCustomJsonEditor
                 open={showAddCustomTonieModal}
