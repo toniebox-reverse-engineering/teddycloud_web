@@ -547,10 +547,16 @@ export const TonieCard: React.FC<{
                         />
                         {showSourceInfoPicture ? (
                             <Tooltip
-                                title={t("tonies.alternativeSource", {
-                                    originalTonie: '"' + modelTitle + '"',
-                                    assignedContent: '"' + sourceTitle + '"',
-                                }).replace(' "" ', " ")}
+                                title={
+                                    `${sourceTitle}`
+                                        ? t("tonies.alternativeSource", {
+                                              originalTonie: '"' + modelTitle + '"',
+                                              assignedContent: '"' + sourceTitle + '"',
+                                          }).replace(' "" ', " ")
+                                        : t("tonies.alternativeSourceUnknown", {
+                                              originalTonie: '"' + modelTitle + '"',
+                                          }).replace(' "" ', " ")
+                                }
                                 placement="bottom"
                             >
                                 <img
