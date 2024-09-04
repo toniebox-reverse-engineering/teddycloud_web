@@ -120,8 +120,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 tonieToHide: tonieInfoString
                     ? tonieInfoString
                     : "uid" in tonieCardOrTAFRecord
-                    ? tonieCardOrTAFRecord.uid
-                    : "",
+                      ? tonieCardOrTAFRecord.uid
+                      : "",
             })}
             handleOk={handleConfirmHide}
             handleCancel={handleCancelHide}
@@ -186,10 +186,16 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     }
                     {informationFromSource ? (
                         <Tooltip
-                            title={t("tonies.alternativeSource", {
-                                originalTonie: '"' + modelTitle + '"',
-                                assignedContent: '"' + sourceTitle + '"',
-                            }).replace(' "" ', " ")}
+                            title={
+                                `${sourceTitle}`
+                                    ? t("tonies.alternativeSource", {
+                                          originalTonie: '"' + modelTitle + '"',
+                                          assignedContent: '"' + sourceTitle + '"',
+                                      }).replace(' "" ', " ")
+                                    : t("tonies.alternativeSourceUnknown", {
+                                          originalTonie: '"' + modelTitle + '"',
+                                      }).replace(' "" ', " ")
+                            }
                             placement="bottom"
                         >
                             <img

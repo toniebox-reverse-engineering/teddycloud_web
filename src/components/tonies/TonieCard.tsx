@@ -243,7 +243,11 @@ export const TonieCard: React.FC<{
 
     const handleModelSave = async () => {
         try {
-            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "tonie_model=" + selectedModel, overlay);
+            await api.apiPostTeddyCloudContentJson(
+                localTonieCard.ruid,
+                "tonie_model=" + encodeURIComponent(selectedModel),
+                overlay,
+            );
             setActiveModel(selectedModel);
             message.success(
                 t("tonies.messages.setTonieToModelSuccessful", {
@@ -263,7 +267,11 @@ export const TonieCard: React.FC<{
 
     const handleSourceSave = async () => {
         try {
-            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "source=" + selectedSource, overlay);
+            await api.apiPostTeddyCloudContentJson(
+                localTonieCard.ruid,
+                "source=" + encodeURIComponent(selectedSource),
+                overlay,
+            );
             setActiveSource(selectedSource);
             message.success(
                 t("tonies.messages.setTonieToSourceSuccessful", {
@@ -547,10 +555,16 @@ export const TonieCard: React.FC<{
                         />
                         {showSourceInfoPicture ? (
                             <Tooltip
-                                title={t("tonies.alternativeSource", {
-                                    originalTonie: '"' + modelTitle + '"',
-                                    assignedContent: '"' + sourceTitle + '"',
-                                }).replace(' "" ', " ")}
+                                title={
+                                    `${sourceTitle}`
+                                        ? t("tonies.alternativeSource", {
+                                              originalTonie: '"' + modelTitle + '"',
+                                              assignedContent: '"' + sourceTitle + '"',
+                                          }).replace(' "" ', " ")
+                                        : t("tonies.alternativeSourceUnknown", {
+                                              originalTonie: '"' + modelTitle + '"',
+                                          }).replace(' "" ', " ")
+                                }
                                 placement="bottom"
                             >
                                 <img
