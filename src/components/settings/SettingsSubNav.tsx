@@ -32,27 +32,32 @@ export const SettingsSubNav = () => {
         return `${url.protocol}//${url.hostname}${port}`;
     };
 
-    const handleUpdateToniesJson = async () => {
+    const handleReloadToniesJson = async () => {
+        const hideLoading = message.loading(t("settings.toniesJsonReloadInProgress"), 0);
+
         try {
-            const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonUpdate");
+            const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonReload");
             const data = await response.text();
             setSelectedKey("");
 
-            if (data.toString() !== "Triggered tonies.json update") {
+            if (data.toString() !== "OK") {
+                hideLoading();
                 messageApi.open({
                     type: "error",
-                    content: t("settings.tonieJsonUpdateFailed"),
+                    content: t("settings.toniesJsonReloadFailed"),
                 });
             } else {
+                hideLoading();
                 messageApi.open({
                     type: "success",
-                    content: t("settings.tonieJsonUpdateTriggered"),
+                    content: t("settings.toniesJsonReloadSuccessful"),
                 });
             }
         } catch (error) {
+            hideLoading();
             messageApi.open({
                 type: "error",
-                content: t("settings.tonieJsonUpdateFailed"),
+                content: t("settings.toniesJsonReloadFailed"),
             });
         }
     };
@@ -77,11 +82,11 @@ export const SettingsSubNav = () => {
             title: t("settings.rtnl.navigationTitle"),
         },
         {
-            key: "update_toniesJson",
-            label: <label style={{ cursor: "pointer" }}>{t("settings.updateToniesJson")}</label>,
-            onClick: handleUpdateToniesJson,
+            key: "reload_toniesJson",
+            label: <label style={{ cursor: "pointer" }}>{t("settings.toniesJsonReload")}</label>,
+            onClick: handleReloadToniesJson,
             icon: React.createElement(SyncOutlined),
-            title: t("settings.updateToniesJson"),
+            title: t("settings.toniesJsonReload"),
         },
         {
             key: "restart_server",
