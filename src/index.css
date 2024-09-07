@@ -114,6 +114,11 @@ code {
     transform-origin: center;
 }
 
+.move-file .ant-select-selector {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
 /* workaround missing good responsiveness of antd tables... */
 
 .showBigDevicesOnly {

@@ -29,6 +29,7 @@ export const ChangelogPage = () => {
                 "gui: Fixed bug saving model and source of a tonie/tag at once",
                 "gui: Fixed display bug sourceInfo with unknown content",
                 "gui: Integrated new reload tonies.json api",
+                "gui: Added Moving and renaming of files in library and content",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.0...tc_v0.6.1",

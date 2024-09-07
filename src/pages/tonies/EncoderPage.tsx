@@ -184,7 +184,7 @@ export const EncoderPage = () => {
             api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
-                    var list: any[] = data.files;
+                    let list: any[] = data.files;
                     list = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
                         .sort((a, b) => {
@@ -250,7 +250,7 @@ export const EncoderPage = () => {
                     setTreeData([...treeData, newDir]);
                     setTreeNodeId(newNodeId);
 
-                    message.success(t("tonies.createDirectory.directoryCreated"));
+                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
                     setInputValueCreateDirectory("");
                 })
@@ -269,20 +269,20 @@ export const EncoderPage = () => {
 
     const createDirectoryModal = (
         <Modal
-            title={t("tonies.createDirectory.modalTitle")}
+            title={t("fileBrowser.createDirectory.modalTitle")}
             open={isCreateDirectoryModalOpen}
             onCancel={closeCreateDirectoryModal}
             onOk={createDirectory}
-            okText={t("tonies.createDirectory.create")}
-            cancelText={t("tonies.createDirectory.cancel")}
+            okText={t("fileBrowser.createDirectory.create")}
+            cancelText={t("fileBrowser.createDirectory.cancel")}
         >
             <p>
-                {t("tonies.createDirectory.inDirectory")} <b>{pathFromNodeId(treeNodeId)}/</b>
+                {t("fileBrowser.createDirectory.inDirectory")} <b>{pathFromNodeId(treeNodeId)}/</b>
             </p>
             <Input
                 ref={inputRef}
                 autoFocus={true}
-                placeholder={t("tonies.createDirectory.placeholder")}
+                placeholder={t("fileBrowser.createDirectory.placeholder")}
                 value={inputValueCreateDirectory}
                 onChange={handleCreateDirectoryInputChange}
             />
@@ -389,7 +389,7 @@ export const EncoderPage = () => {
                                                 loadData={onLoadTreeData}
                                                 treeData={treeData}
                                             />
-                                            <Tooltip title={t("tonies.createDirectory.createDirectory")}>
+                                            <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                                                 <Button
                                                     disabled={uploading}
                                                     icon={<FolderAddOutlined />}
