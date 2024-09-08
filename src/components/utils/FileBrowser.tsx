@@ -374,17 +374,17 @@ export const FileBrowser: React.FC<{
 
     const pathFromNodeId = (nodeId: string): string => {
         const node = treeData.filter((entry) => entry.value === nodeId)[0];
-        if (!node || node.pId === "-1") return "";
+        if (node.pId === "-1") return "";
         return pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
     };
 
-    const findNodeIdByFullPath = (fullPath: string, nodes: any[]): string => {
+    const findNodeIdByFullPath = (fullPath: string, nodes: any[]): string | null => {
         for (const node of nodes) {
             if (node.fullPath === fullPath) {
                 return node.id;
             }
         }
-        return rootTreeNode.id;
+        return null;
     };
 
     const findNodesByParentId = (parentId: string, nodes: any[]): string[] => {
@@ -702,7 +702,7 @@ export const FileBrowser: React.FC<{
                     if (text !== "OK") {
                         throw new Error(text);
                     }
-                    const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData);
+                    const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData) || rootTreeNode.id;
                     const newNodeId = `${parentNodeId}.${treeData.length}`; // Generate a unique ID for the new node
                     const nodeExpanded = isNodeExpanded(parentNodeId);
 
