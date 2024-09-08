@@ -130,6 +130,7 @@ export const FileBrowser: React.FC<{
 
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
+    const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
 
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState(false);
 
@@ -373,7 +374,7 @@ export const FileBrowser: React.FC<{
 
     const pathFromNodeId = (nodeId: string): string => {
         const node = treeData.filter((entry) => entry.value === nodeId)[0];
-        if (node.pId === "-1") return "";
+        if (!node || node.pId === "-1") return "";
         return pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
     };
 
@@ -394,6 +395,10 @@ export const FileBrowser: React.FC<{
             }
         }
         return childNodes;
+    };
+
+    const isNodeExpanded = (nodeId: string) => {
+        return expandedKeys.includes(nodeId);
     };
 
     // tap functions
@@ -535,6 +540,8 @@ export const FileBrowser: React.FC<{
                         treeData={treeData}
                         treeNodeLabelProp="fullPath"
                         placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
+                        treeExpandedKeys={expandedKeys}
+                        onTreeExpand={(keys) => setExpandedKeys(keys)}
                     />
                     <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                         <Button
@@ -697,8 +704,9 @@ export const FileBrowser: React.FC<{
                     }
                     const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData);
                     const newNodeId = `${parentNodeId}.${treeData.length}`; // Generate a unique ID for the new node
-                    const childNodes = findNodesByParentId(parentNodeId, treeData);
-                    if (childNodes.length > 0) {
+                    const nodeExpanded = isNodeExpanded(parentNodeId);
+
+                    if (nodeExpanded) {
                         const newDir = {
                             id: newNodeId,
                             pId: parentNodeId,
