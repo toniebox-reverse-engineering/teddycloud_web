@@ -143,7 +143,6 @@ export const FileBrowser: React.FC<{
             api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log("initial");
                     var list: any[] = data.files;
                     list = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
@@ -160,7 +159,6 @@ export const FileBrowser: React.FC<{
                             };
                         });
                     setTreeData(treeData.concat(list));
-                    console.log(treeData);
                 });
         };
         preLoadTreeData();
@@ -181,7 +179,7 @@ export const FileBrowser: React.FC<{
             setPath("");
             const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
             window.history.replaceState(null, "", newUrl);
-            setRebuildList(!rebuildList);
+            setRebuildList((prev) => !prev);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [overlay]);
@@ -447,6 +445,7 @@ export const FileBrowser: React.FC<{
 
     const closeMoveFileModal = () => {
         setIsMoveFileModalOpen(false);
+        setTreeNodeId(rootTreeNode.id);
     };
 
     const handleSingleMove = async (source: string, target: string) => {
@@ -454,6 +453,7 @@ export const FileBrowser: React.FC<{
             await moveRenameFile(source + "/" + currentFile, target + "/" + currentFile, true);
             setRebuildList((prev) => !prev);
             setIsMoveFileModalOpen(false);
+            setTreeNodeId(rootTreeNode.id);
         } catch (error) {}
     };
 
@@ -468,6 +468,7 @@ export const FileBrowser: React.FC<{
             setRebuildList((prev) => !prev);
             setIsMoveFileModalOpen(false);
             setSelectedRowKeys([]);
+            setTreeNodeId(rootTreeNode.id);
         } else {
             message.warning("No rows selected for moving.");
         }
@@ -635,26 +636,29 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    const deleteFile = async (path: string, apiCall: string) => {
+    const deleteFile = async (deletePath: string, apiCall: string) => {
         const loadingMessage = message.loading(t("fileBrowser.messages.deleting"), 0);
         try {
             const deleteUrl = `/api/fileDelete${apiCall}`;
-            const response = await api.apiPostTeddyCloudRaw(deleteUrl, path);
+            const response = await api.apiPostTeddyCloudRaw(deleteUrl, deletePath);
 
             const data = await response.text();
             loadingMessage();
             if (data === "OK") {
-                message.success(t("fileBrowser.messages.deleteSuccessful", { file: path }));
-                const idToRemove = findNodeIdByFullPath(path + "/", treeData);
+                message.success(t("fileBrowser.messages.deleteSuccessful", { file: deletePath }));
+                const idToRemove = findNodeIdByFullPath(deletePath + "/", treeData);
                 if (idToRemove) {
                     setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
                 }
+                if (createDirectoryPath === deletePath + "/") {
+                    setCreateDirectoryPath(path);
+                }
             } else {
-                message.error(`${t("fileBrowser.messages.deleteFailed", { file: path })}: ${data}`);
+                message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${data}`);
             }
         } catch (error) {
             loadingMessage();
-            message.error(`${t("fileBrowser.messages.deleteFailed", { file: path })}: ${error}`);
+            message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${error}`);
         }
     };
 
@@ -700,7 +704,7 @@ export const FileBrowser: React.FC<{
                     }
                     message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
-                    setRebuildList(!rebuildList);
+                    setRebuildList((prev) => !prev);
                     setInputValueCreateDirectory("");
                 })
                 .catch((error) => {
@@ -756,7 +760,7 @@ export const FileBrowser: React.FC<{
             navigate(`?path=${dirPath}`);
         }
         if (path === dirPath) {
-            setRebuildList(!rebuildList);
+            setRebuildList((prev) => !prev);
         }
         setFilterFieldAutoFocus(false);
         setPath(dirPath);
@@ -812,7 +816,7 @@ export const FileBrowser: React.FC<{
                             type: "success",
                             content: t("fileBrowser.messages.migrationSuccessful"),
                         });
-                        setRebuildList(!rebuildList);
+                        setRebuildList((prev) => !prev);
                     } else {
                         messageApi.open({
                             type: "error",
