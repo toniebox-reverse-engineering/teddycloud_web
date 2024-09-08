@@ -264,7 +264,10 @@ export const EncoderPage = () => {
             title: inputValueCreateDirectory,
         };
         try {
-            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, path + "/" + inputValueCreateDirectory)
+            api.apiPostTeddyCloudRaw(
+                `/api/dirCreate?special=library`,
+                path + "/" + encodeURIComponent(inputValueCreateDirectory),
+            )
                 .then((response) => {
                     return response.text();
                 })

@@ -377,13 +377,23 @@ export const FileBrowser: React.FC<{
         return pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
     };
 
-    const findNodeIdByFullPath = (fullPath: string, nodes: any[]): string | null => {
+    const findNodeIdByFullPath = (fullPath: string, nodes: any[]): string => {
         for (const node of nodes) {
             if (node.fullPath === fullPath) {
                 return node.id;
             }
         }
-        return null;
+        return rootTreeNode.id;
+    };
+
+    const findNodesByParentId = (parentId: string, nodes: any[]): string[] => {
+        let childNodes: string[] = [];
+        for (const node of nodes) {
+            if (node.pId === parentId) {
+                childNodes.push(node);
+            }
+        }
+        return childNodes;
     };
 
     // tap functions
@@ -676,7 +686,7 @@ export const FileBrowser: React.FC<{
         try {
             api.apiPostTeddyCloudRaw(
                 `/api/dirCreate?special=library`,
-                createDirectoryPath + "/" + inputValueCreateDirectory,
+                createDirectoryPath + "/" + encodeURIComponent(inputValueCreateDirectory),
             )
                 .then((response) => {
                     return response.text();
@@ -685,22 +695,25 @@ export const FileBrowser: React.FC<{
                     if (text !== "OK") {
                         throw new Error(text);
                     }
-
-                    const newNodeId = `${treeNodeId}.${treeData.length}`; // Generate a unique ID for the new node
-                    const newDir = {
-                        id: newNodeId,
-                        pId: treeNodeId,
-                        value: newNodeId,
-                        title: inputValueCreateDirectory,
-                        fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
-                    };
-                    setTreeData(
-                        [...treeData, newDir].sort((a, b) => {
-                            return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
-                        }),
-                    );
-                    if (isMoveFileModalOpen) {
-                        setTreeNodeId(newNodeId);
+                    const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData);
+                    const newNodeId = `${parentNodeId}.${treeData.length}`; // Generate a unique ID for the new node
+                    const childNodes = findNodesByParentId(parentNodeId, treeData);
+                    if (childNodes.length > 0) {
+                        const newDir = {
+                            id: newNodeId,
+                            pId: parentNodeId,
+                            value: newNodeId,
+                            title: inputValueCreateDirectory,
+                            fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
+                        };
+                        setTreeData(
+                            [...treeData, newDir].sort((a, b) => {
+                                return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
+                            }),
+                        );
+                        if (isMoveFileModalOpen) {
+                            setTreeNodeId(newNodeId);
+                        }
                     }
                     message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
