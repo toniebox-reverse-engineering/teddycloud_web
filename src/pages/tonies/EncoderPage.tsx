@@ -61,6 +61,32 @@ export const EncoderPage = () => {
             setDebugPCMObjects(logPCMURLObject);
         };
         fetchDebugPCM();
+
+        const preLoadTreeData = async () => {
+            const newPath = pathFromNodeId(rootTreeNode.id); // Construct API path based on node id
+
+            // Simulate an API call to fetch children
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+                .then((response) => response.json())
+                .then((data) => {
+                    var list: any[] = data.files;
+                    list = list
+                        .filter((entry) => entry.isDir && entry.name !== "..")
+                        .sort((a, b) => {
+                            return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+                        })
+                        .map((entry) => {
+                            return {
+                                id: rootTreeNode.id + "." + list.indexOf(entry),
+                                pId: rootTreeNode.id,
+                                value: rootTreeNode.id + "." + list.indexOf(entry),
+                                title: entry.name,
+                            };
+                        });
+                    setTreeData(treeData.concat(list));
+                });
+        };
+        preLoadTreeData();
     }, []);
 
     useEffect(() => {
@@ -184,7 +210,7 @@ export const EncoderPage = () => {
             api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
-                    let list: any[] = data.files;
+                    var list: any[] = data.files;
                     list = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
                         .sort((a, b) => {
@@ -247,9 +273,12 @@ export const EncoderPage = () => {
                         throw new Error(text);
                     }
                     // Update the tree data and select the new directory
-                    setTreeData([...treeData, newDir]);
+                    setTreeData(
+                        [...treeData, newDir].sort((a, b) => {
+                            return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
+                        }),
+                    );
                     setTreeNodeId(newNodeId);
-
                     message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
                     setInputValueCreateDirectory("");

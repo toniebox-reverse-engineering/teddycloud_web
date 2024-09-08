@@ -137,6 +137,36 @@ export const FileBrowser: React.FC<{
     const [newFilename, setInputValueNewFilename] = useState<string>(currentFile);
 
     useEffect(() => {
+        const preLoadTreeData = async () => {
+            const newPath = pathFromNodeId(rootTreeNode.id);
+
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("initial");
+                    var list: any[] = data.files;
+                    list = list
+                        .filter((entry) => entry.isDir && entry.name !== "..")
+                        .sort((a, b) => {
+                            return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+                        })
+                        .map((entry) => {
+                            return {
+                                id: rootTreeNode.id + "." + list.indexOf(entry),
+                                pId: rootTreeNode.id,
+                                value: rootTreeNode.id + "." + list.indexOf(entry),
+                                title: entry.name,
+                                fullPath: `${newPath}/${entry.name}/`,
+                            };
+                        });
+                    setTreeData(treeData.concat(list));
+                    console.log(treeData);
+                });
+        };
+        preLoadTreeData();
+    }, []);
+
+    useEffect(() => {
         // Function to parse the query parameters from the URL
         const queryParams = new URLSearchParams(location.search);
         const initialPath = queryParams.get("path") || ""; // Get the 'path' parameter from the URL, default to empty string if not present
@@ -347,6 +377,15 @@ export const FileBrowser: React.FC<{
         const node = treeData.filter((entry) => entry.value === nodeId)[0];
         if (node.pId === "-1") return "";
         return pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
+    };
+
+    const findNodeIdByFullPath = (fullPath: string, nodes: any[]): string | null => {
+        for (const node of nodes) {
+            if (node.fullPath === fullPath) {
+                return node.id;
+            }
+        }
+        return null;
     };
 
     // tap functions
@@ -606,6 +645,10 @@ export const FileBrowser: React.FC<{
             loadingMessage();
             if (data === "OK") {
                 message.success(t("fileBrowser.messages.deleteSuccessful", { file: path }));
+                const idToRemove = findNodeIdByFullPath(path + "/", treeData);
+                if (idToRemove) {
+                    setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
+                }
             } else {
                 message.error(`${t("fileBrowser.messages.deleteFailed", { file: path })}: ${data}`);
             }
@@ -647,11 +690,14 @@ export const FileBrowser: React.FC<{
                         title: inputValueCreateDirectory,
                         fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
                     };
-                    setTreeData([...treeData, newDir]);
+                    setTreeData(
+                        [...treeData, newDir].sort((a, b) => {
+                            return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
+                        }),
+                    );
                     if (isMoveFileModalOpen) {
                         setTreeNodeId(newNodeId);
                     }
-
                     message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
                     setRebuildList(!rebuildList);
