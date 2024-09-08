@@ -705,8 +705,8 @@ export const FileBrowser: React.FC<{
                     const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData) || rootTreeNode.id;
                     const newNodeId = `${parentNodeId}.${treeData.length}`; // Generate a unique ID for the new node
                     const nodeExpanded = isNodeExpanded(parentNodeId);
-
-                    if (nodeExpanded) {
+                    const childNodes = findNodesByParentId(parentNodeId, treeData);
+                    if (nodeExpanded || childNodes.length > 0) {
                         const newDir = {
                             id: newNodeId,
                             pId: parentNodeId,
