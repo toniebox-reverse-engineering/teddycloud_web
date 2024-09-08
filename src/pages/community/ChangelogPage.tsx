@@ -23,9 +23,13 @@ export const ChangelogPage = () => {
                 "Stabilization backend",
                 "Changed default for setting cloud.prioCustomContent to false",
                 "Disabled prioCustomContent if lower audio id is allowed",
+                "Added reload tonies(.custom).json api https://github.com/toniebox-reverse-engineering/teddycloud/issues/177",
+                "Added moveFile api https://github.com/toniebox-reverse-engineering/teddycloud/issues/198",
                 "gui: Fixed bug storing source with html special chars",
                 "gui: Fixed bug saving model and source of a tonie/tag at once",
                 "gui: Fixed display bug sourceInfo with unknown content",
+                "gui: Integrated new reload tonies.json api",
+                "gui: Added Moving and renaming of files in library and content",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.0...tc_v0.6.1",

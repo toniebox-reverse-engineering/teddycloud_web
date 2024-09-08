@@ -1,7 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Modal, Table, Tooltip, message, Button, Input, Breadcrumb, InputRef, theme } from "antd";
+import {
+    Modal,
+    Table,
+    Tooltip,
+    message,
+    Button,
+    Input,
+    Breadcrumb,
+    InputRef,
+    theme,
+    TreeSelectProps,
+    TreeSelect,
+    Typography,
+    Alert,
+} from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
 import { useAudioContext } from "../audio/AudioContext";
@@ -11,6 +25,9 @@ import {
     CopyOutlined,
     DeleteOutlined,
     EditOutlined,
+    FolderAddOutlined,
+    FormOutlined,
+    NodeExpandOutlined,
     PlayCircleOutlined,
     TruckOutlined,
 } from "@ant-design/icons";
@@ -24,10 +41,13 @@ import TonieInformationModal from "./TonieInformationModal";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { DefaultOptionType } from "antd/es/select";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
+
+const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/", fullPath: "/" };
 
 interface RecordTafHeader {
     audioId?: any;
@@ -93,6 +113,7 @@ export const FileBrowser: React.FC<{
     const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
 
     const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState<boolean>(false);
+    const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(path);
     const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
 
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
@@ -106,6 +127,44 @@ export const FileBrowser: React.FC<{
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
     const [deletePath, setDeletePath] = useState<string>("");
     const [deleteApiCall, setDeleteApiCall] = useState<string>("");
+
+    const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
+    const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
+
+    const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState(false);
+
+    const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState(false);
+    const [newFilename, setInputValueNewFilename] = useState<string>(currentFile);
+
+    useEffect(() => {
+        const preLoadTreeData = async () => {
+            const newPath = pathFromNodeId(rootTreeNode.id);
+
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log("initial");
+                    var list: any[] = data.files;
+                    list = list
+                        .filter((entry) => entry.isDir && entry.name !== "..")
+                        .sort((a, b) => {
+                            return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+                        })
+                        .map((entry) => {
+                            return {
+                                id: rootTreeNode.id + "." + list.indexOf(entry),
+                                pId: rootTreeNode.id,
+                                value: rootTreeNode.id + "." + list.indexOf(entry),
+                                title: entry.name,
+                                fullPath: `${newPath}/${entry.name}/`,
+                            };
+                        });
+                    setTreeData(treeData.concat(list));
+                    console.log(treeData);
+                });
+        };
+        preLoadTreeData();
+    }, []);
 
     useEffect(() => {
         // Function to parse the query parameters from the URL
@@ -129,7 +188,7 @@ export const FileBrowser: React.FC<{
 
     useEffect(() => {
         api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
+            `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : ""),
         )
             .then((response) => response.json())
             .then((data) => {
@@ -139,7 +198,7 @@ export const FileBrowser: React.FC<{
                 if (filetypeFilter.length > 0)
                     list = list.filter(
                         (file: any) =>
-                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
+                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter)),
                     );
                 setFiles(list);
             });
@@ -161,6 +220,14 @@ export const FileBrowser: React.FC<{
             inputRefFilter.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
         }
     }, [filterText]);
+
+    useEffect(() => {
+        setCreateDirectoryPath(path);
+    }, [path]);
+
+    useEffect(() => {
+        setInputValueNewFilename(currentFile);
+    }, [currentFile]);
 
     // general functions
     function detectColorScheme() {
@@ -234,7 +301,6 @@ export const FileBrowser: React.FC<{
     // taf header viewer functions
     const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
         const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
-
         const { tracks, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
         setFilterFieldAutoFocus(false);
         setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
@@ -277,6 +343,51 @@ export const FileBrowser: React.FC<{
         </Modal>
     );
 
+    // directory tree
+    const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
+        new Promise((resolve, reject) => {
+            const newPath = pathFromNodeId(id);
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+                .then((response) => response.json())
+                .then((data) => {
+                    let list: any[] = data.files;
+                    list = list
+                        .filter((entry) => entry.isDir && entry.name !== "..")
+                        .sort((a, b) => {
+                            return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+                        })
+                        .map((entry) => {
+                            return {
+                                id: id + "." + list.indexOf(entry),
+                                pId: id,
+                                value: id + "." + list.indexOf(entry),
+                                title: entry.name,
+                                fullPath: `${newPath}/${entry.name}/`,
+                            };
+                        });
+                    setTreeData(treeData.concat(list));
+                    resolve(true);
+                })
+                .then(() => {
+                    reject();
+                });
+        });
+
+    const pathFromNodeId = (nodeId: string): string => {
+        const node = treeData.filter((entry) => entry.value === nodeId)[0];
+        if (node.pId === "-1") return "";
+        return pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
+    };
+
+    const findNodeIdByFullPath = (fullPath: string, nodes: any[]): string | null => {
+        for (const node of nodes) {
+            if (node.fullPath === fullPath) {
+                return node.id;
+            }
+        }
+        return null;
+    };
+
     // tap functions
     const onTAPCreate = (values: any) => {
         console.log("Received values of form: ", values);
@@ -293,6 +404,194 @@ export const FileBrowser: React.FC<{
             setTapEditorModalOpen(true);
         }
     };
+
+    // move / rename functions
+    const moveRenameFile = async (source: string, target: string, moving: boolean) => {
+        const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
+        const loadingMessage = message.loading(
+            moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
+            0,
+        );
+        try {
+            const moveUrl = `/api/fileMove${"?special=" + special + (overlay ? `&overlay=${overlay}` : "")}`;
+            const response = await api.apiPostTeddyCloudRaw(moveUrl, body);
+
+            const data = await response.text();
+            loadingMessage();
+            if (data === "OK") {
+                message.success(
+                    moving
+                        ? t("fileBrowser.messages.movingSuccessful", { file: source })
+                        : t("fileBrowser.messages.renamingSuccessful"),
+                );
+            } else {
+                message.error(
+                    `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed")}: ${data}`,
+                );
+                throw data;
+            }
+        } catch (error) {
+            loadingMessage();
+            message.error(
+                `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed")}: ${error}`,
+            );
+            throw error;
+        }
+    };
+
+    // move
+    const showMoveDialog = (fileName: string) => {
+        setCurrentFile(fileName);
+        setIsMoveFileModalOpen(true);
+    };
+
+    const closeMoveFileModal = () => {
+        setIsMoveFileModalOpen(false);
+    };
+
+    const handleSingleMove = async (source: string, target: string) => {
+        try {
+            await moveRenameFile(source + "/" + currentFile, target + "/" + currentFile, true);
+            setRebuildList((prev) => !prev);
+            setIsMoveFileModalOpen(false);
+        } catch (error) {}
+    };
+
+    const handleMultipleMove = async (source: string, target: string) => {
+        if (selectedRowKeys.length > 0) {
+            for (const rowName of selectedRowKeys) {
+                const file = (files as Record[]).find((file) => file.name === rowName);
+                if (file && !file.isDir) {
+                    await moveRenameFile(source + "/" + file.name, target + "/" + file.name, true);
+                }
+            }
+            setRebuildList((prev) => !prev);
+            setIsMoveFileModalOpen(false);
+            setSelectedRowKeys([]);
+        } else {
+            message.warning("No rows selected for moving.");
+        }
+    };
+
+    const isMoveButtonDisabled = !treeNodeId || pathFromNodeId(treeNodeId) === path;
+
+    const moveFileModal = (
+        <Modal
+            title={currentFile ? t("fileBrowser.moveFile.modalTitle") : t("fileBrowser.moveFile.modalTitleMultiple")}
+            open={isMoveFileModalOpen}
+            onCancel={closeMoveFileModal}
+            onOk={() =>
+                currentFile
+                    ? handleSingleMove(path, pathFromNodeId(treeNodeId))
+                    : handleMultipleMove(path, pathFromNodeId(treeNodeId))
+            }
+            okText={t("fileBrowser.moveFile.move")}
+            cancelText={t("fileBrowser.moveFile.cancel")}
+            okButtonProps={{ disabled: isMoveButtonDisabled }}
+        >
+            <Alert
+                message={t("fileBrowser.attention")}
+                description={t("fileBrowser.moveFile.attention")}
+                type="warning"
+                showIcon
+                style={{ marginBottom: 16 }}
+            />
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
+                <Input
+                    type="text"
+                    style={{
+                        borderTopRightRadius: currentFile ? 0 : "unset",
+                        borderBottomRightRadius: currentFile ? 0 : "unset",
+                    }}
+                    disabled
+                    value={path + "/" + (currentFile ? currentFile : "")}
+                    placeholder={path + "/" + (currentFile ? currentFile : "")}
+                />
+                <div>{t("fileBrowser.moveFile.moveTo")}</div>
+
+                <div style={{ display: "flex" }}>
+                    <TreeSelect
+                        className="move-file"
+                        treeLine
+                        treeDataSimpleMode
+                        value={treeNodeId}
+                        dropdownStyle={{
+                            maxHeight: 400,
+                            overflow: "auto",
+                        }}
+                        onChange={setTreeNodeId}
+                        loadData={onLoadTreeData}
+                        treeData={treeData}
+                        treeNodeLabelProp="fullPath"
+                        placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
+                    />
+                    <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
+                        <Button
+                            icon={<FolderAddOutlined />}
+                            onClick={() => {
+                                setCreateDirectoryPath(pathFromNodeId(treeNodeId));
+                                setCreateDirectoryModalOpen(true);
+                            }}
+                            style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                        ></Button>
+                    </Tooltip>
+                </div>
+            </div>
+        </Modal>
+    );
+
+    // rename
+    const showRenameDialog = (fileName: string) => {
+        setCurrentFile(fileName);
+        setIsRenameFileModalOpen(true);
+    };
+
+    const handleRename = async (source: string, newFileName: string) => {
+        try {
+            await moveRenameFile(source + "/" + currentFile, source + "/" + newFileName, false);
+            setInputValueNewFilename("");
+            setRebuildList((prev) => !prev);
+            setIsRenameFileModalOpen(false);
+        } catch (error) {}
+    };
+
+    const closeRenameFileModal = () => {
+        setIsRenameFileModalOpen(false);
+    };
+
+    const handleNewFilenameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setInputValueNewFilename(e.target.value);
+    };
+
+    const isRenameButtonDisabled = !newFilename || newFilename === currentFile;
+
+    const renameFileModal = (
+        <Modal
+            title={t("fileBrowser.renameFile.modalTitle")}
+            open={isRenameFileModalOpen}
+            onCancel={closeRenameFileModal}
+            onOk={() => handleRename(path, newFilename)}
+            okText={t("fileBrowser.renameFile.rename")}
+            cancelText={t("fileBrowser.renameFile.cancel")}
+            okButtonProps={{ disabled: isRenameButtonDisabled }}
+        >
+            <Alert
+                message={t("fileBrowser.attention")}
+                description={t("fileBrowser.renameFile.attention")}
+                type="warning"
+                showIcon
+                style={{ marginBottom: 16 }}
+            />
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
+                <Input
+                    type="text"
+                    value={newFilename}
+                    onChange={handleNewFilenameInputChange}
+                    placeholder={currentFile}
+                />
+            </div>
+        </Modal>
+    );
 
     // delete functions
     const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
@@ -345,13 +644,17 @@ export const FileBrowser: React.FC<{
             const data = await response.text();
             loadingMessage();
             if (data === "OK") {
-                message.success(t("fileBrowser.messages.deleteSuccessful"));
+                message.success(t("fileBrowser.messages.deleteSuccessful", { file: path }));
+                const idToRemove = findNodeIdByFullPath(path + "/", treeData);
+                if (idToRemove) {
+                    setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
+                }
             } else {
-                message.error(`${t("fileBrowser.messages.deleteFailed")}: ${data}`);
+                message.error(`${t("fileBrowser.messages.deleteFailed", { file: path })}: ${data}`);
             }
         } catch (error) {
             loadingMessage();
-            message.error(`${t("fileBrowser.messages.deleteFailed")}: ${error}`);
+            message.error(`${t("fileBrowser.messages.deleteFailed", { file: path })}: ${error}`);
         }
     };
 
@@ -367,7 +670,10 @@ export const FileBrowser: React.FC<{
 
     const createDirectory = () => {
         try {
-            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, path + "/" + inputValueCreateDirectory)
+            api.apiPostTeddyCloudRaw(
+                `/api/dirCreate?special=library`,
+                createDirectoryPath + "/" + inputValueCreateDirectory,
+            )
                 .then((response) => {
                     return response.text();
                 })
@@ -375,7 +681,24 @@ export const FileBrowser: React.FC<{
                     if (text !== "OK") {
                         throw new Error(text);
                     }
-                    message.success(t("tonies.createDirectory.directoryCreated"));
+
+                    const newNodeId = `${treeNodeId}.${treeData.length}`; // Generate a unique ID for the new node
+                    const newDir = {
+                        id: newNodeId,
+                        pId: treeNodeId,
+                        value: newNodeId,
+                        title: inputValueCreateDirectory,
+                        fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
+                    };
+                    setTreeData(
+                        [...treeData, newDir].sort((a, b) => {
+                            return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
+                        }),
+                    );
+                    if (isMoveFileModalOpen) {
+                        setTreeNodeId(newNodeId);
+                    }
+                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
                     setRebuildList(!rebuildList);
                     setInputValueCreateDirectory("");
@@ -394,18 +717,25 @@ export const FileBrowser: React.FC<{
         setInputValueCreateDirectory("");
     };
 
+    const isCreateDirectoryButtonDisabled = !inputValueCreateDirectory;
+
     const createDirectoryModal = (
         <Modal
-            title={t("tonies.createDirectory.modalTitle")}
+            title={t("fileBrowser.createDirectory.modalTitle")}
             open={isCreateDirectoryModalOpen}
             onCancel={closeCreateDirectoryModal}
             onOk={createDirectory}
-            okText={t("tonies.createDirectory.create")}
-            cancelText={t("tonies.createDirectory.cancel")}
+            okText={t("fileBrowser.createDirectory.create")}
+            cancelText={t("fileBrowser.createDirectory.cancel")}
+            zIndex={1050}
+            okButtonProps={{ disabled: isCreateDirectoryButtonDisabled }}
         >
+            <Typography style={{ marginBottom: 8 }}>
+                {t("fileBrowser.createDirectory.parentPath") + " " + createDirectoryPath + "/"}{" "}
+            </Typography>
             <Input
                 ref={inputRef}
-                placeholder={t("tonies.createDirectory.placeholder")}
+                placeholder={t("fileBrowser.createDirectory.placeholder")}
                 value={inputValueCreateDirectory}
                 onChange={handleCreateDirectoryInputChange}
             />
@@ -543,7 +873,7 @@ export const FileBrowser: React.FC<{
                 message.warning(
                     t("fileBrowser.maxSelectedRows", {
                         maxSelectedRows: maxSelectedRows,
-                    })
+                    }),
                 );
             } else {
                 setSelectedRowKeys(newSelectedRowKeys);
@@ -609,13 +939,22 @@ export const FileBrowser: React.FC<{
         {
             title:
                 maxSelectedRows === 0 && selectedRowKeys.length > 0 ? (
-                    <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
-                        <Button
-                            icon={<DeleteOutlined />}
-                            onClick={handleMultipleDelete}
-                            disabled={selectedRowKeys.length === 0}
-                        />
-                    </Tooltip>
+                    <div style={{ display: "flex", gap: 8 }}>
+                        <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
+                            <Button
+                                icon={<NodeExpandOutlined />}
+                                onClick={() => showMoveDialog("")}
+                                disabled={selectedRowKeys.length === 0}
+                            />
+                        </Tooltip>
+                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
+                            <Button
+                                icon={<DeleteOutlined />}
+                                onClick={handleMultipleDelete}
+                                disabled={selectedRowKeys.length === 0}
+                            />
+                        </Tooltip>
+                    </div>
                 ) : (
                     ""
                 ),
@@ -778,7 +1117,7 @@ export const FileBrowser: React.FC<{
                                     }
                                     style={{ margin: "0 8px 0 0" }}
                                 />
-                            </Tooltip>
+                            </Tooltip>,
                         );
                         actions.push(
                             <Tooltip
@@ -791,7 +1130,7 @@ export const FileBrowser: React.FC<{
                                     }
                                     style={{ margin: "0 8px 0 0" }}
                                 />
-                            </Tooltip>
+                            </Tooltip>,
                         );
                     }
                     actions.push(
@@ -808,11 +1147,11 @@ export const FileBrowser: React.FC<{
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
+                                        record.tonieInfo,
                                     )
                                 }
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                 }
                 // tap file
@@ -823,12 +1162,34 @@ export const FileBrowser: React.FC<{
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                     actions.push(
                         <Tooltip key={`action-copy-${record.name}`} title={t("fileBrowser.tap.copy")}>
                             <CopyOutlined style={{ margin: "0 8px 0 0" }} />
-                        </Tooltip>
+                        </Tooltip>,
+                    );
+                }
+                // include the rename icon on files
+                if (!record.isDir && record.name !== ".." && maxSelectedRows === 0) {
+                    actions.push(
+                        <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
+                            <FormOutlined
+                                onClick={() => showRenameDialog(record.name)}
+                                style={{ margin: "0 8px 0 0" }}
+                            />
+                        </Tooltip>,
+                    );
+                }
+                // include the move icon on files
+                if (!record.isDir && record.name !== ".." && maxSelectedRows === 0) {
+                    actions.push(
+                        <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
+                            <NodeExpandOutlined
+                                onClick={() => showMoveDialog(record.name)}
+                                style={{ margin: "0 8px 0 0" }}
+                            />
+                        </Tooltip>,
                     );
                 }
                 // include the delete action
@@ -840,12 +1201,12 @@ export const FileBrowser: React.FC<{
                                     showDeleteConfirmDialog(
                                         record.name,
                                         path + "/" + record.name,
-                                        "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
+                                        "?special=" + special + (overlay ? `&overlay=${overlay}` : ""),
                                     )
                                 }
                                 style={{ margin: "0 8px 0 0" }}
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                 }
                 return actions;
@@ -896,6 +1257,8 @@ export const FileBrowser: React.FC<{
             {jsonViewerModal}
             {tafHeaderViewerModal}
             {createDirectoryModal}
+            {moveFileModal}
+            {renameFileModal}
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
@@ -913,7 +1276,7 @@ export const FileBrowser: React.FC<{
                 </div>
                 {maxSelectedRows === 0 && special === "library" ? (
                     <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
-                        {t("tonies.createDirectory.createDirectory")}
+                        {t("fileBrowser.createDirectory.createDirectory")}
                     </Button>
                 ) : (
                     ""
