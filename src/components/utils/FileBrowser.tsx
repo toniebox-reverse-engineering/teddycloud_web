@@ -435,18 +435,18 @@ export const FileBrowser: React.FC<{
                 message.success(
                     moving
                         ? t("fileBrowser.messages.movingSuccessful", { file: source })
-                        : t("fileBrowser.messages.renamingSuccessful"),
+                        : t("fileBrowser.messages.renamingSuccessful", { file: source }),
                 );
             } else {
                 message.error(
-                    `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed")}: ${data}`,
+                    `${(moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed"), { file: source })}: ${data}`,
                 );
                 throw data;
             }
         } catch (error) {
             loadingMessage();
             message.error(
-                `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed")}: ${error}`,
+                `${(moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed"), { file: source })}: ${error}`,
             );
             throw error;
         }
