@@ -439,14 +439,14 @@ export const FileBrowser: React.FC<{
                 );
             } else {
                 message.error(
-                    `${(moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed", { file: source })}: ${data}`,
+                    `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed", { file: source })}: ${data}`,
                 );
                 throw data;
             }
         } catch (error) {
             loadingMessage();
             message.error(
-                `${(moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed", { file: source })}: ${error}`,
+                `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed", { file: source })}: ${error}`,
             );
             throw error;
         }
