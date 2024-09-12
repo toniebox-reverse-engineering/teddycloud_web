@@ -44,8 +44,7 @@ If you don't need the ESP32 Box flashing section working, you can adapt the `pac
         "start-https": "cross-env HTTPS=true PORT=3443 vite",
         "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
         "build": "tsc && vite build",
-        "preview": "vite preview",
-        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true"
+        "preview": "vite preview"
     },
 ```
 
@@ -55,8 +54,7 @@ to
 "scripts": {
         "start": "npm run start",
         "build": "tsc && vite build",
-        "preview": "vite preview",
-        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true"
+        "preview": "vite preview"
      },
 ```
 
