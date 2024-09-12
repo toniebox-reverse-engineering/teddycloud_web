@@ -7,7 +7,6 @@
         "@ant-design/icons": "^5.4.0",
         "@dnd-kit/core": "^6.1.0",
         "@dnd-kit/sortable": "^8.0.0",
-        "@openapitools/openapi-generator-cli": "^2.13.4",
         "@types/jest": "^29.5.12",
         "@types/node": "^22.3.0",
         "@types/react": "^18.3.3",
@@ -37,8 +36,7 @@
         "start-https": "cross-env HTTPS=true PORT=3443 vite",
         "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
         "build": "tsc && vite build",
-        "preview": "vite preview",
-        "api:generate": "rm -rf ./src/api && openapi-generator-cli generate -i ./api/swagger.yaml -g typescript-fetch -o ./src/api --additional-properties=typescriptThreePlus=true"
+        "preview": "vite preview"
     },
     "eslintConfig": {
         "extends": [
