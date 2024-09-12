@@ -145,6 +145,8 @@ Sometimes it happens, that the dev environment unexpected crashes. Even after a 
 
 Ideally, the TeddyCloudApi.ts should be generated with swagger.yaml. However, it was actually changed manually and new API functions were added directly. This should be revised in the future. Until then, you should NOT generate the API with the openapitools, as this will break the frontend.
 
+Due to security reasons we removed "@openapitools/openapi-generator-cli" from the devDependencies completely. If you want to refactor the manually changed api functions and bring back support for openapitools, add it again.
+
 ## General React App information
 
 ## Getting Started with Vite
