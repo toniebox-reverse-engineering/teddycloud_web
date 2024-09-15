@@ -15,6 +15,7 @@ import {
     TreeSelect,
     Typography,
     Alert,
+    Upload,
 } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
@@ -27,6 +28,7 @@ import {
     EditOutlined,
     FolderAddOutlined,
     FormOutlined,
+    InboxOutlined,
     NodeExpandOutlined,
     PlayCircleOutlined,
     TruckOutlined,
@@ -109,6 +111,9 @@ export const FileBrowser: React.FC<{
     const [tapEditorModalOpen, setTapEditorModalOpen] = useState(false);
     const [tapEditorKey, setTapEditorKey] = useState(0);
 
+    const [tafMetaEditorModalOpen, setTafMetaEditorModalOpen] = useState(false);
+    const [tafMetaEditorKey, setTafMetaEditorKey] = useState(0);
+
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
     const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
 
@@ -136,6 +141,10 @@ export const FileBrowser: React.FC<{
 
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState(false);
     const [newFilename, setInputValueNewFilename] = useState<string>(currentFile);
+
+    const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
+    const [fileList, setFileList] = useState<any[]>([]);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         const preLoadTreeData = async () => {
@@ -187,7 +196,7 @@ export const FileBrowser: React.FC<{
 
     useEffect(() => {
         api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : ""),
+            `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
             .then((response) => response.json())
             .then((data) => {
@@ -197,7 +206,7 @@ export const FileBrowser: React.FC<{
                 if (filetypeFilter.length > 0)
                     list = list.filter(
                         (file: any) =>
-                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter)),
+                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
                     );
                 setFiles(list);
             });
@@ -418,12 +427,25 @@ export const FileBrowser: React.FC<{
         }
     };
 
+    // taf meta functions - to do
+    const handleEditTafMetaDataClick = (file: string) => {
+        // To Do - to be completed
+        if (file.includes(".taf")) {
+            const folder = special === "library" ? "/library" : "/content";
+            fetchJsonData(folder + file);
+            setFilterFieldAutoFocus(false);
+            setCurrentFile(file);
+            setTafMetaEditorKey((prevKey) => prevKey + 1);
+            setTafMetaEditorModalOpen(true);
+        }
+    };
+
     // move / rename functions
     const moveRenameFile = async (source: string, target: string, moving: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
         const loadingMessage = message.loading(
             moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
-            0,
+            0
         );
         try {
             const moveUrl = `/api/fileMove${"?special=" + special + (overlay ? `&overlay=${overlay}` : "")}`;
@@ -435,18 +457,26 @@ export const FileBrowser: React.FC<{
                 message.success(
                     moving
                         ? t("fileBrowser.messages.movingSuccessful", { file: source })
-                        : t("fileBrowser.messages.renamingSuccessful", { file: source }),
+                        : t("fileBrowser.messages.renamingSuccessful", { file: source })
                 );
             } else {
                 message.error(
-                    `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed", { file: source })}: ${data}`,
+                    `${
+                        moving
+                            ? t("fileBrowser.messages.movingFailed", { file: source })
+                            : t("fileBrowser.messages.renamingFailed", { file: source })
+                    }: ${data}`
                 );
                 throw data;
             }
         } catch (error) {
             loadingMessage();
             message.error(
-                `${moving ? t("fileBrowser.messages.movingFailed", { file: source }) : t("fileBrowser.messages.renamingFailed", { file: source })}: ${error}`,
+                `${
+                    moving
+                        ? t("fileBrowser.messages.movingFailed", { file: source })
+                        : t("fileBrowser.messages.renamingFailed", { file: source })
+                }: ${error}`
             );
             throw error;
         }
@@ -693,7 +723,7 @@ export const FileBrowser: React.FC<{
         try {
             api.apiPostTeddyCloudRaw(
                 `/api/dirCreate?special=library`,
-                createDirectoryPath + "/" + encodeURIComponent(inputValueCreateDirectory),
+                createDirectoryPath + "/" + encodeURIComponent(inputValueCreateDirectory)
             )
                 .then((response) => {
                     return response.text();
@@ -717,7 +747,7 @@ export const FileBrowser: React.FC<{
                         setTreeData(
                             [...treeData, newDir].sort((a, b) => {
                                 return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
-                            }),
+                            })
                         );
                         if (isMoveFileModalOpen) {
                             setTreeNodeId(newNodeId);
@@ -861,6 +891,129 @@ export const FileBrowser: React.FC<{
         }
     };
 
+    // upload files functionality
+    const showUploadFilesDragAndDropModal = () => {
+        setIsOpenUploadDragAndDropModal(true);
+    };
+
+    const props = {
+        name: "file",
+        multiple: true,
+        fileList,
+        customRequest: async (options: any) => {
+            const { onSuccess, onError, file } = options;
+            onSuccess("Ok");
+        },
+        onChange(info: any) {
+            const { status, fileList } = info;
+            if (status !== "uploading") {
+                setFileList(fileList);
+                console.log(info.file, info.fileList);
+            }
+        },
+        onDrop(e: any) {
+            console.log("Dropped files", e.dataTransfer.files);
+        },
+        onRemove: (file: any) => {
+            setFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
+        },
+    };
+
+    const handleUploadToTeddycloud = async (files: any[]) => {
+        if (!files.length) {
+            return;
+        }
+        setUploading(true);
+        let failure = false;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const hideLoading = message.loading(t("fileBrowser.upload.uploadInProgress", { file: file.name }), 0);
+            const formData = new FormData();
+            formData.append(file.name, file.originFileObj);
+            try {
+                const response = await api.apiPostTeddyCloudFormDataRaw(
+                    `/api/fileUpload?path=${encodeURIComponent(path)}&special=${special}`,
+                    formData
+                );
+                if (response.ok) {
+                    hideLoading();
+                    setFileList((prevList) => prevList.filter((f) => f.uid !== file.uid));
+                    message.success(t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }));
+                } else {
+                    failure = true;
+                    hideLoading();
+                    setFileList((prevList) =>
+                        prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f))
+                    );
+                    message.error(t("fileBrowser.upload.uploadFailedForFile", { file: file.name }));
+                }
+            } catch (err) {
+                failure = true;
+                hideLoading();
+                message.error(t("fileBrowser.upload.uploadFailedForFile", { file: file.name }));
+                setFileList((prevList) => prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f)));
+            }
+        }
+
+        if (failure) {
+            setRebuildList(!rebuildList);
+            message.error(t("fileBrowser.upload.uploadFailed"));
+        } else {
+            setRebuildList(!rebuildList);
+            setIsOpenUploadDragAndDropModal(false);
+            message.success(t("fileBrowser.upload.uploadSuccessful"));
+        }
+        setUploading(false);
+    };
+
+    const closeUploadDragAndDropModal = () => {
+        setFileList([]);
+        setIsOpenUploadDragAndDropModal(false);
+    };
+
+    const uploadFileModalFooter = (
+        <div
+            style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                padding: "16px 0",
+                margin: "-24px -24px -12px -24px",
+                background: token.colorBgElevated,
+            }}
+        >
+            <Button onClick={closeUploadDragAndDropModal}>{t("fileBrowser.upload.cancel")}</Button>
+            <Button
+                type="primary"
+                onClick={() => handleUploadToTeddycloud(fileList)}
+                loading={uploading}
+                disabled={fileList.length === 0 || uploading}
+            >
+                {uploading ? t("fileBrowser.upload.uploading") : t("fileBrowser.upload.upload")}
+            </Button>
+        </div>
+    );
+
+    const uploadFileModal = (
+        <Modal
+            className="sticky-footer"
+            title={t("fileBrowser.upload.modalTitle")}
+            open={isOpenUploadDragAndDropModal}
+            onCancel={closeUploadDragAndDropModal}
+            footer={uploadFileModalFooter}
+        >
+            <div style={{ width: "100%", marginBottom: 8 }}>
+                <Upload.Dragger {...props} style={{ width: "100%", marginBottom: 8 }}>
+                    <p className="ant-upload-drag-icon">
+                        <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">{t("fileBrowser.upload.uploadText")}</p>
+                    <p className="ant-upload-hint">{t("fileBrowser.upload.uploadHint")}</p>
+                </Upload.Dragger>
+            </div>
+        </Modal>
+    );
+
     // filter functions
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterText(e.target.value);
@@ -898,7 +1051,7 @@ export const FileBrowser: React.FC<{
                 message.warning(
                     t("fileBrowser.maxSelectedRows", {
                         maxSelectedRows: maxSelectedRows,
-                    }),
+                    })
                 );
             } else {
                 setSelectedRowKeys(newSelectedRowKeys);
@@ -1142,7 +1295,7 @@ export const FileBrowser: React.FC<{
                                     }
                                     style={{ margin: "0 8px 0 0" }}
                                 />
-                            </Tooltip>,
+                            </Tooltip>
                         );
                         actions.push(
                             <Tooltip
@@ -1155,7 +1308,7 @@ export const FileBrowser: React.FC<{
                                     }
                                     style={{ margin: "0 8px 0 0" }}
                                 />
-                            </Tooltip>,
+                            </Tooltip>
                         );
                     }
                     actions.push(
@@ -1172,11 +1325,11 @@ export const FileBrowser: React.FC<{
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo,
+                                        record.tonieInfo
                                     )
                                 }
                             />
-                        </Tooltip>,
+                        </Tooltip>
                     );
                 }
                 // tap file
@@ -1187,12 +1340,22 @@ export const FileBrowser: React.FC<{
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
                             />
-                        </Tooltip>,
+                        </Tooltip>
                     );
                     actions.push(
                         <Tooltip key={`action-copy-${record.name}`} title={t("fileBrowser.tap.copy")}>
                             <CopyOutlined style={{ margin: "0 8px 0 0" }} />
-                        </Tooltip>,
+                        </Tooltip>
+                    );
+                }
+                if (record.name.includes(".taf")) {
+                    actions.push(
+                        <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
+                            <EditOutlined
+                                style={{ margin: "0 8px 0 0" }}
+                                onClick={() => handleEditTafMetaDataClick(path + "/" + record.name)}
+                            />
+                        </Tooltip>
                     );
                 }
                 // include the rename icon on files
@@ -1203,7 +1366,7 @@ export const FileBrowser: React.FC<{
                                 onClick={() => showRenameDialog(record.name)}
                                 style={{ margin: "0 8px 0 0" }}
                             />
-                        </Tooltip>,
+                        </Tooltip>
                     );
                 }
                 // include the move icon on files
@@ -1214,7 +1377,7 @@ export const FileBrowser: React.FC<{
                                 onClick={() => showMoveDialog(record.name)}
                                 style={{ margin: "0 8px 0 0" }}
                             />
-                        </Tooltip>,
+                        </Tooltip>
                     );
                 }
                 // include the delete action
@@ -1226,12 +1389,12 @@ export const FileBrowser: React.FC<{
                                     showDeleteConfirmDialog(
                                         record.name,
                                         path + "/" + record.name,
-                                        "?special=" + special + (overlay ? `&overlay=${overlay}` : ""),
+                                        "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
                                     )
                                 }
                                 style={{ margin: "0 8px 0 0" }}
                             />
-                        </Tooltip>,
+                        </Tooltip>
                     );
                 }
                 return actions;
@@ -1282,6 +1445,7 @@ export const FileBrowser: React.FC<{
             {jsonViewerModal}
             {tafHeaderViewerModal}
             {createDirectoryModal}
+            {uploadFileModal}
             {moveFileModal}
             {renameFileModal}
             {currentRecord ? (
@@ -1300,9 +1464,17 @@ export const FileBrowser: React.FC<{
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
                 {maxSelectedRows === 0 && special === "library" ? (
-                    <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
-                        {t("fileBrowser.createDirectory.createDirectory")}
-                    </Button>
+                    <div style={{ width: "100%", marginBottom: 8 }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                            <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
+                                {t("fileBrowser.createDirectory.createDirectory")}
+                            </Button>
+
+                            <Button size="small" onClick={showUploadFilesDragAndDropModal} style={{ marginBottom: 8 }}>
+                                {t("fileBrowser.upload.showUploadFilesDragNDrop")}
+                            </Button>
+                        </div>
+                    </div>
                 ) : (
                     ""
                 )}

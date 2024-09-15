@@ -31,6 +31,7 @@ export const ChangelogPage = () => {
                 "gui: Integrated new reload tonies.json api",
                 "gui: Added Moving and renaming of files in library and content",
                 "gui: Fixing security weaknesses",
+                "gui: Added file upload to library",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.0...tc_v0.6.1",
@@ -208,7 +209,7 @@ export const ChangelogPage = () => {
                 </Link>
             ) : (
                 part
-            ),
+            )
         );
     };
 
