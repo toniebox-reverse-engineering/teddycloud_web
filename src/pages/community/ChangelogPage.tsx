@@ -18,6 +18,28 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.6.1",
+            changes: [
+                "Stabilization backend",
+                "Changed default for setting cloud.prioCustomContent to false",
+                "Disabled prioCustomContent if lower audio id is allowed",
+                "Added reload tonies(.custom).json api https://github.com/toniebox-reverse-engineering/teddycloud/issues/177",
+                "Added moveFile api https://github.com/toniebox-reverse-engineering/teddycloud/issues/198",
+                "gui: Fixed bug storing source with html special chars",
+                "gui: Fixed bug saving model and source of a tonie/tag at once",
+                "gui: Fixed display bug sourceInfo with unknown content",
+                "gui: Integrated new reload tonies.json api",
+                "gui: Added Moving and renaming of files in library and content",
+                "gui: Fixing security weaknesses",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.0...tc_v0.6.1",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.0...tcw_v0.6.1",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-1/701",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.1",
+        },
+        {
             version: "0.6.0",
             changes: [
                 "Stabilization backend",
@@ -186,7 +208,7 @@ export const ChangelogPage = () => {
                 </Link>
             ) : (
                 part
-            )
+            ),
         );
     };
 

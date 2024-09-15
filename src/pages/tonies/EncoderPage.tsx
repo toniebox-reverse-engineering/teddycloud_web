@@ -61,6 +61,32 @@ export const EncoderPage = () => {
             setDebugPCMObjects(logPCMURLObject);
         };
         fetchDebugPCM();
+
+        const preLoadTreeData = async () => {
+            const newPath = pathFromNodeId(rootTreeNode.id); // Construct API path based on node id
+
+            // Simulate an API call to fetch children
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+                .then((response) => response.json())
+                .then((data) => {
+                    var list: any[] = data.files;
+                    list = list
+                        .filter((entry) => entry.isDir && entry.name !== "..")
+                        .sort((a, b) => {
+                            return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+                        })
+                        .map((entry) => {
+                            return {
+                                id: rootTreeNode.id + "." + list.indexOf(entry),
+                                pId: rootTreeNode.id,
+                                value: rootTreeNode.id + "." + list.indexOf(entry),
+                                title: entry.name,
+                            };
+                        });
+                    setTreeData(treeData.concat(list));
+                });
+        };
+        preLoadTreeData();
     }, []);
 
     useEffect(() => {
@@ -116,11 +142,17 @@ export const EncoderPage = () => {
     const handleUpload = async () => {
         setUploading(true);
         const formData = new FormData();
-
         for (const file of fileList) {
-            await new Promise((resolve, reject) => upload(resolve, reject, formData, fileList, file, debugPCMObjects));
+            try {
+                await new Promise((resolve, reject) =>
+                    upload(resolve, reject, formData, fileList, file, debugPCMObjects),
+                );
+            } catch (error) {
+                message.error(t("tonies.encoder.errorFileProcessing") + " " + error);
+                setUploading(false);
+                return;
+            }
         }
-
         const currentUnixTime = Math.floor(Date.now() / 1000);
         const queryParams = {
             name: tafFilename + ".taf",
@@ -178,7 +210,7 @@ export const EncoderPage = () => {
             api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
-                    var list: any[] = data.files;
+                    let list: any[] = data.files;
                     list = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
                         .sort((a, b) => {
@@ -232,7 +264,10 @@ export const EncoderPage = () => {
             title: inputValueCreateDirectory,
         };
         try {
-            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, path + "/" + inputValueCreateDirectory)
+            api.apiPostTeddyCloudRaw(
+                `/api/dirCreate?special=library`,
+                path + "/" + encodeURIComponent(inputValueCreateDirectory),
+            )
                 .then((response) => {
                     return response.text();
                 })
@@ -241,10 +276,13 @@ export const EncoderPage = () => {
                         throw new Error(text);
                     }
                     // Update the tree data and select the new directory
-                    setTreeData([...treeData, newDir]);
+                    setTreeData(
+                        [...treeData, newDir].sort((a, b) => {
+                            return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
+                        }),
+                    );
                     setTreeNodeId(newNodeId);
-
-                    message.success(t("tonies.createDirectory.directoryCreated"));
+                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
                     setInputValueCreateDirectory("");
                 })
@@ -263,20 +301,20 @@ export const EncoderPage = () => {
 
     const createDirectoryModal = (
         <Modal
-            title={t("tonies.createDirectory.modalTitle")}
+            title={t("fileBrowser.createDirectory.modalTitle")}
             open={isCreateDirectoryModalOpen}
             onCancel={closeCreateDirectoryModal}
             onOk={createDirectory}
-            okText={t("tonies.createDirectory.create")}
-            cancelText={t("tonies.createDirectory.cancel")}
+            okText={t("fileBrowser.createDirectory.create")}
+            cancelText={t("fileBrowser.createDirectory.cancel")}
         >
             <p>
-                {t("tonies.createDirectory.inDirectory")} <b>{pathFromNodeId(treeNodeId)}/</b>
+                {t("fileBrowser.createDirectory.inDirectory")} <b>{pathFromNodeId(treeNodeId)}/</b>
             </p>
             <Input
                 ref={inputRef}
                 autoFocus={true}
-                placeholder={t("tonies.createDirectory.placeholder")}
+                placeholder={t("fileBrowser.createDirectory.placeholder")}
                 value={inputValueCreateDirectory}
                 onChange={handleCreateDirectoryInputChange}
             />
@@ -383,7 +421,7 @@ export const EncoderPage = () => {
                                                 loadData={onLoadTreeData}
                                                 treeData={treeData}
                                             />
-                                            <Tooltip title={t("tonies.createDirectory.createDirectory")}>
+                                            <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                                                 <Button
                                                     disabled={uploading}
                                                     icon={<FolderAddOutlined />}

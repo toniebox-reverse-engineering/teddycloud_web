@@ -113,7 +113,7 @@ export const TonieboxCard: React.FC<{
                     const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
                     setLastPlayedTonie(
                         tonieData.filter((tonieData) => tonieData.ruid === ruid),
-                        ruidTime
+                        ruidTime,
                     );
                 };
                 fetchTonies();
@@ -168,7 +168,7 @@ export const TonieboxCard: React.FC<{
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
         boxModelImages.map((v) => {
             return { label: v.name, value: v.id };
-        })
+        }),
     );
 
     const selectBoxImage = (id: string) => {
@@ -184,7 +184,7 @@ export const TonieboxCard: React.FC<{
                         top: "0",
                         left: "0",
                     }}
-                />
+                />,
             );
         } else {
             setBoxImage(
@@ -199,7 +199,7 @@ export const TonieboxCard: React.FC<{
                         top: "0",
                         left: "0",
                     }}
-                />
+                />,
             );
         }
     };
@@ -233,7 +233,7 @@ export const TonieboxCard: React.FC<{
                         />
                     </Tooltip>
                 </Link>
-            </>
+            </>,
         );
     };
 
@@ -309,7 +309,7 @@ export const TonieboxCard: React.FC<{
             message.error(
                 t("tonieboxes.editModelModal.errorOnModelChange", {
                     error: error,
-                })
+                }),
             );
         }
     };
@@ -332,7 +332,7 @@ export const TonieboxCard: React.FC<{
             message.error(
                 t("tonieboxes.editModelModal.errorOnNameChange", {
                     error: error,
-                })
+                }),
             );
         }
     };
@@ -433,7 +433,7 @@ export const TonieboxCard: React.FC<{
             onCancel={handleUploadCertificatesCancel}
         >
             <Paragraph>
-                {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")} :{" "}
+                {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")}{" "}
                 <i>{options?.options?.find((option: { iD: string }) => option.iD === "core.certdir")?.value}</i>{" "}
                 <small>
                     {options?.options?.find((option: { iD: string }) => option.iD === "core.certdir")?.overlayed

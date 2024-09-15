@@ -9,7 +9,7 @@ import {
     RetweetOutlined,
     SaveFilled,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Input, Modal, Tooltip, Typography, message, theme } from "antd";
+import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAudioContext } from "../audio/AudioContext";
@@ -85,9 +85,25 @@ export const TonieCard: React.FC<{
 
     const [activeModel, setActiveModel] = useState(localTonieCard.tonieInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
+    const [inputValidationModel, setInputValidationModel] = useState<{
+        validateStatus: ValidateStatus;
+        help: string;
+    }>({
+        validateStatus: "",
+        help: "",
+    });
 
     const [activeSource, setActiveSource] = useState(localTonieCard.source);
     const [selectedSource, setSelectedSource] = useState("");
+    const [inputValidationSource, setInputValidationSource] = useState<{
+        validateStatus: ValidateStatus;
+        help: string;
+    }>({
+        validateStatus: "",
+        help: "",
+    });
+
+    type ValidateStatus = "" | "success" | "warning" | "error" | "validating" | undefined;
 
     const fetchUpdatedTonieCard = async () => {
         try {
@@ -136,19 +152,22 @@ export const TonieCard: React.FC<{
     const showModelModal = () => {
         setSelectedModel(activeModel);
         setSelectedSource(activeSource);
-
         setIsEditModalOpen(true);
     };
+
     const handleSaveChanges = async () => {
+        try {
+            if (activeSource !== selectedSource) {
+                await handleSourceSave();
+            }
+            if (activeModel !== selectedModel) {
+                await handleModelSave();
+            }
+        } catch (error) {
+            fetchUpdatedTonieCard();
+            return;
+        }
         setIsEditModalOpen(false);
-        const promises = [];
-        if (activeSource !== selectedSource) {
-            promises.push(handleSourceSave());
-        }
-        if (activeModel !== selectedModel) {
-            promises.push(handleModelSave());
-        }
-        await Promise.all(promises);
         fetchUpdatedTonieCard();
     };
 
@@ -224,29 +243,49 @@ export const TonieCard: React.FC<{
 
     const handleModelSave = async () => {
         try {
-            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "tonie_model=" + selectedModel, overlay);
+            await api.apiPostTeddyCloudContentJson(
+                localTonieCard.ruid,
+                "tonie_model=" + encodeURIComponent(selectedModel),
+                overlay,
+            );
             setActiveModel(selectedModel);
             message.success(
                 t("tonies.messages.setTonieToModelSuccessful", {
                     selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
-                })
+                }),
             );
+            setInputValidationModel({ validateStatus: "", help: "" });
         } catch (error) {
             message.error(t("tonies.messages.setTonieToModelFailed") + error);
+            setInputValidationModel({
+                validateStatus: "error",
+                help: t("tonies.messages.setTonieToModelFailed") + error,
+            });
+            throw error;
         }
     };
 
     const handleSourceSave = async () => {
         try {
-            await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "source=" + selectedSource, overlay);
+            await api.apiPostTeddyCloudContentJson(
+                localTonieCard.ruid,
+                "source=" + encodeURIComponent(selectedSource),
+                overlay,
+            );
             setActiveSource(selectedSource);
             message.success(
                 t("tonies.messages.setTonieToSourceSuccessful", {
                     selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
-                })
+                }),
             );
+            setInputValidationSource({ validateStatus: "", help: "" });
         } catch (error) {
             message.error(t("tonies.messages.setTonieToSourceFailed") + error);
+            setInputValidationSource({
+                validateStatus: "error",
+                help: t("tonies.messages.setTonieToSourceFailed") + error,
+            });
+            throw error;
         }
 
         if (!isNoCloud) {
@@ -307,38 +346,46 @@ export const TonieCard: React.FC<{
                 {t("tonies.editModal.source")}
             </Divider>
             <div>
-                <Input
-                    value={selectedSource}
-                    width="auto"
-                    onChange={handleSourceInputChange}
-                    addonBefore={
-                        <CloseOutlined
-                            onClick={() => setSelectedSource(activeSource)}
-                            style={{
-                                color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
-                                cursor: activeSource === selectedSource ? "default" : "pointer",
-                            }}
-                        />
-                    }
-                    addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
-                />
-                <RadioStreamSearch
-                    placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
-                    onChange={searchRadioResultChanged}
-                />
+                <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
+                    <Input
+                        value={selectedSource}
+                        width="auto"
+                        onChange={handleSourceInputChange}
+                        addonBefore={
+                            <CloseOutlined
+                                onClick={() => {
+                                    setSelectedSource(activeSource);
+                                    setInputValidationSource({ validateStatus: "", help: "" });
+                                }}
+                                style={{
+                                    color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
+                                    cursor: activeSource === selectedSource ? "default" : "pointer",
+                                }}
+                            />
+                        }
+                        addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
+                    />
+                    <RadioStreamSearch
+                        placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
+                        onChange={searchRadioResultChanged}
+                    />
+                </Form.Item>
             </div>
             <Divider orientation="left" orientationMargin="0">
                 {t("tonies.editModal.model")}
             </Divider>
             <div>
-                <p>
+                <Form.Item validateStatus={inputValidationModel.validateStatus} help={inputValidationModel.help}>
                     <Input
                         value={selectedModel}
                         width="auto"
                         onChange={handleModelInputChange}
                         addonBefore={
                             <CloseOutlined
-                                onClick={() => setSelectedModel(activeModel)}
+                                onClick={() => {
+                                    setSelectedModel(activeModel);
+                                    setInputValidationModel({ validateStatus: "", help: "" });
+                                }}
                                 style={{
                                     color: activeModel === selectedModel ? token.colorTextDisabled : token.colorText,
                                     cursor: activeModel === selectedModel ? "default" : "pointer",
@@ -346,11 +393,11 @@ export const TonieCard: React.FC<{
                             />
                         }
                     />
-                </p>
-                <TonieArticleSearch
-                    placeholder={t("tonies.editModal.placeholderSearchForAModel")}
-                    onChange={searchModelResultChanged}
-                />
+                    <TonieArticleSearch
+                        placeholder={t("tonies.editModal.placeholderSearchForAModel")}
+                        onChange={searchModelResultChanged}
+                    />
+                </Form.Item>
             </div>
         </Modal>
     );
@@ -408,7 +455,7 @@ export const TonieCard: React.FC<{
                           handlePlayPauseClick(
                               localTonieCard.valid
                                   ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
-                                  : activeSource
+                                  : activeSource,
                           )
                       }
                   />
@@ -440,7 +487,7 @@ export const TonieCard: React.FC<{
                           handlePlayPauseClick(
                               localTonieCard.valid
                                   ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
-                                  : activeSource
+                                  : activeSource,
                           )
                       }
                   />
@@ -508,10 +555,16 @@ export const TonieCard: React.FC<{
                         />
                         {showSourceInfoPicture ? (
                             <Tooltip
-                                title={t("tonies.alternativeSource", {
-                                    originalTonie: '"' + modelTitle + '"',
-                                    assignedContent: '"' + sourceTitle + '"',
-                                }).replace(' "" ', " ")}
+                                title={
+                                    `${sourceTitle}`
+                                        ? t("tonies.alternativeSource", {
+                                              originalTonie: '"' + modelTitle + '"',
+                                              assignedContent: '"' + sourceTitle + '"',
+                                          }).replace(' "" ', " ")
+                                        : t("tonies.alternativeSourceUnknown", {
+                                              originalTonie: '"' + modelTitle + '"',
+                                          }).replace(' "" ', " ")
+                                }
                                 placement="bottom"
                             >
                                 <img
