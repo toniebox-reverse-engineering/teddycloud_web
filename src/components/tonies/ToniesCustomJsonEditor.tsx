@@ -21,7 +21,7 @@ interface ToniesCustomJsonEditorProps {
     hash?: string;
 }
 
-const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
+export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     open,
     onClose,
     setValue,

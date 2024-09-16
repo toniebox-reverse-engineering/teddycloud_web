@@ -26,5 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 localhost-key.pem
 localhost.pem
+mkcert.exe
 src/setupProxy.js
 public/img_unknown.png
