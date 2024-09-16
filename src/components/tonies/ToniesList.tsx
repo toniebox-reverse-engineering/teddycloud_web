@@ -57,6 +57,7 @@ export const ToniesList: React.FC<{
     const [doLocalStore, setLocalStore] = useState(true);
     const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
     const [listKey, setListKey] = useState(0);
+    const [showSourceInfo, setShowSourceInfo] = useState<boolean>(false);
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -99,6 +100,11 @@ export const ToniesList: React.FC<{
             setLastTonieboxRUIDs(tonieboxLastRUIDs);
         };
         fetchTonieboxes();
+        const fetchShowSourceInfo = async () => {
+            const response = await api.apiGetTeddyCloudSettingRaw("frontend.split_model_content");
+            setShowSourceInfo((await response.text()) === "true" ? true : false);
+        };
+        fetchShowSourceInfo();
     }, []);
 
     const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
@@ -575,6 +581,7 @@ export const ToniesList: React.FC<{
                             overlay={overlay}
                             readOnly={readOnly}
                             defaultLanguage={defaultLanguage}
+                            showSourceInfo={showSourceInfo}
                             onHide={handleHideTonieCard}
                             onUpdate={handleUpdate}
                         />
