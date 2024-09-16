@@ -67,9 +67,10 @@ export const TonieCard: React.FC<{
     overlay: string;
     readOnly: boolean;
     defaultLanguage?: string;
+    showSourceInfo?: boolean;
     onHide: (ruid: string) => void;
     onUpdate: (updatedTonieCard: TonieCardProps) => void;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", onHide, onUpdate }) => {
+}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", showSourceInfo = true, onHide, onUpdate }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
@@ -126,6 +127,7 @@ export const TonieCard: React.FC<{
             : "";
 
     const showSourceInfoPicture =
+        showSourceInfo &&
         "sourceInfo" in localTonieCard &&
         ((localTonieCard.sourceInfo.picture !== localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle) ||
             (localTonieCard.sourceInfo.picture === localTonieCard.tonieInfo.picture && modelTitle !== sourceTitle));
@@ -246,13 +248,13 @@ export const TonieCard: React.FC<{
             await api.apiPostTeddyCloudContentJson(
                 localTonieCard.ruid,
                 "tonie_model=" + encodeURIComponent(selectedModel),
-                overlay,
+                overlay
             );
             setActiveModel(selectedModel);
             message.success(
                 t("tonies.messages.setTonieToModelSuccessful", {
                     selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
-                }),
+                })
             );
             setInputValidationModel({ validateStatus: "", help: "" });
         } catch (error) {
@@ -270,13 +272,13 @@ export const TonieCard: React.FC<{
             await api.apiPostTeddyCloudContentJson(
                 localTonieCard.ruid,
                 "source=" + encodeURIComponent(selectedSource),
-                overlay,
+                overlay
             );
             setActiveSource(selectedSource);
             message.success(
                 t("tonies.messages.setTonieToSourceSuccessful", {
                     selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
-                }),
+                })
             );
             setInputValidationSource({ validateStatus: "", help: "" });
         } catch (error) {
@@ -455,7 +457,7 @@ export const TonieCard: React.FC<{
                           handlePlayPauseClick(
                               localTonieCard.valid
                                   ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
-                                  : activeSource,
+                                  : activeSource
                           )
                       }
                   />
@@ -487,7 +489,7 @@ export const TonieCard: React.FC<{
                           handlePlayPauseClick(
                               localTonieCard.valid
                                   ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + localTonieCard.audioUrl
-                                  : activeSource,
+                                  : activeSource
                           )
                       }
                   />
@@ -593,6 +595,7 @@ export const TonieCard: React.FC<{
                 open={isInformationModalOpen}
                 onClose={() => setInformationModalOpen(false)}
                 tonieCardOrTAFRecord={localTonieCard}
+                showSourceInfo={showSourceInfo}
                 readOnly={readOnly}
                 lastRUIDs={lastRUIDs}
                 onHide={onHide}

@@ -32,6 +32,7 @@ export const ChangelogPage = () => {
                 "gui: Added Moving and renaming of files in library and content",
                 "gui: Fixing security weaknesses",
                 "gui: Added file upload to library",
+                'gui: If Setting "Category frontend: Split content / model" is disabled, don\'t show the source info in Tonies list and details modal',
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.0...tc_v0.6.1",

@@ -18,6 +18,7 @@ export type InformationModalProps = {
     open: boolean;
     onClose: () => void;
     tonieCardOrTAFRecord: TonieCardTAFRecord;
+    showSourceInfo?: boolean;
     readOnly?: boolean;
     lastRUIDs?: Array<[string, string, string]>;
     overlay?: string;
@@ -28,6 +29,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     open,
     onClose,
     tonieCardOrTAFRecord,
+    showSourceInfo = false,
     readOnly,
     lastRUIDs,
     overlay,
@@ -44,6 +46,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
 
     useEffect(() => {
         if (
+            showSourceInfo &&
             "sourceInfo" in tonieCardOrTAFRecord &&
             ((tonieCardOrTAFRecord.sourceInfo.picture !== tonieCardOrTAFRecord.tonieInfo.picture &&
                 modelTitle !== sourceTitle) ||
@@ -120,8 +123,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 tonieToHide: tonieInfoString
                     ? tonieInfoString
                     : "uid" in tonieCardOrTAFRecord
-                      ? tonieCardOrTAFRecord.uid
-                      : "",
+                    ? tonieCardOrTAFRecord.uid
+                    : "",
             })}
             handleOk={handleConfirmHide}
             handleCancel={handleCancelHide}
