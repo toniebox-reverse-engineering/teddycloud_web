@@ -98,6 +98,16 @@
         "date": "Datum",
         "delete": "Löschen",
         "deleteMultiple": "Markierte Zeilen löschen",
+        "encodeFiles": {
+            "noSupportedFiletypesChoosen": "Keine unterstützte Dateien ausgewählt. Es werden folgende Dateitypen unterstützt: ",
+            "encodingInProgress": "Dateien werden konvertiert...",
+            "encodingSuccessful": "Dateien erfolgreich konvertiert!",
+            "encodingFailed": "Konvertierung fehlgeschlagen!",
+            "modalTitle": "Audiodateien konvertieren",
+            "encode": "Konvertiere",
+            "cancel": "Abbrechen",
+            "encodeFiles": "Markierte Dateien in eine taf-Datei konvertieren. Nur die folgenden Dateitypen werden berücksichtigt: "
+        },
         "episode": "Episode",
         "filter": "Filter im aktuellen Ordner",
         "maxSelectedRows": "Du kannst nur maximal {{maxSelectedRows}} Dateien auswählen",

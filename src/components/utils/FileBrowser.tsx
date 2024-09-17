@@ -16,6 +16,8 @@ import {
     Typography,
     Alert,
     Upload,
+    Space,
+    Divider,
 } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
@@ -23,6 +25,7 @@ import { useAudioContext } from "../audio/AudioContext";
 import {
     CloseOutlined,
     CloudServerOutlined,
+    CloudSyncOutlined,
     CopyOutlined,
     DeleteOutlined,
     EditOutlined,
@@ -44,10 +47,15 @@ import TonieInformationModal from "./TonieInformationModal";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { DefaultOptionType } from "antd/es/select";
+import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { DraggableSimpleListItem } from "./DraggableSimpleListItem";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
+
+const MAX_FILES = 99;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/", fullPath: "/" };
 
@@ -99,7 +107,7 @@ export const FileBrowser: React.FC<{
     const cursorPositionFilterRef = useRef<number | null>(null);
     const [messageApi, contextHolder] = message.useMessage();
 
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState<any[]>([]);
     const [path, setPath] = useState("");
     const [rebuildList, setRebuildList] = useState(false);
     const [currentFile, setCurrentFile] = useState("");
@@ -145,6 +153,11 @@ export const FileBrowser: React.FC<{
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
     const [fileList, setFileList] = useState<any[]>([]);
     const [uploading, setUploading] = useState(false);
+
+    const [processing, setProcessing] = useState<boolean>(false);
+    const [tafFilename, setTafFilename] = useState("");
+    const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
+    const [encodeFileList, setEncodeFileList] = useState<string[]>([]);
 
     useEffect(() => {
         const preLoadTreeData = async () => {
@@ -410,6 +423,27 @@ export const FileBrowser: React.FC<{
         return expandedKeys.includes(nodeId);
     };
 
+    const folderTree = (
+        <TreeSelect
+            className="move-file"
+            treeLine
+            treeDataSimpleMode
+            value={treeNodeId}
+            dropdownStyle={{
+                maxHeight: 400,
+                overflow: "auto",
+            }}
+            onChange={setTreeNodeId}
+            loadData={onLoadTreeData}
+            treeData={treeData}
+            treeNodeLabelProp="fullPath"
+            placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
+            treeExpandedKeys={expandedKeys}
+            onTreeExpand={(keys) => setExpandedKeys(keys)}
+            disabled={processing || uploading}
+        />
+    );
+
     // tap functions
     const onTAPCreate = (values: any) => {
         console.log("Received values of form: ", values);
@@ -556,23 +590,7 @@ export const FileBrowser: React.FC<{
                 <div>{t("fileBrowser.moveFile.moveTo")}</div>
 
                 <div style={{ display: "flex" }}>
-                    <TreeSelect
-                        className="move-file"
-                        treeLine
-                        treeDataSimpleMode
-                        value={treeNodeId}
-                        dropdownStyle={{
-                            maxHeight: 400,
-                            overflow: "auto",
-                        }}
-                        onChange={setTreeNodeId}
-                        loadData={onLoadTreeData}
-                        treeData={treeData}
-                        treeNodeLabelProp="fullPath"
-                        placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
-                        treeExpandedKeys={expandedKeys}
-                        onTreeExpand={(keys) => setExpandedKeys(keys)}
-                    />
+                    {folderTree}
                     <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                         <Button
                             icon={<FolderAddOutlined />}
@@ -794,6 +812,190 @@ export const FileBrowser: React.FC<{
                 value={inputValueCreateDirectory}
                 onChange={handleCreateDirectoryInputChange}
             />
+        </Modal>
+    );
+
+    // encode files
+    const sensor = useSensor(PointerSensor, {
+        activationConstraint: { distance: 10 },
+    });
+
+    const onDragEnd = ({ active, over }: DragEndEvent) => {
+        if (active.id !== over?.id) {
+            setEncodeFileList((prev) => {
+                const activeIndex = prev.findIndex((i) => i === active.id);
+                const overIndex = prev.findIndex((i) => i === over?.id);
+                return arrayMove(prev, activeIndex, overIndex);
+            });
+        }
+    };
+
+    const onRemove = (file: string) => {
+        const index = encodeFileList.indexOf(file);
+        const newFileList = encodeFileList.slice();
+        newFileList.splice(index, 1);
+        setEncodeFileList(newFileList);
+    };
+
+    const sortFileListAlphabetically = () => {
+        setEncodeFileList((prev) => [...prev].sort((a, b) => a.localeCompare(b)));
+    };
+
+    const supportedAudioExtensionsForEncoding = [
+        ".mp3",
+        ".aac",
+        ".m4a",
+        ".wav",
+        ".flac",
+        ".ogg",
+        ".opus",
+        ".aiff",
+        ".aif",
+        ".wma",
+        ".ac3",
+        ".dts",
+    ];
+
+    const handleEncode = () => {
+        const stringKeys = selectedRowKeys
+            .map((key) => String(key))
+            .filter((filename) =>
+                supportedAudioExtensionsForEncoding.some((ext) => filename.toLowerCase().endsWith(ext))
+            );
+
+        if (stringKeys.length === 0) {
+            message.error(
+                t("fileBrowser.encodeFiles.noSupportedFiletypesChoosen") +
+                    supportedAudioExtensionsForEncoding.join(", ")
+            );
+            return;
+        }
+        setEncodeFileList(stringKeys);
+        setIsEncodeFilesModalOpen(true);
+    };
+
+    const closeEncodeFilesModal = () => {
+        setIsEncodeFilesModalOpen(false);
+        setTafFilename("");
+        setTreeNodeId("1");
+    };
+
+    const encodeFiles = async () => {
+        setProcessing(true);
+        const hideLoading = message.loading(t("fileBrowser.encodeFiles.encodingInProgress"), 0);
+        const body =
+            encodeFileList.map((file) => `source=${encodeURIComponent(path + "/" + file)}`).join("&") +
+            `&target=${encodeURIComponent(pathFromNodeId(treeNodeId) + "/" + tafFilename + ".taf")}`;
+        try {
+            const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
+            if (response.ok) {
+                hideLoading();
+                message.success(t("fileBrowser.encodeFiles.encodingSuccessful"));
+                setIsEncodeFilesModalOpen(false);
+                setTafFilename("");
+                setTreeNodeId("1");
+                setSelectedRowKeys([]);
+                setRebuildList(!rebuildList);
+            } else {
+                hideLoading();
+                message.error(t("fileBrowser.encodeFiles.encodingFailed"));
+            }
+        } catch (err) {
+            hideLoading();
+            message.error(t("fileBrowser.encodeFiles.encodingFailed"));
+        }
+        setProcessing(false);
+    };
+
+    const encodeFilesModal = (
+        <Modal
+            title={t("fileBrowser.encodeFiles.modalTitle")}
+            open={isEncodeFilesModalOpen}
+            onCancel={closeEncodeFilesModal}
+            onOk={encodeFiles}
+            okText={t("fileBrowser.encodeFiles.encode")}
+            cancelText={t("fileBrowser.encodeFiles.cancel")}
+            zIndex={1000}
+            width="auto"
+            okButtonProps={{ disabled: processing || !tafFilename || encodeFileList.length === 0 }}
+        >
+            <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
+                <SortableContext items={encodeFileList} strategy={verticalListSortingStrategy} disabled={processing}>
+                    {encodeFileList.map((fileName) => (
+                        <DraggableSimpleListItem
+                            key={fileName}
+                            originNode={<div>{fileName}</div>}
+                            onRemove={onRemove}
+                            disabled={processing}
+                            simpleList={encodeFileList}
+                            file={fileName}
+                        />
+                    ))}
+                </SortableContext>
+            </DndContext>
+            <Space direction="vertical" style={{ display: "flex" }}>
+                {encodeFileList.length > 0 ? (
+                    <>
+                        <Space
+                            direction="horizontal"
+                            style={{
+                                width: "100%",
+                                display: "flex",
+                                alignItems: "flex-start",
+                            }}
+                        >
+                            <Button type="default" disabled={uploading} onClick={sortFileListAlphabetically}>
+                                {t("tonies.encoder.sortAlphabetically")}
+                            </Button>
+                        </Space>
+                        <Divider />
+                        <div style={{ width: "100%" }} className="encoder">
+                            <Space direction="vertical" style={{ width: "100%" }}>
+                                <Space.Compact
+                                    direction="horizontal"
+                                    style={{
+                                        width: "100%",
+                                        marginBottom: "16px",
+                                        display: "flex",
+                                        alignItems: "flex-end",
+                                        justifyContent: "flex-end",
+                                    }}
+                                >
+                                    <Input
+                                        type="text"
+                                        style={{
+                                            maxWidth: 180,
+                                            borderTopRightRadius: 0,
+                                            borderBottomRightRadius: 0,
+                                        }}
+                                        disabled
+                                        value={t("tonies.encoder.saveAs")}
+                                    ></Input>
+                                    {folderTree}
+                                    <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
+                                        <Button
+                                            disabled={processing}
+                                            icon={<FolderAddOutlined />}
+                                            onClick={openCreateDirectoryModal}
+                                            style={{ borderRadius: 0 }}
+                                        ></Button>
+                                    </Tooltip>
+                                    <Input
+                                        addonAfter=".taf"
+                                        required
+                                        value={tafFilename}
+                                        status={encodeFileList.length > 0 && tafFilename === "" ? "error" : ""}
+                                        onChange={(event) => setTafFilename(event.target.value)}
+                                        disabled={processing}
+                                    />
+                                </Space.Compact>
+                            </Space>
+                        </div>
+                    </>
+                ) : (
+                    <></>
+                )}
+            </Space>
         </Modal>
     );
 
@@ -1113,6 +1315,10 @@ export const FileBrowser: React.FC<{
         return a.isDir ? -1 : 1;
     };
 
+    const withinTafBoundaries = (numberOfFiles: number) => {
+        return numberOfFiles > 0 && numberOfFiles <= MAX_FILES;
+    };
+
     var columns: any[] = [
         {
             title:
@@ -1132,6 +1338,31 @@ export const FileBrowser: React.FC<{
                                 disabled={selectedRowKeys.length === 0}
                             />
                         </Tooltip>
+                        {withinTafBoundaries(
+                            files.filter(
+                                (item) =>
+                                    selectedRowKeys.includes(item.name) &&
+                                    supportedAudioExtensionsForEncoding.some((ext) =>
+                                        item.name.toLowerCase().endsWith(ext)
+                                    )
+                            ).length
+                        ) && special === "library" ? (
+                            <Tooltip
+                                key="encodeFiles"
+                                title={
+                                    t("fileBrowser.encodeFiles.encodeFiles") +
+                                    supportedAudioExtensionsForEncoding.join(", ")
+                                }
+                            >
+                                <Button
+                                    icon={<CloudSyncOutlined />}
+                                    onClick={handleEncode}
+                                    disabled={selectedRowKeys.length === 0}
+                                />
+                            </Tooltip>
+                        ) : (
+                            ""
+                        )}
                     </div>
                 ) : (
                     ""
@@ -1448,6 +1679,7 @@ export const FileBrowser: React.FC<{
             {uploadFileModal}
             {moveFileModal}
             {renameFileModal}
+            {encodeFilesModal}
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
