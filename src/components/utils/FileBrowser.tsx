@@ -466,11 +466,6 @@ export const FileBrowser: React.FC<{
         // To Do - to be completed
         if (file.includes(".taf")) {
             const folder = special === "library" ? "/library" : "/content";
-            fetchJsonData(folder + file);
-            setFilterFieldAutoFocus(false);
-            setCurrentFile(file);
-            setTafMetaEditorKey((prevKey) => prevKey + 1);
-            setTafMetaEditorModalOpen(true);
         }
     };
 
