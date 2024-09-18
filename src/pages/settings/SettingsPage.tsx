@@ -102,9 +102,9 @@ export const SettingsPage = () => {
                 justifyContent: "flex-end",
             }}
         >
-            <Button onClick={() => {}}>{t("tonies.selectFileModal.cancel")}</Button>
-            <Button type="primary" onClick={() => {}}>
-                {t("tonies.selectFileModal.ok")}
+            <Button onClick={() => SettingsDataHandler.getInstance().resetAll()}>{t("settings.discard")}</Button>
+            <Button type="primary" onClick={() => SettingsDataHandler.getInstance().saveAll()}>
+                {t("settings.save")}
             </Button>
         </div>
     );
@@ -116,7 +116,7 @@ export const SettingsPage = () => {
             <div>
                 
             </div>
-            TEST{selectModalFooter}
+            {selectModalFooter}
         </div>
     );
 

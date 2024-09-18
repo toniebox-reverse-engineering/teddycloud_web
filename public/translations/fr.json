@@ -274,6 +274,8 @@
             "title": "Journal RTNL"
         },
         "saved": "Paramètre enregistré !",
+        "save": "Enregister",
+        "discard": "Ignorer les modifications",
         "title": "Paramètres",
         "tonieboxes": "tonieboxes",
         "tonieJsonUpdateFailed": "La mise à jour de Tonies.json a échoué!",

@@ -61,8 +61,13 @@ export default class SettingsDataHandler{
     //TODO: save changes to server (batched)
     public saveAll(){
         this.settings.forEach(async setting => {
-            await this.saveSingleSetting(setting)
+            if(setting.initialValue !== setting.value){
+                await this.saveSingleSetting(setting)
+            }
         })
+        this.settings.forEach(setting => setting.initialValue=setting.value)
+        this.unsavedChanges = false
+        this.callAllListeners()
     }
 
     private saveSingleSetting(setting: Setting){
@@ -75,17 +80,24 @@ export default class SettingsDataHandler{
             return api.apiPostTeddyCloudSetting(setting.iD, setting.value, setting.overlayId)
                 .then(() => {
                     triggerWriteConfig();
-                    message.success(t("settings.saved"));
+                    message.success(t("settings.saved")+": "+setting.label);
                 })
                 .catch((e) => {
-                    message.error("Error while sending data to file.");
+                    message.error("Error while sending data to file: "+setting.label);
                 });
         } catch (e) {
-            message.error("Error while sending data to server.");
+            message.error("Error while sending data to server: "+setting.label);
             return Promise<null>
         }
 
         //TODO: what did this do in InputField? helpers.setValue(field.value || "");
+        
+    }
+
+    public resetAll(){
+        this.settings.forEach(setting => setting.value=setting.initialValue??"")
+        this.unsavedChanges = false
+        this.callAllListeners()
     }
 
     public getSetting(iD:string){

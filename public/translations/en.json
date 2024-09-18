@@ -274,6 +274,8 @@
             "title": "RTNL Log"
         },
         "saved": "Setting saved!",
+        "save": "Save",
+        "discard": "Discard changes",
         "title": "Settings",
         "tonieboxes": "tonieboxes",
         "tonieJsonUpdateFailed": "Tonies.json update failed!",

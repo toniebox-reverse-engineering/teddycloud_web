@@ -275,6 +275,8 @@
             "title": "RTNL Log"
         },
         "saved": "Einstellung gespeichert!",
+        "save": "Speichern",
+        "discard": "Verwerfen",
         "title": "Einstellungen",
         "tonieboxes": "Tonieboxen",
         "tonieJsonUpdateFailed": "Tonies.json Aktualisierung fehlgeschlagen!",
