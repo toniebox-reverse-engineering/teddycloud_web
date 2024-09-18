@@ -1,11 +1,12 @@
+import { SaveOutlined } from "@ant-design/icons";
+import { Checkbox, Input, InputProps, message } from "antd";
+import FormItem from "antd/es/form/FormItem";
+import { useField } from "formik";
 import { MouseEventHandler, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useField } from "formik";
-import FormItem from "antd/es/form/FormItem";
-import { Input, InputProps, message, Checkbox } from "antd";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { SaveOutlined } from "@ant-design/icons";
+import SettingsDataHandler from "../../data/SettingsDataHandler";
 
 type InputFieldProps = {
     name: string;
@@ -20,6 +21,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
     const { name, label, description, overlayed: initialOverlayed, overlayId, ...inputProps } = props;
     const [field, meta, helpers] = useField(name!);
     const [overlayed, setOverlayed] = useState(initialOverlayed);
+    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value)
 
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
@@ -120,7 +122,7 @@ const InputField = (props: InputFieldProps & InputProps) => {
             </Checkbox>
         ),
     ];
-
+    let value = fieldValue?.toString()
     return (
         <FormItem
             help={hasFeedback ? help : undefined}
@@ -131,11 +133,18 @@ const InputField = (props: InputFieldProps & InputProps) => {
             <Input
                 {...inputProps}
                 {...field}
+                value={value}
                 addonAfter={addonAfter}
                 disabled={!overlayed && overlayed !== undefined}
+                onChange={(changeEventHandler) => {
+                    SettingsDataHandler.getInstance().changeSetting(name, changeEventHandler.target.value)
+                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value)
+                    return 
+                }}
             />
         </FormItem>
     );
 };
 
 export { InputField };
+
