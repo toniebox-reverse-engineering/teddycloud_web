@@ -1,30 +1,31 @@
 import { DeleteOutlined } from "@ant-design/icons";
-import { Button, theme, Typography } from "antd";
+import { Button, theme } from "antd";
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useTranslation } from "react-i18next";
+import { FileObject } from "../../utils/types";
 
-interface DraggableSimpleListItemProps {
+interface DraggableFileObjectListItemProps {
     originNode: React.ReactElement<any, string | React.JSXElementConstructor<any>>;
-    simpleList: string[];
-    file: string;
-    onRemove: (file: string) => void;
+    fileObjectList: FileObject[];
+    file: FileObject;
+    onRemove: (file: FileObject) => void;
     disabled: boolean;
 }
 
 const { useToken } = theme;
 
-export const DraggableSimpleListItem = ({
+export const DraggableFileObjectListItem = ({
     originNode,
-    simpleList: simpleList,
+    fileObjectList: fileObjectList,
     file,
     onRemove,
     disabled,
-}: DraggableSimpleListItemProps) => {
+}: DraggableFileObjectListItemProps) => {
     const { token } = useToken();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-        id: file,
+        id: file.name,
     });
 
     const { t } = useTranslation();
@@ -71,9 +72,12 @@ export const DraggableSimpleListItem = ({
                             color: `${token.colorPrimaryText}`,
                         }}
                     >
-                        {simpleList.indexOf(file) + 1}.
+                        {fileObjectList.indexOf(file) + 1}.
                     </span>
-                    <span>{file}</span>
+                    <div>
+                        <div>{file.name}</div>
+                        <div style={{ fontSize: "smaller", color: `${token.colorTextSecondary}` }}>in {file.path}/</div>
+                    </div>
                 </div>
                 <Button
                     title={t("tonies.encoder.removeFile")}

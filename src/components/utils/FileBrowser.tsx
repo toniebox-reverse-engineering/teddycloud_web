@@ -49,7 +49,8 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { DefaultOptionType } from "antd/es/select";
 import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { DraggableSimpleListItem } from "./DraggableSimpleListItem";
+import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
+import { FileObject } from "../../utils/types";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -157,7 +158,7 @@ export const FileBrowser: React.FC<{
     const [processing, setProcessing] = useState<boolean>(false);
     const [tafFilename, setTafFilename] = useState("");
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
-    const [encodeFileList, setEncodeFileList] = useState<string[]>([]);
+    const [encodeFileList, setEncodeFileList] = useState<FileObject[]>([]);
 
     useEffect(() => {
         const preLoadTreeData = async () => {
@@ -818,14 +819,14 @@ export const FileBrowser: React.FC<{
     const onDragEnd = ({ active, over }: DragEndEvent) => {
         if (active.id !== over?.id) {
             setEncodeFileList((prev) => {
-                const activeIndex = prev.findIndex((i) => i === active.id);
-                const overIndex = prev.findIndex((i) => i === over?.id);
+                const activeIndex = prev.findIndex((i) => i.name === active.id);
+                const overIndex = prev.findIndex((i) => i.name === over?.id);
                 return arrayMove(prev, activeIndex, overIndex);
             });
         }
     };
 
-    const onRemove = (file: string) => {
+    const onRemove = (file: FileObject) => {
         const index = encodeFileList.indexOf(file);
         const newFileList = encodeFileList.slice();
         newFileList.splice(index, 1);
@@ -833,7 +834,7 @@ export const FileBrowser: React.FC<{
     };
 
     const sortFileListAlphabetically = () => {
-        setEncodeFileList((prev) => [...prev].sort((a, b) => a.localeCompare(b)));
+        setEncodeFileList((prev) => [...prev].sort((a, b) => a.name.localeCompare(b.name)));
     };
 
     const supportedAudioExtensionsForEncoding = [
@@ -852,20 +853,23 @@ export const FileBrowser: React.FC<{
     ];
 
     const handleEncode = () => {
-        const stringKeys = selectedRowKeys
-            .map((key) => String(key))
-            .filter((filename) =>
-                supportedAudioExtensionsForEncoding.some((ext) => filename.toLowerCase().endsWith(ext))
+        const newEncodedFiles: FileObject[] = [];
+
+        for (const rowName of selectedRowKeys) {
+            const file = files.find(
+                (file) =>
+                    file.name === rowName &&
+                    supportedAudioExtensionsForEncoding.some((ext) => file.name.toLowerCase().endsWith(ext))
             );
 
-        if (stringKeys.length === 0) {
-            message.error(
-                t("fileBrowser.encodeFiles.noSupportedFiletypesChoosen") +
-                    supportedAudioExtensionsForEncoding.join(", ")
-            );
-            return;
+            if (file) {
+                newEncodedFiles.push({
+                    name: file.name,
+                    path: path,
+                });
+            }
         }
-        setEncodeFileList(stringKeys);
+        setEncodeFileList(newEncodedFiles);
         setIsEncodeFilesModalOpen(true);
     };
 
@@ -879,7 +883,7 @@ export const FileBrowser: React.FC<{
         setProcessing(true);
         const hideLoading = message.loading(t("fileBrowser.encodeFiles.encodingInProgress"), 0);
         const body =
-            encodeFileList.map((file) => `source=${encodeURIComponent(path + "/" + file)}`).join("&") +
+            encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file)}`).join("&") +
             `&target=${encodeURIComponent(pathFromNodeId(treeNodeId) + "/" + tafFilename + ".taf")}`;
         try {
             const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
@@ -915,15 +919,19 @@ export const FileBrowser: React.FC<{
             okButtonProps={{ disabled: processing || !tafFilename || encodeFileList.length === 0 }}
         >
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
-                <SortableContext items={encodeFileList} strategy={verticalListSortingStrategy} disabled={processing}>
-                    {encodeFileList.map((fileName) => (
-                        <DraggableSimpleListItem
-                            key={fileName}
-                            originNode={<div>{fileName}</div>}
+                <SortableContext
+                    items={encodeFileList.map((i) => i.name)}
+                    strategy={verticalListSortingStrategy}
+                    disabled={processing}
+                >
+                    {encodeFileList.map((file) => (
+                        <DraggableFileObjectListItem
+                            key={file.name}
+                            originNode={<div>{file.name}</div>}
                             onRemove={onRemove}
                             disabled={processing}
-                            simpleList={encodeFileList}
-                            file={fileName}
+                            fileObjectList={encodeFileList}
+                            file={file}
                         />
                     ))}
                 </SortableContext>
