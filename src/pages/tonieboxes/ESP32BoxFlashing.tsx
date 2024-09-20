@@ -3,7 +3,7 @@ import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Divider, Form, Input, Progress, Row, Steps, Typography } from "antd";
+import { Alert, Button, Col, Collapse, Divider, Form, Input, message, Progress, Row, Steps, Typography } from "antd";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import BreadcrumbWrapper, {
@@ -21,6 +21,7 @@ import {
     FileAddOutlined,
     LeftOutlined,
     RightOutlined,
+    SafetyCertificateOutlined,
     SyncOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
@@ -566,7 +567,7 @@ export const ESP32BoxFlashing = () => {
             const formData = new FormData();
             formData.append(sanitizedName, new Blob([flashData.buffer]), sanitizedName);
 
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/uploadFirmware`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/esp32/uploadFirmware`, formData);
 
             if (response.ok && response.status === 200) {
                 const filename = await response.text();
@@ -626,8 +627,12 @@ export const ESP32BoxFlashing = () => {
         }));
 
         const response = await api.apiGetTeddyCloudApiRaw(
-            `/api/patchFirmware?filename=${state.filename}&hostname=${encodeURIComponent(state.hostname)}` +
-                (state.wifi_ssid && state.wifi_pass ? `&wifi_ssid=${encodeURIComponent(state.wifi_ssid)}&wifi_pass=${encodeURIComponent(state.wifi_pass)}` : "")
+            `/api/esp32/patchFirmware?filename=${state.filename}&hostname=${encodeURIComponent(state.hostname)}` +
+                (state.wifi_ssid && state.wifi_pass
+                    ? `&wifi_ssid=${encodeURIComponent(state.wifi_ssid)}&wifi_pass=${encodeURIComponent(
+                          state.wifi_pass
+                      )}`
+                    : "")
         );
 
         setState((prevState) => ({
@@ -817,6 +822,38 @@ export const ESP32BoxFlashing = () => {
             alert(err);
             await port.close();
             return;
+        }
+    };
+
+    const extractAndStoreCertsFromFlash = async () => {
+        const hideLoading = message.loading(t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates"), 0);
+
+        try {
+            const response = await api.apiPostTeddyCloudRaw(`/api/esp32/extractCerts?filename=${state.filename}`);
+
+            if (response.ok && response.status === 200) {
+                hideLoading();
+                message.success(
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessful", {
+                        file: state.filename,
+                    })
+                );
+            } else {
+                hideLoading();
+                t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed", {
+                    file: state.filename,
+                }) + "!";
+            }
+        } catch (err: any) {
+            hideLoading();
+
+            message.error(
+                t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed", {
+                    file: state.filename,
+                }) +
+                    ": " +
+                    (await err.response.text())
+            );
         }
     };
 
@@ -1106,30 +1143,74 @@ export const ESP32BoxFlashing = () => {
                         description={
                             <div>
                                 <Typography>
+                                    <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.automatically")}</Divider>
                                     <Paragraph>
-                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP1")}{" "}
-                                        <Text code>docker exec -it &lt;container-name&gt; bash</Text>.
+                                        {t(
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesAutomaticallyHint"
+                                        )}
                                     </Paragraph>
-                                    <Paragraph>
-                                        <pre style={{ fontSize: 12 }}>
-                                            {`# Please check the filename of your backup
+                                    <Button
+                                        icon={<SafetyCertificateOutlined />}
+                                        disabled={disableButtons}
+                                        type="primary"
+                                        onClick={() => extractCertsFromFlash()}
+                                    >
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificates")}
+                                    </Button>
+                                </Typography>
+                                <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.manually")}</Divider>
+                                <Typography style={{ marginBottom: 8 }}>
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHint")}
+                                </Typography>
+                                <Typography>
+                                    <Collapse
+                                        size="small"
+                                        items={[
+                                            {
+                                                key: "1",
+                                                label: t(
+                                                    "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManually"
+                                                ),
+                                                children: (
+                                                    <Typography>
+                                                        <Paragraph>
+                                                            {t(
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP1"
+                                                            )}{" "}
+                                                            <Text code>
+                                                                docker exec -it &lt;container-name&gt; bash
+                                                            </Text>
+                                                            .
+                                                        </Paragraph>
+                                                        <Paragraph>
+                                                            <pre style={{ fontSize: 12 }}>
+                                                                {`# Please check the filename of your backup
 # Be sure you are in the teddycloud directory
 # cd /teddycloud/ # just for docker
 teddycloud --esp32-extract data/firmware/` +
-                                                (state.filename ? state.filename : "ESP32_<mac>.bin") +
-                                                ` --destination certs/client`}
-                                        </pre>
-                                    </Paragraph>
-                                    <Paragraph>
-                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP2")}
-                                    </Paragraph>
-                                    <Paragraph>
-                                        <pre style={{ fontSize: 12 }}>
-                                            {`mv certs/client/CLIENT.DER certs/client/client.der
+                                                                    (state.filename
+                                                                        ? state.filename
+                                                                        : "ESP32_<mac>.bin") +
+                                                                    ` --destination certs/client`}
+                                                            </pre>
+                                                        </Paragraph>
+                                                        <Paragraph>
+                                                            {t(
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP2"
+                                                            )}
+                                                        </Paragraph>
+                                                        <Paragraph>
+                                                            <pre style={{ fontSize: 12 }}>
+                                                                {`mv certs/client/CLIENT.DER certs/client/client.der
 mv certs/client/PRIVATE.DER certs/client/private.der
 mv certs/client/CA.DER certs/client/ca.der`}
-                                        </pre>
-                                    </Paragraph>
+                                                            </pre>
+                                                        </Paragraph>
+                                                    </Typography>
+                                                ),
+                                            },
+                                        ]}
+                                    />
                                 </Typography>
                             </div>
                         }
@@ -1179,6 +1260,10 @@ mv certs/client/CA.DER certs/client/ca.der`}
 
     const flashESP32 = () => {
         writeFlash();
+    };
+
+    const extractCertsFromFlash = () => {
+        extractAndStoreCertsFromFlash();
     };
 
     const next = () => {
