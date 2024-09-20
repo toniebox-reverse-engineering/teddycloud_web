@@ -883,7 +883,7 @@ export const FileBrowser: React.FC<{
         setProcessing(true);
         const hideLoading = message.loading(t("fileBrowser.encodeFiles.encodingInProgress"), 0);
         const body =
-            encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file)}`).join("&") +
+            encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
             `&target=${encodeURIComponent(pathFromNodeId(treeNodeId) + "/" + tafFilename + ".taf")}`;
         try {
             const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
