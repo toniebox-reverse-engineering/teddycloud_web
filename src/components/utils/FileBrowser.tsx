@@ -1380,7 +1380,7 @@ export const FileBrowser: React.FC<{
         {
             title:
                 selectedRowKeys.length > 0 ? (
-                    <div style={{ display: "flex", gap: 8 }}>
+                    <div style={{ display: "flex", gap: 8, minHeight: 32 }}>
                         {files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length > 0 ? (
                             <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
                                 <Button
@@ -1426,7 +1426,7 @@ export const FileBrowser: React.FC<{
                         )}
                     </div>
                 ) : (
-                    ""
+                    <div style={{ minHeight: 32 }}></div>
                 ),
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
