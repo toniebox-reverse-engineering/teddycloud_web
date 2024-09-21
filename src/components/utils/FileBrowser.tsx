@@ -863,7 +863,7 @@ export const FileBrowser: React.FC<{
 
                 if (file) {
                     newEncodedFiles.push({
-                        uid: crypto.randomUUID(),
+                        uid: "id-" + Math.floor(Math.random() * Date.now()),
                         name: file.name,
                         path: path,
                     });
@@ -932,7 +932,7 @@ export const FileBrowser: React.FC<{
 
             if (file) {
                 newEncodedFiles.push({
-                    uid: crypto.randomUUID(),
+                    uid: "id-" + Math.floor(Math.random() * Date.now()),
                     name: file.name,
                     path: path,
                 });
