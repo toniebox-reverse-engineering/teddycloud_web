@@ -248,6 +248,10 @@ export const FileBrowser: React.FC<{
     }, [path]);
 
     useEffect(() => {
+        setCreateDirectoryPath(pathFromNodeId(treeNodeId));
+    }, [treeNodeId]);
+
+    useEffect(() => {
         setInputValueNewFilename(currentFile);
     }, [currentFile]);
 
