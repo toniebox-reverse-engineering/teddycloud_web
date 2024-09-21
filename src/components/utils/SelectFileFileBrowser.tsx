@@ -466,6 +466,12 @@ export const SelectFileFileBrowser: React.FC<{
                     onDoubleClick: () => {
                         if (record.isDir) {
                             handleDirClick(record.name);
+                        } else {
+                            const newSelectedKeys = selectedRowKeys.includes(record.name)
+                                ? selectedRowKeys.filter((key) => key !== record.name)
+                                : [...selectedRowKeys, record.name];
+
+                            onSelectChange(newSelectedKeys);
                         }
                     },
                 })}

@@ -70,7 +70,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     };
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
-        if (files && files.length > 0) {
+        if (files) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const newFiles = files.map((file) => ({
                 filepath: prefix + path + "/" + file.name,
