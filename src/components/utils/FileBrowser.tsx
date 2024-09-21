@@ -1381,13 +1381,17 @@ export const FileBrowser: React.FC<{
             title:
                 selectedRowKeys.length > 0 ? (
                     <div style={{ display: "flex", gap: 8 }}>
-                        <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
-                            <Button
-                                icon={<NodeExpandOutlined />}
-                                onClick={() => showMoveDialog("")}
-                                disabled={selectedRowKeys.length === 0}
-                            />
-                        </Tooltip>
+                        {files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length > 0 ? (
+                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
+                                <Button
+                                    icon={<NodeExpandOutlined />}
+                                    onClick={() => showMoveDialog("")}
+                                    disabled={selectedRowKeys.length === 0}
+                                />
+                            </Tooltip>
+                        ) : (
+                            ""
+                        )}
                         <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
                             <Button
                                 icon={<DeleteOutlined />}
