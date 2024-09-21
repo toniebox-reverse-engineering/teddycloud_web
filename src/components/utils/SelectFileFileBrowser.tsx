@@ -560,7 +560,7 @@ export const SelectFileFileBrowser: React.FC<{
                             );
                         },
                         cell: (props: any) => {
-                            return <th {...props} />;
+                            return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
                         },
                     },
                 }}
