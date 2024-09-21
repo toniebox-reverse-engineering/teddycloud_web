@@ -1,0 +1,15 @@
+export const supportedAudioExtensionsFFMPG = [
+    ".mp3",
+    ".aac",
+    ".m4a",
+    ".wav",
+    ".flac",
+    ".ogg",
+    ".opus",
+    ".aiff",
+    ".aif",
+    ".wma",
+    ".ac3",
+    ".dts",
+    ".taf",
+];

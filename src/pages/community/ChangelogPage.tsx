@@ -27,7 +27,7 @@ export const ChangelogPage = () => {
                 "Added moveFile api https://github.com/toniebox-reverse-engineering/teddycloud/issues/198",
                 "Added server side taf file encoding",
                 "Support TAF files in taps and server side taf file encoding",
-                "Added API to extract certificates",
+                "Added API to extract certificates https://github.com/toniebox-reverse-engineering/teddycloud/issues/103",
                 "Initial cert generation generates now a 4096bit long cert https://github.com/toniebox-reverse-engineering/teddycloud/issues/138",
                 "Fixed some bugs",
                 "gui: Fixed bug storing source with html special chars",
@@ -39,6 +39,7 @@ export const ChangelogPage = () => {
                 "gui: Added file upload to library",
                 'gui: If setting "Category frontend: Split content / model" is disabled, don\'t show the source info in Tonies list and details modal',
                 "gui: added encoding functionality in library",
+                "gui: allow playing all encodable files in teddyCloud",
                 "gui: esp32 flash process - integrated remaining manual steps. Certificate extraction is now also automated",
             ],
             commits: [

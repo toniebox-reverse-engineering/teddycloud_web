@@ -13,7 +13,7 @@ import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, message
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAudioContext } from "../audio/AudioContext";
-import { FileBrowser } from "../utils/FileBrowser";
+import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { TonieArticleSearch } from "./TonieArticleSearch";
 import LanguageFlagSVG from "../../utils/languageUtil";
 import { RadioStreamSearch } from "../utils/RadioStreamSearch";
@@ -432,10 +432,11 @@ export const TonieCard: React.FC<{
             width="auto"
             footer={selectModalFooter}
         >
-            <FileBrowser
+            <SelectFileFileBrowser
                 special="library"
                 maxSelectedRows={1}
                 trackUrl={false}
+                filetypeFilter={[".taf", ".tap"]}
                 onFileSelectChange={handleFileSelectChange}
             />
         </Modal>

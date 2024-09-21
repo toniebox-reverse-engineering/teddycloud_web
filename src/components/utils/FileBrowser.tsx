@@ -51,12 +51,16 @@ import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/cor
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
 import { FileObject } from "../../utils/types";
+import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
+import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
 const MAX_FILES = 99;
+
+const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/", fullPath: "/" };
 
@@ -80,36 +84,33 @@ export const FileBrowser: React.FC<{
     filetypeFilter?: string[];
     isTapList?: boolean;
     overlay?: string;
-    maxSelectedRows?: number;
     trackUrl?: boolean;
-    selectTafOrTapOnly?: boolean;
     showDirOnly?: boolean;
     showColumns?: string[];
-    onFileSelectChange?: (files: any[], path: string, special: string) => void;
 }> = ({
     special,
     filetypeFilter = [],
     isTapList = false,
     overlay = "",
-    maxSelectedRows = 0,
-    selectTafOrTapOnly = true,
     trackUrl = true,
     showDirOnly = false,
     showColumns = undefined,
-    onFileSelectChange,
 }) => {
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
     const { token } = useToken();
-    const location = useLocation();
     const navigate = useNavigate();
     const inputRef = useRef<InputRef>(null);
     const inputRefFilter = useRef<InputRef>(null);
     const cursorPositionFilterRef = useRef<number | null>(null);
     const [messageApi, contextHolder] = message.useMessage();
 
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const initialPath = queryParams.get("path") || "";
+    const [path, setPath] = useState(initialPath);
+
     const [files, setFiles] = useState<any[]>([]);
-    const [path, setPath] = useState("");
     const [rebuildList, setRebuildList] = useState(false);
     const [currentFile, setCurrentFile] = useState("");
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -194,7 +195,7 @@ export const FileBrowser: React.FC<{
         const initialPath = queryParams.get("path") || ""; // Get the 'path' parameter from the URL, default to empty string if not present
 
         setPath(initialPath); // Set the initial path
-    }, [location]);
+    }, []);
 
     useEffect(() => {
         if (overlay) {
@@ -215,7 +216,6 @@ export const FileBrowser: React.FC<{
             .then((response) => response.json())
             .then((data) => {
                 var list: never[] = data.files;
-
                 if (showDirOnly) list = list.filter((file: any) => file.isDir);
                 if (filetypeFilter.length > 0)
                     list = list.filter(
@@ -246,6 +246,10 @@ export const FileBrowser: React.FC<{
     useEffect(() => {
         setCreateDirectoryPath(path);
     }, [path]);
+
+    useEffect(() => {
+        setCreateDirectoryPath(pathFromNodeId(treeNodeId));
+    }, [treeNodeId]);
 
     useEffect(() => {
         setInputValueNewFilename(currentFile);
@@ -811,6 +815,85 @@ export const FileBrowser: React.FC<{
         </Modal>
     );
 
+    // select File Modal for encoding
+    const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState(false);
+    const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
+    const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState(0); // Initialize a key
+
+    const handleCancelSelectFile = () => {
+        setIsSelectFileModalOpen(false);
+    };
+
+    const addSelectedFilesForEncoding = () => {
+        setEncodeFileList((prevList) => {
+            return [...prevList, ...selectedNewFilesForEncoding];
+        });
+        setIsSelectFileModalOpen(false);
+        setSelectedNewFilesForEncoding([]);
+    };
+
+    const selectModalFooter = (
+        <div
+            style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                padding: "16px 0",
+                margin: "-24px -24px -12px -24px",
+                background: token.colorBgElevated,
+            }}
+        >
+            <Button onClick={handleCancelSelectFile}>{t("tonies.selectFileModal.cancel")}</Button>
+            <Button type="primary" onClick={addSelectedFilesForEncoding}>
+                {t("tonies.selectFileModal.ok")}
+            </Button>
+        </div>
+    );
+
+    const handleFileSelectChange = (files: any[], path: string, special: string) => {
+        const newEncodedFiles: FileObject[] = [];
+
+        if (files.length > 0) {
+            for (const selectedFile of files) {
+                const file = files.find(
+                    (file) =>
+                        file.name === selectedFile.name &&
+                        supportedAudioExtensionsForEncoding.some((ext) => file.name.toLowerCase().endsWith(ext))
+                );
+
+                if (file) {
+                    newEncodedFiles.push({
+                        uid: crypto.randomUUID(),
+                        name: file.name,
+                        path: path,
+                    });
+                }
+            }
+        }
+        setSelectedNewFilesForEncoding(newEncodedFiles);
+    };
+
+    const selectFileModal = (
+        <Modal
+            className="sticky-footer"
+            title={t("tonies.selectFileModal.selectFile")}
+            open={isSelectFileModalOpen}
+            onOk={addSelectedFilesForEncoding}
+            onCancel={handleCancelSelectFile}
+            width="auto"
+            footer={selectModalFooter}
+        >
+            <SelectFileFileBrowser
+                key={selectFileFileBrowserKey}
+                special="library"
+                maxSelectedRows={MAX_FILES - encodeFileList.length - 1}
+                trackUrl={false}
+                filetypeFilter={supportedAudioExtensionsForEncoding}
+                onFileSelectChange={handleFileSelectChange}
+            />
+        </Modal>
+    );
+
     // encode files
     const sensor = useSensor(PointerSensor, {
         activationConstraint: { distance: 10 },
@@ -819,8 +902,8 @@ export const FileBrowser: React.FC<{
     const onDragEnd = ({ active, over }: DragEndEvent) => {
         if (active.id !== over?.id) {
             setEncodeFileList((prev) => {
-                const activeIndex = prev.findIndex((i) => i.name === active.id);
-                const overIndex = prev.findIndex((i) => i.name === over?.id);
+                const activeIndex = prev.findIndex((i) => i.uid === active.id);
+                const overIndex = prev.findIndex((i) => i.uid === over?.id);
                 return arrayMove(prev, activeIndex, overIndex);
             });
         }
@@ -837,22 +920,7 @@ export const FileBrowser: React.FC<{
         setEncodeFileList((prev) => [...prev].sort((a, b) => a.name.localeCompare(b.name)));
     };
 
-    const supportedAudioExtensionsForEncoding = [
-        ".mp3",
-        ".aac",
-        ".m4a",
-        ".wav",
-        ".flac",
-        ".ogg",
-        ".opus",
-        ".aiff",
-        ".aif",
-        ".wma",
-        ".ac3",
-        ".dts",
-    ];
-
-    const handleEncode = () => {
+    const openFileEncodeModal = () => {
         const newEncodedFiles: FileObject[] = [];
 
         for (const rowName of selectedRowKeys) {
@@ -864,6 +932,7 @@ export const FileBrowser: React.FC<{
 
             if (file) {
                 newEncodedFiles.push({
+                    uid: crypto.randomUUID(),
                     name: file.name,
                     path: path,
                 });
@@ -883,7 +952,7 @@ export const FileBrowser: React.FC<{
         setProcessing(true);
         const hideLoading = message.loading(t("fileBrowser.encodeFiles.encodingInProgress"), 0);
         const body =
-            encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file)}`).join("&") +
+            encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
             `&target=${encodeURIComponent(pathFromNodeId(treeNodeId) + "/" + tafFilename + ".taf")}`;
         try {
             const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
@@ -918,15 +987,24 @@ export const FileBrowser: React.FC<{
             width="auto"
             okButtonProps={{ disabled: processing || !tafFilename || encodeFileList.length === 0 }}
         >
+            {selectFileModal}
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
                 <SortableContext
-                    items={encodeFileList.map((i) => i.name)}
+                    items={encodeFileList.map((i) => i.uid)}
                     strategy={verticalListSortingStrategy}
                     disabled={processing}
                 >
+                    <Button
+                        onClick={() => {
+                            setSelectFileFileBrowserKey((prevKey) => prevKey + 1);
+                            setIsSelectFileModalOpen(true);
+                        }}
+                    >
+                        {t("fileBrowser.encodeFiles.addFiles")}
+                    </Button>
                     {encodeFileList.map((file) => (
                         <DraggableFileObjectListItem
-                            key={file.name}
+                            key={file.uid}
                             originNode={<div>{file.name}</div>}
                             onRemove={onRemove}
                             disabled={processing}
@@ -1241,31 +1319,7 @@ export const FileBrowser: React.FC<{
     };
 
     const onSelectChange = (newSelectedRowKeys: Key[]) => {
-        if (maxSelectedRows > 0) {
-            if (selectTafOrTapOnly) {
-                const rowCount = newSelectedRowKeys.length;
-                newSelectedRowKeys = newSelectedRowKeys.filter((key) => {
-                    const file = files.find((f: any) => f.name === key) as any;
-                    return (file && file.tafHeader !== undefined) || (file && file.name.toLowerCase().endsWith(".tap"));
-                });
-                if (rowCount !== newSelectedRowKeys.length) {
-                    message.warning(t("fileBrowser.selectTafOrTapOnly"));
-                }
-            }
-            if (newSelectedRowKeys.length > maxSelectedRows) {
-                message.warning(
-                    t("fileBrowser.maxSelectedRows", {
-                        maxSelectedRows: maxSelectedRows,
-                    })
-                );
-            } else {
-                setSelectedRowKeys(newSelectedRowKeys);
-            }
-        } else {
-            setSelectedRowKeys(newSelectedRowKeys);
-        }
-        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
-        if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
+        setSelectedRowKeys(newSelectedRowKeys);
     };
 
     const handleDirClick = (dirPath: string) => {
@@ -1325,15 +1379,19 @@ export const FileBrowser: React.FC<{
     var columns: any[] = [
         {
             title:
-                maxSelectedRows === 0 && selectedRowKeys.length > 0 ? (
-                    <div style={{ display: "flex", gap: 8 }}>
-                        <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
-                            <Button
-                                icon={<NodeExpandOutlined />}
-                                onClick={() => showMoveDialog("")}
-                                disabled={selectedRowKeys.length === 0}
-                            />
-                        </Tooltip>
+                selectedRowKeys.length > 0 ? (
+                    <div style={{ display: "flex", gap: 8, minHeight: 32 }}>
+                        {files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length > 0 ? (
+                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
+                                <Button
+                                    icon={<NodeExpandOutlined />}
+                                    onClick={() => showMoveDialog("")}
+                                    disabled={selectedRowKeys.length === 0}
+                                />
+                            </Tooltip>
+                        ) : (
+                            ""
+                        )}
                         <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
                             <Button
                                 icon={<DeleteOutlined />}
@@ -1359,7 +1417,7 @@ export const FileBrowser: React.FC<{
                             >
                                 <Button
                                     icon={<CloudSyncOutlined />}
-                                    onClick={handleEncode}
+                                    onClick={openFileEncodeModal}
                                     disabled={selectedRowKeys.length === 0}
                                 />
                             </Tooltip>
@@ -1368,7 +1426,7 @@ export const FileBrowser: React.FC<{
                         )}
                     </div>
                 ) : (
-                    ""
+                    <div style={{ minHeight: 32 }}></div>
                 ),
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
@@ -1555,8 +1613,29 @@ export const FileBrowser: React.FC<{
                                             "/content" +
                                             path +
                                             "/" +
-                                            record.name +
+                                            encodeURIComponent(record.name) +
                                             "?ogg=true&special=" +
+                                            special +
+                                            (overlay ? `&overlay=${overlay}` : ""),
+                                        record.tonieInfo
+                                    )
+                                }
+                            />
+                        </Tooltip>
+                    );
+                } else if (supportedAudioExtensionsForEncoding.some((ending) => record.name.endsWith(ending))) {
+                    actions.push(
+                        <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
+                            <PlayCircleOutlined
+                                style={{ margin: "0 8px 0 0" }}
+                                onClick={() =>
+                                    playAudio(
+                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                            "/content" +
+                                            path +
+                                            "/" +
+                                            encodeURIComponent(record.name) +
+                                            "?special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
                                         record.tonieInfo
@@ -1593,7 +1672,7 @@ export const FileBrowser: React.FC<{
                     );
                 }
                 // include the rename icon on files
-                if (!record.isDir && record.name !== ".." && maxSelectedRows === 0) {
+                if (!record.isDir && record.name !== "..") {
                     actions.push(
                         <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
                             <FormOutlined
@@ -1604,7 +1683,7 @@ export const FileBrowser: React.FC<{
                     );
                 }
                 // include the move icon on files
-                if (!record.isDir && record.name !== ".." && maxSelectedRows === 0) {
+                if (!record.isDir && record.name !== "..") {
                     actions.push(
                         <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
                             <NodeExpandOutlined
@@ -1615,7 +1694,7 @@ export const FileBrowser: React.FC<{
                     );
                 }
                 // include the delete action
-                if (record.name !== ".." && maxSelectedRows === 0) {
+                if (record.name !== "..") {
                     actions.push(
                         <Tooltip key={`action-delete-${record.name}`} title={t("fileBrowser.delete")}>
                             <DeleteOutlined
@@ -1698,7 +1777,7 @@ export const FileBrowser: React.FC<{
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
-                {maxSelectedRows === 0 && special === "library" ? (
+                {special === "library" ? (
                     <div style={{ width: "100%", marginBottom: 8 }}>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                             <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
@@ -1731,26 +1810,19 @@ export const FileBrowser: React.FC<{
                     },
                 })}
                 rowClassName={rowClassName}
-                rowSelection={
-                    maxSelectedRows > 0
-                        ? {
-                              selectedRowKeys,
-                              onChange: onSelectChange,
-                          }
-                        : {
-                              selectedRowKeys,
-                              onChange: onSelectChange,
-                              getCheckboxProps: (record: Record) => ({
-                                  disabled: record.name === "..", // Disable checkbox for rows with name '..'
-                              }),
-                              onSelectAll: (selected: boolean, selectedRows: any[]) => {
-                                  const selectedKeys = selected
-                                      ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
-                                      : [];
-                                  setSelectedRowKeys(selectedKeys);
-                              },
-                          }
-                }
+                rowSelection={{
+                    selectedRowKeys,
+                    onChange: onSelectChange,
+                    getCheckboxProps: (record: Record) => ({
+                        disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                    }),
+                    onSelectAll: (selected: boolean, selectedRows: any[]) => {
+                        const selectedKeys = selected
+                            ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                            : [];
+                        setSelectedRowKeys(selectedKeys);
+                    },
+                }}
                 components={{
                     // Override the header to include custom search row
                     header: {
@@ -1791,7 +1863,7 @@ export const FileBrowser: React.FC<{
                             );
                         },
                         cell: (props: any) => {
-                            return <th {...props} />;
+                            return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
                         },
                     },
                 }}

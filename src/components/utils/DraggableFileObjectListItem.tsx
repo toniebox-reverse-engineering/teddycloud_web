@@ -25,7 +25,7 @@ export const DraggableFileObjectListItem = ({
 }: DraggableFileObjectListItemProps) => {
     const { token } = useToken();
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-        id: file.name,
+        id: file.uid,
     });
 
     const { t } = useTranslation();
