@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Button, Space, Alert, theme } from "antd";
 import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { FileBrowser } from "../utils/FileBrowser";
+import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 export interface FileItem {
     filepath: string;
@@ -27,6 +28,8 @@ export interface TonieAudioPlaylistEditorProps {
 }
 
 const { useToken } = theme;
+
+const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     open,
@@ -343,11 +346,11 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     width="auto"
                     footer={selectModalFooter}
                 >
-                    <FileBrowser
+                    <SelectFileFileBrowser
                         maxSelectedRows={99}
                         special="library"
                         trackUrl={false}
-                        selectTafOrTapOnly={false}
+                        filetypeFilter={supportedAudioExtensionsForEncoding}
                         key={filebrowserKey}
                         onFileSelectChange={handleFileSelectChange}
                     />
