@@ -11,12 +11,15 @@ import TonieInformationModal from "./TonieInformationModal";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
 const MAX_FILES = 99;
+
+const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 interface RecordTafHeader {
     audioId?: any;
@@ -404,8 +407,29 @@ export const SelectFileFileBrowser: React.FC<{
                                             "/content" +
                                             path +
                                             "/" +
-                                            record.name +
+                                            encodeURIComponent(record.name) +
                                             "?ogg=true&special=" +
+                                            special +
+                                            (overlay ? `&overlay=${overlay}` : ""),
+                                        record.tonieInfo
+                                    )
+                                }
+                            />
+                        </Tooltip>
+                    );
+                } else if (supportedAudioExtensionsForEncoding.some((ending) => record.name.endsWith(ending))) {
+                    actions.push(
+                        <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
+                            <PlayCircleOutlined
+                                style={{ margin: "0 8px 0 0" }}
+                                onClick={() =>
+                                    playAudio(
+                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                            "/content" +
+                                            path +
+                                            "/" +
+                                            encodeURIComponent(record.name) +
+                                            "?special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
                                         record.tonieInfo

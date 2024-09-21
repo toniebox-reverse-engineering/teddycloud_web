@@ -1,4 +1,6 @@
 import React, { useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
+import logoImg from "../../assets/logo.png";
 
 interface AudioContextType {
     playAudio: (url: string, meta?: any) => void;
@@ -31,6 +33,7 @@ const extractFilename = (url: string) => {
 };
 
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
+    const { t } = useTranslation();
     const [songImage, setSongImage] = useState<string>("");
     const [songArtist, setSongArtist] = useState<string>("");
     const [songTitle, setSongTitle] = useState<string>("");
@@ -42,13 +45,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         globalAudio.src = url;
         if (meta) {
             setSongImage(meta.picture);
-            setSongArtist(meta.series);
+            setSongArtist(
+                meta.series || meta.episode
+                    ? meta.series
+                    : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource")))
+            );
             setSongTitle(meta.episode);
             setSongTracks([]); // the tracks (starting in seconds) should be added here
         } else {
-            setSongImage("");
+            console.log(decodeURI(url));
+            setSongImage(decodeURI(url).includes(".taf?") ? "/img_unknown.png" : logoImg);
             setSongArtist("");
-            setSongTitle(extractFilename(url));
+            setSongTitle(extractFilename(decodeURI(url)));
             setSongTracks([]);
         }
         globalAudio.play();
