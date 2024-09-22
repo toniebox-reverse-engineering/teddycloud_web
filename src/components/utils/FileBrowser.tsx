@@ -480,11 +480,8 @@ export const FileBrowser: React.FC<{
     };
 
     // taf meta functions - to do
-    const handleEditTafMetaDataClick = (file: string) => {
+    const handleEditTafMetaDataClick = (path: string, record: Record) => {
         // To Do - to be completed
-        if (file.includes(".taf")) {
-            const folder = special === "library" ? "/library" : "/content";
-        }
     };
 
     // delete functions
@@ -1748,12 +1745,12 @@ export const FileBrowser: React.FC<{
                         </Tooltip>
                     );
                 }
-                if (record.name.includes(".taf")) {
+                if (record.tafHeader) {
                     actions.push(
                         <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
                             <EditOutlined
                                 style={{ margin: "0 8px 0 0" }}
-                                onClick={() => handleEditTafMetaDataClick(path + "/" + record.name)}
+                                onClick={() => handleEditTafMetaDataClick(path, record)}
                             />
                         </Tooltip>
                     );
