@@ -403,11 +403,13 @@ export const SelectFileFileBrowser: React.FC<{
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() =>
                                     playAudio(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            "/content" +
-                                            path +
-                                            "/" +
-                                            encodeURIComponent(record.name) +
+                                        encodeURI(
+                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                "/content" +
+                                                path +
+                                                "/" +
+                                                record.name
+                                        ) +
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
@@ -424,11 +426,13 @@ export const SelectFileFileBrowser: React.FC<{
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() =>
                                     playAudio(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            "/content" +
-                                            path +
-                                            "/" +
-                                            encodeURIComponent(record.name) +
+                                        encodeURI(
+                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                "/content" +
+                                                path +
+                                                "/" +
+                                                record.name
+                                        ) +
                                             "?special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
