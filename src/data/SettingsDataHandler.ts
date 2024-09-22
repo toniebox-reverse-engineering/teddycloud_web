@@ -101,7 +101,6 @@ export default class SettingsDataHandler{
     }
 
     public getSetting(iD:string){
-        console.log("Getting setting ", iD)
         return this.settings.find(setting => setting.iD === iD)
     }
 
