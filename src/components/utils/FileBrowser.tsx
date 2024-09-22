@@ -105,6 +105,7 @@ export const FileBrowser: React.FC<{
     const cursorPositionFilterRef = useRef<number | null>(null);
     const inputCreateDirectoryRef = useRef<InputRef>(null);
     const inputEncodeTafFileNameRef = useRef<InputRef>(null);
+    const inputRenameTafFileNameRef = useRef<InputRef>(null);
     const inputFilterRef = useRef<InputRef>(null);
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -114,18 +115,18 @@ export const FileBrowser: React.FC<{
     const [path, setPath] = useState(initialPath);
 
     const [files, setFiles] = useState<any[]>([]);
-    const [rebuildList, setRebuildList] = useState(false);
-    const [currentFile, setCurrentFile] = useState("");
+    const [rebuildList, setRebuildList] = useState<boolean>(false);
+    const [currentFile, setCurrentFile] = useState<string>("");
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const [jsonData, setJsonData] = useState<string>("");
-    const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState(false);
+    const [jsonViewerModalOpened, setJsonViewerModalOpened] = useState<boolean>(false);
 
-    const [tapEditorModalOpen, setTapEditorModalOpen] = useState(false);
-    const [tapEditorKey, setTapEditorKey] = useState(0);
+    const [tapEditorModalOpen, setTapEditorModalOpen] = useState<boolean>(false);
+    const [tapEditorKey, setTapEditorKey] = useState<number>(0);
 
-    const [tafMetaEditorModalOpen, setTafMetaEditorModalOpen] = useState(false);
-    const [tafMetaEditorKey, setTafMetaEditorKey] = useState(0);
+    const [tafMetaEditorModalOpen, setTafMetaEditorModalOpen] = useState<boolean>(false);
+    const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
 
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
     const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
@@ -133,13 +134,13 @@ export const FileBrowser: React.FC<{
     const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState<boolean>(false);
     const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(initialPath);
     const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
-    const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState(false);
+    const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState<boolean>(false);
 
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
 
     const [filterText, setFilterText] = useState("");
-    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
+    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState<boolean>(false);
 
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [isConfirmMultipleDeleteModalOpen, setIsConfirmMultipleDeleteModalOpen] = useState(false);
@@ -151,24 +152,24 @@ export const FileBrowser: React.FC<{
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
 
-    const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState(false);
+    const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
 
-    const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState(false);
-    const [newRenameFilename, setInputValueRenameNewFilename] = useState<string>(currentFile);
-    const [hasInvalidChars, setHasInvalidChars] = useState(false);
+    const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
+    const [renameInputKey, setRenameInputKey] = useState<number>(1);
+    const [hasInvalidChars, setHasInvalidChars] = useState<boolean>(false);
 
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
     const [fileList, setFileList] = useState<any[]>([]);
-    const [uploading, setUploading] = useState(false);
+    const [uploading, setUploading] = useState<boolean>(false);
 
     const [processing, setProcessing] = useState<boolean>(false);
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
     const [encodeFileList, setEncodeFileList] = useState<FileObject[]>([]);
-    const [isError, setIsError] = useState(true);
+    const [isError, setIsError] = useState<boolean>(true);
 
-    const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState(false);
+    const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState<boolean>(false);
     const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
-    const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState(0); // Initialize a key
+    const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState<number>(0);
 
     useEffect(() => {
         const preLoadTreeData = async () => {
@@ -199,11 +200,10 @@ export const FileBrowser: React.FC<{
     }, []);
 
     useEffect(() => {
-        // Function to parse the query parameters from the URL
         const queryParams = new URLSearchParams(location.search);
-        const initialPath = queryParams.get("path") || ""; // Get the 'path' parameter from the URL, default to empty string if not present
+        const initialPath = queryParams.get("path") || "";
 
-        setPath(initialPath); // Set the initial path
+        setPath(initialPath);
     }, []);
 
     useEffect(() => {
@@ -259,10 +259,6 @@ export const FileBrowser: React.FC<{
     useEffect(() => {
         setCreateDirectoryPath(path);
     }, [path]);
-
-    useEffect(() => {
-        setInputValueRenameNewFilename(currentFile);
-    }, [currentFile]);
 
     // general functions
     function detectColorScheme() {
@@ -625,6 +621,7 @@ export const FileBrowser: React.FC<{
     // rename
     const showRenameDialog = (fileName: string) => {
         setCurrentFile(fileName);
+        setRenameInputKey((prevKey) => prevKey + 1);
         setIsRenameFileModalOpen(true);
     };
 
@@ -639,22 +636,35 @@ export const FileBrowser: React.FC<{
     const closeRenameFileModal = () => {
         setIsRenameFileModalOpen(false);
         setHasInvalidChars(false);
-        setInputValueRenameNewFilename(currentFile);
     };
 
     const handleRenameNewFilenameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        setHasInvalidChars(!isInputValid(e.target.value.toString()));
-        setInputValueRenameNewFilename(e.target.value);
+        const value = e.target.value;
+        const inputInvalid = !isInputValid(value.toString());
+        const errorDetected = !value.toString() || inputInvalid;
+        setHasInvalidChars(inputInvalid);
+        setIsError(errorDetected);
     };
 
-    const isRenameButtonDisabled = !newRenameFilename || newRenameFilename === currentFile || hasInvalidChars;
+    const isRenameButtonDisabled =
+        !inputRenameTafFileNameRef.current?.input?.value ||
+        inputRenameTafFileNameRef.current?.input?.value === currentFile ||
+        hasInvalidChars;
 
     const renameFileModal = (
         <Modal
             title={t("fileBrowser.renameFile.modalTitle")}
+            key={renameInputKey}
             open={isRenameFileModalOpen}
             onCancel={closeRenameFileModal}
-            onOk={() => handleRename(path, newRenameFilename)}
+            onOk={() =>
+                handleRename(
+                    path,
+                    inputRenameTafFileNameRef.current && inputRenameTafFileNameRef.current.input
+                        ? inputRenameTafFileNameRef.current.input.value
+                        : currentFile
+                )
+            }
             okText={t("fileBrowser.renameFile.rename")}
             cancelText={t("fileBrowser.renameFile.cancel")}
             okButtonProps={{ disabled: isRenameButtonDisabled }}
@@ -677,8 +687,9 @@ export const FileBrowser: React.FC<{
                     required
                 >
                     <Input
+                        ref={inputRenameTafFileNameRef}
                         type="text"
-                        value={newRenameFilename}
+                        defaultValue={currentFile}
                         onChange={handleRenameNewFilenameInputChange}
                         placeholder={currentFile}
                         status={hasInvalidChars ? "error" : ""}
@@ -781,7 +792,7 @@ export const FileBrowser: React.FC<{
                         throw new Error(text);
                     }
                     const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData) || rootTreeNode.id;
-                    const newNodeId = `${parentNodeId}.${treeData.length}`; // Generate a unique ID for the new node
+                    const newNodeId = `${parentNodeId}.${treeData.length}`;
                     const nodeExpanded = isNodeExpanded(parentNodeId);
                     const childNodes = findNodesByParentId(parentNodeId, treeData);
                     if (nodeExpanded || childNodes.length > 0) {
