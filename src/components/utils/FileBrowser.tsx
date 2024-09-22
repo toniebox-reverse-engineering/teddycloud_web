@@ -55,6 +55,7 @@ import { FileObject } from "../../utils/types";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
+import { setHeapSnapshotNearHeapLimit } from "v8";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -155,7 +156,7 @@ export const FileBrowser: React.FC<{
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
 
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
-    const [renameInputKey, setRenameInputKey] = useState<number>(1);
+    const [renameInputKey, setRenameInputKey] = useState<number>(0);
     const [hasInvalidChars, setHasInvalidChars] = useState<boolean>(false);
 
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
@@ -166,7 +167,7 @@ export const FileBrowser: React.FC<{
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
     const [encodeFileList, setEncodeFileList] = useState<FileObject[]>([]);
     const [isError, setIsError] = useState<boolean>(true);
-    const [encodeFilesModalKey, setEncodeFilesModalKey] = useState<number>(1);
+    const [encodeFilesModalKey, setEncodeFilesModalKey] = useState<number>(0);
 
     const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState<boolean>(false);
     const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
@@ -486,6 +487,181 @@ export const FileBrowser: React.FC<{
         }
     };
 
+    // delete functions
+    const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
+        setFilterFieldAutoFocus(false);
+        setFileToDelete(fileName);
+        setDeletePath(path);
+        setDeleteApiCall(apiCall);
+        setIsConfirmDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteFile(deletePath, deleteApiCall);
+        setRebuildList((prev) => !prev);
+        setIsConfirmDeleteModalOpen(false);
+    };
+
+    const handleCancelDelete = () => {
+        setIsConfirmDeleteModalOpen(false);
+        setIsConfirmMultipleDeleteModalOpen(false);
+    };
+
+    const handleMultipleDelete = () => {
+        setIsConfirmMultipleDeleteModalOpen(true);
+    };
+
+    const handleConfirmMultipleDelete = async () => {
+        if (selectedRowKeys.length > 0) {
+            for (const rowName of selectedRowKeys) {
+                const file = (files as Record[]).find((file) => file.name === rowName);
+                if (file) {
+                    const deletePath = path + "/" + file.name;
+                    const deleteApiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
+                    await deleteFile(deletePath, deleteApiCall);
+                }
+            }
+            setRebuildList((prev) => !prev);
+            setIsConfirmMultipleDeleteModalOpen(false);
+            setSelectedRowKeys([]);
+        } else {
+            message.warning("No rows selected for deletion.");
+        }
+    };
+
+    const deleteFile = async (deletePath: string, apiCall: string) => {
+        const loadingMessage = message.loading(t("fileBrowser.messages.deleting"), 0);
+        try {
+            const deleteUrl = `/api/fileDelete${apiCall}`;
+            const response = await api.apiPostTeddyCloudRaw(deleteUrl, deletePath);
+
+            const data = await response.text();
+            loadingMessage();
+            if (data === "OK") {
+                message.success(t("fileBrowser.messages.deleteSuccessful", { file: deletePath }));
+                const idToRemove = findNodeIdByFullPath(deletePath + "/", treeData);
+                if (idToRemove) {
+                    setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
+                }
+                if (createDirectoryPath === deletePath + "/") {
+                    setCreateDirectoryPath(path);
+                }
+            } else {
+                message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${data}`);
+            }
+        } catch (error) {
+            loadingMessage();
+            message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${error}`);
+        }
+    };
+
+    // create directory functions
+    const showCreateDirectoryModal = () => {
+        setIsUnchangedOrEmpty(true);
+        setHasNewDirectoryInvalidChars(false);
+        setcreateDirectoryInputKey((prevKey) => prevKey + 1);
+        setFilterFieldAutoFocus(false);
+        setCreateDirectoryModalOpen(true);
+    };
+
+    const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        const value = e.target.value;
+        const inputInvalid = !isInputValid(value.toString());
+        setHasNewDirectoryInvalidChars(inputInvalid);
+        setIsUnchangedOrEmpty(value === "");
+    };
+
+    const createDirectory = () => {
+        const inputValueCreateDirectory = inputCreateDirectoryRef.current?.input?.value || "";
+        try {
+            api.apiPostTeddyCloudRaw(
+                `/api/dirCreate?special=library`,
+                createDirectoryPath + "/" + inputValueCreateDirectory
+            )
+                .then((response) => {
+                    return response.text();
+                })
+                .then((text) => {
+                    if (text !== "OK") {
+                        throw new Error(text);
+                    }
+                    const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData) || rootTreeNode.id;
+                    const newNodeId = `${parentNodeId}.${treeData.length}`;
+                    const nodeExpanded = isNodeExpanded(parentNodeId);
+                    const childNodes = findNodesByParentId(parentNodeId, treeData);
+                    if (nodeExpanded || childNodes.length > 0) {
+                        const newDir = {
+                            id: newNodeId,
+                            pId: parentNodeId,
+                            value: newNodeId,
+                            title: inputValueCreateDirectory,
+                            fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
+                        };
+                        setTreeData(
+                            [...treeData, newDir].sort((a, b) => {
+                                return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
+                            })
+                        );
+                        if (isMoveFileModalOpen || isEncodeFilesModalOpen) {
+                            setTreeNodeId(newNodeId);
+                        }
+                    }
+                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
+                    setCreateDirectoryModalOpen(false);
+                    setRebuildList((prev) => !prev);
+                    setCreateDirectoryPath(path);
+                })
+                .catch((error) => {
+                    message.error(error.message);
+                });
+        } catch (error) {
+            message.error(`Error while creating directory`);
+        }
+    };
+
+    const closeCreateDirectoryModal = () => {
+        setFilterFieldAutoFocus(false);
+        setCreateDirectoryModalOpen(false);
+    };
+
+    const isCreateDirectoryButtonDisabled = isUnchangedOrEmpty || hasNewDirectoryInvalidChars;
+
+    const createDirectoryModal = (
+        <Modal
+            title={t("fileBrowser.createDirectory.modalTitle")}
+            key={"createDirModal-" + createDirectoryInputKey}
+            open={isCreateDirectoryModalOpen}
+            onCancel={closeCreateDirectoryModal}
+            onOk={createDirectory}
+            okText={t("fileBrowser.createDirectory.create")}
+            cancelText={t("fileBrowser.createDirectory.cancel")}
+            zIndex={1050}
+            okButtonProps={{ disabled: isCreateDirectoryButtonDisabled }}
+        >
+            <Typography style={{ marginBottom: 8 }}>
+                {t("fileBrowser.createDirectory.parentPath") + " " + createDirectoryPath + "/"}{" "}
+            </Typography>
+            <Form.Item
+                validateStatus={hasNewDirectoryInvalidChars ? "error" : ""}
+                help={
+                    hasNewDirectoryInvalidChars
+                        ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
+                        : ""
+                }
+                required
+            >
+                {" "}
+                <Input
+                    ref={inputCreateDirectoryRef}
+                    type="text"
+                    placeholder={t("fileBrowser.createDirectory.placeholder")}
+                    status={hasNewDirectoryInvalidChars ? "error" : ""}
+                    onChange={handleCreateDirectoryInputChange}
+                />
+            </Form.Item>
+        </Modal>
+    );
+
     // move / rename functions
     const moveRenameFile = async (source: string, target: string, moving: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
@@ -609,7 +785,7 @@ export const FileBrowser: React.FC<{
                             icon={<FolderAddOutlined />}
                             onClick={() => {
                                 setCreateDirectoryPath(pathFromNodeId(treeNodeId));
-                                setCreateDirectoryModalOpen(true);
+                                showCreateDirectoryModal();
                             }}
                             style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                         ></Button>
@@ -622,6 +798,8 @@ export const FileBrowser: React.FC<{
     // rename
     const showRenameDialog = (fileName: string) => {
         setCurrentFile(fileName);
+        setIsUnchangedOrEmpty(true);
+        setHasInvalidChars(!isInputValid(fileName));
         setRenameInputKey((prevKey) => prevKey + 1);
         setIsRenameFileModalOpen(true);
     };
@@ -636,8 +814,6 @@ export const FileBrowser: React.FC<{
 
     const closeRenameFileModal = () => {
         setIsRenameFileModalOpen(false);
-        setHasInvalidChars(false);
-        setIsUnchangedOrEmpty(true);
     };
 
     const handleRenameNewFilenameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
@@ -654,7 +830,7 @@ export const FileBrowser: React.FC<{
     const renameFileModal = (
         <Modal
             title={t("fileBrowser.renameFile.modalTitle")}
-            key={renameInputKey}
+            key={"renameModal-" + renameInputKey}
             open={isRenameFileModalOpen}
             onCancel={closeRenameFileModal}
             onOk={() =>
@@ -696,181 +872,6 @@ export const FileBrowser: React.FC<{
                     />
                 </Form.Item>
             </div>
-        </Modal>
-    );
-
-    // delete functions
-    const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
-        setFilterFieldAutoFocus(false);
-        setFileToDelete(fileName);
-        setDeletePath(path);
-        setDeleteApiCall(apiCall);
-        setIsConfirmDeleteModalOpen(true);
-    };
-
-    const handleConfirmDelete = () => {
-        deleteFile(deletePath, deleteApiCall);
-        setRebuildList((prev) => !prev);
-        setIsConfirmDeleteModalOpen(false);
-    };
-
-    const handleCancelDelete = () => {
-        setIsConfirmDeleteModalOpen(false);
-        setIsConfirmMultipleDeleteModalOpen(false);
-    };
-
-    const handleMultipleDelete = () => {
-        setIsConfirmMultipleDeleteModalOpen(true);
-    };
-
-    const handleConfirmMultipleDelete = async () => {
-        if (selectedRowKeys.length > 0) {
-            for (const rowName of selectedRowKeys) {
-                const file = (files as Record[]).find((file) => file.name === rowName);
-                if (file) {
-                    const deletePath = path + "/" + file.name;
-                    const deleteApiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
-                    await deleteFile(deletePath, deleteApiCall);
-                }
-            }
-            setRebuildList((prev) => !prev);
-            setIsConfirmMultipleDeleteModalOpen(false);
-            setSelectedRowKeys([]);
-        } else {
-            message.warning("No rows selected for deletion.");
-        }
-    };
-
-    const deleteFile = async (deletePath: string, apiCall: string) => {
-        const loadingMessage = message.loading(t("fileBrowser.messages.deleting"), 0);
-        try {
-            const deleteUrl = `/api/fileDelete${apiCall}`;
-            const response = await api.apiPostTeddyCloudRaw(deleteUrl, deletePath);
-
-            const data = await response.text();
-            loadingMessage();
-            if (data === "OK") {
-                message.success(t("fileBrowser.messages.deleteSuccessful", { file: deletePath }));
-                const idToRemove = findNodeIdByFullPath(deletePath + "/", treeData);
-                if (idToRemove) {
-                    setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
-                }
-                if (createDirectoryPath === deletePath + "/") {
-                    setCreateDirectoryPath(path);
-                }
-            } else {
-                message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${data}`);
-            }
-        } catch (error) {
-            loadingMessage();
-            message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${error}`);
-        }
-    };
-
-    // create directory functions
-    const openCreateDirectoryModal = () => {
-        setcreateDirectoryInputKey((prevKey) => prevKey + 1);
-        setFilterFieldAutoFocus(false);
-        setCreateDirectoryModalOpen(true);
-    };
-
-    const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        const value = e.target.value;
-        const inputInvalid = !isInputValid(value.toString());
-        setHasNewDirectoryInvalidChars(inputInvalid);
-        setIsUnchangedOrEmpty(value === "");
-    };
-
-    const createDirectory = () => {
-        const inputValueCreateDirectory = inputCreateDirectoryRef.current?.input?.value || "";
-        try {
-            api.apiPostTeddyCloudRaw(
-                `/api/dirCreate?special=library`,
-                createDirectoryPath + "/" + inputValueCreateDirectory
-            )
-                .then((response) => {
-                    return response.text();
-                })
-                .then((text) => {
-                    if (text !== "OK") {
-                        throw new Error(text);
-                    }
-                    const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData) || rootTreeNode.id;
-                    const newNodeId = `${parentNodeId}.${treeData.length}`;
-                    const nodeExpanded = isNodeExpanded(parentNodeId);
-                    const childNodes = findNodesByParentId(parentNodeId, treeData);
-                    if (nodeExpanded || childNodes.length > 0) {
-                        const newDir = {
-                            id: newNodeId,
-                            pId: parentNodeId,
-                            value: newNodeId,
-                            title: inputValueCreateDirectory,
-                            fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
-                        };
-                        setTreeData(
-                            [...treeData, newDir].sort((a, b) => {
-                                return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
-                            })
-                        );
-                        if (isMoveFileModalOpen || isEncodeFilesModalOpen) {
-                            setTreeNodeId(newNodeId);
-                        }
-                    }
-                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
-                    setCreateDirectoryModalOpen(false);
-                    setRebuildList((prev) => !prev);
-                    setCreateDirectoryPath(path);
-                })
-                .catch((error) => {
-                    message.error(error.message);
-                });
-        } catch (error) {
-            message.error(`Error while creating directory`);
-        }
-    };
-
-    const closeCreateDirectoryModal = () => {
-        setFilterFieldAutoFocus(false);
-        setCreateDirectoryModalOpen(false);
-        setHasNewDirectoryInvalidChars(false);
-        setIsUnchangedOrEmpty(true);
-    };
-
-    const isCreateDirectoryButtonDisabled = isUnchangedOrEmpty || hasNewDirectoryInvalidChars;
-
-    const createDirectoryModal = (
-        <Modal
-            title={t("fileBrowser.createDirectory.modalTitle")}
-            key={createDirectoryInputKey}
-            open={isCreateDirectoryModalOpen}
-            onCancel={closeCreateDirectoryModal}
-            onOk={createDirectory}
-            okText={t("fileBrowser.createDirectory.create")}
-            cancelText={t("fileBrowser.createDirectory.cancel")}
-            zIndex={1050}
-            okButtonProps={{ disabled: isCreateDirectoryButtonDisabled }}
-        >
-            <Typography style={{ marginBottom: 8 }}>
-                {t("fileBrowser.createDirectory.parentPath") + " " + createDirectoryPath + "/"}{" "}
-            </Typography>
-            <Form.Item
-                validateStatus={hasNewDirectoryInvalidChars ? "error" : ""}
-                help={
-                    hasNewDirectoryInvalidChars
-                        ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
-                        : ""
-                }
-                required
-            >
-                {" "}
-                <Input
-                    ref={inputCreateDirectoryRef}
-                    type="text"
-                    placeholder={t("fileBrowser.createDirectory.placeholder")}
-                    status={hasNewDirectoryInvalidChars ? "error" : ""}
-                    onChange={handleCreateDirectoryInputChange}
-                />
-            </Form.Item>
         </Modal>
     );
 
@@ -976,6 +977,8 @@ export const FileBrowser: React.FC<{
     };
 
     const openFileEncodeModal = () => {
+        setIsUnchangedOrEmpty(true);
+        setHasInvalidChars(false);
         setEncodeFilesModalKey((prevKey) => prevKey + 1);
         setTreeNodeId(rootTreeNode.id);
         const newEncodedFiles: FileObject[] = [];
@@ -1003,8 +1006,6 @@ export const FileBrowser: React.FC<{
         setIsEncodeFilesModalOpen(false);
         setCreateDirectoryPath(path);
         setEncodeFileList([]);
-        setHasInvalidChars(false);
-        setIsUnchangedOrEmpty(true);
     };
 
     const encodeFiles = async () => {
@@ -1046,7 +1047,7 @@ export const FileBrowser: React.FC<{
     const encodeFilesModal = (
         <Modal
             title={t("fileBrowser.encodeFiles.modalTitle")}
-            key={encodeFilesModalKey}
+            key={"encodeModal-" + encodeFilesModalKey}
             open={isEncodeFilesModalOpen}
             onCancel={closeEncodeFilesModal}
             onOk={encodeFiles}
@@ -1126,7 +1127,10 @@ export const FileBrowser: React.FC<{
                                         <Button
                                             disabled={processing}
                                             icon={<FolderAddOutlined />}
-                                            onClick={openCreateDirectoryModal}
+                                            onClick={() => {
+                                                setCreateDirectoryPath(pathFromNodeId(treeNodeId));
+                                                showCreateDirectoryModal();
+                                            }}
                                             style={{ borderRadius: 0 }}
                                         ></Button>
                                     </Tooltip>
@@ -1863,7 +1867,7 @@ export const FileBrowser: React.FC<{
                 {special === "library" ? (
                     <div style={{ width: "100%", marginBottom: 8 }}>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                            <Button size="small" onClick={openCreateDirectoryModal} style={{ marginBottom: 8 }}>
+                            <Button size="small" onClick={showCreateDirectoryModal} style={{ marginBottom: 8 }}>
                                 {t("fileBrowser.createDirectory.createDirectory")}
                             </Button>
 
