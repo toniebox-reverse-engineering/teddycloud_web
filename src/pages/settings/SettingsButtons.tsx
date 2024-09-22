@@ -18,7 +18,6 @@ export const SettingsButton: FunctionComponent<SettingsButtonProps> = () => {
         setReloadCount(reloadCount+1)
     }
     SettingsDataHandler.getInstance().addListener(listener)
-    console.log("*** rendering!")
     return SettingsDataHandler.getInstance().hasUnchangedChanges()?( <div
         style={{
             display: "flex",

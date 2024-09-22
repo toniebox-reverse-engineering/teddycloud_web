@@ -99,7 +99,6 @@ export const SettingsPage = () => {
             </div>
         </div>
     );
-    console.log("rerendering?")
     return (
         <>
             <StyledSider>
