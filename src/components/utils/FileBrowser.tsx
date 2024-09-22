@@ -133,9 +133,9 @@ export const FileBrowser: React.FC<{
 
     const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState<boolean>(false);
     const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(initialPath);
-    const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
+    const [createDirectoryInputKey, setcreateDirectoryInputKey] = useState<number>(1);
     const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState<boolean>(false);
-
+    const [isUnchangedOrEmpty, setIsUnchangedOrEmpty] = useState<boolean>(true);
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
 
@@ -166,6 +166,7 @@ export const FileBrowser: React.FC<{
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
     const [encodeFileList, setEncodeFileList] = useState<FileObject[]>([]);
     const [isError, setIsError] = useState<boolean>(true);
+    const [encodeFilesModalKey, setEncodeFilesModalKey] = useState<number>(1);
 
     const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState<boolean>(false);
     const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
@@ -636,6 +637,7 @@ export const FileBrowser: React.FC<{
     const closeRenameFileModal = () => {
         setIsRenameFileModalOpen(false);
         setHasInvalidChars(false);
+        setIsUnchangedOrEmpty(true);
     };
 
     const handleRenameNewFilenameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
@@ -644,12 +646,10 @@ export const FileBrowser: React.FC<{
         const errorDetected = !value.toString() || inputInvalid;
         setHasInvalidChars(inputInvalid);
         setIsError(errorDetected);
+        setIsUnchangedOrEmpty(!value || value === currentFile);
     };
 
-    const isRenameButtonDisabled =
-        !inputRenameTafFileNameRef.current?.input?.value ||
-        inputRenameTafFileNameRef.current?.input?.value === currentFile ||
-        hasInvalidChars;
+    const isRenameButtonDisabled = isUnchangedOrEmpty || hasInvalidChars || isError;
 
     const renameFileModal = (
         <Modal
@@ -769,16 +769,20 @@ export const FileBrowser: React.FC<{
 
     // create directory functions
     const openCreateDirectoryModal = () => {
+        setcreateDirectoryInputKey((prevKey) => prevKey + 1);
         setFilterFieldAutoFocus(false);
         setCreateDirectoryModalOpen(true);
     };
 
     const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        setHasNewDirectoryInvalidChars(!isInputValid(e.target.value.toString()));
-        setInputValueCreateDirectory(e.target.value);
+        const value = e.target.value;
+        const inputInvalid = !isInputValid(value.toString());
+        setHasNewDirectoryInvalidChars(inputInvalid);
+        setIsUnchangedOrEmpty(value === "");
     };
 
     const createDirectory = () => {
+        const inputValueCreateDirectory = inputCreateDirectoryRef.current?.input?.value || "";
         try {
             api.apiPostTeddyCloudRaw(
                 `/api/dirCreate?special=library`,
@@ -815,7 +819,6 @@ export const FileBrowser: React.FC<{
                     message.success(t("fileBrowser.createDirectory.directoryCreated"));
                     setCreateDirectoryModalOpen(false);
                     setRebuildList((prev) => !prev);
-                    setInputValueCreateDirectory("");
                     setCreateDirectoryPath(path);
                 })
                 .catch((error) => {
@@ -829,15 +832,16 @@ export const FileBrowser: React.FC<{
     const closeCreateDirectoryModal = () => {
         setFilterFieldAutoFocus(false);
         setCreateDirectoryModalOpen(false);
-        setInputValueCreateDirectory("");
         setHasNewDirectoryInvalidChars(false);
+        setIsUnchangedOrEmpty(true);
     };
 
-    const isCreateDirectoryButtonDisabled = !inputValueCreateDirectory || hasNewDirectoryInvalidChars;
+    const isCreateDirectoryButtonDisabled = isUnchangedOrEmpty || hasNewDirectoryInvalidChars;
 
     const createDirectoryModal = (
         <Modal
             title={t("fileBrowser.createDirectory.modalTitle")}
+            key={createDirectoryInputKey}
             open={isCreateDirectoryModalOpen}
             onCancel={closeCreateDirectoryModal}
             onOk={createDirectory}
@@ -861,8 +865,8 @@ export const FileBrowser: React.FC<{
                 {" "}
                 <Input
                     ref={inputCreateDirectoryRef}
+                    type="text"
                     placeholder={t("fileBrowser.createDirectory.placeholder")}
-                    value={inputValueCreateDirectory}
                     status={hasNewDirectoryInvalidChars ? "error" : ""}
                     onChange={handleCreateDirectoryInputChange}
                 />
@@ -972,6 +976,7 @@ export const FileBrowser: React.FC<{
     };
 
     const openFileEncodeModal = () => {
+        setEncodeFilesModalKey((prevKey) => prevKey + 1);
         setTreeNodeId(rootTreeNode.id);
         const newEncodedFiles: FileObject[] = [];
 
@@ -997,6 +1002,9 @@ export const FileBrowser: React.FC<{
     const closeEncodeFilesModal = () => {
         setIsEncodeFilesModalOpen(false);
         setCreateDirectoryPath(path);
+        setEncodeFileList([]);
+        setHasInvalidChars(false);
+        setIsUnchangedOrEmpty(true);
     };
 
     const encodeFiles = async () => {
@@ -1032,11 +1040,13 @@ export const FileBrowser: React.FC<{
         const errorDetected = (encodeFileList.length > 0 && !value.toString()) || inputInvalid;
         setHasInvalidChars(inputInvalid);
         setIsError(errorDetected);
+        setIsUnchangedOrEmpty(value === "");
     };
 
     const encodeFilesModal = (
         <Modal
             title={t("fileBrowser.encodeFiles.modalTitle")}
+            key={encodeFilesModalKey}
             open={isEncodeFilesModalOpen}
             onCancel={closeEncodeFilesModal}
             onOk={encodeFiles}
@@ -1044,7 +1054,7 @@ export const FileBrowser: React.FC<{
             cancelText={t("fileBrowser.encodeFiles.cancel")}
             zIndex={1000}
             width="auto"
-            okButtonProps={{ disabled: processing || isError || encodeFileList.length === 0 }}
+            okButtonProps={{ disabled: processing || isError || isUnchangedOrEmpty || encodeFileList.length === 0 }}
         >
             {selectFileModal}
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
