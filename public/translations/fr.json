@@ -281,8 +281,8 @@
         "tonieJsonUpdateFailed": "La mise à jour de Tonies.json a échoué!",
         "tonieJsonUpdateTriggered": "Mise à jour Tonies.json déclenchée!",
         "updateToniesJson": "Mettre à jour Tonies.json",
-        "warning": "Attention ! Bouton de sauvegarde + Niveau des paramètres",
-        "warningHint": "Les entrées de texte doivent actuellement être enregistrées explicitement jusqu'à ce qu'une meilleure solution soit mise en œuvre. Pour ce faire, cliquez sur le symbole de sauvegarde à la fin du champ. Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
+        "warning": "Attention ! Niveau des paramètres",
+        "warningHint": "Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
     },
     "tonieArticleSearch": {
         "failedToFetchSearchResults": "Échec de la récupération des résultats de recherche : "

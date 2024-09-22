@@ -1,4 +1,4 @@
-import { Alert, Button, Divider, Form, Radio, message, theme } from "antd";
+import { Alert, Divider, Form, Radio, message, theme } from "antd";
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -11,9 +11,10 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../components/StyledComponents";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
-import OptionItem from "../../components/utils/OptionItem";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import SettingsDataHandler, { Setting } from "../../data/SettingsDataHandler";
+import SettingsButton from "./SettingsButtons";
+import { SettingsOptionItem } from "./fields/SettingsOptionItem";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -37,13 +38,7 @@ export const SettingsPage = () => {
 
     const [settingsLevel, setSettingsLevel] = useState("");
     const [loading, setLoading] = useState(false);
-    const [reloadCount, setReloadCount] = useState(0)
-
-    const listener = () => {
-        setReloadCount(reloadCount+1)
-    }
-    SettingsDataHandler.getInstance().addListener(listener)
-
+     
     useEffect(() => {
         const fetchSettingsLevel = async () => {
             try {
@@ -94,32 +89,17 @@ export const SettingsPage = () => {
         }
     };
 
-    const selectModalFooter = (
-        <div
-            style={{
-                display: "flex",
-                gap: 8,
-                justifyContent: "flex-end",
-            }}
-        >
-            <Button onClick={() => SettingsDataHandler.getInstance().resetAll()}>{t("settings.discard")}</Button>
-            <Button type="primary" onClick={() => SettingsDataHandler.getInstance().saveAll()}>
-                {t("settings.save")}
-            </Button>
-        </div>
-    );
-
     const stickyFooter = (
-        <div
+        <div id="testfooter"
             className="sticky-footer-panel"            
         >
             <div>
                 
+            <SettingsButton></SettingsButton>
             </div>
-            {selectModalFooter}
         </div>
     );
-
+    console.log("rerendering?")
     return (
         <>
             <StyledSider>
@@ -199,7 +179,7 @@ export const SettingsPage = () => {
                                             }
                                             return null;
                                         })}
-                                        <OptionItem option={option} noOverlay={true} key={option.iD} />
+                                        <SettingsOptionItem iD={option.iD} />
                                     </React.Fragment>
                                 );
                             })}
@@ -222,7 +202,7 @@ export const SettingsPage = () => {
                             Expert
                         </Radio.Button>
                     </Radio.Group> 
-                    {SettingsDataHandler.getInstance().hasUnchangedChanges() ? stickyFooter:<></>}
+                    {stickyFooter}
                 </StyledContent>
             </StyledLayout>
            
