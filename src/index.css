@@ -10,6 +10,21 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
+.sticky-footer-panel div{
+   position:fixed; 
+   bottom:2px;
+   right:15px; 
+   padding-right: 12px;
+   padding-left: 12px;
+   padding-bottom: 8px;
+   margin-bottom: 0px;
+   z-index: 11;
+}
+
+.sticky-footer-panel div div{
+   padding:0 !important;
+}
+
 .ant-layout .ant-layout-sider-children {
     margin: 0 !important;
 }

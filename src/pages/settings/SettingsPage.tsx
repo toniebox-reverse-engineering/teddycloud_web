@@ -1,7 +1,9 @@
-import React from "react";
-import { Form, Alert, Divider, Radio, message } from "antd";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Alert, Divider, Form, Radio, message, theme } from "antd";
+import { Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom"; // Import Link from React Router
+import { OptionsList, TeddyCloudApi } from "../../api";
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
@@ -9,11 +11,10 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../components/StyledComponents";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
-import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { useEffect, useState } from "react";
-import OptionItem from "../../components/utils/OptionItem";
-import { Formik } from "formik";
+import SettingsDataHandler, { Setting } from "../../data/SettingsDataHandler";
+import SettingsButton from "./SettingsButtons";
+import { SettingsOptionItem } from "./fields/SettingsOptionItem";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -29,17 +30,19 @@ const settingsValidationSchema = Yup.object().shape({
  */
 
 export const SettingsPage = () => {
+
     const { t } = useTranslation();
     const [options, setOptions] = useState<OptionsList | undefined>();
+    const { useToken } = theme;
+    const { token } = useToken();
 
     const [settingsLevel, setSettingsLevel] = useState("");
     const [loading, setLoading] = useState(false);
-
+     
     useEffect(() => {
         const fetchSettingsLevel = async () => {
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("core.settings_level");
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -58,8 +61,9 @@ export const SettingsPage = () => {
         const fetchOptions = async () => {
             setLoading(true);
             const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
-            if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
+            if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {                
                 setOptions(optionsRequest);
+                SettingsDataHandler.getInstance().initializeSettings((optionsRequest.options as Setting[]))
             }
             setLoading(false);
         };
@@ -85,6 +89,16 @@ export const SettingsPage = () => {
         }
     };
 
+    const stickyFooter = (
+        <div id="testfooter"
+            className="sticky-footer-panel"            
+        >
+            <div>
+                
+            <SettingsButton></SettingsButton>
+            </div>
+        </div>
+    );
     return (
         <>
             <StyledSider>
@@ -164,7 +178,7 @@ export const SettingsPage = () => {
                                             }
                                             return null;
                                         })}
-                                        <OptionItem option={option} noOverlay={true} key={option.iD} />
+                                        <SettingsOptionItem iD={option.iD} />
                                     </React.Fragment>
                                 );
                             })}
@@ -186,9 +200,11 @@ export const SettingsPage = () => {
                         <Radio.Button value="3" key="3">
                             Expert
                         </Radio.Button>
-                    </Radio.Group>
+                    </Radio.Group> 
+                    {stickyFooter}
                 </StyledContent>
             </StyledLayout>
+           
         </>
     );
 };
