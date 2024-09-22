@@ -18,6 +18,7 @@ import {
     Upload,
     Space,
     Divider,
+    Form,
 } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
@@ -53,6 +54,7 @@ import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
 import { FileObject } from "../../utils/types";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -100,9 +102,10 @@ export const FileBrowser: React.FC<{
     const { playAudio } = useAudioContext();
     const { token } = useToken();
     const navigate = useNavigate();
-    const inputRef = useRef<InputRef>(null);
-    const inputRefFilter = useRef<InputRef>(null);
     const cursorPositionFilterRef = useRef<number | null>(null);
+    const inputCreateDirectoryRef = useRef<InputRef>(null);
+    const inputEncodeTafFileNameRef = useRef<InputRef>(null);
+    const inputFilterRef = useRef<InputRef>(null);
     const [messageApi, contextHolder] = message.useMessage();
 
     const location = useLocation();
@@ -128,8 +131,9 @@ export const FileBrowser: React.FC<{
     const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
 
     const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState<boolean>(false);
-    const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(path);
+    const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(initialPath);
     const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
+    const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState(false);
 
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
@@ -150,16 +154,21 @@ export const FileBrowser: React.FC<{
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState(false);
 
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState(false);
-    const [newFilename, setInputValueNewFilename] = useState<string>(currentFile);
+    const [newRenameFilename, setInputValueRenameNewFilename] = useState<string>(currentFile);
+    const [hasInvalidChars, setHasInvalidChars] = useState(false);
 
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
     const [fileList, setFileList] = useState<any[]>([]);
     const [uploading, setUploading] = useState(false);
 
     const [processing, setProcessing] = useState<boolean>(false);
-    const [tafFilename, setTafFilename] = useState("");
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
     const [encodeFileList, setEncodeFileList] = useState<FileObject[]>([]);
+    const [isError, setIsError] = useState(true);
+
+    const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState(false);
+    const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
+    const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState(0); // Initialize a key
 
     useEffect(() => {
         const preLoadTreeData = async () => {
@@ -230,29 +239,29 @@ export const FileBrowser: React.FC<{
     useEffect(() => {
         if (isCreateDirectoryModalOpen) {
             setTimeout(() => {
-                if (inputRef.current) {
-                    inputRef.current.focus();
+                if (inputCreateDirectoryRef.current) {
+                    inputCreateDirectoryRef.current.focus();
                 }
             }, 0);
         }
     }, [isCreateDirectoryModalOpen]);
 
     useEffect(() => {
-        if (cursorPositionFilterRef.current !== null && inputRefFilter.current) {
-            inputRefFilter.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
+        if (cursorPositionFilterRef.current !== null && inputFilterRef.current) {
+            inputFilterRef.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
         }
     }, [filterText]);
-
-    useEffect(() => {
-        setCreateDirectoryPath(path);
-    }, [path]);
 
     useEffect(() => {
         setCreateDirectoryPath(pathFromNodeId(treeNodeId));
     }, [treeNodeId]);
 
     useEffect(() => {
-        setInputValueNewFilename(currentFile);
+        setCreateDirectoryPath(path);
+    }, [path]);
+
+    useEffect(() => {
+        setInputValueRenameNewFilename(currentFile);
     }, [currentFile]);
 
     // general functions
@@ -524,13 +533,14 @@ export const FileBrowser: React.FC<{
 
     // move
     const showMoveDialog = (fileName: string) => {
+        setTreeNodeId(rootTreeNode.id);
         setCurrentFile(fileName);
         setIsMoveFileModalOpen(true);
     };
 
     const closeMoveFileModal = () => {
         setIsMoveFileModalOpen(false);
-        setTreeNodeId(rootTreeNode.id);
+        setCreateDirectoryPath(path);
     };
 
     const handleSingleMove = async (source: string, target: string) => {
@@ -621,7 +631,6 @@ export const FileBrowser: React.FC<{
     const handleRename = async (source: string, newFileName: string) => {
         try {
             await moveRenameFile(source + "/" + currentFile, source + "/" + newFileName, false);
-            setInputValueNewFilename("");
             setRebuildList((prev) => !prev);
             setIsRenameFileModalOpen(false);
         } catch (error) {}
@@ -629,20 +638,23 @@ export const FileBrowser: React.FC<{
 
     const closeRenameFileModal = () => {
         setIsRenameFileModalOpen(false);
+        setHasInvalidChars(false);
+        setInputValueRenameNewFilename(currentFile);
     };
 
-    const handleNewFilenameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        setInputValueNewFilename(e.target.value);
+    const handleRenameNewFilenameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setHasInvalidChars(!isInputValid(e.target.value.toString()));
+        setInputValueRenameNewFilename(e.target.value);
     };
 
-    const isRenameButtonDisabled = !newFilename || newFilename === currentFile;
+    const isRenameButtonDisabled = !newRenameFilename || newRenameFilename === currentFile || hasInvalidChars;
 
     const renameFileModal = (
         <Modal
             title={t("fileBrowser.renameFile.modalTitle")}
             open={isRenameFileModalOpen}
             onCancel={closeRenameFileModal}
-            onOk={() => handleRename(path, newFilename)}
+            onOk={() => handleRename(path, newRenameFilename)}
             okText={t("fileBrowser.renameFile.rename")}
             cancelText={t("fileBrowser.renameFile.cancel")}
             okButtonProps={{ disabled: isRenameButtonDisabled }}
@@ -655,12 +667,23 @@ export const FileBrowser: React.FC<{
                 style={{ marginBottom: 16 }}
             />
             <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
-                <Input
-                    type="text"
-                    value={newFilename}
-                    onChange={handleNewFilenameInputChange}
-                    placeholder={currentFile}
-                />
+                <Form.Item
+                    validateStatus={hasInvalidChars ? "error" : ""}
+                    help={
+                        hasInvalidChars
+                            ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
+                            : ""
+                    }
+                    required
+                >
+                    <Input
+                        type="text"
+                        value={newRenameFilename}
+                        onChange={handleRenameNewFilenameInputChange}
+                        placeholder={currentFile}
+                        status={hasInvalidChars ? "error" : ""}
+                    />
+                </Form.Item>
             </div>
         </Modal>
     );
@@ -740,6 +763,7 @@ export const FileBrowser: React.FC<{
     };
 
     const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setHasNewDirectoryInvalidChars(!isInputValid(e.target.value.toString()));
         setInputValueCreateDirectory(e.target.value);
     };
 
@@ -747,7 +771,7 @@ export const FileBrowser: React.FC<{
         try {
             api.apiPostTeddyCloudRaw(
                 `/api/dirCreate?special=library`,
-                createDirectoryPath + "/" + encodeURIComponent(inputValueCreateDirectory)
+                createDirectoryPath + "/" + inputValueCreateDirectory
             )
                 .then((response) => {
                     return response.text();
@@ -773,7 +797,7 @@ export const FileBrowser: React.FC<{
                                 return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
                             })
                         );
-                        if (isMoveFileModalOpen) {
+                        if (isMoveFileModalOpen || isEncodeFilesModalOpen) {
                             setTreeNodeId(newNodeId);
                         }
                     }
@@ -781,6 +805,7 @@ export const FileBrowser: React.FC<{
                     setCreateDirectoryModalOpen(false);
                     setRebuildList((prev) => !prev);
                     setInputValueCreateDirectory("");
+                    setCreateDirectoryPath(path);
                 })
                 .catch((error) => {
                     message.error(error.message);
@@ -794,9 +819,10 @@ export const FileBrowser: React.FC<{
         setFilterFieldAutoFocus(false);
         setCreateDirectoryModalOpen(false);
         setInputValueCreateDirectory("");
+        setHasNewDirectoryInvalidChars(false);
     };
 
-    const isCreateDirectoryButtonDisabled = !inputValueCreateDirectory;
+    const isCreateDirectoryButtonDisabled = !inputValueCreateDirectory || hasNewDirectoryInvalidChars;
 
     const createDirectoryModal = (
         <Modal
@@ -812,20 +838,28 @@ export const FileBrowser: React.FC<{
             <Typography style={{ marginBottom: 8 }}>
                 {t("fileBrowser.createDirectory.parentPath") + " " + createDirectoryPath + "/"}{" "}
             </Typography>
-            <Input
-                ref={inputRef}
-                placeholder={t("fileBrowser.createDirectory.placeholder")}
-                value={inputValueCreateDirectory}
-                onChange={handleCreateDirectoryInputChange}
-            />
+            <Form.Item
+                validateStatus={hasNewDirectoryInvalidChars ? "error" : ""}
+                help={
+                    hasNewDirectoryInvalidChars
+                        ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
+                        : ""
+                }
+                required
+            >
+                {" "}
+                <Input
+                    ref={inputCreateDirectoryRef}
+                    placeholder={t("fileBrowser.createDirectory.placeholder")}
+                    value={inputValueCreateDirectory}
+                    status={hasNewDirectoryInvalidChars ? "error" : ""}
+                    onChange={handleCreateDirectoryInputChange}
+                />
+            </Form.Item>
         </Modal>
     );
 
     // select File Modal for encoding
-    const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState(false);
-    const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
-    const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState(0); // Initialize a key
-
     const handleCancelSelectFile = () => {
         setIsSelectFileModalOpen(false);
     };
@@ -927,6 +961,7 @@ export const FileBrowser: React.FC<{
     };
 
     const openFileEncodeModal = () => {
+        setTreeNodeId(rootTreeNode.id);
         const newEncodedFiles: FileObject[] = [];
 
         for (const rowName of selectedRowKeys) {
@@ -950,23 +985,22 @@ export const FileBrowser: React.FC<{
 
     const closeEncodeFilesModal = () => {
         setIsEncodeFilesModalOpen(false);
-        setTafFilename("");
-        setTreeNodeId("1");
+        setCreateDirectoryPath(path);
     };
 
     const encodeFiles = async () => {
         setProcessing(true);
+        const newTafFilename = inputEncodeTafFileNameRef?.current?.input?.value;
         const hideLoading = message.loading(t("fileBrowser.encodeFiles.encodingInProgress"), 0);
         const body =
             encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
-            `&target=${encodeURIComponent(pathFromNodeId(treeNodeId) + "/" + tafFilename + ".taf")}`;
+            `&target=${encodeURIComponent(pathFromNodeId(treeNodeId) + "/" + newTafFilename + ".taf")}`;
         try {
             const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
             if (response.ok) {
                 hideLoading();
                 message.success(t("fileBrowser.encodeFiles.encodingSuccessful"));
                 setIsEncodeFilesModalOpen(false);
-                setTafFilename("");
                 setTreeNodeId("1");
                 setSelectedRowKeys([]);
                 setRebuildList(!rebuildList);
@@ -981,6 +1015,14 @@ export const FileBrowser: React.FC<{
         setProcessing(false);
     };
 
+    const handleFileNameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        const value = e.target.value;
+        const inputInvalid = !isInputValid(value.toString());
+        const errorDetected = (encodeFileList.length > 0 && !value.toString()) || inputInvalid;
+        setHasInvalidChars(inputInvalid);
+        setIsError(errorDetected);
+    };
+
     const encodeFilesModal = (
         <Modal
             title={t("fileBrowser.encodeFiles.modalTitle")}
@@ -991,7 +1033,7 @@ export const FileBrowser: React.FC<{
             cancelText={t("fileBrowser.encodeFiles.cancel")}
             zIndex={1000}
             width="auto"
-            okButtonProps={{ disabled: processing || !tafFilename || encodeFileList.length === 0 }}
+            okButtonProps={{ disabled: processing || isError || encodeFileList.length === 0 }}
         >
             {selectFileModal}
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
@@ -1001,6 +1043,7 @@ export const FileBrowser: React.FC<{
                     disabled={processing}
                 >
                     <Button
+                        disabled={processing}
                         onClick={() => {
                             setSelectFileFileBrowserKey((prevKey) => prevKey + 1);
                             setIsSelectFileModalOpen(true);
@@ -1031,7 +1074,7 @@ export const FileBrowser: React.FC<{
                                 alignItems: "flex-start",
                             }}
                         >
-                            <Button type="default" disabled={uploading} onClick={sortFileListAlphabetically}>
+                            <Button type="default" disabled={processing} onClick={sortFileListAlphabetically}>
                                 {t("tonies.encoder.sortAlphabetically")}
                             </Button>
                         </Space>
@@ -1042,7 +1085,6 @@ export const FileBrowser: React.FC<{
                                     direction="horizontal"
                                     style={{
                                         width: "100%",
-                                        marginBottom: "16px",
                                         display: "flex",
                                         alignItems: "flex-end",
                                         justifyContent: "flex-end",
@@ -1067,15 +1109,25 @@ export const FileBrowser: React.FC<{
                                             style={{ borderRadius: 0 }}
                                         ></Button>
                                     </Tooltip>
+
                                     <Input
+                                        ref={inputEncodeTafFileNameRef}
                                         addonAfter=".taf"
                                         required
-                                        value={tafFilename}
-                                        status={encodeFileList.length > 0 && tafFilename === "" ? "error" : ""}
-                                        onChange={(event) => setTafFilename(event.target.value)}
+                                        status={isError ? "error" : ""}
+                                        onChange={handleFileNameInputChange}
                                         disabled={processing}
                                     />
                                 </Space.Compact>
+                                {hasInvalidChars ? (
+                                    <div style={{ textAlign: "end", color: token.colorErrorText }}>
+                                        {t("inputValidator.invalidCharactersDetected", {
+                                            invalidChar: invalidCharactersAsString,
+                                        })}
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
                             </Space>
                         </div>
                     </>
@@ -1615,11 +1667,13 @@ export const FileBrowser: React.FC<{
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() =>
                                     playAudio(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            "/content" +
-                                            path +
-                                            "/" +
-                                            encodeURIComponent(record.name) +
+                                        encodeURI(
+                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                "/content" +
+                                                path +
+                                                "/" +
+                                                record.name
+                                        ) +
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
@@ -1636,11 +1690,13 @@ export const FileBrowser: React.FC<{
                                 style={{ margin: "0 8px 0 0" }}
                                 onClick={() =>
                                     playAudio(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            "/content" +
-                                            path +
-                                            "/" +
-                                            encodeURIComponent(record.name) +
+                                        encodeURI(
+                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                "/content" +
+                                                path +
+                                                "/" +
+                                                record.name
+                                        ) +
                                             "?special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
@@ -1846,7 +1902,7 @@ export const FileBrowser: React.FC<{
                                                 value={filterText}
                                                 onChange={handleFilterChange}
                                                 onFocus={handleFilterFieldInputFocus}
-                                                ref={inputRefFilter} // Assign ref to input element
+                                                ref={inputFilterRef} // Assign ref to input element
                                                 style={{ width: "100%" }}
                                                 autoFocus={filterFieldAutoFocus}
                                                 addonAfter={
