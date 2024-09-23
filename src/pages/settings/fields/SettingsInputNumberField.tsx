@@ -13,10 +13,12 @@ type InputNumberFieldProps = {
 
 export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
     const { t } = useTranslation();
-    const { name, label, description} = props;
-    const [field, meta, helpers] = useField<number | undefined>(name!);    
-    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value)
-    
+    const { name, label, description } = props;
+    const [field, meta, helpers] = useField<number | undefined>(name!);
+    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    const idListener = () => setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    SettingsDataHandler.getInstance().addIdListener(idListener, name);
+
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
     const validateStatus = meta.touched && meta.error ? "error" : undefined;
@@ -32,13 +34,11 @@ export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
                 {...field}
                 value={fieldValue as number}
                 onChange={(value) => {
-                    SettingsDataHandler.getInstance().changeSetting(name, value??0)
-                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value)
-                    
+                    SettingsDataHandler.getInstance().changeSetting(name, value ?? 0);
+                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                 }}
                 onBlur={() => helpers.setTouched(true)}
             />
         </FormItem>
     );
 };
-

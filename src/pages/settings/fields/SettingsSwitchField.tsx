@@ -13,14 +13,16 @@ type SwitchFieldProps = {
 
 export const SettingsSwitchField = (props: SwitchFieldProps) => {
     const { t } = useTranslation();
-    const { name, label, description} = props;
+    const { name, label, description } = props;
     const [field, meta] = useField(name!);
-    
-    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value)
+
+    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value);
 
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
-    const validateStatus = meta.touched && meta.error ? "error" : undefined;  
+    const validateStatus = meta.touched && meta.error ? "error" : undefined;
+    const idListener = () => setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    SettingsDataHandler.getInstance().addIdListener(idListener, name);
 
     return (
         <FormItem
@@ -33,10 +35,10 @@ export const SettingsSwitchField = (props: SwitchFieldProps) => {
                 {...field}
                 checked={fieldValue as boolean}
                 onChange={(value) => {
-                    SettingsDataHandler.getInstance().changeSetting(name, value)
-                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value)
+                    SettingsDataHandler.getInstance().changeSetting(name, value);
+                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                 }}
-            />            
+            />
         </FormItem>
     );
 };

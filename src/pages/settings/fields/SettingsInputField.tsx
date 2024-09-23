@@ -13,15 +13,17 @@ type InputFieldProps = {
 
 export const SettingsInputField = (props: InputFieldProps) => {
     const { t } = useTranslation();
-    const { name, label, description} = props;
+    const { name, label, description } = props;
     const [field, meta] = useField(name!);
-    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value)
+    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    const idListener = () => setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    SettingsDataHandler.getInstance().addIdListener(idListener, name);
 
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
     const validateStatus = meta.touched && meta.error ? "error" : undefined;
-    
-    let value = fieldValue?.toString()
+
+    let value = fieldValue?.toString();
     return (
         <FormItem
             help={hasFeedback ? help : undefined}
@@ -33,12 +35,10 @@ export const SettingsInputField = (props: InputFieldProps) => {
                 {...field}
                 value={value}
                 onChange={(changeEventHandler) => {
-                    SettingsDataHandler.getInstance().changeSetting(name, changeEventHandler.target.value)
-                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value)
+                    SettingsDataHandler.getInstance().changeSetting(name, changeEventHandler.target.value);
+                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                 }}
             />
         </FormItem>
     );
 };
-
-
