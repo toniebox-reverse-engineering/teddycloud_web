@@ -344,14 +344,16 @@
             "title": "Journal RTNL"
         },
         "saved": "Paramètre enregistré !",
+        "save": "Enregister",
+        "discard": "Ignorer les modifications",
         "title": "Paramètres",
         "tonieboxes": "tonieboxes",
         "toniesJsonReload": "Recharger Tonies.json",
         "toniesJsonReloadFailed": "Échec du rechargement de Tonies(.custom).json!",
         "toniesJsonReloadInProgress": "Chargement de Tonies(.custom).json...",
         "toniesJsonReloadSuccessful": "Tonies(.custom).json rechargé avec succès!",
-        "warning": "Attention ! Bouton de sauvegarde + Niveau des paramètres",
-        "warningHint": "Les entrées de texte doivent actuellement être enregistrées explicitement jusqu'à ce qu'une meilleure solution soit mise en œuvre. Pour ce faire, cliquez sur le symbole de sauvegarde à la fin du champ. Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
+        "warning": "Attention ! Niveau des paramètres",
+        "warningHint": "Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
     },
     "tonieArticleSearch": {
         "failedToFetchSearchResults": "Échec de la récupération des résultats de recherche : "

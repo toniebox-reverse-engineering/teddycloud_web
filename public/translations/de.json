@@ -345,14 +345,16 @@
             "title": "RTNL Log"
         },
         "saved": "Einstellung gespeichert!",
+        "save": "Speichern",
+        "discard": "Verwerfen",
         "title": "Einstellungen",
         "tonieboxes": "Tonieboxen",
         "toniesJsonReload": "Lade Tonies.json",
         "toniesJsonReloadFailed": "Tonies(.custom).json neu laden fehlgeschlagen!",
         "toniesJsonReloadInProgress": "Lade Tonies(.custom).json...",
         "toniesJsonReloadSuccessful": "Tonies(.custom).json erfolgreich neu geladen!",
-        "warning": "Achtung! Speicherbutton + Settings level",
-        "warningHint": "Texteingaben müssen derzeit explizit gespeichert werden, bis eine bessere Lösung implementiert ist. Klicke dazu auf das Speichersymbol am Ende des Feldes. Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
+        "warning": "Achtung! Settings level",
+        "warningHint": "Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
     },
     "tonieArticleSearch": {
         "failedToFetchSearchResults": "Suchergebnisse konnten nicht abgerufen werden: "

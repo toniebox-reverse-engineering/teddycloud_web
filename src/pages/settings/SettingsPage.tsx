@@ -1,19 +1,20 @@
-import React from "react";
-import { Form, Alert, Divider, Radio, message } from "antd";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Alert, Divider, Form, Radio, message } from "antd";
+import { Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom"; // Import Link from React Router
+import { OptionsList, TeddyCloudApi } from "../../api";
+import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
-import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { useEffect, useState } from "react";
-import OptionItem from "../../components/utils/OptionItem";
-import { Formik } from "formik";
+import SettingsDataHandler from "../../data/SettingsDataHandler";
+import { SettingsOptionItem } from "./fields/SettingsOptionItem";
+import SettingsButton from "./SettingsButtons";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -60,6 +61,7 @@ export const SettingsPage = () => {
             const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
             if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
                 setOptions(optionsRequest);
+                SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options);
             }
             setLoading(false);
         };
@@ -84,6 +86,14 @@ export const SettingsPage = () => {
             message.error("Error while sending data to server.");
         }
     };
+
+    const stickyFooter = (
+        <div id="testfooter" className="sticky-footer-panel">
+            <div>
+                <SettingsButton></SettingsButton>
+            </div>
+        </div>
+    );
 
     return (
         <>
@@ -164,7 +174,7 @@ export const SettingsPage = () => {
                                             }
                                             return null;
                                         })}
-                                        <OptionItem option={option} noOverlay={true} key={option.iD} />
+                                        <SettingsOptionItem iD={option.iD} />
                                     </React.Fragment>
                                 );
                             })}
@@ -187,6 +197,7 @@ export const SettingsPage = () => {
                             Expert
                         </Radio.Button>
                     </Radio.Group>
+                    {stickyFooter}
                 </StyledContent>
             </StyledLayout>
         </>
