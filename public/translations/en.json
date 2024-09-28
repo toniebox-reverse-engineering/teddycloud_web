@@ -179,9 +179,6 @@
             "uploading": "Uploading..."
         }
     },
-    "inputValidator": {
-        "invalidCharactersDetected": "Your input contains invalid characters, such as {{invalidChar}}"
-    },
     "home": {
         "features": {
             "currentlyImplementedFeatures": "Currently implemented features",
@@ -275,6 +272,9 @@
             "navigationTitle": "Tonie Meeting"
         },
         "yourTonies": "Your Tonies"
+    },
+    "inputValidator": {
+        "invalidCharactersDetected": "Your input contains invalid characters, such as {{invalidChar}}"
     },
     "language": {
         "change": "Change language",
@@ -489,6 +489,8 @@
             "redirect": "Proceed to HTTPS",
             "title": "ESP32 Box Flashing"
         },
+        "hintLatestFirmware": "For the initial setup with TeddyCloud of your Toniebox, please ensure it has the latest firmware installed. If you're unsure whether your Toniebox is up to date, connect it to the official cloud and allow some time for the firmware update to complete.",
+        "hintLatestFirmwareTitle": "Important",
         "lastOnline": "last online",
         "lastPlayedTonie": "Last played Tonie: ",
         "linkToBoxCFW": "Open web interface of Toniebox",

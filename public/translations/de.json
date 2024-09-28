@@ -490,6 +490,8 @@
             "redirect": "Weiter zu HTTPS",
             "title": "ESP32 Box Flashing"
         },
+        "hintLatestFirmware": "Für die Ersteinrichtung deiner Toniebox mit TeddyCloud stelle bitte sicher, dass die neueste Firmware installiert ist. Wenn du dir nicht sicher bist, ob deine Toniebox auf dem neuesten Stand ist, verbinde sie mit der offiziellen Cloud und warte, bis das Firmware-Update abgeschlossen ist.",
+        "hintLatestFirmwareTitle": "Wichtig",
         "lastOnline": "zuletzt online",
         "lastPlayedTonie": "Zuletzt gespielter Tonie: ",
         "linkToBoxCFW": "Öffne Web Frontend deiner Toniebox",

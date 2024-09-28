@@ -179,9 +179,6 @@
             "uploading": "Téléversement en cours..."
         }
     },
-    "inputValidator": {
-        "invalidCharactersDetected": "Ta saisie contient des caractères invalides, tels que {{invalidChar}}"
-    },
     "home": {
         "features": {
             "currentlyImplementedFeatures": "Fonctionnalités actuellement implémentées",
@@ -275,6 +272,9 @@
             "navigationTitle": "Réunion Tonie"
         },
         "yourTonies": "Vos Tonies"
+    },
+    "inputValidator": {
+        "invalidCharactersDetected": "Ta saisie contient des caractères invalides, tels que {{invalidChar}}"
     },
     "language": {
         "change": "Changer de langue",
@@ -490,6 +490,8 @@
             "redirect": "Continuer vers HTTPS",
             "title": "ESP32 Flashage de la boîte"
         },
+        "hintLatestFirmware": "Pour la configuration initiale de votre Toniebox avec TeddyCloud, assurez-vous qu'elle dispose du dernier firmware installé. Si vous n'êtes pas certain que votre Toniebox soit à jour, connectez-la au cloud officiel et laissez-lui le temps de terminer la mise à jour du firmware",
+        "hintLatestFirmwareTitle": "Important",
         "lastOnline": "dernière connexion",
         "lastPlayedTonie": "Dernier Tonie joué: ",
         "linkToBoxCFW": "Ouvrir l'interface web de la Toniebox",
