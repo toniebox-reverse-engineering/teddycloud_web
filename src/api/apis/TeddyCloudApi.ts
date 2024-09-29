@@ -311,7 +311,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<string> {
         const response = await this.apiGetTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
         const timestamp = await response.text();
-        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
+        const date = timestamp && timestamp !== "0" ? new Date(parseInt(timestamp, 10) * 1000) : "";
         return date.toLocaleString();
     }
 
