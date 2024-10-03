@@ -75,6 +75,8 @@ export const ESP32BoxFlashing = () => {
 
     const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState<boolean>(false);
     const [isOverwriteForceConfirmationModalOpen, setIsOverwriteForceConfirmationModalOpen] = useState<boolean>(false);
+    const [certDir, setCertDir] = useState<string>("certs/client");
+
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState<string>("");
 
     const [currentStep, setCurrent] = useState(0);
@@ -123,6 +125,14 @@ export const ESP32BoxFlashing = () => {
         }
         return binaryString;
     }
+    useEffect(() => {
+        const fetchCertsDir = async () => {
+            const response = await api.apiGetTeddyCloudSettingRaw("core.certdir");
+            const certDir = await response.text();
+            setCertDir(certDir);
+        };
+        fetchCertsDir();
+    }, []);
 
     useEffect(() => {
         setIsSupported(isWebSerialSupported());
@@ -1193,7 +1203,10 @@ export const ESP32BoxFlashing = () => {
                                     <Paragraph>
                                         {t(
                                             "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesAutomaticallyHint2",
-                                            { mac: state.chipMac.replaceAll(":", "").toLocaleLowerCase() }
+                                            {
+                                                certDir: certDir,
+                                                mac: state.chipMac.replaceAll(":", "").toLocaleLowerCase(),
+                                            }
                                         )}
                                     </Paragraph>
                                 </Typography>
@@ -1214,7 +1227,8 @@ export const ESP32BoxFlashing = () => {
                                                     <Typography>
                                                         <Paragraph>
                                                             {t(
-                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP1"
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP1",
+                                                                { certDir: certDir }
                                                             )}{" "}
                                                             <Text code>
                                                                 docker exec -it &lt;container-name&gt; bash
@@ -1230,7 +1244,7 @@ teddycloud --esp32-extract data/firmware/` +
                                                                     (state.filename
                                                                         ? state.filename
                                                                         : "ESP32_<mac>.bin") +
-                                                                    ` --destination certs/client`}
+                                                                    ` --destination ${certDir}`}
                                                             </pre>
                                                         </Paragraph>
                                                         <Paragraph>
@@ -1240,9 +1254,9 @@ teddycloud --esp32-extract data/firmware/` +
                                                         </Paragraph>
                                                         <Paragraph>
                                                             <pre style={{ fontSize: 12 }}>
-                                                                {`mv certs/client/CLIENT.DER certs/client/client.der
-mv certs/client/PRIVATE.DER certs/client/private.der
-mv certs/client/CA.DER certs/client/ca.der`}
+                                                                {`mv ${certDir}/CLIENT.DER ${certDir}/client.der
+mv ${certDir}/PRIVATE.DER ${certDir}/private.der
+mv ${certDir}/CA.DER ${certDir}/ca.der`}
                                                             </pre>
                                                         </Paragraph>
                                                     </Typography>

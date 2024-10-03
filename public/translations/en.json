@@ -424,7 +424,7 @@
                 "error": "Error",
                 "extractCertificates": "Extract Certificates for TeddyCloud",
                 "extractCertificatesAutomaticallyHint": "Click the button \"Extract certificates for TeddyCloud\" to automatically extract and store the certificates in TeddyCloud.",
-                "extractCertificatesAutomaticallyHint2": "Certificates will be stored in up to two locations: first, in the base certificate directory for TeddyCloud (if no certificates are already present), and second, in the folder ../cert/client/{{mac}}.",
+                "extractCertificatesAutomaticallyHint2": "Certificates will be stored in up to two locations: first, in the base client certificate directory ../{{certDir}}/ for TeddyCloud (if no certificates are already present), and second, in the folder ../{{certDir}}/{{mac}}.",
                 "extractCertificatesManually": "Extract certificates manually",
                 "extractCertificatesManuallyHint": "You can also extract the certificates manually by following the steps below.",
                 "extractingCertificates": "Extracting certificates for TeddyCloud...",
