@@ -25,6 +25,11 @@ export const StyledLanguageSwitcher = () => {
             label: t("language.french"),
             onClick: () => changeLanguage("fr"),
         },
+        {
+            key: "4",
+            label: t("language.spanish"),
+            onClick: () => changeLanguage("es"),
+        },
     ];
 
     const currentLanguage = i18n.language;

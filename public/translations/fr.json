@@ -227,7 +227,8 @@
                     "items": {
                         "01certificates": "extraire/injecter des certificats sur un dump de firmware esp32",
                         "02newServerHost": "définir un nouvel hôte de serveur",
-                        "03wifiCredentials": "définir les identifiants WiFi"
+                        "03wifiCredentials": "définir les identifiants WiFi",
+                        "04extractCertificates": "Extraire les certificats et les stocker dans TeddyCloud"
                     },
                     "title": "Flashage de la Box ESP32"
                 },
@@ -241,7 +242,6 @@
             },
             "futureFeatures": {
                 "01firmwareUpdate": "Mise à jour du firmware via TeddyCloud",
-                "02improvedFlashing": "Amélioration du flashage de la Box ESP32 (entièrement via Web GUI, plus aucune étape backend)",
                 "03reportUnknownTonies": "Signaler les Tonies inconnus",
                 "04completeTAPIntegration": "Achèvement de l'intégration de TAP WebFrontend",
                 "05completeCustomToniesIntegration": "Achèvement de l'intégration des Tonies personnalisés dans le WebFront JSON (\"Métadonnées des tags personnalisés\")",
@@ -280,7 +280,8 @@
         "change": "Changer de langue",
         "english": "EN",
         "french": "FR",
-        "german": "DE"
+        "german": "DE",
+        "spanish": "ES"
     },
     "languageUtil": {
         "de-de": "Allemand",
@@ -423,9 +424,13 @@
                 "error": "Erreur",
                 "extractCertificates": "Extraire les certificats pour TeddyCloud",
                 "extractCertificatesAutomaticallyHint": "Cliquez sur le bouton \"Extraire les certificats pour TeddyCloud\" pour extraire et enregistrer automatiquement les certificats dans TeddyCloud.",
+                "extractCertificatesAutomaticallyHint2": "Les certificats seront stockés dans jusqu'à deux emplacements : d'abord dans le répertoire de base des certificats pour TeddyCloud (si aucun certificat n'est déjà présent), puis dans le dossier ../cert/client/{{mac}}.",
                 "extractCertificatesManually": "Extraire les certificats manuellement",
                 "extractCertificatesManuallyHint": "Vous pouvez également extraire les certificats manuellement en suivant les étapes ci-dessous.",
                 "extractingCertificates": "Extraction des certificats pour TeddyCloud...",
+                "extractingCertificates409ResponseForceOverwrite": "Écraser les certificats existants",
+                "extractingCertificates409ResponseForceOverwriteConfirmButton": "Écraser les fichiers",
+                "extractingCertificates409ResponseForceOverwriteContent": "La tentative initiale de stockage des certificats a échoué : {{error}}. Voulez-vous écraser les fichiers existants ?",
                 "extractingCertificatesFailed": "Échec de l'extraction des certificats à partir de \"{{file}}\"",
                 "extractingCertificatesSuccessful": "Certificats extraits avec succès de \"{{file}}\" et enregistrés dans TeddyCloud.",
                 "failedToCommunicate": "Échec de la communication :",

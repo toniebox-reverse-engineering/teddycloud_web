@@ -126,11 +126,11 @@ export const FileBrowser: React.FC<{
     const [filterText, setFilterText] = useState("");
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState<boolean>(false);
 
-    const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
+    const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
 
     const [jsonData, setJsonData] = useState<string>("");
-    const [isJsonViewerModalOpen, setJsonViewerModalOpen] = useState<boolean>(false);
+    const [isJsonViewerModalOpen, setIsJsonViewerModalOpen] = useState<boolean>(false);
 
     const [isTapEditorModalOpen, setIsTapEditorModalOpen] = useState<boolean>(false);
     const [tapEditorKey, setTapEditorKey] = useState<number>(0);
@@ -139,14 +139,14 @@ export const FileBrowser: React.FC<{
     const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
 
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
-    const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
+    const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
 
     const [isUnchangedOrEmpty, setIsUnchangedOrEmpty] = useState<boolean>(true);
     const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState<boolean>(false);
     const [hasInvalidChars, setHasInvalidChars] = useState<boolean>(false);
     const [hasError, setHasError] = useState<boolean>(true);
 
-    const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState<boolean>(false);
+    const [isCreateDirectoryModalOpen, setIsCreateDirectoryModalOpen] = useState<boolean>(false);
     const [createDirectoryInputKey, setcreateDirectoryInputKey] = useState<number>(1);
     const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(initialPath);
 
@@ -404,7 +404,7 @@ export const FileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
-            setInformationModalOpen(true);
+            setIsInformationModalOpen(true);
         }
     };
 
@@ -414,11 +414,11 @@ export const FileBrowser: React.FC<{
         fetchJsonData(folder + file);
         setFilterFieldAutoFocus(false);
         setCurrentFile(file);
-        setJsonViewerModalOpen(true);
+        setIsJsonViewerModalOpen(true);
     };
 
     const closeJsonViewer = () => {
-        setJsonViewerModalOpen(false);
+        setIsJsonViewerModalOpen(false);
     };
 
     const fetchJsonData = async (path: string) => {
@@ -432,7 +432,7 @@ export const FileBrowser: React.FC<{
     };
 
     const jsonViewerModalFooter = (
-        <Button type="primary" onClick={() => setJsonViewerModalOpen(false)}>
+        <Button type="primary" onClick={() => setIsJsonViewerModalOpen(false)}>
             {t("tonies.informationModal.ok")}
         </Button>
     );
@@ -472,23 +472,23 @@ export const FileBrowser: React.FC<{
         setFilterFieldAutoFocus(false);
         setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
         setCurrentFile(file);
-        setTafHeaderModalOpened(true);
+        setIsTafHeaderModalOpen(true);
     };
 
     const closeTafHeader = () => {
-        setTafHeaderModalOpened(false);
+        setIsTafHeaderModalOpen(false);
     };
 
     const tafHeaderViewerModal = (
         <Modal
             className="taf-header-viewer"
             footer={
-                <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
+                <Button type="primary" onClick={() => setIsTafHeaderModalOpen(false)}>
                     {t("tonies.informationModal.ok")}
                 </Button>
             }
             title={t("tonies.tafHeaderOf") + currentFile}
-            open={tafHeaderModalOpened}
+            open={isTafHeaderModalOpen}
             onCancel={closeTafHeader}
         >
             {currentRecordTafHeader ? (
@@ -606,12 +606,12 @@ export const FileBrowser: React.FC<{
         setHasNewDirectoryInvalidChars(false);
         setcreateDirectoryInputKey((prevKey) => prevKey + 1);
         setFilterFieldAutoFocus(false);
-        setCreateDirectoryModalOpen(true);
+        setIsCreateDirectoryModalOpen(true);
     };
 
     const closeCreateDirectoryModal = () => {
         setFilterFieldAutoFocus(false);
-        setCreateDirectoryModalOpen(false);
+        setIsCreateDirectoryModalOpen(false);
     };
 
     const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
@@ -657,7 +657,7 @@ export const FileBrowser: React.FC<{
                         }
                     }
                     message.success(t("fileBrowser.createDirectory.directoryCreated"));
-                    setCreateDirectoryModalOpen(false);
+                    setIsCreateDirectoryModalOpen(false);
                     setRebuildList((prev) => !prev);
                     setCreateDirectoryPath(path);
                 })
@@ -1850,7 +1850,7 @@ export const FileBrowser: React.FC<{
                 <TonieInformationModal
                     open={isInformationModalOpen}
                     tonieCardOrTAFRecord={currentRecord}
-                    onClose={() => setInformationModalOpen(false)}
+                    onClose={() => setIsInformationModalOpen(false)}
                     overlay={overlay}
                 />
             ) : (

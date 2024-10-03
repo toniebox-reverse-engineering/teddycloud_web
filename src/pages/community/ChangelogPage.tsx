@@ -41,6 +41,7 @@ export const ChangelogPage = () => {
                 "gui: added encoding functionality in library",
                 "gui: allow playing all encodable files in teddyCloud",
                 "gui: esp32 flash process - integrated remaining manual steps. Certificate extraction is now also automated",
+                "gui: added Spanish language - feel free to improve translations as current translation is completely done by ChatGPT.",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.0...tc_v0.6.1",

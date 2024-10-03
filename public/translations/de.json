@@ -227,7 +227,8 @@
                     "items": {
                         "01certificates": "Zertifikate in einem ESP32-Firmware-Dump extrahieren/injizieren",
                         "02newServerHost": "Neuen Server-Host festlegen",
-                        "03wifiCredentials": "WLAN-Zugangsdaten festlegen"
+                        "03wifiCredentials": "WLAN-Zugangsdaten festlegen",
+                        "04extractCertificates": "Zertifikate extrahieren und in TeddyCloud ablegen"
                     },
                     "title": "ESP32 Box Flashing"
                 },
@@ -241,7 +242,6 @@
             },
             "futureFeatures": {
                 "01firmwareUpdate": "Firmware-Update über TeddyCloud",
-                "02improvedFlashing": "Verbessertes ESP32 Box Flashing (vollständig über Web GUI, keine Backend-Schritte mehr)",
                 "03reportUnknownTonies": "Unbekannte Tonies melden",
                 "04completeTAPIntegration": "Abschluss der TAP-WebFrontend-Integration",
                 "05completeCustomToniesIntegration": "Abschluss der Integration benutzerdefinierter Tonies im JSON-WebFront (\"Metadaten benutzerdefinierter Tags\")",
@@ -281,7 +281,8 @@
         "change": "Sprache ändern",
         "english": "EN",
         "french": "FR",
-        "german": "DE"
+        "german": "DE",
+        "spanish": "ES"
     },
     "languageUtil": {
         "de-de": "Deutsch",
@@ -424,9 +425,13 @@
                 "error": "Fehler",
                 "extractCertificates": "Zertifikate für TeddyCloud extrahieren",
                 "extractCertificatesAutomaticallyHint": "Klicke den Button \"Zertifikate für TeddyCloud extrahieren\" zum automatischen Extrahieren und Ablegen der Zertifikate in TeddyCloud.",
+                "extractCertificatesAutomaticallyHint2": "Die Zertifikate werden an bis zu zwei Speicherorten abgelegt: Zuerst im Basiszertifikatverzeichnis für TeddyCloud (falls keine Zertifikate vorhanden sind) und dann im Ordner ../cert/client/{{mac}}.",
                 "extractCertificatesManually": "Zertifikate manuell extrahieren",
                 "extractCertificatesManuallyHint": "Du kannst die Zertifikate auch manuell extrahieren, führe dazu die folgenden Schritte durch",
                 "extractingCertificates": "Zertifikate für TeddyCloud werden extrahiert...",
+                "extractingCertificates409ResponseForceOverwrite": "Vorhandene Zertifikate überschreiben",
+                "extractingCertificates409ResponseForceOverwriteConfirmButton": "Dateien überschreiben",
+                "extractingCertificates409ResponseForceOverwriteContent": "Der erste Versuch, die Zertifikate zu speichern, ist fehlgeschlagen: {{error}}. Möchten Sie die vorhandenen Dateien überschreiben?",
                 "extractingCertificatesFailed": "Zertifikate aus \"{{file}}\" extrahieren fehlgeschlagen",
                 "extractingCertificatesSuccessful": "Zertifikate erfolgreich aus \"{{file}}\" extrahiert und in TeddyCloud abgelegt.",
                 "failedToCommunicate": "Kommunikation fehlgeschlagen:",
