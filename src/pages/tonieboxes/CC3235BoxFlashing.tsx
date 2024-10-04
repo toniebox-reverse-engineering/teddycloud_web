@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Typography } from "antd";
+import { Alert, Typography } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -33,6 +33,14 @@ export const CC3235BoxFlashingPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.cc3235BoxFlashing.title`)}</h1>
+                    <Alert
+                        type="warning"
+                        closeIcon
+                        showIcon
+                        message={t("tonieboxes.hintLatestFirmwareTitle")}
+                        description={t("tonieboxes.hintLatestFirmware")}
+                    ></Alert>
+                    <Paragraph style={{ marginTop: 16 }}></Paragraph>
                     <Paragraph>
                         {t(`tonieboxes.cc3235BoxFlashing.hint`)}
                         <ul>

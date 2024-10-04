@@ -108,7 +108,7 @@ token.*
 
 ### Usage of translations
 
-Please use always `t("...")` instead of hard coded text. Please add the strings in the English, German and French translation Json.
+Please use always `t("...")` instead of hard coded text. Please add the strings in the English, German, French and Spanish translation Json.
 
 ### Adding new API request method
 
@@ -162,6 +162,7 @@ This project was bootstrapped with [Vite](https://vitejs.dev/).
 ## Typicale development workflow:
 
 ### Preconditions
+
 You have `node.js` and `python` installed.
 
 ### Install dotenv
@@ -171,6 +172,7 @@ You have `node.js` and `python` installed.
 `sudo apt install python3-dotenv-cli`
 
 #### Windows
+
 `pip install python-dotenv` \
 followed by \
 `pip install "python-dotenv[cli]"`

@@ -311,7 +311,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<string> {
         const response = await this.apiGetTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
         const timestamp = await response.text();
-        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
+        const date = timestamp && timestamp !== "0" ? new Date(parseInt(timestamp, 10) * 1000) : "";
         return date.toLocaleString();
     }
 
@@ -562,19 +562,25 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             const blob = new Blob([str], { type: "text/plain" });
             return blob;
         };
-        const response = await this.request(
-            {
-                path: `${path}${overlay ? "?overlay=" + overlay : ""}`,
-                method: "POST",
-                headers: headerParameters,
-                body: stringToBlob(body?.toString() || ""),
-            },
-            initOverrides
-        );
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
+
+        try {
+            const response = await this.request(
+                {
+                    path: `${path}${overlay ? "?overlay=" + overlay : ""}`,
+                    method: "POST",
+                    headers: headerParameters,
+                    body: stringToBlob(body?.toString() || ""),
+                },
+                initOverrides
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response;
+        } catch (err: any) {
+            return err.response;
         }
-        return response;
     }
 
     /**
