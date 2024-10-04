@@ -1169,6 +1169,7 @@ export const ESP32BoxFlashing = () => {
     );
 
     // step 3 - the flashing was successful!
+    const certDirWithMac = `${certDir}/${state.chipMac ? state.chipMac.replaceAll(":", "").toLowerCase() : "<mac>"}`;
     const contentStep3 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleESP32FirmwareFlashed")}</h3>
@@ -1227,36 +1228,50 @@ export const ESP32BoxFlashing = () => {
                                                     <Typography>
                                                         <Paragraph>
                                                             {t(
-                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP1",
-                                                                { certDir: certDir }
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP1"
                                                             )}{" "}
                                                             <Text code>
                                                                 docker exec -it &lt;container-name&gt; bash
                                                             </Text>
                                                             .
                                                         </Paragraph>
+
                                                         <Paragraph>
                                                             <pre style={{ fontSize: 12 }}>
                                                                 {`# Please check the filename of your backup
-# Be sure you are in the teddycloud directory
+# Be sure you are in the TeddyCloud directory
 # cd /teddycloud/ # just for docker
+mkdir ${certDirWithMac}
 teddycloud --esp32-extract data/firmware/` +
                                                                     (state.filename
                                                                         ? state.filename
                                                                         : "ESP32_<mac>.bin") +
-                                                                    ` --destination ${certDir}`}
+                                                                    ` --destination ${certDirWithMac}`}
                                                             </pre>
                                                         </Paragraph>
                                                         <Paragraph>
                                                             {t(
-                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.downloadFlashFilesHintP2"
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP2"
                                                             )}
                                                         </Paragraph>
                                                         <Paragraph>
                                                             <pre style={{ fontSize: 12 }}>
-                                                                {`mv ${certDir}/CLIENT.DER ${certDir}/client.der
-mv ${certDir}/PRIVATE.DER ${certDir}/private.der
-mv ${certDir}/CA.DER ${certDir}/ca.der`}
+                                                                {`mv ${certDirWithMac}/CLIENT.DER ${certDirWithMac}/client.der
+mv ${certDirWithMac}/PRIVATE.DER ${certDir}/${certDirWithMac}/private.der
+mv ${certDirWithMac}/CA.DER ${certDir}/${certDirWithMac}/ca.der`}
+                                                            </pre>
+                                                        </Paragraph>
+
+                                                        <Paragraph>
+                                                            {t(
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP3"
+                                                            )}
+                                                        </Paragraph>
+                                                        <Paragraph>
+                                                            <pre style={{ fontSize: 12 }}>
+                                                                {`cp ${certDirWithMac}/client.der ${certDir}/client.der
+cp ${certDirWithMac}/private.der ${certDir}/private.der
+cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                                                             </pre>
                                                         </Paragraph>
                                                     </Typography>
