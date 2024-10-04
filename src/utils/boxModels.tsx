@@ -17,23 +17,28 @@ export default function GetBoxModelImages() {
 
     useEffect(() => {
         async function fetchData() {
+            var jsonResult:any = [];
             try {
                 const response = await api.apiGetTeddyCloudApiRaw(`/api/tonieboxesJson`);
                 const jsonData = await response.json();
+                jsonResult = [...jsonResult, ...jsonData];
+            } catch (error) {
+                console.error("Error fetching and transforming toniebox data:", error);
+            }
+            try {
                 const responseCustom = await api.apiGetTeddyCloudApiRaw(`/api/tonieboxesCustomJson`);
                 const jsonDataCustom = await responseCustom.json();
-                const jsonDataCombined = [...jsonDataCustom, ...jsonData];
-                const dataArray: TonieboxImage[] = jsonDataCombined.map((item: any) => ({
-                    id: item.id,
-                    name: item.name,
-                    img_src: item.img_src,
-                    crop: item.crop || null,
-                }));
-                setBoxModelImages(dataArray);
+                jsonResult = [...jsonResult, ...jsonDataCustom];
             } catch (error) {
-                console.error("Error fetching and transforming data:", error);
-                setBoxModelImages([]);
+                console.error("Error fetching and transforming custom toniebox data:", error);
             }
+            const images: TonieboxImage[] = jsonResult.map((item: any) => ({
+                id: item.id,
+                name: item.name,
+                img_src: item.img_src,
+                crop: item.crop || null,
+            }));
+            setBoxModelImages(images);
         }
 
         fetchData();
