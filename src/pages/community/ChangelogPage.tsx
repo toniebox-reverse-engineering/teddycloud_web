@@ -30,6 +30,7 @@ export const ChangelogPage = () => {
                 "Added API to extract certificates https://github.com/toniebox-reverse-engineering/teddycloud/issues/103",
                 "Initial cert generation generates now a 4096bit long cert https://github.com/toniebox-reverse-engineering/teddycloud/issues/138",
                 "Extended settings api",
+                "Fixed bug updating empty model information if entry was added in tonies.json https://github.com/toniebox-reverse-engineering/teddycloud/issues/215",
                 "Fixed some bugs",
                 "gui: Fixed bug storing source with html special chars",
                 "gui: Fixed bug saving model and source of a tonie/tag at once",
@@ -42,6 +43,7 @@ export const ChangelogPage = () => {
                 "gui: Added encoding functionality in library",
                 "gui: Allow playing all encodable files in teddyCloud",
                 "gui: ESP32 flash process - integrated remaining manual steps. Certificate extraction is now also automated",
+                "gui: Fixed bug tonieboxes if tonieboxes.custom.json was empty or not available https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/133",
                 "gui: Added Spanish language - feel free to improve translations as current translation is completely done by ChatGPT.",
             ],
             commits: [
