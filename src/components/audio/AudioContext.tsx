@@ -51,14 +51,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                     : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource")))
             );
             setSongTitle(meta.episode);
-            setSongTracks(trackSeconds || [0]);
         } else {
-            console.log(decodeURI(url));
             setSongImage(decodeURI(url).includes(".taf?") ? "/img_unknown.png" : logoImg);
             setSongArtist("");
             setSongTitle(extractFilename(decodeURI(url)));
-            setSongTracks([]);
         }
+        setSongTracks(trackSeconds || [0]);
         globalAudio.play();
     };
 
