@@ -59,6 +59,7 @@ export type TonieCardProps = {
     downloadTriggerUrl: string;
     tonieInfo: TonieInfo;
     sourceInfo: TonieInfo;
+    trackSeconds: number[];
 };
 
 export const TonieCard: React.FC<{
@@ -208,7 +209,12 @@ export const TonieCard: React.FC<{
     };
 
     const handlePlayPauseClick = async (url: string) => {
-        playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo);
+        console.log(localTonieCard);
+        playAudio(
+            url,
+            showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo,
+            localTonieCard.trackSeconds
+        );
     };
 
     const handleBackgroundDownload = async () => {

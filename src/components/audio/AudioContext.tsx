@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import logoImg from "../../assets/logo.png";
 
 interface AudioContextType {
-    playAudio: (url: string, meta?: any) => void;
+    playAudio: (url: string, meta?: any, trackSeconds?: number[]) => void;
     songImage: string;
     songArtist: string;
     songTitle: string;
@@ -39,7 +39,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const [songTitle, setSongTitle] = useState<string>("");
     const [songTracks, setSongTracks] = useState<number[]>([]);
 
-    const playAudio = (url: string, meta?: any) => {
+    const playAudio = (url: string, meta?: any, trackSeconds?: number[]) => {
         console.log("Play audio: " + url);
         const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
         globalAudio.src = url;
@@ -51,7 +51,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                     : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource")))
             );
             setSongTitle(meta.episode);
-            setSongTracks([]); // the tracks (starting in seconds) should be added here
+            setSongTracks(trackSeconds || [0]);
         } else {
             console.log(decodeURI(url));
             setSongImage(decodeURI(url).includes(".taf?") ? "/img_unknown.png" : logoImg);

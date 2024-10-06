@@ -70,7 +70,7 @@ interface RecordTafHeader {
     audioId?: any;
     sha1Hash?: any;
     size?: number;
-    tracks?: any;
+    trackSeconds?: number[];
 }
 
 export type Record = {
@@ -468,7 +468,7 @@ export const FileBrowser: React.FC<{
     // taf header viewer functions
     const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
         const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
-        const { tracks, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
+        const { trackSeconds, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
         setFilterFieldAutoFocus(false);
         setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
         setCurrentFile(file);
@@ -1699,7 +1699,8 @@ export const FileBrowser: React.FC<{
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
+                                        record.tonieInfo,
+                                        record.tafHeader?.trackSeconds
                                     )
                                 }
                             />
