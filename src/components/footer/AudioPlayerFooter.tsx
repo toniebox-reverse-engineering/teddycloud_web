@@ -194,14 +194,14 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     const handlePrevTrackButton = () => {
         let i = 0;
-        while (globalAudio.currentTime > songTracks[i] / 3.15) {
+        while (globalAudio.currentTime > songTracks[i]) {
             i++;
             if (i > songTracks.length) {
                 break;
             }
         }
         if (i > 1 && i <= songTracks.length) {
-            globalAudio.currentTime = songTracks[i - 2] / 3.15;
+            globalAudio.currentTime = songTracks[i - 2];
         } else if (i <= 1) {
             globalAudio.currentTime = 0;
         }
@@ -209,14 +209,14 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     const handleNextTrackButton = () => {
         let i = 0;
-        while (globalAudio.currentTime > songTracks[i] / 3.15) {
+        while (globalAudio.currentTime > songTracks[i]) {
             i++;
             if (i > songTracks.length) {
                 break;
             }
         }
         if (i < songTracks.length) {
-            globalAudio.currentTime = songTracks[i] / 3.15;
+            globalAudio.currentTime = songTracks[i];
         }
     };
 

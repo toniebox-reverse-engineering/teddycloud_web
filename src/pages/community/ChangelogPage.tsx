@@ -18,6 +18,21 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.6.2",
+            changes: [
+                "Stabilization backend",
+                "Provide TrackSeconds for Frontend https://github.com/toniebox-reverse-engineering/teddycloud/issues/187",
+                "Fixed some bugs",
+                "gui: Next button in audio player now jumps according tracks of taf",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.1...tcw_v0.6.2",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-2/773",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.2",
+        },
+        {
             version: "0.6.1",
             changes: [
                 "Stabilization backend",
