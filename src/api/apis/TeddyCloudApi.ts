@@ -600,15 +600,45 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
         headerParameters: runtime.HTTPHeaders = {}
     ): Promise<Response> {
-        // To Do: Replace fetch with request
-        const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
-            method: "POST",
-            body: formData,
-        });
+        try {
+            // To Do: Replace fetch with request
+            const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
+                method: "POST",
+                body: formData,
+            });
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response;
+        } catch (err: any) {
+            if (err.response) {
+                return err.response;
+            } else if (err instanceof TypeError) {
+                return new Response(
+                    JSON.stringify({
+                        error: "Network error, please try again later.",
+                        message: err.message,
+                    }),
+                    {
+                        status: 500,
+                        statusText: "Network Error",
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+            } else {
+                return new Response(
+                    JSON.stringify({
+                        error: "An unexpected error occurred.",
+                        message: err,
+                    }),
+                    {
+                        status: 500,
+                        statusText: "Unexpected Error",
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+            }
         }
-        return response;
     }
 }

@@ -169,21 +169,24 @@ export const EncoderPage = () => {
         setProcessing(true);
         const queryString = createQueryString(queryParams);
 
-        const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
-
-        const responseData = await response.text();
-        if (response.ok) {
-            message.success(t("tonies.encoder.uploadSuccessful"));
-            setFileList([]);
-            setTafFilename("");
-            setTreeData([rootTreeNode]);
-            setTreeNodeId(rootTreeNode.id);
-        } else {
-            console.log("Upload failed:", responseData);
+        try {
+            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
+            if (response.ok) {
+                message.success(t("tonies.encoder.uploadSuccessful"));
+                setFileList([]);
+                setTafFilename("");
+                setTreeData([rootTreeNode]);
+                setTreeNodeId(rootTreeNode.id);
+            } else {
+                message.error(t("tonies.encoder.uploadFailed") + ": " + response.statusText);
+            }
+            setProcessing(false);
+            setUploading(false);
+        } catch (err) {
             message.error(t("tonies.encoder.uploadFailed"));
+            setProcessing(false);
+            setUploading(false);
         }
-        setProcessing(false);
-        setUploading(false);
     };
 
     const props: UploadProps = {
