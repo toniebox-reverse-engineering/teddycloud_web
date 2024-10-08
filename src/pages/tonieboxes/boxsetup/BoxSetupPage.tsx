@@ -33,6 +33,14 @@ export const BoxSetupPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.BoxFlashing.title`)}</h1>
+                    <Alert
+                        type="warning"
+                        closeIcon
+                        showIcon
+                        message={t("tonieboxes.hintLatestFirmwareTitle")}
+                        description={t("tonieboxes.hintLatestFirmware")}
+                    ></Alert>
+                    tbd
                 </StyledContent>
             </StyledLayout>
         </>

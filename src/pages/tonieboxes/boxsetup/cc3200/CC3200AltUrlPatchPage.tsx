@@ -40,30 +40,7 @@ export const CC3200AltUrlPatchPage = () => {
                         message={t("tonieboxes.hintLatestFirmwareTitle")}
                         description={t("tonieboxes.hintLatestFirmware")}
                     ></Alert>
-                    <Paragraph style={{ marginTop: 16 }}>
-                        {t(`tonieboxes.cc3200BoxFlashing.hint`)}
-                        <ul>
-                            <li>
-                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/" target="_blank">
-                                    {t(`tonieboxes.cc3200BoxFlashing.linkGeneral`)}
-                                </Link>
-                            </li>
-                        </ul>
-                    </Paragraph>
-
-                    <Paragraph>
-                        {t(`tonieboxes.cc3200BoxFlashing.hint2`)}
-                        <ul>
-                            <li>
-                                <Link
-                                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/"
-                                    target="_blank"
-                                >
-                                    {t(`tonieboxes.cc3200BoxFlashing.linkSpecific`)}
-                                </Link>
-                            </li>
-                        </ul>
-                    </Paragraph>
+                    tbd
                 </StyledContent>
             </StyledLayout>
         </>
