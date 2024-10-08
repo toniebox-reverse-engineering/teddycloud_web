@@ -36,19 +36,19 @@
         "navigationTitle": "Comunidad",
         "title": "Comunidad",
         "translations": {
-            "navigationTitle": "Traducciones",
-            "title": "Traducciones",
-            "language": "Idioma",
-            "missingKeys": "Claves faltantes",
-            "noMissingKeys": "No hay claves faltantes.",
-            "extraKeys": "Claves adicionales",
-            "noExtraKeys": "No hay claves adicionales.",
-            "missingExtraKeysHeadline": "Claves de traducción faltantes / adicionales",
-            "noDiscrepancies": "Todo está bien.",
-            "missing": "FALTANTE",
-            "key": "Clave",
             "allTranslationStrings": "Todas las cadenas de traducción",
-            "hint": "Si ves alguna mala traducción, por favor vuelve a contactarnos por Telegram. El francés y el español están actualmente completamente traducidos por ChatGPT."
+            "extraKeys": "Claves adicionales",
+            "hint": "Si ves alguna mala traducción, por favor vuelve a contactarnos por Telegram. El francés y el español están actualmente completamente traducidos por ChatGPT.",
+            "key": "Clave",
+            "language": "Idioma",
+            "missing": "FALTANTE",
+            "missingExtraKeysHeadline": "Claves de traducción faltantes / adicionales",
+            "missingKeys": "Claves faltantes",
+            "navigationTitle": "Traducciones",
+            "noDiscrepancies": "Todo está bien.",
+            "noExtraKeys": "No hay claves adicionales.",
+            "noMissingKeys": "No hay claves faltantes.",
+            "title": "Traducciones"
         }
     },
     "confirmDialog": {
@@ -366,7 +366,6 @@
         "toniesJsonReloadFailed": "¡Error al recargar Tonies(.custom).json!",
         "toniesJsonReloadInProgress": "Cargando Tonies(.custom).json...",
         "toniesJsonReloadSuccessful": "¡Tonies(.custom).json recargado con éxito!",
-
         "warning": "¡Atención! Botón Guardar + Nivel de configuración",
         "warningHint": "Actualmente, los campos de texto deben guardarse explícitamente hasta que se implemente una mejor solución. Para hacerlo, haz clic en el símbolo de guardar al final del campo. Si faltan configuraciones, aumenta el 'Nivel de configuración'."
     },

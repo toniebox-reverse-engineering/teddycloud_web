@@ -36,19 +36,19 @@
         "navigationTitle": "Community",
         "title": "Community",
         "translations": {
-            "navigationTitle": "Übersetzungen",
-            "title": "Übersetzungen",
-            "language": "Sprache",
-            "missingKeys": "Fehlende Schlüssel",
-            "noMissingKeys": "Keine fehlenden Schlüssel.",
-            "extraKeys": "Zusätzliche Schlüssel",
-            "noExtraKeys": "Keine zusätzlichen Schlüssel.",
-            "missingExtraKeysHeadline": "Fehlende / Zusätzliche Übersetzungsschlüssel",
-            "noDiscrepancies": "Alles ist in Ordnung.",
-            "missing": "FEHLT",
-            "key": "Schlüssel",
             "allTranslationStrings": "Alle Übersetzungsstrings",
-            "hint": "Wenn du eine schlechte Übersetzung siehst, komm bitte über Telegram auf uns zu. Französisch und Spanisch werden derzeit vollständig von ChatGPT übersetzt."
+            "extraKeys": "Zusätzliche Schlüssel",
+            "hint": "Wenn du eine schlechte Übersetzung siehst, komm bitte über Telegram auf uns zu. Französisch und Spanisch werden derzeit vollständig von ChatGPT übersetzt.",
+            "key": "Schlüssel",
+            "language": "Sprache",
+            "missing": "FEHLT",
+            "missingExtraKeysHeadline": "Fehlende / Zusätzliche Übersetzungsschlüssel",
+            "missingKeys": "Fehlende Schlüssel",
+            "navigationTitle": "Übersetzungen",
+            "noDiscrepancies": "Alles ist in Ordnung.",
+            "noExtraKeys": "Keine zusätzlichen Schlüssel.",
+            "noMissingKeys": "Keine fehlenden Schlüssel.",
+            "title": "Übersetzungen"
         }
     },
     "confirmDialog": {
