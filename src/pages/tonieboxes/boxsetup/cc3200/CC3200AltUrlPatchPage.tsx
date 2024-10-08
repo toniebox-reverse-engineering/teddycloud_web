@@ -6,13 +6,13 @@ import BreadcrumbWrapper, {
     StyledContent,
     StyledLayout,
     StyledSider,
-} from "../../components/StyledComponents";
-import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
+} from "../../../../components/StyledComponents";
+import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
-export const CC3235BoxFlashingPage = () => {
+export const CC3200AltUrlPatchPage = () => {
     const { t } = useTranslation();
 
     return (
@@ -28,11 +28,11 @@ export const CC3235BoxFlashingPage = () => {
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
-                        { title: t("tonieboxes.cc3235BoxFlashing.navigationTitle") },
+                        { title: t("tonieboxes.cc3200BoxFlashing.navigationTitle") },
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`tonieboxes.cc3235BoxFlashing.title`)}</h1>
+                    <h1>{t(`tonieboxes.cc3200BoxFlashing.title`)}</h1>
                     <Alert
                         type="warning"
                         closeIcon
@@ -40,27 +40,26 @@ export const CC3235BoxFlashingPage = () => {
                         message={t("tonieboxes.hintLatestFirmwareTitle")}
                         description={t("tonieboxes.hintLatestFirmware")}
                     ></Alert>
-                    <Paragraph style={{ marginTop: 16 }}></Paragraph>
-                    <Paragraph>
-                        {t(`tonieboxes.cc3235BoxFlashing.hint`)}
+                    <Paragraph style={{ marginTop: 16 }}>
+                        {t(`tonieboxes.cc3200BoxFlashing.hint`)}
                         <ul>
                             <li>
                                 <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/" target="_blank">
-                                    Patching your Toniebox for using with TeddyCloud
+                                    {t(`tonieboxes.cc3200BoxFlashing.linkGeneral`)}
                                 </Link>
                             </li>
                         </ul>
                     </Paragraph>
 
                     <Paragraph>
-                        {t(`tonieboxes.cc3235BoxFlashing.hint2`)}
+                        {t(`tonieboxes.cc3200BoxFlashing.hint2`)}
                         <ul>
                             <li>
                                 <Link
-                                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3235/"
+                                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/"
                                     target="_blank"
                                 >
-                                    CC3235 specific setup
+                                    {t(`tonieboxes.cc3200BoxFlashing.linkSpecific`)}
                                 </Link>
                             </li>
                         </ul>

@@ -34,7 +34,22 @@
             "navigationTitle": "Forum"
         },
         "navigationTitle": "Community",
-        "title": "Community"
+        "title": "Community",
+        "translations": {
+            "navigationTitle": "Übersetzungen",
+            "title": "Übersetzungen",
+            "language": "Sprache",
+            "missingKeys": "Fehlende Schlüssel",
+            "noMissingKeys": "Keine fehlenden Schlüssel.",
+            "extraKeys": "Zusätzliche Schlüssel",
+            "noExtraKeys": "Keine zusätzlichen Schlüssel.",
+            "missingExtraKeysHeadline": "Fehlende / Zusätzliche Übersetzungsschlüssel",
+            "noDiscrepancies": "Alles ist in Ordnung.",
+            "missing": "FEHLT",
+            "key": "Schlüssel",
+            "allTranslationStrings": "Alle Übersetzungsstrings",
+            "hint": "Wenn du eine schlechte Übersetzung siehst, komm bitte über Telegram auf uns zu. Französisch und Spanisch werden derzeit vollständig von ChatGPT übersetzt."
+        }
     },
     "confirmDialog": {
         "contentHintTitle": "Denk dran"
@@ -271,7 +286,6 @@
         "tonieMeeting": {
             "navigationTitle": "Tonie Meeting"
         },
-        "yourCustomTonies": "Deine Custom Tonies",
         "yourTonies": "Deine Tonies"
     },
     "inputValidator": {

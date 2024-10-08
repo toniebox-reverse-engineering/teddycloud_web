@@ -27,12 +27,17 @@ import { ChangelogPage } from "./pages/community/ChangelogPage";
 import { useState, useEffect } from "react";
 import { ConfigProvider, theme } from "antd";
 import { SunOutlined, MoonOutlined, BulbOutlined } from "@ant-design/icons";
-import { ESP32BoxFlashing } from "./pages/tonieboxes/ESP32BoxFlashing";
-import { TonieMeetingPage } from "./pages/home/TonieMeeting";
+import { ESP32BoxFlashingPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32BoxFlashingPage";
+import { TonieMeetingPage } from "./pages/home/TonieMeetingPage";
 import { FAQPage } from "./pages/community/FAQPage";
 import { FeaturesPage } from "./pages/home/FeaturesPage";
-import { CC3235BoxFlashingPage } from "./pages/tonieboxes/CC3235BoxFlashing";
-import { CC3200BoxFlashingPage } from "./pages/tonieboxes/CC3200BoxFlashing";
+import { CC3235BoxFlashingPage } from "./pages/tonieboxes/boxsetup/cc3235/CC3235BoxFlashingPage";
+import { CC3200BoxFlashingPage } from "./pages/tonieboxes/boxsetup/cc3200/CC3200BoxFlashingPage";
+import { BoxSetupPage } from "./pages/tonieboxes/boxsetup/BoxSetupPage";
+import { IdentifyBoxVersionPage } from "./pages/tonieboxes/boxsetup/IdentifyBoxVersionPage";
+import { ESP32LegacyPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyPage";
+import { CC3200AltUrlPatchPage } from "./pages/tonieboxes/boxsetup/cc3200/CC3200AltUrlPatchPage";
+import { TranslationsPage } from "./pages/community/TranslationsPage";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -124,9 +129,28 @@ function App() {
                                     <Route path="/tonies/encoder" element={<EncoderPage />} />
                                     <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
                                     <Route path="/tonieboxes" element={<TonieboxesPage />} />
-                                    <Route path="/tonieboxes/esp32boxflashing" element={<ESP32BoxFlashing />} />
-                                    <Route path="/tonieboxes/cc3200boxflashing" element={<CC3200BoxFlashingPage />} />
-                                    <Route path="/tonieboxes/cc3235boxflashing" element={<CC3235BoxFlashingPage />} />
+                                    <Route path="/tonieboxes/boxsetup" element={<BoxSetupPage />} />
+                                    <Route
+                                        path="/tonieboxes/boxsetup/identifyboxversion"
+                                        element={<IdentifyBoxVersionPage />}
+                                    />
+                                    <Route
+                                        path="/tonieboxes/boxsetup/esp32/flashing"
+                                        element={<ESP32BoxFlashingPage />}
+                                    />
+                                    <Route path="/tonieboxes/boxsetup/esp32/legacy" element={<ESP32LegacyPage />} />
+                                    <Route
+                                        path="/tonieboxes/boxsetup/cc3200/flashing"
+                                        element={<CC3200BoxFlashingPage />}
+                                    />
+                                    <Route
+                                        path="/tonieboxes/boxsetup/cc3200/alturlpatch"
+                                        element={<CC3200AltUrlPatchPage />}
+                                    />
+                                    <Route
+                                        path="/tonieboxes/boxsetup/cc3235/flashing"
+                                        element={<CC3235BoxFlashingPage />}
+                                    />
                                     <Route path="/settings" element={<SettingsPage />} />
                                     <Route path="/settings/certificates" element={<CertificatesPage />} />
                                     <Route path="/settings/rtnl" element={<RtnlPage />} />
@@ -137,6 +161,7 @@ function App() {
                                         path="/community/contribution/tonies-json"
                                         element={<ContributionToniesJsonPage />}
                                     />
+                                    <Route path="/community/contribution/translations" element={<TranslationsPage />} />
                                     <Route path="/community/contributors" element={<ContributorsPage />} />
                                     <Route path="/community/changelog" element={<ChangelogPage />} />
                                     <Route path="/uitest" element={<UiTest />} />
