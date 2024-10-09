@@ -6,8 +6,8 @@ import BreadcrumbWrapper, {
     StyledContent,
     StyledLayout,
     StyledSider,
-} from "../../components/StyledComponents";
-import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
+} from "../../../../components/StyledComponents";
+import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;

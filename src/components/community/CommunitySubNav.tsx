@@ -7,14 +7,44 @@ import {
     BranchesOutlined,
     FileTextOutlined,
     QuestionCircleOutlined,
+    GlobalOutlined,
 } from "@ant-design/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
 
 export const CommunitySubNav = () => {
     const { t } = useTranslation();
+    const [openKeys, setOpenKeys] = useState<string[]>([]);
+
+    // Function to add new open key without removing existing ones
+    const updateOpenKeys = (pathname: string) => {
+        const newKeys: string[] = [];
+        if (pathname.includes("/contribution")) {
+            newKeys.push("contribution");
+        }
+        setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
+    };
+
+    // Update open keys and selected keys when location changes
+    useEffect(() => {
+        updateOpenKeys(location.pathname);
+    }, [location.pathname]);
+
+    const onOpenChange = (keys: string[]) => {
+        // Check which keys are currently opened or closed
+        const latestOpenKey = keys.find((key) => !openKeys.includes(key)); // New key being opened
+        const latestCloseKey = openKeys.find((key) => !keys.includes(key)); // Key being closed
+
+        if (latestOpenKey) {
+            // Opening new key, merge it with previously open keys
+            setOpenKeys((prevKeys) => [...prevKeys, latestOpenKey]);
+        } else if (latestCloseKey) {
+            // Closing a key, filter it out from the open keys
+            setOpenKeys((prevKeys) => prevKeys.filter((key) => key !== latestCloseKey));
+        }
+    };
 
     const subnav: MenuProps["items"] = [
         {
@@ -49,6 +79,16 @@ export const CommunitySubNav = () => {
                     icon: React.createElement(FileTextOutlined),
                     title: t("community.contribution.toniesJson.navigationTitle"),
                 },
+                {
+                    key: "translation",
+                    label: (
+                        <Link to="/community/contribution/translations">
+                            {t("community.translations.navigationTitle")}
+                        </Link>
+                    ),
+                    icon: React.createElement(GlobalOutlined),
+                    title: t("community.translations.navigationTitle"),
+                },
             ],
         },
         {
@@ -75,5 +115,14 @@ export const CommunitySubNav = () => {
         },
     ];
 
-    return <StyledSubMenu mode="inline" defaultOpenKeys={["sub"]} items={subnav} />;
+    return (
+        <StyledSubMenu
+            mode="inline"
+            defaultOpenKeys={["sub"]}
+            openKeys={openKeys}
+            selectedKeys={[]}
+            onOpenChange={onOpenChange}
+            items={subnav}
+        />
+    );
 };

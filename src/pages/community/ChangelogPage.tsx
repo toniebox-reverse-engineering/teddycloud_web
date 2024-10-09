@@ -25,6 +25,7 @@ export const ChangelogPage = () => {
                 "Fixed some bugs",
                 "gui: Next button in audio player now jumps according tracks of taf",
                 "gui: Show error if something went wrong while encoding new taf (Audio Encoder)",
+                "gui: Added translation overviewpage in community contribution section",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",

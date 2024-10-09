@@ -1,20 +1,20 @@
 import { useEffect, useState, useRef } from "react";
 import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
-import i18n from "../../i18n";
+import i18n from "../../../../i18n";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Col, Collapse, Divider, Form, Input, message, Progress, Row, Steps, Typography } from "antd";
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
     StyledLayout,
     StyledSider,
-} from "../../components/StyledComponents";
-import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
-import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
-import DotAnimation from "../../utils/dotAnimation";
+} from "../../../../components/StyledComponents";
+import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
+import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog";
+import DotAnimation from "../../../../utils/dotAnimation";
 import {
     CodeOutlined,
     DownloadOutlined,
@@ -25,7 +25,7 @@ import {
     SyncOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { isWebSerialSupported } from "../../utils/checkWebSerialSupport";
+import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
 import { Link } from "react-router-dom";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -64,7 +64,7 @@ interface ESP32Flasher {
 const { Paragraph, Text } = Typography;
 const { Step } = Steps;
 
-export const ESP32BoxFlashing = () => {
+export const ESP32BoxFlashingPage = () => {
     const { t } = useTranslation();
     const currentLanguage = i18n.language;
 
