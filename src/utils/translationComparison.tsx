@@ -15,17 +15,23 @@ const findMissingKeys = (baseObj: Translations, otherObj: Translations, parentKe
 
     Object.keys(baseObj).forEach((key) => {
         const fullKey = parentKey ? `${parentKey}.${key}` : key;
-
         if (Array.isArray(baseObj[key])) {
-            // Compare each item in the array
-            (baseObj[key] as TranslationEntry[]).forEach((item, index) => {
-                const questionKey = `${fullKey}[${index}].question`;
-                const answerKey = `${fullKey}[${index}].answer`;
-
-                if (!otherObj[key] || !Array.isArray(otherObj[key]) || !otherObj[key][index]) {
+            if (!Array.isArray(otherObj[key])) {
+                (baseObj[key] as TranslationEntry[]).forEach((_, index) => {
+                    const questionKey = `${fullKey}[${index}].question`;
+                    const answerKey = `${fullKey}[${index}].answer`;
                     missingKeys.push(questionKey, answerKey);
-                }
-            });
+                });
+            } else {
+                (baseObj[key] as TranslationEntry[]).forEach((item, index) => {
+                    const questionKey = `${fullKey}[${index}].question`;
+                    const answerKey = `${fullKey}[${index}].answer`;
+                    const otherArray = otherObj[key] as TranslationEntry[];
+                    if (!otherArray[index]) {
+                        missingKeys.push(questionKey, answerKey);
+                    }
+                });
+            }
         } else if (typeof baseObj[key] === "object" && baseObj[key] !== null) {
             if (!(key in otherObj) || typeof otherObj[key] !== "object") {
                 missingKeys.push(...collectAllKeys(baseObj[key] as Translations, fullKey));
@@ -68,17 +74,23 @@ const findExtraKeys = (baseObj: Translations, otherObj: Translations, parentKey 
 
     Object.keys(otherObj).forEach((key) => {
         const fullKey = parentKey ? `${parentKey}.${key}` : key;
-
         if (Array.isArray(otherObj[key])) {
-            // Check for extra items in the array
-            (otherObj[key] as TranslationEntry[]).forEach((_, index) => {
-                const questionKey = `${fullKey}[${index}].question`;
-                const answerKey = `${fullKey}[${index}].answer`;
-
-                if (!baseObj[key] || !Array.isArray(baseObj[key]) || !baseObj[key][index]) {
+            if (!Array.isArray(baseObj[key])) {
+                (otherObj[key] as TranslationEntry[]).forEach((_, index) => {
+                    const questionKey = `${fullKey}[${index}].question`;
+                    const answerKey = `${fullKey}[${index}].answer`;
                     extraKeys.push(questionKey, answerKey);
-                }
-            });
+                });
+            } else {
+                (otherObj[key] as TranslationEntry[]).forEach((_, index) => {
+                    const questionKey = `${fullKey}[${index}].question`;
+                    const answerKey = `${fullKey}[${index}].answer`;
+                    const baseArray = baseObj[key] as TranslationEntry[];
+                    if (!baseArray[index]) {
+                        extraKeys.push(questionKey, answerKey);
+                    }
+                });
+            }
         } else if (typeof otherObj[key] === "object" && otherObj[key] !== null) {
             if (!baseObj[key] || typeof baseObj[key] !== "object") {
                 extraKeys.push(fullKey);
