@@ -105,12 +105,11 @@ const TranslationTable: React.FC = () => {
         })),
     ];
 
-    // Prepare table data by combining translations from all languages
     const dataSource = allKeys.map((key) => {
         const row: any = { key };
         languages.forEach((lang) => {
             const value = getValueFromKey(translations[lang], key);
-            row[lang] = value || t("community.translations.missing"); // Show "MISSING" if the translation is not found
+            row[lang] = value || "<" + t("community.translations.missing") + ">";
         });
         return row;
     });
