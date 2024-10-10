@@ -100,31 +100,53 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
     };
 
     useEffect(() => {
-        const fetchWebGitShaShortMatching = async () => {
-            try {
-                const expectedWebGitShaResponse = await api.apiGetTeddyCloudSettingRaw("internal.version_web.git_sha");
-                const expectedWebGitSha = await expectedWebGitShaResponse.text();
-
-                const actualWebGitShaResponse = await fetch(
-                    import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + `/web/web_version.json`
-                );
-                const actualWebGitShaData = await actualWebGitShaResponse.json();
-                const actualWebGitSha = actualWebGitShaData.web_gitSha;
-
-                console.log("expected Web Git Sha: ", expectedWebGitSha);
-                console.log("actual Web Git Sha: ", actualWebGitSha);
-
-                if (expectedWebGitSha !== actualWebGitSha) {
-                    showWarningDialogMismatchFrontendBackend();
+        const checkVersionMismatch = async () => {
+            const fetchIgnoreWebVersionMismatch = async () => {
+                try {
+                    const ignoreWebVersionMismatchResponse = await api.apiGetTeddyCloudSettingRaw(
+                        "frontend.ignore_web_version_mismatch"
+                    );
+                    const ignoreWebVersionMismatch = (await ignoreWebVersionMismatchResponse.text()) === "true";
+                    return ignoreWebVersionMismatch;
+                } catch (err) {
+                    console.log("Something went wrong getting ignoreWebVersionMismatch.");
+                    return false;
                 }
-            } catch (err) {
-                console.log("Something went wrong getting gitSha.");
+            };
+
+            const fetchWebGitShaShortMatching = async () => {
+                try {
+                    const expectedWebGitShaResponse = await api.apiGetTeddyCloudSettingRaw(
+                        "internal.version_web.git_sha"
+                    );
+                    const expectedWebGitSha = await expectedWebGitShaResponse.text();
+
+                    const actualWebGitShaResponse = await fetch(
+                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + `/web/web_version.json`
+                    );
+                    const actualWebGitShaData = await actualWebGitShaResponse.json();
+                    const actualWebGitSha = actualWebGitShaData.web_gitSha;
+
+                    console.log("expected Web Git Sha: ", expectedWebGitSha);
+                    console.log("actual Web Git Sha: ", actualWebGitSha);
+
+                    if (expectedWebGitSha !== actualWebGitSha) {
+                        showWarningDialogMismatchFrontendBackend();
+                    }
+                } catch (err) {
+                    console.log("Something went wrong getting gitSha.");
+                }
+            };
+
+            if (import.meta.env.MODE === "production") {
+                const ignoreMismatch = await fetchIgnoreWebVersionMismatch();
+                if (!ignoreMismatch) {
+                    await fetchWebGitShaShortMatching();
+                }
             }
         };
 
-        if (import.meta.env.MODE === "production") {
-            fetchWebGitShaShortMatching();
-        }
+        checkVersionMismatch();
     }, []);
 
     return (
