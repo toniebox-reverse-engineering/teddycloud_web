@@ -114,7 +114,7 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                 }
             };
 
-            const fetchWebGitShaShortMatching = async () => {
+            const fetchWebGitShaMatching = async () => {
                 try {
                     const expectedWebGitShaResponse = await api.apiGetTeddyCloudSettingRaw(
                         "internal.version_web.git_sha"
@@ -141,7 +141,7 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
             if (import.meta.env.MODE === "production") {
                 const ignoreMismatch = await fetchIgnoreWebVersionMismatch();
                 if (!ignoreMismatch) {
-                    await fetchWebGitShaShortMatching();
+                    await fetchWebGitShaMatching();
                 }
             }
         };
