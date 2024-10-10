@@ -134,8 +134,13 @@ export const EncoderPage = () => {
                 }),
             });
         }
-
-        setFileList(newFileList.slice(0, MAX_FILES) as MyUploadFile[]);
+        const updatedFileList = newFileList.slice(0, MAX_FILES) as MyUploadFile[];
+        if (updatedFileList.length === 1 && tafFilename === "") {
+            const singleFile = updatedFileList[0];
+            const fileNameWithoutExtension = singleFile.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+            setTafFilename(fileNameWithoutExtension);
+        }
+        setFileList(updatedFileList);
     };
 
     const onRemove = (file: MyUploadFile) => {
@@ -175,8 +180,6 @@ export const EncoderPage = () => {
                 message.success(t("tonies.encoder.uploadSuccessful"));
                 setFileList([]);
                 setTafFilename("");
-                setTreeData([rootTreeNode]);
-                setTreeNodeId(rootTreeNode.id);
             } else {
                 message.error(t("tonies.encoder.uploadFailed") + ": " + response.statusText);
             }
@@ -457,6 +460,7 @@ export const EncoderPage = () => {
                                             <Input
                                                 addonAfter=".taf"
                                                 required
+                                                defaultValue={tafFilename}
                                                 style={{
                                                     maxWidth: 300,
                                                 }}
