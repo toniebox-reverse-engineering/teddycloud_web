@@ -3,13 +3,17 @@ import { Header } from "antd/es/layout/layout";
 import styled from "styled-components";
 import { MenuOutlined } from "@ant-design/icons";
 import logoImg from "../../assets/logo.png";
-import { Button, Drawer, Menu, MenuProps } from "antd";
+import { Button, Drawer, Menu, MenuProps, Modal } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { ServerStatus } from "./ServerStatus";
 import { useEffect, useState } from "react";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { theme } from "antd";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
@@ -86,6 +90,42 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
     let selectedKey = location.pathname.split("/")[1];
     if (!selectedKey) selectedKey = "/";
     if (selectedKey === "home") selectedKey = "/";
+
+    const showWarningDialogMismatchFrontendBackend = () => {
+        Modal.error({
+            title: t("home.error"),
+            content: t("home.errorWebVersionMismatch"),
+            okText: t("home.errorConfirm"),
+        });
+    };
+
+    useEffect(() => {
+        const fetchWebGitShaShortMatching = async () => {
+            try {
+                const expectedWebGitShaResponse = await api.apiGetTeddyCloudSettingRaw("internal.version_web.git_sha");
+                const expectedWebGitSha = await expectedWebGitShaResponse.text();
+
+                const actualWebGitShaResponse = await fetch(
+                    import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + `/web/web_version.json`
+                );
+                const actualWebGitShaData = await actualWebGitShaResponse.json();
+                const actualWebGitSha = actualWebGitShaData.web_gitSha;
+
+                console.log("expected Web Git Sha: ", expectedWebGitSha);
+                console.log("actual Web Git Sha: ", actualWebGitSha);
+
+                if (expectedWebGitSha !== actualWebGitSha) {
+                    showWarningDialogMismatchFrontendBackend();
+                }
+            } catch (err) {
+                console.log("Something went wrong getting gitSha.");
+            }
+        };
+
+        if (import.meta.env.MODE === "production") {
+            fetchWebGitShaShortMatching();
+        }
+    }, []);
 
     return (
         <StyledHeaderComponent>
