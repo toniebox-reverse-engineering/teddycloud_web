@@ -30,7 +30,8 @@ export const ChangelogPage = () => {
                 "gui: Added translation overview page in community contribution section",
                 "gui: Improved Audio Encoder, leave selected target folder till reload of page, if only one file is added, take filename as preset for taf filename https://github.com/toniebox-reverse-engineering/teddycloud/issues/223",
                 "gui: Fixed filterbug in FileBrowser Component (List + Select) https://github.com/toniebox-reverse-engineering/teddycloud/issues/224",
-                "gui: Show warning if web_version of gui does not match expected web_version from backend"
+                "gui: Show warning if web_version of gui does not match expected web_version from backend",
+                "gui: Show warning if ogg/opus (taf) is not supported by browser",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",

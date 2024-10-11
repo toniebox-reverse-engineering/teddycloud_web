@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import logoImg from "../../assets/logo.png";
+import { isWebKit } from "../../utils/browserUtils";
+import { Modal } from "antd";
 
 interface AudioContextType {
     playAudio: (url: string, meta?: any, trackSeconds?: number[]) => void;
@@ -41,23 +43,31 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
     const playAudio = (url: string, meta?: any, trackSeconds?: number[]) => {
         console.log("Play audio: " + url);
-        const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
-        globalAudio.src = url;
-        if (meta) {
-            setSongImage(meta.picture);
-            setSongArtist(
-                meta.series || meta.episode
-                    ? meta.series
-                    : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource")))
-            );
-            setSongTitle(meta.episode);
+        if (isWebKit() && url.search(".taf?ogg")) {
+            Modal.error({
+                title: t("audio.errorNoOggOpusSupport"),
+                content: t("audio.errorNoOggOpusSupportByApple"),
+                okText: t("audio.errorConfirm"),
+            });
         } else {
-            setSongImage(decodeURI(url).includes(".taf?") ? "/img_unknown.png" : logoImg);
-            setSongArtist("");
-            setSongTitle(extractFilename(decodeURI(url)));
+            const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
+            globalAudio.src = url;
+            if (meta) {
+                setSongImage(meta.picture);
+                setSongArtist(
+                    meta.series || meta.episode
+                        ? meta.series
+                        : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource")))
+                );
+                setSongTitle(meta.episode);
+            } else {
+                setSongImage(decodeURI(url).includes(".taf?") ? "/img_unknown.png" : logoImg);
+                setSongArtist("");
+                setSongTitle(extractFilename(decodeURI(url)));
+            }
+            setSongTracks(trackSeconds || [0]);
+            globalAudio.play();
         }
-        setSongTracks(trackSeconds || [0]);
-        globalAudio.play();
     };
 
     return (

@@ -5,7 +5,10 @@
         "title": "404"
     },
     "audio": {
-        "unknownSource": "Unbekannt"
+        "unknownSource": "Unbekannt",
+        "errorConfirm": "Schließen",
+        "errorerrorNoOggOpusSupport": "Fehler - OGG/Opus (taf) nicht unterstützt.",
+        "errorNoOggOpusSupportByApple": "WebKit (by Apple) unterstützt im Moment keine OGG/Opus (taf) Dateien. Helfen Sie uns, indem Sie ein Ticket bei Apple zur Behebung des Problems einreichen!"
     },
     "community": {
         "changelog": {
