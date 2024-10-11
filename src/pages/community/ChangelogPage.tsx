@@ -22,10 +22,15 @@ export const ChangelogPage = () => {
             changes: [
                 "Stabilization backend",
                 "Provide TrackSeconds for Frontend https://github.com/toniebox-reverse-engineering/teddycloud/issues/187",
+                "Fixed bug no update of model in content.json if empty https://github.com/toniebox-reverse-engineering/teddycloud/issues/215",
+                "Added web_version.json for consistency checks, including new setting frontend.ignore_web_version_mismatch",
                 "Fixed some bugs",
                 "gui: Next button in audio player now jumps according tracks of taf",
                 "gui: Show error if something went wrong while encoding new taf (Audio Encoder)",
-                "gui: Added translation overviewpage in community contribution section",
+                "gui: Added translation overview page in community contribution section",
+                "gui: Improved Audio Encoder, leave selected target folder till reload of page, if only one file is added, take filename as preset for taf filename https://github.com/toniebox-reverse-engineering/teddycloud/issues/223",
+                "gui: Fixed filterbug in FileBrowser Component (List + Select) https://github.com/toniebox-reverse-engineering/teddycloud/issues/224",
+                "gui: Show warning if web_version of gui does not match expected web_version from backend"
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",
