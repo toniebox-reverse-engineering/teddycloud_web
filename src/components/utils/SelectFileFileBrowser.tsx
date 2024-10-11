@@ -12,6 +12,7 @@ import TonieInformationModal from "./TonieInformationModal";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import { humanFileSize } from "../../utils/humanFileSize";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -179,6 +180,9 @@ export const SelectFileFileBrowser: React.FC<{
     const handleFilterFieldInputFocus = () => {
         setFilterFieldAutoFocus(true);
     };
+    const handleFilterFieldInputBlur = () => {
+        setFilterFieldAutoFocus(false);
+    };
 
     // table functions
     const rowClassName = (record: any) => {
@@ -334,7 +338,10 @@ export const SelectFileFileBrowser: React.FC<{
                 return (
                     record.name === ".." ||
                     record.name.toLowerCase().includes(text) ||
-                    (!record.isDir && "tafHeader" in record) ||
+                    (!record.isDir &&
+                        "tafHeader" in record &&
+                        record.tafHeader.size &&
+                        humanFileSize(record.tafHeader.size).toString().includes(text)) ||
                     ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.model.toLowerCase().includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
@@ -541,6 +548,7 @@ export const SelectFileFileBrowser: React.FC<{
                                                 value={filterText}
                                                 onChange={handleFilterChange}
                                                 onFocus={handleFilterFieldInputFocus}
+                                                onBlur={handleFilterFieldInputBlur}
                                                 ref={inputRefFilter} // Assign ref to input element
                                                 style={{ width: "100%" }}
                                                 autoFocus={filterFieldAutoFocus}
