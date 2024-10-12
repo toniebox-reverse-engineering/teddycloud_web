@@ -8,7 +8,7 @@
         "unknownSource": "Inconnu",
         "errorConfirm": "Fermer",
         "errorNoOggOpusSupport": "Erreur - OGG/Opus (taf) non pris en charge.",
-        "errorNoOggOpusSupportByApple": "WebKit (par Apple) ne prend pas en charge les fichiers OGG/Opus (taf) pour le moment. Aidez-nous en soumettant un ticket à Apple pour demander une correction !"
+        "errorNoOggOpusSupportByApple": "Votre navigateur ne prend pas en charge les fichiers OGG/Opus (taf) pour le moment. Si vous utilisez un appareil Apple, aidez-nous en soumettant un ticket à Apple pour demander une solution !"
     },
     "community": {
         "changelog": {

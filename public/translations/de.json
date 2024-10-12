@@ -8,7 +8,7 @@
         "unknownSource": "Unbekannt",
         "errorConfirm": "Schließen",
         "errorerrorNoOggOpusSupport": "Fehler - OGG/Opus (taf) nicht unterstützt.",
-        "errorNoOggOpusSupportByApple": "WebKit (by Apple) unterstützt im Moment keine OGG/Opus (taf) Dateien. Helfen Sie uns, indem Sie ein Ticket bei Apple zur Behebung des Problems einreichen!"
+        "errorNoOggOpusSupportByApple": "Dein Browser unterstützt im Moment keine OGG/Opus (taf) Dateien. Nutzt du ein Apple Gerät, dann hilf uns, indem Sie ein Ticket bei Apple zur Behebung des Problems einreichen!"
     },
     "community": {
         "changelog": {

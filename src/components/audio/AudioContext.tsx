@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import logoImg from "../../assets/logo.png";
-import { isWebKit } from "../../utils/browserUtils";
+import { supportsOggOpus } from "../../utils/browserUtils";
 import { Modal } from "antd";
 
 interface AudioContextType {
@@ -43,7 +43,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
     const playAudio = (url: string, meta?: any, trackSeconds?: number[]) => {
         console.log("Play audio: " + url);
-        if (isWebKit() && url.search(".taf?ogg")) {
+        if (!supportsOggOpus() && url.includes("?ogg")) {
             Modal.error({
                 title: t("audio.errorNoOggOpusSupport"),
                 content: t("audio.errorNoOggOpusSupportByApple"),
