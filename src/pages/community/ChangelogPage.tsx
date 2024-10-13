@@ -32,6 +32,7 @@ export const ChangelogPage = () => {
                 "gui: Fixed filterbug in FileBrowser Component (List + Select) https://github.com/toniebox-reverse-engineering/teddycloud/issues/224",
                 "gui: Show warning if web_version of gui does not match expected web_version from backend",
                 "gui: Show warning if ogg/opus (taf) is not supported by browser",
+                "gui: Extended CC3200 Firmware flash section, added custom alt Url Patch generation.",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",

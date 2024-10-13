@@ -1056,7 +1056,7 @@ export const ESP32BoxFlashingPage = () => {
                                         let value = sanitizeHostname(e.target.value);
                                         let warningText = "";
                                         if (value.length > 12) {
-                                            warningText = t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong");
+                                            warningText = t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameTooLong");
                                         } else {
                                             warningText = "";
                                         }
@@ -1071,7 +1071,7 @@ export const ESP32BoxFlashingPage = () => {
                         </Row>
                         {state.warningTextHostname && (
                             <p style={{ color: "#CC3010" }}>
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameToLong")}
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameTooLong")}
                             </p>
                         )}
                     </Form.Item>
