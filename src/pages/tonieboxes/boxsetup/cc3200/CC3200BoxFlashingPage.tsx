@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Form, Input, Modal, Row, Steps, Table, Typography } from "antd";
+import { Alert, Button, Col, Divider, Form, Input, Modal, Row, Steps, Table, Typography } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -73,6 +73,14 @@ export const CC3200BoxFlashingPage = () => {
     const contentStep0 = (
         <>
             <h3>{t("tonieboxes.cc3200BoxFlashing.preparations")}</h3>
+            <Alert
+                type="warning"
+                closeIcon
+                showIcon
+                message={t("tonieboxes.hintLatestFirmwareTitle")}
+                description={t("tonieboxes.hintLatestFirmware")}
+                style={{ marginBottom: 16 }}
+            ></Alert>
             <h4>{t("tonieboxes.cc3200BoxFlashing.installCC3200tool")}</h4>
             <Link
                 to="https://github.com/toniebox-reverse-engineering/cc3200tool?tab=readme-ov-file#installation"
@@ -448,14 +456,7 @@ export const CC3200BoxFlashingPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.cc3200BoxFlashing.title`)}</h1>
-                    <Alert
-                        type="warning"
-                        closeIcon
-                        showIcon
-                        message={t("tonieboxes.hintLatestFirmwareTitle")}
-                        description={t("tonieboxes.hintLatestFirmware")}
-                        style={{ marginBottom: 16 }}
-                    ></Alert>
+                    <Divider>{t("tonieboxes.cc3200BoxFlashing.title")}</Divider>
                     <Paragraph>
                         <Steps current={currentStep} onChange={onChange}>
                             {steps.map((step, index) => (
