@@ -110,7 +110,7 @@ export const CC3200BoxFlashingPage = () => {
                 {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
             </Link>
             <h4>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacement")}</h4>
-            <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/flash-ca/" target="_blank">
+            <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/flash-ca/cc3200/" target="_blank">
                 {t("tonieboxes.cc3200BoxFlashing.flashCAreplacementLink")}
             </Link>
         </>

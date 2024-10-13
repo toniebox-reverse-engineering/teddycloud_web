@@ -36,7 +36,6 @@ import { CC3200BoxFlashingPage } from "./pages/tonieboxes/boxsetup/cc3200/CC3200
 import { BoxSetupPage } from "./pages/tonieboxes/boxsetup/BoxSetupPage";
 import { IdentifyBoxVersionPage } from "./pages/tonieboxes/boxsetup/IdentifyBoxVersionPage";
 import { ESP32LegacyPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyPage";
-import { CC3200AltUrlPatchPage } from "./pages/tonieboxes/boxsetup/cc3200/CC3200AltUrlPatchPage";
 import { TranslationsPage } from "./pages/community/TranslationsPage";
 
 function detectColorScheme() {
@@ -142,10 +141,6 @@ function App() {
                                     <Route
                                         path="/tonieboxes/boxsetup/cc3200/flashing"
                                         element={<CC3200BoxFlashingPage />}
-                                    />
-                                    <Route
-                                        path="/tonieboxes/boxsetup/cc3200/alturlpatch"
-                                        element={<CC3200AltUrlPatchPage />}
                                     />
                                     <Route
                                         path="/tonieboxes/boxsetup/cc3235/flashing"
