@@ -7,7 +7,7 @@
     "audio": {
         "unknownSource": "Unbekannt",
         "errorConfirm": "Schließen",
-        "errorerrorNoOggOpusSupport": "Fehler - OGG/Opus (taf) nicht unterstützt.",
+        "errorNoOggOpusSupport": "Fehler - OGG/Opus (taf) nicht unterstützt.",
         "errorNoOggOpusSupportByApple": "Dein Browser unterstützt im Moment keine OGG/Opus (taf) Dateien. Nutzt du ein Apple Gerät, dann hilf uns, indem Sie ein Ticket bei Apple zur Behebung des Problems einreichen!"
     },
     "community": {
