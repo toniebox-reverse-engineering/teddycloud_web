@@ -381,6 +381,23 @@
     "tonieboxes": {
         "accessApiDisabled": "Acceso a las API de TeddyCloud deshabilitado.",
         "accessApiEnabled": "Acceso a las API de TeddyCloud habilitado.",
+        "boxSetup": {
+            "identifyVersion": {
+                "navigationTitle": "Versión de la Toniebox",
+                "title": "Identifica la versión de tu Toniebox",
+                "identifyUsingMac": "Identifica tu versión con la dirección MAC de tu Toniebox",
+                "mac": "Por favor, introduce la dirección MAC:",
+                "identify": "Identificar",
+                "vendor": "El fabricante del chip principal de tu Toniebox es",
+                "boxVersion": "Esto significa que tu caja es una",
+                "version": "versión",
+                "errorMac": "No se pudo identificar al fabricante con la dirección MAC proporcionada",
+                "boxMacTooLong": "La dirección MAC ingresada es inválida (demasiado larga)",
+                "or": "o",
+                "macvendors": "Verificar utiliza la API proporcionada por",
+                "macvendorsLink": "macvendors.com"
+            }
+        },
         "boxWithoutAPIAccess": "¡Toniebox sin acceso a la API de TeddyCloud!",
         "boxWithoutAPIAccessGoToTonieboxes": "Si deseas cambiar eso, habilita el acceso a la API para la mencionada ",
         "boxWithoutAPIAccessText": "Las siguientes Tonieboxes no tienen acceso habilitado a la API:",

@@ -55,6 +55,16 @@ export const TonieboxesSubNav = () => {
             icon: React.createElement(TonieboxIcon),
             title: t("tonieboxes.navigationTitle"),
         },
+        {
+            key: "identifyboxversion",
+            label: (
+                <Link to="/tonieboxes/boxsetup/identifyboxversion">
+                    {t("tonieboxes.boxSetup.identifyVersion.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(SearchOutlined),
+            title: t("tonieboxes.boxSetup.identifyVersion.navigationTitle"),
+        },
         /*
         {
             key: "boxsetup",

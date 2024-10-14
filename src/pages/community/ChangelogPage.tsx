@@ -24,6 +24,7 @@ export const ChangelogPage = () => {
                 "Provide TrackSeconds for Frontend https://github.com/toniebox-reverse-engineering/teddycloud/issues/187",
                 "Fixed bug no update of model in content.json if empty https://github.com/toniebox-reverse-engineering/teddycloud/issues/215",
                 "Added web_version.json for consistency checks, including new setting frontend.ignore_web_version_mismatch",
+                "Added frontend setting frontend.confirm_audioplayer_close",
                 "Fixed some bugs",
                 "gui: Next button in audio player now jumps according tracks of taf",
                 "gui: Show error if something went wrong while encoding new taf (Audio Encoder)",
@@ -33,6 +34,9 @@ export const ChangelogPage = () => {
                 "gui: Show warning if web_version of gui does not match expected web_version from backend",
                 "gui: Show warning if ogg/opus (taf) is not supported by browser",
                 "gui: Extended CC3200 Firmware flash section, added custom alt Url Patch generation.",
+                "gui: Extended CC3200 Firmware flash section, extended Applying Patches step",
+                "gui: Added Box version identification page (first version)",
+                "gui: integrated frontend.confirm_audioplayer_close",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",
