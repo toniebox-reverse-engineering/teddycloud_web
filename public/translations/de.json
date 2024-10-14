@@ -488,7 +488,7 @@
                 "examplengCFGJsonCollapse": {
                     "collapseTitle": "Beispiel \"ngCfg.json\" mit dem Patch \"altUrl.custom.305\" unter Verwendung von \"ofw2\""
                 },
-                "finish": "Wenn du ngCfg.json wie angegeben geändert hast, bitte montiere deine Toniebox wieder und schalte sie ein. Führe einen Frische-Check durch, warte einen Moment und klicke dann auf 'Verfügbare Boxen anzeigen', um die verfügbaren Tonieboxes in deiner TeddyCloud anzuzeigen."
+                "finish": "Wenn du ngCfg.json wie angegeben geändert hast, bitte montiere deine Toniebox wieder und schalte sie ein. Führe einen Freshness-Check durch, warte einen Moment und klicke dann auf 'Verfügbare Boxen anzeigen', um die verfügbaren Tonieboxes in deiner TeddyCloud anzuzeigen."
             }
         },
         "cc3235BoxFlashing": {
