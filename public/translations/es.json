@@ -385,7 +385,7 @@
             "identifyVersion": {
                 "navigationTitle": "Versión de la Toniebox",
                 "title": "Identifica la versión de tu Toniebox",
-                "identifyUsingMac": "Identifica tu versión con la dirección MAC de tu Toniebox",
+                "identifyUsingMac": "Identifica tu versión con la dirección MAC de tu Toniebox. Encuentras la dirección MAC en la parte inferior de tu Toniebox.",
                 "mac": "Por favor, introduce la dirección MAC:",
                 "identify": "Identificar",
                 "vendor": "El fabricante del chip principal de tu Toniebox es",
