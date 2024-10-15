@@ -811,7 +811,7 @@ export const CC3200BoxFlashingPage = () => {
             (item) => `{
         "_desc": "${item._desc}",
         "search":  ["${item.search.join('", "')}"],
-        "replace": ["${item.search.join('", "')}"]
+        "replace": ["${item.replace.join('", "')}"]
     }`
         )
         .join(", ")}]
