@@ -395,7 +395,12 @@
                 "boxMacTooLong": "Die eingegebene MAC-Adresse ist ungültig (zu lang)",
                 "or": "oder",
                 "macvendors": "Diese Überprüfung nutzt die bereitgestellte API von",
-                "macvendorsLink": "macvendors.com"
+                "macvendorsLink": "macvendors.com",
+                "tiInstruction": "Um die spezifische Version herauszufinden, musst du deine Toniebox öffnen und den Hauptchip der Platine (PCB) zur Identifikation verwenden.",
+                "cc3200text": "Diese Version hat die Bezeichnung CC3200R1 auf dem Hauptchip, wie auf den folgenden Bildern zu sehen.",
+                "cc3235text": "Hier findest du die Version ebenfalls auf dem Hauptchip, nämlich CC3235, wie auf den folgenden Bildern zu sehen.",
+                "espressifIntro": "Im Fall von Espressif Inc. ist es einfach, es gibt nur die ESP32-Version.",
+                "esp32text": "Die Platine und der Hauptchip der ESP32-Version sehen aus wie auf den folgenden Bildern."
             }
         },
         "boxWithoutAPIAccess": "Toniebox ohne TeddyCloud API Zugang!",

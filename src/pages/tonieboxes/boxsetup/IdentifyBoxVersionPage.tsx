@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Form, Input, Row, Typography } from "antd";
+import { Alert, Button, Col, Form, Input, Row, Typography, Image } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -11,6 +11,12 @@ import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNa
 import { CodeOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import pcb3235Image from "../../../assets/boxSetup/3235_pcb.png";
+import pcb3200Image from "../../../assets/boxSetup/3200_pcb.png";
+import chip3200Image from "../../../assets/boxSetup/cc3200.jpg";
+import chip3235Image from "../../../assets/boxSetup/cc3235.jpg";
+import pcbesp32Image from "../../../assets/boxSetup/esp32_pcb.png";
+import chipesp32Image from "../../../assets/boxSetup/esp32.jpg";
 
 const { Paragraph } = Typography;
 
@@ -98,10 +104,16 @@ export const IdentifyBoxVersionPage = () => {
                         >
                             {t("tonieboxes.boxSetup.identifyVersion.identify")}
                         </Button>
+                        <Paragraph style={{ fontSize: "small", marginTop: 16 }}>
+                            {t("tonieboxes.boxSetup.identifyVersion.macvendors")}{" "}
+                            <Link to="https://macvendors.com/" target="_blank">
+                                {t("tonieboxes.boxSetup.identifyVersion.macvendorsLink")}
+                            </Link>
+                        </Paragraph>
                     </Form>
                     {vendor ? (
                         <Alert
-                            style={{ marginTop: 32 }}
+                            style={{ marginTop: 16 }}
                             type="success"
                             description={
                                 <>
@@ -121,18 +133,69 @@ export const IdentifyBoxVersionPage = () => {
                         />
                     ) : error ? (
                         <Alert
-                            style={{ marginTop: 32 }}
+                            style={{ marginTop: 16 }}
                             type="error"
                             description={<>{t("tonieboxes.boxSetup.identifyVersion.errorMac")}</>}
                         />
                     ) : (
                         ""
                     )}
-                    <Paragraph style={{ fontSize: "small", marginTop: 16 }}>
-                        {t("tonieboxes.boxSetup.identifyVersion.macvendors")}{" "}
-                        <Link to="https://macvendors.com/" target="_blank">
-                            {t("tonieboxes.boxSetup.identifyVersion.macvendorsLink")}
-                        </Link>
+                    <Paragraph style={{ marginTop: 16 }}>
+                        {vendor ? (
+                            !vendor.includes("Espressif") ? (
+                                <>
+                                    <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.tiInstruction")}</Paragraph>
+                                    <h3>CC3200</h3>
+                                    <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.cc3200text")}</Paragraph>
+                                    <Image
+                                        src={pcb3200Image}
+                                        width={400}
+                                        style={{ maxWidth: "80%" }}
+                                        alt="PCB CC3200"
+                                    ></Image>
+                                    <Image
+                                        src={chip3200Image}
+                                        height={300}
+                                        alt="Chip CC3200"
+                                        style={{ marginTop: 16 }}
+                                    ></Image>
+                                    <h3>CC3235</h3>
+                                    <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.cc3235text")}</Paragraph>
+                                    <Image
+                                        src={pcb3235Image}
+                                        width={400}
+                                        style={{ maxWidth: "80%" }}
+                                        alt="PCB CC3235"
+                                    ></Image>
+                                    <Image
+                                        src={chip3235Image}
+                                        height={300}
+                                        alt="Chip CC3235"
+                                        style={{ marginTop: 16 }}
+                                    ></Image>
+                                </>
+                            ) : (
+                                <>
+                                    <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.espressifIntro")}</Paragraph>
+                                    <h3>ESP32</h3>
+                                    <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.esp32text")}</Paragraph>
+                                    <Image
+                                        src={pcbesp32Image}
+                                        width={400}
+                                        style={{ maxWidth: "80%" }}
+                                        alt="PCB ESP32"
+                                    ></Image>
+                                    <Image
+                                        src={chipesp32Image}
+                                        height={300}
+                                        alt="Chip ESP32"
+                                        style={{ marginTop: 16 }}
+                                    ></Image>
+                                </>
+                            )
+                        ) : (
+                            ""
+                        )}
                     </Paragraph>
                 </StyledContent>
             </StyledLayout>
