@@ -15,6 +15,8 @@ import { useAudioContext } from "../audio/AudioContext";
 import { useEffect, useState } from "react";
 import { Button, Popover, Progress, Slider, theme } from "antd";
 import { useTranslation } from "react-i18next";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
@@ -32,6 +34,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const { t } = useTranslation();
     const { songImage, songArtist, songTitle, songTracks } = useAudioContext();
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
+    const api = new TeddyCloudApi(defaultAPIConfig());
 
     const [audioPlayerDisplay, setAudioPlayerDisplay] = useState<string>("none");
     const [showAudioPlayerMinimal, setShowAudioPlayerMinimal] = useState<boolean>(false);
@@ -49,7 +52,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [volume, setVolume] = useState<number | null>(100);
     const [lastVolume, setLastVolume] = useState<number | null>(100);
     const [closePlayerPopoverOpen, setClosePlayerPopoverOpen] = useState(false);
-
+    const [confirmClose, setConfirmClose] = useState<boolean>(true);
     const [isTouching, setIsTouching] = useState<boolean>(false);
 
     useEffect(() => {
@@ -61,6 +64,15 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             }
         }
     }, [volume, globalAudio]);
+
+    useEffect(() => {
+        const fetchConfirmClose = async () => {
+            const response = await api.apiGetTeddyCloudSettingRaw("frontend.confirm_audioplayer_close");
+            const confirmClose = (await response.text()) === "true";
+            setConfirmClose(confirmClose);
+        };
+        fetchConfirmClose();
+    }, [audioPlayerDisplay]);
 
     const handleVolumeSliderChange = (value: number | [number, number]) => {
         if (Array.isArray(value)) {
@@ -189,7 +201,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     };
 
     const openClosePlayerPopOver = () => {
-        setClosePlayerPopoverOpen(true);
+        confirmClose ? setClosePlayerPopoverOpen(true) : handleClosePlayer();
     };
 
     const handlePrevTrackButton = () => {

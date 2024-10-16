@@ -1393,6 +1393,10 @@ export const FileBrowser: React.FC<{
         setFilterFieldAutoFocus(true);
     };
 
+    const handleFilterFieldInputBlur = () => {
+        setFilterFieldAutoFocus(false);
+    };
+
     // table functions
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
@@ -1925,6 +1929,7 @@ export const FileBrowser: React.FC<{
                                                 value={filterText}
                                                 onChange={handleFilterChange}
                                                 onFocus={handleFilterFieldInputFocus}
+                                                onBlur={handleFilterFieldInputBlur}
                                                 ref={inputFilterRef} // Assign ref to input element
                                                 style={{ width: "100%" }}
                                                 autoFocus={filterFieldAutoFocus}
