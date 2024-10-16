@@ -397,9 +397,9 @@
                 "macvendors": "Verificar utiliza la API proporcionada por",
                 "macvendorsLink": "macvendors.com",
                 "tiInstruction": "Para averiguar la versión específica, tienes que abrir tu Toniebox y usar el chip principal de la PCB para identificarla.",
+                "generalInstruction": "Si no puedes obtener la dirección MAC, puedes identificar la versión específica de tu Toniebox abriéndola y revisando el chip principal en la placa de circuito (PCB). Haz clic en la pestaña de cada versión para obtener más detalles.",
                 "cc3200text": "Esta versión tiene el texto CC3200R1 en el chip principal, como se muestra en las siguientes imágenes.",
                 "cc3235text": "Aquí también encontrarás la versión en el chip principal, como se muestra en las siguientes imágenes, es decir, CC3235.",
-                "espressifIntro": "En el caso de Espressif Inc., es sencillo, solo existe la versión ESP32.",
                 "esp32text": "La PCB y el chip principal de la versión ESP32 se ven como en las siguientes imágenes."
             }
         },

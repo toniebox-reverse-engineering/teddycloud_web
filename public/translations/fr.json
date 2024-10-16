@@ -396,10 +396,10 @@
                 "or": "ou",
                 "macvendors": "Vérifier utilise l'API fournie par",
                 "macvendorsLink": "macvendors.com",
+                "generalInstruction": "Si tu n'es pas en mesure de récupérer l'adresse MAC, tu peux identifier la version spécifique de ta Toniebox en l'ouvrant et en vérifiant la puce principale sur le circuit imprimé (PCB). Clique sur l'onglet de chaque version pour obtenir plus de détails.",
                 "tiInstruction": "Pour connaître la version spécifique, tu dois ouvrir ta Toniebox et utiliser la puce principale de la carte PCB pour l'identifier.",
                 "cc3200text": "Cette version a l'inscription CC3200R1 sur la puce principale, comme montré dans les images suivantes.",
                 "cc3235text": "Ici, tu trouveras aussi la version sur la puce principale, à savoir CC3235, comme montré dans les images suivantes.",
-                "espressifIntro": "Dans le cas de Espressif Inc., c'est simple, il n'y a que la version ESP32.",
                 "esp32text": "Le PCB et la puce principale de la version ESP32 ressemblent aux images suivantes."
             }
         },
