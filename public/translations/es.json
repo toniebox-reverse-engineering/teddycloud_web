@@ -386,7 +386,7 @@
                 "navigationTitle": "Versión de la Toniebox",
                 "title": "Identifica la versión de tu Toniebox",
                 "identifyUsingMac": "Identifica tu versión con la dirección MAC de tu Toniebox. Encuentras la dirección MAC en la parte inferior de tu Toniebox.",
-                "mac": "Por favor, introduce la dirección MAC:",
+                "mac": "Por favor, introduzca la dirección MAC:",
                 "identify": "Identificar",
                 "vendor": "El fabricante del chip principal de tu Toniebox es",
                 "boxVersion": "Esto significa que tu caja es una",
@@ -397,16 +397,21 @@
                 "macvendors": "Verificar utiliza la API proporcionada por",
                 "macvendorsLink": "macvendors.com",
                 "tiInstruction": "Para averiguar la versión específica, tienes que abrir tu Toniebox y usar el chip principal de la PCB para identificarla.",
-                "generalInstruction": "Si no puedes obtener la dirección MAC, puedes identificar la versión específica de tu Toniebox abriéndola y revisando el chip principal en la placa de circuito (PCB). Haz clic en la pestaña de cada versión para obtener más detalles.",
+                "generalInstruction1": "Si no puedes obtener la dirección MAC, puedes identificar la versión específica de tu Toniebox",
+                "generalInstructionLinkText": "abriéndola",
+                "generalInstruction2": "y revisando el chip principal en la placa de circuito (PCB). Haz clic en la pestaña de cada versión para obtener más detalles.",
                 "cc3200text": "Esta versión tiene el texto CC3200R1 en el chip principal, como se muestra en las siguientes imágenes.",
                 "cc3235text": "Aquí también encontrarás la versión en el chip principal, como se muestra en las siguientes imágenes, es decir, CC3235.",
-                "esp32text": "La PCB y el chip principal de la versión ESP32 se ven como en las siguientes imágenes."
+                "esp32text": "La PCB y el chip principal de la versión ESP32 se ven como en las siguientes imágenes.",
+                "proceedToFlash1": "Ve a la página de flasheo para la versión seleccionada:",
+                "proceedToFlashLinkText": "Flasheo de Caja"
             },
             "openBoxGuide": {
                 "navigationTitle": "Abre tu Toniebox",
                 "title": "Cómo abrir y acceder a la PCB de tu Toniebox",
                 "intro": "Si no sabes cómo abrir tu Toniebox para acceder a la PCB, aquí tienes dos guías útiles para ayudarte en el proceso.",
-                "link1": "https://es.ifixit.com/Gu%C3%ADa/Abrir+la+Toniebox/124139"
+                "link1": "https://es.ifixit.com/Gu%C3%ADa/Abrir+la+Toniebox/124139",
+                "linkTooltip": "Haz clic aquí para ver la guía sobre cómo abrir una Toniebox."
             }
         },
         "boxWithoutAPIAccess": "¡Toniebox sin acceso a la API de TeddyCloud!",

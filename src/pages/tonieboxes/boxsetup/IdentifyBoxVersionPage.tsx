@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme } from "antd";
+import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme, Tooltip } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -122,6 +122,12 @@ export const IdentifyBoxVersionPage = () => {
                 )}
                 indicator={{ size: (origin) => origin - 20, align: "center" }}
             />
+            <Paragraph style={{ marginTop: 16 }}>
+                {t("tonieboxes.boxSetup.identifyVersion.proceedToFlash1")}{" "}
+                <Link to={`../tonieboxes/boxsetup/${activeKey}/flashing`}>
+                    {activeKey.toUpperCase()} {t("tonieboxes.boxSetup.identifyVersion.proceedToFlashLinkText")}
+                </Link>
+            </Paragraph>
         </>
     );
 
@@ -155,7 +161,7 @@ export const IdentifyBoxVersionPage = () => {
                         <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.identifyUsingMac")} </Paragraph>
                         <Form.Item>
                             <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
-                                <Col style={{ flex: "0 0 200px", color: warningTextMac ? "#CC3010" : "unset" }}>
+                                <Col style={{ flex: "0 0 250px", color: warningTextMac ? "#CC3010" : "unset" }}>
                                     <label>{t("tonieboxes.boxSetup.identifyVersion.mac")}</label>
                                 </Col>
                                 <Col style={{ flex: "1 1 auto" }}>
@@ -242,7 +248,19 @@ export const IdentifyBoxVersionPage = () => {
                         ""
                     )}
                     <Paragraph style={{ marginTop: 16 }}>
-                        {!vendor ? t("tonieboxes.boxSetup.identifyVersion.generalInstruction") : ""}
+                        {!vendor ? (
+                            <>
+                                {t("tonieboxes.boxSetup.identifyVersion.generalInstruction1")}{" "}
+                                <Tooltip title={t("tonieboxes.boxSetup.openBoxGuide.linkTooltip")}>
+                                    <Link to="/tonieboxes/boxsetup/openboxguide">
+                                        {t("tonieboxes.boxSetup.identifyVersion.generalInstructionLinkText")}
+                                    </Link>
+                                </Tooltip>{" "}
+                                {t("tonieboxes.boxSetup.identifyVersion.generalInstruction2")}
+                            </>
+                        ) : (
+                            ""
+                        )}
                         {versionTabs}
                     </Paragraph>
                 </StyledContent>
