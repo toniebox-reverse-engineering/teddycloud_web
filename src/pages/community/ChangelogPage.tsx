@@ -35,8 +35,9 @@ export const ChangelogPage = () => {
                 "gui: Show warning if ogg/opus (taf) is not supported by browser",
                 "gui: Extended CC3200 Firmware flash section, added custom alt Url Patch generation.",
                 "gui: Extended CC3200 Firmware flash section, extended Applying Patches step",
-                "gui: Added Box version identification page (first version)",
-                "gui: integrated frontend.confirm_audioplayer_close",
+                "gui: Added Box version identification page",
+                "gui: Integrated frontend.confirm_audioplayer_close",
+                "gui: Added Open Toniebox guide page (first version)",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",
