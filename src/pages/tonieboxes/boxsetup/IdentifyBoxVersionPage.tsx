@@ -129,6 +129,7 @@ export const IdentifyBoxVersionPage = () => {
         setBoxMac("");
         setVendor(null);
         setWarningTextMac("");
+        setError(null);
     };
 
     return (

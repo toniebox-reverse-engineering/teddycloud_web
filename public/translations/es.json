@@ -401,6 +401,12 @@
                 "cc3200text": "Esta versión tiene el texto CC3200R1 en el chip principal, como se muestra en las siguientes imágenes.",
                 "cc3235text": "Aquí también encontrarás la versión en el chip principal, como se muestra en las siguientes imágenes, es decir, CC3235.",
                 "esp32text": "La PCB y el chip principal de la versión ESP32 se ven como en las siguientes imágenes."
+            },
+            "openBoxGuide": {
+                "navigationTitle": "Abre tu Toniebox",
+                "title": "Cómo abrir y acceder a la PCB de tu Toniebox",
+                "intro": "Si no sabes cómo abrir tu Toniebox para acceder a la PCB, aquí tienes dos guías útiles para ayudarte en el proceso.",
+                "link1": "https://es.ifixit.com/Gu%C3%ADa/Abrir+la+Toniebox/124139"
             }
         },
         "boxWithoutAPIAccess": "¡Toniebox sin acceso a la API de TeddyCloud!",

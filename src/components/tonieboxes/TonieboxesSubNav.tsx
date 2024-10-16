@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { MenuProps } from "antd";
 import { StyledSubMenu } from "../StyledComponents";
 import { TonieboxIcon } from "../../utils/tonieboxIcon";
-import { DeliveredProcedureOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeliveredProcedureOutlined, PlusSquareOutlined, SearchOutlined } from "@ant-design/icons";
 
 export const TonieboxesSubNav = () => {
     const { t } = useTranslation();
@@ -64,6 +64,16 @@ export const TonieboxesSubNav = () => {
             ),
             icon: React.createElement(SearchOutlined),
             title: t("tonieboxes.boxSetup.identifyVersion.navigationTitle"),
+        },
+        {
+            key: "openbox",
+            label: (
+                <Link to="/tonieboxes/boxsetup/openboxguide">
+                    {t("tonieboxes.boxSetup.openBoxGuide.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(PlusSquareOutlined),
+            title: t("tonieboxes.boxSetup.openBoxGuide.navigationTitle"),
         },
         /*
         {

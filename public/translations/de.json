@@ -401,6 +401,12 @@
                 "cc3200text": "Diese Version hat die Bezeichnung CC3200R1 auf dem Hauptchip, wie auf den folgenden Bildern zu sehen.",
                 "cc3235text": "Hier findest du die Version ebenfalls auf dem Hauptchip, nämlich CC3235, wie auf den folgenden Bildern zu sehen.",
                 "esp32text": "Die Platine und der Hauptchip der ESP32-Version sehen aus wie auf den folgenden Bildern."
+            },
+            "openBoxGuide": {
+                "navigationTitle": "Toniebox öffnen",
+                "title": "So öffnest du deine Toniebox und greifst auf die Platine zu",
+                "intro": "Falls du nicht weißt, wie du deine Toniebox öffnen kannst, um an die Platine zu gelangen, findest du hier zwei hilfreiche Anleitungen!",
+                "link1": "https://de.ifixit.com/Anleitung/Toniebox+%C3%B6ffnen/124139"
             }
         },
         "boxWithoutAPIAccess": "Toniebox ohne TeddyCloud API Zugang!",

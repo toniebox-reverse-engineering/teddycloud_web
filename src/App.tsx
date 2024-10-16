@@ -37,6 +37,7 @@ import { BoxSetupPage } from "./pages/tonieboxes/boxsetup/BoxSetupPage";
 import { IdentifyBoxVersionPage } from "./pages/tonieboxes/boxsetup/IdentifyBoxVersionPage";
 import { ESP32LegacyPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyPage";
 import { TranslationsPage } from "./pages/community/TranslationsPage";
+import { OpenBoxGuidePage } from "./pages/tonieboxes/boxsetup/OpenBoxGuidePage";
 
 function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -133,6 +134,7 @@ function App() {
                                         path="/tonieboxes/boxsetup/identifyboxversion"
                                         element={<IdentifyBoxVersionPage />}
                                     />
+                                    <Route path="/tonieboxes/boxsetup/openboxguide" element={<OpenBoxGuidePage />} />
                                     <Route
                                         path="/tonieboxes/boxsetup/esp32/flashing"
                                         element={<ESP32BoxFlashingPage />}
