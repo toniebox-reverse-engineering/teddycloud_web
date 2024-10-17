@@ -54,13 +54,13 @@ export const BoxSetupPage = () => {
                     <Paragraph>{t("tonieboxes.boxSetup.flashBoxText")}</Paragraph>
                     <ul>
                         <li>
-                            <Link to="/tonieboxes/esp32/flashing">ESP32</Link>
+                            <Link to="/tonieboxes/boxsetup/esp32/flashing">ESP32</Link>
                         </li>
                         <li>
-                            <Link to="/tonieboxes/cc3200/flashing">CC3200</Link>
+                            <Link to="/tonieboxes/boxsetup/cc3200/flashing">CC3200</Link>
                         </li>
                         <li>
-                            <Link to="/tonieboxes/cc3235/flashing">CC3235</Link>
+                            <Link to="/tonieboxes/boxsetup/cc3235/flashing">CC3235</Link>
                         </li>
                     </ul>
                 </>
