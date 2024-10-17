@@ -8,6 +8,7 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { detectColorScheme } from "../../utils/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -137,17 +138,6 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         setJsonViewerModalOpened(false);
         handleCancel();
     };
-
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
 
     const jsonViewerModal = (
         <Modal

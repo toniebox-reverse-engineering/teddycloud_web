@@ -13,3 +13,14 @@ export const supportsOggOpus = () => {
     console.log("Supports OGG/Opus:", canPlay);
     return canPlay === "probably" || canPlay === "maybe";
 };
+
+export function detectColorScheme() {
+    const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const storedTheme = localStorage.getItem("theme");
+
+    if (storedTheme === "auto") {
+        return prefersDarkMode ? "dark" : "light";
+    } else {
+        return storedTheme;
+    }
+}

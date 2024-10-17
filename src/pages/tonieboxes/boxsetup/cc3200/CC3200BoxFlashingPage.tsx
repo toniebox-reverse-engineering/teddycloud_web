@@ -17,6 +17,7 @@ import { TeddyCloudApi } from "../../../../api";
 import { TonieboxCardProps } from "../../../../components/tonieboxes/TonieboxCard";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { detectColorScheme } from "../../../../utils/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -26,17 +27,6 @@ const { Step } = Steps;
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
     version: string;
-}
-
-function detectColorScheme() {
-    const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const storedTheme = localStorage.getItem("theme");
-
-    if (storedTheme === "auto") {
-        return prefersDarkMode ? "dark" : "light";
-    } else {
-        return storedTheme;
-    }
 }
 
 export const CC3200BoxFlashingPage = () => {

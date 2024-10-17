@@ -55,6 +55,7 @@ import { FileObject } from "../../utils/types";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
+import { detectColorScheme } from "../../utils/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -262,17 +263,6 @@ export const FileBrowser: React.FC<{
     }, [path]);
 
     // general functions
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
-
     function generateUUID() {
         return ([1e7] + "-1e3-4e3-8e3-1e11").replace(/[018]/g, (c) =>
             (parseInt(c) ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (parseInt(c) / 4)))).toString(16)
