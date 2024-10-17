@@ -38,17 +38,7 @@ import { IdentifyBoxVersionPage } from "./pages/tonieboxes/boxsetup/IdentifyBoxV
 import { ESP32LegacyPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyPage";
 import { TranslationsPage } from "./pages/community/TranslationsPage";
 import { OpenBoxGuidePage } from "./pages/tonieboxes/boxsetup/OpenBoxGuidePage";
-
-function detectColorScheme() {
-    const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const storedTheme = localStorage.getItem("theme");
-
-    if (storedTheme === "auto") {
-        return prefersDarkMode ? "dark" : "light";
-    } else {
-        return storedTheme;
-    }
-}
+import { detectColorScheme } from "./utils/browserUtils";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;

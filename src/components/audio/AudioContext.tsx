@@ -43,7 +43,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
     const playAudio = (url: string, meta?: any, trackSeconds?: number[]) => {
         console.log("Play audio: " + url);
-        if (!supportsOggOpus() && url.includes("?ogg")) {
+
+        const pattern = /\/....04E0\?|(\?ogg)/;
+        const matches = pattern.test(url);
+
+        if (matches && !supportsOggOpus()) {
             Modal.error({
                 title: t("audio.errorNoOggOpusSupport"),
                 content: t("audio.errorNoOggOpusSupportByApple"),

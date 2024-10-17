@@ -6,6 +6,7 @@ import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import { detectColorScheme } from "../../utils/browserUtils";
 
 export interface FileItem {
     filepath: string;
@@ -138,17 +139,6 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     const handleJsonViewerModalClose = () => {
         setJsonViewerModalOpened(false);
     };
-
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
 
     const jsonViewerModal = (
         <Modal

@@ -10,6 +10,7 @@ import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { useEffect, useRef, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { detectColorScheme } from "../../utils/browserUtils";
 
 const { Paragraph, Text } = Typography;
 
@@ -164,17 +165,6 @@ export const RtnlPage = () => {
     const clearRtnl = () => {
         setLogEntries([]);
     };
-
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
 
     return (
         <>
