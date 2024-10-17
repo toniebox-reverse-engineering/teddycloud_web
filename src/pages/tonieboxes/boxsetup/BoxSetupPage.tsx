@@ -22,17 +22,18 @@ export const BoxSetupPage = () => {
         {
             children: (
                 <>
-                    <h5>{t("tonieboxes.boxSetup.setupTeddyCloud")}</h5>
+                    <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.setupTeddyCloud")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.setupTeddyCloudText")}</Paragraph>
                 </>
             ),
             dot: <CheckCircleOutlined />,
             color: token.colorSuccess,
+            style: { paddingBottom: 8 },
         },
         {
             children: (
                 <>
-                    <h5>{t("tonieboxes.boxSetup.identifyTonieboxVersion")}</h5>
+                    <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.identifyTonieboxVersion")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.identifyTonieboxVersionText")}</Paragraph>
                     <ul>
                         <li>
@@ -44,11 +45,12 @@ export const BoxSetupPage = () => {
                 </>
             ),
             dot: <SearchOutlined />,
+            style: { paddingBottom: 8 },
         },
         {
             children: (
                 <>
-                    <h5>{t("tonieboxes.boxSetup.flashBox")}</h5>
+                    <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.flashBox")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.flashBoxText")}</Paragraph>
                     <ul>
                         <li>
@@ -64,15 +66,17 @@ export const BoxSetupPage = () => {
                 </>
             ),
             dot: <DeliveredProcedureOutlined />,
+            style: { paddingBottom: 8 },
         },
         {
             children: (
                 <>
-                    <h5>{t("tonieboxes.boxSetup.useIt")}</h5>
+                    <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.useIt")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.useItText")}</Paragraph>
                 </>
             ),
             dot: <SmileOutlined />,
+            style: { paddingBottom: 8 },
         },
     ];
 
