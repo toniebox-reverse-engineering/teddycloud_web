@@ -34,13 +34,12 @@ export const CC3200BoxFlashingPage = () => {
     const currentLanguage = i18n.language;
     const [currentStep, setCurrent] = useState(0);
     const [content, setContent] = useState([<></>, <></>, <></>, <></>, <></>]);
-    const [disableButtons, setDisableButtons] = useState<boolean>(false);
     const [tonieboxes, setTonieboxes] = useState<TonieboxPropsWithStatusAndVersion[]>([]);
 
     const [hostname, setHostname] = useState<string>("");
     const [warningTextHostname, setWarningTextHostname] = useState<string>("");
 
-    const [isOpenAailableBoxesModal, setIsOpenAailableBoxesModal] = useState(false);
+    const [isOpenAvailableBoxesModal, setIsOpenAailableBoxesModal] = useState(false);
 
     const updateContent = (index: number, newContent: JSX.Element) => {
         setContent((prevContent) => {
@@ -586,7 +585,7 @@ export const CC3200BoxFlashingPage = () => {
     };
 
     const previousButton = (
-        <Button icon={<LeftOutlined />} disabled={disableButtons} onClick={() => prev()}>
+        <Button icon={<LeftOutlined />} onClick={() => prev()}>
             {t("tonieboxes.cc3200BoxFlashing.previous")}
         </Button>
     );
@@ -663,7 +662,7 @@ export const CC3200BoxFlashingPage = () => {
     const availableBoxesModal = (
         <Modal
             title={t("tonieboxes.cc3200BoxFlashing.availableBoxes")}
-            open={isOpenAailableBoxesModal}
+            open={isOpenAvailableBoxesModal}
             onOk={handleAvailableBoxesModalOk}
             onCancel={handleAvailableBoxesModalCancel}
         >
@@ -868,12 +867,7 @@ export const CC3200BoxFlashingPage = () => {
                                     <div></div>
                                     <div></div>
                                     <div style={{ display: "flex", gap: 8 }}>
-                                        <Button
-                                            icon={<RightOutlined />}
-                                            iconPosition="end"
-                                            disabled={disableButtons}
-                                            onClick={next}
-                                        >
+                                        <Button icon={<RightOutlined />} iconPosition="end" onClick={next}>
                                             {t("tonieboxes.cc3200BoxFlashing.proceedWithCustomBootloader")}
                                         </Button>
                                         <Button icon={<RightOutlined />} iconPosition="end" disabled={true}>
@@ -887,12 +881,7 @@ export const CC3200BoxFlashingPage = () => {
                                     {previousButton}
                                     <div></div>
                                     <div>
-                                        <Button
-                                            icon={<CheckSquareOutlined />}
-                                            disabled={disableButtons}
-                                            type="primary"
-                                            onClick={next}
-                                        >
+                                        <Button icon={<CheckSquareOutlined />} type="primary" onClick={next}>
                                             {t("tonieboxes.cc3200BoxFlashing.bootloaderInstalled")}
                                         </Button>
                                     </div>
@@ -903,12 +892,7 @@ export const CC3200BoxFlashingPage = () => {
                                     {previousButton}
                                     <div></div>
                                     <div>
-                                        <Button
-                                            icon={<CheckSquareOutlined />}
-                                            disabled={disableButtons}
-                                            type="primary"
-                                            onClick={next}
-                                        >
+                                        <Button icon={<CheckSquareOutlined />} type="primary" onClick={next}>
                                             {t("tonieboxes.cc3200BoxFlashing.certificatesDumpedCAreplacementFlashed")}
                                         </Button>
                                     </div>
@@ -920,7 +904,7 @@ export const CC3200BoxFlashingPage = () => {
                                     <div>
                                         <Button
                                             icon={<CodeOutlined />}
-                                            disabled={disableButtons || hostname.length > 12 || hostname.length === 0}
+                                            disabled={hostname.length > 12 || hostname.length === 0}
                                             type="primary"
                                             onClick={createPatch}
                                         >
@@ -928,12 +912,7 @@ export const CC3200BoxFlashingPage = () => {
                                         </Button>
                                     </div>
                                     <div>
-                                        <Button
-                                            icon={<RightOutlined />}
-                                            iconPosition="end"
-                                            disabled={disableButtons}
-                                            onClick={() => next()}
-                                        >
+                                        <Button icon={<RightOutlined />} iconPosition="end" onClick={() => next()}>
                                             {t("tonieboxes.cc3200BoxFlashing.next")}
                                         </Button>
                                     </div>
@@ -943,12 +922,7 @@ export const CC3200BoxFlashingPage = () => {
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     {previousButton}
                                     <div>
-                                        <Button
-                                            icon={<EyeOutlined />}
-                                            disabled={disableButtons}
-                                            type="primary"
-                                            onClick={checkBoxes}
-                                        >
+                                        <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
                                             {t("tonieboxes.cc3200BoxFlashing.checkBoxes")}
                                         </Button>
                                     </div>
