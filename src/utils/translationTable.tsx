@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { useTranslation } from "react-i18next";
+import { ColumnsType } from "antd/es/table";
 
 interface TranslationEntry {
     question: string;
@@ -60,6 +61,11 @@ const getValueFromKey = (obj: Translations, keyPath: string): string | undefined
     return typeof value === "string" ? value : undefined;
 };
 
+interface DataType {
+    key: string;
+    [key: string]: any;
+}
+
 const TranslationTable: React.FC = () => {
     const { t } = useTranslation();
     const [translations, setTranslations] = useState<Record<string, Translations>>({});
@@ -90,12 +96,13 @@ const TranslationTable: React.FC = () => {
 
     const allKeys = collectAllKeys(translations[baseLang]);
 
-    const columns = [
+    const columns: ColumnsType<DataType> = [
         {
             title: t("community.translations.key"),
             dataIndex: "key",
             key: "key",
-            width: "20%",
+            width: "30%",
+            fixed: "left",
             render: (text: string) => <div style={{ wordWrap: "break-word", wordBreak: "break-all" }}>{text}</div>,
         },
         ...languages.map((lang) => ({
@@ -120,6 +127,7 @@ const TranslationTable: React.FC = () => {
             <Table
                 size="small"
                 columns={columns}
+                scroll={{ x: "100%" }}
                 dataSource={dataSource}
                 rowKey="key"
                 pagination={false} // Disable pagination for simplicity
