@@ -555,7 +555,7 @@
             "certificatesIntro": "Beim ersten Start wird TeddyCloud das CA und die Zertifikate mit dem Startdatum 2015-11-03 generieren. Diese werden unter /certs/server/ abgelegt. Dabei wird auch der Ersatz-CA für die Toniebox unter certs/server/ca.der erzeugt.",
             "dumpCertificatesIntro1": "Du benötigst die flash:/cert/ca.der (Boxine CA), flash:/cert/client.der (Client-Zertifikat) und flash:/cert/private.der (Client-Privatschlüssel). Lege diese Dateien unter /certs/client/* ab. Du kannst die Box entweder mit dem Akku betreiben (achte darauf, dass er nicht leer ist) oder mit dem Netzteil (empfohlen).",
             "dumpCertificatesIntro2": "Behalte eine Sicherungskopie der Zertifikate, besonders der client.der und private.der. Ohne diese kannst du dich nicht mehr mit der Cloud verbinden!",
-            "dumpCertificatesCC3235": "Du musst sie manuell aus dem Flash des Toniebox-Chips mit einer SOP8-Klammer direkt aus dem Speicher oder durch Auslöten extrahieren. Das Lesen im eingebauten Zustand kann schwierig sein, ist aber möglich. Ich empfehle Flashrom als Tool dafür. Es könnte notwendig sein, eine neuere Version davon zu verwenden.",
+            "dumpCertificatesCC3235": "Du musst sie manuell aus dem Flash des Toniebox-Chips mit einer SOP8-Klammer direkt aus dem Speicher oder durch Auslöten extrahieren. Das Lesen im eingebauten Zustand kann schwierig sein, ist aber möglich. Wir empfehlen Flashrom als Tool dafür. Es könnte notwendig sein, eine neuere Version davon zu verwenden.",
             "readingFlashPico": "Flash mit Pico lesen",
             "readingFlashPicoText1": "Als Probe kannst du einen Raspberry Pi Pico mit dem Serprog-Protokoll-Firmware verwenden.",
             "installSerprogFirmware": "Serprog-Firmware installieren",
