@@ -900,5 +900,10 @@
             "title": "Tonies"
         },
         "unsetTonie": "Tonie/Tag"
+    },
+    "utils": {
+        "copied": "Kopiert!",
+        "copyToClipboard": "In die Zwischenablage kopieren",
+        "failedToCopied": "Kopieren fehlgeschlagen!"
     }
 }

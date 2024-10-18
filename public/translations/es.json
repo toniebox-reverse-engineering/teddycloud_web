@@ -900,5 +900,10 @@
             "title": "Tonies"
         },
         "unsetTonie": "Tonie/Etiqueta"
+    },
+    "utils": {
+        "copied": "¡Copiado!",
+        "copyToClipboard": "Copiar al portapapeles",
+        "failedToCopied": "¡Error al copiar!"
     }
 }
