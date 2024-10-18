@@ -3,7 +3,21 @@ import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../../../i18n";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Collapse, Divider, Form, Input, message, Progress, Row, Steps, Typography } from "antd";
+import {
+    Alert,
+    Button,
+    Col,
+    Collapse,
+    Divider,
+    Form,
+    Input,
+    Image,
+    message,
+    Progress,
+    Row,
+    Steps,
+    Typography,
+} from "antd";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import BreadcrumbWrapper, {
@@ -27,6 +41,8 @@ import {
 } from "@ant-design/icons";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
 import { Link } from "react-router-dom";
+import tbEsp32Uart from "../../../../assets/boxSetup/tb-esp32-uart.png";
+import tbEsp32UartClamp from "../../../../assets/boxSetup/tb-esp32-uart-clamp.png";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -1013,6 +1029,62 @@ export const ESP32BoxFlashingPage = () => {
                     <Paragraph style={{ marginTop: 16 }}>
                         {t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}
                     </Paragraph>
+                    <Collapse
+                        size="small"
+                        items={[
+                            {
+                                key: "1",
+                                label: t("tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.collapseTitle"),
+                                children: (
+                                    <>
+                                        <Paragraph
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "flex-start",
+                                                justifyContent: "center",
+                                            }}
+                                        >
+                                            <div style={{ display: "inline-block", margin: "0 20px" }}>
+                                                <Image
+                                                    src={tbEsp32Uart}
+                                                    width={200}
+                                                    alt={t(
+                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
+                                                    )}
+                                                />
+                                                <p style={{ marginTop: 8 }}>
+                                                    {t(
+                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
+                                                    )}
+                                                </p>
+                                            </div>
+                                            <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
+                                                <Image
+                                                    src={tbEsp32UartClamp}
+                                                    width={200}
+                                                    alt={t(
+                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
+                                                    )}
+                                                />
+                                                <p style={{ marginTop: 8 }}>
+                                                    {t(
+                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </Paragraph>
+                                        <Paragraph>
+                                            <i>
+                                                {t(
+                                                    "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp4PinHint"
+                                                )}
+                                            </i>
+                                        </Paragraph>
+                                    </>
+                                ),
+                            },
+                        ]}
+                    />
                 </>
             )}
             {stepStatusText}

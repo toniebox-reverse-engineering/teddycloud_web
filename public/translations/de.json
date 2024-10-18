@@ -633,7 +633,13 @@
                 "wifiSSID": "WiFi SSID:",
                 "wifiSettings": "WiFi Daten (optional)",
                 "writingFinished": "Schreiben abgeschlossen",
-                "writingFlash": "Schreibe {{size}} MiB Flash..."
+                "writingFlash": "Schreibe {{size}} MiB Flash...",
+                "j103clampCollapse": {
+                    "collapseTitle": "Verbinde UART mit der Toniebox J103 mithilfe einer Klemme",
+                    "esp32UartJ103": "ESP32 J103",
+                    "esp32UartJ103Clamp": "ESP32 J103 mit 4-Pin-Klemme",
+                    "esp32UartJ103Clamp4PinHint": "Wenn du nur eine 4-Pin-Klemme statt der benötigten 3-Pin-Klemme hast (wie oben gezeigt), sitzt sie möglicherweise nicht perfekt. Versuche, die Pins so zentral wie möglich auf den Kontakten zu platzieren."
+                }
             },
             "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird und du einen Browser nutzt, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge. Wenn du deine ESP32 Toniebox flashen willst, dann klicke bitte auf \"Weiter zu HTTPS\", du wirst dann automatisch auf die HTTPS Version weitergeleitet. Es kann sein, dass dein Browser meldet, dass die Verbindung nicht sicher ist. Dies ist ok, bestätige es und öffne die Seite dennoch. Eventuell musst du dafür weitere Details bei der Meldung anzeigen.",
             "hintWiki": "Falls du keinen WebSerial fähigen Browser nutzen möchtest, hier findest du eine Schritt-für-Schritt-Anleitung:",

@@ -633,7 +633,13 @@
                 "wifiSSID": "SSID WiFi:",
                 "wifiSettings": "Données WiFi (optionnel):",
                 "writingFinished": "Écriture terminée",
-                "writingFlash": "Écriture de {{size}} MiB de mémoire flash..."
+                "writingFlash": "Écriture de {{size}} MiB de mémoire flash...",
+                "j103clampCollapse": {
+                    "collapseTitle": "Connecte l'UART à la Toniebox J103 avec une pince",
+                    "esp32UartJ103": "ESP32 J103",
+                    "esp32UartJ103Clamp": "ESP32 J103 avec une pince 4 broches",
+                    "esp32UartJ103Clamp4PinHint": "Si tu n'as qu'une pince à 4 broches au lieu de la pince à 3 broches nécessaire (comme illustré ci-dessus), elle ne sera pas parfaitement alignée. Essaie de placer les broches aussi centré que possible sur les contacts."
+                }
             },
             "hint": "Cette section est uniquement disponible si vous utilisez HTTPS et un navigateur compatible avec l'API Web Serial, comme Chrome ou Edge. Si vous souhaitez flasher votre ESP32 Toniebox, cliquez sur \"Continuer vers HTTPS\", vous serez alors automatiquement redirigé vers la version HTTPS. Il est possible que votre navigateur indique que la connexion n'est pas sécurisée. C'est normal, confirmez-le et ouvrez la page quand même. Vous devrez peut-être afficher plus de détails dans l’avertissement.",
             "hintWiki": "Si vous ne souhaitez pas utiliser un navigateur qui prend en charge WebSerial, vous trouverez ici un guide étape par étape :",
