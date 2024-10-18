@@ -83,6 +83,15 @@ export const CC3200BoxFlashingPage = () => {
                 description={t("tonieboxes.hintLatestFirmware")}
                 style={{ marginBottom: 16 }}
             ></Alert>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.preparationText")}{" "}
+                <Link
+                    to="https://support.tonies.com/hc/en-us/articles/4415294030482-How-do-I-set-up-a-Wi-Fi-connection-without-the-setup-assistant"
+                    target="_blank"
+                >
+                    {t("tonieboxes.cc3235BoxFlashing.preparationTextLink")}
+                </Link>
+            </Paragraph>
             <h4>{t("tonieboxes.cc3200BoxFlashing.installCC3200tool")}</h4>
             <Link
                 to="https://github.com/toniebox-reverse-engineering/cc3200tool?tab=readme-ov-file#installation"
@@ -115,7 +124,10 @@ export const CC3200BoxFlashingPage = () => {
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.cc3200BoxFlashing.certificates")}</h3>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.certificatesIntro")}</Paragraph>
             <h4>{t("tonieboxes.cc3200BoxFlashing.dumpCertificates")}</h4>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesIntro1")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesIntro2")}</Paragraph>
             <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/" target="_blank">
                 {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
             </Link>
