@@ -38,8 +38,6 @@ import {
     TruckOutlined,
 } from "@ant-design/icons";
 import { humanFileSize } from "../../utils/humanFileSize";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { TonieInfo } from "../tonies/TonieCard";
 import ConfirmationDialog from "./ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
@@ -55,7 +53,7 @@ import { FileObject } from "../../utils/types";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
-import { detectColorScheme } from "../../utils/browserUtils";
+import CodeSnippet from "../../utils/codeSnippet";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -431,27 +429,12 @@ export const FileBrowser: React.FC<{
         <Modal
             className="json-viewer"
             footer={jsonViewerModalFooter}
-            width={700}
+            width={800}
             title={"File: " + currentFile}
             open={isJsonViewerModalOpen}
             onCancel={closeJsonViewer}
         >
-            {jsonData ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {JSON.stringify(jsonData, null, 2)}
-                </SyntaxHighlighter>
-            ) : (
-                "Loading..."
-            )}
+            {jsonData ? <CodeSnippet language="json" code={JSON.stringify(jsonData, null, 2)} /> : "Loading..."}
         </Modal>
     );
 
@@ -480,20 +463,10 @@ export const FileBrowser: React.FC<{
             title={t("tonies.tafHeaderOf") + currentFile}
             open={isTafHeaderModalOpen}
             onCancel={closeTafHeader}
+            width={700}
         >
             {currentRecordTafHeader ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {JSON.stringify(currentRecordTafHeader, null, 2)}
-                </SyntaxHighlighter>
+                <CodeSnippet language="json" code={JSON.stringify(currentRecordTafHeader, null, 2)} />
             ) : (
                 "Loading..."
             )}

@@ -16,8 +16,7 @@ import i18n from "../../../../i18n";
 import { CheckSquareOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import CodeSnippet from "../../../../utils/codeSnippet";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -112,71 +111,35 @@ export const CC3235BoxFlashingPage = () => {
             <h5>{t("tonieboxes.cc3235BoxFlashing.readingFlashPico")}</h5>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.readingFlashPicoText1")}</Paragraph>
             <Paragraph>
-                <SyntaxHighlighter
+                <CodeSnippet
                     language="shell"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                    wrapLines={true}
-                    lineProps={{ style: { whiteSpace: "pre-wrap" } }}
-                >
-                    {`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.bin --progress`}
-                </SyntaxHighlighter>
+                    code={`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.bin --progress`}
+                />
             </Paragraph>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.readingFlashPicoText2")}</Paragraph>
             <Paragraph>
-                <SyntaxHighlighter
+                <CodeSnippet
                     language="shell"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                    wrapLines={true}
-                    lineProps={{ style: { whiteSpace: "pre-wrap" } }}
-                >
-                    {`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.2.bin --progress diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
-                </SyntaxHighlighter>
+                    code={`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.2.bin --progress diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
+                />
             </Paragraph>
             <h5>{t("tonieboxes.cc3235BoxFlashing.extractCertificates")}</h5>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.useCC3200ToolToExtract")}</Paragraph>
             <Paragraph>
-                <SyntaxHighlighter
+                <CodeSnippet
                     language="shell"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                    wrapLines={true}
-                    lineProps={{ style: { whiteSpace: "pre-wrap" } }}
-                >
-                    {`cc3200tool -if cc32xx-flash.bin -d cc32xx read_all_files extract/`}
-                </SyntaxHighlighter>
+                    code={`cc3200tool -if cc32xx-flash.bin -d cc32xx read_all_files extract/`}
+                />
             </Paragraph>
             <h4>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacement")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacementText1")}</Paragraph>
 
             <Paragraph>
-                <SyntaxHighlighter
+                <CodeSnippet
                     language="shell"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                    wrapLines={true}
-                    lineProps={{ style: { whiteSpace: "pre-wrap" } }}
-                >
-                    {`cc3200tool -if cc32xx-flash.bin -of cc32xx-flash.customca.bin -d cc32xx write_file customca.der /cert/ca.der
+                    code={`cc3200tool -if cc32xx-flash.bin -of cc32xx-flash.customca.bin -d cc32xx write_file customca.der /cert/ca.der
 flashrom -p serprog:dev=/dev/ttyACM0:921600 -w cc32xx-flash.bin --progress`}
-                </SyntaxHighlighter>
+                />
             </Paragraph>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacementText2")}</Paragraph>
         </>
@@ -197,18 +160,9 @@ flashrom -p serprog:dev=/dev/ttyACM0:921600 -w cc32xx-flash.bin --progress`}
             />
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dnsText2")}</Paragraph>
             <Paragraph>
-                <SyntaxHighlighter
+                <CodeSnippet
                     language="shell"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                    wrapLines={true}
-                    lineProps={{ style: { whiteSpace: "pre-wrap" } }}
-                >
-                    {`uci set dhcp.teddycloud="tag"
+                    code={`uci set dhcp.teddycloud="tag"
 uci set dhcp.teddycloud.dhcp_option="3,1.2.3.4" # 1.2.3.4=teddycloud ip
 
 uci add dhcp host
@@ -218,7 +172,7 @@ uci set dhcp.@host[-1].ip="1.2.3.101" # toniebox_1 ip
 uci set dhcp.@host[-1].tag="teddycloud"
 uci commit dhcp
 /etc/init.d/dnsmasq restart`}
-                </SyntaxHighlighter>
+                />
             </Paragraph>
         </>
     );

@@ -15,9 +15,8 @@ import i18n from "../../../../i18n";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../../api";
 import { TonieboxCardProps } from "../../../../components/tonieboxes/TonieboxCard";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { detectColorScheme } from "../../../../utils/browserUtils";
+import CodeSnippet from "../../../../utils/codeSnippet";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -542,18 +541,7 @@ export const CC3200BoxFlashingPage = () => {
                         ),
                         children: (
                             <Paragraph>
-                                <SyntaxHighlighter
-                                    language="json"
-                                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                                    customStyle={{
-                                        padding: 0,
-                                        borderRadius: 0,
-                                        margin: 0,
-                                        border: "none",
-                                    }}
-                                >
-                                    {JSON.stringify(exampleNgCfgJson, null, 2)}
-                                </SyntaxHighlighter>
+                                <CodeSnippet language="shell" code={JSON.stringify(exampleNgCfgJson, null, 2)} />
                             </Paragraph>
                         ),
                     },

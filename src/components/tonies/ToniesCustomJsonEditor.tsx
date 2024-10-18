@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, Button, Col, Row, message, Tooltip, Alert } from "antd";
 import { TonieCardProps } from "./TonieCard";
 import { useTranslation } from "react-i18next";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { detectColorScheme } from "../../utils/browserUtils";
+import CodeSnippet from "../../utils/codeSnippet";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -142,40 +140,21 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     const jsonViewerModal = (
         <Modal
             footer={jsonViewerModalFooter}
-            width={700}
+            width={1000}
             title={"File (you can copy the content to the tonies.custom.json)"}
             open={jsonViewerModalOpened}
             onCancel={handleJsonViewerModalClose}
         >
             {jsonData ? (
                 <>
-                    <SyntaxHighlighter
-                        key="json-readable"
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(jsonData, null, 2)}
-                    </SyntaxHighlighter>
+                    <CodeSnippet key="json-readable" language="json" code={JSON.stringify(jsonData, null, 2)} />
                     <div style={{ margin: "16px 0 8px 0" }}>Minimized json:</div>
-                    <SyntaxHighlighter
+                    <CodeSnippet
                         key="json-minimized"
                         language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(jsonData, null, 0)}
-                    </SyntaxHighlighter>
+                        showLineNumbers={false}
+                        code={JSON.stringify(jsonData, null, 0)}
+                    />
                 </>
             ) : (
                 "Loading..."
