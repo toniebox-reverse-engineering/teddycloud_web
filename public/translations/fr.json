@@ -635,7 +635,7 @@
                 "writingFinished": "Écriture terminée",
                 "writingFlash": "Écriture de {{size}} MiB de mémoire flash...",
                 "j103clampCollapse": {
-                    "collapseTitle": "Connecte l'UART à la Toniebox J103 avec une pince",
+                    "collapseTitle": "Aide: ESP32 J103 & Connecte l'UART à la ESP32 J103 avec une pince",
                     "esp32UartJ103": "ESP32 J103",
                     "esp32UartJ103Clamp": "ESP32 J103 avec une pince 4 broches",
                     "esp32UartJ103Clamp4PinHint": "Si tu n'as qu'une pince à 4 broches au lieu de la pince à 3 broches nécessaire (comme illustré ci-dessus), elle ne sera pas parfaitement alignée. Essaie de placer les broches aussi centré que possible sur les contacts."

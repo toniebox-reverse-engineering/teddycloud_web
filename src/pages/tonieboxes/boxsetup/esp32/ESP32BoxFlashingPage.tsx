@@ -1031,6 +1031,7 @@ export const ESP32BoxFlashingPage = () => {
                     </Paragraph>
                     <Collapse
                         size="small"
+                        style={{ marginBottom: 16 }}
                         items={[
                             {
                                 key: "1",
