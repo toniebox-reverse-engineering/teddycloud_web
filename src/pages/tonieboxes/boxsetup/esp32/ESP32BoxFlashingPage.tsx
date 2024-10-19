@@ -1046,48 +1046,52 @@ export const ESP32BoxFlashingPage = () => {
                                                 justifyContent: "center",
                                             }}
                                         >
-                                            <div style={{ display: "inline-block", margin: "0 20px" }}>
-                                                <Image
-                                                    src={tbEsp32Uart}
-                                                    height={200}
-                                                    alt={t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
-                                                    )}
-                                                />
-                                                <p style={{ marginTop: 8 }}>
-                                                    {t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
-                                                    )}
-                                                </p>
-                                            </div>
-                                            <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
-                                                <Image
-                                                    src={tbEsp32UartClamp}
-                                                    height={200}
-                                                    alt={t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
-                                                    )}
-                                                />
-                                                <p style={{ marginTop: 8 }}>
-                                                    {t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
-                                                    )}
-                                                </p>
-                                            </div>
-                                            <div style={{ display: "inline-block", margin: "0 20px" }}>
-                                                <Image
-                                                    src={tbEsp32UartAnalogClamp}
-                                                    height={200}
-                                                    alt={t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103AnalogClamp"
-                                                    )}
-                                                />
-                                                <p style={{ marginTop: 8 }}>
-                                                    {t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103AnalogClamp"
-                                                    )}
-                                                </p>
-                                            </div>
+                                            <Image.PreviewGroup>
+                                                <div style={{ display: "inline-block", margin: "0 20px" }}>
+                                                    <Image
+                                                        src={tbEsp32Uart}
+                                                        height={200}
+                                                        alt={t(
+                                                            "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
+                                                        )}
+                                                    />
+                                                    <p style={{ marginTop: 8 }}>
+                                                        {t(
+                                                            "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
+                                                        )}
+                                                    </p>
+                                                </div>
+                                                <div
+                                                    style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}
+                                                >
+                                                    <Image
+                                                        src={tbEsp32UartClamp}
+                                                        height={200}
+                                                        alt={t(
+                                                            "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
+                                                        )}
+                                                    />
+                                                    <p style={{ marginTop: 8 }}>
+                                                        {t(
+                                                            "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
+                                                        )}
+                                                    </p>
+                                                </div>
+                                                <div style={{ display: "inline-block", margin: "0 20px" }}>
+                                                    <Image
+                                                        src={tbEsp32UartAnalogClamp}
+                                                        height={200}
+                                                        alt={t(
+                                                            "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103AnalogClamp"
+                                                        )}
+                                                    />
+                                                    <p style={{ marginTop: 8 }}>
+                                                        {t(
+                                                            "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103AnalogClamp"
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </Image.PreviewGroup>
                                         </Paragraph>
                                         <Paragraph>
                                             <i>

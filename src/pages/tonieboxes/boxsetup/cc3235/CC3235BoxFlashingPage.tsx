@@ -127,28 +127,32 @@ export const CC3235BoxFlashingPage = () => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <div style={{ display: "inline-block", margin: "0 20px" }}>
-                                        <Image
-                                            src={cc3235Flash}
-                                            height={200}
-                                            alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
-                                        />
-                                        <p style={{ marginTop: 8 }}>
-                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
-                                        </p>
-                                    </div>
-                                    <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
-                                        <Image
-                                            src={cc3235SMDGrippers}
-                                            height={200}
-                                            alt={t(
-                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers"
-                                            )}
-                                        />
-                                        <p style={{ marginTop: 8 }}>
-                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers")}
-                                        </p>
-                                    </div>
+                                    <Image.PreviewGroup>
+                                        <div style={{ display: "inline-block", margin: "0 20px" }}>
+                                            <Image
+                                                src={cc3235Flash}
+                                                height={200}
+                                                alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
+                                            />
+                                            <p style={{ marginTop: 8 }}>
+                                                {t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
+                                            </p>
+                                        </div>
+                                        <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
+                                            <Image
+                                                src={cc3235SMDGrippers}
+                                                height={200}
+                                                alt={t(
+                                                    "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers"
+                                                )}
+                                            />
+                                            <p style={{ marginTop: 8 }}>
+                                                {t(
+                                                    "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers"
+                                                )}
+                                            </p>
+                                        </div>
+                                    </Image.PreviewGroup>
                                 </Paragraph>
                             </>
                         ),
