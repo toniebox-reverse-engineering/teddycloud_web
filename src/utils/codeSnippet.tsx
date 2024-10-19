@@ -22,23 +22,24 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
-        setIsSecureContext(false); //window.isSecureContext);
+        setIsSecureContext(window.isSecureContext);
     }, []);
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(code).then(() => {
             setCopySuccess(t("utils.copied"));
-            setTimeout(() => setCopySuccess(""), 2000); // Reset after 2 seconds
+            setTimeout(() => setCopySuccess(""), 2000);
         });
     };
 
+    // fall back in unsecure context as navigator.clipboard is only available in secure context
     const copyToClipboardFallback = () => {
         if (textAreaRef.current) {
-            textAreaRef.current.select(); // Select the text
+            textAreaRef.current.select();
             try {
-                document.execCommand("copy"); // Attempt to copy the selected text
+                document.execCommand("copy");
                 setCopySuccess(t("utils.copied"));
-                setTimeout(() => setCopySuccess(""), 2000); // Reset after 2 seconds
+                setTimeout(() => setCopySuccess(""), 2000);
             } catch (err) {
                 setCopySuccess(t("utils.failedToCopied"));
             }
@@ -88,10 +89,9 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
                             border: "none",
                             background: "transparent",
                             cursor: "pointer",
-                            fontSize: "1.2rem",
                         }}
                     >
-                        <CopyOutlined />
+                        <CopyOutlined style={{ color: token.colorText }} />
                     </button>
                 </Tooltip>
             )}
@@ -104,6 +104,7 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
                         border: "none",
                         background: "transparent",
                         color: token.colorSuccess,
+                        fontSize: "small",
                     }}
                 >
                     <CheckOutlined /> {copySuccess}
