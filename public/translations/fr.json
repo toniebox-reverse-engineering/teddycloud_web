@@ -568,7 +568,12 @@
             "dnsText1": "Configure les entrées DNS pour prod.de.tbs.toys et rtnl.bxcl.de sur l'adresse IP des serveurs TeddyCloud.",
             "dnsBeware": "Attention!",
             "dnsBewareText": "Cela coupera la connexion de toutes les Tonieboxes dans ton réseau qui ne sont pas patchées avec ta CA de remplacement !",
-            "dnsText2": "Comme alternative, tu peux définir la passerelle pour les Tonieboxes sur l'IP de TeddyCloud. Avec OpenWRT, cela fonctionne ainsi:"
+            "dnsText2": "Comme alternative, tu peux définir la passerelle pour les Tonieboxes sur l'IP de TeddyCloud. Avec OpenWRT, cela fonctionne ainsi:",
+            "flashCollapse": {
+                "collapseTitle": "Aide : Flash du firmware du CC3235",
+                "cc3235flash": "Flash avec des broches",
+                "cc3235flashWithSMDGrippers": "Flash avec pinces SMD connectées"
+            }
         },
         "confirmDeleteDialog": "Voulez-vous vraiment supprimer {{tonieboxToDelete}}?",
         "confirmDeleteModal": "Confirmer la suppression",
@@ -678,6 +683,7 @@
                     "collapseTitle": "Aide: ESP32 J103 & Connecte l'UART à la ESP32 J103 avec une pince",
                     "esp32UartJ103": "ESP32 J103",
                     "esp32UartJ103Clamp": "ESP32 J103 avec une pince 4 broches",
+                    "esp32UartJ103AnalogClamp": "ESP32 J103 avec une pince à linge",
                     "esp32UartJ103Clamp4PinHint": "Si tu n'as qu'une pince à 4 broches au lieu de la pince à 3 broches nécessaire (comme illustré ci-dessus), elle ne sera pas parfaitement alignée. Essaie de placer les broches aussi centré que possible sur les contacts."
                 }
             },

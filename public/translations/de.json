@@ -568,7 +568,12 @@
             "dnsText1": "Setze die DNS-Einträge für prod.de.tbs.toys und rtnl.bxcl.de auf die IP-Adresse des TeddyCloud-Servers.",
             "dnsBeware": "Achtung!",
             "dnsBewareText": "Dies wird die Verbindung aller Tonieboxen in deinem Netzwerk unterbrechen, die nicht mit deiner Ersatz-CA gepatcht wurden!",
-            "dnsText2": "Alternativ kannst du das Gateway für die Tonieboxen auf die IP von TeddyCloud setzen. Mit OpenWRT funktioniert es so:"
+            "dnsText2": "Alternativ kannst du das Gateway für die Tonieboxen auf die IP von TeddyCloud setzen. Mit OpenWRT funktioniert es so:",
+            "flashCollapse": {
+                "collapseTitle": "Hilfe: Firmware-Flash des CC3235",
+                "cc3235flash": "Flash mit Pins",
+                "cc3235flashWithSMDGrippers": "Flash mit verbundenen SMD-Klammern"
+            }
         },
         "confirmDeleteDialog": "Möchtest du die Toniebox {{tonieboxToDelete}} wirklich löschen?",
         "confirmDeleteModal": "Bestätige Löschvorgang",
@@ -678,6 +683,7 @@
                     "collapseTitle": "Hilfe: ESP J103 & Verbinde UART mit ESP32 J103 mithilfe einer Klemme",
                     "esp32UartJ103": "ESP32 J103",
                     "esp32UartJ103Clamp": "ESP32 J103 mit 4-Pin-Klemme",
+                    "esp32UartJ103AnalogClamp": "ESP32 J103 mit Wäscheklammer-Klemme",
                     "esp32UartJ103Clamp4PinHint": "Wenn du nur eine 4-Pin-Klemme statt der benötigten 3-Pin-Klemme hast (wie oben gezeigt), sitzt sie möglicherweise nicht perfekt. Versuche, die Pins so zentral wie möglich auf den Kontakten zu platzieren."
                 }
             },

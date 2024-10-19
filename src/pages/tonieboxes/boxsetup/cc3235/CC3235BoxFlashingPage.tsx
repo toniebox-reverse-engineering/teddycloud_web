@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Divider, Modal, Steps, Table, Typography } from "antd";
+import { Alert, Button, Collapse, Divider, Image, Modal, Steps, Table, Typography } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -17,6 +17,9 @@ import { CheckSquareOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import CodeSnippet from "../../../../utils/codeSnippet";
+
+import cc3235Flash from "../../../../assets/boxSetup/cc3235_flash.jpg";
+import cc3235SMDGrippers from "../../../../assets/boxSetup/cc3235_smd_grippers.jpg";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -108,6 +111,50 @@ export const CC3235BoxFlashingPage = () => {
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesIntro2")}</Paragraph>
             <h4>CC3235</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesCC3235")}</Paragraph>
+            <Collapse
+                size="small"
+                style={{ marginBottom: 16 }}
+                items={[
+                    {
+                        key: "1",
+                        label: t("tonieboxes.cc3235BoxFlashing.flashCollapse.collapseTitle"),
+                        children: (
+                            <>
+                                <Paragraph
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <div style={{ display: "inline-block", margin: "0 20px" }}>
+                                        <Image
+                                            src={cc3235Flash}
+                                            height={200}
+                                            alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
+                                        />
+                                        <p style={{ marginTop: 8 }}>
+                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
+                                        </p>
+                                    </div>
+                                    <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
+                                        <Image
+                                            src={cc3235SMDGrippers}
+                                            height={200}
+                                            alt={t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers"
+                                            )}
+                                        />
+                                        <p style={{ marginTop: 8 }}>
+                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers")}
+                                        </p>
+                                    </div>
+                                </Paragraph>
+                            </>
+                        ),
+                    },
+                ]}
+            />
             <h5>{t("tonieboxes.cc3235BoxFlashing.readingFlashPico")}</h5>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.readingFlashPicoText1")}</Paragraph>
             <Paragraph>
