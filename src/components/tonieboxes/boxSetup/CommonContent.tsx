@@ -1,4 +1,4 @@
-import { Alert, Image, Modal, Table, Typography } from "antd";
+import { Alert, Button, Image, Modal, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import CodeSnippet from "../../../utils/codeSnippet";
 
@@ -125,12 +125,12 @@ uci commit dhcp
 const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, isOpen, onClose }) => {
     const { t } = useTranslation();
     const [tonieboxes, setTonieboxes] = useState<TonieboxPropsWithStatusAndVersion[]>([]);
-
+    const [recheckTonieboxes, setRecheckTonieboxes] = useState<boolean>(false);
     useEffect(() => {
         if (isOpen) {
             fetchTonieboxes();
         }
-    }, [isOpen]);
+    }, [isOpen, recheckTonieboxes]);
 
     const fetchTonieboxes = async () => {
         const tonieboxData = await api.apiGetTonieboxesIndex();
@@ -175,12 +175,27 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
         },
     ];
 
+    const availableBoxesFooter = (
+        <Paragraph style={{ display: "flex", gap: 8, alignContent: "flex-end", justifyContent: "wrap" }}>
+            <Button onClick={() => setRecheckTonieboxes((prev) => !prev)}>
+                {" "}
+                {t("tonieboxes.availableBoxModal.recheck")}
+            </Button>
+            <Button onClick={onClose}> {t("tonieboxes.availableBoxModal.cancel")}</Button>
+            <Button type="primary" onClick={onClose}>
+                {" "}
+                {t("tonieboxes.availableBoxModal.ok")}
+            </Button>
+        </Paragraph>
+    );
+
     return (
         <Modal
             title={t("tonieboxes.availableBoxModal.availableBoxes", { boxVersion: boxVersion })}
             open={isOpen}
             onOk={onClose}
             onCancel={onClose}
+            footer={availableBoxesFooter}
         >
             <Paragraph>
                 <Paragraph>

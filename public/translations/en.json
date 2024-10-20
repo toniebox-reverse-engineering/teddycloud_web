@@ -749,7 +749,10 @@
             "availableBoxes": "Available Toniebox(es) (only {{boxVersion}} Tonieboxes)",
             "newBoxAvailable": "Please check if the new box appears in the table below. If it is not listed, something may have gone wrong. Ensure you have enabled the setting \"Add new boxes\", the box is visible in your Wi-Fi, that the replacement CA has been flashed{{cc3200Hint}} and that the correct IP/URL for TeddyCloud is being used. If the box still does not appear, check here:",
             "cc3200Hint": ", that you are booting the correct firmware slot, that all necessary patches are set",
-            "troubleShooting": "Troubleshooting"
+            "troubleShooting": "Troubleshooting",
+            "ok": "OK",
+            "cancel": "Cancel",
+            "recheck": "Recheck"
         },
         "connectESP32Modal": {
             "connectESP32Text1": "Please connect the jumper J100 (Boot) and reset the box to put it into the required UARTmode. Connect your 3.3V UART to J103 (TxD, RxD, GND).",

@@ -749,7 +749,10 @@
             "availableBoxes": "Toniebox(es) disponibles (solo {{boxVersion}} Tonieboxes)",
             "newBoxAvailable": "Por favor, verifica si la nueva caja aparece en la tabla a continuación. Si no está listada, algo puede haber salido mal. Asegúrate has activado la configuración \"Add new boxes\", de que la caja sea visible en tu Wi-Fi, de que el CA de reemplazo haya sido flasheado{{cc3200Hint}} y de que se esté utilizando la IP/URL correcta para TeddyCloud. Si la caja aún no aparece, verifica aquí:",
             "cc3200Hint": ", de que estés iniciando la ranura de firmware correcta, de que todos los parches necesarios estén configurados",
-            "troubleShooting": "Resolución de problemas"
+            "troubleShooting": "Resolución de problemas",
+            "ok": "Aceptar",
+            "cancel": "Cancelar",
+            "recheck": "Revisar"
         },
         "connectESP32Modal": {
             "connectESP32Text1": "Por favor, conecta el jumper J100 (Boot) y reinicia la caja para ponerla en el modo UART requerido. Conecta tu UART de 3.3V a J103 (TxD, RxD, GND).",
