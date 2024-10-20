@@ -637,7 +637,7 @@
                 "hintPatchFlash": "To apply the selected/read flash with your TeddyCloud CA certificate and possibly make other adjustments like the TeddyCloud hostname and/or WiFi credentials, click 'Patch' after entering the information or proceed to the next step without patching.",
                 "hintPatchHost": "Enter the desired hostname for your TeddyCloud instance.",
                 "hintPatchWifi": "Optionally enter the WiFi credentials for your Toniebox.",
-                "hintReadESP32ImportFlash": "Now disconnect the Powersource of your Toniebox. Make sure that the UART operates in 3.3V mode. Connect your UART with your PC and Toniebox (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND). Short cut the J100 pinholes. Click on \"Read Flash\" or \"Load File\", then choose the COM-Port. Then connect your Toniebox to power and wait till the step is done!",
+                "hintReadESP32ImportFlash": "Now disconnect the Powersource of your Toniebox. Make sure that the UART operates in 3.3V mode. Connect your UART with your PC and Toniebox. Short cut the J100 pinholes. Click on \"Read Flash\" or \"Load File\", then choose the COM-Port. Then connect your Toniebox to power and wait till the step is done!",
                 "hostname": "TeddyCloud Hostname:",
                 "hostnameSettings": "Hostname TeddyCloud",
                 "hostnameTooLong": "The hostname should be less than 13 characters long.",
@@ -673,12 +673,6 @@
                 "wifiSettings": "WiFi Data (optional):",
                 "writingFinished": "Writing finished",
                 "writingFlash": "Writing {{size}} MiB flash...",
-                "j103clampCollapse": {
-                    "collapseTitle": "Help: Connect UART to ESP32 J103 using a clamp",
-                    "esp32UartJ103Clamp": "ESP32 J103 with 4-pin clamp",
-                    "esp32UartJ103AnalogClamp": "ESP32 J103 with clothespin",
-                    "esp32UartJ103Clamp4PinHint": "If you have only 4-pin clamp instead of the needed 3-pin clamp (as shown above), so it`s not aligned perfectlys. Try to place the pins as centrally as possible on the contacts."
-                },
                 "connectESPCollapseTitle": "Help: Connect UART with Toniebox"
             },
             "hint": "This section is only available when using HTTPS and a browser that supports the Web Serial API, such as Chrome or Edge. If you want to flash your ESP32 Toniebox, please click on \"Proceed to HTTPS\", and you will be automatically redirected to the HTTPS version. Your browser might warn that the connection is not secure. This is okay; confirm it and proceed to open the page anyway. You may need to display more details in the warning.",
@@ -755,7 +749,7 @@
             "recheck": "Recheck"
         },
         "connectESP32Modal": {
-            "connectESP32Text1": "Please connect the jumper J100 (Boot) and reset the box to put it into the required UARTmode. Connect your 3.3V UART to J103 (TxD, RxD, GND).",
+            "connectESP32Text1": "Please connect the jumper J100 (Boot) and reset the box to put it into the required UARTmode. Connect your 3.3V UART to J103 (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND).",
             "connectESP32Text2": "If you`re unsure in which mode the ESP32 is starting, check the following.",
             "normalMode": "Normal startup mode",
             "normalModeText": "LED blinking green, startup sound is played, Serial output:",
@@ -763,7 +757,11 @@
             "downloadModeText": "LED is off, no sound, Serial output:",
             "beware": "Beware!",
             "warningText": "If the serial monitor is open it will block esptool.py from accessing the esp. If you get a “BROWNOUT_RST” check your power supply / battery. “SPI_FAST_FLASH_BOOT” indicates a boot without the J100 jumper.",
-            "esp32UartJ103": "ESP32 J103"
+            "esp32UartJ103": "ESP32 J103",
+            "esp32UartJ103ClampTitle": "Connect UART to ESP32 J103 using a clamp",
+            "esp32UartJ103Clamp": "ESP32 J103 with 4-pin clamp",
+            "esp32UartJ103AnalogClamp": "ESP32 J103 with clothespin",
+            "esp32UartJ103Clamp4PinHint": "If you have only 4-pin clamp instead of the needed 3-pin clamp (as shown above), so it`s not aligned perfectlys. Try to place the pins as centrally as possible on the contacts."
         }
     },
     "tonies": {

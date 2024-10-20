@@ -1,14 +1,16 @@
 import { Alert, Button, Image, Modal, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import CodeSnippet from "../../../utils/codeSnippet";
-
-import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import { TonieboxCardProps } from "../TonieboxCard";
+
+import tbEsp32UartClamp from "../../../assets/boxSetup/tb-esp32-uart-clamp.png";
+import tbEsp32UartAnalogClamp from "../../../assets/boxSetup/esp32_pcb_clamp.png";
+import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -31,7 +33,13 @@ export function connectESP32Explanation(): JSX.Element {
     return (
         <>
             <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1")}</Paragraph>
-            <Paragraph style={{ display: "inline-block", margin: "0 20px" }}>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "center",
+                }}
+            >
                 <Image
                     src={tbEsp32Uart}
                     height={200}
@@ -39,6 +47,35 @@ export function connectESP32Explanation(): JSX.Element {
                     alt={t("tonieboxes.connectESP32Modal.esp32UartJ103")}
                 />
             </Paragraph>
+            <h5>{t("tonieboxes.connectESP32Modal.esp32UartJ103ClampTitle")}</h5>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "center",
+                }}
+            >
+                <Image.PreviewGroup>
+                    <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
+                        <Image
+                            src={tbEsp32UartClamp}
+                            height={200}
+                            alt={t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp")}
+                        />
+                        <p style={{ marginTop: 8 }}>{t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp")}</p>
+                    </div>
+                    <div style={{ display: "inline-block", margin: "0 20px" }}>
+                        <Image
+                            src={tbEsp32UartAnalogClamp}
+                            height={200}
+                            alt={t("tonieboxes.connectESP32Modal.esp32UartJ103AnalogClamp")}
+                        />
+                        <p style={{ marginTop: 8 }}>{t("tonieboxes.connectESP32Modal.esp32UartJ103AnalogClamp")}</p>
+                    </div>
+                </Image.PreviewGroup>
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp4PinHint")}</Paragraph>
+
             <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text2")}</Paragraph>
             <Alert
                 type="warning"

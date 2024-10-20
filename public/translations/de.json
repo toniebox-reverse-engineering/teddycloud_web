@@ -637,7 +637,7 @@
                 "hintPatchFlash": "Um das ausgewählte / gelesene Flash mit dem dem CA-Zertifikat deiner TeddyCloud zu versehen und ggf. weitere Anpassungen wie Hostname der TeddyCloud und/oder der WiFi-Zugangsdaten vorzunehmen, klicke nach Eingabe auf \"Patch\" oder gehe ohne Patching direkt zum nächsten Schritt. ",
                 "hintPatchHost": "Gib den gewünschten Hostnamen deiner TeddyCloud-Instanz ein.",
                 "hintPatchWifi": "Gib optional die WiFi Zugangsdaten für deine Toniebox ein.",
-                "hintReadESP32ImportFlash": "Trenne die Stromversorgung deiner Toniebox. Stelle sicher, dass der UART im 3.3V Modus arbeitet. Verbinde dein UART mit deinem PC und der Toniebox (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND). Schliesse die J100-Pinlöcher kurz. Klicke auf \"Flash lesen\" oder \"Datei laden\" und wähle dann den COM-Port. Schließe dann deine Toniebox an die Stromversorgung an und warte, bis der Schritt abgeschlossen ist!",
+                "hintReadESP32ImportFlash": "Trenne die Stromversorgung deiner Toniebox. Stelle sicher, dass der UART im 3.3V Modus arbeitet. Verbinde dein UART mit deinem PC und der Toniebox. Schliesse die J100-Pinlöcher kurz. Klicke auf \"Flash lesen\" oder \"Datei laden\" und wähle dann den COM-Port. Schließe dann deine Toniebox an die Stromversorgung an und warte, bis der Schritt abgeschlossen ist!",
                 "hostname": "TeddyCloud-Hostname:",
                 "hostnameSettings": "Hostname TeddyCloud",
                 "hostnameTooLong": "Der Hostname sollte weniger als 13 Zeichen lang sein.",
@@ -673,12 +673,6 @@
                 "wifiSettings": "WiFi Daten (optional)",
                 "writingFinished": "Schreiben abgeschlossen",
                 "writingFlash": "Schreibe {{size}} MiB Flash...",
-                "j103clampCollapse": {
-                    "collapseTitle": "Hilfe: Verbinde UART mit ESP32 J103 mithilfe einer Klemme",
-                    "esp32UartJ103Clamp": "ESP32 J103 mit 4-Pin-Klemme",
-                    "esp32UartJ103AnalogClamp": "ESP32 J103 mit Wäscheklammer-Klemme",
-                    "esp32UartJ103Clamp4PinHint": "Wenn du nur eine 4-Pin-Klemme statt der benötigten 3-Pin-Klemme hast (wie oben gezeigt), sitzt sie möglicherweise nicht perfekt. Versuche, die Pins so zentral wie möglich auf den Kontakten zu platzieren."
-                },
                 "connectESPCollapseTitle": "Hilfe: UART mit Toniebox verbinden"
             },
             "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird und du einen Browser nutzt, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge. Wenn du deine ESP32 Toniebox flashen willst, dann klicke bitte auf \"Weiter zu HTTPS\", du wirst dann automatisch auf die HTTPS Version weitergeleitet. Es kann sein, dass dein Browser meldet, dass die Verbindung nicht sicher ist. Dies ist ok, bestätige es und öffne die Seite dennoch. Eventuell musst du dafür weitere Details bei der Meldung anzeigen.",
@@ -755,7 +749,7 @@
             "recheck": "Überprüfen"
         },
         "connectESP32Modal": {
-            "connectESP32Text1": "Bitte verbinde den Jumper J100 (Boot) und setze die Box zurück, um sie in den erforderlichen UART-Modus zu versetzen. Verbinde dein 3,3 V UART mit J103 (TxD, RxD, GND).",
+            "connectESP32Text1": "Bitte verbinde den Jumper J100 (Boot) und setze die Box zurück, um sie in den erforderlichen UART-Modus zu versetzen. Verbinde dein 3,3 V UART mit J103 (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND).",
             "connectESP32Text2": "Wenn du dir nicht sicher bist, in welchem Modus der ESP32 startet, überprüfe Folgendes.",
             "normalMode": "Normaler Startmodus",
             "normalModeText": "LED blinkt grün, Startton wird abgespielt, Serieller Output:",
@@ -763,7 +757,11 @@
             "downloadModeText": "LED ist aus, kein Ton, Serieller Output:",
             "beware": "Achtung!",
             "warningText": "Wenn der serielle Monitor geöffnet ist, blockiert er den Zugriff von esptool.py auf das ESP. Wenn du einen „BROWNOUT_RST“ erhältst, überprüfe deine Stromversorgung/Batterie. „SPI_FAST_FLASH_BOOT“ zeigt einen Boot ohne den Jumper J100 an.",
-            "esp32UartJ103": "ESP32 J103"
+            "esp32UartJ103": "ESP32 J103",
+            "esp32UartJ103ClampTitle": "Verbinde UART mit ESP32 J103 mithilfe einer Klemme",
+            "esp32UartJ103Clamp": "ESP32 J103 mit 4-Pin-Klemme",
+            "esp32UartJ103AnalogClamp": "ESP32 J103 mit Wäscheklammer-Klemme",
+            "esp32UartJ103Clamp4PinHint": "Wenn du nur eine 4-Pin-Klemme statt der benötigten 3-Pin-Klemme hast (wie oben gezeigt), sitzt sie möglicherweise nicht perfekt. Versuche, die Pins so zentral wie möglich auf den Kontakten zu platzieren."
         }
     },
     "tonies": {
