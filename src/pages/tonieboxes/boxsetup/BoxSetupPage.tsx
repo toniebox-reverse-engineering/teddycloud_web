@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Alert, theme, Timeline, Typography } from "antd";
+import { Alert, message, theme, Timeline, Typography } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -10,13 +10,32 @@ import BreadcrumbWrapper, {
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 import { Link } from "react-router-dom";
 import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
 
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 export const BoxSetupPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
+
+    const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
+
+    useEffect(() => {
+        const fetchNewBoxesAllowed = async () => {
+            try {
+                const newBoxesAllowed = await api.apiGetNewBoxesAllowed();
+                setNewBoxesAllowed(newBoxesAllowed);
+            } catch (error) {
+                message.error("Fetching new box allowed: " + error);
+            }
+        };
+        fetchNewBoxesAllowed();
+    }, []);
 
     const items = [
         {
@@ -98,27 +117,39 @@ export const BoxSetupPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.boxSetup.title`)}</h1>
-                    <Alert
-                        type="warning"
-                        closeIcon
-                        showIcon
-                        message={t("tonieboxes.hintLatestFirmwareTitle")}
-                        description={t("tonieboxes.hintLatestFirmware")}
-                    ></Alert>
-                    <Paragraph style={{ marginTop: 16 }}>
-                        {t("tonieboxes.boxSetup.boxSetupIntro1")}{" "}
-                        <Link to="https://forum.revvox.de/" target="_blank">
-                            {t("tonieboxes.boxSetup.boxSetupIntroForum")}
-                        </Link>{" "}
-                        {t("tonieboxes.boxSetup.boxSetupIntro2")}{" "}
-                        <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
-                            {t("tonieboxes.boxSetup.boxSetupIntroTelegram")}
-                        </Link>{" "}
-                        {t("tonieboxes.boxSetup.boxSetupIntro3")}
-                    </Paragraph>
-                    <Paragraph style={{ marginTop: 16 }}>
-                        <Timeline items={items} />
-                    </Paragraph>{" "}
+
+                    {newBoxesAllowed ? (
+                        <>
+                            <Alert
+                                type="warning"
+                                closeIcon
+                                showIcon
+                                message={t("tonieboxes.hintLatestFirmwareTitle")}
+                                description={t("tonieboxes.hintLatestFirmware")}
+                            ></Alert>
+                            <Paragraph style={{ marginTop: 16 }}>
+                                {t("tonieboxes.boxSetup.boxSetupIntro1")}{" "}
+                                <Link to="https://forum.revvox.de/" target="_blank">
+                                    {t("tonieboxes.boxSetup.boxSetupIntroForum")}
+                                </Link>{" "}
+                                {t("tonieboxes.boxSetup.boxSetupIntro2")}{" "}
+                                <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
+                                    {t("tonieboxes.boxSetup.boxSetupIntroTelegram")}
+                                </Link>{" "}
+                                {t("tonieboxes.boxSetup.boxSetupIntro3")}
+                            </Paragraph>
+                            <Paragraph style={{ marginTop: 16 }}>
+                                <Timeline items={items} />
+                            </Paragraph>{" "}
+                        </>
+                    ) : (
+                        <Alert
+                            type="warning"
+                            showIcon
+                            message={t("tonieboxes.noNewBoxesAllowed")}
+                            description={t("tonieboxes.noNewBoxesAllowedText")}
+                        ></Alert>
+                    )}
                 </StyledContent>
             </StyledLayout>
         </>

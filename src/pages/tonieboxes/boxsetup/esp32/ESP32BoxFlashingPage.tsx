@@ -3,21 +3,7 @@ import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../../../i18n";
 import { useTranslation } from "react-i18next";
-import {
-    Alert,
-    Button,
-    Col,
-    Collapse,
-    Divider,
-    Form,
-    Input,
-    Image,
-    message,
-    Progress,
-    Row,
-    Steps,
-    Typography,
-} from "antd";
+import { Alert, Button, Col, Collapse, Divider, Form, Input, message, Progress, Row, Steps, Typography } from "antd";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import BreadcrumbWrapper, {
@@ -32,6 +18,7 @@ import DotAnimation from "../../../../utils/dotAnimation";
 import {
     CodeOutlined,
     DownloadOutlined,
+    EyeOutlined,
     FileAddOutlined,
     LeftOutlined,
     RightOutlined,
@@ -41,8 +28,7 @@ import {
 } from "@ant-design/icons";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
 import { Link } from "react-router-dom";
-import tbEsp32Uart from "../../../../assets/boxSetup/tb-esp32-uart.png";
-import tbEsp32UartClamp from "../../../../assets/boxSetup/tb-esp32-uart-clamp.png";
+import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -97,6 +83,9 @@ export const ESP32BoxFlashingPage = () => {
 
     const [currentStep, setCurrent] = useState(0);
     const [content, setContent] = useState([<></>, <></>, <></>, <></>]);
+
+    const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
+
     const [state, setState] = useState<ESP32Flasher>({
         progress: 0,
         chipMac: "",
@@ -1029,60 +1018,15 @@ export const ESP32BoxFlashingPage = () => {
                     <Paragraph style={{ marginTop: 16 }}>
                         {t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}
                     </Paragraph>
+
                     <Collapse
                         size="small"
                         style={{ marginBottom: 16 }}
                         items={[
                             {
                                 key: "1",
-                                label: t("tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.collapseTitle"),
-                                children: (
-                                    <>
-                                        <Paragraph
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "flex-start",
-                                                justifyContent: "center",
-                                            }}
-                                        >
-                                            <div style={{ display: "inline-block", margin: "0 20px" }}>
-                                                <Image
-                                                    src={tbEsp32Uart}
-                                                    width={200}
-                                                    alt={t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
-                                                    )}
-                                                />
-                                                <p style={{ marginTop: 8 }}>
-                                                    {t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103"
-                                                    )}
-                                                </p>
-                                            </div>
-                                            <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
-                                                <Image
-                                                    src={tbEsp32UartClamp}
-                                                    width={200}
-                                                    alt={t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
-                                                    )}
-                                                />
-                                                <p style={{ marginTop: 8 }}>
-                                                    {t(
-                                                        "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp"
-                                                    )}
-                                                </p>
-                                            </div>
-                                        </Paragraph>
-                                        <Paragraph>
-                                            <i>
-                                                {t(
-                                                    "tonieboxes.esp32BoxFlashing.esp32flasher.j103clampCollapse.esp32UartJ103Clamp4PinHint"
-                                                )}
-                                            </i>
-                                        </Paragraph>
-                                    </>
-                                ),
+                                label: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectESPCollapseTitle"),
+                                children: <>{connectESP32Explanation()}</>,
                             },
                         ]}
                     />
@@ -1442,6 +1386,26 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
         </Button>
     );
 
+    const checkBoxes = () => {
+        showAvailableBoxesModal();
+    };
+
+    const showAvailableBoxesModal = () => {
+        setIsOpenAvailableBoxesModal(true);
+    };
+
+    const handleAvailableBoxesModalClose = () => {
+        setIsOpenAvailableBoxesModal(false);
+    };
+
+    const availableBoxesModal = (
+        <AvailableBoxesModal
+            boxVersion="ESP32"
+            isOpen={isOpenAvailableBoxesModal}
+            onClose={handleAvailableBoxesModalClose}
+        />
+    );
+
     const ESP32BoxFlashingForm = isSupported ? (
         <>
             <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
@@ -1478,8 +1442,14 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
             <div style={{ marginTop: 24 }}>{content[currentStep]}</div>
             <div style={{ marginTop: 24, marginBottom: 24 }}>
                 {currentStep === 0 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                        <div>
+                            <Button>
+                                <Link to="/tonieboxes/boxsetup/esp32/legacy">
+                                    {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                </Link>
+                            </Button>
+                        </div>
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button icon={<FileAddOutlined />} disabled={disableButtons} onClick={() => loadFile()}>
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
@@ -1504,7 +1474,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     </div>
                 )}
                 {currentStep === 1 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                         {previousButton}
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button
@@ -1527,7 +1497,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     </div>
                 )}
                 {currentStep === 2 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                         {previousButton}
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button
@@ -1543,9 +1513,13 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     </div>
                 )}
                 {currentStep === 3 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                         {previousButton}
-                        <div></div>
+                        <div>
+                            <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
+                                {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
+                            </Button>
+                        </div>
                         <div></div>
                     </div>
                 )}
@@ -1607,21 +1581,33 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                 <StyledContent>
                     <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
                     {!httpsActive ? (
-                        <Alert
-                            message={t("tonieboxes.esp32BoxFlashing.attention")}
-                            description={
-                                <>
-                                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.hint")}</Paragraph>
-                                    <Paragraph>
-                                        <Button icon={<SyncOutlined />} onClick={openHttpsUrl}>
-                                            {t("tonieboxes.esp32BoxFlashing.redirect")}
-                                        </Button>
-                                    </Paragraph>
-                                </>
-                            }
-                            type="warning"
-                            showIcon
-                        />
+                        <>
+                            <Alert
+                                message={t("tonieboxes.esp32BoxFlashing.attention")}
+                                description={
+                                    <>
+                                        <Paragraph>{t("tonieboxes.esp32BoxFlashing.hint")}</Paragraph>
+                                        <Paragraph>
+                                            <Button icon={<SyncOutlined />} onClick={openHttpsUrl}>
+                                                {t("tonieboxes.esp32BoxFlashing.redirect")}
+                                            </Button>
+                                        </Paragraph>
+                                    </>
+                                }
+                                type="warning"
+                                showIcon
+                            />
+                            <Paragraph style={{ marginTop: 16 }}>
+                                <Paragraph> {t("tonieboxes.esp32BoxFlashing.legacy.followLegacyApproach")}</Paragraph>
+                                <Paragraph>
+                                    <Button>
+                                        <Link to="/tonieboxes/boxsetup/esp32/legacy">
+                                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                        </Link>
+                                    </Button>
+                                </Paragraph>
+                            </Paragraph>
+                        </>
                     ) : (
                         ESP32BoxFlashingForm
                     )}
@@ -1641,6 +1627,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                         handleOk={() => extractAndStoreCertsFromFlash(true)}
                         handleCancel={() => setIsOverwriteForceConfirmationModalOpen(false)}
                     ></ConfirmationDialog>
+                    {availableBoxesModal}
                 </StyledContent>
             </StyledLayout>
         </>

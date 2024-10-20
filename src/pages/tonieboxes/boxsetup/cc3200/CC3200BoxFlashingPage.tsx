@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Collapse, Divider, Form, Input, Modal, Row, Steps, Table, Typography } from "antd";
+import { Alert, Button, Col, Collapse, Divider, Form, Input, Row, Steps, Table, Typography } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -12,14 +12,10 @@ import { Link } from "react-router-dom";
 import { RightOutlined, CodeOutlined, LeftOutlined, CheckSquareOutlined, EyeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import i18n from "../../../../i18n";
-import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../../../api";
 import { TonieboxCardProps } from "../../../../components/tonieboxes/TonieboxCard";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { detectColorScheme } from "../../../../utils/browserUtils";
-
-const api = new TeddyCloudApi(defaultAPIConfig());
+import CodeSnippet from "../../../../utils/codeSnippet";
+import AvailableBoxesModal, { certificateIntro } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -34,12 +30,11 @@ export const CC3200BoxFlashingPage = () => {
     const currentLanguage = i18n.language;
     const [currentStep, setCurrent] = useState(0);
     const [content, setContent] = useState([<></>, <></>, <></>, <></>, <></>]);
-    const [tonieboxes, setTonieboxes] = useState<TonieboxPropsWithStatusAndVersion[]>([]);
 
     const [hostname, setHostname] = useState<string>("");
     const [warningTextHostname, setWarningTextHostname] = useState<string>("");
 
-    const [isOpenAvailableBoxesModal, setIsOpenAailableBoxesModal] = useState(false);
+    const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
     const updateContent = (index: number, newContent: JSX.Element) => {
         setContent((prevContent) => {
@@ -55,13 +50,13 @@ export const CC3200BoxFlashingPage = () => {
 
     const steps = [
         {
-            title: t("tonieboxes.cc3200BoxFlashing.preparations"),
+            title: t("tonieboxes.boxFlashingCommon.preparations"),
         },
         {
             title: t("tonieboxes.cc3200BoxFlashing.bootloader"),
         },
         {
-            title: t("tonieboxes.cc3200BoxFlashing.certificates"),
+            title: t("tonieboxes.boxFlashingCommon.certificates"),
         },
         {
             title: t("tonieboxes.cc3200BoxFlashing.patches"),
@@ -74,7 +69,7 @@ export const CC3200BoxFlashingPage = () => {
     // step 0 - preparations
     const contentStep0 = (
         <>
-            <h3>{t("tonieboxes.cc3200BoxFlashing.preparations")}</h3>
+            <h3>{t("tonieboxes.boxFlashingCommon.preparations")}</h3>
             <Alert
                 type="warning"
                 closeIcon
@@ -123,11 +118,8 @@ export const CC3200BoxFlashingPage = () => {
     // step 2 - certificates
     const contentStep2 = (
         <>
-            <h3>{t("tonieboxes.cc3200BoxFlashing.certificates")}</h3>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.certificatesIntro")}</Paragraph>
-            <h4>{t("tonieboxes.cc3200BoxFlashing.dumpCertificates")}</h4>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesIntro1")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesIntro2")}</Paragraph>
+            <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
+            {certificateIntro()}
             <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/" target="_blank">
                 {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
             </Link>
@@ -542,18 +534,7 @@ export const CC3200BoxFlashingPage = () => {
                         ),
                         children: (
                             <Paragraph>
-                                <SyntaxHighlighter
-                                    language="json"
-                                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                                    customStyle={{
-                                        padding: 0,
-                                        borderRadius: 0,
-                                        margin: 0,
-                                        border: "none",
-                                    }}
-                                >
-                                    {JSON.stringify(exampleNgCfgJson, null, 2)}
-                                </SyntaxHighlighter>
+                                <CodeSnippet language="shell" code={JSON.stringify(exampleNgCfgJson, null, 2)} />
                             </Paragraph>
                         ),
                     },
@@ -608,93 +589,23 @@ export const CC3200BoxFlashingPage = () => {
 
     // available boxes modal
     const checkBoxes = () => {
-        const fetchTonieboxes = async () => {
-            // Perform API call to fetch Toniebox data
-            const tonieboxData = await api.apiGetTonieboxesIndex();
-
-            const updatedBoxes = await Promise.all(
-                tonieboxData.map(async (box) => {
-                    const tonieboxStatus = await api.apiGetTonieboxStatus(box.ID);
-                    const statusString = tonieboxStatus ? "Online" : "Offline";
-                    const tonieboxVersion = await api.apiGetTonieboxVersion(box.ID);
-                    const BoxVersions: { [key: string]: string } = {
-                        "0": "UNKNOWN",
-                        "1": "CC3200",
-                        "2": "CC3235",
-                        "3": "ESP32",
-                    };
-                    let version = null;
-                    if (tonieboxVersion in BoxVersions) {
-                        version = BoxVersions[tonieboxVersion as keyof typeof BoxVersions];
-                    }
-                    // Return updated box with status and version
-                    return {
-                        ...box,
-                        status: statusString,
-                        version: version || "UNKNOWN",
-                    };
-                })
-            );
-            setTonieboxes(updatedBoxes);
-        };
-        fetchTonieboxes();
         showAvailableBoxesModal();
     };
 
     const showAvailableBoxesModal = () => {
-        setIsOpenAailableBoxesModal(true);
+        setIsOpenAvailableBoxesModal(true);
     };
 
-    const handleAvailableBoxesModalOk = () => {
-        setIsOpenAailableBoxesModal(false);
+    const handleAvailableBoxesModalClose = () => {
+        setIsOpenAvailableBoxesModal(false);
     };
-
-    const handleAvailableBoxesModalCancel = () => {
-        setIsOpenAailableBoxesModal(false);
-    };
-
-    const availableBoxesModalColumns = [
-        {
-            title: t("tonieboxes.cc3200BoxFlashing.commonName"),
-            dataIndex: "commonName",
-            key: "commonName",
-        },
-        {
-            title: t("tonieboxes.cc3200BoxFlashing.boxVersion"),
-            dataIndex: "version",
-            key: "version",
-        },
-        {
-            title: t("tonieboxes.cc3200BoxFlashing.status"),
-            dataIndex: "status",
-            key: "status",
-        },
-    ];
 
     const availableBoxesModal = (
-        <Modal
-            title={t("tonieboxes.cc3200BoxFlashing.availableBoxes")}
-            open={isOpenAvailableBoxesModal}
-            onOk={handleAvailableBoxesModalOk}
-            onCancel={handleAvailableBoxesModalCancel}
-        >
-            <Paragraph>
-                <Paragraph>{t("tonieboxes.cc3200BoxFlashing.newBoxAvailable")}</Paragraph>
-                <Link
-                    to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/test-troubleshooting/"
-                    target="_blank"
-                >
-                    {t("tonieboxes.cc3200BoxFlashing.troubleShooting")}
-                </Link>
-            </Paragraph>
-            <h4>{t("tonieboxes.cc3200BoxFlashing.availableBoxes")}</h4>
-            <Table
-                dataSource={tonieboxes.filter((box) => box.version === "CC3200")}
-                columns={availableBoxesModalColumns}
-                rowKey="ID"
-                pagination={false}
-            />
-        </Modal>
+        <AvailableBoxesModal
+            boxVersion="CC3200"
+            isOpen={isOpenAvailableBoxesModal}
+            onClose={handleAvailableBoxesModalClose}
+        />
     );
 
     // create altUrl.custom.305.json patch
@@ -875,21 +786,32 @@ export const CC3200BoxFlashingPage = () => {
                         <div style={{ marginTop: 24 }}>{content[currentStep]}</div>
                         <div style={{ marginTop: 24, marginBottom: 24 }}>
                             {currentStep === 0 && (
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        flexWrap: "wrap",
+                                        gap: 8,
+                                    }}
+                                >
                                     <div></div>
                                     <div></div>
-                                    <div style={{ display: "flex", gap: 8 }}>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                                         <Button icon={<RightOutlined />} iconPosition="end" onClick={next}>
                                             {t("tonieboxes.cc3200BoxFlashing.proceedWithCustomBootloader")}
-                                        </Button>
-                                        <Button icon={<RightOutlined />} iconPosition="end" disabled={true}>
-                                            {t("tonieboxes.cc3200BoxFlashing.proceedWithoutCustomBootloader")}
                                         </Button>
                                     </div>
                                 </div>
                             )}
                             {currentStep === 1 && (
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        flexWrap: "wrap",
+                                        gap: 8,
+                                    }}
+                                >
                                     {previousButton}
                                     <div></div>
                                     <div>
@@ -900,7 +822,14 @@ export const CC3200BoxFlashingPage = () => {
                                 </div>
                             )}
                             {currentStep === 2 && (
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        flexWrap: "wrap",
+                                        gap: 8,
+                                    }}
+                                >
                                     {previousButton}
                                     <div></div>
                                     <div>
@@ -911,7 +840,14 @@ export const CC3200BoxFlashingPage = () => {
                                 </div>
                             )}
                             {currentStep === 3 && (
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        flexWrap: "wrap",
+                                        gap: 8,
+                                    }}
+                                >
                                     {previousButton}
                                     <div>
                                         <Button
@@ -931,7 +867,14 @@ export const CC3200BoxFlashingPage = () => {
                                 </div>
                             )}
                             {currentStep === 4 && (
-                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        flexWrap: "wrap",
+                                        gap: 8,
+                                    }}
+                                >
                                     {previousButton}
                                     <div>
                                         <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
