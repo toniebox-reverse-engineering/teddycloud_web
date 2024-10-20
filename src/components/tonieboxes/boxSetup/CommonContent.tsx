@@ -176,7 +176,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
     ];
 
     const availableBoxesFooter = (
-        <Paragraph style={{ display: "flex", gap: 8, alignContent: "flex-end", justifyContent: "wrap" }}>
+        <Paragraph style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
             <Button onClick={() => setRecheckTonieboxes((prev) => !prev)}>
                 {t("tonieboxes.availableBoxModal.recheck")}
             </Button>
