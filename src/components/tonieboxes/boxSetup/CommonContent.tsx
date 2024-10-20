@@ -178,12 +178,10 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
     const availableBoxesFooter = (
         <Paragraph style={{ display: "flex", gap: 8, alignContent: "flex-end", justifyContent: "wrap" }}>
             <Button onClick={() => setRecheckTonieboxes((prev) => !prev)}>
-                {" "}
                 {t("tonieboxes.availableBoxModal.recheck")}
             </Button>
             <Button onClick={onClose}> {t("tonieboxes.availableBoxModal.cancel")}</Button>
             <Button type="primary" onClick={onClose}>
-                {" "}
                 {t("tonieboxes.availableBoxModal.ok")}
             </Button>
         </Paragraph>
