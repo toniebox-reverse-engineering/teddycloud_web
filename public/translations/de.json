@@ -730,6 +730,8 @@
         "navigationTitle": "Tonieboxen",
         "newBoxesAllowed": "Neue Tonieboxen erlaubt",
         "newBoxesAllowedText": "Du kannst neue Tonieboxen mit TeddyCloud verbinden. Wenn du alle deine Boxen verbunden hast, deaktiviere aus Sicherheitsgründen bitte die Einstellung \"Allow new boxes\".",
+        "noNewBoxesAllowed": "Neue Tonieboxen sind nicht erlaubt",
+        "noNewBoxesAllowedText": "Du kannst keine neuen Tonieboxen mit TeddyCloud verbinden. Bitte aktiviere zuerst die Einstellung „Neue Boxen erlauben“. Sobald du alle deine Boxen verbunden hast, deaktiviere die Einstellung „Neue Boxen erlauben“ aus Sicherheitsgründen.",
         "offline": "offline",
         "online": "online",
         "title": "Deine Tonieboxen",
@@ -745,7 +747,7 @@
             "boxVersion": "Version",
             "status": "Status",
             "availableBoxes": "Verfügbare Toniebox(en) (nur {{boxVersion}} Tonieboxen)",
-            "newBoxAvailable": "Bitte überprüfe, ob die neue Box in der Tabelle unten erscheint. Wenn sie nicht aufgeführt ist, könnte etwas schiefgegangen sein. Stelle sicher, dass die Box in deinem WLAN sichtbar ist, dass das Ersatz-CA geflasht wurde{{cc3200Hint}} und dass die korrekte IP/URL für TeddyCloud verwendet wird. Wenn die Box weiterhin nicht erscheint, überprüfe hier:",
+            "newBoxAvailable": "Bitte überprüfe, ob die neue Box in der Tabelle unten erscheint. Wenn sie nicht aufgeführt ist, könnte etwas schiefgegangen sein. Stelle sicher, dass du die Einstellung \"Add new boxes\" aktiviert hast, die Box in deinem WLAN sichtbar ist, dass das Ersatz-CA geflasht wurde{{cc3200Hint}} und dass die korrekte IP/URL für TeddyCloud verwendet wird. Wenn die Box weiterhin nicht erscheint, überprüfe hier:",
             "cc3200Hint": ", dass du den richtigen Firmware-Slot bootest, dass alle notwendigen Patches gesetzt sind",
             "troubleShooting": "Fehlerbehebung"
         },

@@ -730,6 +730,8 @@
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "Nuevas Tonieboxes permitidas",
         "newBoxesAllowedText": "Puedes conectar nuevas Tonieboxes a TeddyCloud. Una vez que hayas conectado todas tus cajas, deshabilita la opción \"Permitir nuevas cajas\" por razones de seguridad.",
+        "noNewBoxesAllowed": "No se permiten nuevas Tonieboxes",
+        "noNewBoxesAllowedText": "No puedes conectar nuevas Tonieboxes a TeddyCloud. Por favor, activa la configuración \"Permitir nuevas cajas\". Una vez que hayas conectado todas tus cajas, desactiva la configuración \"Permitir nuevas cajas\" por razones de seguridad.",
         "offline": "desconectado",
         "online": "conectado",
         "title": "Tus Tonieboxes",
@@ -745,7 +747,7 @@
             "boxVersion": "Versión",
             "status": "Estado",
             "availableBoxes": "Toniebox(es) disponibles (solo {{boxVersion}} Tonieboxes)",
-            "newBoxAvailable": "Por favor, verifica si la nueva caja aparece en la tabla a continuación. Si no está listada, algo puede haber salido mal. Asegúrate de que la caja sea visible en tu Wi-Fi, de que el CA de reemplazo haya sido flasheado{{cc3200Hint}} y de que se esté utilizando la IP/URL correcta para TeddyCloud. Si la caja aún no aparece, verifica aquí:",
+            "newBoxAvailable": "Por favor, verifica si la nueva caja aparece en la tabla a continuación. Si no está listada, algo puede haber salido mal. Asegúrate has activado la configuración \"Add new boxes\", de que la caja sea visible en tu Wi-Fi, de que el CA de reemplazo haya sido flasheado{{cc3200Hint}} y de que se esté utilizando la IP/URL correcta para TeddyCloud. Si la caja aún no aparece, verifica aquí:",
             "cc3200Hint": ", de que estés iniciando la ranura de firmware correcta, de que todos los parches necesarios estén configurados",
             "troubleShooting": "Resolución de problemas"
         },

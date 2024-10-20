@@ -730,6 +730,8 @@
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "Nouvelles Tonieboxes autorisées",
         "newBoxesAllowedText": "Vous pouvez connecter de nouvelles Tonieboxes à TeddyCloud. Une fois que vous avez connecté toutes vos boîtes, veuillez désactiver le réglage \"Autoriser les nouvelles boîtes\" pour des raisons de sécurité.",
+        "noNewBoxesAllowed": "Les nouvelles Tonieboxes ne sont pas autorisées",
+        "noNewBoxesAllowedText": "Tu ne peux pas connecter de nouvelles Tonieboxes à TeddyCloud. Veuillez activer le paramètre \"Autoriser de nouvelles boxes\". Une fois que tu as connecté toutes tes boxes, désactive le paramètre \"Autoriser de nouvelles boxes\" pour des raisons de sécurité.",
         "offline": "hors ligne",
         "online": "en ligne",
         "title": "Vos Tonieboxes",
@@ -745,7 +747,7 @@
             "boxVersion": "Version",
             "status": "Statut",
             "availableBoxes": "Toniebox(s) disponible(s) (seulement {{boxVersion}} Tonieboxes)",
-            "newBoxAvailable": "Veuillez vérifier si la nouvelle boîte apparaît dans le tableau ci-dessous. Si elle n'est pas listée, quelque chose a peut-être mal tourné. Assurez-vous que la boîte est visible dans votre Wi-Fi, que le CA de remplacement a été flashé{{cc3200Hint}} sont appliqués et que la bonne IP/URL pour TeddyCloud est utilisée. Si la boîte n'apparaît toujours pas, vérifiez ici :",
+            "newBoxAvailable": "Veuillez vérifier si la nouvelle boîte apparaît dans le tableau ci-dessous. Si elle n'est pas listée, quelque chose a peut-être mal tourné. Assurez-vous tu as activé le paramètre \"Add new boxes\", que la boîte est visible dans votre Wi-Fi, que le CA de remplacement a été flashé{{cc3200Hint}} sont appliqués et que la bonne IP/URL pour TeddyCloud est utilisée. Si la boîte n'apparaît toujours pas, vérifiez ici :",
             "cc3200Hint": ", que vous démarrez le bon slot de firmware, que tous les correctifs nécessaires",
             "troubleShooting": "Dépannage"
         },

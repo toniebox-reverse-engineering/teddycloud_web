@@ -730,6 +730,8 @@
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "New Tonieboxes allowed",
         "newBoxesAllowedText": "You can connect new Tonieboxes to TeddyCloud. Once you have connected all your boxes, please disable the \"Allow new boxes\" setting for security reasons.",
+        "noNewBoxesAllowed": "New Tonieboxes are not allowed",
+        "noNewBoxesAllowedText": "You cannot connect new Tonieboxes to TeddyCloud. Please enable first the \"Allow new boxes\" setting. Once you have connected all your boxes, please disable the \"Allow new boxes\" setting for security reasons.",
         "offline": "offline",
         "online": "online",
         "title": "Your Tonieboxes",
@@ -745,7 +747,7 @@
             "boxVersion": "Version",
             "status": "Status",
             "availableBoxes": "Available Toniebox(es) (only {{boxVersion}} Tonieboxes)",
-            "newBoxAvailable": "Please check if the new box appears in the table below. If it is not listed, something may have gone wrong. Ensure the box is visible in your Wi-Fi, that the replacement CA has been flashed{{cc3200Hint}} and that the correct IP/URL for TeddyCloud is being used. If the box still does not appear, check here:",
+            "newBoxAvailable": "Please check if the new box appears in the table below. If it is not listed, something may have gone wrong. Ensure you have enabled the setting \"Add new boxes\", the box is visible in your Wi-Fi, that the replacement CA has been flashed{{cc3200Hint}} and that the correct IP/URL for TeddyCloud is being used. If the box still does not appear, check here:",
             "cc3200Hint": ", that you are booting the correct firmware slot, that all necessary patches are set",
             "troubleShooting": "Troubleshooting"
         },

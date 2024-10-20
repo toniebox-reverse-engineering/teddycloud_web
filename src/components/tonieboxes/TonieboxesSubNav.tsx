@@ -91,6 +91,8 @@ export const TonieboxesSubNav = () => {
                             to="/tonieboxes/boxsetup/esp32/flashing"
                             style={{
                                 color: "currentColor",
+                                display: "flex",
+                                alignItems: "center",
                                 padding: "0 50px 0 0",
                             }}
                         >
