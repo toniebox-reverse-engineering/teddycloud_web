@@ -41,6 +41,8 @@ export const ChangelogPage = () => {
                 "gui: Extended CC3200 Firmware flash section, added custom alt Url Patch generation. https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/126",
                 "gui: Extended CC3200 Firmware flash section, extended Applying Patches step",
                 "gui: Extended CC3235 Firmware flash section, same version as wiki, but additional images flash chip",
+                "gui: Added ESP32 Firmware flash legacy section, same version as wiki",
+                "gui: some refactoring",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",
