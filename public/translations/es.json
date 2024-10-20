@@ -680,7 +680,7 @@
             "hintWiki2": "Sigue luego el camino para ESP32:",
             "httpsSettings": "Configuración de HTTPS",
             "legacy": {
-                "followLegacyApproach": "Usa el enfoque legado en su lugar:",
+                "followLegacyApproach": "O usa el enfoque legacy (consola simple)",
                 "navigationTitle": "Método legado",
                 "title": "Flasheo de la caja ESP32 legado",
                 "hint": "¡Hay soporte directo para flashear tu Toniebox ESP32 con TeddyCloud disponible!",
