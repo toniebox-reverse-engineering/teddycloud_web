@@ -680,7 +680,7 @@
             "hintWiki2": "Please follow then the ESP32 path:",
             "httpsSettings": "HTTPS Settings",
             "legacy": {
-                "followLegacyApproach": "Use the legacy approach instead:",
+                "followLegacyApproach": "Or use the legacy approach (plain console)",
                 "navigationTitle": "Legacy way",
                 "title": "Legacy way of flashing",
                 "hint": "There is a direct support of flashing your ESP32 Toniebox with TeddyCloud available!",

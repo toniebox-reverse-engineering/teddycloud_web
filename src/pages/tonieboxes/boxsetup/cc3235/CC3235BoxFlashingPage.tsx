@@ -29,17 +29,8 @@ export const CC3235BoxFlashingPage = () => {
     const { t } = useTranslation();
     const currentLanguage = i18n.language;
     const [currentStep, setCurrent] = useState(0);
-    const [content, setContent] = useState([<></>, <></>, <></>]);
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
-
-    const updateContent = (index: number, newContent: JSX.Element) => {
-        setContent((prevContent) => {
-            const updatedContent = [...prevContent];
-            updatedContent[index] = newContent;
-            return updatedContent;
-        });
-    };
 
     const steps = [
         {
@@ -189,6 +180,15 @@ flashrom -p serprog:dev=/dev/ttyACM0:921600 -w cc32xx-flash.bin --progress`}
             {dnsForTeddyCloud()}
         </>
     );
+
+    const [content, setContent] = useState([contentStep0, contentStep1, contentStep2]);
+    const updateContent = (index: number, newContent: JSX.Element) => {
+        setContent((prevContent) => {
+            const updatedContent = [...prevContent];
+            updatedContent[index] = newContent;
+            return updatedContent;
+        });
+    };
 
     useEffect(() => {
         const getContentForStep = () => {

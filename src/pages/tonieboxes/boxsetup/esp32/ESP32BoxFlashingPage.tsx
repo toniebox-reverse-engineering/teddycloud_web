@@ -82,7 +82,6 @@ export const ESP32BoxFlashingPage = () => {
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState<string>("");
 
     const [currentStep, setCurrent] = useState(0);
-    const [content, setContent] = useState([<></>, <></>, <></>, <></>]);
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
@@ -894,14 +893,6 @@ export const ESP32BoxFlashingPage = () => {
     };
 
     // step content functionality
-    const updateContent = (index: number, newContent: JSX.Element) => {
-        setContent((prevContent) => {
-            const updatedContent = [...prevContent];
-            updatedContent[index] = newContent;
-            return updatedContent;
-        });
-    };
-
     const steps = [
         {
             title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash"),
@@ -1327,6 +1318,16 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
             )}
         </>
     );
+
+    const [content, setContent] = useState([contentStep0, contentStep1, contentStep2, contentStep3]);
+
+    const updateContent = (index: number, newContent: JSX.Element) => {
+        setContent((prevContent) => {
+            const updatedContent = [...prevContent];
+            updatedContent[index] = newContent;
+            return updatedContent;
+        });
+    };
 
     // button functions
     const readFirmware = () => {

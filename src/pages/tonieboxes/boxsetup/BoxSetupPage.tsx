@@ -23,7 +23,7 @@ export const BoxSetupPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
 
-    const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
+    const [newBoxesAllowed, setNewBoxesAllowed] = useState(true);
 
     useEffect(() => {
         const fetchNewBoxesAllowed = async () => {
@@ -117,39 +117,36 @@ export const BoxSetupPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.boxSetup.title`)}</h1>
-
-                    {newBoxesAllowed ? (
-                        <>
-                            <Alert
-                                type="warning"
-                                closeIcon
-                                showIcon
-                                message={t("tonieboxes.hintLatestFirmwareTitle")}
-                                description={t("tonieboxes.hintLatestFirmware")}
-                            ></Alert>
-                            <Paragraph style={{ marginTop: 16 }}>
-                                {t("tonieboxes.boxSetup.boxSetupIntro1")}{" "}
-                                <Link to="https://forum.revvox.de/" target="_blank">
-                                    {t("tonieboxes.boxSetup.boxSetupIntroForum")}
-                                </Link>{" "}
-                                {t("tonieboxes.boxSetup.boxSetupIntro2")}{" "}
-                                <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
-                                    {t("tonieboxes.boxSetup.boxSetupIntroTelegram")}
-                                </Link>{" "}
-                                {t("tonieboxes.boxSetup.boxSetupIntro3")}
-                            </Paragraph>
-                            <Paragraph style={{ marginTop: 16 }}>
-                                <Timeline items={items} />
-                            </Paragraph>{" "}
-                        </>
-                    ) : (
+                    {!newBoxesAllowed && (
                         <Alert
                             type="warning"
                             showIcon
                             message={t("tonieboxes.noNewBoxesAllowed")}
                             description={t("tonieboxes.noNewBoxesAllowedText")}
-                        ></Alert>
+                            style={{ marginBottom: 16 }}
+                        />
                     )}
+                    <Alert
+                        type="warning"
+                        closeIcon
+                        showIcon
+                        message={t("tonieboxes.hintLatestFirmwareTitle")}
+                        description={t("tonieboxes.hintLatestFirmware")}
+                    ></Alert>
+                    <Paragraph style={{ marginTop: 16 }}>
+                        {t("tonieboxes.boxSetup.boxSetupIntro1")}{" "}
+                        <Link to="https://forum.revvox.de/" target="_blank">
+                            {t("tonieboxes.boxSetup.boxSetupIntroForum")}
+                        </Link>{" "}
+                        {t("tonieboxes.boxSetup.boxSetupIntro2")}{" "}
+                        <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
+                            {t("tonieboxes.boxSetup.boxSetupIntroTelegram")}
+                        </Link>{" "}
+                        {t("tonieboxes.boxSetup.boxSetupIntro3")}
+                    </Paragraph>
+                    <Paragraph style={{ marginTop: 16 }}>
+                        <Timeline items={items} />
+                    </Paragraph>{" "}
                 </StyledContent>
             </StyledLayout>
         </>
