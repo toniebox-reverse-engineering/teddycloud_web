@@ -57,7 +57,7 @@ export const TonieboxesSubNav = () => {
         {
             key: "boxsetup",
             label: (
-                <Link to="/tonieboxes/boxsetup" style={{ color: "currentColor", marginLeft: 8 }}>
+                <Link to="/tonieboxes/boxsetup" style={{ color: "currentColor" }}>
                     {t("tonieboxes.boxSetup.navigationTitle")}
                 </Link>
             ),
@@ -87,24 +87,30 @@ export const TonieboxesSubNav = () => {
                 {
                     key: "esp32",
                     label: (
-                        <Link to="/tonieboxes/boxsetup/esp32/flashing">
+                        <Link
+                            to="/tonieboxes/boxsetup/esp32/flashing"
+                            style={{
+                                color: "currentColor",
+                                padding: "0 50px 0 0",
+                            }}
+                        >
                             {t("tonieboxes.esp32BoxFlashing.navigationTitle")}
                         </Link>
                     ),
                     icon: React.createElement(DeliveredProcedureOutlined),
                     title: t("tonieboxes.esp32BoxFlashing.navigationTitle"),
-                    /*children: [
+                    children: [
                         {
                             key: "esp32legacy",
                             label: (
                                 <Link to="/tonieboxes/boxsetup/esp32/legacy">
-                                    {t("tonieboxes.boxsetup.esp32.legacy.navigationTitle")}
+                                    {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
                                 </Link>
                             ),
-                            icon: React.createElement(SearchOutlined),
-                            title: t("tonieboxes.boxsetup.esp32.legacy.navigationTitle"),
+                            icon: React.createElement(DeliveredProcedureOutlined),
+                            title: t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle"),
                         },
-                    ],*/
+                    ],
                 },
                 {
                     key: "cc3200",

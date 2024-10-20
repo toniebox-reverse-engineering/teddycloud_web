@@ -57,7 +57,7 @@ export const CommunitySubNav = () => {
         {
             key: "contribution",
             label: (
-                <Link to="/community/contribution" style={{ color: "currentColor" }}>
+                <Link to="/community/contribution" style={{ color: "currentColor", padding: "0 50px 0 0" }}>
                     {t("community.contribution.navigationTitle")}
                 </Link>
             ),
