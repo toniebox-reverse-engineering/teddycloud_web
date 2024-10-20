@@ -329,12 +329,12 @@
     "server": {
         "boxineStatusOffline": "Nicht mit Boxine/Toniecloud verbunden",
         "boxineStatusOnline": "Mit Boxine/Toniecloud verbunden",
-        "teddycloudStatusOffline": "Teddycloud Server offline",
-        "teddycloudStatusOnline": "Teddycloud Server online"
+        "teddycloudStatusOffline": "TeddyCloud Server offline",
+        "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
         "certificates": {
-            "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der Teddycloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
+            "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
             "navigationTitle": "Zertifikate",
             "title": "Zertifikate",
@@ -639,7 +639,7 @@
                 "hintPatchWifi": "Gib optional die WiFi Zugangsdaten für deine Toniebox ein.",
                 "hintReadESP32ImportFlash": "Trenne die Stromversorgung deiner Toniebox. Stelle sicher, dass der UART im 3.3V Modus arbeitet. Verbinde dein UART mit deinem PC und der Toniebox (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND). Schliesse die J100-Pinlöcher kurz. Klicke auf \"Flash lesen\" oder \"Datei laden\" und wähle dann den COM-Port. Schließe dann deine Toniebox an die Stromversorgung an und warte, bis der Schritt abgeschlossen ist!",
                 "hostname": "TeddyCloud-Hostname:",
-                "hostnameSettings": "Hostname Teddycloud",
+                "hostnameSettings": "Hostname TeddyCloud",
                 "hostnameTooLong": "Der Hostname sollte weniger als 13 Zeichen lang sein.",
                 "infoTable": "ESP32 info",
                 "invalidSerialPort": "Ungültiger serieller Port",
@@ -702,8 +702,8 @@
                 "dumpCertificates": "Zertifikate für TeddyCloud extrahieren",
                 "flashCAreplacement": "CA-Ersatz für TeddyCloud flashen",
                 "flashCAreplacementText1": "Ersetze das originale CA in deinem Flash-Dump mit esptool.",
-                "flashCAreplacementText2": "Baue deine Toniebox erneut zusammen. Wenn du bereits den teddyCloud-Hostnamen festgelegt hast, kannst du den DNS-Schritt für den ESP32 überspringen. Andernfalls fahre mit dem DNS-Schritt für den ESP32 fort.",
-                "flashCAreplacementText3": "Deine Toniebox sollte jetzt in der Lage sein, eine Verbindung zu deinem teddyCloud herzustellen. Mache einen Frischheitscheck und klicke auf \"Verfügbare Boxen überprüfen\".",
+                "flashCAreplacementText2": "Baue deine Toniebox erneut zusammen. Wenn du bereits den TeddyCloud-Hostnamen festgelegt hast, kannst du den DNS-Schritt für den ESP32 überspringen. Andernfalls fahre mit dem DNS-Schritt für den ESP32 fort.",
+                "flashCAreplacementText3": "Deine Toniebox sollte jetzt in der Lage sein, eine Verbindung zu deiner TeddyCloud herzustellen. Mache einen Freshnesscheck und klicke auf \"Verfügbare Boxen anzeigen\".",
                 "certificatesDumpedCAreplacementFlashed": "Zertifikate gedumpt und CA-Ersatz geflasht",
                 "checkBoxes": "Verfügbare Boxen anzeigen",
                 "dnsIntro": "Du kannst entweder die IP/Hostname innerhalb des Images festlegen oder es wie im Folgenden beschrieben tun."
