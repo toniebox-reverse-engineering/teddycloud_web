@@ -29,20 +29,11 @@ export const CC3200BoxFlashingPage = () => {
     const { t } = useTranslation();
     const currentLanguage = i18n.language;
     const [currentStep, setCurrent] = useState(0);
-    const [content, setContent] = useState([<></>, <></>, <></>, <></>, <></>]);
 
     const [hostname, setHostname] = useState<string>("");
     const [warningTextHostname, setWarningTextHostname] = useState<string>("");
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
-
-    const updateContent = (index: number, newContent: JSX.Element) => {
-        setContent((prevContent) => {
-            const updatedContent = [...prevContent];
-            updatedContent[index] = newContent;
-            return updatedContent;
-        });
-    };
 
     const sanitizeHostname = (input: string) => {
         return input.replace(/[^a-zA-Z0-9-.]/g, "").trim();
@@ -546,6 +537,15 @@ export const CC3200BoxFlashingPage = () => {
             </Paragraph>
         </>
     );
+
+    const [content, setContent] = useState([contentStep0, contentStep1, contentStep2, contentStep3, contentStep4]);
+    const updateContent = (index: number, newContent: JSX.Element) => {
+        setContent((prevContent) => {
+            const updatedContent = [...prevContent];
+            updatedContent[index] = newContent;
+            return updatedContent;
+        });
+    };
 
     useEffect(() => {
         const getContentForStep = () => {

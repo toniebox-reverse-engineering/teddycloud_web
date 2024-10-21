@@ -30,17 +30,8 @@ export const ESP32LegacyPage = () => {
     const currentLanguage = i18n.language;
 
     const [currentStep, setCurrent] = useState(0);
-    const [content, setContent] = useState([<></>, <></>, <></>]);
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
-
-    const updateContent = (index: number, newContent: JSX.Element) => {
-        setContent((prevContent) => {
-            const updatedContent = [...prevContent];
-            updatedContent[index] = newContent;
-            return updatedContent;
-        });
-    };
 
     const steps = [
         {
@@ -153,9 +144,19 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.dns")}</h3>
+            <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.skipDnsIfAlreadyDone")}</Paragraph>
             {dnsForTeddyCloud()}
         </>
     );
+
+    const [content, setContent] = useState([contentStep0, contentStep1, contentStep2]);
+    const updateContent = (index: number, newContent: JSX.Element) => {
+        setContent((prevContent) => {
+            const updatedContent = [...prevContent];
+            updatedContent[index] = newContent;
+            return updatedContent;
+        });
+    };
 
     useEffect(() => {
         const getContentForStep = () => {
@@ -281,15 +282,13 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
                                 >
                                     {previousButton}
                                     <div>
-                                        <Button icon={<EyeOutlined />} onClick={checkBoxes}>
+                                        <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
                                             {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
                                         </Button>
                                     </div>
                                     <div>
-                                        <Button icon={<CheckSquareOutlined />} type="primary" onClick={next}>
-                                            {t(
-                                                "tonieboxes.esp32BoxFlashing.legacy.certificatesDumpedCAreplacementFlashed"
-                                            )}
+                                        <Button icon={<RightOutlined />} onClick={next}>
+                                            {t("tonieboxes.esp32BoxFlashing.legacy.proceedWithDNS")}
                                         </Button>
                                     </div>
                                 </div>
