@@ -42,7 +42,7 @@ export function connectESP32Explanation(): JSX.Element {
             >
                 <Image
                     src={tbEsp32Uart}
-                    height={200}
+                    style={{ height: 200, width: "auto" }}
                     preview={false}
                     alt={t("tonieboxes.connectESP32Modal.esp32UartJ103")}
                 />
@@ -53,21 +53,23 @@ export function connectESP32Explanation(): JSX.Element {
                     display: "flex",
                     alignItems: "flex-start",
                     justifyContent: "center",
+                    flexWrap: "wrap",
+                    gap: 16,
                 }}
             >
                 <Image.PreviewGroup>
-                    <div style={{ maxWidth: 200, display: "inline-block", margin: "0 20px" }}>
+                    <div style={{ maxWidth: 200 }}>
                         <Image
+                            style={{ height: 200, width: "auto" }}
                             src={tbEsp32UartClamp}
-                            height={200}
                             alt={t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp")}
                         />
                         <p style={{ marginTop: 8 }}>{t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp")}</p>
                     </div>
-                    <div style={{ display: "inline-block", margin: "0 20px" }}>
+                    <div style={{ maxWidth: 200 }}>
                         <Image
+                            style={{ height: 200, width: "auto" }}
                             src={tbEsp32UartAnalogClamp}
-                            height={200}
                             alt={t("tonieboxes.connectESP32Modal.esp32UartJ103AnalogClamp")}
                         />
                         <p style={{ marginTop: 8 }}>{t("tonieboxes.connectESP32Modal.esp32UartJ103AnalogClamp")}</p>
