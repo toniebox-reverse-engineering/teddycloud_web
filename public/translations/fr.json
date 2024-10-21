@@ -698,7 +698,8 @@
                 "flashCAreplacementText1": "Remplacez le CA d'origine dans votre dump flash avec esptool.",
                 "flashCAreplacementText2": "Remontez votre Toniebox. Si vous avez déjà défini le nom d'hôte de teddyCloud, vous pouvez ignorer l'étape DNS pour l'ESP32, sinon continuez avec l'étape DNS pour l'ESP32.",
                 "flashCAreplacementText3": "Votre Toniebox devrait maintenant pouvoir se connecter à votre teddyCloud. Effectuez un contrôle de fraîcheur et cliquez sur \"Vérifier les boîtes disponibles\".",
-                "certificatesDumpedCAreplacementFlashed": "Certificats dumpés et remplacement CA flashé",
+                "proceedWithDNS": "Procédez à l'étape DNS",
+                "skipDnsIfAlreadyDone": "Si vous avez déjà remplacé l'IP/le nom d'hôte dans le dump flash, vous pouvez ignorer cette étape ici.",
                 "checkBoxes": "Afficher les boîtes disponibles",
                 "dnsIntro": "Vous pouvez soit définir l'adresse IP/le nom d'hôte dans l'image, soit le faire comme décrit ci-dessous."
             },

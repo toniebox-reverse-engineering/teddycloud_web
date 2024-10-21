@@ -698,7 +698,8 @@
                 "flashCAreplacementText1": "Reemplaza la CA original dentro de tu volcado flash con esptool.",
                 "flashCAreplacementText2": "Vuelve a ensamblar tu Toniebox. Si ya configuraste el nombre de host de teddyCloud, puedes omitir el paso de DNS para el ESP32, si no, continúa con el paso de DNS para el ESP32.",
                 "flashCAreplacementText3": "Tu Toniebox ahora debería poder conectarse a tu teddyCloud. Haz una verificación de frescura y haz clic en \"Verificar cajas disponibles\".",
-                "certificatesDumpedCAreplacementFlashed": "Certificados volcados y reemplazo de CA flasheado",
+                "proceedWithDNS": "Procede con el paso de DNS",
+                "skipDnsIfAlreadyDone": "Si ya has reemplazado la IP/hostname en el volcado de flash, puedes ignorar este paso aquí.",
                 "checkBoxes": "Mostrar cajas disponibles",
                 "dnsIntro": "Puedes establecer la IP/nombre de host dentro de la imagen o puedes hacerlo como se describe a continuación."
             },
