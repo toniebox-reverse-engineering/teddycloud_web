@@ -590,7 +590,7 @@
         },
         "esp32BoxFlashing": {
             "attention": "Atención",
-            "browserNotSupported": "El flasheo de la caja ESP32 solo se puede usar con navegadores que admiten la API Web Serial. Lamentablemente, tu navegador actual no admite esta función. Utiliza un navegador que admita la API Web Serial, como Chrome o Edge.",
+            "browserNotSupported": "La funcionalidad de flasheo integrado de la caja ESP32 solo se puede utilizar con navegadores que admiten la API Web Serial. Desafortunadamente, tu navegador actual no admite esta función. Por favor, utiliza un navegador que soporte la API Web Serial, como Chrome o Edge.",
             "esp32flasher": {
                 "automatically": "Automáticamente",
                 "cancel": "Cancelar",
@@ -676,13 +676,12 @@
                 "connectESPCollapseTitle": "Ayuda: Conectar UART con Toniebox"
             },
             "hint": "Esta sección solo está disponible cuando se utiliza HTTPS y un navegador que admite la API Web Serial, como Chrome o Edge. Si deseas flashear tu Toniebox ESP32, haz clic en \"Proceder a HTTPS\" y serás redirigido automáticamente a la versión HTTPS. Tu navegador puede advertir que la conexión no es segura. Esto está bien; confírmalo y procede a abrir la página de todos modos. Es posible que debas mostrar más detalles en la advertencia.",
-            "hintWiki": "Si prefieres no usar un navegador que soporte WebSerial, puedes encontrar una guía paso a paso aquí:",
-            "hintWiki2": "Sigue luego el camino para ESP32:",
+            "hintLegacyApproach": "Si prefieres no usar un navegador que soporte WebSerial, aún puedes usar el método legado (sin GUI, solo línea de comandos).",
             "httpsSettings": "Configuración de HTTPS",
             "legacy": {
-                "followLegacyApproach": "O usa el enfoque legacy (consola simple)",
+                "followLegacyApproach": "O utiliza el método legado (sin GUI, solo línea de comandos).",
                 "navigationTitle": "Método legado",
-                "title": "Flasheo de la caja ESP32 legado",
+                "title": "Método legado de flasheo",
                 "hint": "¡Hay soporte directo para flashear tu Toniebox ESP32 con TeddyCloud disponible!",
                 "preparationText": "Por favor, conecta tu Toniebox a tu Wi-Fi y actualiza su firmware. Muchas cajas se envían con un firmware de producción que necesita ser actualizado. De lo contrario, la caja no funcionará como debería. No es necesario conectar la caja a la aplicación/cuenta mytonies.",
                 "preparationTextLink": "Conecta la caja sin el asistente de configuración.",

@@ -1537,28 +1537,15 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     showIcon
                 />
             </Paragraph>
-            <Paragraph>
-                {t(`tonieboxes.esp32BoxFlashing.hintWiki`)}
-                <ul>
-                    <li>
-                        <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/" target="_blank">
-                            {t(`tonieboxes.esp32BoxFlashing.linkWikiGeneral`)}
+            <Paragraph style={{ marginTop: 16 }}>
+                <Paragraph> {t("tonieboxes.esp32BoxFlashing.hintLegacyApproach")}</Paragraph>
+                <Paragraph>
+                    <Button>
+                        <Link to="/tonieboxes/boxsetup/esp32/legacy">
+                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
                         </Link>
-                    </li>
-                </ul>
-            </Paragraph>
-            <Paragraph>
-                {t(`tonieboxes.esp32BoxFlashing.hintWiki2`)}
-                <ul>
-                    <li>
-                        <Link
-                            to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/esp32/"
-                            target="_blank"
-                        >
-                            {t(`tonieboxes.esp32BoxFlashing.linkWikiSpecific`)}
-                        </Link>
-                    </li>
-                </ul>
+                    </Button>
+                </Paragraph>
             </Paragraph>
         </>
     );

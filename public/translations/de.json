@@ -590,7 +590,7 @@
         },
         "esp32BoxFlashing": {
             "attention": "Achtung",
-            "browserNotSupported": "ESP32 Box Flashing kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge.",
+            "browserNotSupported": "Die integrierte ESP32 Box Flashing Funktionalität kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge.",
             "esp32flasher": {
                 "automatically": "Automatisch",
                 "cancel": "Abbrechen",
@@ -676,13 +676,12 @@
                 "connectESPCollapseTitle": "Hilfe: UART mit Toniebox verbinden"
             },
             "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird und du einen Browser nutzt, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge. Wenn du deine ESP32 Toniebox flashen willst, dann klicke bitte auf \"Weiter zu HTTPS\", du wirst dann automatisch auf die HTTPS Version weitergeleitet. Es kann sein, dass dein Browser meldet, dass die Verbindung nicht sicher ist. Dies ist ok, bestätige es und öffne die Seite dennoch. Eventuell musst du dafür weitere Details bei der Meldung anzeigen.",
-            "hintWiki": "Falls du keinen WebSerial fähigen Browser nutzen möchtest, hier findest du eine Schritt-für-Schritt-Anleitung:",
-            "hintWiki2": "Bitte folge dann dem ESP32-Pfad:",
+            "hintLegacyApproach": "Wenn du lieber keinen Browser verwenden möchtest, der WebSerial unterstützt, kannst du immer noch die Legacy-Methode verwenden (kein GUI, nur Eingabeaufforderung).",
             "httpsSettings": "HTTPS Settings",
             "legacy": {
-                "followLegacyApproach": "Oder verwende stattdessen den Legacy-Ansatz (rein über Konsole)",
+                "followLegacyApproach": "Oder verwende die Legacy-Methode (kein GUI, nur Eingabeaufforderung).",
                 "navigationTitle": "Legacy-Methode",
-                "title": "ESP32 Box Flashing Legacy-Methode",
+                "title": "Legacy-Methode zum Flashen",
                 "hint": "Es gibt eine direkte Unterstützung zum Flashen deiner ESP32 Toniebox mit TeddyCloud!",
                 "preparationText": "Bitte verbinde deine Toniebox mit deinem WLAN und aktualisiere die Firmware. Viele Boxen werden mit einer Produktionsfirmware ausgeliefert, die aktualisiert werden muss. Andernfalls funktioniert die Box nicht wie vorgesehen. Es ist nicht notwendig, die Box mit der Mytonies-App/Konto zu verbinden.",
                 "preparationTextLink": "Verbinde die Box ohne den Einrichtungsassistenten.",
