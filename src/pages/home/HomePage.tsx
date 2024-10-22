@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Typography, Button, Alert, message } from "antd";
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -24,6 +24,7 @@ interface LanguageCounts {
 
 export const HomePage = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
@@ -190,11 +191,11 @@ export const HomePage = () => {
                             readOnly={true}
                             defaultLanguage={defaultLanguage}
                         />
-                        <Button>
-                            <Link to="/tonies">
+                        <Paragraph>
+                            <Button onClick={() => navigate("/tonies")}>
                                 {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})
-                            </Link>
-                        </Button>
+                            </Button>
+                        </Paragraph>
                     </Paragraph>
                     <Paragraph>
                         <h2>{t("home.helpfulLinks")}</h2>

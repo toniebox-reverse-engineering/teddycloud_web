@@ -1428,7 +1428,8 @@ export const FileBrowser: React.FC<{
             title:
                 selectedRowKeys.length > 0 ? (
                     <div style={{ display: "flex", gap: 8, minHeight: 32 }}>
-                        {files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length > 0 ? (
+                        {special === "library" &&
+                        files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length > 0 ? (
                             <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
                                 <Button
                                     icon={<NodeExpandOutlined />}
@@ -1624,36 +1625,10 @@ export const FileBrowser: React.FC<{
 
                 // taf file
                 if (record.tafHeader) {
-                    // migration to lib possible
-                    if (special !== "library") {
-                        actions.push(
-                            <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
-                                <CloudServerOutlined
-                                    onClick={() =>
-                                        migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)
-                                    }
-                                    style={{ margin: "0 8px 0 0" }}
-                                />
-                            </Tooltip>
-                        );
-                        actions.push(
-                            <Tooltip
-                                key={`action-migrate-root-${record.name}`}
-                                title={t("fileBrowser.migrateContentToLibRoot")}
-                            >
-                                <TruckOutlined
-                                    onClick={() =>
-                                        migrateContent2Lib(path.replace("/", "") + record.name, true, overlay)
-                                    }
-                                    style={{ margin: "0 8px 0 0" }}
-                                />
-                            </Tooltip>
-                        );
-                    }
                     actions.push(
                         <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
                             <PlayCircleOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() =>
                                     playAudio(
                                         encodeURI(
@@ -1673,11 +1648,37 @@ export const FileBrowser: React.FC<{
                             />
                         </Tooltip>
                     );
+                    // migration to lib possible
+                    if (special !== "library") {
+                        actions.push(
+                            <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
+                                <CloudServerOutlined
+                                    onClick={() =>
+                                        migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)
+                                    }
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                        actions.push(
+                            <Tooltip
+                                key={`action-migrate-root-${record.name}`}
+                                title={t("fileBrowser.migrateContentToLibRoot")}
+                            >
+                                <TruckOutlined
+                                    onClick={() =>
+                                        migrateContent2Lib(path.replace("/", "") + record.name, true, overlay)
+                                    }
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                    }
                 } else if (supportedAudioExtensionsForEncoding.some((ending) => record.name.endsWith(ending))) {
                     actions.push(
                         <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
                             <PlayCircleOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() =>
                                     playAudio(
                                         encodeURI(
@@ -1702,14 +1703,14 @@ export const FileBrowser: React.FC<{
                     actions.push(
                         <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tap.edit")}>
                             <EditOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
                             />
                         </Tooltip>
                     );
                     actions.push(
                         <Tooltip key={`action-copy-${record.name}`} title={t("fileBrowser.tap.copy")}>
-                            <CopyOutlined style={{ margin: "0 8px 0 0" }} />
+                            <CopyOutlined style={{ margin: "4px 8px 4px 0", padding: 4 }} />
                         </Tooltip>
                     );
                 }
@@ -1717,33 +1718,36 @@ export const FileBrowser: React.FC<{
                     actions.push(
                         <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
                             <EditOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTafMetaDataClick(path, record)}
                             />
                         </Tooltip>
                     );
                 }
-                // include the rename icon on files
-                if (!record.isDir && record.name !== "..") {
-                    actions.push(
-                        <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
-                            <FormOutlined
-                                onClick={() => showRenameDialog(record.name)}
-                                style={{ margin: "0 8px 0 0" }}
-                            />
-                        </Tooltip>
-                    );
-                }
-                // include the move icon on files
-                if (!record.isDir && record.name !== "..") {
-                    actions.push(
-                        <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
-                            <NodeExpandOutlined
-                                onClick={() => showMoveDialog(record.name)}
-                                style={{ margin: "0 8px 0 0" }}
-                            />
-                        </Tooltip>
-                    );
+                // only in library move and rename
+                if (special === "library") {
+                    // include the rename icon on files
+                    if (!record.isDir && record.name !== "..") {
+                        actions.push(
+                            <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
+                                <FormOutlined
+                                    onClick={() => showRenameDialog(record.name)}
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                    }
+                    // include the move icon on files
+                    if (!record.isDir && record.name !== "..") {
+                        actions.push(
+                            <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
+                                <NodeExpandOutlined
+                                    onClick={() => showMoveDialog(record.name)}
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                    }
                 }
                 // include the delete action
                 if (record.name !== "..") {
@@ -1757,7 +1761,7 @@ export const FileBrowser: React.FC<{
                                         "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
                                     )
                                 }
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                             />
                         </Tooltip>
                     );
