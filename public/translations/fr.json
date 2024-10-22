@@ -743,6 +743,8 @@
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "Nouvelles Tonieboxes autorisées",
         "newBoxesAllowedText": "Vous pouvez connecter de nouvelles Tonieboxes à TeddyCloud. Une fois que vous avez connecté toutes vos boîtes, veuillez désactiver le réglage \"Autoriser les nouvelles boîtes\" pour des raisons de sécurité.",
+        "noData": "Aucune Toniebox trouvée.",
+        "noDataText": "Les Toniebox n'apparaîtront qu'après l'établissement d'une connexion réussie. Assure-toi que ta Toniebox est correctement connectée.",
         "noNewBoxesAllowed": "Les nouvelles Tonieboxes ne sont pas autorisées",
         "noNewBoxesAllowedText": "Tu ne peux pas connecter de nouvelles Tonieboxes à TeddyCloud. Veuillez activer le paramètre \"Autoriser de nouvelles boxes\". Une fois que tu as connecté toutes tes boxes, désactive le paramètre \"Autoriser de nouvelles boxes\" pour des raisons de sécurité.",
         "offline": "hors ligne",

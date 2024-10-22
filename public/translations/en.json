@@ -743,6 +743,8 @@
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "New Tonieboxes allowed",
         "newBoxesAllowedText": "You can connect new Tonieboxes to TeddyCloud. Once you have connected all your boxes, please disable the \"Allow new boxes\" setting for security reasons.",
+        "noData": "No Tonieboxes found.",
+        "noDataText": "Tonieboxes will only appear after establishing a successful connection. Ensure your Toniebox is connected properly.",
         "noNewBoxesAllowed": "New Tonieboxes are not allowed",
         "noNewBoxesAllowedText": "You cannot connect new Tonieboxes to TeddyCloud. Please enable first the \"Allow new boxes\" setting. Once you have connected all your boxes, please disable the \"Allow new boxes\" setting for security reasons.",
         "offline": "offline",

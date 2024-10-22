@@ -743,6 +743,8 @@
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "Nuevas Tonieboxes permitidas",
         "newBoxesAllowedText": "Puedes conectar nuevas Tonieboxes a TeddyCloud. Una vez que hayas conectado todas tus cajas, deshabilita la opción \"Permitir nuevas cajas\" por razones de seguridad.",
+        "noData": "No se encontraron Tonieboxes.",
+        "noDataText": "Las Tonieboxes solo aparecerán después de establecer una conexión exitosa. Asegúrate de que tu Toniebox esté conectada correctamente.",
         "noNewBoxesAllowed": "No se permiten nuevas Tonieboxes",
         "noNewBoxesAllowedText": "No puedes conectar nuevas Tonieboxes a TeddyCloud. Por favor, activa la configuración \"Permitir nuevas cajas\". Una vez que hayas conectado todas tus cajas, desactiva la configuración \"Permitir nuevas cajas\" por razones de seguridad.",
         "offline": "desconectado",

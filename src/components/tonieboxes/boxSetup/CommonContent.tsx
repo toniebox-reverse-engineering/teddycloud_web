@@ -1,4 +1,4 @@
-import { Alert, Button, Image, Modal, Table, Typography } from "antd";
+import { Alert, Button, Empty, Image, Modal, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import CodeSnippet from "../../../utils/codeSnippet";
 import { useState, useEffect } from "react";
@@ -226,6 +226,18 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
         </Paragraph>
     );
 
+    const renderEmpty = () => (
+        <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={
+                <div>
+                    <p>{t("tonieboxes.noData")}</p>
+                    <p>{t("tonieboxes.noDataText")}</p>
+                </div>
+            }
+        />
+    );
+
     return (
         <Modal
             title={t("tonieboxes.availableBoxModal.availableBoxes", { boxVersion: boxVersion })}
@@ -253,6 +265,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                 columns={columns}
                 rowKey="ID"
                 pagination={false}
+                locale={{ emptyText: renderEmpty() }}
             />
         </Modal>
     );
