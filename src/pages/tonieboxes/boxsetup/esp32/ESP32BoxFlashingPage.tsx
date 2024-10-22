@@ -27,7 +27,7 @@ import {
     UploadOutlined,
 } from "@ant-design/icons";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -68,6 +68,7 @@ const { Step } = Steps;
 
 export const ESP32BoxFlashingPage = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const currentLanguage = i18n.language;
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1445,11 +1446,11 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                 {currentStep === 0 && (
                     <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                         <div>
-                            <Button>
-                                <Link to="/tonieboxes/boxsetup/esp32/legacy">
+                            <Paragraph>
+                                <Button onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}>
                                     {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Paragraph>
                         </div>
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button icon={<FileAddOutlined />} disabled={disableButtons} onClick={() => loadFile()}>
@@ -1540,10 +1541,8 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
             <Paragraph style={{ marginTop: 16 }}>
                 <Paragraph> {t("tonieboxes.esp32BoxFlashing.hintLegacyApproach")}</Paragraph>
                 <Paragraph>
-                    <Button>
-                        <Link to="/tonieboxes/boxsetup/esp32/legacy">
-                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
-                        </Link>
+                    <Button onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}>
+                        {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
                     </Button>
                 </Paragraph>
             </Paragraph>
@@ -1588,10 +1587,8 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                             <Paragraph style={{ marginTop: 16 }}>
                                 <Paragraph> {t("tonieboxes.esp32BoxFlashing.legacy.followLegacyApproach")}</Paragraph>
                                 <Paragraph>
-                                    <Button>
-                                        <Link to="/tonieboxes/boxsetup/esp32/legacy">
-                                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
-                                        </Link>
+                                    <Button onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}>
+                                        {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
                                     </Button>
                                 </Paragraph>
                             </Paragraph>

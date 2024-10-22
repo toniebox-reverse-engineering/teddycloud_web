@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme, Tooltip } from "antd";
+import { useNavigate } from "react-router-dom";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -25,6 +26,7 @@ const { useToken } = theme;
 export const IdentifyBoxVersionPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const navigate = useNavigate();
     const [boxMac, setBoxMac] = useState<string>("");
     const [warningTextMac, setWarningTextMac] = useState<string>("");
     const [vendor, setVendor] = useState<string | null>(null);
@@ -66,39 +68,72 @@ export const IdentifyBoxVersionPage = () => {
     const cc3200Tab = (
         <>
             <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.cc3200text")}</Paragraph>
-            <Image
-                src={pcb3200Image}
-                width={400}
-                style={{ maxWidth: window.innerWidth < 448 ? "70%" : "100%" }}
-                alt="PCB CC3200"
-            ></Image>{" "}
-            <Image src={chip3200Image} height={300} alt="Chip CC3200"></Image>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    flexWrap: "wrap",
+                    gap: 16,
+                }}
+            >
+                <Image.PreviewGroup>
+                    <Paragraph style={{ maxWidth: 400 }}>
+                        <Image src={pcb3200Image} alt="PCB CC3200"></Image>
+                    </Paragraph>
+                    <Paragraph style={{ maxWidth: "100%" }}>
+                        <Image src={chip3200Image} style={{ height: 300, width: "auto" }} alt="Chip CC3200"></Image>
+                    </Paragraph>
+                </Image.PreviewGroup>
+            </Paragraph>
         </>
     );
 
     const cc3235Tab = (
         <>
             <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.cc3235text")}</Paragraph>
-            <Image
-                src={pcb3235Image}
-                width={400}
-                style={{ maxWidth: window.innerWidth < 448 ? "70%" : "100%" }}
-                alt="PCB CC3235"
-            ></Image>{" "}
-            <Image src={chip3235Image} height={300} alt="Chip CC3235"></Image>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    flexWrap: "wrap",
+                    gap: 16,
+                }}
+            >
+                <Image.PreviewGroup>
+                    <Paragraph style={{ maxWidth: 400 }}>
+                        <Image src={pcb3235Image} alt="PCB CC3235"></Image>
+                    </Paragraph>
+                    <Paragraph style={{ maxWidth: "100%" }}>
+                        <Image src={chip3235Image} style={{ height: 300, width: "auto" }} alt="Chip CC3235"></Image>
+                    </Paragraph>
+                </Image.PreviewGroup>
+            </Paragraph>
         </>
     );
 
     const esp32Tab = (
         <>
             <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.esp32text")}</Paragraph>
-            <Image
-                src={pcbesp32Image}
-                width={400}
-                style={{ maxWidth: window.innerWidth < 448 ? "70%" : "100%" }}
-                alt="PCB ESP32"
-            ></Image>{" "}
-            <Image src={chipesp32Image} height={300} alt="Chip ESP32"></Image>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    flexWrap: "wrap",
+                    gap: 16,
+                }}
+            >
+                <Image.PreviewGroup>
+                    <Paragraph style={{ maxWidth: 400 }}>
+                        <Image src={pcbesp32Image} alt="PCB ESP32"></Image>
+                    </Paragraph>
+                    <Paragraph style={{ maxWidth: "100%" }}>
+                        <Image src={chipesp32Image} style={{ height: 300, width: "auto" }} alt="Chip ESP32"></Image>
+                    </Paragraph>
+                </Image.PreviewGroup>
+            </Paragraph>
         </>
     );
 
@@ -122,11 +157,11 @@ export const IdentifyBoxVersionPage = () => {
                 )}
                 indicator={{ size: (origin) => origin - 20, align: "center" }}
             />
+            <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.proceedToFlash1")} </Paragraph>
             <Paragraph style={{ marginTop: 16 }}>
-                {t("tonieboxes.boxSetup.identifyVersion.proceedToFlash1")}{" "}
-                <Link to={`../tonieboxes/boxsetup/${activeKey}/flashing`}>
-                    {activeKey.toUpperCase()} {t("tonieboxes.boxSetup.identifyVersion.proceedToFlashLinkText")}
-                </Link>
+                <Button type="primary" onClick={() => navigate(`../tonieboxes/boxsetup/${activeKey}/flashing`)}>
+                    {`${activeKey.toUpperCase()} ${t("tonieboxes.boxSetup.identifyVersion.proceedToFlashLinkText")}`}
+                </Button>
             </Paragraph>
         </>
     );
