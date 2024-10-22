@@ -37,7 +37,7 @@ export const ChangelogPage = () => {
                 "gui: Improved Code Snippet Element, show line numbers and added copy functionality",
                 "gui: Added Box setup overview page",
                 "gui: Added Box version identification page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/145",
-                "gui: Added Open Toniebox guide page (first version) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/146",
+                "gui: Added Open Toniebox guide page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/146",
                 "gui: Extended CC3200 Firmware flash section, added custom alt Url Patch generation. https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/126",
                 "gui: Extended CC3200 Firmware flash section, extended Applying Patches step",
                 "gui: Extended CC3235 Firmware flash section, same version as wiki, but additional images flash chip",
