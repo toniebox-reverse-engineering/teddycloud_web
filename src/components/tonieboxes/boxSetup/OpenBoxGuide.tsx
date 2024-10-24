@@ -19,8 +19,8 @@ export function openBoxGuide(): JSX.Element {
     const [intervalDuration, setIntervalDuration] = useState(500);
 
     useEffect(() => {
-        let interval;
-        interval = setInterval(() => {
+        let interval: number;
+        interval = window.setInterval(() => {
             setShowFirstImage((prev) => !prev);
             setIntervalDuration((prevDuration) => (prevDuration === 500 ? 2000 : 500));
         }, intervalDuration);
