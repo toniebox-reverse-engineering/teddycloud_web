@@ -27,7 +27,7 @@ import {
     UploadOutlined,
 } from "@ant-design/icons";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -994,6 +994,8 @@ export const ESP32BoxFlashingPage = () => {
         </div>
     );
 
+    const conESP32Explanation = connectESP32Explanation();
+
     // step 0 - start the process, select between read flash and load file
     const contentStep0 = (
         <>
@@ -1008,7 +1010,10 @@ export const ESP32BoxFlashingPage = () => {
                         description={t("tonieboxes.hintLatestFirmware")}
                     ></Alert>
                     <Paragraph style={{ marginTop: 16 }}>
-                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}
+                        <Alert
+                            type="info"
+                            description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}
+                        />
                     </Paragraph>
 
                     <Collapse
@@ -1018,7 +1023,7 @@ export const ESP32BoxFlashingPage = () => {
                             {
                                 key: "1",
                                 label: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectESPCollapseTitle"),
-                                children: <>{connectESP32Explanation()}</>,
+                                children: conESP32Explanation,
                             },
                         ]}
                     />
@@ -1036,7 +1041,9 @@ export const ESP32BoxFlashingPage = () => {
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash")}</h3>
             <div>
                 {!state.actionInProgress && (
-                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")}</Paragraph>
+                    <Paragraph>
+                        <Alert type="info" description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")} />
+                    </Paragraph>
                 )}
                 {stepStatusText}
                 {!state.actionInProgress && state.downloadLink ? (
@@ -1156,7 +1163,10 @@ export const ESP32BoxFlashingPage = () => {
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32")}</h3>
             {!state.actionInProgress && (
-                <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")}</Paragraph>
+                <Paragraph>
+                    {" "}
+                    <Alert type="info" description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")} />
+                </Paragraph>
             )}
             {stepStatusText}
             {!state.actionInProgress && state.downloadLinkPatched ? (
@@ -1182,7 +1192,12 @@ export const ESP32BoxFlashingPage = () => {
     const contentStep3 = (
         <>
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleESP32FirmwareFlashed")}</h3>
-            <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareFlashed")}</Paragraph>
+            <Paragraph>
+                <Alert
+                    type="success"
+                    description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareFlashed")}
+                />
+            </Paragraph>
             {stepStatusText}
             {contentProgress}
             {(state.downloadLink || state.downloadLinkPatched) && (

@@ -45,6 +45,8 @@ export const ESP32LegacyPage = () => {
         },
     ];
 
+    const conESP32Explanation = connectESP32Explanation();
+
     // step 0 - preparations
     const contentStep0 = (
         <>
@@ -74,7 +76,7 @@ export const ESP32LegacyPage = () => {
                 </Link>
             </Paragraph>
             <h4>{t("tonieboxes.esp32BoxFlashing.legacy.connectESP32")}</h4>
-            {connectESP32Explanation()}
+            {conESP32Explanation}
         </>
     );
 
@@ -141,11 +143,12 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
     );
 
     // step 2 - dns
+    const dnsForTC = dnsForTeddyCloud();
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.dns")}</h3>
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.skipDnsIfAlreadyDone")}</Paragraph>
-            {dnsForTeddyCloud()}
+            {dnsForTC}
         </>
     );
 

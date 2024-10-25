@@ -176,10 +176,11 @@ flashrom -p serprog:dev=/dev/ttyACM0:921600 -w cc32xx-flash.bin --progress`}
     );
 
     // step 2 - dns
+    const dnsForTC = dnsForTeddyCloud();
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.dns")}</h3>
-            {dnsForTeddyCloud()}
+            {dnsForTC}
         </>
     );
 
