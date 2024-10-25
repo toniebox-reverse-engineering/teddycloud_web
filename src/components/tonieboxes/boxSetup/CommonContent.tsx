@@ -201,7 +201,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
         } catch (error) {
             console.error("Error fetching tonieboxes:", error);
         } finally {
-            setLoading(false); // Set loading to false after data is fetched
+            setLoading(false);
         }
     };
 
@@ -227,9 +227,9 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
         <Paragraph style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
             <Button
                 onClick={async () => {
-                    setLoading(true); // Set loading to true
+                    setLoading(true);
                     setRecheckTonieboxes((prev) => !prev);
-                    await fetchTonieboxes(); // Fetch tonieboxes again
+                    await fetchTonieboxes();
                 }}
             >
                 {t("tonieboxes.availableBoxModal.recheck")}
