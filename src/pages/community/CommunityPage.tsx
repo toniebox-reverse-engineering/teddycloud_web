@@ -28,25 +28,20 @@ export const CommunityPage = () => {
                     items={[{ title: t("home.navigationTitle") }, { title: t("community.navigationTitle") }]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.title`)}</h1>
+                    <h1>{t("community.title")}</h1>
                     <Paragraph>
-                        <h2>Get involved</h2>
-                        Be a part of our global contributor community by writing code, commenting on issues, or
-                        participate in discussons in our telegram group.
+                        <h2>{t("community.community.getInvolved")}</h2>
+                        {t("community.community.getInvolvedText1")}
                     </Paragraph>
                     <Paragraph>
-                        Your best points of contact are the following locations
+                        <Paragraph>{t("community.community.getInvolvedText2")}</Paragraph>
                         <ul>
                             <li>
                                 <Link to="https://github.com/toniebox-reverse-engineering" target="_blank">
                                     GitHub
                                 </Link>
                                 <ul>
-                                    <li>
-                                        The place where all sources are stored for this and related projects. Where you
-                                        can fork the repositories, contribute new or improved features, create issues or
-                                        just give some feedback on already existing issues.
-                                    </li>
+                                    <li>{t("community.community.github")}</li>
                                 </ul>
                             </li>
                             <li>
@@ -54,10 +49,7 @@ export const CommunityPage = () => {
                                     Telegram Chat
                                 </Link>
                                 <ul>
-                                    <li>
-                                        The first level support if you need help or if you are interested in getting
-                                        involved in the development of TeddyCloud.
-                                    </li>
+                                    <li>{t("community.community.telegram")}</li>
                                 </ul>
                             </li>
                             <li>
@@ -65,10 +57,7 @@ export const CommunityPage = () => {
                                     Discourse Forum
                                 </Link>
                                 <ul>
-                                    <li>
-                                        The lively knowledge base for the project, a place to ask questions whose
-                                        answers can be helpful for others.
-                                    </li>
+                                    <li>{t("community.community.discourse")}</li>
                                 </ul>
                             </li>
                             <li>
@@ -76,10 +65,7 @@ export const CommunityPage = () => {
                                     TeddyCloud Wiki
                                 </Link>
                                 <ul>
-                                    <li>
-                                        A Wiki contains, among other things, how to install TeddyCloud and how to solve
-                                        possible problems.
-                                    </li>
+                                    <li>{t("community.community.teddyCloudWiki")}</li>
                                 </ul>
                             </li>
                         </ul>

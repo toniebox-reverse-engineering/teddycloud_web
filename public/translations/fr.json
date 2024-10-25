@@ -11,9 +11,23 @@
         "unknownSource": "Inconnu"
     },
     "community": {
+        "community": {
+            "getInvolved": "Participe",
+            "getInvolvedText1": "Faites partie de notre communauté mondiale de contributeurs en écrivant du code, en commentant des problèmes ou en participant aux discussions dans notre groupe Telegram.",
+            "getInvolvedText2": "Vos meilleurs points de contact sont les lieux suivants :",
+            "github": "L’endroit où toutes les sources sont stockées pour ce projet et les projets associés. Vous pouvez y forker les dépôts, apporter de nouvelles fonctionnalités ou des améliorations, créer des issues ou simplement donner votre avis sur les issues existants.",
+            "telegram": "Le support de premier niveau si vous avez besoin d’aide ou si vous êtes intéressé(e) à participer au développement de TeddyCloud.",
+            "discourse": "La base de connaissances animée du projet, un lieu où poser des questions dont les réponses peuvent être utiles pour d'autres.",
+            "teddyCloudWiki": "Un Wiki qui contient, entre autres, comment installer TeddyCloud et comment résoudre des problèmes éventuels."
+        },
         "changelog": {
             "navigationTitle": "Journal des modifications",
-            "title": "Journal des modifications/Notes de version"
+            "title": "Journal des modifications/Notes de version",
+            "version": "Version",
+            "changes": "Modifications",
+            "allCommits": "Tous les commits inclus se trouvent ici (repo teddy cloud)",
+            "discussion": "Discussion",
+            "githubRelease": "Publication GitHub"
         },
         "contribution": {
             "navigationTitle": "Contribution",
@@ -22,11 +36,35 @@
                 "navigationTitle": "tonies.json",
                 "text": "Vous êtes les bienvenus pour nous aider en nous envoyant les données manquantes des Tonies listés ci-dessous. À l'avenir, cela sera possible directement dans TeddyCloud, pour le moment vous pouvez utiliser TeddyBench. Merci d'avance !",
                 "title": "Contribuer à tonies.json"
-            }
+            },
+            "contributionIntro": "TeddyCloud ne peut se développer que grâce aux contributions de cette communauté. Merci beaucoup pour votre enthousiasme et votre travail - nous apprécions tout ce que vous faites !",
+            "communityValues": "Valeurs de la communauté",
+            "communityValuesIntro": "Dans l'intérêt de favoriser un environnement ouvert et accueillant, les contributeurs et les mainteneurs s'engagent à faire de la participation à notre projet et à notre communauté une expérience exempte de harcèlement pour tous ' indépendamment de l'âge, de la taille corporelle, du handicap, de l'ethnicité, de l'identité de genre et de l'expression, du niveau d'expérience, de la nationalité, de l'apparence personnelle, de la race, de la religion ou de l'identité et de l'orientation sexuelle.",
+            "communityValuesExamples": "Exemples de comportements qui contribuent à créer un environnement positif:",
+            "communityValues1": "Utiliser un langage accueillant et inclusif.",
+            "communityValues2": "Respecter les points de vue et les expériences différents.",
+            "communityValues3": "Accepter gracieusement les critiques constructives.",
+            "communityValues4": "Favoriser ce qui est le mieux pour la communauté.",
+            "communityValues5": "Faire preuve d'empathie envers les autres membres de la communauté.",
+            "communityValues6": "Les décisions sont prises en fonction du mérite technique et du consensus. La communauté TeddyCloud aspire à traiter tout le monde de la même manière et à valoriser toutes les contributions.",
+            "makeFirstContribution": "Faites votre première contribution",
+            "makeFirstContributionIntro": "Il existe de nombreuses façons de contribuer à TeddyCloud ! Vous pouvez contribuer par du code et améliorer la documentation de TeddyCloud. Nos contributions les plus courantes incluent le code, la documentation et le support communautaire.",
+            "makeFirstContribution1": "Écrire du code.",
+            "makeFirstContribution2": "Améliorer la documentation.",
+            "makeFirstContribution3": "Répondre aux questions dans notre groupe Telegram.",
+            "makeFirstContribution4": "Enquêter sur les bugs et les issues sur GitHub.",
+            "makeFirstContribution5": "Examiner et commenter les pull requests d'autres développeurs.",
+            "makeFirstContribution6": "Signaler un problème.",
+            "makeFirstContribution7": "Donnez un \"pouce en l'air\" aux issues qui vous concernent."
         },
         "contributors": {
             "navigationTitle": "Contributeurs",
-            "title": "Contributeurs"
+            "title": "Contributeurs",
+            "contributorsIntro": "Ce projet repose sur les contributeurs infatigables qui offrent leur temps libre et leurs compétences. Directement liés à TeddyCloud sont les contributeurs des deux projets teddycloud et teddycloud_web :",
+            "teddyCloud": "La partie la plus nécessaire mais souvent invisible de votre serveur TeddyCloud.",
+            "teddyCloudWeb": "L'interface que vous utilisez et voyez ici.",
+            "others": "Vous pouvez trouver d'autres contributeurs à l'ensemble du thème dans les autres dépôts GitHub sous",
+            "bigRoundOfApplause": "Un grand applaudissement pour eux !"
         },
         "faq": {
             "intro": "Vous trouverez ici des réponses à certaines questions fréquemment posées. Si votre question n'est pas répondue ici, veuillez visiter le forum ou utiliser le groupe Telegram pour obtenir de l'aide.",
@@ -249,12 +287,26 @@
                         "01certificates": "extraire/injecter des certificats sur un dump de firmware esp32",
                         "02newServerHost": "définir un nouvel hôte de serveur",
                         "03wifiCredentials": "définir les identifiants WiFi",
-                        "04extractCertificates": "Extraire les certificats et les stocker dans TeddyCloud"
+                        "04extractCertificates": "extraire les certificats et les stocker dans TeddyCloud",
+                        "05guidelineLegacyMethod": "guide pour le flashage avec la méthode héritée (sans GUI, seulement en ligne de commande)"
                     },
                     "title": "Flashage de la Box ESP32"
                 },
-                "09decodeLogs": "Décrypter les journaux RTNL",
-                "10mqttClient": {
+                "09CC3200Flashing": {
+                    "items": {
+                        "01Guideline": "guide pour le flashage",
+                        "02AltUrlCustomPatch": "génération du patch AltUrl.custom.305 basée sur formulaire"
+                    },
+                    "title": "Flashage de la Boîte CC3200"
+                },
+                "10CC3235Flashing": {
+                    "items": {
+                        "01Guideline": "guide détaillé pour le processus de flashage"
+                    },
+                    "title": "Flashage de la Boîte CC3235"
+                },
+                "11decodeLogs": "Décrypter les journaux RTNL",
+                "12mqttClient": {
                     "items": {
                         "01homeAssistantIntegration": "Intégration Home Assistant (MQTT)"
                     },

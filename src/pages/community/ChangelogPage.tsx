@@ -277,15 +277,17 @@ export const ChangelogPage = () => {
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.changelog.title`)}</h1>
+                    <h1>{t("community.changelog.title")}</h1>
                     <Paragraph>
                         <List
                             dataSource={changelogData}
                             renderItem={(item) => (
                                 <>
-                                    <h2>Version {item.version}</h2>
+                                    <h2>
+                                        {t("community.changelog.version")} {item.version}
+                                    </h2>
                                     <Paragraph>
-                                        <h3>Changes</h3>
+                                        <h3>{t("community.changelog.changes")}</h3>
                                         <ul>
                                             {item.changes.map((change, index) => (
                                                 <li key={index}>{renderChangeEntry(change)}</li>
@@ -294,9 +296,7 @@ export const ChangelogPage = () => {
                                     </Paragraph>
                                     {item.commits && item.commits.length > 0 && (
                                         <>
-                                            <Text strong>
-                                                All contained commits can be found here (teddy cloud repo):
-                                            </Text>
+                                            <Text strong>{t("community.changelog.allCommits")}:</Text>
                                             <ul>
                                                 {item.commits.map((commit, index) => (
                                                     <li key={index}>
@@ -310,7 +310,7 @@ export const ChangelogPage = () => {
                                     )}
                                     {item.discussionLink && (
                                         <>
-                                            <Text strong>Discussion:</Text>
+                                            <Text strong>{t("community.changelog.discussion")}:</Text>
                                             <ul>
                                                 <li>
                                                     <Link to={item.discussionLink} target="_blank">
@@ -322,7 +322,7 @@ export const ChangelogPage = () => {
                                     )}
                                     {item.githubReleaseLink && (
                                         <>
-                                            <Text strong>GitHub Release:</Text>
+                                            <Text strong>{t("community.changelog.githubRelease")}:</Text>
                                             <ul>
                                                 <li>
                                                     <Link to={item.githubReleaseLink} target="_blank">

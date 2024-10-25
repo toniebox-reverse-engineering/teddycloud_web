@@ -11,9 +11,23 @@
         "unknownSource": "Desconocido"
     },
     "community": {
+        "community": {
+            "getInvolved": "Involúcrate",
+            "getInvolvedText1": "Forma parte de nuestra comunidad global de colaboradores escribiendo código, comentando issues o participando en discusiones en nuestro grupo de Telegram.",
+            "getInvolvedText2": "Tus mejores puntos de contacto son los siguientes lugares:",
+            "github": "El lugar donde se almacenan todos los recursos para este y otros proyectos relacionados. Aquí puedes bifurcar los repositorios, contribuir con nuevas o mejoradas características, crear issues o simplemente dar comentarios sobre issues existentes.",
+            "telegram": "El soporte de primer nivel, si necesitas ayuda o si deseas involucrarte en el desarrollo de TeddyCloud.",
+            "discourse": "La base de conocimiento activa del proyecto, un lugar para hacer preguntas cuyas respuestas puedan ser útiles para otros.",
+            "teddyCloudWiki": "Un Wiki que contiene, entre otras cosas, cómo instalar TeddyCloud y cómo resolver posibles problemas."
+        },
         "changelog": {
             "navigationTitle": "Registro de cambios",
-            "title": "Registro de cambios/Notas de la versión"
+            "title": "Registro de cambios/Notas de la versión",
+            "version": "Versión",
+            "changes": "Cambios",
+            "allCommits": "Todos los commits incluidos se pueden encontrar aquí (repositorio de teddy cloud)",
+            "discussion": "Discusión",
+            "githubRelease": "Lanzamiento de GitHub"
         },
         "contribution": {
             "navigationTitle": "Contribución",
@@ -22,11 +36,35 @@
                 "navigationTitle": "tonies.json",
                 "text": "Nos encantaría que nos apoyaras enviándonos los datos faltantes de los Tonies listados a continuación. En el futuro, esto será posible directamente en TeddyCloud, pero por ahora puedes usar TeddyBench. ¡Gracias de antemano!",
                 "title": "Contribuir a tonies.json"
-            }
+            },
+            "contributionIntro": "TeddyCloud solo puede crecer gracias a las contribuciones de esta comunidad. ¡Gracias por tu entusiasmo y trabajo, apreciamos todo lo que haces!",
+            "communityValues": "Valores de la comunidad",
+            "communityValuesIntro": "Para fomentar un ambiente abierto y acogedor, los colaboradores y mantenedores se comprometen a hacer de la participación en nuestro proyecto y en nuestra comunidad una experiencia libre de acoso para todos, independientemente de la edad, tamaño corporal, discapacidad, etnia, identidad y expresión de género, nivel de experiencia, nacionalidad, apariencia personal, raza, religión o identidad y orientación sexual.",
+            "communityValuesExamples": "Ejemplos de comportamientos que contribuyen a crear un entorno positivo:",
+            "communityValues1": "Usa un lenguaje acogedor e inclusivo.",
+            "communityValues2": "Respeta los puntos de vista y experiencias diferentes.",
+            "communityValues3": "Acepta con gracia las críticas constructivas.",
+            "communityValues4": "Promueve lo mejor para la comunidad.",
+            "communityValues5": "Muestra empatía hacia otros miembros de la comunidad.",
+            "communityValues6": "Las decisiones se toman en base al mérito técnico y al consenso. La comunidad de TeddyCloud aspira a tratar a todos por igual y a valorar todas las contribuciones.",
+            "makeFirstContribution": "Haz tu primera contribución",
+            "makeFirstContributionIntro": "¡Hay muchas maneras de contribuir a TeddyCloud! Puedes contribuir con código y hacer mejoras a la documentación de TeddyCloud. Nuestras contribuciones más comunes incluyen código, documentación y soporte a la comunidad.",
+            "makeFirstContribution1": "Escribe código.",
+            "makeFirstContribution2": "Mejora la documentación.",
+            "makeFirstContribution3": "Responde preguntas en nuestro grupo de Telegram.",
+            "makeFirstContribution4": "Investiga errores e issues en GitHub.",
+            "makeFirstContribution5": "Revisa y comenta los pull requests de otros desarrolladores.",
+            "makeFirstContribution6": "Reporta un issue.",
+            "makeFirstContribution7": "Dale un \"me gusta\" a los issues que te resulten relevantes."
         },
         "contributors": {
             "navigationTitle": "Contribuidores",
-            "title": "Contribuidores"
+            "title": "Contribuidores",
+            "contributorsIntro": "Este proyecto depende de los incansables colaboradores que ofrecen su tiempo libre y habilidades. Directamente relacionados con TeddyCloud están los colaboradores de los dos proyectos teddycloud y teddycloud_web:",
+            "teddyCloud": "La parte más necesaria, pero mayormente invisible de tu servidor TeddyCloud.",
+            "teddyCloudWeb": "El frontend que estás usando y viendo aquí.",
+            "others": "Puedes encontrar más colaboradores en el tema completo en los demás repositorios de GitHub en",
+            "bigRoundOfApplause": "¡Un gran aplauso para ellos!"
         },
         "faq": {
             "intro": "Aquí puedes encontrar respuestas a algunas preguntas frecuentes. Si tu pregunta no se responde aquí, visita el foro o utiliza el grupo de Telegram para obtener ayuda.",
@@ -249,12 +287,26 @@
                         "01certificates": "extraer/inyectar certificados en un volcado de firmware esp32",
                         "02newServerHost": "configurar un nuevo servidor host",
                         "03wifiCredentials": "establecer credenciales WiFi",
-                        "04extractCertificates": "Extraer los certificados y almacenarlos en TeddyCloud"
+                        "04extractCertificates": "extraer los certificados y almacenarlos en TeddyCloud",
+                        "05guidelineLegacyMethod": "guía para flasheo con el método antiguo (sin GUI, solo línea de comandos)"
                     },
                     "title": "Flasheo de la caja ESP32"
                 },
-                "09decodeLogs": "Decodificar registros RTNL",
-                "10mqttClient": {
+                "09CC3200Flashing": {
+                    "items": {
+                        "01Guideline": "guía para flasheo",
+                        "02AltUrlCustomPatch": "generación de AltUrl.custom.305 Patch basado en formulario"
+                    },
+                    "title": "Flasheo de la Caja CC3200"
+                },
+                "10CC3235Flashing": {
+                    "items": {
+                        "01Guideline": "guía detallada para el proceso de flasheo"
+                    },
+                    "title": "Flasheo de la Caja CC3235"
+                },
+                "11decodeLogs": "Decodificar registros RTNL",
+                "12mqttClient": {
                     "items": {
                         "01homeAssistantIntegration": "Integración con Home Assistant (MQTT)"
                     },
