@@ -11,61 +11,60 @@
         "unknownSource": "Unkown"
     },
     "community": {
+        "changelog": {
+            "allCommits": "All contained commits can be found here (teddy cloud repo)",
+            "changes": "Changes",
+            "discussion": "Discussion",
+            "githubRelease": "GitHub Release",
+            "navigationTitle": "Changelog",
+            "title": "Changelog",
+            "version": "Version"
+        },
         "community": {
+            "discourse": "The lively knowledge base for the project, a place to ask questions whose answers can be helpful for others.",
             "getInvolved": "Get involved",
             "getInvolvedText1": "Be a part of our global contributor community by writing code, commenting on issues, or participate in discussons in our telegram group.",
             "getInvolvedText2": "Your best points of contact are the following locations",
             "github": "The place where all sources are stored for this and related projects. Where you can fork the repositories, contribute new or improved features, create issues or just give some feedback on already existing issues.",
-            "telegram": "The first level support if you need help or if you are interested in getting involved in the development of TeddyCloud.",
-            "discourse": "The lively knowledge base for the project, a place to ask questions whose answers can be helpful for others.",
-            "teddyCloudWiki": "A Wiki contains, among other things, how to install TeddyCloud and how to solve possible problems."
+            "teddyCloudWiki": "A Wiki contains, among other things, how to install TeddyCloud and how to solve possible problems.",
+            "telegram": "The first level support if you need help or if you are interested in getting involved in the development of TeddyCloud."
         },
         "contribution": {
-            "navigationTitle": "Contribution",
-            "toniesJson": {
-                "navigationTitle": "tonies.json",
-                "text": "You are welcome to support us by sending us the missing data of the Tonies listed below. In the future this will be possible directly in TeddyCloud, at the moment you can use TeddyBench. Thank you in advance!",
-                "title": "Contribute tonies.json"
-            },
-            "title": "Contribution",
-            "contributionIntro": "The Teddycloud can only grow through the contributions of this community. Thanks so much for your enthusiasm and your work - we appreciate everything you do!",
             "communityValues": "Community values",
-            "communityValuesIntro": "In the interest of fostering an open and welcoming environment, contributors and maintainers pledge to make participation in our project and our community a harassment-free experience for everyone - regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.",
-            "communityValuesExamples": "Examples of behaviors that contribute to creating a positive environment include:",
             "communityValues1": "Use welcome and inclusive language.",
             "communityValues2": "Be respectful of differing viewpoints and experiences.",
             "communityValues3": "Gracefully accept constructive criticism.",
             "communityValues4": "Foster what's best for the community.",
             "communityValues5": "Show empathy for other community members.",
             "communityValues6": "Decisions are made based on technical merit and consensus. The Teddycloud community aspires to treat everyone equally, and to value all contributions.",
+            "communityValuesExamples": "Examples of behaviors that contribute to creating a positive environment include:",
+            "communityValuesIntro": "In the interest of fostering an open and welcoming environment, contributors and maintainers pledge to make participation in our project and our community a harassment-free experience for everyone - regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.",
+            "contributionIntro": "The Teddycloud can only grow through the contributions of this community. Thanks so much for your enthusiasm and your work - we appreciate everything you do!",
             "makeFirstContribution": "Make your first contribution",
-            "makeFirstContributionIntro": "There are many ways to contribute to Teddycloud! You can contribute code and make improvements to the Teddycloud documentation. Our most common contributions include code, documentation, and community support.",
             "makeFirstContribution1": "Write code.",
             "makeFirstContribution2": "Improve documentation.",
             "makeFirstContribution3": "Answer questions on our telegram group.",
             "makeFirstContribution4": "Investigate bugs and issues on GitHub.",
             "makeFirstContribution5": "Review and comment on pull requests from other developers.",
             "makeFirstContribution6": "Report an issue.",
-            "makeFirstContribution7": "Give a \"thumbs up\" on issues that are relevant to you."
+            "makeFirstContribution7": "Give a \"thumbs up\" on issues that are relevant to you.",
+            "makeFirstContributionIntro": "There are many ways to contribute to Teddycloud! You can contribute code and make improvements to the Teddycloud documentation. Our most common contributions include code, documentation, and community support.",
+            "navigationTitle": "Contribution",
+            "title": "Contribution",
+            "toniesJson": {
+                "navigationTitle": "tonies.json",
+                "text": "You are welcome to support us by sending us the missing data of the Tonies listed below. In the future this will be possible directly in TeddyCloud, at the moment you can use TeddyBench. Thank you in advance!",
+                "title": "Contribute tonies.json"
+            }
         },
         "contributors": {
-            "title": "Contributors",
-            "navigationTitle": "Contributors",
+            "bigRoundOfApplause": "A big round of applause for them!",
             "contributorsIntro": "This project relies on the tireless contributors who offer their free time and skills. Directly related to TeddyCloud are the contributors of the two projects teddycloud and teddycloud_web:",
+            "navigationTitle": "Contributors",
+            "others": "You can find more contributors to the entire topic complex in the other GitHub repositories at",
             "teddyCloud": "The most neccessary, but mostly invisible part of your TeddyCloud Server.",
             "teddyCloudWeb": "Which is actually this frontend you are using and seeing here.",
-            "others": "You can find more contributors to the entire topic complex in the other GitHub repositories at",
-            "bigRoundOfApplause": "A big round of applause for them!"
-        },
-        "changelog": {
-            "title": "Changelog",
-            "navigationTitle": "Changelog",
-
-            "version": "Version",
-            "changes": "Changes",
-            "allCommits": "All contained commits can be found here (teddy cloud repo)",
-            "discussion": "Discussion",
-            "githubRelease": "GitHub Release"
+            "title": "Contributors"
         },
         "faq": {
             "intro": "Here you can find answers to some frequently asked questions. If your question is not answered here, please visit the forum or use the Telegram group to get assistance.",

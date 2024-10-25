@@ -11,60 +11,60 @@
         "unknownSource": "Unbekannt"
     },
     "community": {
+        "changelog": {
+            "allCommits": "Alle enthaltenen Commits findest du hier (TeddyCloud-Repo)",
+            "changes": "Änderungen",
+            "discussion": "Diskussion",
+            "githubRelease": "GitHub-Release",
+            "navigationTitle": "Changelog",
+            "title": "Changelog/Release notes",
+            "version": "Version"
+        },
         "community": {
+            "discourse": "Die lebendige Wissensdatenbank für das Projekt, ein Ort, um Fragen zu stellen, deren Antworten anderen helfen können.",
             "getInvolved": "Mach mit",
             "getInvolvedText1": "Werde Teil unserer globalen Mitwirkenden-Community, indem du Code schreibst, zu Issues kommentierst oder an Diskussionen in unserer Telegram-Gruppe teilnimmst.",
             "getInvolvedText2": "Die besten Kontaktpunkte für dich sind die folgenden Orte:",
             "github": "Hier sind alle Quellen für dieses und verwandte Projekte gespeichert. Du kannst Repositories forken, neue oder verbesserte Funktionen beitragen, Issues erstellen oder einfach Feedback zu bestehenden Issues geben.",
-            "telegram": "Die erste Anlaufstelle, wenn du Hilfe benötigst oder wenn du an der Entwicklung von TeddyCloud mitwirken möchtest.",
-            "discourse": "Die lebendige Wissensdatenbank für das Projekt, ein Ort, um Fragen zu stellen, deren Antworten anderen helfen können.",
-            "teddyCloudWiki": "Ein Wiki, das unter anderem erklärt, wie TeddyCloud installiert wird und wie mögliche Probleme gelöst werden können."
-        },
-        "changelog": {
-            "navigationTitle": "Changelog",
-            "title": "Changelog/Release notes",
-            "version": "Version",
-            "changes": "Änderungen",
-            "allCommits": "Alle enthaltenen Commits findest du hier (TeddyCloud-Repo)",
-            "discussion": "Diskussion",
-            "githubRelease": "GitHub-Release"
+            "teddyCloudWiki": "Ein Wiki, das unter anderem erklärt, wie TeddyCloud installiert wird und wie mögliche Probleme gelöst werden können.",
+            "telegram": "Die erste Anlaufstelle, wenn du Hilfe benötigst oder wenn du an der Entwicklung von TeddyCloud mitwirken möchtest."
         },
         "contribution": {
-            "navigationTitle": "Contribution",
-            "title": "Contribution",
-            "toniesJson": {
-                "navigationTitle": "tonies.json",
-                "text": "Ihr könnt uns gerne unterstützen, indem ihr uns die fehlenden Daten der unten aufgeführten Tonies zukommen lasst. Perspektivisch wird dies in TeddyCloud direkt möglich sein, momentan könnt ihr dazu TeddyBench nutzen. Wir danken euch schon einmal!",
-                "title": "Contribute tonies.json"
-            },
-            "contributionIntro": "TeddyCloud kann nur durch die Beiträge dieser Community wachsen. Vielen Dank für dein Engagement und deine Arbeit - wir schätzen alles, was du tust!",
             "communityValues": "Community-Werte",
-            "communityValuesIntro": "Um ein offenes und einladendes Umfeld zu fördern, verpflichten sich Mitwirkende und Betreuer, die Teilnahme an unserem Projekt und unserer Community für alle zu einer belästigungsfreien Erfahrung zu machen - unabhängig von Alter, Körpergröße, Behinderung, Ethnie, Geschlechtsidentität und Ausdruck, Erfahrungsgrad, Nationalität, äußerer Erscheinung, Religion oder sexueller Identität und Orientierung.",
-            "communityValuesExamples": "Beispiele für Verhaltensweisen, die zu einem positiven Umfeld beitragen:",
             "communityValues1": "Verwende eine einladende und inklusive Sprache.",
             "communityValues2": "Sei respektvoll gegenüber unterschiedlichen Standpunkten und Erfahrungen.",
             "communityValues3": "Akzeptiere konstruktive Kritik gelassen.",
             "communityValues4": "Fördere das, was für die Community am besten ist.",
             "communityValues5": "Zeige Empathie für andere Community-Mitglieder.",
             "communityValues6": "Entscheidungen werden auf technischer Qualität und Konsensbasis getroffen. Die TeddyCloud-Community strebt an, alle gleich zu behandeln und alle Beiträge wertzuschätzen.",
+            "communityValuesExamples": "Beispiele für Verhaltensweisen, die zu einem positiven Umfeld beitragen:",
+            "communityValuesIntro": "Um ein offenes und einladendes Umfeld zu fördern, verpflichten sich Mitwirkende und Betreuer, die Teilnahme an unserem Projekt und unserer Community für alle zu einer belästigungsfreien Erfahrung zu machen - unabhängig von Alter, Körpergröße, Behinderung, Ethnie, Geschlechtsidentität und Ausdruck, Erfahrungsgrad, Nationalität, äußerer Erscheinung, Religion oder sexueller Identität und Orientierung.",
+            "contributionIntro": "TeddyCloud kann nur durch die Beiträge dieser Community wachsen. Vielen Dank für dein Engagement und deine Arbeit - wir schätzen alles, was du tust!",
             "makeFirstContribution": "Leiste deinen ersten Beitrag",
-            "makeFirstContributionIntro": "Es gibt viele Möglichkeiten, zu TeddyCloud beizutragen! Du kannst Code beisteuern und die Dokumentation von TeddyCloud verbessern. Unsere häufigsten Beiträge umfassen Code, Dokumentation und Community-Unterstützung.",
             "makeFirstContribution1": "Schreibe Code.",
             "makeFirstContribution2": "Verbessere die Dokumentation.",
             "makeFirstContribution3": "Beantworte Fragen in unserer Telegram-Gruppe.",
             "makeFirstContribution4": "Untersuche Bugs und Issues auf GitHub.",
             "makeFirstContribution5": "Bewerte und kommentiere Pull Requests anderer Entwickler.",
             "makeFirstContribution6": "Melde ein Issue.",
-            "makeFirstContribution7": "Gib ein \"Daumen hoch\" für Issues, die für dich relevant sind."
+            "makeFirstContribution7": "Gib ein \"Daumen hoch\" für Issues, die für dich relevant sind.",
+            "makeFirstContributionIntro": "Es gibt viele Möglichkeiten, zu TeddyCloud beizutragen! Du kannst Code beisteuern und die Dokumentation von TeddyCloud verbessern. Unsere häufigsten Beiträge umfassen Code, Dokumentation und Community-Unterstützung.",
+            "navigationTitle": "Contribution",
+            "title": "Contribution",
+            "toniesJson": {
+                "navigationTitle": "tonies.json",
+                "text": "Ihr könnt uns gerne unterstützen, indem ihr uns die fehlenden Daten der unten aufgeführten Tonies zukommen lasst. Perspektivisch wird dies in TeddyCloud direkt möglich sein, momentan könnt ihr dazu TeddyBench nutzen. Wir danken euch schon einmal!",
+                "title": "Contribute tonies.json"
+            }
         },
         "contributors": {
-            "navigationTitle": "Contributors",
-            "title": "Contributors",
+            "bigRoundOfApplause": "Einen großen Applaus für sie!",
             "contributorsIntro": "Dieses Projekt basiert auf den unermüdlichen Mitwirkenden, die ihre freie Zeit und ihr Können einbringen. Direkt mit TeddyCloud verbunden sind die Mitwirkenden der beiden Projekte teddycloud und teddycloud_web:",
+            "navigationTitle": "Contributors",
+            "others": "Weitere Mitwirkende zum gesamten Themenbereich findest du in den anderen GitHub-Repositories unter",
             "teddyCloud": "Der notwendigste, aber meist unsichtbare Teil deines TeddyCloud-Servers.",
             "teddyCloudWeb": "Das Frontend, das du hier benutzt und siehst.",
-            "others": "Weitere Mitwirkende zum gesamten Themenbereich findest du in den anderen GitHub-Repositories unter",
-            "bigRoundOfApplause": "Einen großen Applaus für sie!"
+            "title": "Contributors"
         },
         "faq": {
             "intro": "Hier findest du einige Antworten zu oft gestellten Fragen. Sollte deine Frage hier nicht beantwortet werden, so gehe ins Forum oder nutze die Telegram-Gruppe um Hilfe zu erhalten.",
