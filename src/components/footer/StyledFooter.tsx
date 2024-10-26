@@ -8,6 +8,7 @@ import AudioPlayerFooter from "./AudioPlayerFooter";
 import { useEffect, useState } from "react";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { gitHubTCReleasesUrl } from "../../constants";
 
 const StyledFooterComponent = styled(Footer)`
     position: fixed;
@@ -69,10 +70,7 @@ export const StyledFooter = () => {
                 <StyledCenterPart>
                     <div>
                         <small>
-                            <Link
-                                to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/"
-                                target="_blank"
-                            >
+                            <Link to={gitHubTCReleasesUrl} target="_blank">
                                 <HiddenDesktop>
                                     {versionShort} ({gitShaShort})
                                 </HiddenDesktop>

@@ -14,6 +14,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -177,8 +178,8 @@ export const HomePage = () => {
                     </Paragraph>
                     <Paragraph>
                         {t("home.forumIntroPart1")}
-                        <Link to="https://forum.revvox.de/" target="_blank">
-                            https://forum.revvox.de/
+                        <Link to={forumUrl} target="_blank">
+                            {forumUrl}
                         </Link>
                         {t("home.forumIntroPart2")}
                     </Paragraph>
@@ -211,22 +212,22 @@ export const HomePage = () => {
                                 <Link to="/community/faq">FAQ</Link>
                             </li>
                             <li>
-                                <Link to="https://github.com/toniebox-reverse-engineering" target="_blank">
+                                <Link to={gitHubUrl} target="_blank">
                                     GitHub
                                 </Link>
                             </li>
                             <li>
-                                <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
+                                <Link to={telegramGroupUrl} target="_blank">
                                     Telegram Chat
                                 </Link>
                             </li>
                             <li>
-                                <Link to="https://forum.revvox.de/" target="_blank">
+                                <Link to={forumUrl} target="_blank">
                                     Discourse Forum
                                 </Link>
                             </li>
                             <li>
-                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                                <Link to={wikiUrl} target="_blank">
                                     TeddyCloud Wiki
                                 </Link>
                             </li>

@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { StyledSubMenu } from "../StyledComponents";
+import { forumUrl } from "../../constants";
 
 export const CommunitySubNav = () => {
     const { t } = useTranslation();
@@ -104,7 +105,7 @@ export const CommunitySubNav = () => {
         {
             key: "Forum",
             label: (
-                <Link to="https://forum.revvox.de/" target="_blank">
+                <Link to={forumUrl} target="_blank">
                     {t("community.forum.navigationTitle")}
                 </Link>
             ),

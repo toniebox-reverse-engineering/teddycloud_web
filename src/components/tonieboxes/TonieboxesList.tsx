@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Empty, List } from "antd";
+import React, { useEffect, useState } from "react";
+import { Empty, List, message } from "antd";
 import { TonieboxCard, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
 import GetBoxModelImages from "../../utils/boxModels";
 import { useTranslation } from "react-i18next";
@@ -9,14 +9,15 @@ export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
 }> = ({ tonieboxCards }) => {
     const { t } = useTranslation();
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [loading, setLoading] = useState(true);
-
     const boxModelImages = GetBoxModelImages();
 
-    // Check if boxModelImages are loaded
-    if (boxModelImages.length === 0 && loading) {
+    useEffect(() => {
+        if (!boxModelImages.loading && boxModelImages.boxModelImages.length === 0) {
+            message.error("Error fetching Toniebox models");
+        }
+    }, [boxModelImages.loading, boxModelImages.boxModelImages.length]);
+
+    if (boxModelImages.loading) {
         return <LoadingSpinner />;
     }
 
@@ -46,7 +47,7 @@ export const TonieboxesList: React.FC<{
             dataSource={tonieboxCards}
             renderItem={(toniebox) => (
                 <List.Item id={toniebox.ID}>
-                    <TonieboxCard tonieboxCard={toniebox} tonieboxImages={boxModelImages} />
+                    <TonieboxCard tonieboxCard={toniebox} tonieboxImages={boxModelImages.boxModelImages} />
                 </List.Item>
             )}
             locale={{ emptyText: noDataTonieboxes() }}

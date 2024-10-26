@@ -13,6 +13,7 @@ import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileO
 import { useState, useEffect } from "react";
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
+import { forumUrl, telegramGroupUrl } from "../../../constants";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -140,11 +141,11 @@ export const BoxSetupPage = () => {
                     ></Alert>
                     <Paragraph style={{ marginTop: 16 }}>
                         {t("tonieboxes.boxSetup.boxSetupIntro1")}{" "}
-                        <Link to="https://forum.revvox.de/" target="_blank">
+                        <Link to={forumUrl} target="_blank">
                             {t("tonieboxes.boxSetup.boxSetupIntroForum")}
                         </Link>{" "}
                         {t("tonieboxes.boxSetup.boxSetupIntro2")}{" "}
-                        <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
+                        <Link to={telegramGroupUrl} target="_blank">
                             {t("tonieboxes.boxSetup.boxSetupIntroTelegram")}
                         </Link>{" "}
                         {t("tonieboxes.boxSetup.boxSetupIntro3")}
