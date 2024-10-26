@@ -6,45 +6,53 @@ import BreadcrumbWrapper, {
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import the TonieCard component and its props type
+import { TonieCardProps } from "../../components/tonies/TonieCard";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { Select } from "antd";
+import { message, Select } from "antd";
 import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
 
 export const SystemSoundsPage = () => {
     const { t } = useTranslation();
-
-    // Define the state with TonieCardProps[] type
-    const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent();
+
+    const [tonies, setTonies] = useState<TonieCardProps[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchTonies = async () => {
-            // Perform API call to fetch Tonie data
-            const tonieData = await api.apiGetTagIndex(overlay ? overlay : "");
-            setTonies(
-                tonieData.sort((a, b) => {
-                    if (a.tonieInfo.series < b.tonieInfo.series) {
-                        return -1;
-                    }
-                    if (a.tonieInfo.series > b.tonieInfo.series) {
-                        return 1;
-                    }
-                    if (a.tonieInfo.episode < b.tonieInfo.episode) {
-                        return -1;
-                    }
-                    if (a.tonieInfo.episode > b.tonieInfo.episode) {
-                        return 1;
-                    }
-                    return 0;
-                })
-            );
+            setLoading(true);
+            try {
+                // Perform API call to fetch Tonie data
+                const tonieData = await api.apiGetTagIndex(overlay ? overlay : "");
+                setTonies(
+                    tonieData.sort((a, b) => {
+                        if (a.tonieInfo.series < b.tonieInfo.series) {
+                            return -1;
+                        }
+                        if (a.tonieInfo.series > b.tonieInfo.series) {
+                            return 1;
+                        }
+                        if (a.tonieInfo.episode < b.tonieInfo.episode) {
+                            return -1;
+                        }
+                        if (a.tonieInfo.episode > b.tonieInfo.episode) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                );
+            } catch (error) {
+                message.error("Fetching Tonies failed: " + error);
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchTonies();
@@ -96,13 +104,17 @@ export const SystemSoundsPage = () => {
                             ""
                         )}
                     </div>
-                    <ToniesList
-                        showFilter={false}
-                        showPagination={true}
-                        tonieCards={tonies.filter((tonie) => tonie.type === "system")}
-                        overlay={overlay}
-                        readOnly={false}
-                    />
+                    {loading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <ToniesList
+                            showFilter={false}
+                            showPagination={true}
+                            tonieCards={tonies.filter((tonie) => tonie.type === "system")}
+                            overlay={overlay}
+                            readOnly={false}
+                        />
+                    )}
                 </StyledContent>
             </StyledLayout>
         </>
