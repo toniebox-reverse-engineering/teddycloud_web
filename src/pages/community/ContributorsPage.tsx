@@ -33,13 +33,12 @@ export const ContributorsPage = () => {
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.contributors.title`)}</h1>
+                    <h1>{t("community.contributors.title")}</h1>
                     <Paragraph>
-                        This project relies on the tireless contributors who offer their free time and skills. Directly
-                        related to TeddyCloud are the contributors of the two projects teddycloud and teddycloud_web:
+                        {t("community.contributors.contributorsIntro")}
                         <Paragraph>
                             <h3>teddycloud</h3>
-                            <div>The most neccessary, but mostly invisible part of your TeddyCloud Server.</div>
+                            <div>{t("community.contributors.teddyCloud")}</div>
                             <Link
                                 to="https://github.com/toniebox-reverse-engineering/teddycloud/graphs/contributors"
                                 target="_blank"
@@ -49,7 +48,7 @@ export const ContributorsPage = () => {
                         </Paragraph>
                         <Paragraph>
                             <h3>teddycloud_web</h3>
-                            <div>Which is actually this frontend you are using and seeing here.</div>
+                            <div>{t("community.contributors.teddyCloudWeb")}</div>
                             <Link
                                 to="https://github.com/toniebox-reverse-engineering/teddycloud_web/graphs/contributors"
                                 target="_blank"
@@ -58,8 +57,7 @@ export const ContributorsPage = () => {
                             </Link>
                         </Paragraph>
                         <Paragraph>
-                            You can find more contributors to the entire topic complex in the other GitHub repositories
-                            at{" "}
+                            {t("community.contributors.others")}{" "}
                             <Link
                                 to="https://github.com/orgs/toniebox-reverse-engineering/repositories"
                                 target="_blank"
@@ -70,9 +68,9 @@ export const ContributorsPage = () => {
                     </Paragraph>
                     <Space></Space>
                     <Paragraph>
-                        <div style={{ marginBottom: 24 }}>A big round of applause for them!</div>
+                        <div style={{ marginBottom: 24 }}>{t("community.contributors.bigRoundOfApplause")}</div>
                         <TonieMeetingElement
-                            maxNoOfGuests={100}
+                            maxNoOfGuests={50}
                             toniesSize={150}
                             showQuestionMark={false}
                             height={150}

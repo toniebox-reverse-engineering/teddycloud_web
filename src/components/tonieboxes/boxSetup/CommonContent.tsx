@@ -1,4 +1,4 @@
-import { Alert, Button, Empty, Image, Modal, Table, Typography } from "antd";
+import { Alert, Button, Empty, Image, Modal, Spin, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import CodeSnippet from "../../../utils/codeSnippet";
 import { useState, useEffect } from "react";
@@ -165,6 +165,8 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
     const { t } = useTranslation();
     const [tonieboxes, setTonieboxes] = useState<TonieboxPropsWithStatusAndVersion[]>([]);
     const [recheckTonieboxes, setRecheckTonieboxes] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+
     useEffect(() => {
         if (isOpen) {
             fetchTonieboxes();
@@ -172,28 +174,35 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
     }, [isOpen, recheckTonieboxes]);
 
     const fetchTonieboxes = async () => {
-        const tonieboxData = await api.apiGetTonieboxesIndex();
-        const updatedBoxes = await Promise.all(
-            tonieboxData.map(async (box) => {
-                const tonieboxStatus = await api.apiGetTonieboxStatus(box.ID);
-                const statusString = tonieboxStatus ? "Online" : "Offline";
-                const tonieboxVersion = await api.apiGetTonieboxVersion(box.ID);
-                const BoxVersions: { [key: string]: string } = {
-                    "0": "UNKNOWN",
-                    "1": "CC3200",
-                    "2": "CC3235",
-                    "3": "ESP32",
-                };
-                let version = BoxVersions[tonieboxVersion] || "UNKNOWN";
-                return {
-                    ...box,
-                    status: statusString,
-                    version,
-                };
-            })
-        );
+        setLoading(true);
+        try {
+            const tonieboxData = await api.apiGetTonieboxesIndex();
+            const updatedBoxes = await Promise.all(
+                tonieboxData.map(async (box) => {
+                    const tonieboxStatus = await api.apiGetTonieboxStatus(box.ID);
+                    const statusString = tonieboxStatus ? "Online" : "Offline";
+                    const tonieboxVersion = await api.apiGetTonieboxVersion(box.ID);
+                    const BoxVersions: { [key: string]: string } = {
+                        "0": "UNKNOWN",
+                        "1": "CC3200",
+                        "2": "CC3235",
+                        "3": "ESP32",
+                    };
+                    let version = BoxVersions[tonieboxVersion] || "UNKNOWN";
+                    return {
+                        ...box,
+                        status: statusString,
+                        version,
+                    };
+                })
+            );
 
-        setTonieboxes(updatedBoxes);
+            setTonieboxes(updatedBoxes);
+        } catch (error) {
+            console.error("Error fetching tonieboxes:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const columns = [
@@ -216,7 +225,13 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
 
     const availableBoxesFooter = (
         <Paragraph style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
-            <Button onClick={() => setRecheckTonieboxes((prev) => !prev)}>
+            <Button
+                onClick={async () => {
+                    setLoading(true);
+                    setRecheckTonieboxes((prev) => !prev);
+                    await fetchTonieboxes();
+                }}
+            >
                 {t("tonieboxes.availableBoxModal.recheck")}
             </Button>
             <Button onClick={onClose}> {t("tonieboxes.availableBoxModal.cancel")}</Button>
@@ -260,13 +275,19 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                 </Link>
             </Paragraph>
             <h4>{t("tonieboxes.availableBoxModal.availableBoxes", { boxVersion: boxVersion })}</h4>
-            <Table
-                dataSource={tonieboxes.filter((box) => box.version === boxVersion)}
-                columns={columns}
-                rowKey="ID"
-                pagination={false}
-                locale={{ emptyText: renderEmpty() }}
-            />
+            {loading ? (
+                <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+                    <Spin size="default" />
+                </div>
+            ) : (
+                <Table
+                    dataSource={tonieboxes.filter((box) => box.version === boxVersion)}
+                    columns={columns}
+                    rowKey="ID"
+                    pagination={false}
+                    locale={{ emptyText: renderEmpty() }}
+                />
+            )}
         </Modal>
     );
 };
