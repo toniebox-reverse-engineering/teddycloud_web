@@ -17,7 +17,7 @@ export default function GetBoxModelImages() {
 
     useEffect(() => {
         async function fetchData() {
-            var jsonResult:any = [];
+            var jsonResult: any = [];
             try {
                 const response = await api.apiGetTeddyCloudApiRaw(`/api/tonieboxesJson`);
                 const jsonData = await response.json();

@@ -14,6 +14,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
 import OptionItem from "../../components/utils/OptionItem";
 import { Formik } from "formik";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -115,78 +116,84 @@ export const SettingsPage = () => {
                         style={{ margin: "8px 0" }}
                     />
                     <Divider>{t("settings.title")}</Divider>
-                    <Formik
-                        //validationSchema={settingsValidationSchema}
-                        initialValues={{
-                            test: "test",
-                        }}
-                        onSubmit={(values: any) => {
-                            // nothing to submit because of field onchange
-                        }}
-                    >
-                        <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
-                            {options?.options?.map((option, index, array) => {
-                                if (option.iD.includes("core.settings_level")) {
-                                    return null;
-                                }
-                                const parts = option.iD.split(".");
-                                const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
-                                return (
-                                    <React.Fragment key={index}>
-                                        {parts.slice(0, -1).map((part, partIndex) => {
-                                            if (lastParts[partIndex] !== part) {
-                                                if (partIndex === 0) {
-                                                    return (
-                                                        <h3
-                                                            style={{
-                                                                marginLeft: `${partIndex * 20}px`,
-                                                                marginBottom: "10px",
-                                                            }}
-                                                            key={`category-${part}`}
-                                                        >
-                                                            Category {part}
-                                                        </h3>
-                                                    );
-                                                } else {
-                                                    return (
-                                                        <h4
-                                                            style={{
-                                                                marginLeft: `${partIndex * 10}px`,
-                                                                marginTop: "10px",
-                                                                marginBottom: "10px",
-                                                            }}
-                                                            key={`category-${part}`}
-                                                        >
-                                                            .{part}
-                                                        </h4>
-                                                    );
-                                                }
-                                            }
+                    {loading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <>
+                            <Formik
+                                //validationSchema={settingsValidationSchema}
+                                initialValues={{
+                                    test: "test",
+                                }}
+                                onSubmit={(values: any) => {
+                                    // nothing to submit because of field onchange
+                                }}
+                            >
+                                <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
+                                    {options?.options?.map((option, index, array) => {
+                                        if (option.iD.includes("core.settings_level")) {
                                             return null;
-                                        })}
-                                        <OptionItem option={option} noOverlay={true} key={option.iD} />
-                                    </React.Fragment>
-                                );
-                            })}
-                        </Form>
-                    </Formik>
-                    <Divider>{t("settings.levelLabel")}</Divider>
-                    <Radio.Group
-                        value={settingsLevel}
-                        onChange={(e) => handleChange(e.target.value)}
-                        style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
-                        disabled={loading}
-                    >
-                        <Radio.Button value="1" key="1">
-                            Basic
-                        </Radio.Button>
-                        <Radio.Button value="2" key="2">
-                            Detail
-                        </Radio.Button>
-                        <Radio.Button value="3" key="3">
-                            Expert
-                        </Radio.Button>
-                    </Radio.Group>
+                                        }
+                                        const parts = option.iD.split(".");
+                                        const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
+                                        return (
+                                            <React.Fragment key={index}>
+                                                {parts.slice(0, -1).map((part, partIndex) => {
+                                                    if (lastParts[partIndex] !== part) {
+                                                        if (partIndex === 0) {
+                                                            return (
+                                                                <h3
+                                                                    style={{
+                                                                        marginLeft: `${partIndex * 20}px`,
+                                                                        marginBottom: "10px",
+                                                                    }}
+                                                                    key={`category-${part}`}
+                                                                >
+                                                                    Category {part}
+                                                                </h3>
+                                                            );
+                                                        } else {
+                                                            return (
+                                                                <h4
+                                                                    style={{
+                                                                        marginLeft: `${partIndex * 10}px`,
+                                                                        marginTop: "10px",
+                                                                        marginBottom: "10px",
+                                                                    }}
+                                                                    key={`category-${part}`}
+                                                                >
+                                                                    .{part}
+                                                                </h4>
+                                                            );
+                                                        }
+                                                    }
+                                                    return null;
+                                                })}
+                                                <OptionItem option={option} noOverlay={true} key={option.iD} />
+                                            </React.Fragment>
+                                        );
+                                    })}
+                                </Form>
+                            </Formik>
+                            <Divider>{t("settings.levelLabel")}</Divider>
+                            <Radio.Group
+                                value={settingsLevel}
+                                onChange={(e) => handleChange(e.target.value)}
+                                style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
+                                disabled={loading}
+                            >
+                                <Radio.Button value="1" key="1">
+                                    Basic
+                                </Radio.Button>
+                                <Radio.Button value="2" key="2">
+                                    Detail
+                                </Radio.Button>
+                                <Radio.Button value="3" key="3">
+                                    Expert
+                                </Radio.Button>
+                            </Radio.Group>
+                        </>
+                    )}
                 </StyledContent>
             </StyledLayout>
         </>

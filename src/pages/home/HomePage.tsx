@@ -13,6 +13,7 @@ import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import th
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -32,6 +33,8 @@ export const HomePage = () => {
     const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
     const [defaultLanguage, setMaxTag] = useState<string>("");
     const [accessApiEnabled, setAccessApiEnabled] = useState<[string, boolean][]>([]);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchDisplayIncidentAlert = async () => {
             const displayIncidentAlert = await api.apiGetSecurityMITAlert();
@@ -65,9 +68,8 @@ export const HomePage = () => {
         fetchNewBoxesAllowed();
 
         const fetchTonies = async () => {
-            // Perform API call to fetch Tonie data
+            setLoading(true);
             const tonieData = (await api.apiGetTagIndexMergedAllOverlays(true)).filter((item) => !item.hide);
-            // sort random
             setTonies(
                 tonieData.sort((a, b) => {
                     if (Math.random() > 0.5) {
@@ -77,6 +79,7 @@ export const HomePage = () => {
                     }
                 })
             );
+            setLoading(false);
         };
 
         fetchTonies();
@@ -181,16 +184,20 @@ export const HomePage = () => {
                     </Paragraph>
                     <Paragraph>
                         <h2>{t("home.yourTonies")}</h2>
-                        <ToniesList
-                            tonieCards={tonies
-                                .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
-                                .slice(0, 6)}
-                            overlay=""
-                            showFilter={false}
-                            showPagination={false}
-                            readOnly={true}
-                            defaultLanguage={defaultLanguage}
-                        />
+                        {loading ? (
+                            <LoadingSpinner />
+                        ) : (
+                            <ToniesList
+                                tonieCards={tonies
+                                    .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
+                                    .slice(0, 6)}
+                                overlay=""
+                                showFilter={false}
+                                showPagination={false}
+                                readOnly={true}
+                                defaultLanguage={defaultLanguage}
+                            />
+                        )}
                         <Paragraph>
                             <Button onClick={() => navigate("/tonies")}>
                                 {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})

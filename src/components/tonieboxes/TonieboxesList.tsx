@@ -3,6 +3,7 @@ import { Empty, List } from "antd";
 import { TonieboxCard, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
 import GetBoxModelImages from "../../utils/boxModels";
 import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
@@ -11,14 +12,15 @@ export const TonieboxesList: React.FC<{
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [loading, setLoading] = useState(true);
+
     const boxModelImages = GetBoxModelImages();
 
     // Check if boxModelImages are loaded
     if (boxModelImages.length === 0 && loading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
-    const renderEmpty = () => (
+    const noDataTonieboxes = () => (
         <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={
@@ -47,7 +49,7 @@ export const TonieboxesList: React.FC<{
                     <TonieboxCard tonieboxCard={toniebox} tonieboxImages={boxModelImages} />
                 </List.Item>
             )}
-            locale={{ emptyText: renderEmpty() }}
+            locale={{ emptyText: noDataTonieboxes() }}
         />
     );
 };
