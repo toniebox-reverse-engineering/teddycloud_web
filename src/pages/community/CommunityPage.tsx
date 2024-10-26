@@ -9,6 +9,7 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { Link } from "react-router-dom";
+import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 
 const { Paragraph } = Typography;
 
@@ -37,7 +38,7 @@ export const CommunityPage = () => {
                         <Paragraph>{t("community.community.getInvolvedText2")}</Paragraph>
                         <ul>
                             <li>
-                                <Link to="https://github.com/toniebox-reverse-engineering" target="_blank">
+                                <Link to={gitHubUrl} target="_blank">
                                     GitHub
                                 </Link>
                                 <ul>
@@ -45,7 +46,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
+                                <Link to={telegramGroupUrl} target="_blank">
                                     Telegram Chat
                                 </Link>
                                 <ul>
@@ -53,7 +54,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to="https://forum.revvox.de/" target="_blank">
+                                <Link to={forumUrl} target="_blank">
                                     Discourse Forum
                                 </Link>
                                 <ul>
@@ -61,7 +62,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                                <Link to={wikiUrl} target="_blank">
                                     TeddyCloud Wiki
                                 </Link>
                                 <ul>

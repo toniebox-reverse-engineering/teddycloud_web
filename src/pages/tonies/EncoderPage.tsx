@@ -20,7 +20,7 @@ import { DefaultOptionType } from "antd/es/select";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { invalidCharacters, invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
+import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

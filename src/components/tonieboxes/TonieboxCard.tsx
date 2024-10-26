@@ -20,6 +20,7 @@ import { TonieCardProps } from "../../components/tonies/TonieCard";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
 import GetBoxModelImages from "../../utils/boxModels";
 import ConfirmationDialog from "../utils/ConfirmationDialog";
+import { tonieboxDefaultImageUrl } from "../../constants";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph, Text } = Typography;
@@ -113,7 +114,7 @@ export const TonieboxCard: React.FC<{
                     const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
                     setLastPlayedTonie(
                         tonieData.filter((tonieData) => tonieData.ruid === ruid),
-                        ruidTime,
+                        ruidTime
                     );
                 };
                 fetchTonies();
@@ -166,13 +167,14 @@ export const TonieboxCard: React.FC<{
     const boxModelImages = GetBoxModelImages();
 
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
-        boxModelImages.map((v) => {
+        boxModelImages.boxModelImages.map((v) => {
             return { label: v.name, value: v.id };
-        }),
+        })
     );
 
     const selectBoxImage = (id: string) => {
         const selectedImage = tonieboxImages.find((item: { id: string }) => item.id === id);
+
         if (selectedImage) {
             setBoxImage(
                 <img
@@ -184,12 +186,12 @@ export const TonieboxCard: React.FC<{
                         top: "0",
                         left: "0",
                     }}
-                />,
+                />
             );
         } else {
             setBoxImage(
                 <img
-                    src="https://cdn.tonies.de/thumbnails/03-0009-i.png"
+                    src={tonieboxDefaultImageUrl}
                     alt=""
                     style={{
                         filter: "opacity(0.20)",
@@ -199,7 +201,7 @@ export const TonieboxCard: React.FC<{
                         top: "0",
                         left: "0",
                     }}
-                />,
+                />
             );
         }
     };
@@ -233,7 +235,7 @@ export const TonieboxCard: React.FC<{
                         />
                     </Tooltip>
                 </Link>
-            </>,
+            </>
         );
     };
 
@@ -309,7 +311,7 @@ export const TonieboxCard: React.FC<{
             message.error(
                 t("tonieboxes.editModelModal.errorOnModelChange", {
                     error: error,
-                }),
+                })
             );
         }
     };
@@ -332,7 +334,7 @@ export const TonieboxCard: React.FC<{
             message.error(
                 t("tonieboxes.editModelModal.errorOnNameChange", {
                     error: error,
-                }),
+                })
             );
         }
     };
@@ -574,7 +576,7 @@ export const TonieboxCard: React.FC<{
                         {lastPlayedTonieName}
                         {/* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique */}
                         <img
-                            src={tonieboxImages.find((item: { id: string }) => item.id === "03-0009")?.img_src}
+                            src={tonieboxDefaultImageUrl}
                             alt=""
                             style={{
                                 position: "relative",

@@ -19,6 +19,7 @@ import {
     Space,
     Divider,
     Form,
+    Empty,
 } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
@@ -54,6 +55,7 @@ import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
 import CodeSnippet from "../../utils/codeSnippet";
+import { LoadingSpinnerAsOverlay } from "../common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -172,6 +174,9 @@ export const FileBrowser: React.FC<{
     const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState<number>(0);
     const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
 
+    const [loading, setLoading] = useState<boolean>(true);
+    const parentRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         const preLoadTreeData = async () => {
             const newPath = getPathFromNodeId(rootTreeNode.id);
@@ -219,6 +224,7 @@ export const FileBrowser: React.FC<{
     }, [overlay]);
 
     useEffect(() => {
+        setLoading(true);
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
@@ -232,6 +238,10 @@ export const FileBrowser: React.FC<{
                             file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
                     );
                 setFiles(list);
+            })
+            .catch((error) => message.error("Failed to fetch dir content: " + error))
+            .finally(() => {
+                setLoading(false);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
@@ -269,6 +279,7 @@ export const FileBrowser: React.FC<{
 
     // breadcrumb functions
     const handleBreadcrumbClick = (dirPath: string) => {
+        setLoading(true);
         if (trackUrl) {
             navigate(`?path=${dirPath}`);
         }
@@ -1370,6 +1381,7 @@ export const FileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
+        setLoading(true);
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
             navigate(`?path=${newPath}`);
@@ -1790,6 +1802,8 @@ export const FileBrowser: React.FC<{
         });
     }
 
+    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+
     return (
         <>
             {contextHolder}
@@ -1849,82 +1863,86 @@ export const FileBrowser: React.FC<{
                     ""
                 )}
             </div>
-            <Table
-                dataSource={files}
-                columns={columns}
-                rowKey={(record) => record.name}
-                pagination={false}
-                onRow={(record) => ({
-                    onDoubleClick: () => {
-                        if (record.isDir) {
-                            handleDirClick(record.name);
-                        } else if (record.name.includes(".json") || record.name.includes(".tap")) {
-                            showJsonViewer(path + "/" + record.name);
-                        } else if (record.tafHeader) {
-                            showTafHeader(record.name, record.tafHeader);
-                        }
-                    },
-                })}
-                rowClassName={rowClassName}
-                rowSelection={{
-                    selectedRowKeys,
-                    onChange: onSelectChange,
-                    getCheckboxProps: (record: Record) => ({
-                        disabled: record.name === "..", // Disable checkbox for rows with name '..'
-                    }),
-                    onSelectAll: (selected: boolean, selectedRows: any[]) => {
-                        const selectedKeys = selected
-                            ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
-                            : [];
-                        setSelectedRowKeys(selectedKeys);
-                    },
-                }}
-                components={{
-                    // Override the header to include custom search row
-                    header: {
-                        wrapper: (props: any) => {
-                            return <thead {...props} />;
+            <div className="test" style={{ position: "relative" }} ref={parentRef}>
+                {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
+                <Table
+                    dataSource={files}
+                    columns={columns}
+                    rowKey={(record) => record.name}
+                    pagination={false}
+                    onRow={(record) => ({
+                        onDoubleClick: () => {
+                            if (record.isDir) {
+                                handleDirClick(record.name);
+                            } else if (record.name.includes(".json") || record.name.includes(".tap")) {
+                                showJsonViewer(path + "/" + record.name);
+                            } else if (record.tafHeader) {
+                                showTafHeader(record.name, record.tafHeader);
+                            }
                         },
-                        row: (props: any) => {
-                            return (
-                                <>
-                                    <tr {...props} />
-                                    <tr>
-                                        <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
-                                            <Input
-                                                placeholder={t("fileBrowser.filter")}
-                                                value={filterText}
-                                                onChange={handleFilterChange}
-                                                onFocus={handleFilterFieldInputFocus}
-                                                onBlur={handleFilterFieldInputBlur}
-                                                ref={inputFilterRef} // Assign ref to input element
-                                                style={{ width: "100%" }}
-                                                autoFocus={filterFieldAutoFocus}
-                                                addonAfter={
-                                                    <CloseOutlined
-                                                        onClick={clearFilterField}
-                                                        disabled={filterText.length === 0}
-                                                        style={{
-                                                            color:
-                                                                filterText.length === 0
-                                                                    ? token.colorTextDisabled
-                                                                    : token.colorText,
-                                                            cursor: filterText.length === 0 ? "default" : "pointer",
-                                                        }}
-                                                    />
-                                                }
-                                            />
-                                        </th>
-                                    </tr>
-                                </>
-                            );
+                    })}
+                    rowClassName={rowClassName}
+                    rowSelection={{
+                        selectedRowKeys,
+                        onChange: onSelectChange,
+                        getCheckboxProps: (record: Record) => ({
+                            disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                        }),
+                        onSelectAll: (selected: boolean, selectedRows: any[]) => {
+                            const selectedKeys = selected
+                                ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                : [];
+                            setSelectedRowKeys(selectedKeys);
                         },
-                        cell: (props: any) => {
-                            return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
+                    }}
+                    components={{
+                        // Override the header to include custom search row
+                        header: {
+                            wrapper: (props: any) => {
+                                return <thead {...props} />;
+                            },
+                            row: (props: any) => {
+                                return (
+                                    <>
+                                        <tr {...props} />
+                                        <tr>
+                                            <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
+                                                <Input
+                                                    placeholder={t("fileBrowser.filter")}
+                                                    value={filterText}
+                                                    onChange={handleFilterChange}
+                                                    onFocus={handleFilterFieldInputFocus}
+                                                    onBlur={handleFilterFieldInputBlur}
+                                                    ref={inputFilterRef} // Assign ref to input element
+                                                    style={{ width: "100%" }}
+                                                    autoFocus={filterFieldAutoFocus}
+                                                    addonAfter={
+                                                        <CloseOutlined
+                                                            onClick={clearFilterField}
+                                                            disabled={filterText.length === 0}
+                                                            style={{
+                                                                color:
+                                                                    filterText.length === 0
+                                                                        ? token.colorTextDisabled
+                                                                        : token.colorText,
+                                                                cursor: filterText.length === 0 ? "default" : "pointer",
+                                                            }}
+                                                        />
+                                                    }
+                                                />
+                                            </th>
+                                        </tr>
+                                    </>
+                                );
+                            },
+                            cell: (props: any) => {
+                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
+                            },
                         },
-                    },
-                }}
-            />
+                    }}
+                    locale={{ emptyText: noData }}
+                />
+            </div>
             <TonieAudioPlaylistEditor
                 open={isTapEditorModalOpen}
                 key={tapEditorKey}

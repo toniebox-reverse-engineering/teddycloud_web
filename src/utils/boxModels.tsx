@@ -14,10 +14,12 @@ interface TonieboxImage {
 
 export default function GetBoxModelImages() {
     const [boxModelImages, setBoxModelImages] = useState<TonieboxImage[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchData() {
-            var jsonResult:any = [];
+            var jsonResult: any = [];
+            setLoading(true);
             try {
                 const response = await api.apiGetTeddyCloudApiRaw(`/api/tonieboxesJson`);
                 const jsonData = await response.json();
@@ -39,10 +41,11 @@ export default function GetBoxModelImages() {
                 crop: item.crop || null,
             }));
             setBoxModelImages(images);
+            setLoading(false);
         }
 
         fetchData();
     }, []);
 
-    return boxModelImages;
+    return { boxModelImages, loading };
 }

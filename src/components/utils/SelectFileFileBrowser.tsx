@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Table, Tooltip, message, Input, Breadcrumb, InputRef, theme } from "antd";
+import { Table, Tooltip, message, Input, Breadcrumb, InputRef, theme, Empty } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
 import { useAudioContext } from "../audio/AudioContext";
@@ -13,6 +13,7 @@ import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 import { humanFileSize } from "../../utils/humanFileSize";
+import { LoadingSpinnerAsOverlay } from "../common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -75,6 +76,9 @@ export const SelectFileFileBrowser: React.FC<{
     const [filterText, setFilterText] = useState("");
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
 
+    const [loading, setLoading] = useState<boolean>(true);
+    const parentRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         setSelectedRowKeys([]);
     }, []);
@@ -92,6 +96,7 @@ export const SelectFileFileBrowser: React.FC<{
     }, [overlay]);
 
     useEffect(() => {
+        setLoading(true);
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
@@ -106,6 +111,10 @@ export const SelectFileFileBrowser: React.FC<{
                             file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
                     );
                 setFiles(list);
+            })
+            .catch((error) => message.error("Failed to fetch dir content: " + error))
+            .finally(() => {
+                setLoading(false);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
@@ -223,6 +232,7 @@ export const SelectFileFileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
+        setLoading(true);
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
             navigate(`?path=${newPath}`);
@@ -270,10 +280,6 @@ export const SelectFileFileBrowser: React.FC<{
             return defaultSorter(a, b, "name");
         }
         return a.isDir ? -1 : 1;
-    };
-
-    const withinTafBoundaries = (numberOfFiles: number) => {
-        return numberOfFiles > 0 && numberOfFiles <= MAX_FILES;
     };
 
     var columns: any[] = [
@@ -473,6 +479,7 @@ export const SelectFileFileBrowser: React.FC<{
             return false;
         });
     }
+    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
     return (
         <>
@@ -492,91 +499,95 @@ export const SelectFileFileBrowser: React.FC<{
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
             </div>
-            <Table
-                dataSource={files}
-                columns={columns}
-                rowKey={(record) => record.name}
-                pagination={false}
-                onRow={(record) => ({
-                    onDoubleClick: () => {
-                        if (record.isDir) {
-                            handleDirClick(record.name);
-                        } else {
-                            const newSelectedKeys = selectedRowKeys.includes(record.name)
-                                ? selectedRowKeys.filter((key) => key !== record.name)
-                                : [...selectedRowKeys, record.name];
+            <div className="test" style={{ position: "relative" }} ref={parentRef}>
+                {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
+                <Table
+                    dataSource={files}
+                    columns={columns}
+                    rowKey={(record) => record.name}
+                    pagination={false}
+                    onRow={(record) => ({
+                        onDoubleClick: () => {
+                            if (record.isDir) {
+                                handleDirClick(record.name);
+                            } else {
+                                const newSelectedKeys = selectedRowKeys.includes(record.name)
+                                    ? selectedRowKeys.filter((key) => key !== record.name)
+                                    : [...selectedRowKeys, record.name];
 
-                            onSelectChange(newSelectedKeys);
-                        }
-                    },
-                })}
-                rowClassName={rowClassName}
-                rowSelection={
-                    maxSelectedRows > 0
-                        ? {
-                              selectedRowKeys,
-                              onChange: onSelectChange,
-                          }
-                        : {
-                              selectedRowKeys,
-                              onChange: onSelectChange,
-                              getCheckboxProps: (record: Record) => ({
-                                  disabled: record.name === "..", // Disable checkbox for rows with name '..'
-                              }),
-                              onSelectAll: (selected: boolean, selectedRows: any[]) => {
-                                  const selectedKeys = selected
-                                      ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
-                                      : [];
-                                  setSelectedRowKeys(selectedKeys);
-                              },
-                          }
-                }
-                components={{
-                    // Override the header to include custom search row
-                    header: {
-                        wrapper: (props: any) => {
-                            return <thead {...props} />;
+                                onSelectChange(newSelectedKeys);
+                            }
                         },
-                        row: (props: any) => {
-                            return (
-                                <>
-                                    <tr {...props} />
-                                    <tr>
-                                        <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
-                                            <Input
-                                                placeholder={t("fileBrowser.filter")}
-                                                value={filterText}
-                                                onChange={handleFilterChange}
-                                                onFocus={handleFilterFieldInputFocus}
-                                                onBlur={handleFilterFieldInputBlur}
-                                                ref={inputRefFilter} // Assign ref to input element
-                                                style={{ width: "100%" }}
-                                                autoFocus={filterFieldAutoFocus}
-                                                addonAfter={
-                                                    <CloseOutlined
-                                                        onClick={clearFilterField}
-                                                        disabled={filterText.length === 0}
-                                                        style={{
-                                                            color:
-                                                                filterText.length === 0
-                                                                    ? token.colorTextDisabled
-                                                                    : token.colorText,
-                                                            cursor: filterText.length === 0 ? "default" : "pointer",
-                                                        }}
-                                                    />
-                                                }
-                                            />
-                                        </th>
-                                    </tr>
-                                </>
-                            );
+                    })}
+                    rowClassName={rowClassName}
+                    rowSelection={
+                        maxSelectedRows > 0
+                            ? {
+                                  selectedRowKeys,
+                                  onChange: onSelectChange,
+                              }
+                            : {
+                                  selectedRowKeys,
+                                  onChange: onSelectChange,
+                                  getCheckboxProps: (record: Record) => ({
+                                      disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                                  }),
+                                  onSelectAll: (selected: boolean, selectedRows: any[]) => {
+                                      const selectedKeys = selected
+                                          ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                          : [];
+                                      setSelectedRowKeys(selectedKeys);
+                                  },
+                              }
+                    }
+                    components={{
+                        // Override the header to include custom search row
+                        header: {
+                            wrapper: (props: any) => {
+                                return <thead {...props} />;
+                            },
+                            row: (props: any) => {
+                                return (
+                                    <>
+                                        <tr {...props} />
+                                        <tr>
+                                            <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
+                                                <Input
+                                                    placeholder={t("fileBrowser.filter")}
+                                                    value={filterText}
+                                                    onChange={handleFilterChange}
+                                                    onFocus={handleFilterFieldInputFocus}
+                                                    onBlur={handleFilterFieldInputBlur}
+                                                    ref={inputRefFilter} // Assign ref to input element
+                                                    style={{ width: "100%" }}
+                                                    autoFocus={filterFieldAutoFocus}
+                                                    addonAfter={
+                                                        <CloseOutlined
+                                                            onClick={clearFilterField}
+                                                            disabled={filterText.length === 0}
+                                                            style={{
+                                                                color:
+                                                                    filterText.length === 0
+                                                                        ? token.colorTextDisabled
+                                                                        : token.colorText,
+                                                                cursor: filterText.length === 0 ? "default" : "pointer",
+                                                            }}
+                                                        />
+                                                    }
+                                                />
+                                            </th>
+                                        </tr>
+                                    </>
+                                );
+                            },
+                            cell: (props: any) => {
+                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
+                            },
                         },
-                        cell: (props: any) => {
-                            return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
-                        },
-                    },
-                }}
-            />
+                    }}
+                    locale={{ emptyText: noData }}
+                />
+            </div>
         </>
     );
 };

@@ -13,6 +13,8 @@ import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import th
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -32,6 +34,8 @@ export const HomePage = () => {
     const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
     const [defaultLanguage, setMaxTag] = useState<string>("");
     const [accessApiEnabled, setAccessApiEnabled] = useState<[string, boolean][]>([]);
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         const fetchDisplayIncidentAlert = async () => {
             const displayIncidentAlert = await api.apiGetSecurityMITAlert();
@@ -65,9 +69,8 @@ export const HomePage = () => {
         fetchNewBoxesAllowed();
 
         const fetchTonies = async () => {
-            // Perform API call to fetch Tonie data
+            setLoading(true);
             const tonieData = (await api.apiGetTagIndexMergedAllOverlays(true)).filter((item) => !item.hide);
-            // sort random
             setTonies(
                 tonieData.sort((a, b) => {
                     if (Math.random() > 0.5) {
@@ -77,6 +80,7 @@ export const HomePage = () => {
                     }
                 })
             );
+            setLoading(false);
         };
 
         fetchTonies();
@@ -174,23 +178,27 @@ export const HomePage = () => {
                     </Paragraph>
                     <Paragraph>
                         {t("home.forumIntroPart1")}
-                        <Link to="https://forum.revvox.de/" target="_blank">
-                            https://forum.revvox.de/
+                        <Link to={forumUrl} target="_blank">
+                            {forumUrl}
                         </Link>
                         {t("home.forumIntroPart2")}
                     </Paragraph>
                     <Paragraph>
                         <h2>{t("home.yourTonies")}</h2>
-                        <ToniesList
-                            tonieCards={tonies
-                                .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
-                                .slice(0, 6)}
-                            overlay=""
-                            showFilter={false}
-                            showPagination={false}
-                            readOnly={true}
-                            defaultLanguage={defaultLanguage}
-                        />
+                        {loading ? (
+                            <LoadingSpinner />
+                        ) : (
+                            <ToniesList
+                                tonieCards={tonies
+                                    .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
+                                    .slice(0, 6)}
+                                overlay=""
+                                showFilter={false}
+                                showPagination={false}
+                                readOnly={true}
+                                defaultLanguage={defaultLanguage}
+                            />
+                        )}
                         <Paragraph>
                             <Button onClick={() => navigate("/tonies")}>
                                 {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})
@@ -204,22 +212,22 @@ export const HomePage = () => {
                                 <Link to="/community/faq">FAQ</Link>
                             </li>
                             <li>
-                                <Link to="https://github.com/toniebox-reverse-engineering" target="_blank">
+                                <Link to={gitHubUrl} target="_blank">
                                     GitHub
                                 </Link>
                             </li>
                             <li>
-                                <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
+                                <Link to={telegramGroupUrl} target="_blank">
                                     Telegram Chat
                                 </Link>
                             </li>
                             <li>
-                                <Link to="https://forum.revvox.de/" target="_blank">
+                                <Link to={forumUrl} target="_blank">
                                     Discourse Forum
                                 </Link>
                             </li>
                             <li>
-                                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/" target="_blank">
+                                <Link to={wikiUrl} target="_blank">
                                     TeddyCloud Wiki
                                 </Link>
                             </li>

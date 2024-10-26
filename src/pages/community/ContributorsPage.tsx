@@ -10,6 +10,7 @@ import BreadcrumbWrapper, {
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { TonieMeetingElement } from "../../components/TonieMeeting";
 import { Link } from "react-router-dom";
+import { gitHubRepositoresUrl, gitHubTCContributorsUrl, gitHubTCwebContributorsUrl } from "../../constants";
 
 const { Paragraph } = Typography;
 
@@ -39,30 +40,21 @@ export const ContributorsPage = () => {
                         <Paragraph>
                             <h3>teddycloud</h3>
                             <div>{t("community.contributors.teddyCloud")}</div>
-                            <Link
-                                to="https://github.com/toniebox-reverse-engineering/teddycloud/graphs/contributors"
-                                target="_blank"
-                            >
-                                https://github.com/toniebox-reverse-engineering/teddycloud/graphs/contributors
+                            <Link to={gitHubTCContributorsUrl} target="_blank">
+                                {gitHubTCContributorsUrl}
                             </Link>
                         </Paragraph>
                         <Paragraph>
                             <h3>teddycloud_web</h3>
                             <div>{t("community.contributors.teddyCloudWeb")}</div>
-                            <Link
-                                to="https://github.com/toniebox-reverse-engineering/teddycloud_web/graphs/contributors"
-                                target="_blank"
-                            >
-                                https://github.com/toniebox-reverse-engineering/teddycloud_web/graphs/contributors
+                            <Link to={gitHubTCwebContributorsUrl} target="_blank">
+                                {gitHubTCwebContributorsUrl}
                             </Link>
                         </Paragraph>
                         <Paragraph>
                             {t("community.contributors.others")}{" "}
-                            <Link
-                                to="https://github.com/orgs/toniebox-reverse-engineering/repositories"
-                                target="_blank"
-                            >
-                                https://github.com/orgs/toniebox-reverse-engineering/repositories
+                            <Link to={gitHubRepositoresUrl} target="_blank">
+                                {gitHubRepositoresUrl}
                             </Link>
                         </Paragraph>
                     </Paragraph>

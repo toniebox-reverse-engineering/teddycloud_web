@@ -121,6 +121,18 @@ If you need to add a new API request to the TeddyCloud API, please use one of th
 
 If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`. We prefer to have all API requests centralized in this file. One reason is the upcoming authentication for accessing the API.
 
+### Linking to other sites
+
+If you need to link to another source / element / ..., please check if in the `constants.tsx` is already the url added. If so, use the variable instead. If not, think about to add it there as a varliable, maybe you need this url more than once, so if the url changes sometimes, you have only to adapt it once.
+
+There are already the following sites added (selection):
+
+-   tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png"
+-   telegramGroupUrl = "https://t.me/toniebox_reverse_engineering"
+-   forumUrl = "https://forum.revvox.de/"
+-   gitHubUrl = "https://github.com/toniebox-reverse-engineering"
+-   wikiUrl = "https://tonies-wiki.revvox.de/docs/tools/teddycloud/"
+
 ## Tips and Tricks
 
 ### Missing img_unknown.png

@@ -13,6 +13,7 @@ import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileO
 import { useState, useEffect } from "react";
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
+import { forumUrl, telegramGroupUrl } from "../../../constants";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -79,6 +80,13 @@ export const BoxSetupPage = () => {
                     <ul>
                         <li>
                             <Link to="/tonieboxes/boxsetup/esp32/flashing">ESP32</Link>
+                            <ul style={{ marginBottom: 0 }}>
+                                <li>
+                                    <Link to="/tonieboxes/boxsetup/esp32/legacy">
+                                        {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                    </Link>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <Link to="/tonieboxes/boxsetup/cc3200/flashing">CC3200</Link>
@@ -140,11 +148,11 @@ export const BoxSetupPage = () => {
                     ></Alert>
                     <Paragraph style={{ marginTop: 16 }}>
                         {t("tonieboxes.boxSetup.boxSetupIntro1")}{" "}
-                        <Link to="https://forum.revvox.de/" target="_blank">
+                        <Link to={forumUrl} target="_blank">
                             {t("tonieboxes.boxSetup.boxSetupIntroForum")}
                         </Link>{" "}
                         {t("tonieboxes.boxSetup.boxSetupIntro2")}{" "}
-                        <Link to="https://t.me/toniebox_reverse_engineering" target="_blank">
+                        <Link to={telegramGroupUrl} target="_blank">
                             {t("tonieboxes.boxSetup.boxSetupIntroTelegram")}
                         </Link>{" "}
                         {t("tonieboxes.boxSetup.boxSetupIntro3")}

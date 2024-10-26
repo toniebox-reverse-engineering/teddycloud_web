@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -12,9 +12,10 @@ import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
 
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { Select, Tooltip } from "antd";
+import { message, Select, Tooltip } from "antd";
 import { useLocation } from "react-router-dom";
 import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { Option } = Select;
@@ -24,16 +25,15 @@ interface LanguageCounts {
 }
 
 export const ToniesPage = () => {
+    const { t } = useTranslation();
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const linkOverlay = searchParams.get("overlay");
-
-    const { t } = useTranslation();
-
-    // Define the state with TonieCardProps[] type
-    const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent(linkOverlay);
+
+    const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [defaultLanguage, setMaxTag] = useState<string>("");
+    const [loading, setLoading] = useState(true);
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
         setTonies((prevTonies) =>
@@ -43,25 +43,32 @@ export const ToniesPage = () => {
 
     useEffect(() => {
         const fetchTonies = async () => {
-            // Perform API call to fetch Tonie data
-            const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "", true)).filter((item) => !item.hide);
-            setTonies(
-                tonieData.sort((a, b) => {
-                    if (a.tonieInfo.series < b.tonieInfo.series) {
-                        return -1;
-                    }
-                    if (a.tonieInfo.series > b.tonieInfo.series) {
-                        return 1;
-                    }
-                    if (a.tonieInfo.episode < b.tonieInfo.episode) {
-                        return -1;
-                    }
-                    if (a.tonieInfo.episode > b.tonieInfo.episode) {
-                        return 1;
-                    }
-                    return 0;
-                })
-            );
+            setLoading(true);
+            try {
+                const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "", true)).filter((item) => !item.hide);
+                setTonies(
+                    tonieData.sort((a, b) => {
+                        if (a.tonieInfo.series < b.tonieInfo.series) {
+                            return -1;
+                        }
+                        if (a.tonieInfo.series > b.tonieInfo.series) {
+                            return 1;
+                        }
+                        if (a.tonieInfo.episode < b.tonieInfo.episode) {
+                            return -1;
+                        }
+                        if (a.tonieInfo.episode > b.tonieInfo.episode) {
+                            return 1;
+                        }
+                        return 0;
+                    })
+                );
+            } catch (error) {
+                message.error("Fetching Tonies failed: " + error);
+                console.log("error: fetching tonies failed: " + error);
+            } finally {
+                setLoading(false);
+            }
         };
 
         fetchTonies();
@@ -140,15 +147,19 @@ export const ToniesPage = () => {
                             ""
                         )}
                     </div>
-                    <ToniesList
-                        showFilter={true}
-                        showPagination={true}
-                        tonieCards={tonies.filter((tonie) => tonie.type === "tag")}
-                        overlay={overlay}
-                        readOnly={false}
-                        defaultLanguage={defaultLanguage}
-                        onToniesCardUpdate={handleUpdate}
-                    />
+                    {loading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <ToniesList
+                            showFilter={true}
+                            showPagination={true}
+                            tonieCards={tonies.filter((tonie) => tonie.type === "tag")}
+                            overlay={overlay}
+                            readOnly={false}
+                            defaultLanguage={defaultLanguage}
+                            onToniesCardUpdate={handleUpdate}
+                        />
+                    )}
                 </StyledContent>
             </StyledLayout>
         </>

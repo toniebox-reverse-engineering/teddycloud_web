@@ -10,6 +10,7 @@ import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { Link } from "react-router-dom";
 import { TeddyCloudApi } from "../../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { gitHubTCCommitTreeBaseUrl } from "../../constants";
 
 interface FeatureItems {
     [key: string]: string | FeatureGroup;
@@ -84,10 +85,7 @@ export const FeaturesPage = () => {
                     <p>{t("home.features.description")}</p>
                     <p>
                         Build:{" "}
-                        <Link
-                            to={"https://github.com/toniebox-reverse-engineering/teddycloud/tree/" + commitGitShaShort}
-                            target="_blank"
-                        >
+                        <Link to={gitHubTCCommitTreeBaseUrl + commitGitShaShort} target="_blank">
                             {version.replace(versionShort, "")}
                         </Link>
                     </p>
