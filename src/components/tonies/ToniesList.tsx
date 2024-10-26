@@ -253,6 +253,7 @@ export const ToniesList: React.FC<{
     };
 
     const handleShowAll = () => {
+        setListKey((prevKey) => prevKey + 1);
         setShowAll(true);
         setPaginationEnabled(false);
         storeLocalStorage();

@@ -34,7 +34,7 @@ export const SettingsPage = () => {
     const [options, setOptions] = useState<OptionsList | undefined>();
 
     const [settingsLevel, setSettingsLevel] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchSettingsLevel = async () => {
