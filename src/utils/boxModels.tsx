@@ -40,7 +40,7 @@ export default function GetBoxModelImages() {
                 img_src: item.img_src,
                 crop: item.crop || null,
             }));
-            setBoxModelImages([]);
+            setBoxModelImages(images);
             setLoading(false);
         }
 
