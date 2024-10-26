@@ -65,7 +65,7 @@ export const SettingsPage = () => {
             setLoading(false);
         };
 
-        fetchOptions();
+        settingsLevel ? fetchOptions() : "";
     }, [settingsLevel]);
 
     const triggerWriteConfig = async () => {
