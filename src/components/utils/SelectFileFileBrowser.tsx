@@ -232,6 +232,7 @@ export const SelectFileFileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
+        setLoading(true);
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
             navigate(`?path=${newPath}`);
@@ -279,10 +280,6 @@ export const SelectFileFileBrowser: React.FC<{
             return defaultSorter(a, b, "name");
         }
         return a.isDir ? -1 : 1;
-    };
-
-    const withinTafBoundaries = (numberOfFiles: number) => {
-        return numberOfFiles > 0 && numberOfFiles <= MAX_FILES;
     };
 
     var columns: any[] = [
@@ -482,7 +479,7 @@ export const SelectFileFileBrowser: React.FC<{
             return false;
         });
     }
-    const noData = loading ? "" : <Empty />;
+    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
     return (
         <>

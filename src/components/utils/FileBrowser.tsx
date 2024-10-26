@@ -279,8 +279,8 @@ export const FileBrowser: React.FC<{
 
     // breadcrumb functions
     const handleBreadcrumbClick = (dirPath: string) => {
+        setLoading(true);
         if (trackUrl) {
-            setLoading(true);
             navigate(`?path=${dirPath}`);
         }
         if (path === dirPath) {
@@ -1381,6 +1381,7 @@ export const FileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
+        setLoading(true);
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
             navigate(`?path=${newPath}`);
@@ -1801,7 +1802,7 @@ export const FileBrowser: React.FC<{
         });
     }
 
-    const noData = loading ? "" : <Empty />;
+    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
     return (
         <>
