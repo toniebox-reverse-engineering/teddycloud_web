@@ -80,6 +80,13 @@ export const BoxSetupPage = () => {
                     <ul>
                         <li>
                             <Link to="/tonieboxes/boxsetup/esp32/flashing">ESP32</Link>
+                            <ul style={{ marginBottom: 0 }}>
+                                <li>
+                                    <Link to="/tonieboxes/boxsetup/esp32/legacy">
+                                        {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                    </Link>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <Link to="/tonieboxes/boxsetup/cc3200/flashing">CC3200</Link>
