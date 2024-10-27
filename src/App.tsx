@@ -39,6 +39,7 @@ import { ESP32LegacyPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyPa
 import { TranslationsPage } from "./pages/community/TranslationsPage";
 import { OpenBoxGuidePage } from "./pages/tonieboxes/boxsetup/OpenBoxGuidePage";
 import { detectColorScheme } from "./utils/browserUtils";
+import { BoxVersionInformationPage } from "./pages/tonieboxes/boxsetup/BoxVersionInformation";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -125,6 +126,10 @@ function App() {
                                         element={<IdentifyBoxVersionPage />}
                                     />
                                     <Route path="/tonieboxes/boxsetup/openboxguide" element={<OpenBoxGuidePage />} />
+                                    <Route
+                                        path="/tonieboxes/boxsetup/boxversioninfo"
+                                        element={<BoxVersionInformationPage />}
+                                    />
                                     <Route
                                         path="/tonieboxes/boxsetup/esp32/flashing"
                                         element={<ESP32BoxFlashingPage />}

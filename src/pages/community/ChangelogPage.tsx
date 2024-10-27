@@ -18,6 +18,21 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.6.3",
+            changes: [
+                "Stabilization backend",
+                "gui: Added version overview page",
+                "gui: Added spinning wheel to lists, should also fix https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/129",
+                "gui: some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.2...tc_v0.6.3",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.2...tcw_v0.6.3",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-3/812",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.3",
+        },
+        {
             version: "0.6.2",
             changes: [
                 "Stabilization backend",

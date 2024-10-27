@@ -57,6 +57,11 @@ export const BoxSetupPage = () => {
                     <Paragraph>{t("tonieboxes.boxSetup.identifyTonieboxVersionText")}</Paragraph>
                     <ul>
                         <li>
+                            <Link to="/tonieboxes/boxsetup/boxversioninfo">
+                                {t("tonieboxes.boxSetup.boxVersion.title")}
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/tonieboxes/boxsetup/openboxguide">
                                 {t("tonieboxes.boxSetup.openBoxGuide.title")}
                             </Link>
