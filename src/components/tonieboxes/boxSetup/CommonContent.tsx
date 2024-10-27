@@ -234,7 +234,6 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
             >
                 {t("tonieboxes.availableBoxModal.recheck")}
             </Button>
-            <Button onClick={onClose}> {t("tonieboxes.availableBoxModal.cancel")}</Button>
             <Button type="primary" onClick={onClose}>
                 {t("tonieboxes.availableBoxModal.ok")}
             </Button>

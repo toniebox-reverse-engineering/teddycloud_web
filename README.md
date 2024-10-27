@@ -123,9 +123,9 @@ If none of the existing methods meet your needs, add the new request to `src/api
 
 ### Linking to other sites
 
-If you need to link to another source / element / ..., please check if in the `constants.tsx` is already the url added. If so, use the variable instead. If not, think about to add it there as a varliable, maybe you need this url more than once, so if the url changes sometimes, you have only to adapt it once.
+If you need to link to another source, element, or URL, please check if it is already defined in `constants.tsx`. If it is, use the existing variable instead of hardcoding the URL. If it isn’t, consider adding it as a variable in `constants.tsx` - you may need this URL more than once. Defining it as a variable ensures you only need to update it in one place if the URL changes in the future.
 
-There are already the following sites added (selection):
+The following URLs have already been defined (partial list):
 
 -   tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png"
 -   telegramGroupUrl = "https://t.me/toniebox_reverse_engineering"

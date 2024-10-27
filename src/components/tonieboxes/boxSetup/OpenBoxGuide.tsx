@@ -139,9 +139,9 @@ export function openBoxGuide(): JSX.Element {
                     {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")}.
                 </Link>
             </Paragraph>
-
-            <Timeline mode={"left"} items={items} />
-
+            <Image.PreviewGroup>
+                <Timeline mode={"left"} items={items} />
+            </Image.PreviewGroup>
             <Paragraph>
                 {t("tonieboxes.boxSetup.openBoxGuide.alternativeGuidelineVideo")}{" "}
                 <Link to="https://www.youtube.com/watch?v=Cv9ID4-P6_A" target="_blank">
