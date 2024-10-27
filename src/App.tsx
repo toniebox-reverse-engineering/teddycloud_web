@@ -3,7 +3,6 @@ import { Layout } from "antd";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AudioProvider } from "./components/audio/AudioContext";
 
-import { UiTest } from "./components/UiTest";
 import { SettingsPage } from "./pages/settings/SettingsPage";
 import { RtnlPage } from "./pages/settings/RtnlPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
@@ -156,7 +155,6 @@ function App() {
                                     <Route path="/community/contribution/translations" element={<TranslationsPage />} />
                                     <Route path="/community/contributors" element={<ContributorsPage />} />
                                     <Route path="/community/changelog" element={<ChangelogPage />} />
-                                    <Route path="/uitest" element={<UiTest />} />
                                     <Route path="/*" element={<Error404Page />} />
                                 </Routes>
                             </Layout>
