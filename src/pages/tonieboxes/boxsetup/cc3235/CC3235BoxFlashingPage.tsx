@@ -163,7 +163,25 @@ export const CC3235BoxFlashingPage = () => {
             </Paragraph>
             <h4>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacement")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacementText1")}</Paragraph>
-
+            <Alert
+                type="warning"
+                showIcon
+                message={t("tonieboxes.cc3235BoxFlashing.flashCAReplacementTitle")}
+                description={
+                    <>
+                        {t("tonieboxes.cc3235BoxFlashing.flashCAReplacementDescription1")}{" "}
+                        <Link
+                            to="https://raw.githubusercontent.com/toniebox-reverse-engineering/teddycloud/master/contrib/gencerts.sh"
+                            target="_blank"
+                        >
+                            {t("tonieboxes.cc3235BoxFlashing.gencertLinkText")}{" "}
+                        </Link>{" "}
+                        {t("tonieboxes.cc3235BoxFlashing.flashCAReplacementDescription2")}{" "}
+                        {t("tonieboxes.cc3235BoxFlashing.flashCAReplacementDescription3")}
+                    </>
+                }
+                style={{ marginBottom: 16 }}
+            />
             <Paragraph>
                 <CodeSnippet
                     language="shell"
