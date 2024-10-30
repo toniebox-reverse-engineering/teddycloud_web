@@ -25,9 +25,9 @@
             "getInvolved": "Participe",
             "getInvolvedText1": "Faites partie de notre communauté mondiale de contributeurs en écrivant du code, en commentant des problèmes ou en participant aux discussions dans notre groupe Telegram.",
             "getInvolvedText2": "Vos meilleurs points de contact sont les lieux suivants :",
-            "github": "L’endroit où toutes les sources sont stockées pour ce projet et les projets associés. Vous pouvez y forker les dépôts, apporter de nouvelles fonctionnalités ou des améliorations, créer des issues ou simplement donner votre avis sur les issues existants.",
+            "github": "L'endroit où toutes les sources sont stockées pour ce projet et les projets associés. Vous pouvez y forker les dépôts, apporter de nouvelles fonctionnalités ou des améliorations, créer des issues ou simplement donner votre avis sur les issues existants.",
             "teddyCloudWiki": "Un Wiki qui contient, entre autres, comment installer TeddyCloud et comment résoudre des problèmes éventuels.",
-            "telegram": "Le support de premier niveau si vous avez besoin d’aide ou si vous êtes intéressé(e) à participer au développement de TeddyCloud."
+            "telegram": "Le support de premier niveau si vous avez besoin d'aide ou si vous êtes intéressé(e) à participer au développement de TeddyCloud."
         },
         "contribution": {
             "communityValues": "Valeurs de la communauté",
@@ -461,7 +461,7 @@
                 "step1Title": "1. Configure AdGuard Home comme serveur DNS",
                 "step2Instructions": "Dans le tableau de bord d'AdGuard Home, va dans Filtres > Règles de filtrage personnalisées. Ajoute les règles personnalisées suivantes pour réécrire les requêtes DNS de certains domaines vers ton IP de TeddyCloud, uniquement lorsque la demande vient de la Toniebox.",
                 "step2Title": "2. Ajouter des règles de réécriture DNS personnalisées",
-                "step3Instructions": "Redémarre le service AdGuard Home pour appliquer les modifications. Teste les réécritures DNS pour confirmer que les demandes de ta Toniebox vers prod.de.tbs.toys et rtnl.bxcl.de sont résolues vers l’IP de ta TeddyCloud. Les autres appareils sur le réseau devraient résoudre ces domaines via la résolution DNS régulière (sauf indication contraire).",
+                "step3Instructions": "Redémarre le service AdGuard Home pour appliquer les modifications. Teste les réécritures DNS pour confirmer que les demandes de ta Toniebox vers prod.de.tbs.toys et rtnl.bxcl.de sont résolues vers l'IP de ta TeddyCloud. Les autres appareils sur le réseau devraient résoudre ces domaines via la résolution DNS régulière (sauf indication contraire).",
                 "step3Title": "3. Vérifier et tester la configuration",
                 "step4Title": "4. Sécurité et gestion supplémentaires (optionnel)",
                 "stepsTitle": "Étapes",
@@ -481,7 +481,7 @@
             "dumpCertificatesIntro1": "Tu auras besoin de flash:/cert/ca.der (Boxine CA), flash:/cert/client.der (Certificat Client) et flash:/cert/private.der (Clé privée Client). Place ces fichiers sous /certs/client/*. Tu peux alimenter la box avec la batterie (assure-toi qu'elle n'est pas vide) ou avec l'alimentation électrique (recommandé).",
             "dumpCertificatesIntro2": "Conserve une sauvegarde des certificats, notamment du client.der et du private.der. Sans eux, tu ne pourras plus te connecter au cloud !",
             "openWrt": {
-                "dnsText2": "En alternative, tu peux configurer la passerelle des Toniebox sur l’IP de TeddyCloud. Avec OpenWRT, cela fonctionne de cette façon :",
+                "dnsText2": "En alternative, tu peux configurer la passerelle des Toniebox sur l'IP de TeddyCloud. Avec OpenWRT, cela fonctionne de cette façon :",
                 "usingOpenWrt": "Utilisation d'OpenWRT"
             },
             "preparations": "Préparations"
@@ -525,7 +525,7 @@
                 "whatVersion": "Quelle version de Toniebox devrais-je choisir ?",
                 "whatVersionConclusion": "Nous ne recommandons pas la version V3 CC3235 en raison des difficultés de flashage et du support limité. Actuellement, la version V1/V2 (TI CC3200) offre le plus de fonctionnalités, y compris la prise en charge d'un bootloader et d'un firmware personnalisés. Cependant, pour l'avenir, nous recommandons la version V4 basée sur ESP32.",
                 "whatVersionConclusionHeader": "Conclusion",
-                "whatVersionIntro": "Si tu n’as pas encore choisi de Toniebox, voici les avantages et inconvénients de chaque version pour t'aider dans ta décision. En fin de compte, le choix dépend de tes besoins et préférences personnels. Toutes les versions sont au moins compatibles avec TeddyCloud."
+                "whatVersionIntro": "Si tu n'as pas encore choisi de Toniebox, voici les avantages et inconvénients de chaque version pour t'aider dans ta décision. En fin de compte, le choix dépend de tes besoins et préférences personnels. Toutes les versions sont au moins compatibles avec TeddyCloud."
             },
             "flashBox": "Flasher la Toniebox",
             "flashBoxText": "Pour ajouter votre Toniebox à TeddyCloud, certaines modifications sont nécessaires. Selon la version de votre Toniebox, il existe trois directives spécifiques à suivre :",
@@ -542,7 +542,7 @@
                 "generalInstruction2": "et en vérifiant la puce principale sur le circuit imprimé (PCB). Clique sur l'onglet de chaque version pour obtenir plus de détails.",
                 "generalInstructionLinkText": "l'ouvrant",
                 "identify": "Identifier",
-                "identifyUsingMac": "Identifie ta version avec l'adresse MAC de ta Toniebox. Tu trouves l’adresse MAC au bas de ta Toniebox.",
+                "identifyUsingMac": "Identifie ta version avec l'adresse MAC de ta Toniebox. Tu trouves l'adresse MAC au bas de ta Toniebox.",
                 "mac": "Merci d'entrer l'adresse MAC :",
                 "macvendors": "Vérifier utilise l'API fournie par",
                 "macvendorsLink": "macvendors.com",
@@ -674,6 +674,27 @@
             "title": "CC3200 Flashage de la boîte"
         },
         "cc3235BoxFlashing": {
+            "CH341AProgrammer": {
+                "CH341AProgrammer": "Configurer la connexion du programmeur CH341A",
+                "CH341Sop8remove": "Raccourcis ici jusqu'à ce qu'elle s'ajuste correctement.",
+                "flashMemoryDumpText1": "Connecte la pince à la mémoire flash IS25LP032D. Assure-toi que le câble rouge de la pince est aligné avec le point sur la puce marquant la broche 1.",
+                "flashMemoryDumpText2": "Si la pince ne tient pas, elle peut entrer en collision avec un bloc noir à proximité. Raccourcis plus de plastique si nécessaire. Ne connecte pas encore le CH341A. Vérifie à nouveau les positions des câbles.",
+                "flashMemoryDumpText3": "Quand tu es prêt, branche le CH341A dans le port USB de ton ordinateur. La lumière de la Toniebox doit être verte fixe. Si elle clignote, la pince peut ne pas être bien positionnée. Débranche le CH341A, ajuste la pince et réessaie pour assurer une bonne connexion.",
+                "flashMemoryDumpText4": "Une fois que la LED est verte fixe, la connexion est bonne. Ouvre un terminal sur ton ordinateur et tape les commandes suivantes :",
+                "flashMemoryDumpText5": "Répète ce processus au moins trois fois.",
+                "flashMemoryDumpText6": "Après trois lectures, compare tous les vidages pour confirmer la cohérence.",
+                "flashMemoryDumpText7": "Une fois que tu confirmes que toutes les versions sont cohérentes, procède à l'extraction des certificats.",
+                "flashMemoryDumpText8": "Retire le CH341A du port USB et enlève la pince pour éviter d'éventuels courts-circuits ou problèmes si la pince se déplace accidentellement.",
+                "prep1": "Obtiens un programmeur CH341A (achète uniquement la version noire avec une ligne dorée et des bords arrondis).",
+                "prep2": "Raccourcis le plastique sur la pince CH341A si nécessaire, afin qu'elle puisse s'adapter à la mémoire flash IS25LP032D.",
+                "prep3": "Assure-toi que la carte PCB et la batterie sont déconnectées.",
+                "prep4": "Connecte le CH341A à l'ordinateur et confirme qu'il est reconnu. Tu peux le faire de la manière suivante :",
+                "prepConclusions1": "Si la sortie diffère, il se peut que le petit pont entre les broches 1 et 2 du CH341A ne soit pas en place. Une fois confirmé, débranche le CH341A du port USB. Cette vérification assure que tout est correctement connecté.",
+                "prepConclusions2": "Assure-toi que le module SOP8 dans le kit CH341A et la pince sont connectés comme indiqué sur l'image.",
+                "prepConclusions3": "Ce n'est que lorsque les préparatifs sont complets que nous pouvons procéder au processus d'extraction.",
+                "preparation": "Uniquement nécessaire si tu prévois de flasher avec un programmeur CH341A",
+                "readingFlash": "Option 2 : Lire la mémoire flash avec le programmeur CH341A"
+            },
             "certificatesDumpedCAreplacementFlashed": "Certificats extraits et remplacement de CA flashé",
             "checkBoxes": "Afficher les boxes disponibles",
             "dnsBeware": "Attention!",
@@ -695,9 +716,10 @@
             "flashCAreplacementText1": "Remplace la CA originale dans ton dump flash par la CA de remplacement et reflash ta boîte.",
             "flashCAreplacementText2": "Si la boîte ne se connecte pas du tout (mot-clé: chouette), tu peux essayer l'ancien gencerts.sh pour générer de nouveaux certificats et reflasher la boîte.",
             "flashCollapse": {
-                "cc3235flash": "Flash avec des broches",
-                "cc3235flashWithSMDGrippers": "Flash avec pinces SMD connectées",
-                "collapseTitle": "Aide : Flash du firmware du CC3235"
+                "cc3235flash": "Mémoire flash avec broches",
+                "cc3235flashWithSMDGrippers": "Mémoire flash avec pinces SMD connectées",
+                "collapseTitle": "Aide : Mémoire Flash IS25LP032D sur CC3235",
+                "sop8Clamp": "Mémoire flash avec pince SOP8 connectée"
             },
             "gencertLinkText": "gencert.sh",
             "hint": "Il n'y a actuellement pas de support direct pour flasher votre CC3235 Toniebox avec TeddyCloud, mais vous trouverez ici un guide étape par étape :",
@@ -705,16 +727,24 @@
             "installCC3200tool": "Installer l'outil CC3200",
             "installCC3200toolLink": "Trouver les instructions d'installation ici",
             "installSerprogFirmware": "Installer le firmware Serprog",
+            "installflashromtool": "Installer Flashrom",
+            "installflashromtoolLink": "Visite la page d'accueil de l'outil pour plus d'informations",
+            "installflashromtoolText": "Assure-toi que l'ordinateur que tu utilises pour flasher a Flashrom installé. Sinon, installe-le en utilisant les commandes suivantes :",
             "linkGeneral": "Patch de votre Toniebox pour l'utiliser avec TeddyCloud",
             "linkSpecific": "Configuration spécifique CC3235",
+            "locateFlashMemory": "Localiser la puce de mémoire flash",
+            "locateFlashMemoryText": "Identifie la puce de mémoire flash IS25LP032D sur la carte ; elle est située à droite du dock de chargement.",
             "navigationTitle": "CC3235",
             "next": "Suivant",
+            "pico": {
+                "preparation": "Uniquement nécessaire si tu prévois de flasher avec un Raspberry Pi Pico",
+                "readingFlash": "Option 1 : Lire la mémoire flash avec Raspberry Pi Pico",
+                "readingFlashText1": "Comme sonde, tu peux utiliser un Raspberry Pi Pico avec un firmware qui prend en charge le protocole serprog.",
+                "readingFlashText2": "Il est recommandé d'effectuer plusieurs lectures et de comparer les résultats."
+            },
             "preparationText": "Connecte ta Toniebox à ton Wi-Fi et mets à jour son firmware. De nombreuses boxes sont expédiées avec un firmware de production qui doit être mis à jour. Sinon, la box ne fonctionnera pas correctement. Il n'est pas nécessaire de connecter la box à l'application ou au compte mytonies.",
             "preparationTextLink": "Connecter la box sans l'assistant de configuration.",
             "previous": "Retour",
-            "readingFlashPico": "Lire la mémoire flash avec Pico",
-            "readingFlashPicoText1": "Tu peux utiliser un Raspberry Pi Pico avec le firmware du protocole Serprog comme sonde.",
-            "readingFlashPicoText2": "Tu peux effectuer plusieurs lectures et comparer les résultats.",
             "serprogFirmwareLink": "Trouver les instructions d'installation ici",
             "title": "CC3235 Flashage de la boîte",
             "useCC3200ToolToExtract": "Tu peux utiliser l'outil CC3200 pour extraire tes certificats à partir du dump de la mémoire flash ensuite."
@@ -840,7 +870,7 @@
                 "writingFinished": "Écriture terminée",
                 "writingFlash": "Écriture de {{size}} MiB de mémoire flash..."
             },
-            "hint": "Cette section est uniquement disponible si vous utilisez HTTPS et un navigateur compatible avec l'API Web Serial, comme Chrome ou Edge. Si vous souhaitez flasher votre ESP32 Toniebox, cliquez sur \"Continuer vers HTTPS\", vous serez alors automatiquement redirigé vers la version HTTPS. Il est possible que votre navigateur indique que la connexion n'est pas sécurisée. C'est normal, confirmez-le et ouvrez la page quand même. Vous devrez peut-être afficher plus de détails dans l’avertissement.",
+            "hint": "Cette section est uniquement disponible si vous utilisez HTTPS et un navigateur compatible avec l'API Web Serial, comme Chrome ou Edge. Si vous souhaitez flasher votre ESP32 Toniebox, cliquez sur \"Continuer vers HTTPS\", vous serez alors automatiquement redirigé vers la version HTTPS. Il est possible que votre navigateur indique que la connexion n'est pas sécurisée. C'est normal, confirmez-le et ouvrez la page quand même. Vous devrez peut-être afficher plus de détails dans l'avertissement.",
             "hintLegacyApproach": "Si vous préférez ne pas utiliser un navigateur prenant en charge WebSerial, vous pouvez toujours utiliser l'approche héritée via votre ligne de commande.",
             "httpsSettings": "Paramètres HTTPS",
             "legacy": {
