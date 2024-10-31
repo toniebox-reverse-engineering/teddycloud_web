@@ -360,9 +360,9 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText2")}</Paragraph>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText3")}</Paragraph>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText4")}</Paragraph>
-            <CodeSnippet language="shell" code={`sudo flashrom -p ch341a_spi -r backupCC3235-1.bin`} />
+            <CodeSnippet language="shell" code={`flashrom -p ch341a_spi -r backupCC3235-1.bin`} />
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText5")}</Paragraph>
-            <CodeSnippet language="shell" code={`sudo flashrom -p ch341a_spi -r backupCC3235-2.bin`} />
+            <CodeSnippet language="shell" code={`flashrom -p ch341a_spi -r backupCC3235-2.bin`} />
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText6")}</Paragraph>
             <CodeSnippet language="shell" code={`diff backupCC3235-1.bin backupCC3235-2.bin #no output = equal`} />
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText7")}</Paragraph>
