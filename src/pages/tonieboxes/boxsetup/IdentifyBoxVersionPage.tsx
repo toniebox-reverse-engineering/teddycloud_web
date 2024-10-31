@@ -206,7 +206,6 @@ export const IdentifyBoxVersionPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.boxSetup.identifyVersion.title`)}</h1>
-
                     <Form>
                         <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.identifyUsingMac")} </Paragraph>
                         <Form.Item>

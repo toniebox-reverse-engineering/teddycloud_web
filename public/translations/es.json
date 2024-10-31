@@ -693,7 +693,8 @@
                 "prepConclusions2": "Asegúrate de que el módulo SOP8 en el kit CH341A y la pinza estén conectados como se muestra en la imagen.",
                 "prepConclusions3": "Solo cuando se completen las preparaciones podemos proceder con el proceso de extracción.",
                 "preparation": "Solo necesario si planeas realizar el flasheo con un Programador CH341A",
-                "readingFlash": "Opción 2: Leer memoria flash con el Programador CH341A"
+                "readingFlash": "Leer memoria flash con el Programador CH341A",
+                "writingFlash": "Escribir en la memoria flash con el programador CH341A"
             },
             "certificatesDumpedCAreplacementFlashed": "Certificados extraídos y CA de reemplazo flasheado",
             "checkBoxes": "Mostrar Tonieboxes disponibles",
@@ -724,6 +725,8 @@
             "gencertLinkText": "gencert.sh",
             "hint": "Actualmente no hay soporte directo para flashear tu Toniebox CC3235 con TeddyCloud, pero encontrarás una guía paso a paso aquí:",
             "hint2": "Sigue luego el camino para CC3235:",
+            "hwToolSpecific": "Preparaciones Dependientes del Hardware",
+            "hwToolSpecificText": "Dependiendo del hardware que planees usar para flashear tu Toniebox, se requieren preparaciones adicionales. Por favor, elige la opción que seguirás.",
             "installCC3200tool": "Instalar la herramienta CC3200",
             "installCC3200toolLink": "Encuentra las instrucciones de instalación aquí",
             "installSerprogFirmware": "Instalar firmware Serprog",
@@ -738,9 +741,10 @@
             "next": "Siguiente",
             "pico": {
                 "preparation": "Solo necesario si planeas realizar el flasheo con un Raspberry Pi Pico",
-                "readingFlash": "Opción 1: Leer memoria flash con Raspberry Pi Pico",
+                "readingFlash": "Leer memoria flash con Raspberry Pi Pico",
                 "readingFlashText1": "Como sonda, puedes usar un Raspberry Pi Pico con firmware que admita el protocolo serprog.",
-                "readingFlashText2": "Se recomienda realizar varias lecturas y comparar los resultados."
+                "readingFlashText2": "Se recomienda realizar varias lecturas y comparar los resultados.",
+                "writingFlash": "Escribir en la memoria flash con Raspberry Pi Pico"
             },
             "preparationText": "Por favor, conecta tu Toniebox a tu Wi-Fi y actualiza su firmware. Muchas cajas se envían con un firmware de producción que necesita actualizarse. De lo contrario, la caja no funcionará como debería. No es necesario conectar la caja a la aplicación/cuenta mytonies.",
             "preparationTextLink": "Conecta la caja sin el asistente de configuración.",

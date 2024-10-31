@@ -693,7 +693,8 @@
                 "prepConclusions2": "Stelle sicher, dass das SOP8-Modul im CH341A-Kit und die Klemme wie im Bild gezeigt verbunden sind.",
                 "prepConclusions3": "Nur wenn die Vorbereitungen abgeschlossen sind, können wir mit dem Extraktionsprozess fortfahren.",
                 "preparation": "Nur erforderlich, wenn du das Flashen mit einem CH341A-Programmierer durchführen möchtest",
-                "readingFlash": "Option 2: Flash-Lesen mit dem CH341A-Programmierer"
+                "readingFlash": "Flash-Lesen mit dem CH341A-Programmierer",
+                "writingFlash": "Flashen mit dem CH341A-Programmierer"
             },
             "certificatesDumpedCAreplacementFlashed": "Zertifikate ausgelesen und CA-Ersatz geflasht",
             "checkBoxes": "Verfügbare Boxen anzeigen",
@@ -724,6 +725,8 @@
             "gencertLinkText": "gencert.sh",
             "hint": "Es gibt derzeit keine direkte Unterstützung, um deine CC3235 Toniebox mit TeddyCloud zu flashen, aber hier findest du eine Schritt-für-Schritt-Anleitung:",
             "hint2": "Bitte folge dann dem CC3235-Pfad:",
+            "hwToolSpecific": "Hardware-Abhängige Vorbereitungen",
+            "hwToolSpecificText": "Abhängig von der Hardware, die du zum Flashen deiner Toniebox verwenden möchtest, sind zusätzliche Vorbereitungen erforderlich. Bitte wähle die Option, der du folgen möchtest.",
             "installCC3200tool": "Installiere das CC3200 Tool",
             "installCC3200toolLink": "Installationsanweisungen findest du hier",
             "installSerprogFirmware": "Serprog-Firmware installieren",
@@ -738,9 +741,10 @@
             "next": "Weiter",
             "pico": {
                 "preparation": "Nur erforderlich, wenn du das Flashen mit einem Raspberry Pi Pico durchführen möchtest",
-                "readingFlash": "Option 1: Flash-Lesen mit Raspberry Pi Pico",
+                "readingFlash": "Flash-Lesen mit Raspberry Pi Pico",
                 "readingFlashText1": "Als Sonde kannst du einen Raspberry Pi Pico mit Firmware verwenden, die das Serprog-Protokoll unterstützt.",
-                "readingFlashText2": "Es wird empfohlen, mehrere Lesevorgänge durchzuführen und die Ergebnisse zu vergleichen."
+                "readingFlashText2": "Es wird empfohlen, mehrere Lesevorgänge durchzuführen und die Ergebnisse zu vergleichen.",
+                "writingFlash": "Flashen mit Raspberry Pi Pico"
             },
             "preparationText": "Bitte verbinde deine Toniebox mit deinem WLAN und aktualisiere die Firmware. Viele Boxen werden mit einer Produktions-Firmware ausgeliefert, die aktualisiert werden muss. Andernfalls funktioniert die Box nicht wie vorgesehen. Es ist nicht notwendig, die Box mit der mytonies App zu verbinden.",
             "preparationTextLink": "Verbinde die Box ohne den Setup-Assistenten.",

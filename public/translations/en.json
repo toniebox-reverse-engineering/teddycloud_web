@@ -693,7 +693,8 @@
                 "prepConclusions2": "Make sure the SOP8 module in the CH341A kit and the clamp are connected as shown in the picture.",
                 "prepConclusions3": "Only when preparations are complete can we proceed with the extraction process.",
                 "preparation": "Only required if you plan to perform the flashing with a CH341A Programmer",
-                "readingFlash": "Option 2: Reading Flash with the CH341A Programmer"
+                "readingFlash": "Reading Flash with the CH341A Programmer",
+                "writingFlash": "Writing Flash with the CH341A Programmer"
             },
             "certificatesDumpedCAreplacementFlashed": "Certificates dumped and CA replacement flashed",
             "checkBoxes": "Show available boxes",
@@ -724,6 +725,8 @@
             "gencertLinkText": "gencert.sh",
             "hint": "There is currently no direct support of flashing your CC3235 Toniebox with TeddyCloud, but you will find a step by step guidance here:",
             "hint2": "Please follow then the CC3235 path:",
+            "hwToolSpecific": "Hardware-Dependent Preparations",
+            "hwToolSpecificText": "Depending on the hardware you plan to use for flashing your Toniebox, additional preparations are required. Please select the option you will follow:",
             "installCC3200tool": "Install the CC3200 Tool",
             "installCC3200toolLink": "Find installation instructions here",
             "installSerprogFirmware": "Install serprog firmware",
@@ -738,9 +741,10 @@
             "next": "Next",
             "pico": {
                 "preparation": "Only required if you plan to perform the flashing with a Raspberry Pi Pico",
-                "readingFlash": "Option 1: Reading Flash with Raspberry Pi Pico",
+                "readingFlash": "Reading Flash with Raspberry Pi Pico",
                 "readingFlashText1": "As a probe, you may use a Raspberry Pi Pico with firmware that supports the serprog protocol.",
-                "readingFlashText2": "It's recommended to perform multiple reads and compare results."
+                "readingFlashText2": "It's recommended to perform multiple reads and compare results.",
+                "writingFlash": "Writing Flash with Raspberry Pi Pico"
             },
             "preparationText": "Please connect your Toniebox to your Wi-Fi and update its firmware. Many boxes are shipped with a production firmware that needs to be updated. Otherwise the box won`t work as it should. It is not necessary to connect the box to the mytonies app/account.",
             "preparationTextLink": "Connect the box without the setup assistant.",

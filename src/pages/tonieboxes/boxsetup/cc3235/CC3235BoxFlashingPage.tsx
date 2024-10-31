@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Collapse, Divider, Image, Steps, Typography } from "antd";
+import { Alert, Button, Collapse, Divider, Image, Steps, Tabs, TabsProps, Typography } from "antd";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -37,6 +37,13 @@ export const CC3235BoxFlashingPage = () => {
     const currentLanguage = i18n.language;
     const [currentStep, setCurrent] = useState(0);
 
+    const [activeKey, setActiveKey] = useState<string>("picoHW");
+    const [commonActiveKey, setCommenActiveKey] = useState<string>("pico");
+
+    useEffect(() => {
+        setCommenActiveKey(activeKey.slice(0, -2));
+    }, [activeKey]);
+
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
     const steps = [
@@ -52,6 +59,103 @@ export const CC3235BoxFlashingPage = () => {
     ];
 
     // step 0 - preparations
+    const picoPrepTab = (
+        <>
+            <h4>{t("tonieboxes.cc3235BoxFlashing.installSerprogFirmware")}</h4>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.preparation")}</Paragraph>
+            <Paragraph>
+                <Link to="https://github.com/stacksmashing/pico-serprog" target="_blank">
+                    {t("tonieboxes.cc3235BoxFlashing.serprogFirmwareLink")}
+                </Link>
+            </Paragraph>
+        </>
+    );
+
+    const ch341aPrepTab = (
+        <>
+            <h4>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammer")}</h4>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.preparation")}</Paragraph>
+            <ul>
+                <li>
+                    {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep1")}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            flexWrap: "wrap",
+                            gap: 16,
+                            margin: 8,
+                        }}
+                    >
+                        <Image
+                            src={cc3235CH341AProgrammer1}
+                            style={{ maxHeight: 200, width: "auto" }}
+                            alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammer")}
+                        />
+                    </div>
+                </li>
+                <li>
+                    {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep2")}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            flexWrap: "wrap",
+                            gap: 16,
+                            margin: 8,
+                        }}
+                    >
+                        <Image
+                            src={cc3235CH341Sop8remove}
+                            style={{ maxHeight: 100, width: "auto" }}
+                            alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341Sop8remove")}
+                        />
+                    </div>
+                </li>
+                <li>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep3")}</li>
+                <li>
+                    {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep4")}
+                    <CodeSnippet
+                        language="shell"
+                        code={`lsusb 
+
+~$ lsusb
+Bus 004 Device 012: ID 1a86:5512 QinHeng Electronics CH341 in EPP/MEM/I2C mode, EPP/I2C adapter
+Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
+                    />
+                </li>
+            </ul>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions1")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions2")}{" "}
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        flexWrap: "wrap",
+                        gap: 16,
+                        margin: 8,
+                    }}
+                >
+                    <Image
+                        src={cc3235CH341AProgrammer2}
+                        style={{ maxHeight: 100, width: "auto" }}
+                        alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammerClampConnection")}
+                    />
+                </div>
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions3")}</Paragraph>
+        </>
+    );
+
+    const hwHelperPrep: TabsProps["items"] = [
+        { key: "picoHW", label: "Raspberry Pi Pico", children: picoPrepTab },
+        { key: "ch341aHW", label: "CH341A Programmer", children: ch341aPrepTab },
+    ];
+
     const contentStep0 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.preparations")}</h3>
@@ -167,135 +271,20 @@ export const CC3235BoxFlashingPage = () => {
             >
                 {t("tonieboxes.cc3235BoxFlashing.installCC3200toolLink")}
             </Link>
-            <h4>{t("tonieboxes.cc3235BoxFlashing.installSerprogFirmware")}</h4>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.preparation")}</Paragraph>
-            <Paragraph>
-                <Link to="https://github.com/stacksmashing/pico-serprog" target="_blank">
-                    {t("tonieboxes.cc3235BoxFlashing.serprogFirmwareLink")}
-                </Link>
-            </Paragraph>
-            <h4>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammer")}</h4>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.preparation")}</Paragraph>
-            <ul>
-                <li>
-                    {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep1")}
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            flexWrap: "wrap",
-                            gap: 16,
-                            margin: 8,
-                        }}
-                    >
-                        <Image
-                            src={cc3235CH341AProgrammer1}
-                            style={{ maxHeight: 200, width: "auto" }}
-                            alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammer")}
-                        />
-                    </div>
-                </li>
-                <li>
-                    {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep2")}
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            flexWrap: "wrap",
-                            gap: 16,
-                            margin: 8,
-                        }}
-                    >
-                        <Image
-                            src={cc3235CH341Sop8remove}
-                            style={{ maxHeight: 100, width: "auto" }}
-                            alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341Sop8remove")}
-                        />
-                    </div>
-                </li>
-                <li>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep3")}</li>
-                <li>
-                    {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prep4")}
-                    <CodeSnippet
-                        language="shell"
-                        code={`lsusb 
-
-~$ lsusb
-Bus 004 Device 012: ID 1a86:5512 QinHeng Electronics CH341 in EPP/MEM/I2C mode, EPP/I2C adapter
-Bus 004 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-Bus 003 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
-Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
-                    />
-                </li>
-            </ul>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions1")}</Paragraph>
-            <Paragraph>
-                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions2")}{" "}
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        flexWrap: "wrap",
-                        gap: 16,
-                        margin: 8,
-                    }}
-                >
-                    <Image
-                        src={cc3235CH341AProgrammer2}
-                        style={{ maxHeight: 100, width: "auto" }}
-                        alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammerClampConnection")}
-                    />
-                </div>
-            </Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions3")}</Paragraph>
+            <h4>{t("tonieboxes.cc3235BoxFlashing.hwToolSpecific")}</h4>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.hwToolSpecificText")}</Paragraph>
+            <Tabs
+                onChange={(newKey) => setActiveKey(newKey)}
+                activeKey={commonActiveKey + "HW"}
+                items={hwHelperPrep}
+                indicator={{ size: (origin) => origin - 20, align: "center" }}
+            />
         </>
     );
 
     // step 1 - certificates
-    const contentStep1 = (
+    const commonCAcontent = (
         <>
-            <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
-            {certificateIntro()}
-            <h4>CC3235</h4>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesCC3235")}</Paragraph>
-
-            <h5>{t("tonieboxes.cc3235BoxFlashing.pico.readingFlash")}</h5>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.readingFlashText1")}</Paragraph>
-            <Paragraph>
-                <CodeSnippet
-                    language="shell"
-                    code={`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.bin --progress`}
-                />
-            </Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.readingFlashText2")}</Paragraph>
-            <Paragraph>
-                <CodeSnippet
-                    language="shell"
-                    code={`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.2.bin --progress 
-diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
-                />
-            </Paragraph>
-            <h5>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.readingFlash")}</h5>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText1")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText2")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText3")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText4")}</Paragraph>
-            <CodeSnippet language="shell" code={`sudo flashrom -p ch341a_spi -r backupCC3235-1.bin`} />
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText5")}</Paragraph>
-            <CodeSnippet language="shell" code={`sudo flashrom -p ch341a_spi -r backupCC3235-2.bin`} />
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText6")}</Paragraph>
-            <CodeSnippet language="shell" code={`diff backupCC3235-1.bin backupCC3235-2.bin #no output = equal`} />
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText7")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText8")}</Paragraph>
-            <h5>{t("tonieboxes.cc3235BoxFlashing.extractCertificates")}</h5>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.useCC3200ToolToExtract")}</Paragraph>
-            <Paragraph>
-                <CodeSnippet
-                    language="shell"
-                    code={`cc3200tool -if cc32xx-flash.bin -d cc32xx read_all_files extract/`}
-                />
-            </Paragraph>
             <h4>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacement")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacementText1")}</Paragraph>
             <Alert
@@ -317,13 +306,106 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                 }
                 style={{ marginBottom: 16 }}
             />
+        </>
+    );
+
+    const picoCertTab = (
+        <>
+            <h5>{t("tonieboxes.cc3235BoxFlashing.pico.readingFlash")}</h5>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.readingFlashText1")}</Paragraph>
             <Paragraph>
                 <CodeSnippet
                     language="shell"
-                    code={`cc3200tool -if cc32xx-flash.bin -of cc32xx-flash.customca.bin -d cc32xx write_file customca.der /cert/ca.der
-flashrom -p serprog:dev=/dev/ttyACM0:921600 -w cc32xx-flash.bin --progress`}
+                    code={`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.bin --progress`}
                 />
             </Paragraph>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.readingFlashText2")}</Paragraph>
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`flashrom -p serprog:dev=/dev/ttyACM0:921600 -r cc32xx-flash.2.bin --progress 
+diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
+                />
+            </Paragraph>
+            <h5>{t("tonieboxes.cc3235BoxFlashing.extractCertificates")}</h5>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.useCC3200ToolToExtract")}</Paragraph>
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -if cc32xx-flash.bin -d cc32xx read_all_files extract/`}
+                />
+            </Paragraph>
+            {commonCAcontent}
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -if cc32xx-flash.bin -of cc32xx-flash.customca.bin -d cc32xx write_file customca.der /cert/ca.der`}
+                />
+            </Paragraph>
+
+            <h5>{t("tonieboxes.cc3235BoxFlashing.pico.writingFlash")}</h5>
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`flashrom -p serprog:dev=/dev/ttyACM0:921600 -w cc32xx-flash.customca.bin --progress`}
+                />
+            </Paragraph>
+        </>
+    );
+
+    const ch341aCertTab = (
+        <>
+            <h5>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.readingFlash")}</h5>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText1")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText2")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText3")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText4")}</Paragraph>
+            <CodeSnippet language="shell" code={`sudo flashrom -p ch341a_spi -r backupCC3235-1.bin`} />
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText5")}</Paragraph>
+            <CodeSnippet language="shell" code={`sudo flashrom -p ch341a_spi -r backupCC3235-2.bin`} />
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText6")}</Paragraph>
+            <CodeSnippet language="shell" code={`diff backupCC3235-1.bin backupCC3235-2.bin #no output = equal`} />
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText7")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText8")}</Paragraph>
+            <h5>{t("tonieboxes.cc3235BoxFlashing.extractCertificates")}</h5>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.useCC3200ToolToExtract")}</Paragraph>
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -if backupCC3235-1.bin -d cc32xx read_all_files extract/`}
+                />
+            </Paragraph>
+            {commonCAcontent}
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -if backupCC3235-1.bin -of cc32xx-flash.customca.bin -d cc32xx write_file customca.der /cert/ca.der`}
+                />
+            </Paragraph>
+            <h5>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.writingFlash")}</h5>
+            <Paragraph>
+                <CodeSnippet language="shell" code={`flashrom -p ch341a_spi -w cc32xx-flash.customca.bin --progress`} />
+            </Paragraph>
+        </>
+    );
+
+    const hwHelperCert: TabsProps["items"] = [
+        { key: "picoCE", label: "Raspberry Pi Pico", children: picoCertTab },
+        { key: "ch341aCE", label: "CH341A Programmer", children: ch341aCertTab },
+    ];
+
+    const contentStep1 = (
+        <>
+            <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
+            {certificateIntro()}
+            <h4>CC3235</h4>
+            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesCC3235")}</Paragraph>
+            <Tabs
+                onChange={(newKey) => setActiveKey(newKey)}
+                activeKey={commonActiveKey + "CE"}
+                items={hwHelperCert}
+                indicator={{ size: (origin) => origin - 20, align: "center" }}
+            />
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacementText2")}</Paragraph>
         </>
     );
@@ -362,7 +444,7 @@ flashrom -p serprog:dev=/dev/ttyACM0:921600 -w cc32xx-flash.bin --progress`}
 
         updateContent(currentStep, getContentForStep());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentStep, currentLanguage, detectColorScheme()]);
+    }, [currentStep, currentLanguage, detectColorScheme(), commonActiveKey]);
 
     const prev = () => {
         setCurrent(currentStep - 1);
