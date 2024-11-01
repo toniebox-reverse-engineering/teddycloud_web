@@ -8,8 +8,8 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import TranslationComparison from "../../components/utils/translationComparison";
-import TranslationTable from "../../components/utils/translationTable";
+import TranslationComparison from "../../components/utils/TranslationComparison";
+import TranslationTable from "../../components/utils/TranslationTable";
 
 const { Paragraph } = Typography;
 
