@@ -1,5 +1,8 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Space, Typography } from "antd";
+
+import { gitHubRepositoresUrl, gitHubTCContributorsUrl, gitHubTCwebContributorsUrl } from "../../constants";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -9,8 +12,6 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { TonieMeetingElement } from "../../components/TonieMeeting";
-import { Link } from "react-router-dom";
-import { gitHubRepositoresUrl, gitHubTCContributorsUrl, gitHubTCwebContributorsUrl } from "../../constants";
 
 const { Paragraph } = Typography;
 

@@ -1,5 +1,5 @@
-import { Dropdown, Space, Tag } from "antd";
 import { useTranslation } from "react-i18next";
+import { Dropdown, Space, Tag } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 
 export const StyledLanguageSwitcher = () => {

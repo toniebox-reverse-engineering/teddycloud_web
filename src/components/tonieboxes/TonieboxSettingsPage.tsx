@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Divider, Form, Radio, message } from "antd";
 import { Formik } from "formik";
+
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import LoadingSpinner from "../utils/LoadingSpinner";
 import OptionItem from "../utils/OptionItem";
-import LoadingSpinner from "../common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

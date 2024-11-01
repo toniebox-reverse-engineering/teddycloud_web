@@ -1,3 +1,6 @@
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import {
     CloseOutlined,
     CloudSyncOutlined,
@@ -9,58 +12,24 @@ import {
     RetweetOutlined,
     SaveFilled,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, message, theme } from "antd";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useAudioContext } from "../audio/AudioContext";
-import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
-import { TonieArticleSearch } from "./TonieArticleSearch";
-import LanguageFlagSVG from "../../utils/languageUtil";
-import { RadioStreamSearch } from "../utils/RadioStreamSearch";
+
+import { TonieCardProps } from "../../types/tonieTypes";
+
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
+
+import { useAudioContext } from "../audio/AudioContext";
+import { TonieArticleSearch } from "./TonieArticleSearch";
+import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
+import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import TonieInformationModal from "../utils/TonieInformationModal";
+import LanguageFlagSVG from "../../utils/languageUtil";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Meta } = Card;
 const { Text } = Typography;
 const { useToken } = theme;
-
-export type TagsTonieCardList = {
-    tags: TonieCardProps[];
-};
-
-export type TagTonieCard = {
-    tagInfo: TonieCardProps;
-};
-
-export type TonieInfo = {
-    series: string;
-    episode: string;
-    language: string;
-    model: string;
-    picture: string;
-    tracks: string[];
-};
-export type TonieCardProps = {
-    uid: string;
-    ruid: string;
-    type: string;
-    valid: boolean;
-    exists: boolean;
-    claimed: boolean;
-    hide: boolean;
-    live: boolean;
-    nocloud: boolean;
-    hasCloudAuth: boolean;
-    source: string;
-    audioUrl: string;
-    downloadTriggerUrl: string;
-    tonieInfo: TonieInfo;
-    sourceInfo: TonieInfo;
-    trackSeconds: number[];
-};
 
 export const TonieCard: React.FC<{
     tonieCard: TonieCardProps;

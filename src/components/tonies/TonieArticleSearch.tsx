@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Select, Tooltip, message } from "antd";
 import type { SelectProps } from "antd";
-import { TonieInfo } from "./TonieCard";
-import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
+
+import { TonieInfo } from "../../types/tonieTypes";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

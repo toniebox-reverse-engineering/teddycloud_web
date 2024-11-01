@@ -1,9 +1,9 @@
-import { MenuProps } from "antd";
-import { ContainerOutlined, HomeOutlined } from "@ant-design/icons";
-import { WifiOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { MenuProps } from "antd";
+import { ContainerOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
+
 import { StyledSubMenu } from "../StyledComponents";
 
 export const HomeSubNav = () => {

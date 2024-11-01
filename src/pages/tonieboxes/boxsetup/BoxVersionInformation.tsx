@@ -1,4 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { Card, Col, List, Row, Typography } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -6,10 +9,7 @@ import BreadcrumbWrapper, {
     StyledLayout,
     StyledSider,
 } from "../../../components/StyledComponents";
-import { Link } from "react-router-dom";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
-import { Card, Col, List, Row, Typography } from "antd";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 const { Paragraph, Title } = Typography;
 

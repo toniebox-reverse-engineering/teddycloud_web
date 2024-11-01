@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { BoxineApi, BoxineForcedApi } from "../../api";
 import { Space, Tag, Tooltip } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { BoxineApi, BoxineForcedApi } from "../../api";
+
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 
 const api = new BoxineApi(defaultAPIConfig());

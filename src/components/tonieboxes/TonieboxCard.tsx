@@ -13,37 +13,25 @@ import {
     LockOutlined,
     LinkOutlined,
 } from "@ant-design/icons";
+
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
+
+import { tonieboxDefaultImageUrl } from "../../constants";
+
+import { TonieCardProps } from "../../types/tonieTypes";
+import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../types/tonieboxTypes";
+
 import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
-import { TonieCardProps } from "../../components/tonies/TonieCard";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
 import GetBoxModelImages from "../../utils/boxModels";
 import ConfirmationDialog from "../utils/ConfirmationDialog";
-import { tonieboxDefaultImageUrl } from "../../constants";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
+
 const { Paragraph, Text } = Typography;
 const { Meta } = Card;
 const { useToken } = theme;
-
-export type TonieboxCardList = {
-    boxes: TonieboxCardProps[];
-};
-
-export type TonieboxCardProps = {
-    ID: string;
-    commonName: string;
-    boxName: string;
-    boxModel: string;
-};
-
-interface TonieboxImage {
-    id: string;
-    name: string;
-    img_src: string;
-    crop?: number[];
-}
 
 export const TonieboxCard: React.FC<{
     tonieboxCard: TonieboxCardProps;
@@ -90,18 +78,18 @@ export const TonieboxCard: React.FC<{
 
         const fetchTonieboxVersion = async () => {
             const tonieboxVersion = await api.apiGetTonieboxVersion(tonieboxCard.ID);
-            const BoxVersions: { [key: string]: string } = {
-                "0": "UNKNOWN",
-                "1": "CC3200",
-                "2": "CC3235",
-                "3": "ESP32",
+            const BoxVersions: { [key: string]: BoxVersionsEnum } = {
+                "0": BoxVersionsEnum.unknown,
+                "1": BoxVersionsEnum.cc3200,
+                "2": BoxVersionsEnum.cc3235,
+                "3": BoxVersionsEnum.esp32,
             };
 
             if (tonieboxVersion in BoxVersions) {
                 const version = BoxVersions[tonieboxVersion as keyof typeof BoxVersions];
                 setTonieboxVersion(version);
             } else {
-                setTonieboxVersion("UNKNOWN");
+                setTonieboxVersion(BoxVersionsEnum.unknown);
             }
         };
         fetchTonieboxVersion();
@@ -143,7 +131,7 @@ export const TonieboxCard: React.FC<{
     }, [tonieboxCard.ID, tonieboxCard.boxModel]);
 
     useEffect(() => {
-        if (lastIp && tonieboxVersion === "CC3200") {
+        if (lastIp && tonieboxVersion === BoxVersionsEnum.cc3200) {
             // only if lastIp is set and box version is CC3200
             // we check for CFW using battery status API call
             try {

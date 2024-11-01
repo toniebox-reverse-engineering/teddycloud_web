@@ -1,20 +1,10 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../../../i18n";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Col, Collapse, Divider, Form, Input, message, Progress, Row, Steps, Typography } from "antd";
-import { TeddyCloudApi } from "../../../../api";
-import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../../components/StyledComponents";
-import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
-import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog";
-import DotAnimation from "../../../../utils/dotAnimation";
 import {
     CodeOutlined,
     DownloadOutlined,
@@ -26,9 +16,23 @@ import {
     SyncOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
-import { useNavigate } from "react-router-dom";
+
+import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
+
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+
+import BreadcrumbWrapper, {
+    HiddenDesktop,
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../../../components/StyledComponents";
+import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
+import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog";
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
+import DotAnimation from "../../../../components/utils/dotAnimation";
+import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -1417,7 +1421,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
 
     const availableBoxesModal = (
         <AvailableBoxesModal
-            boxVersion="ESP32"
+            boxVersion={BoxVersionsEnum.esp32}
             isOpen={isOpenAvailableBoxesModal}
             onClose={handleAvailableBoxesModalClose}
         />

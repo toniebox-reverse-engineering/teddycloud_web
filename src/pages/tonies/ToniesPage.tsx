@@ -1,23 +1,26 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
+import { message, Select, Tooltip } from "antd";
+
+import { TonieCardProps } from "../../types/tonieTypes";
+
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
+
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import the TonieCard component and its props type
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
-
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { message, Select, Tooltip } from "antd";
-import { useLocation } from "react-router-dom";
+import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
+
 const { Option } = Select;
 
 interface LanguageCounts {

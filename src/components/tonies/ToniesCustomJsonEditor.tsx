@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Col, Row, message, Tooltip, Alert } from "antd";
-import { TonieCardProps } from "./TonieCard";
 import { useTranslation } from "react-i18next";
+import { Modal, Form, Input, Button, Col, Row, message, Tooltip, Alert } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
+
+import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import CodeSnippet from "../../utils/codeSnippet";
+import CodeSnippet from "../utils/CodeSnippet";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

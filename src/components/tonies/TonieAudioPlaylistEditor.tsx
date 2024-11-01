@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, Form, Input, Button, Space, Alert, theme } from "antd";
 import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
+
+import CodeSnippet from "../utils/CodeSnippet";
 import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
-import CodeSnippet from "../../utils/codeSnippet";
 
 export interface FileItem {
     filepath: string;
     name: string;
 }
 
-export interface FormValues {
+export interface TAPFormValues {
     type: string;
     audio_id: number;
     filepath: string;
@@ -22,7 +23,7 @@ export interface FormValues {
 export interface TonieAudioPlaylistEditorProps {
     open: boolean;
     initialValuesJson?: string;
-    onCreate: (values: FormValues) => void;
+    onCreate: (values: TAPFormValues) => void;
     onCancel: () => void;
 }
 
@@ -38,7 +39,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const [form] = Form.useForm<FormValues>();
+    const [form] = Form.useForm<TAPFormValues>();
     const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
     const [filebrowserKey, setFilebrowserKey] = useState(0);
@@ -92,7 +93,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     };
 
     const handleOkSelectFile = () => {
-        const currentValues = form.getFieldsValue() as FormValues;
+        const currentValues = form.getFieldsValue() as TAPFormValues;
         let updatedFiles = [...currentValues.files];
 
         if (selectedFileIndex !== -1) {
@@ -191,7 +192,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                 onOk={() => {
                     form.validateFields()
                         .then(() => {
-                            onCreate(form.getFieldsValue() as FormValues);
+                            onCreate(form.getFieldsValue() as TAPFormValues);
                             //remove that if the API is available
                             setJsonData(JSON.stringify(form.getFieldsValue(), null, 2));
                             setJsonDataMinimized(JSON.stringify(form.getFieldsValue(), null, 0));

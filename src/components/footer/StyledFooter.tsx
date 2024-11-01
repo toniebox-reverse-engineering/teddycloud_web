@@ -1,14 +1,15 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Footer } from "antd/es/layout/layout";
 import styled from "styled-components";
 
-import { Link } from "react-router-dom";
-import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
-import AudioPlayerFooter from "./AudioPlayerFooter";
+import { gitHubTCReleasesUrl } from "../../constants";
 
-import { useEffect, useState } from "react";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { gitHubTCReleasesUrl } from "../../constants";
+
+import AudioPlayerFooter from "./AudioPlayerFooter";
+import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 
 const StyledFooterComponent = styled(Footer)`
     position: fixed;

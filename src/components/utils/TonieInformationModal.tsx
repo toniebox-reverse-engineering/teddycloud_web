@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, Typography, Button, message, Tooltip } from "antd";
-import { TonieCardProps } from "../tonies/TonieCard";
-import { Record } from "./FileBrowser";
-import ConfirmationDialog from "./ConfirmationDialog";
+
+import { Record } from "../../types/fileBrowserTypes";
+import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Text } = Typography;
 
-export type TonieCardTAFRecord = TonieCardProps | Record;
+type TonieCardTAFRecord = TonieCardProps | Record;
 
-export type InformationModalProps = {
+interface InformationModalProps {
     open: boolean;
     onClose: () => void;
     tonieCardOrTAFRecord: TonieCardTAFRecord;
@@ -23,7 +25,7 @@ export type InformationModalProps = {
     lastRUIDs?: Array<[string, string, string]>;
     overlay?: string;
     onHide?: (ruid: string) => void;
-};
+}
 
 const TonieInformationModal: React.FC<InformationModalProps> = ({
     open,

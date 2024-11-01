@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Popover, Progress, Slider, theme } from "antd";
 import {
     PlayCircleOutlined,
     PauseCircleOutlined,
@@ -11,15 +13,15 @@ import {
     ArrowsAltOutlined,
     CloseOutlined,
 } from "@ant-design/icons";
-import { useAudioContext } from "../audio/AudioContext";
-import { useEffect, useState } from "react";
-import { Button, Popover, Progress, Slider, theme } from "antd";
-import { useTranslation } from "react-i18next";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
+import { useAudioContext } from "../audio/AudioContext";
+
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
+
 interface AudioPlayerFooterProps {
     isPlaying?: boolean;
     onPlayPause?: () => void;

@@ -1,3 +1,6 @@
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { MenuProps, message } from "antd";
 import {
     SafetyCertificateOutlined,
@@ -7,13 +10,12 @@ import {
     SyncOutlined,
     HistoryOutlined,
 } from "@ant-design/icons";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { StyledSubMenu } from "../StyledComponents";
-import { restartServer } from "../../utils/restartServer";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import { StyledSubMenu } from "../StyledComponents";
+import { restartServer } from "../../utils/restartServer";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

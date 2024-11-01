@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import logoImg from "../../assets/logo.png";
-import { supportsOggOpus } from "../../utils/browserUtils";
 import { Modal } from "antd";
+
+import logoImg from "../../assets/logo.png";
+
+import { supportsOggOpus } from "../../utils/browserUtils";
 
 interface AudioContextType {
     playAudio: (url: string, meta?: any, trackSeconds?: number[]) => void;
@@ -10,6 +12,10 @@ interface AudioContextType {
     songArtist: string;
     songTitle: string;
     songTracks: number[];
+}
+
+interface AudioProviderProps {
+    children: React.ReactNode; // Define the children prop
 }
 
 const AudioContext = React.createContext<AudioContextType | undefined>(undefined);
@@ -21,10 +27,6 @@ export const useAudioContext = () => {
     }
     return context;
 };
-
-interface AudioProviderProps {
-    children: React.ReactNode; // Define the children prop
-}
 
 const extractFilename = (url: string) => {
     // Remove query parameters if any

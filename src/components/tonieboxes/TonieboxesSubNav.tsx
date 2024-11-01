@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { MenuProps } from "antd";
-import { StyledSubMenu } from "../StyledComponents";
-import { TonieboxIcon } from "../../utils/tonieboxIcon";
 import {
     DeliveredProcedureOutlined,
     InfoCircleOutlined,
@@ -11,6 +9,9 @@ import {
     PlusSquareOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
+
+import { StyledSubMenu } from "../StyledComponents";
+import { TonieboxIcon } from "../utils/tonieboxIcon";
 
 export const TonieboxesSubNav = () => {
     const { t } = useTranslation();

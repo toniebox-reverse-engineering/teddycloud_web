@@ -1,5 +1,11 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import i18n from "../../../../i18n";
+import { Link } from "react-router-dom";
 import { Alert, Button, Col, Collapse, Divider, Form, Input, Row, Steps, Table, Typography } from "antd";
+import { RightOutlined, CodeOutlined, LeftOutlined, CheckSquareOutlined, EyeOutlined } from "@ant-design/icons";
+
+import { BoxVersionsEnum, TonieboxCardProps } from "../../../../types/tonieboxTypes";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -8,13 +14,8 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
-import { Link } from "react-router-dom";
-import { RightOutlined, CodeOutlined, LeftOutlined, CheckSquareOutlined, EyeOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import i18n from "../../../../i18n";
-import { TonieboxCardProps } from "../../../../components/tonieboxes/TonieboxCard";
+import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
-import CodeSnippet from "../../../../utils/codeSnippet";
 import AvailableBoxesModal, { certificateIntro } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
 const { Paragraph } = Typography;
@@ -602,7 +603,7 @@ export const CC3200BoxFlashingPage = () => {
 
     const availableBoxesModal = (
         <AvailableBoxesModal
-            boxVersion="CC3200"
+            boxVersion={BoxVersionsEnum.cc3200}
             isOpen={isOpenAvailableBoxesModal}
             onClose={handleAvailableBoxesModalClose}
         />

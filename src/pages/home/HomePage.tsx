@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Typography, Button, Alert, message } from "antd";
+
+import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
+import { TonieCardProps } from "../../types/tonieTypes";
+
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
+
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
@@ -9,12 +16,8 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
-import { TonieCardProps } from "../../components/tonies/TonieCard"; // Import the TonieCardDisplayOnly component and its props type
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
 import { ToniesList } from "../../components/tonies/ToniesList";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
+import LoadingSpinner from "../../components/utils/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

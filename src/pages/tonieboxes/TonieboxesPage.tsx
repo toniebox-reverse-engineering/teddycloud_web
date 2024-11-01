@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, message } from "antd";
+import { TonieboxCardProps } from "../../types/tonieboxTypes";
+
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
+
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard"; // Import the TonieboxCard component and its props type
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
 import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 

@@ -1,19 +1,11 @@
-import { useTranslation } from "react-i18next";
-import { Alert, Button, Collapse, Divider, Image, Steps, Tabs, TabsProps, Typography } from "antd";
-
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../../components/StyledComponents";
-import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { detectColorScheme } from "../../../../utils/browserUtils";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
+import { Alert, Button, Collapse, Divider, Image, Steps, Tabs, TabsProps, Typography } from "antd";
 import { CheckSquareOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
-import CodeSnippet from "../../../../utils/codeSnippet";
+
+import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
 
 import cc3235Flash from "../../../../assets/boxSetup/cc3235_flash.jpg";
 import cc3235SMDGrippers from "../../../../assets/boxSetup/cc3235_smd_grippers.jpg";
@@ -24,10 +16,19 @@ import cc3235CH341Sop82 from "../../../../assets/boxSetup/02_CH341A_sop8_2.jpg";
 import cc3235CH341Sop83 from "../../../../assets/boxSetup/02_CH341A_sop8_3.jpg";
 import cc3235CH341Sop8remove from "../../../../assets/boxSetup/02_CH341A_sop8_remove.jpg";
 
+import BreadcrumbWrapper, {
+    HiddenDesktop,
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../../../components/StyledComponents";
+import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import AvailableBoxesModal, {
     certificateIntro,
     dnsForTeddyCloud,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
+import CodeSnippet from "../../../../components/utils/CodeSnippet";
+import { detectColorScheme } from "../../../../utils/browserUtils";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -479,7 +480,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
 
     const availableBoxesModal = (
         <AvailableBoxesModal
-            boxVersion="CC3235"
+            boxVersion={BoxVersionsEnum.cc3235}
             isOpen={isOpenAvailableBoxesModal}
             onClose={handleAvailableBoxesModalClose}
         />

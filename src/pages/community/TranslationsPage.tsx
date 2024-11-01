@@ -7,9 +7,9 @@ import BreadcrumbWrapper, {
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import TranslationComparison from "../../utils/translationComparison";
-import TranslationTable from "../../utils/translationTable";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import TranslationComparison from "../../components/utils/translationComparison";
+import TranslationTable from "../../components/utils/translationTable";
 
 const { Paragraph } = Typography;
 

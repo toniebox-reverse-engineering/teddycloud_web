@@ -1,17 +1,9 @@
-import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme, Tooltip } from "antd";
-import { useNavigate } from "react-router-dom";
-
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../components/StyledComponents";
-import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
-import { CloseOutlined, CodeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router-dom";
+import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme, Tooltip } from "antd";
+
+import { CloseOutlined, CodeOutlined } from "@ant-design/icons";
 import pcb3235Image from "../../../assets/boxSetup/3235_pcb.png";
 import pcb3235ImagePreview from "../../../assets/boxSetup/3235_pcb_preview.png";
 import pcb3200Image from "../../../assets/boxSetup/3200_pcb.png";
@@ -22,8 +14,15 @@ import pcbesp32Image from "../../../assets/boxSetup/esp32_pcb.png";
 import pcbesp32ImagePreview from "../../../assets/boxSetup/esp32_pcb_preview.png";
 import chipesp32Image from "../../../assets/boxSetup/esp32.jpg";
 
-const { Paragraph } = Typography;
+import BreadcrumbWrapper, {
+    HiddenDesktop,
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../../components/StyledComponents";
+import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 
+const { Paragraph } = Typography;
 const { useToken } = theme;
 
 export const IdentifyBoxVersionPage = () => {

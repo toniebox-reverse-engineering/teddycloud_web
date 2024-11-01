@@ -1,11 +1,12 @@
 import { MouseEventHandler, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useField } from "formik";
-import FormItem from "antd/es/form/FormItem";
 import { Input, InputProps, message, Checkbox } from "antd";
+import FormItem from "antd/es/form/FormItem";
+import { SaveOutlined } from "@ant-design/icons";
+import { useField } from "formik";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { SaveOutlined } from "@ant-design/icons";
 
 type InputFieldProps = {
     name: string;

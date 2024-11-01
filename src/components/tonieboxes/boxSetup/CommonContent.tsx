@@ -1,16 +1,17 @@
-import { Alert, Button, Empty, Image, Modal, Spin, Table, Typography } from "antd";
-import { useTranslation } from "react-i18next";
-import CodeSnippet from "../../../utils/codeSnippet";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Alert, Button, Empty, Image, Modal, Spin, Table, Typography } from "antd";
 
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-import { TonieboxCardProps } from "../TonieboxCard";
 
 import tbEsp32UartClamp from "../../../assets/boxSetup/tb-esp32-uart-clamp.png";
 import tbEsp32UartAnalogClamp from "../../../assets/boxSetup/esp32_pcb_clamp.png";
 import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
+
+import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
+import CodeSnippet from "../../utils/CodeSnippet";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -324,7 +325,8 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
             <Paragraph>
                 <Paragraph>
                     {t("tonieboxes.availableBoxModal.newBoxAvailable", {
-                        cc3200Hint: boxVersion === "CC3200" ? t("tonieboxes.availableBoxModal.cc3200Hint") : "",
+                        cc3200Hint:
+                            boxVersion === BoxVersionsEnum.cc3200 ? t("tonieboxes.availableBoxModal.cc3200Hint") : "",
                     })}
                 </Paragraph>
                 <Link

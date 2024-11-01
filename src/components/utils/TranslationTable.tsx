@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "antd";
 import { useTranslation } from "react-i18next";
+import { Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 
 interface TranslationEntry {

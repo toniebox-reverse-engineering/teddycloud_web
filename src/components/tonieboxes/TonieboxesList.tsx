@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Empty, List, message } from "antd";
-import { TonieboxCard, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
-import GetBoxModelImages from "../../utils/boxModels";
 import { useTranslation } from "react-i18next";
-import LoadingSpinner from "../common/LoadingSpinner";
+import { Empty, List, message } from "antd";
+
+import { TonieboxCardProps } from "../../types/tonieboxTypes";
+
+import { TonieboxCard } from "../tonieboxes/TonieboxCard";
+import LoadingSpinner from "../utils/LoadingSpinner";
+import GetBoxModelImages from "../../utils/boxModels";
 
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
