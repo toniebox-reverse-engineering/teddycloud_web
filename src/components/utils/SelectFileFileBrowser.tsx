@@ -413,7 +413,8 @@ export const SelectFileFileBrowser: React.FC<{
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
+                                        record.tonieInfo,
+                                        record
                                     )
                                 }
                             />

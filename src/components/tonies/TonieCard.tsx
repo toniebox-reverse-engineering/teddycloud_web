@@ -179,11 +179,7 @@ export const TonieCard: React.FC<{
 
     const handlePlayPauseClick = async (url: string) => {
         console.log(localTonieCard);
-        playAudio(
-            url,
-            showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo,
-            localTonieCard.trackSeconds
-        );
+        playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo, localTonieCard);
     };
 
     const handleBackgroundDownload = async () => {

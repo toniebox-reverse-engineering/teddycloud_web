@@ -18,6 +18,7 @@ import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import { useAudioContext } from "../audio/AudioContext";
+import TonieInformationModal from "../utils/TonieInformationModal";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
@@ -34,7 +35,7 @@ interface AudioPlayerFooterProps {
 
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { t } = useTranslation();
-    const { songImage, songArtist, songTitle, songTracks } = useAudioContext();
+    const { songImage, songArtist, songTitle, songTracks, tonieCard } = useAudioContext();
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
     const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -56,6 +57,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [closePlayerPopoverOpen, setClosePlayerPopoverOpen] = useState(false);
     const [confirmClose, setConfirmClose] = useState<boolean>(true);
     const [isTouching, setIsTouching] = useState<boolean>(false);
+    const [isInformationModalOpen, setInformationModalOpen] = useState(false);
+    const [keyInfoModal, setKeyInfoModal] = useState(0);
 
     useEffect(() => {
         if (globalAudio) {
@@ -392,7 +395,19 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     ) : (
                         <PlayCircleOutlined style={{ fontSize: 24, marginRight: 8 }} onClick={handlePlayButton} />
                     )}
-                    {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
+                    {songImage && (
+                        <img
+                            src={songImage}
+                            alt="Song"
+                            style={{ ...styles.songImage, cursor: tonieCard ? "help" : "unset" }}
+                            onClick={() => {
+                                if (tonieCard !== undefined) {
+                                    setKeyInfoModal(keyInfoModal + 1);
+                                    setInformationModalOpen(true);
+                                }
+                            }}
+                        />
+                    )}
 
                     {!audioDurationFormat.startsWith("Infinity") ? (
                         <div style={{ ...styles.playPositionContainer, marginRight: 0 }}>
@@ -464,7 +479,15 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         onClick={handleNextTrackButton}
                     />
                 </div>
-                <div style={styles.trackInfo}>
+                <div
+                    style={{ ...styles.trackInfo, cursor: tonieCard ? "help" : "unset" }}
+                    onClick={() => {
+                        if (tonieCard !== undefined) {
+                            setKeyInfoModal(keyInfoModal + 1);
+                            setInformationModalOpen(true);
+                        }
+                    }}
+                >
                     {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
                     <div style={styles.songContainer}>
                         <div>{songTitle}</div>
@@ -538,6 +561,18 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             >
                 {minimalPlayer}
                 {normalPlayer}
+                {tonieCard ? (
+                    <TonieInformationModal
+                        open={isInformationModalOpen}
+                        onClose={() => setInformationModalOpen(false)}
+                        tonieCardOrTAFRecord={tonieCard}
+                        showSourceInfo={true}
+                        readOnly={true}
+                        key={keyInfoModal}
+                    />
+                ) : (
+                    ""
+                )}
             </div>
             <audio
                 id="globalAudioPlayer"

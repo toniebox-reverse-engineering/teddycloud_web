@@ -1640,7 +1640,7 @@ export const FileBrowser: React.FC<{
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
                                         record.tonieInfo,
-                                        record.tafHeader?.trackSeconds
+                                        record
                                     )
                                 }
                             />

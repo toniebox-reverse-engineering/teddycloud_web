@@ -5,13 +5,15 @@ import { Modal } from "antd";
 import logoImg from "../../assets/logo.png";
 
 import { supportsOggOpus } from "../../utils/browserUtils";
+import { TonieCardProps } from "../../types/tonieTypes";
 
 interface AudioContextType {
-    playAudio: (url: string, meta?: any, trackSeconds?: number[]) => void;
+    playAudio: (url: string, meta?: any, tonieCard?: TonieCardProps) => void;
     songImage: string;
     songArtist: string;
     songTitle: string;
     songTracks: number[];
+    tonieCard: TonieCardProps | undefined;
 }
 
 interface AudioProviderProps {
@@ -42,8 +44,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const [songArtist, setSongArtist] = useState<string>("");
     const [songTitle, setSongTitle] = useState<string>("");
     const [songTracks, setSongTracks] = useState<number[]>([]);
+    const [tonieCard, setTonieCard] = useState<TonieCardProps | undefined>();
 
-    const playAudio = (url: string, meta?: any, trackSeconds?: number[]) => {
+    const playAudio = (url: string, meta?: any, tonieCard?: TonieCardProps) => {
         console.log("Play audio: " + url);
 
         const pattern = /\/....04E0\?|(\?ogg)/;
@@ -71,13 +74,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 setSongArtist("");
                 setSongTitle(extractFilename(decodeURI(url)));
             }
-            setSongTracks(trackSeconds || [0]);
+            if (tonieCard) {
+                setSongTracks(tonieCard.trackSeconds || [0]);
+                setTonieCard(tonieCard);
+            } else {
+                setSongTracks([0]);
+                setTonieCard(undefined);
+            }
             globalAudio.play();
         }
     };
 
     return (
-        <AudioContext.Provider value={{ playAudio, songImage, songArtist, songTitle, songTracks }}>
+        <AudioContext.Provider value={{ playAudio, songImage, songArtist, songTitle, songTracks, tonieCard }}>
             {children}
         </AudioContext.Provider>
     );
