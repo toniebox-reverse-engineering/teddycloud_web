@@ -8,7 +8,7 @@ import { supportsOggOpus } from "../../utils/browserUtils";
 import { TonieCardProps } from "../../types/tonieTypes";
 
 interface AudioContextType {
-    playAudio: (url: string, meta?: any, tonieCard?: TonieCardProps) => void;
+    playAudio: (url: string, meta?: any, tonieCard?: TonieCardProps, startTime?: number) => void;
     songImage: string;
     songArtist: string;
     songTitle: string;
@@ -46,7 +46,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const [songTracks, setSongTracks] = useState<number[]>([]);
     const [tonieCard, setTonieCard] = useState<TonieCardProps | undefined>();
 
-    const playAudio = (url: string, meta?: any, tonieCard?: TonieCardProps) => {
+    const playAudio = (url: string, meta?: any, tonieCard?: TonieCardProps, startTime?: number) => {
         console.log("Play audio: " + url);
 
         const pattern = /\/....04E0\?|(\?ogg)/;
@@ -80,6 +80,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             } else {
                 setSongTracks([0]);
                 setTonieCard(undefined);
+            }
+            if (startTime) {
+                globalAudio.currentTime = startTime;
             }
             globalAudio.play();
         }

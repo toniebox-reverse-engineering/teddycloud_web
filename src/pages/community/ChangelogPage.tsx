@@ -23,6 +23,7 @@ export const ChangelogPage = () => {
                 "gui: Added version overview page",
                 "gui: Added spinning wheel to lists, should also fix https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/129",
                 "gui: Extended cc3235 guide based on https://github.com/toniebox-reverse-engineering/teddycloud/issues/232, https://github.com/toniebox-reverse-engineering/teddycloud/issues/230 and https://github.com/toniebox-reverse-engineering/teddycloud/issues/229",
+                "gui: Extended audioplay, show info of currently played content (in case of taf), added play icon to each track in tonieinfomodal (only if tracks and trackseconds have the same number of elements), on click plays the chapter directly",
                 "gui: some refactoring",
             ],
             commits: [
