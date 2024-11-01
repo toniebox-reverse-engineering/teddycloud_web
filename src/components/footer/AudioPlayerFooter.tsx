@@ -84,7 +84,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     useEffect(() => {
         setCurrentTrackNo(0);
         setCurrentTitle("");
-    }, [globalAudio.src]);
+    }, [globalAudio?.src]);
 
     useEffect(() => {
         onVisibilityChange();

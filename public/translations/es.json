@@ -62,6 +62,9 @@
             "contributorsIntro": "Este proyecto depende de los incansables colaboradores que ofrecen su tiempo libre y habilidades. Directamente relacionados con TeddyCloud están los colaboradores de los dos proyectos teddycloud y teddycloud_web:",
             "navigationTitle": "Contribuidores",
             "others": "Puedes encontrar más colaboradores en el tema completo en los demás repositorios de GitHub en",
+            "supportTeam": "Apoya al equipo",
+            "supportTeamLink": "Patrocina TeddyCloud en GitHub",
+            "supportTeamText": "Si te gusta TeddyCloud, ¡considera apoyarnos con un patrocinio o una propina!",
             "teddyCloud": "La parte más necesaria, pero mayormente invisible de tu servidor TeddyCloud.",
             "teddyCloudWeb": "El frontend que estás usando y viendo aquí.",
             "title": "Contribuidores"
@@ -235,6 +238,10 @@
             "uploading": "Subiendo..."
         }
     },
+    "footer": {
+        "sponsor": "¡Patrocina ahora!",
+        "sponsorText": "¿Te gusta TeddyCloud?"
+    },
     "home": {
         "error": "Error - La interfaz gráfica no está en el estado esperado.",
         "errorConfirm": "Cerrar",
@@ -330,6 +337,9 @@
         "helpfulLinks": "Enlaces útiles",
         "intro": "TeddyCloud es un servidor alternativo para tu Toniebox, lo que te permite alojar los servicios en la nube localmente. Esto te da control sobre qué datos se envían a la nube del fabricante original y te permite alojar tus propios archivos de audio de figurines.",
         "navigationTitle": "Inicio",
+        "sponsor": {
+            "navigationTitle": "Donar"
+        },
         "stats": {
             "cloud_blocked": "Solicitudes a la nube bloqueadas",
             "cloud_failed": "Solicitudes a la nube fallidas",

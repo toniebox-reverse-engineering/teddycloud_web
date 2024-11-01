@@ -62,6 +62,9 @@
             "contributorsIntro": "Dieses Projekt basiert auf den unermüdlichen Mitwirkenden, die ihre freie Zeit und ihr Können einbringen. Direkt mit TeddyCloud verbunden sind die Mitwirkenden der beiden Projekte teddycloud und teddycloud_web:",
             "navigationTitle": "Contributors",
             "others": "Weitere Mitwirkende zum gesamten Themenbereich findest du in den anderen GitHub-Repositories unter",
+            "supportTeam": "Unterstütze das Team",
+            "supportTeamLink": "Sponsoriere TeddyCloud auf GitHub",
+            "supportTeamText": "Wenn dir TeddyCloud gefällt, denke daran, uns mit einem Sponsoring oder einem Trinkgeld zu unterstützen!",
             "teddyCloud": "Der notwendigste, aber meist unsichtbare Teil deines TeddyCloud-Servers.",
             "teddyCloudWeb": "Das Frontend, das du hier benutzt und siehst.",
             "title": "Contributors"
@@ -235,6 +238,10 @@
             "uploading": "Lädt hoch..."
         }
     },
+    "footer": {
+        "sponsor": "Jetzt sponsoren!",
+        "sponsorText": "Gefällt dir TeddyCloud?"
+    },
     "home": {
         "error": "Fehler - Das Frontend ist nicht auf dem erwarteten Stand.",
         "errorConfirm": "Schließen",
@@ -330,6 +337,9 @@
         "helpfulLinks": "Hilfreiche Links",
         "intro": "TeddyCloud ist eine alternative Serverlösung für deine Toniebox, die es dir ermöglicht, Cloud-Dienste lokal zu hosten. Dadurch behältst du die Kontrolle darüber, welche Daten an die Cloud des Originalherstellers gesendet werden, und kannst deine eigenen Hörspiel-Dateien für die Figuren selbst hosten.",
         "navigationTitle": "Home",
+        "sponsor": {
+            "navigationTitle": "Sponsoren"
+        },
         "stats": {
             "cloud_blocked": "Cloudanfragen blockiert",
             "cloud_failed": "Fehlgeschlagene Cloudanfragen",
