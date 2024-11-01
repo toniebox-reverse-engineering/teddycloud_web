@@ -1,3 +1,6 @@
+// various constants
+export const MAX_FILES = 99;
+
 // used urls
 export const tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png";
 export const telegramGroupUrl = "https://t.me/toniebox_reverse_engineering";

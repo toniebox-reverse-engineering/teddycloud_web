@@ -31,7 +31,7 @@ import BreadcrumbWrapper, {
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog";
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
-import DotAnimation from "../../../../components/utils/dotAnimation";
+import DotAnimation from "../../../../components/utils/DotAnimation";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
 
 const api = new TeddyCloudApi(defaultAPIConfig());

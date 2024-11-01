@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 
 import { StyledSubMenu } from "../StyledComponents";
-import { TonieboxIcon } from "../utils/tonieboxIcon";
+import { TonieboxIcon } from "../utils/TonieboxIcon";
 
 export const TonieboxesSubNav = () => {
     const { t } = useTranslation();

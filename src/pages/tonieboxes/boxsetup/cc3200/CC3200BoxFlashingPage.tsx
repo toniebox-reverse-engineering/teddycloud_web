@@ -21,11 +21,6 @@ import AvailableBoxesModal, { certificateIntro } from "../../../../components/to
 const { Paragraph } = Typography;
 const { Step } = Steps;
 
-interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
-    status: string;
-    version: string;
-}
-
 export const CC3200BoxFlashingPage = () => {
     const { t } = useTranslation();
     const currentLanguage = i18n.language;

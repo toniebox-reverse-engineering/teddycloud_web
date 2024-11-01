@@ -22,14 +22,13 @@ import { DraggableUploadListItem } from "../../components/utils/DraggableUploadL
 import { MyUploadFile, upload } from "../../utils/encoder";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
 import { createQueryString } from "../../utils/url";
+import { MAX_FILES } from "../../constants";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
-
-const MAX_FILES = 99;
 
 export const EncoderPage = () => {
     const { t } = useTranslation();

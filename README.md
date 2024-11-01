@@ -236,3 +236,9 @@ The **Open Toniebox Guide** (`src\components\tonieboxes\boxSetup\OpenBoxGuide.ts
 Both guides were originally written and illustrated by [Tobias Isakeit](https://www.ifixit.com/User/828031/Tobias+Isakeit), who also created all the images used here.
 
 Special thanks to Tobias for providing such clear and detailed instructions!
+
+The icons used are from here:
+
+-   logo.png: https://www.flaticon.com/free-icon/dog_2829818
+
+Thanks for the original authors for these great icons.

@@ -38,14 +38,14 @@ export const CC3235BoxFlashingPage = () => {
     const currentLanguage = i18n.language;
     const [currentStep, setCurrent] = useState(0);
 
+    const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
+
     const [activeKey, setActiveKey] = useState<string>("picoHW");
     const [commonActiveKey, setCommenActiveKey] = useState<string>("pico");
 
     useEffect(() => {
         setCommenActiveKey(activeKey.slice(0, -2));
     }, [activeKey]);
-
-    const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
     const steps = [
         {
