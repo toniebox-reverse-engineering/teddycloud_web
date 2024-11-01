@@ -303,7 +303,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [songTitle, songArtist, songImage, songTracks, globalAudio]);
+    }, [currentTitle, songTitle, songArtist, songImage, songTracks, globalAudio]);
 
     useEffect(() => {
         if (navigator.mediaSession && globalAudio) {
