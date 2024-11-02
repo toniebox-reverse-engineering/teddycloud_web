@@ -620,6 +620,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         onClose={() => setInformationModalOpen(false)}
                         tonieCardOrTAFRecord={{
                             ...tonieCard,
+                            // this is kind of a dirty trick. In the audioplayer we need always (if possible)
+                            // the actual source, so we set the tonieInfo to the source also.
                             tonieInfo: tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo,
                         }}
                         readOnly={true}
