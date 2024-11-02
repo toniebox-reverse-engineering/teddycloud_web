@@ -10,6 +10,7 @@ import {
     InfoCircleOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
+    RollbackOutlined,
     SaveFilled,
 } from "@ant-design/icons";
 
@@ -324,8 +325,16 @@ export const TonieCard: React.FC<{
                         value={selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
-                        addonBefore={
+                        addonBefore={[
                             <CloseOutlined
+                                onClick={() => {
+                                    setSelectedSource("");
+                                    setInputValidationSource({ validateStatus: "", help: "" });
+                                }}
+                            />,
+                            <Divider type="vertical" style={{ height: 16 }} />,
+
+                            <RollbackOutlined
                                 onClick={() => {
                                     setSelectedSource(activeSource);
                                     setInputValidationSource({ validateStatus: "", help: "" });
@@ -334,8 +343,8 @@ export const TonieCard: React.FC<{
                                     color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
                                     cursor: activeSource === selectedSource ? "default" : "pointer",
                                 }}
-                            />
-                        }
+                            />,
+                        ]}
                         addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
                     />
                     <RadioStreamSearch
@@ -353,8 +362,15 @@ export const TonieCard: React.FC<{
                         value={selectedModel}
                         width="auto"
                         onChange={handleModelInputChange}
-                        addonBefore={
+                        addonBefore={[
                             <CloseOutlined
+                                onClick={() => {
+                                    setSelectedModel("");
+                                    setInputValidationModel({ validateStatus: "", help: "" });
+                                }}
+                            />,
+                            <Divider type="vertical" style={{ height: 16 }} />,
+                            <RollbackOutlined
                                 onClick={() => {
                                     setSelectedModel(activeModel);
                                     setInputValidationModel({ validateStatus: "", help: "" });
@@ -363,8 +379,8 @@ export const TonieCard: React.FC<{
                                     color: activeModel === selectedModel ? token.colorTextDisabled : token.colorText,
                                     cursor: activeModel === selectedModel ? "default" : "pointer",
                                 }}
-                            />
-                        }
+                            />,
+                        ]}
                     />
                     <TonieArticleSearch
                         placeholder={t("tonies.editModal.placeholderSearchForAModel")}

@@ -506,6 +506,7 @@ export const SelectFileFileBrowser: React.FC<{
                                 onSelectChange(newSelectedKeys);
                             }
                         },
+                        style: { cursor: record.isDir ? "context-menu" : "unset" },
                     })}
                     rowClassName={rowClassName}
                     rowSelection={

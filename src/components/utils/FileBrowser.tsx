@@ -1866,6 +1866,7 @@ export const FileBrowser: React.FC<{
                                 showTafHeader(record.name, record.tafHeader);
                             }
                         },
+                        style: { cursor: record.isDir ? "context-menu" : "unset" },
                     })}
                     rowClassName={rowClassName}
                     rowSelection={{
