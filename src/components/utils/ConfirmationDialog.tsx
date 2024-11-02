@@ -1,7 +1,7 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, Modal } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
 
 interface ConfirmationDialogProps {
     title: string;

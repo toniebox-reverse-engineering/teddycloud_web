@@ -1,5 +1,8 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Typography } from "antd";
+
+import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -8,8 +11,6 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import { Link } from "react-router-dom";
-import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 
 const { Paragraph } = Typography;
 

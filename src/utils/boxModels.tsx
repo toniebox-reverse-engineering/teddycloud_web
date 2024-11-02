@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react";
 
+import { TonieboxImage } from "../types/tonieboxTypes";
+
 import { TeddyCloudApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
-
-interface TonieboxImage {
-    id: string;
-    name: string;
-    img_src: string;
-    crop?: number[];
-}
 
 export default function GetBoxModelImages() {
     const [boxModelImages, setBoxModelImages] = useState<TonieboxImage[]>([]);

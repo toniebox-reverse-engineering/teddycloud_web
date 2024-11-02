@@ -4,16 +4,18 @@ import { useTranslation } from "react-i18next";
 import { Table, Tooltip, message, Input, Breadcrumb, InputRef, theme, Empty } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
-import { useAudioContext } from "../audio/AudioContext";
 import { CloseOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { TonieInfo } from "../tonies/TonieCard";
-import TonieInformationModal from "./TonieInformationModal";
+
+import { Record } from "../../types/fileBrowserTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+
+import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
+import TonieInformationModal from "./TonieInformationModal";
+import { useAudioContext } from "../audio/AudioContext";
 import { humanFileSize } from "../../utils/humanFileSize";
-import { LoadingSpinnerAsOverlay } from "../common/LoadingSpinner";
+import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -22,21 +24,6 @@ const { useToken } = theme;
 const MAX_FILES = 99;
 
 const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
-
-interface RecordTafHeader {
-    audioId?: any;
-    sha1Hash?: any;
-    size?: number;
-    tracks?: any;
-}
-
-export type Record = {
-    date: number;
-    isDir: boolean;
-    name: string;
-    tafHeader: RecordTafHeader;
-    tonieInfo: TonieInfo;
-};
 
 export const SelectFileFileBrowser: React.FC<{
     special: string;
@@ -426,7 +413,8 @@ export const SelectFileFileBrowser: React.FC<{
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
+                                        record.tonieInfo,
+                                        record
                                     )
                                 }
                             />
@@ -518,6 +506,7 @@ export const SelectFileFileBrowser: React.FC<{
                                 onSelectChange(newSelectedKeys);
                             }
                         },
+                        style: { cursor: record.isDir ? "context-menu" : "unset" },
                     })}
                     rowClassName={rowClassName}
                     rowSelection={

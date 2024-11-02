@@ -14,7 +14,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useEffect, useState } from "react";
 import OptionItem from "../../components/utils/OptionItem";
 import { Formik } from "formik";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
+import LoadingSpinner from "../../components/utils/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

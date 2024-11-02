@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, Typography, Button, message, Tooltip } from "antd";
-import { TonieCardProps } from "../tonies/TonieCard";
-import { Record } from "./FileBrowser";
-import ConfirmationDialog from "./ConfirmationDialog";
+import { PlayCircleOutlined } from "@ant-design/icons";
+
+import { Record } from "../../types/fileBrowserTypes";
+import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import ConfirmationDialog from "./ConfirmationDialog";
+import { useAudioContext } from "../audio/AudioContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Text } = Typography;
 
-export type TonieCardTAFRecord = TonieCardProps | Record;
+type TonieCardTAFRecord = TonieCardProps | Record;
 
-export type InformationModalProps = {
+interface InformationModalProps {
     open: boolean;
     onClose: () => void;
     tonieCardOrTAFRecord: TonieCardTAFRecord;
@@ -23,7 +27,11 @@ export type InformationModalProps = {
     lastRUIDs?: Array<[string, string, string]>;
     overlay?: string;
     onHide?: (ruid: string) => void;
-};
+}
+
+function isTonieCardProps(value: any): value is TonieCardProps {
+    return value && typeof value === "object" && "uid" in value && "audioUrl" in value && "tonieInfo" in value;
+}
 
 const TonieInformationModal: React.FC<InformationModalProps> = ({
     open,
@@ -36,6 +44,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     onHide,
 }) => {
     const { t } = useTranslation();
+    const { playAudio } = useAudioContext();
 
     const [isConfirmHideModalOpen, setIsConfirmHideModalOpen] = useState(false);
 
@@ -62,6 +71,18 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tonieCardOrTAFRecord, open]);
+
+    const handlePlayPauseClick = async (url: string, startTime?: number) => {
+        console.log(tonieCardOrTAFRecord);
+        playAudio(
+            url,
+            showSourceInfo && "sourceInfo" in tonieCardOrTAFRecord
+                ? tonieCardOrTAFRecord.sourceInfo
+                : tonieCardOrTAFRecord.tonieInfo,
+            isTonieCardProps(tonieCardOrTAFRecord) ? tonieCardOrTAFRecord : undefined,
+            startTime
+        );
+    };
 
     const toniePlayedOn =
         lastRUIDs && "ruid" in tonieCardOrTAFRecord
@@ -256,7 +277,28 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                 <strong>{t("tonies.infoModal.tracklist")}</strong>
                                 <ol>
                                     {sourceTracks.map((track, index) => (
-                                        <li key={index}>{track}</li>
+                                        <li key={index}>
+                                            {"audioUrl" in tonieCardOrTAFRecord &&
+                                            "trackSeconds" in tonieCardOrTAFRecord &&
+                                            tonieCardOrTAFRecord.trackSeconds.length ===
+                                                tonieCardOrTAFRecord.sourceInfo?.tracks?.length ? (
+                                                <>
+                                                    <PlayCircleOutlined
+                                                        key="playpause"
+                                                        onClick={() =>
+                                                            handlePlayPauseClick(
+                                                                import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                                    tonieCardOrTAFRecord.audioUrl,
+                                                                tonieCardOrTAFRecord.trackSeconds[index]
+                                                            )
+                                                        }
+                                                    />{" "}
+                                                </>
+                                            ) : (
+                                                ""
+                                            )}{" "}
+                                            {track}
+                                        </li>
                                     ))}
                                 </ol>
                             </>
@@ -268,7 +310,28 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                             <strong>{t("tonies.infoModal.tracklist")}</strong>
                             <ol>
                                 {tonieCardOrTAFRecord.tonieInfo.tracks.map((track, index) => (
-                                    <li key={index}>{track}</li>
+                                    <li key={index}>
+                                        {"audioUrl" in tonieCardOrTAFRecord &&
+                                        "trackSeconds" in tonieCardOrTAFRecord &&
+                                        tonieCardOrTAFRecord.trackSeconds.length ===
+                                            tonieCardOrTAFRecord.tonieInfo?.tracks?.length ? (
+                                            <>
+                                                <PlayCircleOutlined
+                                                    key="playpause"
+                                                    onClick={() =>
+                                                        handlePlayPauseClick(
+                                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                                tonieCardOrTAFRecord.audioUrl,
+                                                            tonieCardOrTAFRecord.trackSeconds[index]
+                                                        )
+                                                    }
+                                                />{" "}
+                                            </>
+                                        ) : (
+                                            ""
+                                        )}{" "}
+                                        {track}
+                                    </li>
                                 ))}
                             </ol>
                         </>

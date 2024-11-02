@@ -1,3 +1,6 @@
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, message, theme } from "antd";
 import {
     CloseOutlined,
     CloudSyncOutlined,
@@ -7,60 +10,27 @@ import {
     InfoCircleOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
+    RollbackOutlined,
     SaveFilled,
 } from "@ant-design/icons";
-import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, message, theme } from "antd";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useAudioContext } from "../audio/AudioContext";
-import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
-import { TonieArticleSearch } from "./TonieArticleSearch";
-import LanguageFlagSVG from "../../utils/languageUtil";
-import { RadioStreamSearch } from "../utils/RadioStreamSearch";
+
+import { TonieCardProps } from "../../types/tonieTypes";
+
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
+
+import { useAudioContext } from "../audio/AudioContext";
+import { TonieArticleSearch } from "./TonieArticleSearch";
+import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
+import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import TonieInformationModal from "../utils/TonieInformationModal";
+import LanguageFlagSVG from "../../utils/languageUtil";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Meta } = Card;
 const { Text } = Typography;
 const { useToken } = theme;
-
-export type TagsTonieCardList = {
-    tags: TonieCardProps[];
-};
-
-export type TagTonieCard = {
-    tagInfo: TonieCardProps;
-};
-
-export type TonieInfo = {
-    series: string;
-    episode: string;
-    language: string;
-    model: string;
-    picture: string;
-    tracks: string[];
-};
-export type TonieCardProps = {
-    uid: string;
-    ruid: string;
-    type: string;
-    valid: boolean;
-    exists: boolean;
-    claimed: boolean;
-    hide: boolean;
-    live: boolean;
-    nocloud: boolean;
-    hasCloudAuth: boolean;
-    source: string;
-    audioUrl: string;
-    downloadTriggerUrl: string;
-    tonieInfo: TonieInfo;
-    sourceInfo: TonieInfo;
-    trackSeconds: number[];
-};
 
 export const TonieCard: React.FC<{
     tonieCard: TonieCardProps;
@@ -75,6 +45,10 @@ export const TonieCard: React.FC<{
     const { t } = useTranslation();
     const { token } = useToken();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
+    const [keyRadioStreamSearch, setKeyRadioStreamSearch] = useState(0);
+    const [keyTonieArticleSearch, setKeyTonieArticleSearch] = useState(0);
+    const [keySelectFileFileBrowser, setKeySelectFileFileBrowser] = useState(0);
+
     const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
     const [messageApi, contextHolder] = message.useMessage();
     const [isNoCloud, setIsNoCloud] = useState(localTonieCard.nocloud);
@@ -95,8 +69,10 @@ export const TonieCard: React.FC<{
         help: "",
     });
 
-    const [activeSource, setActiveSource] = useState(localTonieCard.source);
-    const [selectedSource, setSelectedSource] = useState("");
+    const [activeSource, setActiveSource] = useState(localTonieCard.source); // the stored source
+    const [tempActiveSource, setTempActiveSource] = useState(localTonieCard.source); // the previously selected, but not saved source
+    const [selectedSource, setSelectedSource] = useState(""); // the current selected source
+    const [tempSelectedSource, setTempSelectedSource] = useState(""); // the current selected but not confirmed source
     const [inputValidationSource, setInputValidationSource] = useState<{
         validateStatus: ValidateStatus;
         help: string;
@@ -137,24 +113,27 @@ export const TonieCard: React.FC<{
         if (files && files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const filePath = prefix + path + "/" + files[0].name;
-            setSelectedSource(filePath);
+            setTempSelectedSource(filePath);
         } else {
-            setSelectedSource(activeSource);
+            setTempSelectedSource(activeSource);
         }
     };
 
     const showFileSelectModal = () => {
+        setKeySelectFileFileBrowser(keySelectFileFileBrowser + 1);
         setSelectFileModalOpen(true);
     };
 
     const handleCancelSelectFile = () => {
-        setSelectedSource(activeSource);
+        setSelectedSource(tempActiveSource ? tempActiveSource : activeSource);
         setSelectFileModalOpen(false);
     };
 
     const showModelModal = () => {
         setSelectedModel(activeModel);
         setSelectedSource(activeSource);
+        setKeyRadioStreamSearch(keyRadioStreamSearch + 1);
+        setKeyTonieArticleSearch(keyTonieArticleSearch + 1);
         setIsEditModalOpen(true);
     };
 
@@ -210,11 +189,7 @@ export const TonieCard: React.FC<{
 
     const handlePlayPauseClick = async (url: string) => {
         console.log(localTonieCard);
-        playAudio(
-            url,
-            showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo,
-            localTonieCard.trackSeconds
-        );
+        playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo, localTonieCard);
     };
 
     const handleBackgroundDownload = async () => {
@@ -299,13 +274,18 @@ export const TonieCard: React.FC<{
         if (!isNoCloud) {
             handleNoCloudClick();
         }
+        if (selectedSource.startsWith("http") && !isLive) {
+            handleLiveClick();
+        } else if (!selectedSource.startsWith("http") && isLive) {
+            handleLiveClick();
+        }
     };
 
     const handleModelInputChange = (e: any) => {
         setSelectedModel(e.target.value);
     };
     const handleSourceInputChange = (e: any) => {
-        setSelectedSource(e.target.value);
+        setTempSelectedSource(e.target.value);
     };
 
     const toniePlayedOn = lastRUIDs
@@ -318,6 +298,7 @@ export const TonieCard: React.FC<{
 
     const searchRadioResultChanged = (newValue: string) => {
         setSelectedSource(newValue);
+        setTempActiveSource(newValue);
     };
 
     const editModalTitel = (
@@ -356,11 +337,22 @@ export const TonieCard: React.FC<{
             <div>
                 <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
                     <Input
+                        key="source"
                         value={selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
-                        addonBefore={
+                        addonBefore={[
                             <CloseOutlined
+                                key="close-source"
+                                onClick={() => {
+                                    setSelectedSource("");
+                                    setInputValidationSource({ validateStatus: "", help: "" });
+                                }}
+                            />,
+                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+
+                            <RollbackOutlined
+                                key="rollback-source"
                                 onClick={() => {
                                     setSelectedSource(activeSource);
                                     setInputValidationSource({ validateStatus: "", help: "" });
@@ -369,13 +361,14 @@ export const TonieCard: React.FC<{
                                     color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
                                     cursor: activeSource === selectedSource ? "default" : "pointer",
                                 }}
-                            />
-                        }
+                            />,
+                        ]}
                         addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
                     />
                     <RadioStreamSearch
                         placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
                         onChange={searchRadioResultChanged}
+                        key={keyRadioStreamSearch}
                     />
                 </Form.Item>
             </div>
@@ -385,11 +378,21 @@ export const TonieCard: React.FC<{
             <div>
                 <Form.Item validateStatus={inputValidationModel.validateStatus} help={inputValidationModel.help}>
                     <Input
+                        key="model"
                         value={selectedModel}
                         width="auto"
                         onChange={handleModelInputChange}
-                        addonBefore={
+                        addonBefore={[
                             <CloseOutlined
+                                key="close-model"
+                                onClick={() => {
+                                    setSelectedModel("");
+                                    setInputValidationModel({ validateStatus: "", help: "" });
+                                }}
+                            />,
+                            <Divider key="divider-model" type="vertical" style={{ height: 16 }} />,
+                            <RollbackOutlined
+                                key="rollback-model"
                                 onClick={() => {
                                     setSelectedModel(activeModel);
                                     setInputValidationModel({ validateStatus: "", help: "" });
@@ -398,19 +401,20 @@ export const TonieCard: React.FC<{
                                     color: activeModel === selectedModel ? token.colorTextDisabled : token.colorText,
                                     cursor: activeModel === selectedModel ? "default" : "pointer",
                                 }}
-                            />
-                        }
+                            />,
+                        ]}
                     />
                     <TonieArticleSearch
                         placeholder={t("tonies.editModal.placeholderSearchForAModel")}
                         onChange={searchModelResultChanged}
+                        key={keyTonieArticleSearch}
                     />
                 </Form.Item>
             </div>
         </Modal>
     );
 
-    const selectModalFooter = (
+    const selectFileModalFooter = (
         <div
             style={{
                 display: "flex",
@@ -422,7 +426,14 @@ export const TonieCard: React.FC<{
             }}
         >
             <Button onClick={handleCancelSelectFile}>{t("tonies.selectFileModal.cancel")}</Button>
-            <Button type="primary" onClick={() => setSelectFileModalOpen(false)}>
+            <Button
+                type="primary"
+                onClick={() => {
+                    setSelectedSource(tempSelectedSource);
+                    setTempActiveSource(tempSelectedSource);
+                    setSelectFileModalOpen(false);
+                }}
+            >
                 {t("tonies.selectFileModal.ok")}
             </Button>
         </div>
@@ -433,12 +444,12 @@ export const TonieCard: React.FC<{
             className="sticky-footer"
             title={t("tonies.selectFileModal.selectFile")}
             open={isSelectFileModalOpen}
-            onOk={() => setSelectFileModalOpen(false)}
             onCancel={handleCancelSelectFile}
             width="auto"
-            footer={selectModalFooter}
+            footer={selectFileModalFooter}
         >
             <SelectFileFileBrowser
+                key={keySelectFileFileBrowser}
                 special="library"
                 maxSelectedRows={1}
                 trackUrl={false}

@@ -1,5 +1,13 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Space, Typography } from "antd";
+
+import {
+    gitHubRepositoresUrl,
+    gitHubSponsoringUrl,
+    gitHubTCContributorsUrl,
+    gitHubTCwebContributorsUrl,
+} from "../../constants";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -9,8 +17,6 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { TonieMeetingElement } from "../../components/TonieMeeting";
-import { Link } from "react-router-dom";
-import { gitHubRepositoresUrl, gitHubTCContributorsUrl, gitHubTCwebContributorsUrl } from "../../constants";
 
 const { Paragraph } = Typography;
 
@@ -58,7 +64,6 @@ export const ContributorsPage = () => {
                             </Link>
                         </Paragraph>
                     </Paragraph>
-                    <Space></Space>
                     <Paragraph>
                         <div style={{ marginBottom: 24 }}>{t("community.contributors.bigRoundOfApplause")}</div>
                         <TonieMeetingElement
@@ -67,6 +72,14 @@ export const ContributorsPage = () => {
                             showQuestionMark={false}
                             height={150}
                         ></TonieMeetingElement>
+                    </Paragraph>
+                    <Space></Space>
+                    <Paragraph>
+                        <h3>{t("community.contributors.supportTeam")}</h3>
+                        <Paragraph>{t("community.contributors.supportTeamText")}</Paragraph>
+                        <Link to={gitHubSponsoringUrl} target="_blank">
+                            {t("community.contributors.supportTeamLink")}
+                        </Link>
                     </Paragraph>
                 </StyledContent>
             </StyledLayout>

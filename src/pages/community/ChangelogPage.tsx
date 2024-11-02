@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, List } from "antd";
@@ -17,6 +16,25 @@ export const ChangelogPage = () => {
     const { t } = useTranslation();
 
     const changelogData = [
+        {
+            version: "0.6.3",
+            changes: [
+                "Stabilization backend",
+                "gui: Added version overview page",
+                "gui: Added spinning wheel to lists, should also fix https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/129",
+                "gui: Extended cc3235 guide based on https://github.com/toniebox-reverse-engineering/teddycloud/issues/232, https://github.com/toniebox-reverse-engineering/teddycloud/issues/230 and https://github.com/toniebox-reverse-engineering/teddycloud/issues/229",
+                "gui: Extended audioplay, show info of currently played content (in case of taf), added play icon to each track in tonieinfomodal (only if tracks and trackseconds have the same number of elements), on click plays the chapter directly",
+                "gui: Edit Tonie/Tag: Overworked rollback and empty field functionality https://github.com/toniebox-reverse-engineering/teddycloud/issues/235",
+                "gui: Set Cursor to Default on Filebrowser directory row",
+                "gui: some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.2...tc_v0.6.3",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.2...tcw_v0.6.3",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-3/812",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.3",
+        },
         {
             version: "0.6.2",
             changes: [

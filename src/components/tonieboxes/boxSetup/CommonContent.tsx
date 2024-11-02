@@ -1,16 +1,17 @@
-import { Alert, Button, Empty, Image, Modal, Spin, Table, Typography } from "antd";
-import { useTranslation } from "react-i18next";
-import CodeSnippet from "../../../utils/codeSnippet";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Alert, Button, Empty, Image, Modal, Spin, Table, Typography } from "antd";
 
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-import { TonieboxCardProps } from "../TonieboxCard";
 
 import tbEsp32UartClamp from "../../../assets/boxSetup/tb-esp32-uart-clamp.png";
 import tbEsp32UartAnalogClamp from "../../../assets/boxSetup/esp32_pcb_clamp.png";
 import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
+
+import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
+import CodeSnippet from "../../utils/CodeSnippet";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -64,7 +65,9 @@ export function connectESP32Explanation(): JSX.Element {
                             src={tbEsp32UartClamp}
                             alt={t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp")}
                         />
-                        <p style={{ marginTop: 8 }}>{t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp")}</p>
+                        <Paragraph style={{ marginTop: 8 }}>
+                            {t("tonieboxes.connectESP32Modal.esp32UartJ103Clamp")}
+                        </Paragraph>
                     </div>
                     <div style={{ maxWidth: 200 }}>
                         <Image
@@ -72,7 +75,9 @@ export function connectESP32Explanation(): JSX.Element {
                             src={tbEsp32UartAnalogClamp}
                             alt={t("tonieboxes.connectESP32Modal.esp32UartJ103AnalogClamp")}
                         />
-                        <p style={{ marginTop: 8 }}>{t("tonieboxes.connectESP32Modal.esp32UartJ103AnalogClamp")}</p>
+                        <Paragraph style={{ marginTop: 8 }}>
+                            {t("tonieboxes.connectESP32Modal.esp32UartJ103AnalogClamp")}
+                        </Paragraph>
                     </div>
                 </Image.PreviewGroup>
             </Paragraph>
@@ -141,7 +146,9 @@ export function dnsForTeddyCloud(): JSX.Element {
                 description={t("tonieboxes.boxFlashingCommon.dnsBewareText")}
                 style={{ marginBottom: 16 }}
             />
-            <Paragraph>{t("tonieboxes.boxFlashingCommon.dnsText2")}</Paragraph>
+            <h4>{t("tonieboxes.boxFlashingCommon.alternativeDNSSolutions")}</h4>
+            <h5>{t("tonieboxes.boxFlashingCommon.openWrt.usingOpenWrt")}</h5>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.openWrt.dnsText2")}</Paragraph>
             <Paragraph>
                 <CodeSnippet
                     language="shell"
@@ -157,6 +164,61 @@ uci commit dhcp
 /etc/init.d/dnsmasq restart`}
                 />
             </Paragraph>
+            <h5>{t("tonieboxes.boxFlashingCommon.adguard.usingAdGuard")}</h5>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.setupInstructionsTitle")}</Paragraph>
+
+            <strong>{t("tonieboxes.boxFlashingCommon.adguard.prerequisitesTitle")}</strong>
+            <ul>
+                <li>
+                    {t("tonieboxes.boxFlashingCommon.adguard.adGuardRequirement")}
+                    <ul style={{ marginBottom: 0 }}>
+                        <li>
+                            {" "}
+                            {t("tonieboxes.boxFlashingCommon.adguard.moreInformation")}{" "}
+                            <Link to="https://adguard.com/" target="_blank">
+                                https://adguard.com/
+                            </Link>
+                        </li>
+                    </ul>
+                </li>
+                <li>{t("tonieboxes.boxFlashingCommon.adguard.teddyCloudIp")}</li>
+                <li>{t("tonieboxes.boxFlashingCommon.adguard.tonieboxIp")}</li>
+            </ul>
+
+            <Paragraph>
+                <strong>{t("tonieboxes.boxFlashingCommon.adguard.stepsTitle")}</strong>
+            </Paragraph>
+
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step1Title")}</Paragraph>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step1Instructions")}</Paragraph>
+
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step2Title")}</Paragraph>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step2Instructions")}</Paragraph>
+
+            <CodeSnippet
+                language="shell"
+                code={`||prod.de.tbs.toys^$dnsrewrite=NOERROR;A;XXX.XXX.XXX.XXX,client=YYY.YYY.YYY.YYY
+||rtnl.bxcl.de^$dnsrewrite=NOERROR;A;XXX.XXX.XXX.XXX,client=YYY.YYY.YYY.YYY`}
+            />
+
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.explanationTitle")}</Paragraph>
+            <Paragraph>
+                <strong>||prod.de.tbs.toys^</strong>: {t("tonieboxes.boxFlashingCommon.adguard.prodDomainExplanation")}
+            </Paragraph>
+            <Paragraph>
+                <strong>$dnsrewrite=NOERROR;A;XXX.XXX.XXX.XXX</strong>:{" "}
+                {t("tonieboxes.boxFlashingCommon.adguard.dnsRewriteExplanation")}
+            </Paragraph>
+            <Paragraph>
+                <strong>client=YYY.YYY.YYY.YYY</strong>: {t("tonieboxes.boxFlashingCommon.adguard.clientExplanation")}
+            </Paragraph>
+
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step3Title")}</Paragraph>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step3Instructions")}</Paragraph>
+
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step4Title")}</Paragraph>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.ipReservationInstructions")}</Paragraph>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.loggingMonitoringInstructions")}</Paragraph>
         </>
     );
 }
@@ -234,7 +296,6 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
             >
                 {t("tonieboxes.availableBoxModal.recheck")}
             </Button>
-            <Button onClick={onClose}> {t("tonieboxes.availableBoxModal.cancel")}</Button>
             <Button type="primary" onClick={onClose}>
                 {t("tonieboxes.availableBoxModal.ok")}
             </Button>
@@ -246,8 +307,8 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={
                 <div>
-                    <p>{t("tonieboxes.noData")}</p>
-                    <p>{t("tonieboxes.noDataText")}</p>
+                    <Paragraph>{t("tonieboxes.noData")}</Paragraph>
+                    <Paragraph>{t("tonieboxes.noDataText")}</Paragraph>
                 </div>
             }
         />
@@ -264,7 +325,8 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
             <Paragraph>
                 <Paragraph>
                     {t("tonieboxes.availableBoxModal.newBoxAvailable", {
-                        cc3200Hint: boxVersion === "CC3200" ? t("tonieboxes.availableBoxModal.cc3200Hint") : "",
+                        cc3200Hint:
+                            boxVersion === BoxVersionsEnum.cc3200 ? t("tonieboxes.availableBoxModal.cc3200Hint") : "",
                     })}
                 </Paragraph>
                 <Link

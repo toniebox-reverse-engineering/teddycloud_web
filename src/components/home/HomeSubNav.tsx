@@ -1,10 +1,11 @@
-import { MenuProps } from "antd";
-import { ContainerOutlined, HomeOutlined } from "@ant-design/icons";
-import { WifiOutlined } from "@ant-design/icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { MenuProps } from "antd";
+import { ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
+
 import { StyledSubMenu } from "../StyledComponents";
+import { gitHubSponsoringUrl } from "../../constants";
 
 export const HomeSubNav = () => {
     const { t } = useTranslation();
@@ -29,10 +30,20 @@ export const HomeSubNav = () => {
             title: t("home.stats.navigationTitle"),
         },
         {
+            key: "sponsor",
+            label: (
+                <Link to={gitHubSponsoringUrl} target="_blank">
+                    {t("home.sponsor.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(HeartOutlined),
+            title: t("home.sponsor.navigationTitle"),
+        },
+        {
             key: "hiddenMeeting",
             label: <Link to="/home/tonieMeeting"></Link>,
         },
     ];
 
-    return <StyledSubMenu mode="inline" defaultOpenKeys={["sub"]} items={subnav} />;
+    return <StyledSubMenu mode="inline" selectedKeys={[]} defaultOpenKeys={["sub"]} items={subnav} />;
 };

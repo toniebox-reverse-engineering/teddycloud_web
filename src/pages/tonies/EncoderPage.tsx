@@ -1,34 +1,34 @@
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Divider, Input, Space, TreeSelect, Upload, message, Modal, Tooltip, Form, theme } from "antd";
+import type { InputRef, TreeSelectProps, UploadProps } from "antd";
+import { DefaultOptionType } from "antd/es/select";
 import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { InputRef, TreeSelectProps, UploadProps } from "antd";
-import { Button, Divider, Input, Space, TreeSelect, Upload, message, Modal, Tooltip, Form, theme } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { DraggableUploadListItem } from "../../components/utils/DraggableUploadListItem";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
+import { DraggableUploadListItem } from "../../components/utils/DraggableUploadListItem";
 import { MyUploadFile, upload } from "../../utils/encoder";
-import { createQueryString } from "../../utils/url";
-import { DefaultOptionType } from "antd/es/select";
-
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
+import { createQueryString } from "../../utils/url";
+import { MAX_FILES } from "../../constants";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
-
-const MAX_FILES = 99;
 
 export const EncoderPage = () => {
     const { t } = useTranslation();

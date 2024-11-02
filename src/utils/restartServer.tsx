@@ -1,11 +1,11 @@
-import { message } from "antd";
 import { t } from "i18next";
+import { message } from "antd";
+
 import { BoxineApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { TeddyCloudApi } from "../api";
 
 const apiTC = new TeddyCloudApi(defaultAPIConfig());
-
 const api = new BoxineApi(defaultAPIConfig());
 
 export const restartServer = async (redirectToBase = true) => {

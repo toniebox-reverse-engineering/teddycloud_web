@@ -1,17 +1,19 @@
-import { useTranslation } from "react-i18next";
-import { Header } from "antd/es/layout/layout";
-import styled from "styled-components";
-import { MenuOutlined } from "@ant-design/icons";
-import logoImg from "../../assets/logo.png";
-import { Button, Drawer, Menu, MenuProps, Modal } from "antd";
-import { Link, useLocation } from "react-router-dom";
-import { ServerStatus } from "./ServerStatus";
 import { useEffect, useState } from "react";
-import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
-import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
-import { theme } from "antd";
+import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import { Button, Drawer, Menu, MenuProps, Modal, theme } from "antd";
+import { Header } from "antd/es/layout/layout";
+import { MenuOutlined } from "@ant-design/icons";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import logoImg from "../../assets/logo.png";
+
+import { ServerStatus } from "./ServerStatus";
+import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
+import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -20,6 +22,7 @@ const { useToken } = theme;
 const StyledLogo = styled.img`
     height: 32px;
 `;
+
 const StyledHeaderComponent = styled(Header)`
     color: white;
     display: flex;

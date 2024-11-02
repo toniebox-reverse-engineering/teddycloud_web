@@ -1,15 +1,23 @@
 import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import logoImg from "../../assets/logo.png";
-import { supportsOggOpus } from "../../utils/browserUtils";
 import { Modal } from "antd";
 
+import logoImg from "../../assets/logo.png";
+
+import { supportsOggOpus } from "../../utils/browserUtils";
+import { TonieCardProps } from "../../types/tonieTypes";
+
 interface AudioContextType {
-    playAudio: (url: string, meta?: any, trackSeconds?: number[]) => void;
+    playAudio: (url: string, meta?: any, tonieCard?: TonieCardProps, startTime?: number) => void;
     songImage: string;
     songArtist: string;
     songTitle: string;
     songTracks: number[];
+    tonieCard: TonieCardProps | undefined;
+}
+
+interface AudioProviderProps {
+    children: React.ReactNode; // Define the children prop
 }
 
 const AudioContext = React.createContext<AudioContextType | undefined>(undefined);
@@ -21,10 +29,6 @@ export const useAudioContext = () => {
     }
     return context;
 };
-
-interface AudioProviderProps {
-    children: React.ReactNode; // Define the children prop
-}
 
 const extractFilename = (url: string) => {
     // Remove query parameters if any
@@ -40,8 +44,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const [songArtist, setSongArtist] = useState<string>("");
     const [songTitle, setSongTitle] = useState<string>("");
     const [songTracks, setSongTracks] = useState<number[]>([]);
+    const [tonieCard, setTonieCard] = useState<TonieCardProps | undefined>();
 
-    const playAudio = (url: string, meta?: any, trackSeconds?: number[]) => {
+    const playAudio = (url: string, meta?: any, tonieCard?: TonieCardProps, startTime?: number) => {
         console.log("Play audio: " + url);
 
         const pattern = /\/....04E0\?|(\?ogg)/;
@@ -69,13 +74,22 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 setSongArtist("");
                 setSongTitle(extractFilename(decodeURI(url)));
             }
-            setSongTracks(trackSeconds || [0]);
+            if (tonieCard) {
+                setSongTracks(tonieCard.trackSeconds || [0]);
+                setTonieCard(tonieCard);
+            } else {
+                setSongTracks([0]);
+                setTonieCard(undefined);
+            }
+            if (startTime) {
+                globalAudio.currentTime = startTime;
+            }
             globalAudio.play();
         }
     };
 
     return (
-        <AudioContext.Provider value={{ playAudio, songImage, songArtist, songTitle, songTracks }}>
+        <AudioContext.Provider value={{ playAudio, songImage, songArtist, songTitle, songTracks, tonieCard }}>
             {children}
         </AudioContext.Provider>
     );

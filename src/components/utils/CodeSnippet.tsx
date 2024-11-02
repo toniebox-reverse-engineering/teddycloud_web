@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { detectColorScheme } from "./browserUtils";
-import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
 import { theme, Tooltip } from "antd";
+import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
+import { detectColorScheme } from "../../utils/browserUtils";
 
 const { useToken } = theme;
 

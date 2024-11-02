@@ -1,17 +1,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { List, Switch, Input, Button, Collapse, Select, CollapseProps, Empty } from "antd";
 import { useTranslation } from "react-i18next";
-import { TonieCard, TonieCardProps } from "../../components/tonies/TonieCard";
+import { List, Switch, Input, Button, Collapse, Select, CollapseProps, Empty } from "antd";
+
+import { TonieCardProps } from "../../types/tonieTypes";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import ToniesPagination from "./ToniesPagination";
-import { languageOptions } from "../../utils/languageUtil";
-import LoadingSpinner from "../common/LoadingSpinner";
 
-const { Option } = Select;
+import ToniesPagination from "./ToniesPagination";
+import { TonieCard } from "../../components/tonies/TonieCard";
+import LoadingSpinner from "../utils/LoadingSpinner";
+import { languageOptions } from "../../utils/languageUtil";
+
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
+
+const { Option } = Select;
 
 export const ToniesList: React.FC<{
     tonieCards: TonieCardProps[];

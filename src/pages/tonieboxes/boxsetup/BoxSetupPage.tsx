@@ -1,5 +1,13 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Alert, message, theme, Timeline, Typography } from "antd";
+import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileOutlined } from "@ant-design/icons";
+
+import { forumUrl, telegramGroupUrl } from "../../../constants";
+
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -8,17 +16,11 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
-import { Link } from "react-router-dom";
-import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import { TeddyCloudApi } from "../../../api";
-import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-import { forumUrl, telegramGroupUrl } from "../../../constants";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
-
-const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const BoxSetupPage = () => {
     const { t } = useTranslation();
@@ -56,6 +58,11 @@ export const BoxSetupPage = () => {
                     <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.identifyTonieboxVersion")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.identifyTonieboxVersionText")}</Paragraph>
                     <ul>
+                        <li>
+                            <Link to="/tonieboxes/boxsetup/boxversioninfo">
+                                {t("tonieboxes.boxSetup.boxVersion.title")}
+                            </Link>
+                        </li>
                         <li>
                             <Link to="/tonieboxes/boxsetup/openboxguide">
                                 {t("tonieboxes.boxSetup.openBoxGuide.title")}

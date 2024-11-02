@@ -21,9 +21,6 @@ import {
     Form,
     Empty,
 } from "antd";
-import { Key } from "antd/es/table/interface";
-import { SortOrder } from "antd/es/table/interface";
-import { useAudioContext } from "../audio/AudioContext";
 import {
     CloseOutlined,
     CloudServerOutlined,
@@ -38,24 +35,28 @@ import {
     PlayCircleOutlined,
     TruckOutlined,
 } from "@ant-design/icons";
+import { Key, SortOrder } from "antd/es/table/interface";
+import { DefaultOptionType } from "antd/es/select";
+import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import { useAudioContext } from "../audio/AudioContext";
 import { humanFileSize } from "../../utils/humanFileSize";
-import { TonieInfo } from "../tonies/TonieCard";
 import ConfirmationDialog from "./ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
 import TonieInformationModal from "./TonieInformationModal";
 
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { DefaultOptionType } from "antd/es/select";
-import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
-import { FileObject } from "../../utils/types";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
-import CodeSnippet from "../../utils/codeSnippet";
-import { LoadingSpinnerAsOverlay } from "../common/LoadingSpinner";
+
+import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
+import { FileObject, Record, RecordTafHeader } from "../../types/fileBrowserTypes";
+import CodeSnippet from "./CodeSnippet";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -66,21 +67,6 @@ const MAX_FILES = 99;
 const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/", fullPath: "/" };
-
-interface RecordTafHeader {
-    audioId?: any;
-    sha1Hash?: any;
-    size?: number;
-    trackSeconds?: number[];
-}
-
-export type Record = {
-    date: number;
-    isDir: boolean;
-    name: string;
-    tafHeader: RecordTafHeader;
-    tonieInfo: TonieInfo;
-};
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -1654,7 +1640,7 @@ export const FileBrowser: React.FC<{
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
                                         record.tonieInfo,
-                                        record.tafHeader?.trackSeconds
+                                        record
                                     )
                                 }
                             />
@@ -1880,6 +1866,7 @@ export const FileBrowser: React.FC<{
                                 showTafHeader(record.name, record.tafHeader);
                             }
                         },
+                        style: { cursor: record.isDir ? "context-menu" : "unset" },
                     })}
                     rowClassName={rowClassName}
                     rowSelection={{

@@ -1,10 +1,11 @@
-import { DeleteOutlined } from "@ant-design/icons";
-import { Button, theme } from "antd";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { Button, theme } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useTranslation } from "react-i18next";
-import { FileObject } from "../../utils/types";
+
+import { FileObject } from "../../types/fileBrowserTypes";
 
 interface DraggableFileObjectListItemProps {
     originNode: React.ReactElement<any, string | React.JSXElementConstructor<any>>;

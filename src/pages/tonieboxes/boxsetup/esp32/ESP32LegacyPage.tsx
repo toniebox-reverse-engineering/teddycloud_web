@@ -1,5 +1,13 @@
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import i18n from "../../../../i18n";
 import { Alert, Button, Divider, Image, Steps, Typography } from "antd";
+import { EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+
+import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
+
+import tbEsp32FlashESPtoolScreen from "../../../../assets/boxSetup/esp32_write_patched_image_with_esptools.png";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -7,20 +15,14 @@ import BreadcrumbWrapper, {
     StyledLayout,
     StyledSider,
 } from "../../../../components/StyledComponents";
-import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
-import { Link } from "react-router-dom";
-import { CheckSquareOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import i18n from "../../../../i18n";
-import { detectColorScheme } from "../../../../utils/browserUtils";
-import CodeSnippet from "../../../../utils/codeSnippet";
 import AvailableBoxesModal, {
     certificateIntro,
     connectESP32Explanation,
     dnsForTeddyCloud,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
-
-import tbEsp32FlashESPtoolScreen from "../../../../assets/boxSetup/esp32_write_patched_image_with_esptools.png";
+import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
+import CodeSnippet from "../../../../components/utils/CodeSnippet";
+import { detectColorScheme } from "../../../../utils/browserUtils";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -211,7 +213,7 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
 
     const availableBoxesModal = (
         <AvailableBoxesModal
-            boxVersion="ESP32"
+            boxVersion={BoxVersionsEnum.esp32}
             isOpen={isOpenAvailableBoxesModal}
             onClose={handleAvailableBoxesModalClose}
         />

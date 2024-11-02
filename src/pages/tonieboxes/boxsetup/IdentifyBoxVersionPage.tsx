@@ -1,6 +1,18 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme, Tooltip } from "antd";
-import { useNavigate } from "react-router-dom";
+
+import { CloseOutlined, CodeOutlined } from "@ant-design/icons";
+import pcb3235Image from "../../../assets/boxSetup/3235_pcb.png";
+import pcb3235ImagePreview from "../../../assets/boxSetup/3235_pcb_preview.png";
+import pcb3200Image from "../../../assets/boxSetup/3200_pcb.png";
+import pcb3200ImagePreview from "../../../assets/boxSetup/3200_pcb_preview.png";
+import chip3200Image from "../../../assets/boxSetup/cc3200.jpg";
+import chip3235Image from "../../../assets/boxSetup/cc3235.jpg";
+import pcbesp32Image from "../../../assets/boxSetup/esp32_pcb.png";
+import pcbesp32ImagePreview from "../../../assets/boxSetup/esp32_pcb_preview.png";
+import chipesp32Image from "../../../assets/boxSetup/esp32.jpg";
 
 import BreadcrumbWrapper, {
     HiddenDesktop,
@@ -9,18 +21,8 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
-import { CloseOutlined, CodeOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import pcb3235Image from "../../../assets/boxSetup/3235_pcb.png";
-import pcb3200Image from "../../../assets/boxSetup/3200_pcb.png";
-import chip3200Image from "../../../assets/boxSetup/cc3200.jpg";
-import chip3235Image from "../../../assets/boxSetup/cc3235.jpg";
-import pcbesp32Image from "../../../assets/boxSetup/esp32_pcb.png";
-import chipesp32Image from "../../../assets/boxSetup/esp32.jpg";
 
 const { Paragraph } = Typography;
-
 const { useToken } = theme;
 
 export const IdentifyBoxVersionPage = () => {
@@ -79,7 +81,11 @@ export const IdentifyBoxVersionPage = () => {
             >
                 <Image.PreviewGroup>
                     <Paragraph style={{ maxWidth: 400 }}>
-                        <Image src={pcb3200Image} alt="PCB CC3200"></Image>
+                        <Image
+                            src={pcb3200Image}
+                            alt="PCB CC3200"
+                            placeholder={<Image preview={false} src={pcb3200ImagePreview} />}
+                        ></Image>
                     </Paragraph>
                     <Paragraph style={{ maxWidth: "100%" }}>
                         <Image src={chip3200Image} style={{ height: 300, width: "auto" }} alt="Chip CC3200"></Image>
@@ -103,7 +109,11 @@ export const IdentifyBoxVersionPage = () => {
             >
                 <Image.PreviewGroup>
                     <Paragraph style={{ maxWidth: 400 }}>
-                        <Image src={pcb3235Image} alt="PCB CC3235"></Image>
+                        <Image
+                            src={pcb3235Image}
+                            alt="PCB CC3235"
+                            placeholder={<Image preview={false} src={pcb3235ImagePreview} />}
+                        ></Image>
                     </Paragraph>
                     <Paragraph style={{ maxWidth: "100%" }}>
                         <Image src={chip3235Image} style={{ height: 300, width: "auto" }} alt="Chip CC3235"></Image>
@@ -127,7 +137,11 @@ export const IdentifyBoxVersionPage = () => {
             >
                 <Image.PreviewGroup>
                     <Paragraph style={{ maxWidth: 400 }}>
-                        <Image src={pcbesp32Image} alt="PCB ESP32"></Image>
+                        <Image
+                            src={pcbesp32Image}
+                            alt="PCB ESP32"
+                            placeholder={<Image preview={false} src={pcbesp32ImagePreview} />}
+                        ></Image>
                     </Paragraph>
                     <Paragraph style={{ maxWidth: "100%" }}>
                         <Image src={chipesp32Image} style={{ height: 300, width: "auto" }} alt="Chip ESP32"></Image>
@@ -191,7 +205,6 @@ export const IdentifyBoxVersionPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`tonieboxes.boxSetup.identifyVersion.title`)}</h1>
-
                     <Form>
                         <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.identifyUsingMac")} </Paragraph>
                         <Form.Item>

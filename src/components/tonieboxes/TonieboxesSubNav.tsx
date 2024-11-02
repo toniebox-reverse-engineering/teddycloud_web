@@ -2,9 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { MenuProps } from "antd";
+import {
+    DeliveredProcedureOutlined,
+    InfoCircleOutlined,
+    OrderedListOutlined,
+    PlusSquareOutlined,
+    SearchOutlined,
+} from "@ant-design/icons";
+
 import { StyledSubMenu } from "../StyledComponents";
-import { TonieboxIcon } from "../../utils/tonieboxIcon";
-import { DeliveredProcedureOutlined, OrderedListOutlined, PlusSquareOutlined, SearchOutlined } from "@ant-design/icons";
+import { TonieboxIcon } from "../utils/TonieboxIcon";
 
 export const TonieboxesSubNav = () => {
     const { t } = useTranslation();
@@ -64,6 +71,16 @@ export const TonieboxesSubNav = () => {
             icon: React.createElement(PlusSquareOutlined),
             title: t("tonieboxes.boxSetup.navigationTitle"),
             children: [
+                {
+                    key: "boxversioninfo",
+                    label: (
+                        <Link to="/tonieboxes/boxsetup/boxversioninfo">
+                            {t("tonieboxes.boxSetup.boxVersion.navigationTitle")}
+                        </Link>
+                    ),
+                    icon: React.createElement(InfoCircleOutlined),
+                    title: t("tonieboxes.boxSetup.boxVersion.navigationTitle"),
+                },
                 {
                     key: "identifyboxversion",
                     label: (
