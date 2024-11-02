@@ -47,6 +47,7 @@ export const TonieCard: React.FC<{
     const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [keyRadioStreamSearch, setKeyRadioStreamSearch] = useState(0);
     const [keyTonieArticleSearch, setKeyTonieArticleSearch] = useState(0);
+    const [keySelectFileFileBrowser, setKeySelectFileFileBrowser] = useState(0);
 
     const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
     const [messageApi, contextHolder] = message.useMessage();
@@ -59,6 +60,7 @@ export const TonieCard: React.FC<{
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
 
     const [activeModel, setActiveModel] = useState(localTonieCard.tonieInfo.model);
+    const [tempActiveModel, setTempActiveModel] = useState(localTonieCard.tonieInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
     const [inputValidationModel, setInputValidationModel] = useState<{
         validateStatus: ValidateStatus;
@@ -69,6 +71,7 @@ export const TonieCard: React.FC<{
     });
 
     const [activeSource, setActiveSource] = useState(localTonieCard.source);
+    const [tempActiveSource, setTempActiveSource] = useState(localTonieCard.source);
     const [selectedSource, setSelectedSource] = useState("");
     const [inputValidationSource, setInputValidationSource] = useState<{
         validateStatus: ValidateStatus;
@@ -111,17 +114,19 @@ export const TonieCard: React.FC<{
             const prefix = special === "library" ? "lib:/" : "content:/";
             const filePath = prefix + path + "/" + files[0].name;
             setSelectedSource(filePath);
+            setTempActiveSource(filePath);
         } else {
             setSelectedSource(activeSource);
         }
     };
 
     const showFileSelectModal = () => {
+        setKeySelectFileFileBrowser(keySelectFileFileBrowser + 1);
         setSelectFileModalOpen(true);
     };
 
     const handleCancelSelectFile = () => {
-        setSelectedSource(activeSource);
+        setSelectedSource(tempActiveSource ? tempActiveSource : activeSource);
         setSelectFileModalOpen(false);
     };
 
@@ -270,6 +275,11 @@ export const TonieCard: React.FC<{
         if (!isNoCloud) {
             handleNoCloudClick();
         }
+        if (selectedSource.startsWith("http") && !isLive) {
+            handleLiveClick();
+        } else if (!selectedSource.startsWith("http") && isLive) {
+            handleLiveClick();
+        }
     };
 
     const handleModelInputChange = (e: any) => {
@@ -285,10 +295,12 @@ export const TonieCard: React.FC<{
 
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
+        setTempActiveModel(newValue);
     };
 
     const searchRadioResultChanged = (newValue: string) => {
         setSelectedSource(newValue);
+        setTempActiveSource(newValue);
     };
 
     const editModalTitel = (
@@ -427,6 +439,7 @@ export const TonieCard: React.FC<{
             footer={selectModalFooter}
         >
             <SelectFileFileBrowser
+                key={keySelectFileFileBrowser}
                 special="library"
                 maxSelectedRows={1}
                 trackUrl={false}
