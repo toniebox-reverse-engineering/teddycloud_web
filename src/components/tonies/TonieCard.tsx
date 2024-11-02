@@ -45,6 +45,9 @@ export const TonieCard: React.FC<{
     const { t } = useTranslation();
     const { token } = useToken();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
+    const [keyRadioStreamSearch, setKeyRadioStreamSearch] = useState(0);
+    const [keyTonieArticleSearch, setKeyTonieArticleSearch] = useState(0);
+
     const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
     const [messageApi, contextHolder] = message.useMessage();
     const [isNoCloud, setIsNoCloud] = useState(localTonieCard.nocloud);
@@ -125,6 +128,8 @@ export const TonieCard: React.FC<{
     const showModelModal = () => {
         setSelectedModel(activeModel);
         setSelectedSource(activeSource);
+        setKeyRadioStreamSearch(keyRadioStreamSearch + 1);
+        setKeyTonieArticleSearch(keyTonieArticleSearch + 1);
         setIsEditModalOpen(true);
     };
 
@@ -350,6 +355,7 @@ export const TonieCard: React.FC<{
                     <RadioStreamSearch
                         placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
                         onChange={searchRadioResultChanged}
+                        key={keyRadioStreamSearch}
                     />
                 </Form.Item>
             </div>
@@ -385,6 +391,7 @@ export const TonieCard: React.FC<{
                     <TonieArticleSearch
                         placeholder={t("tonies.editModal.placeholderSearchForAModel")}
                         onChange={searchModelResultChanged}
+                        key={keyTonieArticleSearch}
                     />
                 </Form.Item>
             </div>
