@@ -337,19 +337,22 @@ export const TonieCard: React.FC<{
             <div>
                 <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
                     <Input
+                        key="source"
                         value={selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
                         addonBefore={[
                             <CloseOutlined
+                                key="close-source"
                                 onClick={() => {
                                     setSelectedSource("");
                                     setInputValidationSource({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
 
                             <RollbackOutlined
+                                key="rollback-source"
                                 onClick={() => {
                                     setSelectedSource(activeSource);
                                     setInputValidationSource({ validateStatus: "", help: "" });
@@ -375,18 +378,21 @@ export const TonieCard: React.FC<{
             <div>
                 <Form.Item validateStatus={inputValidationModel.validateStatus} help={inputValidationModel.help}>
                     <Input
+                        key="model"
                         value={selectedModel}
                         width="auto"
                         onChange={handleModelInputChange}
                         addonBefore={[
                             <CloseOutlined
+                                key="close-model"
                                 onClick={() => {
                                     setSelectedModel("");
                                     setInputValidationModel({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-model" type="vertical" style={{ height: 16 }} />,
                             <RollbackOutlined
+                                key="rollback-model"
                                 onClick={() => {
                                     setSelectedModel(activeModel);
                                     setInputValidationModel({ validateStatus: "", help: "" });
