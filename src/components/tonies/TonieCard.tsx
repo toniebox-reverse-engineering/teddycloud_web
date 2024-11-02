@@ -60,7 +60,6 @@ export const TonieCard: React.FC<{
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
 
     const [activeModel, setActiveModel] = useState(localTonieCard.tonieInfo.model);
-    const [tempActiveModel, setTempActiveModel] = useState(localTonieCard.tonieInfo.model);
     const [selectedModel, setSelectedModel] = useState("");
     const [inputValidationModel, setInputValidationModel] = useState<{
         validateStatus: ValidateStatus;
@@ -70,9 +69,10 @@ export const TonieCard: React.FC<{
         help: "",
     });
 
-    const [activeSource, setActiveSource] = useState(localTonieCard.source);
-    const [tempActiveSource, setTempActiveSource] = useState(localTonieCard.source);
-    const [selectedSource, setSelectedSource] = useState("");
+    const [activeSource, setActiveSource] = useState(localTonieCard.source); // the stored source
+    const [tempActiveSource, setTempActiveSource] = useState(localTonieCard.source); // the previously selected, but not saved source
+    const [selectedSource, setSelectedSource] = useState(""); // the current selected source
+    const [tempSelectedSource, setTempSelectedSource] = useState(""); // the current selected but not confirmed source
     const [inputValidationSource, setInputValidationSource] = useState<{
         validateStatus: ValidateStatus;
         help: string;
@@ -113,10 +113,9 @@ export const TonieCard: React.FC<{
         if (files && files.length === 1) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const filePath = prefix + path + "/" + files[0].name;
-            setSelectedSource(filePath);
-            setTempActiveSource(filePath);
+            setTempSelectedSource(filePath);
         } else {
-            setSelectedSource(activeSource);
+            setTempSelectedSource(activeSource);
         }
     };
 
@@ -286,7 +285,7 @@ export const TonieCard: React.FC<{
         setSelectedModel(e.target.value);
     };
     const handleSourceInputChange = (e: any) => {
-        setSelectedSource(e.target.value);
+        setTempSelectedSource(e.target.value);
     };
 
     const toniePlayedOn = lastRUIDs
@@ -295,7 +294,6 @@ export const TonieCard: React.FC<{
 
     const searchModelResultChanged = (newValue: string) => {
         setSelectedModel(newValue);
-        setTempActiveModel(newValue);
     };
 
     const searchRadioResultChanged = (newValue: string) => {
@@ -410,7 +408,7 @@ export const TonieCard: React.FC<{
         </Modal>
     );
 
-    const selectModalFooter = (
+    const selectFileModalFooter = (
         <div
             style={{
                 display: "flex",
@@ -422,7 +420,14 @@ export const TonieCard: React.FC<{
             }}
         >
             <Button onClick={handleCancelSelectFile}>{t("tonies.selectFileModal.cancel")}</Button>
-            <Button type="primary" onClick={() => setSelectFileModalOpen(false)}>
+            <Button
+                type="primary"
+                onClick={() => {
+                    setSelectedSource(tempSelectedSource);
+                    setTempActiveSource(tempSelectedSource);
+                    setSelectFileModalOpen(false);
+                }}
+            >
                 {t("tonies.selectFileModal.ok")}
             </Button>
         </div>
@@ -433,10 +438,9 @@ export const TonieCard: React.FC<{
             className="sticky-footer"
             title={t("tonies.selectFileModal.selectFile")}
             open={isSelectFileModalOpen}
-            onOk={() => setSelectFileModalOpen(false)}
             onCancel={handleCancelSelectFile}
             width="auto"
-            footer={selectModalFooter}
+            footer={selectFileModalFooter}
         >
             <SelectFileFileBrowser
                 key={keySelectFileFileBrowser}
