@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
-import { HeartTwoTone } from "@ant-design/icons";
+import { HeartFilled } from "@ant-design/icons";
 import styled from "styled-components";
 
 import { gitHubSponsoringUrl, gitHubTCReleasesUrl } from "../../constants";
@@ -86,8 +86,7 @@ export const StyledFooter = () => {
                             </Link>
                             <HiddenMobile style={{ paddingLeft: 8 }}>
                                 -
-                                <HeartTwoTone twoToneColor="#eb2f96" style={{ paddingLeft: 8 }} />{" "}
-                                {t("footer.sponsorText")}{" "}
+                                <HeartFilled style={{ paddingLeft: 8, color: "#eb2f96" }} /> {t("footer.sponsorText")}{" "}
                                 <b>
                                     <Link to={gitHubSponsoringUrl} target="_blank">
                                         {t("footer.sponsor")}
