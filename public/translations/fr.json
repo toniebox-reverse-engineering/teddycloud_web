@@ -173,6 +173,87 @@
         },
         "episode": "Épisode",
         "filter": "Filtrer dans le dossier actuel",
+        "help": {
+            "title": "Aide",
+            "showHelp": "Aide",
+            "actionItemsMulti": {
+                "moveSelectedFiles": {
+                    "title": "Déplacer les fichiers sélectionnés",
+                    "text": "Déplace les fichiers sélectionnés vers un nouvel emplacement. Remarque : les références à ces fichiers dans tout Tonie/Tag ne seront pas mises à jour. Les dossiers sélectionnés seront ignorés."
+                },
+                "deleteSelectedFiles": {
+                    "title": "Supprimer les fichiers/dossiers sélectionnés",
+                    "text": "Supprime les fichiers ou dossiers sélectionnés (seulement s'ils sont vides). Remarque : les références aux fichiers supprimés dans tout Tonie/Tag ne seront pas mises à jour."
+                },
+                "encodeFilesToTAF": {
+                    "title": "Encoder les fichiers en TAF",
+                    "text": "Ajoute les fichiers pris en charge à une file d'attente d'encodage. Vous pouvez sélectionner plusieurs fichiers pour les encoder dans un fichier TAF, qui peut ensuite être attribué à un Tonie/Tag."
+                }
+            },
+            "actionItems": {
+                "playAudioFile": {
+                    "title": "Lire le fichier audio",
+                    "text": "Ouvre le lecteur audio et lance la lecture du fichier."
+                },
+                "migrateToLibraryRoot": {
+                    "title": "Migrer le fichier TAF vers la racine de la bibliothèque",
+                    "text": "Déplace le fichier TAF vers le dossier racine de la bibliothèque et met à jour la source dans le fichier JSON correspondant."
+                },
+                "migrateToAudioIdFolder": {
+                    "title": "Migrer le fichier TAF dans la bibliothèque par AudioId",
+                    "text": "Déplace le fichier TAF dans le dossier 'by/audioId' de la bibliothèque et met à jour la source dans le fichier JSON."
+                },
+                "editTAFMetadata": {
+                    "title": "Modifier les métadonnées TAF",
+                    "text": "Ouvre l'éditeur de métadonnées pour modifier les détails du fichier TAF. Les modifications sont enregistrées dans tonies.custom.json. (WIP)"
+                },
+                "editTAPPlaylist": {
+                    "title": "Modifier la liste de lecture TAP",
+                    "text": "Ouvre l'éditeur de liste de lecture audio Tonie pour gérer les fichiers TAP. (WIP)"
+                },
+                "renameFile": {
+                    "title": "Renommer le fichier",
+                    "text": "Renomme le fichier. Remarque : si ce fichier est attribué à un Tonie/Tag, la référence ne sera pas mise à jour automatiquement."
+                },
+                "moveFile": {
+                    "title": "Déplacer le fichier",
+                    "text": "Déplace le fichier vers un nouvel emplacement. Remarque : si ce fichier est attribué à un Tonie/Tag, la référence ne sera pas mise à jour."
+                },
+                "deleteFileFolder": {
+                    "title": "Supprimer le fichier/dossier",
+                    "text": "Supprime le fichier ou le dossier (seulement si le dossier est vide). Remarque : si ce fichier est attribué à un Tonie/Tag, la référence ne sera pas mise à jour."
+                },
+                "duplicateTAPFile": {
+                    "title": "Dupliquer le fichier TAP",
+                    "text": "Crée une copie du fichier TAP sélectionné."
+                }
+            },
+            "instructions": {
+                "openDirectory": {
+                    "title": "Ouvrir le répertoire",
+                    "text": "Double-cliquez sur un répertoire pour l'ouvrir. Les répertoires sont marqués par des crochets et affichent <DIR> comme taille."
+                },
+                "openTAFViewer": {
+                    "title": "Ouvrir le visualiseur d'en-tête TAF",
+                    "text": "Double-cliquez sur un fichier TAF pour afficher son en-tête. Le visualiseur d'en-tête TAF montre des détails tels que l'AudioId, le hachage SHA1 et la taille du fichier. L'AudioId et le hachage SHA1 sont nécessaires pour les entrées dans tonies.custom.json."
+                },
+                "openTAPJSONViewer": {
+                    "title": "Ouvrir le visualiseur TAP/JSON",
+                    "text": "Double-cliquez sur un fichier TAP ou JSON pour ouvrir le visualiseur JSON."
+                },
+                "viewTonieInfoModal": {
+                    "title": "Afficher la fenêtre d'informations Tonie",
+                    "text": "Cliquez sur l'image d'un Tonie/Tag dans la ligne pour ouvrir la fenêtre d'informations Tonie. Cela affiche des informations détaillées, y compris une image agrandie et une liste de pistes (si disponible)."
+                },
+                "multiSelection": {
+                    "title": "Actions de sélection multiple",
+                    "text": "Pour effectuer des actions sur plusieurs fichiers, cochez leurs cases. De nouvelles icônes d'action apparaîtront dans l'en-tête, vous permettant de déplacer, supprimer ou encoder plusieurs fichiers :"
+                },
+                "fileActions": {
+                    "title": "Actions de fichiers"
+                }
+            }
+        },
         "maxSelectedRows": "Vous ne pouvez sélectionner que jusqu'à {{maxSelectedRows}} fichiers",
         "messages": {
             "deleteFailed": "La suppression du fichier {{file}} a échoué",
