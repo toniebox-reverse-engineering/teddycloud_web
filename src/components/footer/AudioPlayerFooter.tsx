@@ -327,7 +327,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             const duration = globalAudio.duration || 0;
             const position = globalAudio.currentTime || 0;
             const playbackRate = globalAudio.playbackRate || 1;
-
+            if (duration < position) return;
             try {
                 navigator.mediaSession.setPositionState({
                     duration: duration,
@@ -338,7 +338,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 console.error("Error setting media session position state:", e);
             }
         }
-    }, [currentPlayPosition, globalAudio]);
+    }, [globalAudio, currentPlayPosition]);
 
     // rearrange player for mobile / tablet
     const isMobile = window.innerWidth <= 768;
