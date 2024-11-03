@@ -124,7 +124,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
             title: t("fileBrowser.help.instructions.multiSelection.title"),
             text: (
                 <>
-                    <Paragraph>{t("fileBrowser.help.instructions.multiSelection.text")}</Paragraph>
+                    {t("fileBrowser.help.instructions.multiSelection.text")}
                     <List
                         size="small"
                         dataSource={actionItemsMulti}
