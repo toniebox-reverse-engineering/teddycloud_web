@@ -211,7 +211,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             const offsetX = touch.clientX - progressBarRect.left;
             const offsetY = progressBarRect.height / 2;
             setCyclePosition({ left: offsetX, top: offsetY, visible: true });
-            globalAudio.currentTime = (offsetX / (showAudioPlayerMinimal ? 100 : 150)) * globalAudio.duration;
+            globalAudio.currentTime = (offsetX / progressBarRect.width) * globalAudio.duration;
             // prevent default Click!
             setIsTouching(true);
         } else {
@@ -221,20 +221,22 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             setCyclePosition({ left: offsetX, top: offsetY, visible: true });
 
             if (isMouseDown) {
-                handleClick();
+                handleClick(event);
             }
         }
     };
+
     const handleMouseLeave = () => {
         setCyclePosition({ left: 0, top: 0, visible: false });
     };
-    const handleClick = () => {
+
+    const handleClick = (event: React.MouseEvent | React.TouchEvent) => {
         if (isTouching) {
             setIsTouching(false);
             handleMouseLeave();
         } else {
-            globalAudio.currentTime =
-                (cyclePosition.left / (showAudioPlayerMinimal ? 100 : 150)) * globalAudio.duration;
+            const progressBarRect = event.currentTarget.getBoundingClientRect();
+            globalAudio.currentTime = (cyclePosition.left / progressBarRect.width) * globalAudio.duration;
         }
     };
     const handleMouseDown = (event: React.MouseEvent) => {
@@ -338,7 +340,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 console.error("Error setting media session position state:", e);
             }
         }
-    }, [globalAudio, currentPlayPosition]);
+    }, [globalAudio]);
 
     // rearrange player for mobile / tablet
     const isMobile = window.innerWidth <= 768;
