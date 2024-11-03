@@ -1938,7 +1938,7 @@ export const FileBrowser: React.FC<{
                                 );
                             },
                             cell: (props: any) => {
-                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
+                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 8 }} />;
                             },
                         },
                     }}
