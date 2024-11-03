@@ -19,6 +19,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import { useAudioContext } from "../audio/AudioContext";
 import TonieInformationModal from "../utils/TonieInformationModal";
+import { getLongestStringByPixelWidth } from "../../utils/helpers";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
@@ -61,6 +62,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [currentTitle, setCurrentTitle] = useState<string>("");
     const [currentTrackNo, setCurrentTrackNo] = useState<number>(0);
+    const [songContainerWidth, setSongContainerWidth] = useState<number>(300);
 
     useEffect(() => {
         if (globalAudio) {
@@ -80,6 +82,21 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         };
         fetchConfirmClose();
     }, [audioPlayerDisplay]);
+
+    useEffect(() => {
+        if (tonieCard) {
+            const songContainer = document.querySelector(".songContainer") || document.body;
+            const longestString = getLongestStringByPixelWidth(
+                [
+                    ...((tonieCard.sourceInfo ? tonieCard?.sourceInfo?.tracks : tonieCard?.tonieInfo?.tracks) ?? []),
+                    songArtist,
+                    songTitle,
+                ],
+                getComputedStyle(songContainer).fontSize + " " + getComputedStyle(songContainer).fontFamily
+            ).pixelWidth;
+            setSongContainerWidth(longestString === 0 ? 300 : longestString);
+        }
+    }, [songTracks, songTitle, songArtist]);
 
     useEffect(() => {
         setCurrentTrackNo(0);
@@ -323,8 +340,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         }
     }, [currentPlayPosition, globalAudio]);
 
-    // rearrange player for mobile
+    // rearrange player for mobile / tablet
     const isMobile = window.innerWidth <= 768;
+    const isTablet = window.innerWidth <= 1024;
     const innerContainerStyle: React.CSSProperties = isMobile
         ? {
               ...styles.innerContainer,
@@ -347,6 +365,13 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
               marginRight: 0,
           }
         : styles.progressBar;
+    const songContainerStyle: React.CSSProperties = !isTablet
+        ? {
+              ...styles.songContainer,
+              minWidth: songContainerWidth,
+              maxWidth: songContainerWidth,
+          }
+        : styles.songContainer;
 
     useEffect(() => {
         onVisibilityChange();
@@ -495,25 +520,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             </span>
             <span style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "none" : "flex" }}>
                 <div id="audioPlayer" style={{ ...styles.controls, flexDirection: "column", gap: 8 }}>
-                    <div>
-                        <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
-                        {isPlaying ? (
-                            <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
-                        ) : (
-                            <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
-                        )}
-                        <StepForwardOutlined
-                            style={{
-                                ...styles.controlButton,
-                                cursor: songTracks.length === 0 ? "default" : "pointer",
-                                opacity: songTracks.length === 0 ? 0.25 : 1.0,
-                            }}
-                            disabled={songTracks.length === 0}
-                            onClick={handleNextTrackButton}
-                        />
-                    </div>
                     {currentTitle ? (
-                        <div style={{ fontSize: "small" }}>
+                        <div style={{ fontSize: "x-small", marginTop: currentTitle ? -20 : 0 }}>
                             {currentTrackNo}
                             {tonieCard &&
                                 (tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo).tracks.length && (
@@ -530,6 +538,23 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     ) : (
                         ""
                     )}
+                    <div style={{ display: "flex", gap: 8 }}>
+                        <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
+                        {isPlaying ? (
+                            <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
+                        ) : (
+                            <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
+                        )}
+                        <StepForwardOutlined
+                            style={{
+                                ...styles.controlButton,
+                                cursor: songTracks.length === 0 ? "default" : "pointer",
+                                opacity: songTracks.length === 0 ? 0.25 : 1.0,
+                            }}
+                            disabled={songTracks.length === 0}
+                            onClick={handleNextTrackButton}
+                        />
+                    </div>
                 </div>
                 <div
                     style={{ ...styles.trackInfo, cursor: tonieCard ? "help" : "unset" }}
@@ -541,7 +566,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     }}
                 >
                     {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
-                    <div style={styles.songContainer}>
+                    <div className="songContainer" style={songContainerStyle}>
                         {currentTitle ? <div>{currentTitle}</div> : ""}
                         <div>{songArtist}</div>
                         <div>{songTitle}</div>
@@ -662,7 +687,7 @@ const styles = {
         padding: 10,
         backgroundColor: "#333",
         borderRadius: 8,
-        gap: 8,
+        gap: 16,
     },
     controls: {
         display: "flex",
@@ -670,7 +695,6 @@ const styles = {
     },
     controlButton: {
         fontSize: 24,
-        margin: "0 10px",
         cursor: "pointer",
     },
     trackInfo: {
@@ -684,7 +708,10 @@ const styles = {
         borderRadius: "50%",
         marginRight: 10,
     },
-    songContainer: {},
+    songContainer: {
+        minWidth: 200,
+        maxWidth: 200,
+    },
     songTitle: {
         display: "block",
     },
