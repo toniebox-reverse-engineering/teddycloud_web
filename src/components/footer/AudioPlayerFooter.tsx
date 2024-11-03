@@ -282,7 +282,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
         if (navigator.mediaSession) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: currentTitle || "",
+                title: currentTitle || songTitle || "",
                 album: songTitle || "",
                 artist: songArtist || "",
                 artwork: [{ src: songImage || "", sizes: "96x96,128x128,192x192,256x256,384x384,512x512" }],
@@ -308,7 +308,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     useEffect(() => {
         if (navigator.mediaSession && globalAudio) {
             const duration = globalAudio.duration || 0;
-            const position = (currentPlayPosition * duration) / 100 || 0;
+            const position = globalAudio.currentTime || 0;
             const playbackRate = globalAudio.playbackRate || 1;
 
             try {
