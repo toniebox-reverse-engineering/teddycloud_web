@@ -86,6 +86,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         setJsonData(values);
         setJsonViewerModalOpened(true);
 
+        /*
         try {
             await api.apiPostTeddyCloudRaw("/api/doSomething", JSON.stringify(values), undefined, undefined, {
                 "Content-Type": "application/json",
@@ -105,6 +106,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         } catch (error) {
             message.error(t("tonies.addNewCustomTonieModal.failedToCreate") + error);
         }
+        */
     };
 
     const handleOk = () => {

@@ -350,7 +350,6 @@ export const TonieCard: React.FC<{
                                 }}
                             />,
                             <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
-
                             <RollbackOutlined
                                 key="rollback-source"
                                 onClick={() => {

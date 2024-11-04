@@ -20,6 +20,7 @@ import {
     Divider,
     Form,
     Empty,
+    List,
 } from "antd";
 import {
     CloseOutlined,
@@ -33,6 +34,7 @@ import {
     InboxOutlined,
     NodeExpandOutlined,
     PlayCircleOutlined,
+    QuestionCircleOutlined,
     TruckOutlined,
 } from "@ant-design/icons";
 import { Key, SortOrder } from "antd/es/table/interface";
@@ -57,10 +59,12 @@ import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputV
 import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
 import { FileObject, Record, RecordTafHeader } from "../../types/fileBrowserTypes";
 import CodeSnippet from "./CodeSnippet";
+import HelpModal from "./FileBrowserHelpModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
+const { Paragraph } = Typography;
 
 const MAX_FILES = 99;
 
@@ -159,6 +163,8 @@ export const FileBrowser: React.FC<{
     const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState<boolean>(false);
     const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState<number>(0);
     const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
+
+    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
     const [loading, setLoading] = useState<boolean>(true);
     const parentRef = useRef<HTMLDivElement>(null);
@@ -1818,6 +1824,9 @@ export const FileBrowser: React.FC<{
             {moveFileModal}
             {renameFileModal}
             {encodeFilesModal}
+            {isHelpModalOpen && (
+                <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+            )}
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
@@ -1833,21 +1842,27 @@ export const FileBrowser: React.FC<{
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
-                {special === "library" ? (
-                    <div style={{ width: "100%", marginBottom: 8 }}>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                            <Button size="small" onClick={showCreateDirectoryModal} style={{ marginBottom: 8 }}>
-                                {t("fileBrowser.createDirectory.createDirectory")}
-                            </Button>
-
-                            <Button size="small" onClick={showUploadFilesDragAndDropModal} style={{ marginBottom: 8 }}>
-                                {t("fileBrowser.upload.showUploadFilesDragNDrop")}
-                            </Button>
+                <div style={{ display: "flex", justifyContent: "space-between", width: "100%", marginBottom: 8 }}>
+                    {special === "library" ? (
+                        <div style={{ width: "100%" }}>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                                <Button size="small" onClick={showCreateDirectoryModal}>
+                                    {t("fileBrowser.createDirectory.createDirectory")}
+                                </Button>
+                                <Button size="small" onClick={showUploadFilesDragAndDropModal}>
+                                    {t("fileBrowser.upload.showUploadFilesDragNDrop")}
+                                </Button>
+                            </div>
                         </div>
+                    ) : (
+                        <div></div>
+                    )}
+                    <div>
+                        <Button size="small" icon={<QuestionCircleOutlined />} onClick={() => setIsHelpModalOpen(true)}>
+                            {t("fileBrowser.help.showHelp")}
+                        </Button>
                     </div>
-                ) : (
-                    ""
-                )}
+                </div>
             </div>
             <div className="test" style={{ position: "relative" }} ref={parentRef}>
                 {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
@@ -1923,7 +1938,7 @@ export const FileBrowser: React.FC<{
                                 );
                             },
                             cell: (props: any) => {
-                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
+                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 8 }} />;
                             },
                         },
                     }}

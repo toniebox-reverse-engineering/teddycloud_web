@@ -5,13 +5,13 @@ import { Typography, Card, Button, Input, message, Modal, Divider, Select, theme
 import {
     EditOutlined,
     SafetyCertificateOutlined,
-    CloseOutlined,
     SettingOutlined,
     WifiOutlined,
     SaveFilled,
     DeleteOutlined,
     LockOutlined,
     LinkOutlined,
+    RollbackOutlined,
 } from "@ant-design/icons";
 
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -394,7 +394,7 @@ export const TonieboxCard: React.FC<{
                     value={boxName}
                     onChange={(e) => setBoxName(e.target.value)}
                     addonBefore={
-                        <CloseOutlined
+                        <RollbackOutlined
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
                                 color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,

@@ -4,11 +4,13 @@ import { InboxOutlined } from "@ant-design/icons";
 
 import { ApiUploadCertPostRequest, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { useTeddyCloud } from "../../utils/TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }) => {
     const { t } = useTranslation();
+    const { setFetchCloudStatus } = useTeddyCloud();
 
     const handleUpload = async (file: UploadFile<any>) => {
         const formData = new FormData();
@@ -35,6 +37,7 @@ export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }
                         filename: file.name,
                     })
                 );
+                setFetchCloudStatus((prev) => !prev);
             } catch (err) {
                 message.error(
                     t("settings.certificates.uploadFailed", {
