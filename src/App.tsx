@@ -39,6 +39,7 @@ import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { detectColorScheme } from "./utils/browserUtils";
+import { TeddyCloudProvider } from "./utils/TeddyCloudContext";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -101,68 +102,76 @@ function App() {
                 },
             }}
         >
-            <div className="App">
-                <Layout style={{ minHeight: "100vh" }}>
-                    <Router basename={import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}>
-                        <AudioProvider>
-                            <StyledHeader themeSwitch={themeSwitchIcon} />
-                            <Layout>
-                                <Routes>
-                                    <Route path="/" element={<HomePage />} />
-                                    <Route path="/home/stats" element={<StatsPage />} />
-                                    <Route path="/home/features" element={<FeaturesPage />} />
-                                    <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
-                                    <Route path="/tonies" element={<ToniesPage />} />
-                                    <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
-                                    <Route path="/tonies/content" element={<ContentPage />} />
-                                    <Route path="/tonies/library" element={<LibraryPage />} />
-                                    <Route path="/tonies/encoder" element={<EncoderPage />} />
-                                    <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
-                                    <Route path="/tonieboxes" element={<TonieboxesPage />} />
-                                    <Route path="/tonieboxes/boxsetup" element={<BoxSetupPage />} />
-                                    <Route
-                                        path="/tonieboxes/boxsetup/identifyboxversion"
-                                        element={<IdentifyBoxVersionPage />}
-                                    />
-                                    <Route path="/tonieboxes/boxsetup/openboxguide" element={<OpenBoxGuidePage />} />
-                                    <Route
-                                        path="/tonieboxes/boxsetup/boxversioninfo"
-                                        element={<BoxVersionInformationPage />}
-                                    />
-                                    <Route
-                                        path="/tonieboxes/boxsetup/esp32/flashing"
-                                        element={<ESP32BoxFlashingPage />}
-                                    />
-                                    <Route path="/tonieboxes/boxsetup/esp32/legacy" element={<ESP32LegacyPage />} />
-                                    <Route
-                                        path="/tonieboxes/boxsetup/cc3200/flashing"
-                                        element={<CC3200BoxFlashingPage />}
-                                    />
-                                    <Route
-                                        path="/tonieboxes/boxsetup/cc3235/flashing"
-                                        element={<CC3235BoxFlashingPage />}
-                                    />
-                                    <Route path="/settings" element={<SettingsPage />} />
-                                    <Route path="/settings/certificates" element={<CertificatesPage />} />
-                                    <Route path="/settings/rtnl" element={<RtnlPage />} />
-                                    <Route path="/community" element={<CommunityPage />} />
-                                    <Route path="/community/faq" element={<FAQPage />} />
-                                    <Route path="/community/contribution" element={<ContributionPage />} />
-                                    <Route
-                                        path="/community/contribution/tonies-json"
-                                        element={<ContributionToniesJsonPage />}
-                                    />
-                                    <Route path="/community/contribution/translations" element={<TranslationsPage />} />
-                                    <Route path="/community/contributors" element={<ContributorsPage />} />
-                                    <Route path="/community/changelog" element={<ChangelogPage />} />
-                                    <Route path="/*" element={<Error404Page />} />
-                                </Routes>
-                            </Layout>
-                            <StyledFooter />
-                        </AudioProvider>
-                    </Router>
-                </Layout>
-            </div>
+            <TeddyCloudProvider>
+                <div className="App">
+                    <Layout style={{ minHeight: "100vh" }}>
+                        <Router basename={import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}>
+                            <AudioProvider>
+                                <StyledHeader themeSwitch={themeSwitchIcon} />
+                                <Layout>
+                                    <Routes>
+                                        <Route path="/" element={<HomePage />} />
+                                        <Route path="/home/stats" element={<StatsPage />} />
+                                        <Route path="/home/features" element={<FeaturesPage />} />
+                                        <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
+                                        <Route path="/tonies" element={<ToniesPage />} />
+                                        <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
+                                        <Route path="/tonies/content" element={<ContentPage />} />
+                                        <Route path="/tonies/library" element={<LibraryPage />} />
+                                        <Route path="/tonies/encoder" element={<EncoderPage />} />
+                                        <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
+                                        <Route path="/tonieboxes" element={<TonieboxesPage />} />
+                                        <Route path="/tonieboxes/boxsetup" element={<BoxSetupPage />} />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/identifyboxversion"
+                                            element={<IdentifyBoxVersionPage />}
+                                        />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/openboxguide"
+                                            element={<OpenBoxGuidePage />}
+                                        />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/boxversioninfo"
+                                            element={<BoxVersionInformationPage />}
+                                        />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/esp32/flashing"
+                                            element={<ESP32BoxFlashingPage />}
+                                        />
+                                        <Route path="/tonieboxes/boxsetup/esp32/legacy" element={<ESP32LegacyPage />} />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/cc3200/flashing"
+                                            element={<CC3200BoxFlashingPage />}
+                                        />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/cc3235/flashing"
+                                            element={<CC3235BoxFlashingPage />}
+                                        />
+                                        <Route path="/settings" element={<SettingsPage />} />
+                                        <Route path="/settings/certificates" element={<CertificatesPage />} />
+                                        <Route path="/settings/rtnl" element={<RtnlPage />} />
+                                        <Route path="/community" element={<CommunityPage />} />
+                                        <Route path="/community/faq" element={<FAQPage />} />
+                                        <Route path="/community/contribution" element={<ContributionPage />} />
+                                        <Route
+                                            path="/community/contribution/tonies-json"
+                                            element={<ContributionToniesJsonPage />}
+                                        />
+                                        <Route
+                                            path="/community/contribution/translations"
+                                            element={<TranslationsPage />}
+                                        />
+                                        <Route path="/community/contributors" element={<ContributorsPage />} />
+                                        <Route path="/community/changelog" element={<ChangelogPage />} />
+                                        <Route path="/*" element={<Error404Page />} />
+                                    </Routes>
+                                </Layout>
+                                <StyledFooter />
+                            </AudioProvider>
+                        </Router>
+                    </Layout>
+                </div>
+            </TeddyCloudProvider>
         </ConfigProvider>
     );
 }

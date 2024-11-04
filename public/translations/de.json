@@ -471,6 +471,7 @@
         "incident_detected": "Ein Sicherheitsvorfall wurde entdeckt! Bitte überprüfe deine Logs!"
     },
     "server": {
+        "boxineDisabled": "Boxine/Toniecloud ist derzeit deaktiviert. Aktiviere die Einstellung 'Cloud enabled', um die Verbindung zu Boxine/Toniecloud wiederherzustellen.",
         "boxineStatusOffline": "Nicht mit Boxine/Toniecloud verbunden",
         "boxineStatusOnline": "Mit Boxine/Toniecloud verbunden",
         "teddycloudStatusOffline": "TeddyCloud Server offline",

@@ -471,6 +471,7 @@
         "incident_detected": "Security Incident Detected! Please check your logs!"
     },
     "server": {
+        "boxineDisabled": "Boxine/Toniecloud is currently disabled. Enable setting 'Cloud enabled' to reconnect to Boxine/Toniecloud.",
         "boxineStatusOffline": "Not connected to Boxine/Toniecloud",
         "boxineStatusOnline": "Connected to Boxine/Toniecloud",
         "teddycloudStatusOffline": "Teddycloud server offline",

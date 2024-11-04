@@ -471,6 +471,7 @@
         "incident_detected": "Incident de sécurité détecté ! Veuillez vérifier vos journaux !"
     },
     "server": {
+        "boxineDisabled": "Boxine/Toniecloud est actuellement désactivé. Active le paramètre 'Cloud enabled' pour te reconnecter à Boxine/Toniecloud.",
         "boxineStatusOffline": "Non connecté à Boxine/Toniecloud",
         "boxineStatusOnline": "Connecté à Boxine/Toniecloud",
         "teddycloudStatusOffline": "Serveur TeddyCloud hors ligne",

@@ -33,6 +33,7 @@ import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog"
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import DotAnimation from "../../../../components/utils/DotAnimation";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
+import { useTeddyCloud } from "../../../../utils/TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -72,6 +73,7 @@ const { Step } = Steps;
 
 export const ESP32BoxFlashingPage = () => {
     const { t } = useTranslation();
+    const { setFetchCloudStatus } = useTeddyCloud();
     const navigate = useNavigate();
     const currentLanguage = i18n.language;
 
@@ -863,6 +865,7 @@ export const ESP32BoxFlashingPage = () => {
                         file: state.filename,
                     })
                 );
+                setFetchCloudStatus((prev) => !prev);
             } else if (!response.ok && response.status === 409) {
                 hideLoading();
                 const errorMessage = await response.text();
