@@ -497,6 +497,10 @@
         "legacyGui": "Interfaz de administración heredada",
         "levelLabel": "Nivel de configuración",
         "navigationTitle": "Configuración",
+        "notifications": {
+            "title": "Notificaciones",
+            "navigationTitle": "Notificaciones"
+        },
         "overlayDisabled": "Superposición deshabilitada",
         "overlayEnabled": "Superposición habilitada",
         "overlayed": "superpuesto",

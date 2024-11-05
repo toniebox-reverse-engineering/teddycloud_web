@@ -497,6 +497,10 @@
         "legacyGui": "Legacy Admin GUI",
         "levelLabel": "Settings level",
         "navigationTitle": "Settings",
+        "notifications": {
+            "title": "Notifications",
+            "navigationTitle": "Notifications"
+        },
         "overlayDisabled": "Overlayed disabled!",
         "overlayEnabled": "Overlayed enabled!",
         "overlayed": "overlayed",

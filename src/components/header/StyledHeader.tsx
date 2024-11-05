@@ -14,6 +14,8 @@ import logoImg from "../../assets/logo.png";
 import { ServerStatus } from "./ServerStatus";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import NotificationButton from "../utils/NotificationButton";
+import { useTeddyCloud } from "../../utils/TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -47,6 +49,7 @@ const StyledLeftPart = styled.div`
 export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const { unconfirmedCount } = useTeddyCloud();
     const [navOpen, setNavOpen] = useState(false);
     const location = useLocation();
 
@@ -157,7 +160,7 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
             <Link to="/" style={{ color: "white" }}>
                 <StyledLeftPart>
                     <StyledLogo src={logoImg} />
-                    <HiddenMobile> TeddyCloud Server</HiddenMobile>
+                    <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud Server</HiddenMobile>
                 </StyledLeftPart>
             </Link>
             <HiddenMobile>
@@ -176,7 +179,8 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                 <ServerStatus />
                 {themeSwitch}
                 <StyledLanguageSwitcher />
-                <HiddenDesktop>
+                <NotificationButton notificationCount={unconfirmedCount} />
+                <HiddenDesktop style={{ marginLeft: 8 }}>
                     <Button
                         className="barsMenu"
                         type="primary"

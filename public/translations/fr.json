@@ -497,6 +497,10 @@
         "legacyGui": "Ancienne GUI Admin",
         "levelLabel": "Niveau des paramètres",
         "navigationTitle": "Paramètres",
+        "notifications": {
+            "title": "Notifications",
+            "navigationTitle": "Notifications"
+        },
         "overlayDisabled": "Superposition désactivée !",
         "overlayEnabled": "Superposition activée !",
         "overlayed": "superposé",
