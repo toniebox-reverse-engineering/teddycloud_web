@@ -1162,7 +1162,7 @@
             "downloadedFileDetails": "Datei von \"{{model}}\" [{{ruid}}] heruntergeladen",
             "downloading": "Herunterladen...",
             "downloadingDetails": "\"{{model}}\" [{{ruid}}] wird heruntergeladen...",
-            "errorDuringDownload": "Fehler beim Herunterladen im Hintergrund: ",
+            "errorDuringDownload": "Fehler beim Herunterladen im Hintergrund",
             "errorDuringDownloadDetails": "Fehler beim Hintergrund-Download von \"{{model}}\" [{{ruid}}]: ",
             "errorFetchingUpdatedCard": "Fehler beim Abrufen der aktualisierten Karte!",
             "errorFetchingUpdatedCardDetails": "Fehler beim Abrufen der aktualisierten Karte für \"{{model}}\" [{{ruid}}]: ",
