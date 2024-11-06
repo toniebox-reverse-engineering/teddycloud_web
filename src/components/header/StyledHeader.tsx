@@ -170,7 +170,7 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                     items={mainNav}
                     selectedKeys={[selectedKey]}
                     style={{
-                        width: "calc(100vw - 480px)",
+                        width: "calc(100vw - 510px)",
                         background: "#141414 !important",
                     }}
                 />

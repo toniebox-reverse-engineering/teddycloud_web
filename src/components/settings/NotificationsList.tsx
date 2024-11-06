@@ -4,6 +4,8 @@ import { NotificationRecord, NotificationType } from "../../types/teddyCloudNoti
 import { useTeddyCloud } from "../../utils/TeddyCloudContext";
 import { ExclamationCircleFilled, CheckCircleFilled, CloseCircleFilled, InfoCircleFilled } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { TableRowSelection } from "antd/es/table/interface";
+import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 
 const { Option } = Select;
 const { useToken } = theme;
@@ -13,7 +15,27 @@ const NotificationsList = () => {
     const { token } = useToken();
     const { notifications, confirmNotification, clearAllNotifications } = useTeddyCloud();
     const [filteredNotifications, setFilteredNotifications] = useState<NotificationRecord[]>(notifications);
-    const [filterType, setFilterType] = useState<string | null>(null); // State for selected filter type
+    const [filterType, setFilterType] = useState<string | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [isTablet, setIsTablet] = useState(false);
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const [pageSize, setPageSize] = useState(20);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        // Add event listener to handle screen size change
+        const handleResize = () => {
+            setIsTablet(window.innerWidth < 1024);
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        handleResize(); // Check screen size on component mount
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize); // Clean up the event listener
+        };
+    }, []);
 
     useEffect(() => {
         setFilteredNotifications(notifications);
@@ -35,18 +57,19 @@ const NotificationsList = () => {
         warning: <ExclamationCircleFilled style={{ color: token.colorWarning }} />,
     };
 
-    const columns = [
+    const columns: any = [
         {
             title: t("settings.notifications.colType"),
             dataIndex: "type",
             key: "type",
             render: (text: NotificationType) => (
-                <div style={{ display: "flex", gap: 16 }}>
-                    {notificationIconMap[text]}
+                <div style={{ display: "flex", gap: 8 }}>
+                    {isMobile ? "" : notificationIconMap[text]}
                     {text.charAt(0).toUpperCase() + text.slice(1)}
                 </div>
             ),
             sorter: (a: NotificationRecord, b: NotificationRecord) => a.type.localeCompare(b.type),
+            ellipsis: true,
         },
         {
             title: t("settings.notifications.colTitle"),
@@ -67,6 +90,7 @@ const NotificationsList = () => {
                 const descriptionB = b.description || "";
                 return descriptionA.localeCompare(descriptionB);
             },
+            responsive: ["lg"],
         },
         {
             title: t("settings.notifications.colContext"),
@@ -77,39 +101,65 @@ const NotificationsList = () => {
                 const contextB = b.context || "";
                 return contextA.localeCompare(contextB);
             },
+            width: 90,
+            onCell: () => ({
+                style: { maxWidth: 90 },
+            }),
+            ellipsis: true,
+            responsive: ["lg"],
         },
         {
             title: t("settings.notifications.colDate"),
             dataIndex: "date",
             key: "date",
             render: (date: Date) => {
-                if (!(date instanceof Date)) return ""; // Check if it's a Date object
+                if (!(date instanceof Date)) return "";
 
-                return date
-                    .toLocaleString("en-US", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: false, // Set to true for 12-hour format
-                    })
-                    .replace(",", ""); // Optionally remove the comma if present
+                return isMobile
+                    ? date
+                          .toLocaleString("en-US", {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                          })
+                          .replace(",", "")
+                    : date
+                          .toLocaleString("en-US", {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: false,
+                          })
+                          .replace(",", "");
             },
             sorter: (a: NotificationRecord, b: NotificationRecord) => {
-                const dateA = new Date(a.date); // Ensure it's a Date object
-                const dateB = new Date(b.date); // Ensure it's a Date object
-                return dateA.getTime() - dateB.getTime(); // Sort by date
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateA.getTime() - dateB.getTime();
             },
+            ellipsis: true,
         },
         {
             title: t("settings.notifications.colStatus"),
             dataIndex: "flagConfirmed",
             key: "flagConfirmed",
             render: (confirmed: boolean) => (confirmed ? "Confirmed" : "Unconfirmed"), // Display confirmation status
-            sorter: (a: NotificationRecord, b: NotificationRecord) => Number(a.flagConfirmed) - Number(b.flagConfirmed), // Sort by confirmed status
+            sorter: (a: NotificationRecord, b: NotificationRecord) => Number(a.flagConfirmed) - Number(b.flagConfirmed),
+            responsive: ["sm"],
         },
     ];
+
+    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+        console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+        setSelectedRowKeys(newSelectedRowKeys);
+    };
+
+    const rowSelection: TableRowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
 
     return (
         <div>
@@ -131,6 +181,9 @@ const NotificationsList = () => {
                 {t("settings.notifications.removeAll")}
             </Button>
             <Table
+                tableLayout="auto"
+                size={"small"}
+                rowSelection={rowSelection}
                 dataSource={filteredNotifications.map((notification, index) => ({
                     key: index,
                     type: notification.type,
@@ -142,11 +195,17 @@ const NotificationsList = () => {
                 }))}
                 columns={columns}
                 pagination={{
-                    pageSize: 20,
+                    current: currentPage,
+                    pageSize,
                     showSizeChanger: true,
-                    pageSizeOptions: ["10", "20", "30", "50"],
+                    pageSizeOptions: [10, 20, 30, 50],
+                    onChange: (page, size) => {
+                        setCurrentPage(page);
+                        setPageSize(size);
+                    },
                     locale: { items_per_page: t("settings.notifications.pageSelector") },
                 }}
+                sticky={{ offsetHeader: 0 }}
                 rowKey="key" // Use the key prop for unique row identification
                 onRow={(record) => ({
                     onClick: () => {
@@ -155,6 +214,32 @@ const NotificationsList = () => {
                         }
                     },
                 })}
+                expandable={
+                    isTablet
+                        ? {
+                              expandedRowRender: (record) => (
+                                  <div>
+                                      <strong>{t("settings.notifications.colDetails")}:</strong> {record.description}
+                                      {record.context ? (
+                                          <div>
+                                              <br />
+                                              <strong>{t("settings.notifications.colContext")}:</strong>{" "}
+                                              {record.context}{" "}
+                                          </div>
+                                      ) : null}
+                                      <br />
+                                      {isMobile ? (
+                                          <div>
+                                              <strong>{t("settings.notifications.colStatus")}:</strong>{" "}
+                                              {record.flagConfirmed ? "Confirmed" : "Unconfirmed"}
+                                          </div>
+                                      ) : null}
+                                  </div>
+                              ),
+                              rowExpandable: (record) => record.description !== undefined, // Ensure rows with no description can't be expanded
+                          }
+                        : undefined
+                }
             />
         </div>
     );
