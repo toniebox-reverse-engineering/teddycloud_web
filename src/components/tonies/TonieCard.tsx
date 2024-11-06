@@ -263,6 +263,8 @@ export const TonieCard: React.FC<{
         playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo, localTonieCard);
     };
 
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
     const handleBackgroundDownload = async () => {
         const path = localTonieCard.downloadTriggerUrl;
         setDownloadTriggerUrl("");
@@ -280,14 +282,16 @@ export const TonieCard: React.FC<{
                 duration: 0,
                 placement: "bottomRight",
             });
-
             const response = await api.apiGetTeddyCloudApiRaw(path);
 
             // blob used that message is shown after download finished
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const blob = await response.blob();
 
-            notification.destroy(key);
+            setTimeout(() => {
+                notification.destroy(key);
+            }, 300);
+            await sleep(400); // prevent flickering
 
             addNotification(
                 "success",
@@ -300,7 +304,11 @@ export const TonieCard: React.FC<{
             );
             fetchUpdatedTonieCard();
         } catch (error) {
-            notification.destroy(key);
+            setTimeout(() => {
+                notification.destroy(key);
+            }, 300);
+            await sleep(400); // prevent flickering
+
             addNotification(
                 "error",
                 t("tonies.messages.errorDuringDownload"),
