@@ -6,9 +6,16 @@ interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
     setFetchCloudStatus: Dispatch<SetStateAction<boolean>>;
     notifications: NotificationRecord[];
-    addNotification: (type: NotificationType, message: string, description: string) => void;
+    addNotification: (
+        type: NotificationType,
+        message: string,
+        description: string,
+        context?: string,
+        confirmed?: boolean
+    ) => void;
     confirmNotification: (index: number) => void;
     unconfirmedCount: number;
+    clearAllNotifications: () => void;
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
@@ -18,6 +25,7 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     addNotification: () => {},
     confirmNotification: () => {},
     unconfirmedCount: 0,
+    clearAllNotifications: () => {},
 });
 
 interface TeddyCloudProviderProps {
@@ -45,22 +53,30 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         localStorage.setItem("notifications", JSON.stringify(newNotifications));
     };
 
-    const addNotification = (type: NotificationType, message: string, description: string, confirmed?: boolean) => {
+    const addNotification = (
+        type: NotificationType,
+        title: string,
+        description: string,
+        context?: string,
+        confirmed?: boolean
+    ) => {
         const newNotification: NotificationRecord = {
             date: new Date(),
             type,
-            message,
+            title,
             description,
+            context: context || "",
             flagConfirmed: confirmed !== undefined ? confirmed : type === "success" || type === "info",
         };
         const updatedNotifications = [newNotification, ...notifications];
         saveNotifications(updatedNotifications);
 
         antdNotification[type]({
-            message: message,
+            message: title,
             description: description,
             showProgress: true,
             pauseOnHover: true,
+            placement: "bottomRight",
         });
     };
 
@@ -70,6 +86,11 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             updatedNotifications[index].flagConfirmed = true;
             saveNotifications(updatedNotifications);
         }
+    };
+
+    const clearAllNotifications = () => {
+        setNotifications([]); // Clear notifications state
+        localStorage.removeItem("notifications"); // Remove notifications from local storage
     };
 
     const unconfirmedCount = notifications.filter((notification) => !notification.flagConfirmed).length;
@@ -83,6 +104,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                 addNotification,
                 confirmNotification,
                 unconfirmedCount,
+                clearAllNotifications,
             }}
         >
             {children}

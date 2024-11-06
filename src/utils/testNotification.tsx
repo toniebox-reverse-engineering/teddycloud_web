@@ -13,6 +13,8 @@ const NotificationExample = () => {
         "An error occurred, please check your input.",
     ];
 
+    const titles = ["Success!", "Information", "Warning!", "ERROR!"];
+
     // Helper function to get a random item from an array
     const getRandomItem = <T,>(items: T[]): T => {
         return items[Math.floor(Math.random() * items.length)];
@@ -20,12 +22,12 @@ const NotificationExample = () => {
 
     // Function to add a random notification
     const handleAddNotification = () => {
-        const type = getRandomItem(notificationTypes); // Get a random type
-        const message = getRandomItem(messages); // Get a random message
-        const description = message; // You can change this if needed to have different description logic
+        const type = getRandomItem(notificationTypes);
+        const title = getRandomItem(titles);
+        const description = getRandomItem(messages);
 
         // Call addNotification with random values
-        addNotification(type, message, description);
+        addNotification(type, title, description);
     };
 
     return (
