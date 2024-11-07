@@ -1,5 +1,5 @@
 import { NotificationType } from "../types/teddyCloudNotificationTypes";
-import { useTeddyCloud } from "./TeddyCloudContext";
+import { useTeddyCloud } from "../TeddyCloudContext";
 
 const NotificationExample = () => {
     const { addNotification, notifications, confirmNotification } = useTeddyCloud();

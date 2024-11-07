@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Table, Select, Space, theme, Button } from "antd";
 import { NotificationRecord, NotificationType } from "../../types/teddyCloudNotificationTypes";
-import { useTeddyCloud } from "../../utils/TeddyCloudContext";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 import { ExclamationCircleFilled, CheckCircleFilled, CloseCircleFilled, InfoCircleFilled } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { TableRowSelection } from "antd/es/table/interface";

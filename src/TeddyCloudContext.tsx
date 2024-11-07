@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
 import { notification as antdNotification } from "antd";
-import { NotificationRecord, NotificationType } from "../types/teddyCloudNotificationTypes";
+import { LoadingOutlined } from "@ant-design/icons";
+
+import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
 
 interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
@@ -13,6 +15,8 @@ interface TeddyCloudContextType {
         context?: string,
         confirmed?: boolean
     ) => void;
+    addLoadingNotification: (key: string, message: string, description: string) => void;
+    closeLoadingNotification: (key: string) => void;
     confirmNotification: (index: number) => void;
     unconfirmedCount: number;
     clearAllNotifications: () => void;
@@ -23,6 +27,8 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     setFetchCloudStatus: () => {},
     notifications: [],
     addNotification: () => {},
+    addLoadingNotification: () => {},
+    closeLoadingNotification: () => {},
     confirmNotification: () => {},
     unconfirmedCount: 0,
     clearAllNotifications: () => {},
@@ -80,6 +86,26 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         });
     };
 
+    const addLoadingNotification = (key: string, title: string, description: string) => {
+        antdNotification.open({
+            key,
+            message: title,
+            description: description,
+            icon: <LoadingOutlined />,
+            duration: 0,
+            placement: "bottomRight",
+        });
+    };
+
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const closeLoadingNotification = async (key: string) => {
+        setTimeout(() => {
+            antdNotification.destroy(key);
+        }, 300);
+        await sleep(500); // prevent flickering
+    };
+
     const confirmNotification = (index: number) => {
         const updatedNotifications = [...notifications];
         if (updatedNotifications[index]) {
@@ -102,6 +128,8 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                 setFetchCloudStatus,
                 notifications,
                 addNotification,
+                addLoadingNotification,
+                closeLoadingNotification,
                 confirmNotification,
                 unconfirmedCount,
                 clearAllNotifications,

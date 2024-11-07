@@ -1,19 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-    Button,
-    Card,
-    Divider,
-    Form,
-    Input,
-    Modal,
-    Spin,
-    Tooltip,
-    Typography,
-    message,
-    notification,
-    theme,
-} from "antd";
+import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, theme } from "antd";
 import {
     CloseOutlined,
     CloudSyncOutlined,
@@ -21,7 +8,6 @@ import {
     EditOutlined,
     FolderOpenOutlined,
     InfoCircleOutlined,
-    LoadingOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
     RollbackOutlined,
@@ -39,7 +25,7 @@ import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import TonieInformationModal from "../utils/TonieInformationModal";
 import LanguageFlagSVG from "../../utils/languageUtil";
-import { useTeddyCloud } from "../../utils/TeddyCloudContext";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -59,7 +45,7 @@ export const TonieCard: React.FC<{
 }> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", showSourceInfo = true, onHide, onUpdate }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { addNotification } = useTeddyCloud();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [keyRadioStreamSearch, setKeyRadioStreamSearch] = useState(0);
     const [keyTonieArticleSearch, setKeyTonieArticleSearch] = useState(0);
@@ -263,35 +249,26 @@ export const TonieCard: React.FC<{
         playAudio(url, showSourceInfoPicture ? localTonieCard.sourceInfo : localTonieCard.tonieInfo, localTonieCard);
     };
 
-    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
     const handleBackgroundDownload = async () => {
         const path = localTonieCard.downloadTriggerUrl;
         setDownloadTriggerUrl("");
         const key = "loading" + localTonieCard.ruid;
 
         try {
-            notification.open({
+            addLoadingNotification(
                 key,
-                message: t("tonies.messages.downloading"),
-                description: t("tonies.messages.downloadingDetails", {
+                t("tonies.messages.downloading"),
+                t("tonies.messages.downloadingDetails", {
                     model: modelTitle,
                     ruid: localTonieCard.ruid,
-                }).replace(' "" ', " "),
-                icon: <LoadingOutlined />,
-                duration: 0,
-                placement: "bottomRight",
-            });
-            const response = await api.apiGetTeddyCloudApiRaw(path);
+                }).replace(' "" ', " ")
+            );
 
+            const response = await api.apiGetTeddyCloudApiRaw(path);
             // blob used that message is shown after download finished
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const blob = await response.blob();
-
-            setTimeout(() => {
-                notification.destroy(key);
-            }, 300);
-            await sleep(400); // prevent flickering
+            closeLoadingNotification(key);
 
             addNotification(
                 "success",
@@ -304,11 +281,7 @@ export const TonieCard: React.FC<{
             );
             fetchUpdatedTonieCard();
         } catch (error) {
-            setTimeout(() => {
-                notification.destroy(key);
-            }, 300);
-            await sleep(400); // prevent flickering
-
+            closeLoadingNotification(key);
             addNotification(
                 "error",
                 t("tonies.messages.errorDuringDownload"),

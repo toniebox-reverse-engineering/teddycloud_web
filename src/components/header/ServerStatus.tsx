@@ -7,7 +7,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { BoxineApi, BoxineForcedApi, TeddyCloudApi } from "../../api";
 
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
-import { useTeddyCloud } from "../../utils/TeddyCloudContext";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new BoxineApi(defaultAPIConfig());
 const api2 = new BoxineForcedApi(defaultAPIConfig());

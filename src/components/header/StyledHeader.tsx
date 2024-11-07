@@ -15,7 +15,7 @@ import { ServerStatus } from "./ServerStatus";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import NotificationButton from "../utils/NotificationButton";
-import { useTeddyCloud } from "../../utils/TeddyCloudContext";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

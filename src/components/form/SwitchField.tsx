@@ -6,7 +6,7 @@ import { useField } from "formik";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../utils/TeddyCloudContext";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 type SwitchFieldProps = {
     name: string;

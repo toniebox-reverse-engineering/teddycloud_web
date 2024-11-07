@@ -39,7 +39,7 @@ import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { detectColorScheme } from "./utils/browserUtils";
-import { TeddyCloudProvider } from "./utils/TeddyCloudContext";
+import { TeddyCloudProvider } from "./TeddyCloudContext";
 import { NotificationsListPage } from "./pages/settings/NotificationsListPage";
 
 function App() {
