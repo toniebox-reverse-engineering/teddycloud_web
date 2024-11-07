@@ -423,7 +423,10 @@ export const TonieCard: React.FC<{
     const editModal = (
         <Modal
             open={isEditModalOpen}
-            onCancel={() => setIsEditModalOpen(false)}
+            onCancel={() => {
+                setIsEditModalOpen(false);
+                setTempSelectedSource("");
+            }}
             title={editModalTitel}
             footer={editModalFooter}
             width={700}
@@ -435,7 +438,7 @@ export const TonieCard: React.FC<{
                 <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
                     <Input
                         key="source"
-                        value={selectedSource}
+                        value={tempSelectedSource || selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
                         addonBefore={[
