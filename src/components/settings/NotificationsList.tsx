@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
-import { Table, Select, Space, theme, Button } from "antd";
+import {
+    Table,
+    Select,
+    Space,
+    theme,
+    Button,
+    DatePicker,
+    Input,
+    Collapse,
+    CollapseProps,
+    Typography,
+    Tooltip,
+} from "antd";
 import { NotificationRecord, NotificationType } from "../../types/teddyCloudNotificationTypes";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { ExclamationCircleFilled, CheckCircleFilled, CloseCircleFilled, InfoCircleFilled } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { TableRowSelection } from "antd/es/table/interface";
-import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 
 const { Option } = Select;
+const { Paragraph } = Typography;
 const { useToken } = theme;
 
 const NotificationsList = () => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { notifications, confirmNotification, clearAllNotifications } = useTeddyCloud();
+    const { notifications, confirmNotification, clearAllNotifications, removeNotifications } = useTeddyCloud();
     const [filteredNotifications, setFilteredNotifications] = useState<NotificationRecord[]>(notifications);
     const [filterType, setFilterType] = useState<string | null>(null);
     const [isMobile, setIsMobile] = useState(false);
@@ -21,6 +33,31 @@ const NotificationsList = () => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [pageSize, setPageSize] = useState(20);
     const [currentPage, setCurrentPage] = useState(1);
+
+    const [collapsed, setCollapsed] = useState(true);
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+    const [titleFilter, setTitleFilter] = useState<string>("");
+    const [descriptionFilter, setDescriptionFilter] = useState<string>("");
+    const [typeFilter, setTypeFilter] = useState<string[]>([]);
+    const [contextFilter, setContextFilter] = useState<string[]>([]);
+    const [statusFilter, setStatusFilter] = useState<string[]>([]);
+
+    useEffect(() => {
+        const filteredData = notifications.filter((notification) => {
+            const matchesDate =
+                (!dateRange[0] || notification.date >= dateRange[0]) &&
+                (!dateRange[1] || notification.date <= dateRange[1]);
+            const matchesTitle = notification.title.toLowerCase().includes(titleFilter.toLowerCase());
+            const matchesDescription = notification.description.toLowerCase().includes(descriptionFilter.toLowerCase());
+            const matchesType = typeFilter.length === 0 || typeFilter.includes(notification.type);
+            const matchesContext = contextFilter.length === 0 || contextFilter.includes(notification.context);
+            const matchesStatus =
+                statusFilter.length === 0 ||
+                statusFilter.includes(notification.flagConfirmed ? "Confirmed" : "Unconfirmed");
+            return matchesDate && matchesTitle && matchesDescription && matchesType && matchesContext && matchesStatus;
+        });
+        setFilteredNotifications(filteredData);
+    }, [notifications, dateRange, titleFilter, descriptionFilter, typeFilter, contextFilter, statusFilter]);
 
     useEffect(() => {
         // Add event listener to handle screen size change
@@ -37,25 +74,16 @@ const NotificationsList = () => {
         };
     }, []);
 
-    useEffect(() => {
-        setFilteredNotifications(notifications);
-    }, [notifications]);
-
-    const handleFilterChange = (value: string | null) => {
-        setFilterType(value);
-        if (value) {
-            setFilteredNotifications(notifications.filter((notification) => notification.type === value));
-        } else {
-            setFilteredNotifications(notifications);
-        }
-    };
-
     const notificationIconMap = {
         success: <CheckCircleFilled style={{ color: token.colorSuccess }} />,
         error: <CloseCircleFilled style={{ color: token.colorError }} />,
         info: <InfoCircleFilled style={{ color: token.colorInfo }} />,
         warning: <ExclamationCircleFilled style={{ color: token.colorWarning }} />,
     };
+
+    const uniqueContexts = Array.from(new Set(notifications.map((notification) => notification.context))).filter(
+        Boolean
+    );
 
     const columns: any = [
         {
@@ -145,7 +173,26 @@ const NotificationsList = () => {
             title: t("settings.notifications.colStatus"),
             dataIndex: "flagConfirmed",
             key: "flagConfirmed",
-            render: (confirmed: boolean) => (confirmed ? "Confirmed" : "Unconfirmed"), // Display confirmation status
+            render: (confirmed: boolean, record: NotificationRecord) => (
+                <div
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+
+                        if (!record.flagConfirmed) {
+                            confirmNotification(record.uuid);
+                        }
+                    }}
+                >
+                    {record.flagConfirmed ? (
+                        t("settings.notifications.confirmed")
+                    ) : (
+                        <Tooltip title={t("settings.notifications.clickToConfirm")}>
+                            {t("settings.notifications.unconfirmed")}
+                        </Tooltip>
+                    )}
+                </div>
+            ),
             sorter: (a: NotificationRecord, b: NotificationRecord) => Number(a.flagConfirmed) - Number(b.flagConfirmed),
             responsive: ["sm"],
         },
@@ -161,31 +208,125 @@ const NotificationsList = () => {
         onChange: onSelectChange,
     };
 
+    const filterPanelContent = (
+        <div
+            style={{
+                marginBottom: 16,
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                gap: 16,
+                alignItems: "start",
+            }}
+        >
+            <Select
+                mode="multiple"
+                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colType")}
+                onChange={setTypeFilter}
+            >
+                <Option value="success">{t("settings.notifications.success")}</Option>
+                <Option value="info">{t("settings.notifications.info")}</Option>
+                <Option value="warning">{t("settings.notifications.warning")}</Option>
+                <Option value="error">{t("settings.notifications.error")}</Option>
+            </Select>
+            <Select
+                mode="multiple"
+                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colContext")}
+                onChange={setContextFilter}
+            >
+                {uniqueContexts.map((context) => (
+                    <Option key={context} value={context}>
+                        {context}
+                    </Option>
+                ))}
+            </Select>
+            <Select
+                mode="multiple"
+                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colStatus")}
+                onChange={setStatusFilter}
+            >
+                <Option value="Confirmed">{t("settings.notifications.confirmed")}</Option>
+                <Option value="Unconfirmed">{t("settings.notifications.unconfirmed")}</Option>
+            </Select>
+            <DatePicker.RangePicker
+                onChange={(dates) => {
+                    setDateRange(dates && dates[0] && dates[1] ? [dates[0].toDate(), dates[1].toDate()] : [null, null]);
+                }}
+                placeholder={[t("settings.notifications.startDate"), t("settings.notifications.endDate")]}
+            />
+            <Input
+                placeholder={t("settings.notifications.searchIn") + " " + t("settings.notifications.colTitle")}
+                onChange={(e) => setTitleFilter(e.target.value)}
+            />
+            <Input
+                placeholder={t("settings.notifications.searchIn") + " " + t("settings.notifications.colDetails")}
+                onChange={(e) => setDescriptionFilter(e.target.value)}
+            />
+        </div>
+    );
+
+    const filterPanelContentItem: CollapseProps["items"] = [
+        {
+            key: "search-filter",
+            label: collapsed ? t("tonies.tonies.filterBar.showFilters") : t("tonies.tonies.filterBar.hideFilters"),
+            children: filterPanelContent,
+        },
+    ];
+
+    const confirmSelectedNotifications = () => {
+        selectedRowKeys.forEach((key) => {
+            const uuid = String(key);
+            confirmNotification(uuid);
+            setSelectedRowKeys([]);
+        });
+    };
+
+    const removeSelectedNotifications = () => {
+        const uuidsToRemove = selectedRowKeys.map((key) => String(key));
+        removeNotifications(uuidsToRemove);
+    };
+
     return (
         <div>
             <h2>{t("settings.notifications.title")}</h2>
-            <Space style={{ marginBottom: 16 }}>
-                <Select
-                    placeholder="Filter by type"
-                    onChange={handleFilterChange}
-                    allowClear // Allow clearing the selection
-                    style={{ width: 200 }}
-                >
-                    <Option value="success">{t("settings.notifications.success")}</Option>
-                    <Option value="info">{t("settings.notifications.info")}</Option>
-                    <Option value="warning">{t("settings.notifications.warning")}</Option>
-                    <Option value="error">{t("settings.notifications.error")}</Option>
-                </Select>
-            </Space>
-            <Button style={{ marginLeft: 16 }} onClick={clearAllNotifications}>
-                {t("settings.notifications.removeAll")}
-            </Button>
+
+            <Paragraph
+                style={{
+                    width: "100%",
+                    marginBottom: 16,
+                }}
+            >
+                <Collapse
+                    items={filterPanelContentItem}
+                    defaultActiveKey={collapsed ? [] : ["search-filter"]}
+                    onChange={() => setCollapsed(!collapsed)}
+                    bordered={false}
+                    style={{ width: "100%" }}
+                />
+            </Paragraph>
+            <Paragraph style={{ display: "flex", gap: 8, justifyContent: "space-between" }}>
+                {selectedRowKeys.length > 0 ? (
+                    <Paragraph style={{ display: "flex", gap: 8 }}>
+                        <Button onClick={removeSelectedNotifications}>
+                            {t("settings.notifications.removeSelectedNotifications")}
+                        </Button>
+                        <Button onClick={confirmSelectedNotifications}>
+                            {t("settings.notifications.confirmSelectedNotifications")}
+                        </Button>{" "}
+                    </Paragraph>
+                ) : (
+                    <Paragraph></Paragraph>
+                )}
+                <Paragraph>
+                    <Button onClick={clearAllNotifications}>{t("settings.notifications.removeAll")}</Button>
+                </Paragraph>
+            </Paragraph>
+
             <Table
                 tableLayout="auto"
                 size={"small"}
                 rowSelection={rowSelection}
-                dataSource={filteredNotifications.map((notification, index) => ({
-                    key: index,
+                dataSource={filteredNotifications.map((notification) => ({
+                    uuid: notification.uuid,
                     type: notification.type,
                     title: notification.title,
                     description: notification.description,
@@ -206,14 +347,7 @@ const NotificationsList = () => {
                     locale: { items_per_page: t("settings.notifications.pageSelector") },
                 }}
                 sticky={{ offsetHeader: 0 }}
-                rowKey="key" // Use the key prop for unique row identification
-                onRow={(record) => ({
-                    onClick: () => {
-                        if (!record.flagConfirmed) {
-                            confirmNotification(record.key);
-                        }
-                    },
-                })}
+                rowKey="uuid"
                 expandable={
                     isTablet
                         ? {
@@ -231,7 +365,13 @@ const NotificationsList = () => {
                                       {isMobile ? (
                                           <div>
                                               <strong>{t("settings.notifications.colStatus")}:</strong>{" "}
-                                              {record.flagConfirmed ? "Confirmed" : "Unconfirmed"}
+                                              {record.flagConfirmed ? (
+                                                  t("settings.notifications.confirmed")
+                                              ) : (
+                                                  <Tooltip title={t("settings.notifications.clickToConfirm")}>
+                                                      {t("settings.notifications.unconfirmed")}
+                                                  </Tooltip>
+                                              )}
                                           </div>
                                       ) : null}
                                   </div>

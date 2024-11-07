@@ -17,9 +17,10 @@ interface TeddyCloudContextType {
     ) => void;
     addLoadingNotification: (key: string, message: string, description: string) => void;
     closeLoadingNotification: (key: string) => void;
-    confirmNotification: (index: number) => void;
+    confirmNotification: (uuid: string) => void;
     unconfirmedCount: number;
     clearAllNotifications: () => void;
+    removeNotifications: (uuid: string[]) => void;
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
@@ -32,6 +33,7 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     confirmNotification: () => {},
     unconfirmedCount: 0,
     clearAllNotifications: () => {},
+    removeNotifications: () => {},
 });
 
 interface TeddyCloudProviderProps {
@@ -59,6 +61,22 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         localStorage.setItem("notifications", JSON.stringify(newNotifications));
     };
 
+    function generateUUIDWithDate(date = new Date()) {
+        const timestamp = date.getTime();
+        const timestampHex = timestamp.toString(16);
+
+        return "xxxx-xxxx-4xxx-yxxx-xxxx".replace(/[xy]/g, function (c, index) {
+            const random = (Math.random() * 16) | 0;
+            const value =
+                c === "x"
+                    ? index < timestampHex.length
+                        ? parseInt(timestampHex[index], 16)
+                        : random
+                    : (random & 0x3) | 0x8;
+
+            return value.toString(16);
+        });
+    }
     const addNotification = (
         type: NotificationType,
         title: string,
@@ -67,6 +85,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         confirmed?: boolean
     ) => {
         const newNotification: NotificationRecord = {
+            uuid: generateUUIDWithDate(new Date()),
             date: new Date(),
             type,
             title,
@@ -106,12 +125,19 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         await sleep(500); // prevent flickering
     };
 
-    const confirmNotification = (index: number) => {
+    const confirmNotification = (uuid: string) => {
         const updatedNotifications = [...notifications];
-        if (updatedNotifications[index]) {
-            updatedNotifications[index].flagConfirmed = true;
+
+        const notificationIndex = updatedNotifications.findIndex((notif) => notif.uuid === uuid);
+        if (notificationIndex !== -1) {
+            updatedNotifications[notificationIndex].flagConfirmed = true;
             saveNotifications(updatedNotifications);
         }
+    };
+
+    const removeNotifications = (uuidsToRemove: string[]) => {
+        const updatedNotifications = notifications.filter((notification) => !uuidsToRemove.includes(notification.uuid));
+        saveNotifications(updatedNotifications);
     };
 
     const clearAllNotifications = () => {
@@ -133,6 +159,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                 confirmNotification,
                 unconfirmedCount,
                 clearAllNotifications,
+                removeNotifications,
             }}
         >
             {children}

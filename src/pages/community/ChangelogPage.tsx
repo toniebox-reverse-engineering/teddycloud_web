@@ -29,6 +29,7 @@ export const ChangelogPage = () => {
                 "gui: Set Cursor to Default on Filebrowser directory row",
                 "gui: Show disabled Cloud in Boxine status badge https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/164",
                 "gui: Recheck cloud status on certain changes (cloud.enabled, uploaded certs, autoextracted certs in esp32 flashing process) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/167",
+                "gui: added notification system, own page. Migrated mnessages to notification on tonies page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/165",
                 "gui: Some refactoring",
             ],
             commits: [
