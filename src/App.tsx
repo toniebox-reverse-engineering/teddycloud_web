@@ -1,7 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { Layout, ConfigProvider, theme } from "antd";
+import { Layout, ConfigProvider, theme, notification } from "antd";
 
 import { BulbOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 
@@ -39,7 +39,8 @@ import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { detectColorScheme } from "./utils/browserUtils";
-import { TeddyCloudProvider } from "./utils/TeddyCloudContext";
+import { TeddyCloudProvider } from "./TeddyCloudContext";
+import { NotificationsListPage } from "./pages/settings/NotificationsListPage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -150,6 +151,7 @@ function App() {
                                         <Route path="/settings" element={<SettingsPage />} />
                                         <Route path="/settings/certificates" element={<CertificatesPage />} />
                                         <Route path="/settings/rtnl" element={<RtnlPage />} />
+                                        <Route path="/settings/notifications" element={<NotificationsListPage />} />
                                         <Route path="/community" element={<CommunityPage />} />
                                         <Route path="/community/faq" element={<FAQPage />} />
                                         <Route path="/community/contribution" element={<ContributionPage />} />

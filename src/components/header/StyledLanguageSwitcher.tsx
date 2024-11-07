@@ -35,7 +35,7 @@ export const StyledLanguageSwitcher = () => {
     const currentLanguage = i18n.language;
 
     return (
-        <Space>
+        <Space style={{ marginRight: -8 }}>
             <Dropdown menu={{ items }} trigger={["click"]}>
                 <a href="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
                     <Tag color="transparent">

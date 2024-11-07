@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, message, theme } from "antd";
+import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, theme } from "antd";
 import {
     CloseOutlined,
     CloudSyncOutlined,
@@ -25,6 +25,7 @@ import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import TonieInformationModal from "../utils/TonieInformationModal";
 import LanguageFlagSVG from "../../utils/languageUtil";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -44,13 +45,13 @@ export const TonieCard: React.FC<{
 }> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", showSourceInfo = true, onHide, onUpdate }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
     const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [keyRadioStreamSearch, setKeyRadioStreamSearch] = useState(0);
     const [keyTonieArticleSearch, setKeyTonieArticleSearch] = useState(0);
     const [keySelectFileFileBrowser, setKeySelectFileFileBrowser] = useState(0);
 
     const [localTonieCard, setLocalTonieCard] = useState<TonieCardProps>(tonieCard);
-    const [messageApi, contextHolder] = message.useMessage();
     const [isNoCloud, setIsNoCloud] = useState(localTonieCard.nocloud);
     const [isLive, setIsLive] = useState(localTonieCard.live);
     const [downloadTriggerUrl, setDownloadTriggerUrl] = useState(localTonieCard.downloadTriggerUrl);
@@ -89,7 +90,15 @@ export const TonieCard: React.FC<{
             setLocalTonieCard(updatedTonieCard);
             onUpdate(updatedTonieCard);
         } catch (error) {
-            message.error("Error fetching updated card: " + error);
+            addNotification(
+                "error",
+                t("tonies.messages.errorFetchingUpdatedCard"),
+                t("tonies.messages.errorFetchingUpdatedCardDetails", {
+                    model: modelTitle,
+                    ruid: localTonieCard.ruid,
+                }).replace(' "" ', "") + error,
+                t("tonies.title")
+            );
         }
     };
 
@@ -158,13 +167,37 @@ export const TonieCard: React.FC<{
             await api.apiPostTeddyCloudContentJson(localTonieCard.ruid, "live=" + !isLive, overlay);
             setIsLive(!isLive);
             if (!isLive) {
-                message.success(t("tonies.messages.liveEnabled"));
+                addNotification(
+                    "success",
+                    t("tonies.messages.liveEnabled"),
+                    t("tonies.messages.liveEnabledDetails", { model: modelTitle, ruid: localTonieCard.ruid }).replace(
+                        ' "" ',
+                        " "
+                    ),
+                    t("tonies.title")
+                );
             } else {
-                message.success(t("tonies.messages.liveDisabled"));
+                addNotification(
+                    "success",
+                    t("tonies.messages.liveDisabled"),
+                    t("tonies.messages.liveDisabledDetails", { model: modelTitle, ruid: localTonieCard.ruid }).replace(
+                        ' "" ',
+                        " "
+                    ),
+                    t("tonies.title")
+                );
             }
             fetchUpdatedTonieCard();
         } catch (error) {
-            message.error(t("tonies.messages.couldNotChangeLiveFlag") + error);
+            addNotification(
+                "error",
+                t("tonies.messages.couldNotChangeLiveFlag"),
+                t("tonies.messages.couldNotChangeLiveFlagDetails", {
+                    model: modelTitle,
+                    ruid: localTonieCard.ruid,
+                }).replace(' "" ', "") + error,
+                t("tonies.title")
+            );
         }
     };
 
@@ -177,13 +210,37 @@ export const TonieCard: React.FC<{
             });
             setIsNoCloud(!isNoCloud);
             if (!isNoCloud) {
-                message.success(t("tonies.messages.cloudAccessBlocked"));
+                addNotification(
+                    "success",
+                    t("tonies.messages.cloudAccessBlocked"),
+                    t("tonies.messages.cloudAccessBlockedDetails", {
+                        model: modelTitle,
+                        ruid: localTonieCard.ruid,
+                    }).replace(' "" ', " "),
+                    t("tonies.title")
+                );
             } else {
-                message.success(t("tonies.messages.cloudAccessEnabled"));
+                addNotification(
+                    "success",
+                    t("tonies.messages.cloudAccessEnabled"),
+                    t("tonies.messages.cloudAccessEnabledDetails", {
+                        model: modelTitle,
+                        ruid: localTonieCard.ruid,
+                    }).replace(' "" ', " "),
+                    t("tonies.title")
+                );
             }
             fetchUpdatedTonieCard();
         } catch (error) {
-            message.error(t("tonies.messages.couldNotChangeCloudFlag") + error);
+            addNotification(
+                "error",
+                t("tonies.messages.couldNotChangeCloudFlag"),
+                t("tonies.messages.couldNotChangeCloudFlagDetails", {
+                    model: modelTitle,
+                    ruid: localTonieCard.ruid,
+                }).replace(' "" ', "") + error,
+                t("tonies.title")
+            );
         }
     };
 
@@ -195,30 +252,45 @@ export const TonieCard: React.FC<{
     const handleBackgroundDownload = async () => {
         const path = localTonieCard.downloadTriggerUrl;
         setDownloadTriggerUrl("");
-        try {
-            messageApi.open({
-                type: "loading",
-                content: t("tonies.messages.downloading"),
-                duration: 0,
-            });
-            const response = await api.apiGetTeddyCloudApiRaw(path);
+        const key = "loading" + localTonieCard.ruid;
 
+        try {
+            addLoadingNotification(
+                key,
+                t("tonies.messages.downloading"),
+                t("tonies.messages.downloadingDetails", {
+                    model: modelTitle,
+                    ruid: localTonieCard.ruid,
+                }).replace(' "" ', " ")
+            );
+
+            const response = await api.apiGetTeddyCloudApiRaw(path);
             // blob used that message is shown after download finished
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const blob = await response.blob();
+            closeLoadingNotification(key);
 
-            messageApi.destroy();
-            messageApi.open({
-                type: "success",
-                content: t("tonies.messages.downloadedFile"),
-            });
+            addNotification(
+                "success",
+                t("tonies.messages.downloadedFile"),
+                t("tonies.messages.downloadedFileDetails", { model: modelTitle, ruid: localTonieCard.ruid }).replace(
+                    ' "" ',
+                    " "
+                ),
+                t("tonies.title")
+            );
             fetchUpdatedTonieCard();
         } catch (error) {
-            messageApi.destroy();
-            messageApi.open({
-                type: "error",
-                content: t("tonies.messages.errorDuringDownload") + error,
-            });
+            closeLoadingNotification(key);
+            addNotification(
+                "error",
+                t("tonies.messages.errorDuringDownload"),
+                t("tonies.messages.errorDuringDownloadDetails", {
+                    model: modelTitle,
+                    ruid: localTonieCard.ruid,
+                }).replace(' "" ', "") + error,
+                t("tonies.title")
+            );
             // this could be a kind of problem if auth is necessary for accessing the API
             setDownloadTriggerUrl(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path);
         }
@@ -232,14 +304,28 @@ export const TonieCard: React.FC<{
                 overlay
             );
             setActiveModel(selectedModel);
-            message.success(
+
+            addNotification(
+                "success",
                 t("tonies.messages.setTonieToModelSuccessful", {
                     selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
-                })
+                }),
+                t("tonies.messages.setTonieToModelSuccessfulDetails", {
+                    ruid: localTonieCard.ruid,
+                    selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
+                }),
+                t("tonies.title")
             );
             setInputValidationModel({ validateStatus: "", help: "" });
         } catch (error) {
-            message.error(t("tonies.messages.setTonieToModelFailed") + error);
+            addNotification(
+                "error",
+                t("tonies.messages.setTonieToModelFailed"),
+                t("tonies.messages.setTonieToModelFailedDetails", {
+                    ruid: localTonieCard.ruid,
+                }) + error,
+                t("tonies.title")
+            );
             setInputValidationModel({
                 validateStatus: "error",
                 help: t("tonies.messages.setTonieToModelFailed") + error,
@@ -256,14 +342,25 @@ export const TonieCard: React.FC<{
                 overlay
             );
             setActiveSource(selectedSource);
-            message.success(
-                t("tonies.messages.setTonieToSourceSuccessful", {
+            addNotification(
+                "success",
+                t("tonies.messages.setTonieToSourceSuccessful"),
+                t("tonies.messages.setTonieToSourceSuccessfulDetails", {
+                    ruid: localTonieCard.ruid,
                     selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
-                })
+                }),
+                t("tonies.title")
             );
             setInputValidationSource({ validateStatus: "", help: "" });
         } catch (error) {
-            message.error(t("tonies.messages.setTonieToSourceFailed") + error);
+            addNotification(
+                "error",
+                t("tonies.messages.setTonieToSourceFailed"),
+                t("tonies.messages.setTonieToSourceFailedDetails", {
+                    ruid: localTonieCard.ruid,
+                }) + error,
+                t("tonies.title")
+            );
             setInputValidationSource({
                 validateStatus: "error",
                 help: t("tonies.messages.setTonieToSourceFailed") + error,
@@ -326,7 +423,10 @@ export const TonieCard: React.FC<{
     const editModal = (
         <Modal
             open={isEditModalOpen}
-            onCancel={() => setIsEditModalOpen(false)}
+            onCancel={() => {
+                setIsEditModalOpen(false);
+                setTempSelectedSource("");
+            }}
             title={editModalTitel}
             footer={editModalFooter}
             width={700}
@@ -338,7 +438,7 @@ export const TonieCard: React.FC<{
                 <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
                     <Input
                         key="source"
-                        value={selectedSource}
+                        value={tempSelectedSource || selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
                         addonBefore={[
@@ -529,7 +629,6 @@ export const TonieCard: React.FC<{
 
     return (
         <>
-            {contextHolder}
             <Card
                 hoverable={false}
                 key={localTonieCard.ruid}

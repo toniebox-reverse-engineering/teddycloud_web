@@ -9,6 +9,7 @@ import {
     FileSearchOutlined,
     SyncOutlined,
     HistoryOutlined,
+    BellOutlined,
 } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
@@ -82,6 +83,12 @@ export const SettingsSubNav = () => {
             label: <Link to="/settings/rtnl">{t("settings.rtnl.navigationTitle")}</Link>,
             icon: React.createElement(FileSearchOutlined),
             title: t("settings.rtnl.navigationTitle"),
+        },
+        {
+            key: "notifications",
+            label: <Link to="/settings/notifications">{t("settings.notifications.navigationTitle")}</Link>,
+            icon: React.createElement(BellOutlined),
+            title: t("settings.notifications.navigationTitle"),
         },
         {
             key: "reload_toniesJson",

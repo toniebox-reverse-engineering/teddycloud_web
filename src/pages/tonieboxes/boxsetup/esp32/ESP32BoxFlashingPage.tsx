@@ -33,7 +33,7 @@ import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog"
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import DotAnimation from "../../../../components/utils/DotAnimation";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
-import { useTeddyCloud } from "../../../../utils/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
