@@ -1183,11 +1183,11 @@
             "setToEmptyValue": "leer",
             "setTonieToModelFailed": "Konnte Tonie-Modell nicht ändern!",
             "setTonieToModelFailedDetails": "Konnte Tonie-Modell für [{{ruid}}] nicht ändern: ",
-            "setTonieToModelSuccessful": "Tonie-Modell erfolgtreich auf {{selectedModel}} gesetzt!",
+            "setTonieToModelSuccessful": "Tonie-Modell erfolgtreich gesetzt!",
             "setTonieToModelSuccessfulDetails": "Tonie-Modell auf {{selectedModel}} für [{{ruid}}] gesetzt",
             "setTonieToSourceFailed": "Konnte Tonie-Quelle nicht ändern!",
             "setTonieToSourceFailedDetails": "Konnte Tonie-Quelle für [{{ruid}}] nicht ändern: ",
-            "setTonieToSourceSuccessful": "Setze Tonie-Quelle auf {{selectedSource}}!",
+            "setTonieToSourceSuccessful": "Tonie-Quelle erfolgreich gesetzt!",
             "setTonieToSourceSuccessfulDetails": "Tonie-Quelle auf {{selectedSource}} für [{{ruid}}] gesetzt"
         },
         "navigationTitle": "Tonies",

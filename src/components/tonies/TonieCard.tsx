@@ -454,11 +454,16 @@ export const TonieCard: React.FC<{
                                 key="rollback-source"
                                 onClick={() => {
                                     setSelectedSource(activeSource);
+                                    setTempSelectedSource(activeSource);
                                     setInputValidationSource({ validateStatus: "", help: "" });
                                 }}
                                 style={{
-                                    color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
-                                    cursor: activeSource === selectedSource ? "default" : "pointer",
+                                    color:
+                                        activeSource === (tempSelectedSource || selectedSource)
+                                            ? token.colorTextDisabled
+                                            : token.colorText,
+                                    cursor:
+                                        activeSource === (tempSelectedSource || selectedSource) ? "default" : "pointer",
                                 }}
                             />,
                         ]}
