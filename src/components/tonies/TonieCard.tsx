@@ -26,6 +26,7 @@ import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import TonieInformationModal from "../utils/TonieInformationModal";
 import LanguageFlagSVG from "../../utils/languageUtil";
 import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -91,7 +92,7 @@ export const TonieCard: React.FC<{
             onUpdate(updatedTonieCard);
         } catch (error) {
             addNotification(
-                "error",
+                NotificationTypeEnum.Error,
                 t("tonies.messages.errorFetchingUpdatedCard"),
                 t("tonies.messages.errorFetchingUpdatedCardDetails", {
                     model: modelTitle,
@@ -168,7 +169,7 @@ export const TonieCard: React.FC<{
             setIsLive(!isLive);
             if (!isLive) {
                 addNotification(
-                    "success",
+                    NotificationTypeEnum.Success,
                     t("tonies.messages.liveEnabled"),
                     t("tonies.messages.liveEnabledDetails", { model: modelTitle, ruid: localTonieCard.ruid }).replace(
                         ' "" ',
@@ -178,7 +179,7 @@ export const TonieCard: React.FC<{
                 );
             } else {
                 addNotification(
-                    "success",
+                    NotificationTypeEnum.Success,
                     t("tonies.messages.liveDisabled"),
                     t("tonies.messages.liveDisabledDetails", { model: modelTitle, ruid: localTonieCard.ruid }).replace(
                         ' "" ',
@@ -190,7 +191,7 @@ export const TonieCard: React.FC<{
             fetchUpdatedTonieCard();
         } catch (error) {
             addNotification(
-                "error",
+                NotificationTypeEnum.Error,
                 t("tonies.messages.couldNotChangeLiveFlag"),
                 t("tonies.messages.couldNotChangeLiveFlagDetails", {
                     model: modelTitle,
@@ -211,7 +212,7 @@ export const TonieCard: React.FC<{
             setIsNoCloud(!isNoCloud);
             if (!isNoCloud) {
                 addNotification(
-                    "success",
+                    NotificationTypeEnum.Success,
                     t("tonies.messages.cloudAccessBlocked"),
                     t("tonies.messages.cloudAccessBlockedDetails", {
                         model: modelTitle,
@@ -221,7 +222,7 @@ export const TonieCard: React.FC<{
                 );
             } else {
                 addNotification(
-                    "success",
+                    NotificationTypeEnum.Success,
                     t("tonies.messages.cloudAccessEnabled"),
                     t("tonies.messages.cloudAccessEnabledDetails", {
                         model: modelTitle,
@@ -233,7 +234,7 @@ export const TonieCard: React.FC<{
             fetchUpdatedTonieCard();
         } catch (error) {
             addNotification(
-                "error",
+                NotificationTypeEnum.Error,
                 t("tonies.messages.couldNotChangeCloudFlag"),
                 t("tonies.messages.couldNotChangeCloudFlagDetails", {
                     model: modelTitle,
@@ -271,7 +272,7 @@ export const TonieCard: React.FC<{
             closeLoadingNotification(key);
 
             addNotification(
-                "success",
+                NotificationTypeEnum.Success,
                 t("tonies.messages.downloadedFile"),
                 t("tonies.messages.downloadedFileDetails", { model: modelTitle, ruid: localTonieCard.ruid }).replace(
                     ' "" ',
@@ -283,7 +284,7 @@ export const TonieCard: React.FC<{
         } catch (error) {
             closeLoadingNotification(key);
             addNotification(
-                "error",
+                NotificationTypeEnum.Error,
                 t("tonies.messages.errorDuringDownload"),
                 t("tonies.messages.errorDuringDownloadDetails", {
                     model: modelTitle,
@@ -306,7 +307,7 @@ export const TonieCard: React.FC<{
             setActiveModel(selectedModel);
 
             addNotification(
-                "success",
+                NotificationTypeEnum.Success,
                 t("tonies.messages.setTonieToModelSuccessful", {
                     selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
                 }),
@@ -319,7 +320,7 @@ export const TonieCard: React.FC<{
             setInputValidationModel({ validateStatus: "", help: "" });
         } catch (error) {
             addNotification(
-                "error",
+                NotificationTypeEnum.Error,
                 t("tonies.messages.setTonieToModelFailed"),
                 t("tonies.messages.setTonieToModelFailedDetails", {
                     ruid: localTonieCard.ruid,
@@ -343,7 +344,7 @@ export const TonieCard: React.FC<{
             );
             setActiveSource(selectedSource);
             addNotification(
-                "success",
+                NotificationTypeEnum.Success,
                 t("tonies.messages.setTonieToSourceSuccessful"),
                 t("tonies.messages.setTonieToSourceSuccessfulDetails", {
                     ruid: localTonieCard.ruid,
@@ -354,7 +355,7 @@ export const TonieCard: React.FC<{
             setInputValidationSource({ validateStatus: "", help: "" });
         } catch (error) {
             addNotification(
-                "error",
+                NotificationTypeEnum.Error,
                 t("tonies.messages.setTonieToSourceFailed"),
                 t("tonies.messages.setTonieToSourceFailedDetails", {
                     ruid: localTonieCard.ruid,

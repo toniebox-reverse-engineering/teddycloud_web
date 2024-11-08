@@ -891,15 +891,20 @@
         "delete": "Delete",
         "editModelModal": {
             "editModel": "Edit Toniebox \"{{name}}\"",
-            "errorOnModelChange": "Error saving model: {{error}}",
-            "errorOnNameChange": "Error saving name: {{error}}",
-            "errorWhileSavingConfig": "Error while saving config to file.",
+            "errorOnModelChange": "Error saving model",
+            "errorOnModelChangeDetails": "Error saving model of Toniebox {{mac}}: {{error}}",
+            "errorOnNameChange": "Error saving name",
+            "errorOnNameChangeDetails": "Error saving name of Toniebox {{mac}}: {{error}}",
+            "errorWhileSavingConfig": "Saving config to file failed",
             "model": "Model",
             "name": "Name",
             "placeholderSearchForAModel": "Select color variant of your Toniebox",
-            "successOnModelChange": "Model of the Toniebox was edited",
-            "successOnNameChange": "Name of the Toniebox was edited",
-            "unsetBoxName": "Model unknown/not set"
+            "successOnModelChange": "Model change saved sucessfully",
+            "successOnNameChange": "Name change saved sucessfully",
+            "unsetBoxName": "Model unknown/not set",
+            "errorWhileSavingConfigDetails": "Error while saving config to file: ",
+            "successOnModelChangeDetails": "New model \"{{model}}\"of the Toniebox {{mac}} was saved sucessfully.",
+            "successOnNameChangeDetails": "New name \"{{name}}\"of the Toniebox {{mac}} was saved sucessfully."
         },
         "editTonieboxSettingsModal": {
             "editTonieboxSettings": "Edit settings for Toniebox \"{{name}}\"",
@@ -1032,11 +1037,17 @@
         "linkToBoxCFW": "Open web interface of Toniebox",
         "messages": {
             "apiAccessDisabled": "Disabled access to TeddyCloud APIs!",
+            "apiAccessDisabledDetails": "Disabled access to TeddyCloud APIs for Toniebox {{mac}}",
             "apiAccessEnabled": "Enabled access to TeddyCloud APIs!",
-            "apiAccessNotChangedError": "Changing access to TeddyCloud API failed: ",
-            "deleteFailed": "Delete failed:",
+            "apiAccessEnabledDetails": "Enabled access to TeddyCloud APIs for Toniebox {{mac}}",
+            "apiAccessNotChangedError": "Changing access to TeddyCloud API failed",
+            "apiAccessNotChangedErrorDetails": "Changing access to TeddyCloud API for Toniebox {{mac}} failed: ",
+            "deleteFailed": "Delete failed",
+            "deleteFailedDetails": "Delete Toniebox {{mac}} failed",
             "deleteSuccessful": "Deleted successful!",
-            "deleting": "Deleting..."
+            "deleteSuccessfulDetails": "Deleted Toniebox {{mac}} from TeddyCloud successful!",
+            "deleting": "Deleting...",
+            "deletingDetails": "Deleting Toniebox {{mac}} from TeddyCloud"
         },
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "New Tonieboxes allowed",

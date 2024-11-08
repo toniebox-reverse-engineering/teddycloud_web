@@ -56,11 +56,6 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         }
     }, []);
 
-    const saveNotifications = (newNotifications: NotificationRecord[]) => {
-        setNotifications(newNotifications);
-        localStorage.setItem("notifications", JSON.stringify(newNotifications));
-    };
-
     function generateUUIDWithDate(date = new Date()) {
         const timestamp = date.getTime();
         const timestampHex = timestamp.toString(16);
@@ -93,15 +88,20 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             context: context || "",
             flagConfirmed: confirmed !== undefined ? confirmed : type === "success" || type === "info",
         };
-        const updatedNotifications = [newNotification, ...notifications];
-        saveNotifications(updatedNotifications);
 
-        antdNotification[type]({
+        antdNotification.open({
+            type: type,
             message: title,
             description: description,
             showProgress: true,
             pauseOnHover: true,
             placement: "bottomRight",
+        });
+
+        setNotifications((prevNotifications) => {
+            const updatedNotifications = [newNotification, ...prevNotifications];
+            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+            return updatedNotifications;
         });
     };
 
@@ -126,23 +126,28 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
     };
 
     const confirmNotification = (uuid: string) => {
-        const updatedNotifications = [...notifications];
-
-        const notificationIndex = updatedNotifications.findIndex((notif) => notif.uuid === uuid);
-        if (notificationIndex !== -1) {
-            updatedNotifications[notificationIndex].flagConfirmed = true;
-            saveNotifications(updatedNotifications);
-        }
+        setNotifications((prevNotifications) => {
+            const updatedNotifications = prevNotifications.map((notification) =>
+                notification.uuid === uuid ? { ...notification, flagConfirmed: true } : notification
+            );
+            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+            return updatedNotifications;
+        });
     };
 
     const removeNotifications = (uuidsToRemove: string[]) => {
-        const updatedNotifications = notifications.filter((notification) => !uuidsToRemove.includes(notification.uuid));
-        saveNotifications(updatedNotifications);
+        setNotifications((prevNotifications) => {
+            const updatedNotifications = prevNotifications.filter(
+                (notification) => !uuidsToRemove.includes(notification.uuid)
+            );
+            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+            return updatedNotifications;
+        });
     };
 
     const clearAllNotifications = () => {
-        setNotifications([]); // Clear notifications state
-        localStorage.removeItem("notifications"); // Remove notifications from local storage
+        setNotifications([]);
+        localStorage.removeItem("notifications");
     };
 
     const unconfirmedCount = notifications.filter((notification) => !notification.flagConfirmed).length;
