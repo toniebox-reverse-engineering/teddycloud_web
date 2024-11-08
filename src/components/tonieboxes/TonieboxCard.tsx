@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Typography, Card, Button, Input, message, Modal, Divider, Select, theme, Tooltip } from "antd";
+import { Typography, Card, Button, Input, Modal, Divider, Select, theme, Tooltip } from "antd";
 import {
     EditOutlined,
     SafetyCertificateOutlined,
