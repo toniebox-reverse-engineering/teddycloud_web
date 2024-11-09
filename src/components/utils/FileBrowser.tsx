@@ -1653,7 +1653,14 @@ export const FileBrowser: React.FC<{
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
                                         record.tonieInfo,
-                                        record
+                                        {
+                                            ...record,
+                                            audioUrl:
+                                                encodeURI("/content" + path + "/" + record.name) +
+                                                "?ogg=true&special=" +
+                                                special +
+                                                (overlay ? `&overlay=${overlay}` : ""),
+                                        }
                                     )
                                 }
                             />

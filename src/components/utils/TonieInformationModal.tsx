@@ -29,10 +29,6 @@ interface InformationModalProps {
     onHide?: (ruid: string) => void;
 }
 
-function isTonieCardProps(value: any): value is TonieCardProps {
-    return value && typeof value === "object" && "uid" in value && "audioUrl" in value && "tonieInfo" in value;
-}
-
 const TonieInformationModal: React.FC<InformationModalProps> = ({
     open,
     onClose,
@@ -54,6 +50,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     const [sourceTracks, setSourceTracks] = useState<string[]>([]);
 
     useEffect(() => {
+        console.log(tonieCardOrTAFRecord);
         if (
             showSourceInfo &&
             "sourceInfo" in tonieCardOrTAFRecord &&
@@ -120,7 +117,6 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             "trackSeconds" in tonieCardOrTAFRecord
                 ? tonieCardOrTAFRecord.trackSeconds
                 : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
-
         return (trackSeconds && trackSeconds[index]) || 0;
     };
 
@@ -297,9 +293,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                             {"audioUrl" in tonieCardOrTAFRecord &&
                                             trackSecondsMatchSourceTracks(
                                                 tonieCardOrTAFRecord,
-                                                ("sourceInfo" in tonieCardOrTAFRecord &&
-                                                    tonieCardOrTAFRecord.sourceInfo.tracks?.length) ||
-                                                    0
+                                                tonieCardOrTAFRecord.sourceInfo.tracks?.length
                                             ) ? (
                                                 <>
                                                     <PlayCircleOutlined
@@ -333,9 +327,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                         {"audioUrl" in tonieCardOrTAFRecord &&
                                         trackSecondsMatchSourceTracks(
                                             tonieCardOrTAFRecord,
-                                            ("tonieInfo" in tonieCardOrTAFRecord &&
-                                                tonieCardOrTAFRecord.tonieInfo.tracks?.length) ||
-                                                0
+                                            tonieCardOrTAFRecord.tonieInfo.tracks?.length
                                         ) ? (
                                             <>
                                                 <PlayCircleOutlined
