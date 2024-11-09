@@ -36,7 +36,7 @@ interface AudioPlayerFooterProps {
 
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { t } = useTranslation();
-    const { songImage, songArtist, songTitle, songTracks, tonieCard } = useAudioContext();
+    const { songImage, songArtist, songTitle, songTracks, tonieCardOrTAFRecord } = useAudioContext();
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
     const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -63,6 +63,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [currentTitle, setCurrentTitle] = useState<string>("");
     const [currentTrackNo, setCurrentTrackNo] = useState<number>(0);
     const [songContainerWidth, setSongContainerWidth] = useState<number>(300);
+    const [displaySongTitle, setDisplaySongTitle] = useState<string>("");
+    const [displaySongArtist, setDisplaySongArtist] = useState<string>("");
 
     useEffect(() => {
         if (globalAudio) {
@@ -84,18 +86,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [audioPlayerDisplay]);
 
     useEffect(() => {
-        if (tonieCard) {
-            const songContainer = document.querySelector(".songContainer") || document.body;
-            const longestString = getLongestStringByPixelWidth(
-                [
-                    ...((tonieCard.sourceInfo ? tonieCard?.sourceInfo?.tracks : tonieCard?.tonieInfo?.tracks) ?? []),
-                    songArtist,
-                    songTitle,
-                ],
-                getComputedStyle(songContainer).fontSize + " " + getComputedStyle(songContainer).fontFamily
-            ).pixelWidth;
-            setSongContainerWidth(longestString === 0 ? 300 : longestString);
-        }
+        calculatePlayerWidth();
+        setDisplaySongTitle(songTitle);
+        setDisplaySongArtist(songArtist);
     }, [songTracks, songTitle, songArtist]);
 
     useEffect(() => {
@@ -127,6 +120,23 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             }
         });
     }, []);
+
+    const calculatePlayerWidth = () => {
+        if (tonieCardOrTAFRecord) {
+            const songContainer = document.querySelector(".songContainer") || document.body;
+            const longestString = getLongestStringByPixelWidth(
+                [
+                    ...(("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                        ? tonieCardOrTAFRecord?.sourceInfo?.tracks
+                        : tonieCardOrTAFRecord?.tonieInfo?.tracks) ?? []),
+                    songArtist,
+                    songTitle,
+                ],
+                getComputedStyle(songContainer).fontSize + " " + getComputedStyle(songContainer).fontFamily
+            ).pixelWidth;
+            setSongContainerWidth(longestString);
+        }
+    };
 
     const handleVolumeSliderChange = (value: number | [number, number]) => {
         if (Array.isArray(value)) {
@@ -179,24 +189,31 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setCurrentPlayPosition((audioElement.currentTime / globalAudio.duration) * 100);
         setCurrentPlayPositionFormat(`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
 
-        if (
-            tonieCard &&
-            (tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo)?.tracks &&
-            tonieCard.trackSeconds &&
-            (tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo).tracks.length ===
-                tonieCard.trackSeconds.length
-        ) {
-            const trackIndex = tonieCard.trackSeconds.findIndex((start, index) => {
-                const nextStart = tonieCard.trackSeconds[index + 1];
+        const trackSeconds =
+            (tonieCardOrTAFRecord &&
+                ("trackSeconds" in tonieCardOrTAFRecord
+                    ? tonieCardOrTAFRecord.trackSeconds
+                    : "tafHeader" in tonieCardOrTAFRecord
+                    ? tonieCardOrTAFRecord.tafHeader.trackSeconds
+                    : [])) ||
+            [];
+
+        const tracks =
+            tonieCardOrTAFRecord &&
+            ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                ? tonieCardOrTAFRecord.sourceInfo
+                : tonieCardOrTAFRecord.tonieInfo
+            )?.tracks;
+
+        if (tracks && trackSeconds && tracks.length === trackSeconds.length) {
+            const trackIndex = trackSeconds.findIndex((start: number, index: number) => {
+                const nextStart = trackSeconds[index + 1];
                 return audioElement.currentTime >= start && (!nextStart || audioElement.currentTime < nextStart);
             });
 
-            if (
-                trackIndex !== -1 &&
-                (tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo).tracks[trackIndex]
-            ) {
+            if (trackIndex !== -1 && tracks[trackIndex]) {
                 setCurrentTrackNo(trackIndex + 1);
-                setCurrentTitle((tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo).tracks[trackIndex]);
+                setCurrentTitle(tracks[trackIndex]);
             }
         } else {
             setCurrentTrackNo(0);
@@ -458,9 +475,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         <img
                             src={songImage}
                             alt="Song"
-                            style={{ ...styles.songImage, cursor: tonieCard ? "help" : "unset" }}
+                            style={{ ...styles.songImage, cursor: tonieCardOrTAFRecord ? "help" : "unset" }}
                             onClick={() => {
-                                if (tonieCard !== undefined) {
+                                if (tonieCardOrTAFRecord !== undefined) {
                                     setKeyInfoModal(keyInfoModal + 1);
                                     setInformationModalOpen(true);
                                 }
@@ -525,14 +542,19 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     {currentTitle ? (
                         <div style={{ fontSize: "x-small", marginTop: currentTitle ? -20 : 0 }}>
                             {currentTrackNo}
-                            {tonieCard &&
-                                (tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo).tracks.length && (
+                            {tonieCardOrTAFRecord &&
+                                ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                                    ? tonieCardOrTAFRecord.sourceInfo
+                                    : tonieCardOrTAFRecord.tonieInfo
+                                )?.tracks.length && (
                                     <>
                                         {" "}
                                         /{" "}
                                         {
-                                            (tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo).tracks
-                                                .length
+                                            ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                                                ? tonieCardOrTAFRecord.sourceInfo
+                                                : tonieCardOrTAFRecord.tonieInfo
+                                            ).tracks.length
                                         }
                                     </>
                                 )}
@@ -559,9 +581,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     </div>
                 </div>
                 <div
-                    style={{ ...styles.trackInfo, cursor: tonieCard ? "help" : "unset" }}
+                    style={{ ...styles.trackInfo, cursor: tonieCardOrTAFRecord ? "help" : "unset" }}
                     onClick={() => {
-                        if (tonieCard !== undefined) {
+                        if (tonieCardOrTAFRecord !== undefined) {
                             setKeyInfoModal(keyInfoModal + 1);
                             setInformationModalOpen(true);
                         }
@@ -570,8 +592,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
                     <div className="songContainer" style={songContainerStyle}>
                         {currentTitle ? <div>{currentTitle}</div> : ""}
-                        <div>{songArtist}</div>
-                        <div>{songTitle}</div>
+                        <div>{displaySongArtist}</div>
+                        <div>{displaySongTitle}</div>
                     </div>
                 </div>
                 {!audioDurationFormat.startsWith("Infinity") ? (
@@ -641,15 +663,18 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             >
                 {minimalPlayer}
                 {normalPlayer}
-                {tonieCard ? (
+                {tonieCardOrTAFRecord ? (
                     <TonieInformationModal
                         open={isInformationModalOpen}
                         onClose={() => setInformationModalOpen(false)}
                         tonieCardOrTAFRecord={{
-                            ...tonieCard,
+                            ...tonieCardOrTAFRecord,
                             // this is kind of a dirty trick. In the audioplayer we need always (if possible)
                             // the actual source, so we set the tonieInfo to the source also.
-                            tonieInfo: tonieCard.sourceInfo ? tonieCard.sourceInfo : tonieCard.tonieInfo,
+                            tonieInfo:
+                                "sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                                    ? tonieCardOrTAFRecord.sourceInfo
+                                    : tonieCardOrTAFRecord.tonieInfo,
                         }}
                         readOnly={true}
                         key={keyInfoModal}

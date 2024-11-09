@@ -119,6 +119,7 @@ export const FileBrowser: React.FC<{
 
     const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
+    const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
     const [jsonData, setJsonData] = useState<string>("");
     const [isJsonViewerModalOpen, setIsJsonViewerModalOpen] = useState<boolean>(false);
@@ -395,6 +396,12 @@ export const FileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
+            setCurrentAudioUrl(
+                encodeURI("/content" + path + "/" + record.name) +
+                    "?ogg=true&special=" +
+                    special +
+                    (overlay ? `&overlay=${overlay}` : "")
+            );
             setIsInformationModalOpen(true);
         }
     };
@@ -1830,7 +1837,7 @@ export const FileBrowser: React.FC<{
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
-                    tonieCardOrTAFRecord={currentRecord}
+                    tonieCardOrTAFRecord={{ ...currentRecord, audioUrl: currentAudioUrl }}
                     onClose={() => setIsInformationModalOpen(false)}
                     overlay={overlay}
                 />

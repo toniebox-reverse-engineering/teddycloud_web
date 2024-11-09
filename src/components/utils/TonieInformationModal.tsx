@@ -73,13 +73,12 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     }, [tonieCardOrTAFRecord, open]);
 
     const handlePlayPauseClick = async (url: string, startTime?: number) => {
-        console.log(tonieCardOrTAFRecord);
         playAudio(
             url,
             showSourceInfo && "sourceInfo" in tonieCardOrTAFRecord
                 ? tonieCardOrTAFRecord.sourceInfo
                 : tonieCardOrTAFRecord.tonieInfo,
-            isTonieCardProps(tonieCardOrTAFRecord) ? tonieCardOrTAFRecord : undefined,
+            tonieCardOrTAFRecord,
             startTime
         );
     };
@@ -107,6 +106,23 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             : "";
 
     const title = informationFromSource ? sourceTitle : modelTitle;
+
+    const trackSecondsMatchSourceTracks = (tonieCardOrTAFRecord: TonieCardTAFRecord, tracksLength: number) => {
+        const trackSeconds =
+            "trackSeconds" in tonieCardOrTAFRecord
+                ? tonieCardOrTAFRecord.trackSeconds
+                : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
+        return trackSeconds?.length === tracksLength;
+    };
+
+    const getTrackStartTime = (tonieCardOrTAFRecord: TonieCardTAFRecord, index: number) => {
+        const trackSeconds =
+            "trackSeconds" in tonieCardOrTAFRecord
+                ? tonieCardOrTAFRecord.trackSeconds
+                : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
+
+        return (trackSeconds && trackSeconds[index]) || 0;
+    };
 
     // hide tag functions
     const showHideConfirmDialog = () => {
@@ -279,9 +295,12 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                     {sourceTracks.map((track, index) => (
                                         <li key={index}>
                                             {"audioUrl" in tonieCardOrTAFRecord &&
-                                            "trackSeconds" in tonieCardOrTAFRecord &&
-                                            tonieCardOrTAFRecord.trackSeconds.length ===
-                                                tonieCardOrTAFRecord.sourceInfo?.tracks?.length ? (
+                                            trackSecondsMatchSourceTracks(
+                                                tonieCardOrTAFRecord,
+                                                ("sourceInfo" in tonieCardOrTAFRecord &&
+                                                    tonieCardOrTAFRecord.sourceInfo.tracks?.length) ||
+                                                    0
+                                            ) ? (
                                                 <>
                                                     <PlayCircleOutlined
                                                         key="playpause"
@@ -289,7 +308,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                             handlePlayPauseClick(
                                                                 import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
                                                                     tonieCardOrTAFRecord.audioUrl,
-                                                                tonieCardOrTAFRecord.trackSeconds[index]
+                                                                getTrackStartTime(tonieCardOrTAFRecord, index)
                                                             )
                                                         }
                                                     />{" "}
@@ -312,9 +331,12 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                 {tonieCardOrTAFRecord.tonieInfo?.tracks.map((track, index) => (
                                     <li key={index}>
                                         {"audioUrl" in tonieCardOrTAFRecord &&
-                                        "trackSeconds" in tonieCardOrTAFRecord &&
-                                        tonieCardOrTAFRecord.trackSeconds.length ===
-                                            tonieCardOrTAFRecord.tonieInfo?.tracks?.length ? (
+                                        trackSecondsMatchSourceTracks(
+                                            tonieCardOrTAFRecord,
+                                            ("tonieInfo" in tonieCardOrTAFRecord &&
+                                                tonieCardOrTAFRecord.tonieInfo.tracks?.length) ||
+                                                0
+                                        ) ? (
                                             <>
                                                 <PlayCircleOutlined
                                                     key="playpause"
@@ -322,7 +344,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                         handlePlayPauseClick(
                                                             import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
                                                                 tonieCardOrTAFRecord.audioUrl,
-                                                            tonieCardOrTAFRecord.trackSeconds[index]
+                                                            getTrackStartTime(tonieCardOrTAFRecord, index)
                                                         )
                                                     }
                                                 />{" "}
