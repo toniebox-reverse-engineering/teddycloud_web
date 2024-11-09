@@ -50,7 +50,6 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     const [sourceTracks, setSourceTracks] = useState<string[]>([]);
 
     useEffect(() => {
-        console.log(tonieCardOrTAFRecord);
         if (
             showSourceInfo &&
             "sourceInfo" in tonieCardOrTAFRecord &&
