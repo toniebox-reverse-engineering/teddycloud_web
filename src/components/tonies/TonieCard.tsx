@@ -73,8 +73,8 @@ export const TonieCard: React.FC<{
 
     const [activeSource, setActiveSource] = useState(localTonieCard.source); // the stored source
     const [tempActiveSource, setTempActiveSource] = useState(localTonieCard.source); // the previously selected, but not saved source
-    const [selectedSource, setSelectedSource] = useState(""); // the current selected source
-    const [tempSelectedSource, setTempSelectedSource] = useState(""); // the current selected but not confirmed source
+    const [selectedSource, setSelectedSource] = useState(activeSource); // the current selected source
+    const [tempSelectedSource, setTempSelectedSource] = useState(selectedSource); // the current selected but not confirmed source
     const [inputValidationSource, setInputValidationSource] = useState<{
         validateStatus: ValidateStatus;
         help: string;
@@ -382,6 +382,7 @@ export const TonieCard: React.FC<{
         setSelectedModel(e.target.value);
     };
     const handleSourceInputChange = (e: any) => {
+        setSelectedSource(e.target.value);
         setTempSelectedSource(e.target.value);
     };
 
@@ -438,7 +439,7 @@ export const TonieCard: React.FC<{
                 <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
                     <Input
                         key="source"
-                        value={tempSelectedSource || selectedSource}
+                        value={selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
                         addonBefore={[
@@ -458,12 +459,8 @@ export const TonieCard: React.FC<{
                                     setInputValidationSource({ validateStatus: "", help: "" });
                                 }}
                                 style={{
-                                    color:
-                                        activeSource === (tempSelectedSource || selectedSource)
-                                            ? token.colorTextDisabled
-                                            : token.colorText,
-                                    cursor:
-                                        activeSource === (tempSelectedSource || selectedSource) ? "default" : "pointer",
+                                    color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
+                                    cursor: activeSource === selectedSource ? "default" : "pointer",
                                 }}
                             />,
                         ]}
