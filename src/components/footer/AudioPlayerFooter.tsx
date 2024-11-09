@@ -135,6 +135,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 getComputedStyle(songContainer).fontSize + " " + getComputedStyle(songContainer).fontFamily
             ).pixelWidth;
             setSongContainerWidth(longestString);
+        } else {
+            setSongContainerWidth(300);
         }
     };
 
