@@ -496,7 +496,7 @@ export const TonieboxCard: React.FC<{
                 t("tonieboxes.messages.deletingDetails", { mac: tonieboxCard.ID })
             );
 
-            api.apiPostTeddyCloudSetting("removeOverlay", null, tonieboxCard.ID)
+            api.apiPostTeddyCloudRaw("/api/settings/removeOverlay?overlay=" + tonieboxCard.ID)
                 .then((response) => response.text())
                 .then((data) => {
                     closeLoadingNotification(key);
