@@ -479,6 +479,10 @@
         "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
+        "errorSettingSettingsLevel": "Fehler beim Festlegen des Settings level",
+        "errorSettingSettingsLevelDetails": "Neues Settings level konnte nicht festgelegt werden:",
+        "errorWhileSavingConfig": "Fehler beim Speichern der Einstellungen",
+        "errorWhileSavingConfigDetails": "Fehler beim Speichern der Einstellungen: ",
         "certificates": {
             "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
@@ -547,9 +551,11 @@
         "warningHint": "Texteingaben müssen derzeit explizit gespeichert werden, bis eine bessere Lösung implementiert ist. Klicke dazu auf das Speichersymbol am Ende des Feldes. Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
     },
     "tonieArticleSearch": {
-        "failedToFetchSearchResults": "Suchergebnisse konnten nicht abgerufen werden: "
+        "failedToFetchSearchResults": "Fehler beim Abrufen der Modelle",
+        "failedToFetchSearchResultsDetails": "Fehler beim Abrufen der Suchergebnisse: "
     },
     "tonieboxes": {
+        "errorFetchingModels": "Fehler beim Abrufen der Toniebox-Modelle",
         "accessApiDisabled": "Zugriff auf TeddyCloud APIs deaktiviert.",
         "accessApiEnabled": "Zugriff auf TeddyCloud APIs aktiviert.",
         "availableBoxModal": {
@@ -896,14 +902,12 @@
             "errorOnModelChangeDetails": "Fehler beim Speichern des Modells der Toniebox {{mac}}: {{error}}",
             "errorOnNameChange": "Fehler beim Speichern des Namens",
             "errorOnNameChangeDetails": "Fehler beim Speichern des Namens der Toniebox {{mac}}: {{error}}",
-            "errorWhileSavingConfig": "Fehler beim Speichern der Einstellungen",
             "model": "Modell",
             "name": "Name",
             "placeholderSearchForAModel": "Wähle deine Farbvariante aus",
             "successOnModelChange": "Modelländerung erfolgreich gespeichert",
             "successOnNameChange": "Namensänderung erfolgreich gespeichert",
             "unsetBoxName": "Modell unbekannt/nicht gesetzt",
-            "errorWhileSavingConfigDetails": "Fehler beim Speichern der Einstellungen: ",
             "successOnModelChangeDetails": "Neues Modell \"{{model}}\" der Toniebox {{mac}} wurde erfolgreich gespeichert.",
             "successOnNameChangeDetails": "Neuer Name \"{{name}}\" der Toniebox {{mac}} wurde erfolgreich gespeichert."
         },

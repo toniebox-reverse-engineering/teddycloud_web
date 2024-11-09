@@ -309,8 +309,8 @@ export const TonieboxCard: React.FC<{
                 .catch((e) => {
                     addNotification(
                         NotificationTypeEnum.Error,
-                        t("tonieboxes.editModelModal.errorWhileSavingConfig"),
-                        t("tonieboxes.editModelModal.errorWhileSavingConfigDetails") + e,
+                        t("settings.errorWhileSavingConfig"),
+                        t("settings.errorWhileSavingConfigDetails") + e,
                         t("tonieboxes.navigationTitle")
                     );
                 });
@@ -350,8 +350,8 @@ export const TonieboxCard: React.FC<{
                 .catch((e) => {
                     addNotification(
                         NotificationTypeEnum.Error,
-                        t("tonieboxes.editModelModal.errorWhileSavingConfig"),
-                        t("tonieboxes.editModelModal.errorWhileSavingConfigDetails") + e,
+                        t("settings.errorWhileSavingConfig"),
+                        t("settings.errorWhileSavingConfigDetails") + e,
                         t("tonieboxes.navigationTitle")
                     );
                 });
@@ -580,8 +580,8 @@ export const TonieboxCard: React.FC<{
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,
-                t("tonieboxes.editModelModal.errorWhileSavingConfig"),
-                t("tonieboxes.editModelModal.errorWhileSavingConfigDetails") + error,
+                t("settings.errorWhileSavingConfig"),
+                t("settings.errorWhileSavingConfigDetails") + error,
                 t("tonieboxes.navigationTitle")
             );
         }

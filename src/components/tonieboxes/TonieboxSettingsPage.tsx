@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Divider, Form, Radio, message } from "antd";
+import { Alert, Divider, Form, Radio } from "antd";
 import { Formik } from "formik";
 
 import { OptionsList, TeddyCloudApi } from "../../api";
@@ -8,12 +8,16 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import LoadingSpinner from "../utils/LoadingSpinner";
 import OptionItem from "../utils/OptionItem";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay }) => {
-    const [options, setOptions] = useState<OptionsList | undefined>();
     const { t } = useTranslation();
+    const { addNotification } = useTeddyCloud();
+
+    const [options, setOptions] = useState<OptionsList | undefined>();
     const [settingsLevel, setSettingsLevel] = useState("");
     const [loading, setLoading] = useState(true);
 
@@ -54,7 +58,12 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
         try {
             await api.apiTriggerWriteConfigGet();
         } catch (error) {
-            message.error("Error while saving config to file.");
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.errorWhileSavingConfig"),
+                t("settings.errorWhileSavingConfigDetails") + error,
+                t("tonieboxes.navigationTitle")
+            );
         }
     };
 
@@ -63,8 +72,13 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
             await api.apiPostTeddyCloudSetting("core.settings_level", value);
             triggerWriteConfig();
             setSettingsLevel(value);
-        } catch (e) {
-            message.error("Error while sending data to server.");
+        } catch (error) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.errorSettingSettingsLevel"),
+                t("settings.errorSettingSettingsLevelDetails") + error,
+                t("tonieboxes.navigationTitle")
+            );
         }
     };
 

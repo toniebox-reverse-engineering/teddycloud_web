@@ -479,6 +479,10 @@
         "teddycloudStatusOnline": "Teddycloud server running fine"
     },
     "settings": {
+        "errorSettingSettingsLevel": "Error setting Settings level",
+        "errorSettingSettingsLevelDetails": "Could not set new Settings level:",
+        "errorWhileSavingConfig": "Saving config to file failed",
+        "errorWhileSavingConfigDetails": "Error while saving config to file: ",
         "certificates": {
             "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
             "information": "Information",
@@ -547,9 +551,11 @@
         "warningHint": "Text inputs currently have to be saved explicitly until a better solution is implemented. To do this, click on the save symbol at the end of the field. If you are missing settings, increase the 'Settings level'."
     },
     "tonieArticleSearch": {
-        "failedToFetchSearchResults": "Failed to fetch search results: "
+        "failedToFetchSearchResults": "Error fetching models",
+        "failedToFetchSearchResultsDetails": "Failed to fetch models search results: "
     },
     "tonieboxes": {
+        "errorFetchingModels": "Error fetching Tonieboxes Models",
         "accessApiDisabled": "Access to TeddyCloud APIs disabled.",
         "accessApiEnabled": "Access to TeddyCloud APIs enabled.",
         "availableBoxModal": {
@@ -896,14 +902,12 @@
             "errorOnModelChangeDetails": "Error saving model of Toniebox {{mac}}: {{error}}",
             "errorOnNameChange": "Error saving name",
             "errorOnNameChangeDetails": "Error saving name of Toniebox {{mac}}: {{error}}",
-            "errorWhileSavingConfig": "Saving config to file failed",
             "model": "Model",
             "name": "Name",
             "placeholderSearchForAModel": "Select color variant of your Toniebox",
             "successOnModelChange": "Model change saved sucessfully",
             "successOnNameChange": "Name change saved sucessfully",
             "unsetBoxName": "Model unknown/not set",
-            "errorWhileSavingConfigDetails": "Error while saving config to file: ",
             "successOnModelChangeDetails": "New model \"{{model}}\"of the Toniebox {{mac}} was saved sucessfully.",
             "successOnNameChangeDetails": "New name \"{{name}}\"of the Toniebox {{mac}} was saved sucessfully."
         },

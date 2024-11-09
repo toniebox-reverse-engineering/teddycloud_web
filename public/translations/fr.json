@@ -479,6 +479,10 @@
         "teddycloudStatusOnline": "Le serveur TeddyCloud fonctionne correctement"
     },
     "settings": {
+        "errorSettingSettingsLevel": "Erreur lors de la configuration du niveau des paramètres",
+        "errorSettingSettingsLevelDetails": "Impossible de définir le nouveau niveau de paramètres :",
+        "errorWhileSavingConfig": "Échec de la sauvegarde de la configuration dans le fichier",
+        "errorWhileSavingConfigDetails": "Erreur lors de la sauvegarde de la configuration dans le fichier : ",
         "certificates": {
             "hint": "Voici les certificats utilisés pour l'utilisation générale de TeddyCloud. Des certificats spécifiques peuvent être utilisés pour vos Tonieboxes. Pour les changer, allez à ",
             "information": "Informations",
@@ -547,9 +551,11 @@
         "warningHint": "Les entrées de texte doivent actuellement être enregistrées explicitement jusqu'à ce qu'une meilleure solution soit mise en œuvre. Pour ce faire, cliquez sur le symbole de sauvegarde à la fin du champ. Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
     },
     "tonieArticleSearch": {
-        "failedToFetchSearchResults": "Échec de la récupération des résultats de recherche : "
+        "failedToFetchSearchResults": "Erreur lors de la récupération des modèles",
+        "failedToFetchSearchResultsDetails": "Échec de la récupération des résultats de recherche de modèles : "
     },
     "tonieboxes": {
+        "errorFetchingModels": "Erreur lors de la récupération des modèles de Tonieboxes",
         "accessApiDisabled": "Accès aux API de TeddyCloud désactivé.",
         "accessApiEnabled": "Accès aux API de TeddyCloud activé.",
         "availableBoxModal": {
@@ -896,14 +902,12 @@
             "errorOnModelChangeDetails": "Erreur lors de la sauvegarde du modèle de la Toniebox {{mac}} : {{error}}",
             "errorOnNameChange": "Erreur lors de la sauvegarde du nom",
             "errorOnNameChangeDetails": "Erreur lors de la sauvegarde du nom de la Toniebox {{mac}} : {{error}}",
-            "errorWhileSavingConfig": "Échec de la sauvegarde de la configuration dans le fichier",
             "model": "Modèle",
             "name": "Nom",
             "placeholderSearchForAModel": "Sélectionne la variante de couleur de ta Toniebox",
             "successOnModelChange": "Modification du modèle enregistrée avec succès",
             "successOnNameChange": "Modification du nom enregistrée avec succès",
             "unsetBoxName": "Modèle inconnu/non défini",
-            "errorWhileSavingConfigDetails": "Erreur lors de la sauvegarde de la configuration dans le fichier : ",
             "successOnModelChangeDetails": "Le nouveau modèle \"{{model}}\" de la Toniebox {{mac}} a été enregistré avec succès.",
             "successOnNameChangeDetails": "Le nouveau nom \"{{name}}\" de la Toniebox {{mac}} a été enregistré avec succès."
         },
