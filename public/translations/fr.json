@@ -463,7 +463,8 @@
         "undefined": "Autre/indéfini"
     },
     "radioStreamSearch": {
-        "failedToFetchSearchResults": "Échec de la récupération des résultats de recherche : ",
+        "failedToFetchSearchResults": "Échec de la récupération des résultats de recherche des stations de radio",
+        "failedToFetchSearchResultsDetails": "Échec de la récupération des résultats de recherche des stations de radio : ",
         "searchLabel": "[Optionnel] Rechercher un flux radio"
     },
     "security": {

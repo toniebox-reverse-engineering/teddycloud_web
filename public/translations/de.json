@@ -463,7 +463,8 @@
         "undefined": "Andere/undefiniert"
     },
     "radioStreamSearch": {
-        "failedToFetchSearchResults": "Suchergebnisse konnten nicht abgerufen werden: ",
+        "failedToFetchSearchResults": "Abrufen der Radiosender-Suchergebnisse fehlgeschlagen",
+        "failedToFetchSearchResultsDetails": "Abrufen der Radiosender-Suchergebnisse fehlgeschlagen: ",
         "searchLabel": "[optional] Radio stream suchen"
     },
     "security": {

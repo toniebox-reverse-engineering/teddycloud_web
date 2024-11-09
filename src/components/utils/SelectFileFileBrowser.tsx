@@ -59,6 +59,7 @@ export const SelectFileFileBrowser: React.FC<{
 
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
+    const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
     const [filterText, setFilterText] = useState("");
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
@@ -116,6 +117,12 @@ export const SelectFileFileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
+            setCurrentAudioUrl(
+                encodeURI("/content" + path + "/" + record.name) +
+                    "?ogg=true&special=" +
+                    special +
+                    (overlay ? `&overlay=${overlay}` : "")
+            );
             setInformationModalOpen(true);
         }
     };
@@ -414,7 +421,14 @@ export const SelectFileFileBrowser: React.FC<{
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
                                         record.tonieInfo,
-                                        record
+                                        {
+                                            ...record,
+                                            audioUrl:
+                                                encodeURI("/content" + path + "/" + record.name) +
+                                                "?ogg=true&special=" +
+                                                special +
+                                                (overlay ? `&overlay=${overlay}` : ""),
+                                        }
                                     )
                                 }
                             />
@@ -474,7 +488,7 @@ export const SelectFileFileBrowser: React.FC<{
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
-                    tonieCardOrTAFRecord={currentRecord}
+                    tonieCardOrTAFRecord={{ ...currentRecord, audioUrl: currentAudioUrl }}
                     onClose={() => setInformationModalOpen(false)}
                     overlay={overlay}
                 />

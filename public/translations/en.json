@@ -463,7 +463,8 @@
         "undefined": "Other/undefined"
     },
     "radioStreamSearch": {
-        "failedToFetchSearchResults": "Failed to fetch search results: ",
+        "failedToFetchSearchResults": "Failed to fetch radio stations search results",
+        "failedToFetchSearchResultsDetails": "Failed to fetch radio stations  search results: ",
         "searchLabel": "[Optionally] Search for a radio stream"
     },
     "security": {

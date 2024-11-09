@@ -6,10 +6,6 @@ import { useNavigate } from "react-router-dom";
 const NotificationButton: React.FC<{ notificationCount: number }> = ({ notificationCount }) => {
     const navigate = useNavigate();
 
-    const handleClick = () => {
-        console.log("Notification button clicked");
-    };
-
     return (
         <Badge
             dot={notificationCount > 0}

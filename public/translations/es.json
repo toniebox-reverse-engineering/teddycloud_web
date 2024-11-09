@@ -463,7 +463,8 @@
         "undefined": "Otro/no definido"
     },
     "radioStreamSearch": {
-        "failedToFetchSearchResults": "Error al obtener resultados de búsqueda: ",
+        "failedToFetchSearchResults": "No se pudieron obtener los resultados de búsqueda de emisoras de radio",
+        "failedToFetchSearchResultsDetails": "No se pudieron obtener los resultados de búsqueda de emisoras de radio: ",
         "searchLabel": "[Opcional] Buscar una transmisión de radio"
     },
     "security": {
