@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 import { message, Select, Tooltip } from "antd";
 
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -17,7 +16,7 @@ import BreadcrumbWrapper, {
 import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
-import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -29,10 +28,7 @@ interface LanguageCounts {
 
 export const ToniesPage = () => {
     const { t } = useTranslation();
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const linkOverlay = searchParams.get("overlay");
-    const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent(linkOverlay);
+    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [defaultLanguage, setMaxTag] = useState<string>("");
@@ -135,7 +131,7 @@ export const ToniesPage = () => {
                                 <Select
                                     id="contentDirectorySelect"
                                     defaultValue=""
-                                    onChange={handleSelectChange}
+                                    onChange={handleContentOverlayChange}
                                     style={{ maxWidth: "300px" }}
                                     value={overlay}
                                 >

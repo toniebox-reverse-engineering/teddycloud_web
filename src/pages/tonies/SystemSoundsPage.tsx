@@ -15,8 +15,8 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -24,7 +24,7 @@ const { Option } = Select;
 
 export const SystemSoundsPage = () => {
     const { t } = useTranslation();
-    const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent();
+    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [loading, setLoading] = useState(true);
@@ -93,7 +93,7 @@ export const SystemSoundsPage = () => {
                             <Select
                                 id="contentDirectorySelect"
                                 defaultValue=""
-                                onChange={handleSelectChange}
+                                onChange={handleContentOverlayChange}
                                 style={{ maxWidth: "300px" }}
                                 value={overlay}
                                 title={t("tonies.content.showToniesOfBoxes")}

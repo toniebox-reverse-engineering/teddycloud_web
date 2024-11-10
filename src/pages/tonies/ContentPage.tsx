@@ -9,14 +9,13 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/utils/FileBrowser";
-import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const { Option } = Select;
 
 export const ContentPage = () => {
     const { t } = useTranslation();
-
-    const { tonieBoxContentDirs, overlay, handleSelectChange } = useTonieboxContent();
+    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
 
     return (
         <>
@@ -49,7 +48,7 @@ export const ContentPage = () => {
                             <Select
                                 id="contentDirectorySelect"
                                 defaultValue=""
-                                onChange={handleSelectChange}
+                                onChange={handleContentOverlayChange}
                                 style={{ maxWidth: "300px" }}
                                 value={overlay}
                                 title={t("tonies.content.showToniesOfBoxes")}
