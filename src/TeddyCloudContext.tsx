@@ -3,6 +3,7 @@ import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
+import { generateUUID } from "./utils/helpers";
 
 interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
@@ -56,22 +57,6 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         }
     }, []);
 
-    function generateUUIDWithDate(date = new Date()) {
-        const timestamp = date.getTime();
-        const timestampHex = timestamp.toString(16);
-
-        return "xxxx-xxxx-4xxx-yxxx-xxxx".replace(/[xy]/g, function (c, index) {
-            const random = (Math.random() * 16) | 0;
-            const value =
-                c === "x"
-                    ? index < timestampHex.length
-                        ? parseInt(timestampHex[index], 16)
-                        : random
-                    : (random & 0x3) | 0x8;
-
-            return value.toString(16);
-        });
-    }
     const addNotification = (
         type: NotificationType,
         title: string,
@@ -80,7 +65,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         confirmed?: boolean
     ) => {
         const newNotification: NotificationRecord = {
-            uuid: generateUUIDWithDate(new Date()),
+            uuid: generateUUID(),
             date: new Date(),
             type,
             title,
@@ -112,7 +97,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             description: description,
             icon: <LoadingOutlined />,
             duration: 0,
-            placement: "bottomRight",
+            placement: "topRight",
         });
     };
 
