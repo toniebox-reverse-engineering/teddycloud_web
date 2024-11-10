@@ -1441,16 +1441,16 @@ export const FileBrowser: React.FC<{
                     if (data === "OK") {
                         addNotification(
                             NotificationTypeEnum.Success,
-                            t("fileBrowser.upload.migrationSuccessful"),
-                            t("fileBrowser.upload.migrationSuccessfulDetails", { ruid: ruid }),
+                            t("fileBrowser.messages.migrationSuccessful"),
+                            t("fileBrowser.messages.migrationSuccessfulDetails", { ruid: ruid }),
                             t("fileBrowser.title")
                         );
                         setRebuildList((prev) => !prev);
                     } else {
                         addNotification(
                             NotificationTypeEnum.Success,
-                            t("fileBrowser.upload.migrationFailed"),
-                            t("fileBrowser.upload.migrationFailedDetails", { ruid: ruid }).replace(": ", ""),
+                            t("fileBrowser.messages.migrationFailed"),
+                            t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }).replace(": ", ""),
                             t("fileBrowser.title")
                         );
                     }
@@ -1459,8 +1459,8 @@ export const FileBrowser: React.FC<{
                     closeLoadingNotification(key);
                     addNotification(
                         NotificationTypeEnum.Success,
-                        t("fileBrowser.upload.migrationFailed"),
-                        t("fileBrowser.upload.migrationFailedDetails", { ruid: ruid }) + error,
+                        t("fileBrowser.messages.migrationFailed"),
+                        t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }) + error,
                         t("fileBrowser.title")
                     );
                 });
@@ -1468,8 +1468,8 @@ export const FileBrowser: React.FC<{
             closeLoadingNotification(key);
             addNotification(
                 NotificationTypeEnum.Success,
-                t("fileBrowser.upload.migrationFailed"),
-                t("fileBrowser.upload.migrationFailedDetails", { ruid: ruid }) + error,
+                t("fileBrowser.messages.migrationFailed"),
+                t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }) + error,
                 t("fileBrowser.title")
             );
         }
