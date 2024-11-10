@@ -20,7 +20,7 @@ import {
     Divider,
     Form,
     Empty,
-    List,
+    Tag,
 } from "antd";
 import {
     CloseOutlined,
@@ -1493,16 +1493,27 @@ export const FileBrowser: React.FC<{
             width: 10,
             render: (picture: string, record: any) =>
                 record && record.tonieInfo?.picture ? (
-                    <img
-                        key={`picture-${record.name}`}
-                        src={record.tonieInfo.picture}
-                        alt={t("tonies.content.toniePicture")}
-                        onClick={() => showInformationModal(record)}
-                        style={{
-                            width: 100,
-                            cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
-                        }}
-                    />
+                    <>
+                        <img
+                            key={`picture-${record.name}`}
+                            src={record.tonieInfo.picture}
+                            alt={t("tonies.content.toniePicture")}
+                            onClick={() => showInformationModal(record)}
+                            style={{
+                                width: 100,
+                                cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
+                            }}
+                        />
+                        {false /* to be replaced by hiddenflag*/ ? (
+                            <div style={{ textAlign: "center" }}>
+                                <Tag bordered={false} color="warning">
+                                    {t("fileBrowser.hidden")}
+                                </Tag>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                    </>
                 ) : (
                     <></>
                 ),

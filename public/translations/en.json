@@ -141,6 +141,7 @@
         }
     ],
     "fileBrowser": {
+        "hidden": "Hidden",
         "actions": "Actions",
         "attention": "Please note!",
         "cancel": "Cancel",
@@ -513,7 +514,7 @@
             "confirmSelectedNotifications": "Confirm selected notifications",
             "confirmed": "confirmed",
             "endDate": "End Date",
-            "error": "Failure",
+            "error": "Error",
             "filterBy": "Filter by",
             "info": "Info",
             "navigationTitle": "Notifications",

@@ -141,6 +141,7 @@
         }
     ],
     "fileBrowser": {
+        "hidden": "Caché",
         "actions": "Actions",
         "attention": "Veuillez noter !",
         "cancel": "Annuler",
