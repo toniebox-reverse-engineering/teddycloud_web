@@ -4,7 +4,7 @@ import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../../../i18n";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Collapse, Divider, Form, Input, message, Progress, Row, Steps, Typography } from "antd";
+import { Alert, Button, Col, Collapse, Divider, Form, Input, Progress, Row, Steps, Typography } from "antd";
 import {
     CodeOutlined,
     DownloadOutlined,
@@ -34,6 +34,7 @@ import AvailableBoxesModal, { connectESP32Explanation } from "../../../../compon
 import DotAnimation from "../../../../components/utils/DotAnimation";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -73,7 +74,7 @@ const { Step } = Steps;
 
 export const ESP32BoxFlashingPage = () => {
     const { t } = useTranslation();
-    const { setFetchCloudStatus } = useTeddyCloud();
+    const { setFetchCloudStatus, addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
     const navigate = useNavigate();
     const currentLanguage = i18n.language;
 
@@ -849,7 +850,12 @@ export const ESP32BoxFlashingPage = () => {
     };
 
     const extractAndStoreCertsFromFlash = async (force?: boolean) => {
-        const hideLoading = message.loading(t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates"), 0);
+        const key = "extractStoreCerts";
+        addLoadingNotification(
+            key,
+            t("tonieboxes.esp32BoxFlashing.processing"),
+            t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates")
+        );
         if (force) {
             setIsOverwriteForceConfirmationModalOpen(false);
         }
@@ -857,45 +863,53 @@ export const ESP32BoxFlashingPage = () => {
             const response = await api.apiPostTeddyCloudRaw(
                 `/api/esp32/extractCerts?filename=${state.filename}` + (force ? "&overwrite=true" : "")
             );
-
+            closeLoadingNotification(key);
             if (response.ok && response.status === 200) {
-                hideLoading();
-                message.success(
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessful", {
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessful"),
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessfulDetails", {
                         file: state.filename,
-                    })
+                    }),
+                    t("tonieboxes.esp32BoxFlashing.title")
                 );
                 setFetchCloudStatus((prev) => !prev);
             } else if (!response.ok && response.status === 409) {
-                hideLoading();
                 const errorMessage = await response.text();
-                message.error(
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed", {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed"),
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails", {
                         file: state.filename,
                     }) +
                         ": " +
-                        errorMessage
+                        errorMessage,
+                    t("tonieboxes.esp32BoxFlashing.title")
                 );
                 setExtractCertificateErrorMessage(errorMessage);
                 setIsOverwriteForceConfirmationModalOpen(true);
             } else {
-                hideLoading();
-                message.error(
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed", {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed"),
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails", {
                         file: state.filename,
                     }) +
                         ": " +
-                        (await response.text())
+                        (await response.text()),
+                    t("tonieboxes.esp32BoxFlashing.title")
                 );
             }
         } catch (err: any) {
-            hideLoading();
-            message.error(
-                t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed", {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed"),
+                t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails", {
                     file: state.filename,
                 }) +
                     ": " +
-                    err
+                    err,
+                t("tonieboxes.esp32BoxFlashing.title")
             );
         }
     };
