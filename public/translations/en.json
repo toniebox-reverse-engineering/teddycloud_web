@@ -509,12 +509,15 @@
         "teddycloudStatusOnline": "Teddycloud server running fine"
     },
     "settings": {
+        "restartTC": "Restarting TeddyCloud",
+        "tryToRestartTC": "Try to restart TeddyCloud",
         "certificates": {
             "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
             "information": "Information",
             "navigationTitle": "Certificates",
             "title": "Certificates",
-            "uploadFailed": "{{filename}} file upload failed. Take a look into the console",
+            "uploadFailed": "Certificate upload failed!",
+            "uploadFailedDetails": "Certificate {{filename}} upload failed. Take a look into the console",
             "uploadHint": "Drag and drop client certificates from your box here",
             "uploadSuccessful": "{{filename}} file uploaded successfully.",
             "uploadText": "Click or drag client certificates to this area to upload"
@@ -1118,7 +1121,8 @@
             "category": "Category",
             "episode": "Episode",
             "episodeHint": "Will be displayed within the Toniecard",
-            "failedToCreate": "Model creation failed: ",
+            "failedToCreate": "Model creation failed!",
+            "failedToCreateDetails": "Model {{series}} [{{model}}] creation failed: ",
             "formfieldTitle": "Title",
             "formfieldTitleHint": "Currently not shown on Toniecard",
             "hash": "Hash",
@@ -1135,6 +1139,7 @@
             "seriesHint": "Will be displayed as the title of the Toniecard",
             "seriesRequired": "The series must be filled.",
             "successfullyCreated": "Model created successful!",
+            "successfullyCreatedDetails": "Model {{series}} [{{model}}] created successful!",
             "title": "Create new Custom Tonie/Tag",
             "track": "Track"
         },

@@ -509,12 +509,15 @@
         "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
+        "restartTC": "TeddyCloud wird neu gestartet",
+        "tryToRestartTC": "Versuche, TeddyCloud neu zu starten",
         "certificates": {
             "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
             "navigationTitle": "Zertifikate",
             "title": "Zertifikate",
-            "uploadFailed": "{{filename}} Upload gescheitert! Bitte schaue einmal in die Konsole!",
+            "uploadFailed": "Zertifikats-Upload fehlgeschlagen!",
+            "uploadFailedDetails": "Der Upload des Zertifikats {{filename}} ist fehlgeschlagen. Bitte schaue einmal in die Konsole",
             "uploadHint": "Ziehe die Client-Zertifikate aus deiner Box hierher",
             "uploadSuccessful": "{{filename}} erfolgreich hochgeladen.",
             "uploadText": "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich"
@@ -1118,7 +1121,8 @@
             "category": "Kategorie",
             "episode": "Episode",
             "episodeHint": "Die Episode wird innerhalb der Toniecard angezeigt",
-            "failedToCreate": "Modellerstellung fehlgeschlagen: ",
+            "failedToCreate": "Modellerstellung fehlgeschlagen!",
+            "failedToCreateDetails": "Modellerstellung {{series}} [{{model}}] fehlgeschlagen: ",
             "formfieldTitle": "Titel",
             "formfieldTitleHint": "Aktuell keine Ausgabe auf Toniecard",
             "hash": "Hash",
@@ -1134,7 +1138,8 @@
             "series": "Serie",
             "seriesHint": "Die Serie wird als Titel der Toniecard angezeigt",
             "seriesRequired": "Die Serie muss ausgefüllt werden.",
-            "successfullyCreated": "Modell erfolgreich erstellt",
+            "successfullyCreated": "Modell erfolgreich erstellt!",
+            "successfullyCreatedDetails": "Modell {{series}} [{{model}}] erfolgreich erstellt",
             "title": "Neuen Custom Tonie/Tag anlegen",
             "track": "Track"
         },

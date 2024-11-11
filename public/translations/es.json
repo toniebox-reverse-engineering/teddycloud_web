@@ -509,12 +509,15 @@
         "teddycloudStatusOnline": "Servidor de Teddycloud funcionando correctamente"
     },
     "settings": {
+        "restartTC": "Reiniciando TeddyCloud",
+        "tryToRestartTC": "Intentando reiniciar TeddyCloud",
         "certificates": {
             "hint": "Estos son los certificados utilizados para el uso general de TeddyCloud. Se pueden usar certificados específicos para tus Tonieboxes. Para cambiarlos, ve a ",
             "information": "Información",
             "navigationTitle": "Certificados",
             "title": "Certificados",
-            "uploadFailed": "Error al subir el archivo {{filename}}. Consulta la consola",
+            "uploadFailed": "¡Error al cargar el certificado!",
+            "uploadFailedDetails": "La carga del certificado {{filename}} ha fallado. Consulta la consola",
             "uploadHint": "Arrastra y suelta los certificados del cliente desde tu caja aquí",
             "uploadSuccessful": "Archivo {{filename}} subido con éxito.",
             "uploadText": "Haz clic o arrastra los certificados del cliente a esta área para subir"
@@ -1118,7 +1121,8 @@
             "category": "Categoría",
             "episode": "Episodio",
             "episodeHint": "Se mostrará en la tarjeta de Tonie",
-            "failedToCreate": "Error al crear modelo: ",
+            "failedToCreate": "¡Error al crear modelo!",
+            "failedToCreateDetails": "Error al crear modelo {{series}} [{{model}}]: ",
             "formfieldTitle": "Título",
             "formfieldTitleHint": "Actualmente no se muestra en la tarjeta de Tonie",
             "hash": "Hash",
@@ -1135,6 +1139,7 @@
             "seriesHint": "Se mostrará como el título de la tarjeta de Tonie",
             "seriesRequired": "La serie debe ser completada.",
             "successfullyCreated": "¡Modelo creado con éxito!",
+            "successfullyCreatedDetails": "¡Modelo {{series}} [{{model}}] creado con éxito!",
             "title": "Crear nuevo Tonie/Etiqueta personalizado",
             "track": "Pista"
         },

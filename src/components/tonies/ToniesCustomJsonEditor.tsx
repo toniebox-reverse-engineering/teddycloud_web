@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Form, Input, Button, Col, Row, message, Tooltip, Alert } from "antd";
+import { Modal, Form, Input, Button, Col, Row, Tooltip, Alert } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -8,6 +8,7 @@ import { TonieCardProps } from "../../types/tonieTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import CodeSnippet from "../utils/CodeSnippet";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -31,6 +32,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     hash,
 }) => {
     const { t } = useTranslation();
+    const { addNotification } = useTeddyCloud();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -101,10 +103,20 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             }
 
             resetForm();
-            message.success(t("tonies.addNewCustomTonieModal.successfullyCreated"));
+            addNotification(
+                NotificationTypeEnum.Success,
+                t("tonies.addNewCustomTonieModal.successfullyCreated"),
+                t("tonies.addNewCustomTonieModal.successfullyCreatedDetails", { series: values.series, model: values.model }),
+                t("tonies.addToniesCustomJsonEntry")
+            );
             onClose();
         } catch (error) {
-            message.error(t("tonies.addNewCustomTonieModal.failedToCreate") + error);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonies.addNewCustomTonieModal.failedToCreate"),
+                t("tonies.addNewCustomTonieModal.failedToCreateDetails", { series: values.series, model: values.model }) + error,
+                t("tonies.addToniesCustomJsonEntry")
+            );
         }
         */
     };

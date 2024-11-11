@@ -509,12 +509,15 @@
         "teddycloudStatusOnline": "Le serveur TeddyCloud fonctionne correctement"
     },
     "settings": {
+        "restartTC": "Redémarrage de TeddyCloud",
+        "tryToRestartTC": "Tentative de redémarrer TeddyCloud",
         "certificates": {
             "hint": "Voici les certificats utilisés pour l'utilisation générale de TeddyCloud. Des certificats spécifiques peuvent être utilisés pour vos Tonieboxes. Pour les changer, allez à ",
             "information": "Informations",
             "navigationTitle": "Certificats",
             "title": "Certificats",
-            "uploadFailed": "Échec du téléchargement du fichier {{filename}}. Consultez la console",
+            "uploadFailed": "Échec du téléchargement du certificat !",
+            "uploadFailedDetails": "Le téléchargement du certificat {{filename}} a échoué. Consultez la console",
             "uploadHint": "Glissez-déposez les certificats clients de votre box ici",
             "uploadSuccessful": "Fichier {{filename}} téléchargé avec succès.",
             "uploadText": "Cliquez ou faites glisser les certificats clients dans cette zone pour les télécharger"
@@ -1118,7 +1121,8 @@
             "category": "Catégorie",
             "episode": "Épisode",
             "episodeHint": "Sera affiché sur la Toniecard",
-            "failedToCreate": "Échec de la création du modèle: ",
+            "failedToCreate": "Échec de la création du modèle!",
+            "failedToCreateDetails": "Échec de la création du modèle {{series}} [{{model}}]: ",
             "formfieldTitle": "Titre",
             "formfieldTitleHint": "Actuellement pas de sortie sur Toniecard",
             "hash": "Hash",
@@ -1135,6 +1139,7 @@
             "seriesHint": "Sera affiché comme titre de la Toniecard",
             "seriesRequired": "La série doit être remplie.",
             "successfullyCreated": "Modèle créé avec succès!",
+            "successfullyCreatedDetails": "Modèle {{series}} [{{model}}] créé avec succès!",
             "title": "Créer un nouveau Tonie/Tag personnalisé",
             "track": "Piste"
         },
