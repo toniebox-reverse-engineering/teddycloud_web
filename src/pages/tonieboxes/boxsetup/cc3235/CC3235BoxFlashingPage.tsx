@@ -398,7 +398,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
     const contentStep1 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
-            {certificateIntro()}
+            {certificateIntro(false)}
             <h4>CC3235</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesCC3235")}</Paragraph>
             <Tabs

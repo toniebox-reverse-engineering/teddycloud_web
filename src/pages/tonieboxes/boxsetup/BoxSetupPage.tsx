@@ -18,7 +18,7 @@ import BreadcrumbWrapper, {
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
-import { handleC2DerDownload } from "../../../utils/helpers";
+import { handleTCCADerDownload } from "../../../utils/helpers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -59,8 +59,12 @@ export const BoxSetupPage = () => {
                     <Paragraph>{t("tonieboxes.boxSetup.setupTeddyCloudText")}</Paragraph>
                     <ul>
                         <li>
-                            <Link to="#" onClick={handleC2DerDownload}>
-                                {t("tonieboxes.downloadC2DerFile")}
+                            <Link to="#" onClick={() => handleTCCADerDownload(true)}>
+                                {t("tonieboxes.downloadC2DerFile")} (CC3200)
+                            </Link>{" "}
+                            |{" "}
+                            <Link to="#" onClick={() => handleTCCADerDownload(false)}>
+                                {t("tonieboxes.downloadCADerFile")} (CC3235, ESP32)
                             </Link>
                         </li>
                     </ul>

@@ -12,7 +12,7 @@ import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
 
 import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
 import CodeSnippet from "../../utils/CodeSnippet";
-import { handleC2DerDownload } from "../../../utils/helpers";
+import { handleTCCADerDownload } from "../../../utils/helpers";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -122,13 +122,15 @@ J103 Pinout`}
     );
 }
 
-export function certificateIntro(): JSX.Element {
+export function certificateIntro(asC2Der: boolean): JSX.Element {
     const { t } = useTranslation();
     return (
         <>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.certificatesIntro")}</Paragraph>
             <Paragraph>
-                <Button onClick={handleC2DerDownload}>{t("tonieboxes.downloadC2DerFile")}</Button>
+                <Button onClick={() => handleTCCADerDownload(asC2Der)}>
+                    {asC2Der ? t("tonieboxes.downloadC2DerFile") : t("tonieboxes.downloadCADerFile")}
+                </Button>
             </Paragraph>
             <h4>{t("tonieboxes.boxFlashingCommon.dumpCertificates")}</h4>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.dumpCertificatesIntro1")}</Paragraph>

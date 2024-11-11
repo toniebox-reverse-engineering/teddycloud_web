@@ -86,7 +86,7 @@ export const ESP32LegacyPage = () => {
     const contentStep1 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
-            {certificateIntro()}
+            {certificateIntro(false)}
             <Paragraph>
                 <CodeSnippet
                     language="shell"

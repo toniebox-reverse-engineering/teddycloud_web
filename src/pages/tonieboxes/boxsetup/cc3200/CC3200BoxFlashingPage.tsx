@@ -106,7 +106,7 @@ export const CC3200BoxFlashingPage = () => {
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
-            {certificateIntro()}
+            {certificateIntro(true)}
             <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/" target="_blank">
                 {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
             </Link>

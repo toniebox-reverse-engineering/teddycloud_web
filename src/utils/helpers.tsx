@@ -29,7 +29,7 @@ export function generateUUID() {
     );
 }
 
-export const handleC2DerDownload = () => {
-    const fileUrl = `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}/api/getFile/c2.der`;
-    window.location.href = fileUrl; // This will prompt the download
+export const handleTCCADerDownload = (asC2Der: boolean) => {
+    const fileUrl = `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}/api/getFile/${asC2Der ? "c2" : "ca"}.der`;
+    window.location.href = fileUrl;
 };
