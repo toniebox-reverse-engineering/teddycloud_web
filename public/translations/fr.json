@@ -877,6 +877,7 @@
             "flashCAreplacementLink": "Trouver les instructions de flashage ici",
             "flashCAreplacementText1": "Remplace la CA originale dans ton dump flash par la CA de remplacement et reflash ta boîte.",
             "flashCAreplacementText2": "Si la boîte ne se connecte pas du tout (mot-clé: chouette), tu peux essayer l'ancien gencerts.sh pour générer de nouveaux certificats et reflasher la boîte.",
+            "flashCAreplacementText3": "Attention : Le fichier ca.der mentionné dans l'extrait de code doit être le CA de remplacement de TeddyCloud!",
             "flashCollapse": {
                 "cc3235flash": "Mémoire flash avec broches",
                 "cc3235flashWithSMDGrippers": "Mémoire flash avec pinces SMD connectées",

@@ -877,6 +877,7 @@
             "flashCAreplacementLink": "Anweisungen zum Flashen findest du hier",
             "flashCAreplacementText1": "Ersetze die originale CA in deinem Flash-Dump durch die Ersatz-CA und flashe sie zurück auf deine Box.",
             "flashCAreplacementText2": "Falls die Box gar keine Verbindung herstellt (Codewort: Eule), kannst du versuchen, mit dem alten gencerts.sh neue Zertifikate zu generieren und die Box neu zu flashen.",
+            "flashCAreplacementText3": "Achtung: Die im Codeausschnitt erwähnte ca.der-Datei muss die TeddyCloud-Ersatz-CA sein!",
             "flashCollapse": {
                 "cc3235flash": "Flash-Speicher mit Pins",
                 "cc3235flashWithSMDGrippers": "Flash-Speicher mit angeschlossenen SMD-Klemmen",

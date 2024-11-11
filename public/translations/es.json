@@ -877,6 +877,7 @@
             "flashCAreplacementLink": "Encuentra las instrucciones para flashear aquí",
             "flashCAreplacementText1": "Reemplaza la CA original en tu volcado de flash con la CA de reemplazo y reflashea tu caja.",
             "flashCAreplacementText2": "Si la caja no se conecta en absoluto (palabra clave: búho), puedes intentar usar el antiguo gencerts.sh para generar nuevos certificados y reflashear la caja.",
+            "flashCAreplacementText3": "Atención: El archivo ca.der mencionado en el fragmento de código debe ser el CA de reemplazo de TeddyCloud!",
             "flashCollapse": {
                 "cc3235flash": "Memoria flash con pines",
                 "cc3235flashWithSMDGrippers": "Memoria flash con pinzas SMD conectadas",

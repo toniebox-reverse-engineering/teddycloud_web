@@ -877,6 +877,7 @@
             "flashCAreplacementLink": "Find flashing instructions here",
             "flashCAreplacementText1": "Replace the original CA within your flash dump with the replacement CA and reflash it to your box.",
             "flashCAreplacementText2": "If the box does not connect at all (codeword owl), you may try the old gencerts.sh to generate new certificates and reflash the box.",
+            "flashCAreplacementText3": "Attention: The ca.der file referenced in the code snippet must be the TeddyCloud Replacement CA!",
             "flashCollapse": {
                 "cc3235flash": "Flash memory with pins",
                 "cc3235flashWithSMDGrippers": "Flash memory with connected SMD grippers",
