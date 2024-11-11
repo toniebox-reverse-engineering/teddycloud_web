@@ -141,8 +141,6 @@
         }
     ],
     "fileBrowser": {
-        "title": "Filebrowser",
-        "hidden": "Hidden",
         "actions": "Actions",
         "attention": "Please note!",
         "cancel": "Cancel",
@@ -153,10 +151,10 @@
             "cancel": "Cancel",
             "create": "Create",
             "createDirectory": "Create New Directory",
-            "directoryCreated": "New directory has been created!",
-            "directoryCreatedDetails": "New directory \"{{directory}}\" has been created!",
             "directoryCreateFailed": "Create directory failed!",
             "directoryCreateFailedDetails": "Create directory \"{{directory}}\" failed: ",
+            "directoryCreated": "New directory has been created!",
+            "directoryCreatedDetails": "New directory \"{{directory}}\" has been created!",
             "inDirectory": "in directory ",
             "modalTitle": "Create New Directory",
             "parentPath": "Parent directory:",
@@ -170,16 +168,17 @@
             "cancel": "Cancel",
             "encode": "Encode",
             "encodeFiles": "Encode selected files into a taf file. Only the following file types will be considered: ",
+            "encoding": "Encoding",
             "encodingFailed": "Encoding failed!",
+            "encodingFailedDetails": "Encoded files \"{{file}}\" failed: ",
             "encodingInProgress": "Files are being encoded...",
             "encodingSuccessful": "Files encoded successfully!",
-            "modalTitle": "Encode Audio Files",
-            "noSupportedFiletypesChoosen": "No supported file types chosen. The following file types are supported: ",
             "encodingSuccessfulDetails": "Files encoded successfully into \"{{file}}\"",
-            "encodingFailedDetails": "Encoded files \"{{file}}\" failed: ",
-            "encoding": "Encoding"
+            "modalTitle": "Encode Audio Files",
+            "noSupportedFiletypesChoosen": "No supported file types chosen. The following file types are supported: "
         },
         "episode": "Episode",
+        "fileTypesWarning": "Select only supported file types!",
         "filter": "Filter within current folder",
         "help": {
             "actionItems": {
@@ -263,36 +262,38 @@
             "showHelp": "Help",
             "title": "Help"
         },
+        "hidden": "Hidden",
         "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files",
+        "maxSelectedRowsWarning": "Too many files selected!",
         "messages": {
+            "deleteFailed": "Deletion failed",
             "deleteFailedDetails": "Deletion of file \"{{file}}\" failed",
+            "deleteSuccessful": "Deletion successful!",
             "deleteSuccessfulDetails": "Deleted file \"{{file}}\" successful!",
             "deleting": "Deleting...",
-            "migrationFailed": "Migration failed",
-            "migrationOngoing": "Migrating...",
-            "migrationSuccessful": "Migration successful!",
-            "moving": "Moving...",
-            "movingFailed": "Moving failed",
-            "movingSuccessful": "Moved file successfully!",
-            "renaming": "Renaming...",
-            "renamingFailed": "Renaming failed",
-            "renamingSuccessful": "Renamed file successfully!",
+            "deletingDetails": "Deleting file \"{{file}}\"...",
             "errorFetchingDirContent": "Loading dir content failed",
             "errorFetchingDirContentDetails": "Failed to load dir content of \"{{path}}\": ",
-            "migrationOngoingDetails": "Migration {{ruid}} in progress...",
-            "migrationSuccessfulDetails": "Migration of {{ruid}} successful!",
+            "migrationFailed": "Migration failed",
             "migrationFailedDetails": "Migration of {{ruid}} failed: ",
+            "migrationOngoing": "Migrating...",
+            "migrationOngoingDetails": "Migration {{ruid}} in progress...",
+            "migrationSuccessful": "Migration successful!",
+            "migrationSuccessfulDetails": "Migration of {{ruid}} successful!",
+            "moving": "Moving...",
+            "movingDetails": "Moving file \"{{file}}\"...",
+            "movingFailed": "Moving failed",
+            "movingFailedDetails": "Moving of file \"{{fileSource}}\" to \"{{fileTarget}}\" failed: ",
+            "movingSuccessful": "Moved file successfully!",
+            "movingSuccessfulDetails": "Moved file \"{{fileSource}}\" to \"{{fileTarget}}\" successfully!",
             "noRowsSelected": "No rows selected",
             "noRowsSelectedForDeletion": "No rows selected for deletion",
             "noRowsSelectedForMoving": "No rows selected for moving",
-            "deleteSuccessful": "Deletion successful!",
-            "deleteFailed": "Deletion failed",
-            "deletingDetails": "Deleting file \"{{file}}\"...",
-            "movingDetails": "Moving file \"{{file}}\"...",
+            "renaming": "Renaming...",
             "renamingDetails": "Renaming file \"{{file}}\"...",
-            "movingFailedDetails": "Moving of file \"{{fileSource}}\" to \"{{fileTarget}}\" failed: ",
-            "movingSuccessfulDetails": "Moved file \"{{fileSource}}\" to \"{{fileTarget}}\" successfully!",
+            "renamingFailed": "Renaming failed",
             "renamingFailedDetails": "Renaming of file \"{{fileSource}}\" to \"{{fileTarget}}\" failed: ",
+            "renamingSuccessful": "Renamed file successfully!",
             "renamingSuccessfulDetails": "Renamed file \"{{fileSource}}\" to \"{{fileTarget}}\" successfully!"
         },
         "migrateContentToLib": "Migrate TAF to library (by/audioId/)",
@@ -329,6 +330,7 @@
             "copy": "(WIP - not implemented yet) Duplicate Tonie Audio Playlist",
             "edit": "(WIP - not implemented yet) Edit Tonie Audio Playlist"
         },
+        "title": "Filebrowser",
         "upload": {
             "cancel": "Cancel",
             "hideUploadFilesDragNDrop": "Hide file upload",
@@ -340,12 +342,12 @@
             "uploadHint": "Drag files here to upload",
             "uploadInProgress": "Uploading \"{{file}}\"...",
             "uploadSuccessful": "Files uploaded successfully.",
+            "uploadSuccessfulDetails": "All files were uploaded successfully.",
             "uploadSuccessfulForFile": "File \"{{file}}\" uploaded successfully.",
             "uploadText": "Click or drag files to this area to upload",
-            "uploading": "Uploading...",
             "uploadedFile": "File uploaded!",
             "uploadedFileFailed": "File upload failed!",
-            "uploadSuccessfulDetails": "All files were uploaded successfully."
+            "uploading": "Uploading..."
         }
     },
     "footer": {
@@ -507,10 +509,6 @@
         "teddycloudStatusOnline": "Teddycloud server running fine"
     },
     "settings": {
-        "errorSettingSettingsLevel": "Error setting Settings level",
-        "errorSettingSettingsLevelDetails": "Could not set new Settings level:",
-        "errorWhileSavingConfig": "Saving config to file failed",
-        "errorWhileSavingConfigDetails": "Error while saving config to file: ",
         "certificates": {
             "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
             "information": "Information",
@@ -521,6 +519,10 @@
             "uploadSuccessful": "{{filename}} file uploaded successfully.",
             "uploadText": "Click or drag client certificates to this area to upload"
         },
+        "errorSettingSettingsLevel": "Error setting Settings level",
+        "errorSettingSettingsLevelDetails": "Could not set new Settings level:",
+        "errorWhileSavingConfig": "Saving config to file failed",
+        "errorWhileSavingConfigDetails": "Error while saving config to file: ",
         "general": {
             "navigationTitle": "General",
             "title": "General settings"
@@ -583,7 +585,6 @@
         "failedToFetchSearchResultsDetails": "Failed to fetch models search results: "
     },
     "tonieboxes": {
-        "errorFetchingModels": "Error fetching Tonieboxes Models",
         "accessApiDisabled": "Access to TeddyCloud APIs disabled.",
         "accessApiEnabled": "Access to TeddyCloud APIs enabled.",
         "availableBoxModal": {
@@ -934,15 +935,16 @@
             "name": "Name",
             "placeholderSearchForAModel": "Select color variant of your Toniebox",
             "successOnModelChange": "Model change saved sucessfully",
-            "successOnNameChange": "Name change saved sucessfully",
-            "unsetBoxName": "Model unknown/not set",
             "successOnModelChangeDetails": "New model \"{{model}}\"of the Toniebox {{mac}} was saved sucessfully.",
-            "successOnNameChangeDetails": "New name \"{{name}}\"of the Toniebox {{mac}} was saved sucessfully."
+            "successOnNameChange": "Name change saved sucessfully",
+            "successOnNameChangeDetails": "New name \"{{name}}\"of the Toniebox {{mac}} was saved sucessfully.",
+            "unsetBoxName": "Model unknown/not set"
         },
         "editTonieboxSettingsModal": {
             "editTonieboxSettings": "Edit settings for Toniebox \"{{name}}\"",
             "editTonieboxSettingsLabel": "Settings"
         },
+        "errorFetchingModels": "Error fetching Tonieboxes Models",
         "esp32BoxFlashing": {
             "attention": "Attention",
             "browserNotSupported": "The integrated ESP32 Box flashing functionality can only be used with browsers that support the Web Serial API. Unfortunately, your current browser does not support this feature. Please use a browser that supports the Web Serial API, such as Chrome or Edge.",

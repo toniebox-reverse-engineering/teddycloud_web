@@ -141,8 +141,6 @@
         }
     ],
     "fileBrowser": {
-        "title": "Explorador de archivos",
-        "hidden": "Oculto",
         "actions": "Acciones",
         "attention": "¡Atención!",
         "cancel": "Cancelar",
@@ -153,10 +151,10 @@
             "cancel": "Cancelar",
             "create": "Crear",
             "createDirectory": "Crear nuevo directorio",
-            "directoryCreated": "¡Nuevo directorio creado!",
-            "directoryCreatedDetails": "Nuevo directorio \"{{directory}}\" ha sido creado!",
             "directoryCreateFailed": "¡Error al crear el directorio!",
             "directoryCreateFailedDetails": "Error al crear el directorio \"{{directory}}\": ",
+            "directoryCreated": "¡Nuevo directorio creado!",
+            "directoryCreatedDetails": "Nuevo directorio \"{{directory}}\" ha sido creado!",
             "inDirectory": "en el directorio",
             "modalTitle": "Crear nuevo directorio",
             "parentPath": "Directorio principal:",
@@ -170,16 +168,17 @@
             "cancel": "Cancelar",
             "encode": "Codificar",
             "encodeFiles": "Codificar los archivos seleccionados en un archivo taf. Solo se considerarán los siguientes tipos de archivos: ",
+            "encoding": "Codificación",
             "encodingFailed": "¡Falló la codificación!",
+            "encodingFailedDetails": "Error al codificar los archivos \"{{file}}\": ",
             "encodingInProgress": "Codificando archivos...",
             "encodingSuccessful": "¡Archivos codificados con éxito!",
-            "modalTitle": "Codificar archivos de audio",
-            "noSupportedFiletypesChoosen": "No se eligieron tipos de archivos compatibles. Se admiten los siguientes tipos de archivos: ",
             "encodingSuccessfulDetails": "Archivos codificados exitosamente en \"{{file}}\"",
-            "encodingFailedDetails": "Error al codificar los archivos \"{{file}}\": ",
-            "encoding": "Codificación"
+            "modalTitle": "Codificar archivos de audio",
+            "noSupportedFiletypesChoosen": "No se eligieron tipos de archivos compatibles. Se admiten los siguientes tipos de archivos: "
         },
         "episode": "Episodio",
+        "fileTypesWarning": "¡Selecciona solo tipos de archivos compatibles!",
         "filter": "Filtrar dentro de la carpeta actual",
         "help": {
             "actionItems": {
@@ -263,36 +262,38 @@
             "showHelp": "Ayuda",
             "title": "Ayuda"
         },
+        "hidden": "Oculto",
         "maxSelectedRows": "Solo puedes seleccionar hasta {{maxSelectedRows}} archivos",
+        "maxSelectedRowsWarning": "¡Demasiados archivos seleccionados!",
         "messages": {
+            "deleteFailed": "Eliminación fallida",
             "deleteFailedDetails": "Error al eliminar el archivo \"{{file}}\"",
+            "deleteSuccessful": "¡Eliminación exitosa!",
             "deleteSuccessfulDetails": "Archivo \"{{file}}\" eliminado con éxito!",
             "deleting": "Eliminando...",
-            "migrationFailed": "Migración fallida",
-            "migrationOngoing": "Migrando...",
-            "migrationSuccessful": "¡Migración exitosa!",
-            "moving": "Moviendo...",
-            "movingFailed": "Error al mover",
-            "movingSuccessful": "¡Archivo movido con éxito!",
-            "renaming": "Renombrando...",
-            "renamingFailed": "Error al renombrar",
-            "renamingSuccessful": "¡Archivo renombrado con éxito!",
+            "deletingDetails": "Eliminando archivo \"{{file}}\"...",
             "errorFetchingDirContent": "Error al cargar el contenido del directorio",
             "errorFetchingDirContentDetails": "Error al cargar el contenido del directorio \"{{path}}\": ",
-            "migrationOngoingDetails": "Migración {{ruid}} en progreso...",
-            "migrationSuccessfulDetails": "Migración de {{ruid}} exitosa!",
+            "migrationFailed": "Migración fallida",
             "migrationFailedDetails": "Error en la migración de {{ruid}}: ",
+            "migrationOngoing": "Migrando...",
+            "migrationOngoingDetails": "Migración {{ruid}} en progreso...",
+            "migrationSuccessful": "¡Migración exitosa!",
+            "migrationSuccessfulDetails": "Migración de {{ruid}} exitosa!",
+            "moving": "Moviendo...",
+            "movingDetails": "Moviendo archivo \"{{file}}\"...",
+            "movingFailed": "Error al mover",
+            "movingFailedDetails": "Error al mover el archivo \"{{fileSource}}\" a \"{{fileTarget}}\": ",
+            "movingSuccessful": "¡Archivo movido con éxito!",
+            "movingSuccessfulDetails": "Archivo \"{{fileSource}}\" movido a \"{{fileTarget}}\" con éxito!",
             "noRowsSelected": "No se seleccionaron filas",
             "noRowsSelectedForDeletion": "No se seleccionaron filas para eliminar",
             "noRowsSelectedForMoving": "No se seleccionaron filas para mover",
-            "deleteSuccessful": "¡Eliminación exitosa!",
-            "deleteFailed": "Eliminación fallida",
-            "deletingDetails": "Eliminando archivo \"{{file}}\"...",
-            "movingDetails": "Moviendo archivo \"{{file}}\"...",
+            "renaming": "Renombrando...",
             "renamingDetails": "Renombrando archivo \"{{file}}\"...",
-            "movingFailedDetails": "Error al mover el archivo \"{{fileSource}}\" a \"{{fileTarget}}\": ",
-            "movingSuccessfulDetails": "Archivo \"{{fileSource}}\" movido a \"{{fileTarget}}\" con éxito!",
+            "renamingFailed": "Error al renombrar",
             "renamingFailedDetails": "Error al renombrar el archivo \"{{fileSource}}\" a \"{{fileTarget}}\": ",
+            "renamingSuccessful": "¡Archivo renombrado con éxito!",
             "renamingSuccessfulDetails": "Archivo \"{{fileSource}}\" renombrado a \"{{fileTarget}}\" con éxito!"
         },
         "migrateContentToLib": "Migrar TAF a la biblioteca (por/audioId/)",
@@ -329,6 +330,7 @@
             "copy": "(WIP - aún no implementado) Duplicar lista de reproducción de Tonie",
             "edit": "(WIP - aún no implementado) Editar lista de reproducción de Tonie"
         },
+        "title": "Explorador de archivos",
         "upload": {
             "cancel": "Cancelar",
             "hideUploadFilesDragNDrop": "Ocultar carga de archivos",
@@ -340,12 +342,12 @@
             "uploadHint": "Arrastra archivos aquí para subir",
             "uploadInProgress": "Subiendo \"{{file}}\"...",
             "uploadSuccessful": "Archivos subidos con éxito.",
+            "uploadSuccessfulDetails": "Todos los archivos se han subido con éxito.",
             "uploadSuccessfulForFile": "Archivo \"{{file}}\" subido con éxito.",
             "uploadText": "Haz clic o arrastra archivos a esta área para subir",
-            "uploading": "Subiendo...",
             "uploadedFile": "¡Archivo subido!",
             "uploadedFileFailed": "¡Error al subir el archivo!",
-            "uploadSuccessfulDetails": "Todos los archivos se han subido con éxito."
+            "uploading": "Subiendo..."
         }
     },
     "footer": {
@@ -507,10 +509,6 @@
         "teddycloudStatusOnline": "Servidor de Teddycloud funcionando correctamente"
     },
     "settings": {
-        "errorSettingSettingsLevel": "Error al configurar el nivel de configuración",
-        "errorSettingSettingsLevelDetails": "No se pudo establecer el nuevo nivel de configuración:",
-        "errorWhileSavingConfig": "Error al guardar la configuración en el archivo",
-        "errorWhileSavingConfigDetails": "Error al guardar la configuración en el archivo: ",
         "certificates": {
             "hint": "Estos son los certificados utilizados para el uso general de TeddyCloud. Se pueden usar certificados específicos para tus Tonieboxes. Para cambiarlos, ve a ",
             "information": "Información",
@@ -521,6 +519,10 @@
             "uploadSuccessful": "Archivo {{filename}} subido con éxito.",
             "uploadText": "Haz clic o arrastra los certificados del cliente a esta área para subir"
         },
+        "errorSettingSettingsLevel": "Error al configurar el nivel de configuración",
+        "errorSettingSettingsLevelDetails": "No se pudo establecer el nuevo nivel de configuración:",
+        "errorWhileSavingConfig": "Error al guardar la configuración en el archivo",
+        "errorWhileSavingConfigDetails": "Error al guardar la configuración en el archivo: ",
         "general": {
             "navigationTitle": "General",
             "title": "Configuración general"
@@ -583,7 +585,6 @@
         "failedToFetchSearchResultsDetails": "No se pudieron obtener los resultados de búsqueda de modelos: "
     },
     "tonieboxes": {
-        "errorFetchingModels": "Error al obtener los modelos de Tonieboxes",
         "accessApiDisabled": "Acceso a las API de TeddyCloud deshabilitado.",
         "accessApiEnabled": "Acceso a las API de TeddyCloud habilitado.",
         "availableBoxModal": {
@@ -934,15 +935,16 @@
             "name": "Nombre",
             "placeholderSearchForAModel": "Selecciona la variante de color de tu Toniebox",
             "successOnModelChange": "Cambio de modelo guardado exitosamente",
-            "successOnNameChange": "Cambio de nombre guardado exitosamente",
-            "unsetBoxName": "Modelo desconocido/no configurado",
             "successOnModelChangeDetails": "El nuevo modelo \"{{model}}\" de la Toniebox {{mac}} se guardó exitosamente.",
-            "successOnNameChangeDetails": "El nuevo nombre \"{{name}}\" de la Toniebox {{mac}} se guardó exitosamente."
+            "successOnNameChange": "Cambio de nombre guardado exitosamente",
+            "successOnNameChangeDetails": "El nuevo nombre \"{{name}}\" de la Toniebox {{mac}} se guardó exitosamente.",
+            "unsetBoxName": "Modelo desconocido/no configurado"
         },
         "editTonieboxSettingsModal": {
             "editTonieboxSettings": "Editar configuración de la Toniebox \"{{name}}\"",
             "editTonieboxSettingsLabel": "Configuración"
         },
+        "errorFetchingModels": "Error al obtener los modelos de Tonieboxes",
         "esp32BoxFlashing": {
             "attention": "Atención",
             "browserNotSupported": "La funcionalidad de flasheo integrado de la caja ESP32 solo se puede utilizar con navegadores que admiten la API Web Serial. Desafortunadamente, tu navegador actual no admite esta función. Por favor, utiliza un navegador que soporte la API Web Serial, como Chrome o Edge.",

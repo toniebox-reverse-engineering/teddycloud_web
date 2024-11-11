@@ -141,8 +141,6 @@
         }
     ],
     "fileBrowser": {
-        "title": "Dateibrowser",
-        "hidden": "Versteckt",
         "actions": "Aktionen",
         "attention": "Bitte beachte!",
         "cancel": "Cancel",
@@ -153,10 +151,10 @@
             "cancel": "Abbrechen",
             "create": "Anlegen",
             "createDirectory": "Neuen Ordner anlegen",
-            "directoryCreated": "Neuer Ordner wurde angelegt!",
-            "directoryCreatedDetails": "Neues Verzeichnis \"{{directory}}\" wurde erstellt!",
             "directoryCreateFailed": "Verzeichniserstellung fehlgeschlagen!",
             "directoryCreateFailedDetails": "Erstellen des Verzeichnisses \"{{directory}}\" fehlgeschlagen: ",
+            "directoryCreated": "Neuer Ordner wurde angelegt!",
+            "directoryCreatedDetails": "Neues Verzeichnis \"{{directory}}\" wurde erstellt!",
             "inDirectory": "im Pfad ",
             "modalTitle": "Neuen Ordner anlegen",
             "parentPath": "übergeordnete(r) Ordner:",
@@ -170,16 +168,17 @@
             "cancel": "Abbrechen",
             "encode": "Konvertiere",
             "encodeFiles": "Markierte Dateien in eine taf-Datei konvertieren. Nur die folgenden Dateitypen werden berücksichtigt: ",
+            "encoding": "Kodierung",
             "encodingFailed": "Konvertierung fehlgeschlagen!",
+            "encodingFailedDetails": "Kodierung der Dateien \"{{file}}\" fehlgeschlagen: ",
             "encodingInProgress": "Dateien werden konvertiert...",
             "encodingSuccessful": "Dateien erfolgreich konvertiert!",
-            "modalTitle": "Audiodateien konvertieren",
-            "noSupportedFiletypesChoosen": "Keine unterstützte Dateien ausgewählt. Es werden folgende Dateitypen unterstützt: ",
             "encodingSuccessfulDetails": "Dateien erfolgreich in \"{{file}}\" kodiert",
-            "encodingFailedDetails": "Kodierung der Dateien \"{{file}}\" fehlgeschlagen: ",
-            "encoding": "Kodierung"
+            "modalTitle": "Audiodateien konvertieren",
+            "noSupportedFiletypesChoosen": "Keine unterstützte Dateien ausgewählt. Es werden folgende Dateitypen unterstützt: "
         },
         "episode": "Episode",
+        "fileTypesWarning": "Wähle nur unterstützte Dateitypen aus!",
         "filter": "Filter im aktuellen Ordner",
         "help": {
             "actionItems": {
@@ -263,36 +262,38 @@
             "showHelp": "Hilfe",
             "title": "Hilfe"
         },
+        "hidden": "Versteckt",
         "maxSelectedRows": "Du kannst nur maximal {{maxSelectedRows}} Dateien auswählen",
+        "maxSelectedRowsWarning": "Zu viele Dateien ausgewählt!",
         "messages": {
+            "deleteFailed": "Löschen fehlgeschlagen",
             "deleteFailedDetails": "Löschen der Datei \"{{file}}\" fehlgeschlagen",
+            "deleteSuccessful": "Löschen erfolgreich!",
             "deleteSuccessfulDetails": "Datei \"{{file}}\" erfolgreich gelöscht!",
             "deleting": "Löschen...",
-            "migrationFailed": "Migration fehlgeschlagen",
-            "migrationOngoing": "Migriere...",
-            "migrationSuccessful": "Migration erfolgreich!",
-            "moving": "Verschiebe...",
-            "movingFailed": "Verschieben fehlgeschlagen",
-            "movingSuccessful": "Datei erfolgreich verschoben!",
-            "renaming": "Benenne um...",
-            "renamingFailed": "Umbenennen fehlgeschlagen",
-            "renamingSuccessful": "Datei erfolgreich umbenannt!",
+            "deletingDetails": "Lösche Datei \"{{file}}\"...",
             "errorFetchingDirContent": "Laden des Verzeichnisinhalts fehlgeschlagen",
             "errorFetchingDirContentDetails": "Laden des Verzeichnisinhalts von \"{{path}}\" fehlgeschlagen: ",
-            "migrationOngoingDetails": "Migration {{ruid}} läuft...",
-            "migrationSuccessfulDetails": "Migration von {{ruid}} erfolgreich!",
+            "migrationFailed": "Migration fehlgeschlagen",
             "migrationFailedDetails": "Migration von {{ruid}} fehlgeschlagen: ",
+            "migrationOngoing": "Migriere...",
+            "migrationOngoingDetails": "Migration {{ruid}} läuft...",
+            "migrationSuccessful": "Migration erfolgreich!",
+            "migrationSuccessfulDetails": "Migration von {{ruid}} erfolgreich!",
+            "moving": "Verschiebe...",
+            "movingDetails": "Verschiebe Datei \"{{file}}\"...",
+            "movingFailed": "Verschieben fehlgeschlagen",
+            "movingFailedDetails": "Verschieben der Datei \"{{fileSource}}\" nach \"{{fileTarget}}\" fehlgeschlagen: ",
+            "movingSuccessful": "Datei erfolgreich verschoben!",
+            "movingSuccessfulDetails": "Datei \"{{fileSource}}\" erfolgreich nach \"{{fileTarget}}\" verschoben!",
             "noRowsSelected": "Keine Zeilen ausgewählt",
             "noRowsSelectedForDeletion": "Keine Zeilen zum Löschen ausgewählt",
             "noRowsSelectedForMoving": "Keine Zeilen zum Verschieben ausgewählt",
-            "deleteSuccessful": "Löschen erfolgreich!",
-            "deleteFailed": "Löschen fehlgeschlagen",
-            "deletingDetails": "Lösche Datei \"{{file}}\"...",
-            "movingDetails": "Verschiebe Datei \"{{file}}\"...",
+            "renaming": "Benenne um...",
             "renamingDetails": "Benenne Datei \"{{file}}\" um...",
-            "movingFailedDetails": "Verschieben der Datei \"{{fileSource}}\" nach \"{{fileTarget}}\" fehlgeschlagen: ",
-            "movingSuccessfulDetails": "Datei \"{{fileSource}}\" erfolgreich nach \"{{fileTarget}}\" verschoben!",
+            "renamingFailed": "Umbenennen fehlgeschlagen",
             "renamingFailedDetails": "Umbenennen der Datei \"{{fileSource}}\" in \"{{fileTarget}}\" fehlgeschlagen: ",
+            "renamingSuccessful": "Datei erfolgreich umbenannt!",
             "renamingSuccessfulDetails": "Datei \"{{fileSource}}\" erfolgreich in \"{{fileTarget}}\" umbenannt!"
         },
         "migrateContentToLib": "TAF-Datei in Library (by/audioId/) migrieren",
@@ -329,6 +330,7 @@
             "copy": "(WIP - not implemented yet) Tonie Audio Playlist duplizieren",
             "edit": "(WIP - not implemented yet) Tonie Audio Playlist editieren"
         },
+        "title": "Dateibrowser",
         "upload": {
             "cancel": "Abbrechen",
             "hideUploadFilesDragNDrop": "Dateiupload ausblenden",
@@ -340,12 +342,12 @@
             "uploadHint": "Ziehe die hochzuladenden Dateien hierher",
             "uploadInProgress": "Lade \"{{file}}\" hoch...",
             "uploadSuccessful": "Dateien erfolgreich hochgeladen.",
+            "uploadSuccessfulDetails": "Alle Dateien wurden erfolgreich hochgeladen.",
             "uploadSuccessfulForFile": "Datei \"{{file}}\" erfolgreich hochgeladen.",
             "uploadText": "Klicke oder ziehe die Dateien zum Hochladen in diesen Bereich",
-            "uploading": "Lädt hoch...",
             "uploadedFile": "Datei hochgeladen!",
             "uploadedFileFailed": "Datei-Upload fehlgeschlagen!",
-            "uploadSuccessfulDetails": "Alle Dateien wurden erfolgreich hochgeladen."
+            "uploading": "Lädt hoch..."
         }
     },
     "footer": {
@@ -507,10 +509,6 @@
         "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
-        "errorSettingSettingsLevel": "Fehler beim Festlegen des Settings level",
-        "errorSettingSettingsLevelDetails": "Neues Settings level konnte nicht festgelegt werden:",
-        "errorWhileSavingConfig": "Fehler beim Speichern der Einstellungen",
-        "errorWhileSavingConfigDetails": "Fehler beim Speichern der Einstellungen: ",
         "certificates": {
             "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
@@ -521,6 +519,10 @@
             "uploadSuccessful": "{{filename}} erfolgreich hochgeladen.",
             "uploadText": "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich"
         },
+        "errorSettingSettingsLevel": "Fehler beim Festlegen des Settings level",
+        "errorSettingSettingsLevelDetails": "Neues Settings level konnte nicht festgelegt werden:",
+        "errorWhileSavingConfig": "Fehler beim Speichern der Einstellungen",
+        "errorWhileSavingConfigDetails": "Fehler beim Speichern der Einstellungen: ",
         "general": {
             "navigationTitle": "Allgemein",
             "title": "Allgemeine Einstellungen"
@@ -583,7 +585,6 @@
         "failedToFetchSearchResultsDetails": "Fehler beim Abrufen der Suchergebnisse: "
     },
     "tonieboxes": {
-        "errorFetchingModels": "Fehler beim Abrufen der Toniebox-Modelle",
         "accessApiDisabled": "Zugriff auf TeddyCloud APIs deaktiviert.",
         "accessApiEnabled": "Zugriff auf TeddyCloud APIs aktiviert.",
         "availableBoxModal": {
@@ -934,15 +935,16 @@
             "name": "Name",
             "placeholderSearchForAModel": "Wähle deine Farbvariante aus",
             "successOnModelChange": "Modelländerung erfolgreich gespeichert",
-            "successOnNameChange": "Namensänderung erfolgreich gespeichert",
-            "unsetBoxName": "Modell unbekannt/nicht gesetzt",
             "successOnModelChangeDetails": "Neues Modell \"{{model}}\" der Toniebox {{mac}} wurde erfolgreich gespeichert.",
-            "successOnNameChangeDetails": "Neuer Name \"{{name}}\" der Toniebox {{mac}} wurde erfolgreich gespeichert."
+            "successOnNameChange": "Namensänderung erfolgreich gespeichert",
+            "successOnNameChangeDetails": "Neuer Name \"{{name}}\" der Toniebox {{mac}} wurde erfolgreich gespeichert.",
+            "unsetBoxName": "Modell unbekannt/nicht gesetzt"
         },
         "editTonieboxSettingsModal": {
             "editTonieboxSettings": "Einstellungen der Toniebox \"{{name}}\" bearbeiten",
             "editTonieboxSettingsLabel": "Einstellungen"
         },
+        "errorFetchingModels": "Fehler beim Abrufen der Toniebox-Modelle",
         "esp32BoxFlashing": {
             "attention": "Achtung",
             "browserNotSupported": "Die integrierte ESP32 Box Flashing Funktionalität kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge.",

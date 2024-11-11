@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Table, Tooltip, message, Input, Breadcrumb, InputRef, theme, Empty } from "antd";
+import { Table, Tooltip, Input, Breadcrumb, InputRef, theme, Empty } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
 import { CloseOutlined, PlayCircleOutlined } from "@ant-design/icons";
@@ -16,12 +16,12 @@ import TonieInformationModal from "./TonieInformationModal";
 import { useAudioContext } from "../audio/AudioContext";
 import { humanFileSize } from "../../utils/humanFileSize";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
-
-const MAX_FILES = 99;
 
 const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
@@ -47,6 +47,8 @@ export const SelectFileFileBrowser: React.FC<{
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
     const { token } = useToken();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
     const location = useLocation();
     const navigate = useNavigate();
     const inputRefFilter = useRef<InputRef>(null);
@@ -100,7 +102,14 @@ export const SelectFileFileBrowser: React.FC<{
                     );
                 setFiles(list);
             })
-            .catch((error) => message.error("Failed to fetch dir content: " + error))
+            .catch((error) =>
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.messages.errorFetchingDirContent"),
+                    t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
+                    t("fileBrowser.title")
+                )
+            )
             .finally(() => {
                 setLoading(false);
             });
@@ -204,16 +213,22 @@ export const SelectFileFileBrowser: React.FC<{
                     );
                 });
                 if (rowCount !== newSelectedRowKeys.length) {
-                    message.warning(
-                        t("fileBrowser.selectAllowedFileTypesOnly", { fileTypes: filetypeFilter.join(", ") })
+                    addNotification(
+                        NotificationTypeEnum.Warning,
+                        t("fileBrowser.fileTypesWarning"),
+                        t("fileBrowser.selectAllowedFileTypesOnly", { fileTypes: filetypeFilter.join(", ") }),
+                        t("fileBrowser.title")
                     );
                 }
             }
             if (newSelectedRowKeys.length > maxSelectedRows) {
-                message.warning(
+                addNotification(
+                    NotificationTypeEnum.Warning,
+                    t("fileBrowser.maxSelectedRowsWarning"),
                     t("fileBrowser.maxSelectedRows", {
                         maxSelectedRows: maxSelectedRows,
-                    })
+                    }),
+                    t("fileBrowser.title")
                 );
             } else {
                 setSelectedRowKeys(newSelectedRowKeys);
