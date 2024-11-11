@@ -340,7 +340,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
             <Paragraph>
                 <CodeSnippet
                     language="shell"
-                    code={`cc3200tool -if cc32xx-flash.bin -of cc32xx-flash.customca.bin -d cc32xx write_file customca.der /cert/ca.der`}
+                    code={`cc3200tool -if cc32xx-flash.bin -of cc32xx-flash.customca.bin -d cc32xx write_file ca.der /cert/ca.der`}
                 />
             </Paragraph>
 
@@ -380,7 +380,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
             <Paragraph>
                 <CodeSnippet
                     language="shell"
-                    code={`cc3200tool -if backupCC3235-1.bin -of cc32xx-flash.customca.bin -d cc32xx write_file customca.der /cert/ca.der`}
+                    code={`cc3200tool -if backupCC3235-1.bin -of cc32xx-flash.customca.bin -d cc32xx write_file ca.der /cert/ca.der`}
                 />
             </Paragraph>
             <h5>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.writingFlash")}</h5>
