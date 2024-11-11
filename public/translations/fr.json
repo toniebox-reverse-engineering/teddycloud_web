@@ -519,6 +519,8 @@
             "uploadSuccessful": "Fichier {{filename}} téléchargé avec succès.",
             "uploadText": "Cliquez ou faites glisser les certificats clients dans cette zone pour les télécharger"
         },
+        "errorFetchingSetting": "Erreur lors de la récupération du paramètre !",
+        "errorFetchingSettingDetails": "Erreur lors de la récupération du paramètre \"{{setting}}\": ",
         "errorSettingSettingsLevel": "Erreur lors de la configuration du niveau des paramètres",
         "errorSettingSettingsLevelDetails": "Impossible de définir le nouveau niveau de paramètres :",
         "errorWhileSavingConfig": "Échec de la sauvegarde de la configuration dans le fichier",
@@ -945,6 +947,7 @@
             "editTonieboxSettingsLabel": "Paramètres"
         },
         "errorFetchingModels": "Erreur lors de la récupération des modèles de Tonieboxes",
+        "errorFetchingTonieboxes": "Erreur lors de la récupération des Tonieboxes",
         "esp32BoxFlashing": {
             "attention": "Attention",
             "browserNotSupported": "La fonctionnalité de flashage intégré de la boîte ESP32 ne peut être utilisée qu'avec des navigateurs prenant en charge l'API Web Serial. Malheureusement, votre navigateur actuel ne prend pas en charge cette fonctionnalité. Veuillez utiliser un navigateur qui prend en charge l'API Web Serial, comme Chrome ou Edge.",
@@ -1188,6 +1191,8 @@
             "uploading": "Téléchargement...",
             "uploadingDetails": "Téléchargement du fichier \"{{file}}\"..."
         },
+        "errorFetchingSystemSounds": "Erreur lors de la récupération des sons du système",
+        "errorFetchingTonies": "Erreur lors de la récupération des Tonies",
         "infoModal": {
             "exists": "Existe:",
             "model": "Modèle:",

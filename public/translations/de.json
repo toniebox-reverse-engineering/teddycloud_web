@@ -519,6 +519,8 @@
             "uploadSuccessful": "{{filename}} erfolgreich hochgeladen.",
             "uploadText": "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich"
         },
+        "errorFetchingSetting": "Fehler beim Abrufen der Einstellung!",
+        "errorFetchingSettingDetails": "Fehler beim Abrufen der Einstellung \"{{setting}}\": ",
         "errorSettingSettingsLevel": "Fehler beim Festlegen des Settings level",
         "errorSettingSettingsLevelDetails": "Neues Settings level konnte nicht festgelegt werden:",
         "errorWhileSavingConfig": "Fehler beim Speichern der Einstellungen",
@@ -945,6 +947,7 @@
             "editTonieboxSettingsLabel": "Einstellungen"
         },
         "errorFetchingModels": "Fehler beim Abrufen der Toniebox-Modelle",
+        "errorFetchingTonieboxes": "Fehler beim Abrufen der Tonieboxen",
         "esp32BoxFlashing": {
             "attention": "Achtung",
             "browserNotSupported": "Die integrierte ESP32 Box Flashing Funktionalität kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge.",
@@ -1188,6 +1191,8 @@
             "uploading": "Lädt hoch...",
             "uploadingDetails": "Datei \"{{file}}\" wird hochgeladen..."
         },
+        "errorFetchingSystemSounds": "Fehler beim Abrufen der System Sounds",
+        "errorFetchingTonies": "Fehler beim Abrufen der Tonies",
         "infoModal": {
             "exists": "Existiert:",
             "model": "Modell:",

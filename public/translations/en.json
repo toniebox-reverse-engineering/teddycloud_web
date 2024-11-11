@@ -519,6 +519,8 @@
             "uploadSuccessful": "{{filename}} file uploaded successfully.",
             "uploadText": "Click or drag client certificates to this area to upload"
         },
+        "errorFetchingSetting": "Error fetching setting!",
+        "errorFetchingSettingDetails": "Error fetching setting \"{{setting}}\": ",
         "errorSettingSettingsLevel": "Error setting Settings level",
         "errorSettingSettingsLevelDetails": "Could not set new Settings level:",
         "errorWhileSavingConfig": "Saving config to file failed",
@@ -945,6 +947,7 @@
             "editTonieboxSettingsLabel": "Settings"
         },
         "errorFetchingModels": "Error fetching Tonieboxes Models",
+        "errorFetchingTonieboxes": "Error fetching Tonieboxes",
         "esp32BoxFlashing": {
             "attention": "Attention",
             "browserNotSupported": "The integrated ESP32 Box flashing functionality can only be used with browsers that support the Web Serial API. Unfortunately, your current browser does not support this feature. Please use a browser that supports the Web Serial API, such as Chrome or Edge.",
@@ -1188,6 +1191,8 @@
             "uploading": "Uploading...",
             "uploadingDetails": "Uploading file \"{{file}}\"..."
         },
+        "errorFetchingSystemSounds": "Error fetching system sounds",
+        "errorFetchingTonies": "Error fetching Tonies",
         "infoModal": {
             "exists": "Exists:",
             "model": "Model:",

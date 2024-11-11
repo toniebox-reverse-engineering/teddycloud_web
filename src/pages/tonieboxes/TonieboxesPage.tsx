@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, message } from "antd";
+import { Alert } from "antd";
 import { TonieboxCardProps } from "../../types/tonieboxTypes";
 
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -14,11 +14,14 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const TonieboxesPage = () => {
     const { t } = useTranslation();
+    const { addNotification } = useTeddyCloud();
 
     // Define the state with TonieCardProps[] type
     const [tonieboxes, setTonieboxes] = useState<TonieboxCardProps[]>([]);
@@ -26,9 +29,18 @@ export const TonieboxesPage = () => {
 
     useEffect(() => {
         const fetchTonieboxes = async () => {
-            // Perform API call to fetch Toniebox data
-            const tonieboxData = await api.apiGetTonieboxesIndex();
-            setTonieboxes(tonieboxData);
+            try {
+                // Perform API call to fetch Toniebox data
+                const tonieboxData = await api.apiGetTonieboxesIndex();
+                setTonieboxes(tonieboxData);
+            } catch (error) {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonieboxes.messages.errorFetchingTonieboxes"),
+                    t("tonieboxes.messages.errorFetchingTonieboxes") + ": " + error,
+                    t("tonieboxes.navigationTitle")
+                );
+            }
         };
 
         fetchTonieboxes();
@@ -38,7 +50,14 @@ export const TonieboxesPage = () => {
                 const newBoxesAllowed = await api.apiGetNewBoxesAllowed();
                 setNewBoxesAllowed(newBoxesAllowed);
             } catch (error) {
-                message.error("Fetching new box allowed: " + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("settings.messages.errorFetchingSetting"),
+                    t("settings.messages.errorFetchingSettingDetails", {
+                        setting: "core.allowNewBox",
+                    }) + error,
+                    t("tonieboxes.navigationTitle")
+                );
             }
         };
 
