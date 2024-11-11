@@ -509,17 +509,17 @@
         "teddycloudStatusOnline": "Le serveur TeddyCloud fonctionne correctement"
     },
     "settings": {
-        "restartTC": "Redémarrage de TeddyCloud",
-        "tryToRestartTC": "Tentative de redémarrer TeddyCloud",
         "certificates": {
             "hint": "Voici les certificats utilisés pour l'utilisation générale de TeddyCloud. Des certificats spécifiques peuvent être utilisés pour vos Tonieboxes. Pour les changer, allez à ",
             "information": "Informations",
+            "invalidFileType": "Type de fichier invalide ! Seuls les fichiers .der sont autorisés !",
             "navigationTitle": "Certificats",
             "title": "Certificats",
             "uploadFailed": "Échec du téléchargement du certificat !",
-            "uploadFailedDetails": "Le téléchargement du certificat {{filename}} a échoué. Consultez la console",
-            "uploadHint": "Glissez-déposez les certificats clients de votre box ici",
-            "uploadSuccessful": "Fichier {{filename}} téléchargé avec succès.",
+            "uploadFailedDetails": "Le téléchargement du certificat {{filename}} a échoué",
+            "uploadHint": "Glissez-déposez les certificats clients (*.der) de votre box ici",
+            "uploadSuccessful": "Certificat téléchargé avec succès.",
+            "uploadSuccessfulDetails": "Certificat {{filename}} téléchargé avec succès.",
             "uploadText": "Cliquez ou faites glisser les certificats clients dans cette zone pour les télécharger"
         },
         "errorFetchingSetting": "Erreur lors de la récupération du paramètre !",
@@ -569,6 +569,7 @@
         "restartFailed": "Échec du redémarrage du serveur TeddyCloud !",
         "restartInProgress": "Redémarrage de TeddyCloud en cours...",
         "restartServer": "Redémarrer le serveur",
+        "restartTC": "Redémarrage de TeddyCloud",
         "rtnl": {
             "clear": "Effacer le journal RTNL",
             "enableRtnl": "Activer la journalisation",
@@ -582,6 +583,7 @@
         "toniesJsonReloadFailed": "Échec du rechargement de Tonies(.custom).json!",
         "toniesJsonReloadInProgress": "Chargement de Tonies(.custom).json...",
         "toniesJsonReloadSuccessful": "Tonies(.custom).json rechargé avec succès!",
+        "tryToRestartTC": "Tentative de redémarrer TeddyCloud",
         "warning": "Attention ! Bouton de sauvegarde + Niveau des paramètres",
         "warningHint": "Les entrées de texte doivent actuellement être enregistrées explicitement jusqu'à ce qu'une meilleure solution soit mise en œuvre. Pour ce faire, cliquez sur le symbole de sauvegarde à la fin du champ. Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
     },

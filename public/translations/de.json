@@ -509,17 +509,17 @@
         "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
-        "restartTC": "TeddyCloud wird neu gestartet",
-        "tryToRestartTC": "Versuche, TeddyCloud neu zu starten",
         "certificates": {
             "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
+            "invalidFileType": "Ungültiger Dateityp! Nur .der-Dateien sind erlaubt!",
             "navigationTitle": "Zertifikate",
             "title": "Zertifikate",
             "uploadFailed": "Zertifikats-Upload fehlgeschlagen!",
-            "uploadFailedDetails": "Der Upload des Zertifikats {{filename}} ist fehlgeschlagen. Bitte schaue einmal in die Konsole",
-            "uploadHint": "Ziehe die Client-Zertifikate aus deiner Box hierher",
-            "uploadSuccessful": "{{filename}} erfolgreich hochgeladen.",
+            "uploadFailedDetails": "Der Upload des Zertifikats {{filename}} ist fehlgeschlagen",
+            "uploadHint": "Ziehe die Client-Zertifikate (*.der) aus deiner Box hierher",
+            "uploadSuccessful": "Zertifikat erfolgreich hochgeladen.",
+            "uploadSuccessfulDetails": "Zertifikat {{filename}} erfolgreich hochgeladen.",
             "uploadText": "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich"
         },
         "errorFetchingSetting": "Fehler beim Abrufen der Einstellung!",
@@ -569,6 +569,7 @@
         "restartFailed": "Neustart TeddyCloud Server fehlgeschlagen!",
         "restartInProgress": "TeddyCloud wird gestartet...",
         "restartServer": "Server neustarten",
+        "restartTC": "TeddyCloud wird neu gestartet",
         "rtnl": {
             "clear": "RTNL Log leeren",
             "enableRtnl": "Logging aktivieren",
@@ -582,6 +583,7 @@
         "toniesJsonReloadFailed": "Tonies(.custom).json neu laden fehlgeschlagen!",
         "toniesJsonReloadInProgress": "Lade Tonies(.custom).json...",
         "toniesJsonReloadSuccessful": "Tonies(.custom).json erfolgreich neu geladen!",
+        "tryToRestartTC": "Versuche, TeddyCloud neu zu starten",
         "warning": "Achtung! Speicherbutton + Settings level",
         "warningHint": "Texteingaben müssen derzeit explizit gespeichert werden, bis eine bessere Lösung implementiert ist. Klicke dazu auf das Speichersymbol am Ende des Feldes. Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
     },

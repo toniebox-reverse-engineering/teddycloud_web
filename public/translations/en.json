@@ -509,17 +509,17 @@
         "teddycloudStatusOnline": "Teddycloud server running fine"
     },
     "settings": {
-        "restartTC": "Restarting TeddyCloud",
-        "tryToRestartTC": "Try to restart TeddyCloud",
         "certificates": {
             "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
             "information": "Information",
+            "invalidFileType": "Invalid file type! Only .der files are allowed!",
             "navigationTitle": "Certificates",
             "title": "Certificates",
             "uploadFailed": "Certificate upload failed!",
-            "uploadFailedDetails": "Certificate {{filename}} upload failed. Take a look into the console",
-            "uploadHint": "Drag and drop client certificates from your box here",
-            "uploadSuccessful": "{{filename}} file uploaded successfully.",
+            "uploadFailedDetails": "Certificate {{filename}} upload failed",
+            "uploadHint": "Drag and drop client certificates (*.der) from your box here",
+            "uploadSuccessful": "Certificate uploaded successfully.",
+            "uploadSuccessfulDetails": "Certificate {{filename}} uploaded successfully.",
             "uploadText": "Click or drag client certificates to this area to upload"
         },
         "errorFetchingSetting": "Error fetching setting!",
@@ -569,6 +569,7 @@
         "restartFailed": "Restart TeddyCloud server failed!",
         "restartInProgress": "TeddyCloud is rebooting...",
         "restartServer": "Restart server",
+        "restartTC": "Restarting TeddyCloud",
         "rtnl": {
             "clear": "Clear RTNL Log",
             "enableRtnl": "Enable logging",
@@ -582,6 +583,7 @@
         "toniesJsonReloadFailed": "Failed to reload Tonies(.custom).json!",
         "toniesJsonReloadInProgress": "Loading Tonies(.custom).json...",
         "toniesJsonReloadSuccessful": "Tonies(.custom).json reloaded successfully!",
+        "tryToRestartTC": "Try to restart TeddyCloud",
         "warning": "Attention! Save button + Settings level",
         "warningHint": "Text inputs currently have to be saved explicitly until a better solution is implemented. To do this, click on the save symbol at the end of the field. If you are missing settings, increase the 'Settings level'."
     },

@@ -41,7 +41,9 @@ export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("settings.certificates.uploadSuccessful"),
-                    t("settings.certificates.uploadSuccessful"),
+                    t("settings.certificates.uploadSuccessfulDetails", {
+                        filename: file.name,
+                    }),
                     overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle")
                 );
                 setFetchCloudStatus((prev) => !prev);
@@ -65,6 +67,22 @@ export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }
     const props = {
         name: "file",
         multiple: true,
+        beforeUpload: (file: UploadFile) => {
+            if (file.type !== "application/x-x509-ca-cert" && !file.name.endsWith(".der")) {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("settings.certificates.uploadFailed"),
+                    t("settings.certificates.uploadFailedDetails", {
+                        filename: file.name,
+                    }) +
+                        ": " +
+                        t("settings.certificates.invalidFileType"),
+                    overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle")
+                );
+                return Upload.LIST_IGNORE;
+            }
+            return true;
+        },
         customRequest: async (options: any) => {
             const { onSuccess, onError, file } = options;
             try {
