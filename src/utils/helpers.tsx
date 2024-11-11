@@ -28,3 +28,8 @@ export function generateUUID() {
         (parseInt(c) ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (parseInt(c) / 4)))).toString(16)
     );
 }
+
+export const handleC2DerDownload = () => {
+    const fileUrl = `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}/api/getFile/c2.der`;
+    window.location.href = fileUrl; // This will prompt the download
+};

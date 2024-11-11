@@ -932,6 +932,7 @@
             "warningText": "Si el monitor serial está abierto, bloqueará el acceso de esptool.py al esp. Si obtienes un “BROWNOUT_RST”, verifica tu fuente de alimentación/batería. “SPI_FAST_FLASH_BOOT” indica un arranque sin el jumper J100."
         },
         "delete": "Eliminar",
+        "downloadC2DerFile": "Descargar certificado de reemplazo CA (c2.der)",
         "editModelModal": {
             "editModel": "Editar Toniebox \"{{name}}\"",
             "errorOnModelChange": "Error al guardar el modelo",

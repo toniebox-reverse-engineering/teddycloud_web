@@ -17,6 +17,7 @@ import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSu
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
 import AvailableBoxesModal, { certificateIntro } from "../../../../components/tonieboxes/boxSetup/CommonContent";
+import { handleC2DerDownload } from "../../../../utils/helpers";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -111,6 +112,9 @@ export const CC3200BoxFlashingPage = () => {
                 {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
             </Link>
             <h4>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacement")}</h4>
+            <Paragraph>
+                <Button onClick={handleC2DerDownload}>{t("tonieboxes.downloadC2DerFile")}</Button>
+            </Paragraph>
             <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/flash-ca/cc3200/" target="_blank">
                 {t("tonieboxes.cc3200BoxFlashing.flashCAreplacementLink")}
             </Link>

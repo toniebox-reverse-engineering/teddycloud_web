@@ -21,6 +21,7 @@ export const ChangelogPage = () => {
             changes: [
                 "Stabilization backend",
                 "Added Hide Information in filesV2 Api https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
+                "Provide c2.der symlink",
                 "Added custom_img volume for storing custom images - adapt your docker-compose.yaml according https://github.com/toniebox-reverse-engineering/teddycloud/blob/master/docker/docker-compose.yaml",
                 "gui: Added version overview page",
                 "gui: Added spinning wheel to lists, should also fix https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/129",
@@ -35,6 +36,7 @@ export const ChangelogPage = () => {
                 "gui: Fixed bug deleting Toniebox https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/174",
                 "gui: Mark hidden Tonies/Tags in content view",
                 "gui: Only allow *.der files to be uploaded on certificate upload",
+                "gui: Added Download buttons/link to download TeddyCloud CA Certificate c2.der https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/177",
                 "gui: Some refactoring",
             ],
             commits: [

@@ -18,6 +18,7 @@ import BreadcrumbWrapper, {
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { handleC2DerDownload } from "../../../utils/helpers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -56,6 +57,13 @@ export const BoxSetupPage = () => {
                 <>
                     <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.setupTeddyCloud")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.setupTeddyCloudText")}</Paragraph>
+                    <ul>
+                        <li>
+                            <Link to="#" onClick={handleC2DerDownload}>
+                                {t("tonieboxes.downloadC2DerFile")}
+                            </Link>
+                        </li>
+                    </ul>
                 </>
             ),
             dot: <CheckCircleOutlined />,
