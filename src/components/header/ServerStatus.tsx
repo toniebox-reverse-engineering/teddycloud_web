@@ -23,14 +23,20 @@ export const ServerStatus = () => {
     const fetchBoxineEnabledStatus = async () => {
         try {
             const cloudEnabled = await apiTC.apiGetTeddyCloudSettingRaw("cloud.enabled");
-            setBoxineEnabledStatus((await cloudEnabled.text()) === "true");
+            const cloudEnabledBoolean = (await cloudEnabled.text()) === "true";
+            setBoxineEnabledStatus(cloudEnabledBoolean);
+            if (!cloudEnabledBoolean) setBoxineStatus(false);
+            return cloudEnabledBoolean;
         } catch (err) {
             console.log("Something went wrong getting cloud.enabled.");
             setBoxineEnabledStatus(false);
+            return false;
         }
     };
 
-    const fetchTime = async () => {
+    const fetchCloudStatusUsingTimeRequests = async () => {
+        const isEnabled = await fetchBoxineEnabledStatus();
+
         try {
             const timeRequest = (await api.v1TimeGet()) as String;
             if (timeRequest.length === 10) {
@@ -40,32 +46,39 @@ export const ServerStatus = () => {
             setTeddyStatus(false);
         }
 
-        if (boxineEnabledStatus) {
-            try {
-                const timeRequest2 = (await api2.reverseV1TimeGet()) as String;
+        if (isEnabled) {
+            async function timeRequest2WithRetries() {
+                const maxRetries = 10;
+                let attempts = 0;
+                let success = false;
 
-                if (timeRequest2.length === 10) {
-                    setBoxineStatus(true);
+                while (attempts < maxRetries && !success) {
+                    try {
+                        const timeRequest2 = (await api2.reverseV1TimeGet()) as string;
+                        if (timeRequest2.length === 10) {
+                            setBoxineStatus(true);
+                            success = true;
+                        }
+                    } catch (e) {
+                        attempts++;
+                        setBoxineStatus(false);
+
+                        await new Promise((resolve) => setTimeout(resolve, 500));
+                    }
                 }
-            } catch (e) {
-                setBoxineStatus(false);
             }
+
+            timeRequest2WithRetries();
         }
     };
 
     useEffect(() => {
-        fetchBoxineEnabledStatus();
-        fetchTime();
+        fetchCloudStatusUsingTimeRequests();
     }, []);
 
     useEffect(() => {
-        fetchBoxineEnabledStatus();
-        fetchTime();
+        fetchCloudStatusUsingTimeRequests();
     }, [fetchCloudStatus]);
-
-    useEffect(() => {
-        fetchTime();
-    }, [boxineEnabledStatus]);
 
     return (
         <Space>

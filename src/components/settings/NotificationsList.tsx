@@ -27,7 +27,6 @@ const NotificationsList = () => {
     const { token } = useToken();
     const { notifications, confirmNotification, clearAllNotifications, removeNotifications } = useTeddyCloud();
     const [filteredNotifications, setFilteredNotifications] = useState<NotificationRecord[]>(notifications);
-    const [filterType, setFilterType] = useState<string | null>(null);
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);

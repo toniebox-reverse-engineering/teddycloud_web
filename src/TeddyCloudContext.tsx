@@ -1,13 +1,22 @@
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from "react";
 import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useLocation } from "react-router-dom";
 
+import { TeddyCloudApi } from "./api";
+import { defaultAPIConfig } from "./config/defaultApiConfig";
 import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
+import { generateUUID } from "./utils/helpers";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
     setFetchCloudStatus: Dispatch<SetStateAction<boolean>>;
     notifications: NotificationRecord[];
+    tonieBoxContentDirs: Array<[string, string[], string]>;
+    overlay: string;
+    setOverlay: (overlay: string) => void;
     addNotification: (
         type: NotificationType,
         message: string,
@@ -21,12 +30,16 @@ interface TeddyCloudContextType {
     unconfirmedCount: number;
     clearAllNotifications: () => void;
     removeNotifications: (uuid: string[]) => void;
+    handleContentOverlayChange: (overlay: string) => void;
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
     fetchCloudStatus: false,
     setFetchCloudStatus: () => {},
     notifications: [],
+    tonieBoxContentDirs: [],
+    overlay: "",
+    setOverlay: () => {},
     addNotification: () => {},
     addLoadingNotification: () => {},
     closeLoadingNotification: () => {},
@@ -34,49 +47,91 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     unconfirmedCount: 0,
     clearAllNotifications: () => {},
     removeNotifications: () => {},
+    handleContentOverlayChange: () => {},
 });
 
 interface TeddyCloudProviderProps {
     children: ReactNode;
+    linkOverlay?: string | null;
 }
 
-export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
+export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProviderProps) {
     const [fetchCloudStatus, setFetchCloudStatus] = useState<boolean>(false);
     const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
+    const [tonieBoxContentDirs, setTonieboxContentDirs] = useState<Array<[string, string[], string]>>([]);
+    const [overlay, setOverlay] = useState("");
+
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Content dir overlay handling
+    useEffect(() => {
+        if (linkOverlay) {
+            setOverlay(linkOverlay);
+            localStorage.setItem("contentOverlay", linkOverlay);
+        } else {
+            const savedOverlay = localStorage.getItem("contentOverlay");
+            if (savedOverlay) setOverlay(savedOverlay);
+        }
+    }, [linkOverlay]);
+
+    useEffect(() => {
+        const fetchContentDirs = async () => {
+            const tonieboxData = await api.apiGetTonieboxesIndex();
+            const tonieboxContentDirs = await Promise.all(
+                tonieboxData.map(async (toniebox) => {
+                    const contentDir = await api.apiGetTonieboxContentDir(toniebox.ID);
+                    return [contentDir, toniebox.boxName, toniebox.ID] as [string, string, string];
+                })
+            );
+
+            const groupedContentDirs = tonieboxContentDirs.reduce((acc, [contentDir, boxName, boxID]) => {
+                const existingGroupIndex = acc.findIndex((group) => group[0] === contentDir);
+                if (existingGroupIndex !== -1) {
+                    acc[existingGroupIndex][1].push(boxName);
+                    if (overlay === boxID) {
+                        setOverlay(acc[existingGroupIndex][2]);
+                    }
+                } else {
+                    acc.push([contentDir, [boxName], boxID]);
+                }
+                return acc;
+            }, [] as [string, string[], string][]);
+
+            const contentDir = await api.apiGetTonieboxContentDir("");
+            if (!groupedContentDirs.some((group) => group[0] === contentDir)) {
+                groupedContentDirs.push(["", ["TeddyCloud Default Content Dir"], ""]);
+            }
+
+            if (!overlay) {
+                const firstBoxId = groupedContentDirs.length > 0 ? groupedContentDirs[0][2] : "";
+                setOverlay(firstBoxId);
+                localStorage.setItem("contentOverlay", firstBoxId);
+            }
+            setTonieboxContentDirs(groupedContentDirs);
+        };
+        fetchContentDirs();
+    }, [overlay]);
+
+    const handleContentOverlayChange = (newOverlay: string) => {
+        setOverlay(newOverlay);
+        localStorage.setItem("contentOverlay", newOverlay);
+    };
+
+    // Notifications
 
     useEffect(() => {
         const storedNotifications = localStorage.getItem("notifications");
         if (storedNotifications) {
             const parsedNotifications: NotificationRecord[] = JSON.parse(storedNotifications);
-            const notificationsWithDateObjects = parsedNotifications.map((notification) => ({
-                ...notification,
-                date: new Date(notification.date), // Convert date string back to Date object
-            }));
-            setNotifications(notificationsWithDateObjects);
+            setNotifications(
+                parsedNotifications.map((notification) => ({
+                    ...notification,
+                    date: new Date(notification.date),
+                }))
+            );
         }
     }, []);
 
-    const saveNotifications = (newNotifications: NotificationRecord[]) => {
-        setNotifications(newNotifications);
-        localStorage.setItem("notifications", JSON.stringify(newNotifications));
-    };
-
-    function generateUUIDWithDate(date = new Date()) {
-        const timestamp = date.getTime();
-        const timestampHex = timestamp.toString(16);
-
-        return "xxxx-xxxx-4xxx-yxxx-xxxx".replace(/[xy]/g, function (c, index) {
-            const random = (Math.random() * 16) | 0;
-            const value =
-                c === "x"
-                    ? index < timestampHex.length
-                        ? parseInt(timestampHex[index], 16)
-                        : random
-                    : (random & 0x3) | 0x8;
-
-            return value.toString(16);
-        });
-    }
     const addNotification = (
         type: NotificationType,
         title: string,
@@ -85,7 +140,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         confirmed?: boolean
     ) => {
         const newNotification: NotificationRecord = {
-            uuid: generateUUIDWithDate(new Date()),
+            uuid: generateUUID(),
             date: new Date(),
             type,
             title,
@@ -93,15 +148,20 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             context: context || "",
             flagConfirmed: confirmed !== undefined ? confirmed : type === "success" || type === "info",
         };
-        const updatedNotifications = [newNotification, ...notifications];
-        saveNotifications(updatedNotifications);
 
-        antdNotification[type]({
+        antdNotification.open({
+            type,
             message: title,
-            description: description,
+            description,
             showProgress: true,
             pauseOnHover: true,
             placement: "bottomRight",
+        });
+
+        setNotifications((prevNotifications) => {
+            const updatedNotifications = [newNotification, ...prevNotifications];
+            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+            return updatedNotifications;
         });
     };
 
@@ -109,14 +169,12 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         antdNotification.open({
             key,
             message: title,
-            description: description,
+            description,
             icon: <LoadingOutlined />,
             duration: 0,
-            placement: "bottomRight",
+            placement: "topRight",
         });
     };
-
-    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const closeLoadingNotification = async (key: string) => {
         setTimeout(() => {
@@ -126,23 +184,28 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
     };
 
     const confirmNotification = (uuid: string) => {
-        const updatedNotifications = [...notifications];
-
-        const notificationIndex = updatedNotifications.findIndex((notif) => notif.uuid === uuid);
-        if (notificationIndex !== -1) {
-            updatedNotifications[notificationIndex].flagConfirmed = true;
-            saveNotifications(updatedNotifications);
-        }
+        setNotifications((prevNotifications) => {
+            const updatedNotifications = prevNotifications.map((notification) =>
+                notification.uuid === uuid ? { ...notification, flagConfirmed: true } : notification
+            );
+            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+            return updatedNotifications;
+        });
     };
 
     const removeNotifications = (uuidsToRemove: string[]) => {
-        const updatedNotifications = notifications.filter((notification) => !uuidsToRemove.includes(notification.uuid));
-        saveNotifications(updatedNotifications);
+        setNotifications((prevNotifications) => {
+            const updatedNotifications = prevNotifications.filter(
+                (notification) => !uuidsToRemove.includes(notification.uuid)
+            );
+            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+            return updatedNotifications;
+        });
     };
 
     const clearAllNotifications = () => {
-        setNotifications([]); // Clear notifications state
-        localStorage.removeItem("notifications"); // Remove notifications from local storage
+        setNotifications([]);
+        localStorage.removeItem("notifications");
     };
 
     const unconfirmedCount = notifications.filter((notification) => !notification.flagConfirmed).length;
@@ -153,6 +216,9 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                 fetchCloudStatus,
                 setFetchCloudStatus,
                 notifications,
+                tonieBoxContentDirs,
+                overlay,
+                setOverlay,
                 addNotification,
                 addLoadingNotification,
                 closeLoadingNotification,
@@ -160,6 +226,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                 unconfirmedCount,
                 clearAllNotifications,
                 removeNotifications,
+                handleContentOverlayChange,
             }}
         >
             {children}

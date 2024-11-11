@@ -5,7 +5,6 @@ import {
     Modal,
     Table,
     Tooltip,
-    message,
     Button,
     Input,
     Breadcrumb,
@@ -20,7 +19,7 @@ import {
     Divider,
     Form,
     Empty,
-    List,
+    Tag,
 } from "antd";
 import {
     CloseOutlined,
@@ -45,6 +44,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
+import { useTeddyCloud } from "../../TeddyCloudContext";
 import { useAudioContext } from "../audio/AudioContext";
 import { humanFileSize } from "../../utils/humanFileSize";
 import ConfirmationDialog from "./ConfirmationDialog";
@@ -60,11 +60,12 @@ import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
 import { FileObject, Record, RecordTafHeader } from "../../types/fileBrowserTypes";
 import CodeSnippet from "./CodeSnippet";
 import HelpModal from "./FileBrowserHelpModal";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { generateUUID } from "../../utils/helpers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
-const { Paragraph } = Typography;
 
 const MAX_FILES = 99;
 
@@ -92,13 +93,14 @@ export const FileBrowser: React.FC<{
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
     const { token } = useToken();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
     const navigate = useNavigate();
     const cursorPositionFilterRef = useRef<number | null>(null);
     const inputCreateDirectoryRef = useRef<InputRef>(null);
     const inputEncodeTafFileNameRef = useRef<InputRef>(null);
     const inputRenameTafFileNameRef = useRef<InputRef>(null);
     const inputFilterRef = useRef<InputRef>(null);
-    const [messageApi, contextHolder] = message.useMessage();
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -119,6 +121,7 @@ export const FileBrowser: React.FC<{
 
     const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
+    const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
     const [jsonData, setJsonData] = useState<string>("");
     const [isJsonViewerModalOpen, setIsJsonViewerModalOpen] = useState<boolean>(false);
@@ -231,7 +234,14 @@ export const FileBrowser: React.FC<{
                     );
                 setFiles(list);
             })
-            .catch((error) => message.error("Failed to fetch dir content: " + error))
+            .catch((error) =>
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.messages.errorFetchingDirContent"),
+                    t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
+                    t("fileBrowser.title")
+                )
+            )
             .finally(() => {
                 setLoading(false);
             });
@@ -261,13 +271,6 @@ export const FileBrowser: React.FC<{
     useEffect(() => {
         setCreateDirectoryPath(path);
     }, [path]);
-
-    // general functions
-    function generateUUID() {
-        return ([1e7] + "-1e3-4e3-8e3-1e11").replace(/[018]/g, (c) =>
-            (parseInt(c) ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (parseInt(c) / 4)))).toString(16)
-        );
-    }
 
     // breadcrumb functions
     const handleBreadcrumbClick = (dirPath: string) => {
@@ -395,6 +398,12 @@ export const FileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
+            setCurrentAudioUrl(
+                encodeURI("/content" + path + "/" + record.name) +
+                    "?ogg=true&special=" +
+                    special +
+                    (overlay ? `&overlay=${overlay}` : "")
+            );
             setIsInformationModalOpen(true);
         }
     };
@@ -524,32 +533,56 @@ export const FileBrowser: React.FC<{
 
     const handleConfirmMultipleDelete = async () => {
         if (selectedRowKeys.length > 0) {
+            const key = "deletingFiles";
+            addLoadingNotification(key, t("fileBrowser.messages.deleting"), t("fileBrowser.messages.deleting"));
             for (const rowName of selectedRowKeys) {
                 const file = (files as Record[]).find((file) => file.name === rowName);
                 if (file) {
                     const deletePath = path + "/" + file.name;
                     const deleteApiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
-                    await deleteFile(deletePath, deleteApiCall);
+                    await deleteFile(deletePath, deleteApiCall, true);
                 }
             }
+            closeLoadingNotification(key);
+
             setRebuildList((prev) => !prev);
             setIsConfirmMultipleDeleteModalOpen(false);
             setSelectedRowKeys([]);
         } else {
-            message.warning("No rows selected for deletion.");
+            addNotification(
+                NotificationTypeEnum.Warning,
+                t("tonies.messages.noRowsSelected"),
+                t("tonies.messages.noRowsSelectedForDeletion"),
+                t("fileBrowser.title")
+            );
         }
     };
 
-    const deleteFile = async (deletePath: string, apiCall: string) => {
-        const loadingMessage = message.loading(t("fileBrowser.messages.deleting"), 0);
+    const deleteFile = async (deletePath: string, apiCall: string, flagMultiple?: boolean) => {
+        const key = "deletingFiles";
+        addLoadingNotification(
+            key,
+            t("fileBrowser.messages.deleting"),
+            t("fileBrowser.messages.deletingDetails", {
+                file: deletePath,
+            })
+        );
+
         try {
             const deleteUrl = `/api/fileDelete${apiCall}`;
             const response = await api.apiPostTeddyCloudRaw(deleteUrl, deletePath);
 
             const data = await response.text();
-            loadingMessage();
+
+            !flagMultiple && closeLoadingNotification(key);
+
             if (data === "OK") {
-                message.success(t("fileBrowser.messages.deleteSuccessful", { file: deletePath }));
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("fileBrowser.messages.deleteSuccessful"),
+                    t("fileBrowser.messages.deleteSuccessfulDetails", { file: deletePath }),
+                    t("fileBrowser.title")
+                );
                 const idToRemove = findNodeIdByFullPath(deletePath + "/", treeData);
                 if (idToRemove) {
                     setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
@@ -558,11 +591,21 @@ export const FileBrowser: React.FC<{
                     setCreateDirectoryPath(path);
                 }
             } else {
-                message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${data}`);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.messages.deleteFailed"),
+                    `${t("fileBrowser.messages.deleteFailedDetails", { file: deletePath })}: ${data}`,
+                    t("fileBrowser.title")
+                );
             }
         } catch (error) {
-            loadingMessage();
-            message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${error}`);
+            !flagMultiple && closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.messages.deleteFailed"),
+                `${t("fileBrowser.messages.deleteFailedDetails", { file: deletePath })}: ${error}`,
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -622,16 +665,37 @@ export const FileBrowser: React.FC<{
                             setTreeNodeId(newNodeId);
                         }
                     }
-                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("fileBrowser.createDirectory.directoryCreated"),
+                        t("fileBrowser.createDirectory.directoryCreatedDetails", {
+                            directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                        }),
+                        t("fileBrowser.title")
+                    );
                     setIsCreateDirectoryModalOpen(false);
                     setRebuildList((prev) => !prev);
                     setCreateDirectoryPath(path);
                 })
                 .catch((error) => {
-                    message.error(error.message);
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("fileBrowser.createDirectory.directoryCreateFailed"),
+                        t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
+                            directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                        }) + error,
+                        t("fileBrowser.title")
+                    );
                 });
         } catch (error) {
-            message.error(`Error while creating directory`);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.createDirectory.directoryCreateFailed"),
+                t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
+                    directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                }) + error,
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -674,44 +738,48 @@ export const FileBrowser: React.FC<{
     );
 
     // move / rename functions
-    const moveRenameFile = async (source: string, target: string, moving: boolean) => {
+    const moveRenameFile = async (source: string, target: string, moving: boolean, flagMultiple?: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
-        const loadingMessage = message.loading(
+        const key = moving ? "move-file" : "rename-file";
+        addLoadingNotification(
+            key,
             moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
-            0
+            moving
+                ? t("fileBrowser.messages.movingDetails", { file: source })
+                : t("fileBrowser.messages.renamingDetails", { file: source })
         );
         try {
             const moveUrl = `/api/fileMove${"?special=" + special + (overlay ? `&overlay=${overlay}` : "")}`;
             const response = await api.apiPostTeddyCloudRaw(moveUrl, body);
 
             const data = await response.text();
-            loadingMessage();
+            !flagMultiple && closeLoadingNotification(key);
             if (data === "OK") {
-                message.success(
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    moving ? t("fileBrowser.messages.movingSuccessful") : t("fileBrowser.messages.renamingSuccessful"),
                     moving
-                        ? t("fileBrowser.messages.movingSuccessful", { file: source })
-                        : t("fileBrowser.messages.renamingSuccessful", { file: source })
+                        ? t("fileBrowser.messages.movingSuccessfulDetails", { fileSource: source, fileTarget: target })
+                        : t("fileBrowser.messages.renamingSuccessfulDetails", {
+                              fileSource: source,
+                              fileTarget: target,
+                          }),
+                    t("fileBrowser.title")
                 );
             } else {
-                message.error(
-                    `${
-                        moving
-                            ? t("fileBrowser.messages.movingFailed", { file: source })
-                            : t("fileBrowser.messages.renamingFailed", { file: source })
-                    }: ${data}`
-                );
                 throw data;
             }
         } catch (error) {
-            loadingMessage();
-            message.error(
-                `${
-                    moving
-                        ? t("fileBrowser.messages.movingFailed", { file: source })
-                        : t("fileBrowser.messages.renamingFailed", { file: source })
-                }: ${error}`
+            !flagMultiple && closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                moving ? t("fileBrowser.messages.movingFailed") : t("fileBrowser.messages.renamingFailed"),
+                (moving
+                    ? t("fileBrowser.messages.movingFailedDetails", { fileSource: source, fileTarget: target })
+                    : t("fileBrowser.messages.renamingFailedDetails", { fileSource: source, fileTarget: target })) +
+                    error,
+                t("fileBrowser.title")
             );
-            throw error;
         }
     };
 
@@ -728,28 +796,34 @@ export const FileBrowser: React.FC<{
     };
 
     const handleSingleMove = async (source: string, target: string) => {
-        try {
-            await moveRenameFile(source + "/" + currentFile, target + "/" + currentFile, true);
-            setRebuildList((prev) => !prev);
-            setIsMoveFileModalOpen(false);
-            setTreeNodeId(rootTreeNode.id);
-        } catch (error) {}
+        await moveRenameFile(source + "/" + currentFile, target + "/" + currentFile, true);
+        setRebuildList((prev) => !prev);
+        setIsMoveFileModalOpen(false);
+        setTreeNodeId(rootTreeNode.id);
     };
 
     const handleMultipleMove = async (source: string, target: string) => {
         if (selectedRowKeys.length > 0) {
+            const key = "move-file";
+            addLoadingNotification(key, t("fileBrowser.messages.moving"), t("fileBrowser.messages.moving"));
             for (const rowName of selectedRowKeys) {
                 const file = (files as Record[]).find((file) => file.name === rowName);
                 if (file && !file.isDir) {
-                    await moveRenameFile(source + "/" + file.name, target + "/" + file.name, true);
+                    await moveRenameFile(source + "/" + file.name, target + "/" + file.name, true, true);
                 }
             }
+            closeLoadingNotification(key);
             setRebuildList((prev) => !prev);
             setIsMoveFileModalOpen(false);
             setSelectedRowKeys([]);
             setTreeNodeId(rootTreeNode.id);
         } else {
-            message.warning("No rows selected for moving.");
+            addNotification(
+                NotificationTypeEnum.Warning,
+                t("tonies.messages.noRowsSelected"),
+                t("tonies.messages.noRowsSelectedForMoving"),
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -1002,26 +1076,47 @@ export const FileBrowser: React.FC<{
     const encodeFiles = async () => {
         setProcessing(true);
         const newTafFilename = inputEncodeTafFileNameRef?.current?.input?.value;
-        const hideLoading = message.loading(t("fileBrowser.encodeFiles.encodingInProgress"), 0);
+        const key = "encoding-" + newTafFilename;
+        addLoadingNotification(
+            key,
+            t("fileBrowser.encodeFiles.encoding"),
+            t("fileBrowser.encodeFiles.encodingInProgress")
+        );
+        const target = getPathFromNodeId(treeNodeId) + "/" + newTafFilename + ".taf";
         const body =
             encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
-            `&target=${encodeURIComponent(getPathFromNodeId(treeNodeId) + "/" + newTafFilename + ".taf")}`;
+            `&target=${encodeURIComponent(target)}`;
         try {
             const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
             if (response.ok) {
-                hideLoading();
-                message.success(t("fileBrowser.encodeFiles.encodingSuccessful"));
+                closeLoadingNotification(key);
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("fileBrowser.encodeFiles.encodingSuccessful"),
+                    t("fileBrowser.encodeFiles.encodingSuccessfulDetails", { file: target }),
+                    t("fileBrowser.title")
+                );
                 setIsEncodeFilesModalOpen(false);
                 setTreeNodeId("1");
                 setSelectedRowKeys([]);
                 setRebuildList(!rebuildList);
             } else {
-                hideLoading();
-                message.error(t("fileBrowser.encodeFiles.encodingFailed"));
+                closeLoadingNotification(key);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.encodeFiles.encodingFailed"),
+                    t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }).replace(": ", ""),
+                    t("fileBrowser.title")
+                );
             }
         } catch (err) {
-            hideLoading();
-            message.error(t("fileBrowser.encodeFiles.encodingFailed"));
+            closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.encodeFiles.encodingFailed"),
+                t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }) + err,
+                t("fileBrowser.title")
+            );
         }
         setProcessing(false);
     };
@@ -1212,9 +1307,15 @@ export const FileBrowser: React.FC<{
         }
         setUploading(true);
         let failure = false;
+        const key = "uploading-" + files.length + "-" + new Date();
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            const hideLoading = message.loading(t("fileBrowser.upload.uploadInProgress", { file: file.name }), 0);
+            addLoadingNotification(
+                key,
+                t("fileBrowser.upload.uploading"),
+                t("fileBrowser.upload.uploadInProgress", { file: file.name })
+            );
             const formData = new FormData();
             formData.append(file.name, file.originFileObj);
             try {
@@ -1223,34 +1324,57 @@ export const FileBrowser: React.FC<{
                     formData
                 );
                 if (response.ok) {
-                    hideLoading();
                     setUploadFileList((prevList) => prevList.filter((f) => f.uid !== file.uid));
-                    message.success(t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }));
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("fileBrowser.upload.uploadedFile"),
+                        t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }),
+                        t("fileBrowser.title")
+                    );
                 } else {
                     failure = true;
-                    hideLoading();
                     setUploadFileList((prevList) =>
                         prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f))
                     );
-                    message.error(t("fileBrowser.upload.uploadFailedForFile", { file: file.name }));
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("fileBrowser.upload.uploadedFileFailed"),
+                        t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
+                        t("fileBrowser.title")
+                    );
                 }
             } catch (err) {
                 failure = true;
-                hideLoading();
-                message.error(t("fileBrowser.upload.uploadFailedForFile", { file: file.name }));
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.upload.uploadedFileFailed"),
+                    t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
+                    t("fileBrowser.title")
+                );
                 setUploadFileList((prevList) =>
                     prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f))
                 );
             }
         }
 
+        closeLoadingNotification(key);
         if (failure) {
             setRebuildList(!rebuildList);
-            message.error(t("fileBrowser.upload.uploadFailed"));
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.upload.uploadFailed"),
+                t("fileBrowser.upload.uploadFailed"),
+                t("fileBrowser.title")
+            );
         } else {
             setRebuildList(!rebuildList);
             setIsOpenUploadDragAndDropModal(false);
-            message.success(t("fileBrowser.upload.uploadSuccessful"));
+            addNotification(
+                NotificationTypeEnum.Success,
+                t("fileBrowser.upload.uploadSuccessful"),
+                t("fileBrowser.upload.uploadSuccessfulDetails"),
+                t("fileBrowser.title")
+            );
         }
         setUploading(false);
     };
@@ -1300,46 +1424,54 @@ export const FileBrowser: React.FC<{
 
     // migrate content functions
     const migrateContent2Lib = (ruid: string, libroot: boolean, overlay?: string) => {
-        try {
-            messageApi.open({
-                type: "loading",
-                content: t("fileBrowser.messages.migrationOngoing"),
-                duration: 0,
-            });
+        const key = "migrating-" + ruid;
 
+        try {
+            addLoadingNotification(
+                key,
+                t("fileBrowser.messages.migrationOngoing"),
+                t("fileBrowser.messages.migrationOngoingDetails", { ruid: ruid })
+            );
             const body = `ruid=${ruid}&libroot=${libroot}`;
 
             api.apiPostTeddyCloudRaw("/api/migrateContent2Lib", body, overlay)
                 .then((response) => response.text())
                 .then((data) => {
-                    messageApi.destroy();
-
+                    closeLoadingNotification(key);
                     if (data === "OK") {
-                        messageApi.open({
-                            type: "success",
-                            content: t("fileBrowser.messages.migrationSuccessful"),
-                        });
+                        addNotification(
+                            NotificationTypeEnum.Success,
+                            t("fileBrowser.messages.migrationSuccessful"),
+                            t("fileBrowser.messages.migrationSuccessfulDetails", { ruid: ruid }),
+                            t("fileBrowser.title")
+                        );
                         setRebuildList((prev) => !prev);
                     } else {
-                        messageApi.open({
-                            type: "error",
-                            content: t("fileBrowser.messages.migrationFailed") + ": " + data,
-                        });
+                        addNotification(
+                            NotificationTypeEnum.Success,
+                            t("fileBrowser.messages.migrationFailed"),
+                            t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }).replace(": ", ""),
+                            t("fileBrowser.title")
+                        );
                     }
                 })
                 .catch((error) => {
-                    messageApi.destroy();
-                    messageApi.open({
-                        type: "error",
-                        content: t("fileBrowser.messages.migrationFailed") + ": " + error,
-                    });
+                    closeLoadingNotification(key);
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("fileBrowser.messages.migrationFailed"),
+                        t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }) + error,
+                        t("fileBrowser.title")
+                    );
                 });
         } catch (error) {
-            messageApi.destroy();
-            messageApi.open({
-                type: "error",
-                content: t("fileBrowser.messages.migrationFailed") + ": " + error,
-            });
+            closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Success,
+                t("fileBrowser.messages.migrationFailed"),
+                t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }) + error,
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -1484,21 +1616,35 @@ export const FileBrowser: React.FC<{
             key: "picture",
             sorter: undefined,
             width: 10,
-            render: (picture: string, record: any) =>
-                record && record.tonieInfo?.picture ? (
-                    <img
-                        key={`picture-${record.name}`}
-                        src={record.tonieInfo.picture}
-                        alt={t("tonies.content.toniePicture")}
-                        onClick={() => showInformationModal(record)}
-                        style={{
-                            width: 100,
-                            cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
-                        }}
-                    />
-                ) : (
-                    <></>
-                ),
+            render: (picture: string, record: any) => (
+                <>
+                    {record && record.tonieInfo?.picture ? (
+                        <>
+                            <img
+                                key={`picture-${record.name}`}
+                                src={record.tonieInfo.picture}
+                                alt={t("tonies.content.toniePicture")}
+                                onClick={() => showInformationModal(record)}
+                                style={{
+                                    width: 100,
+                                    cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
+                                }}
+                            />
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                    {record.hide ? (
+                        <div style={{ textAlign: "center" }}>
+                            <Tag bordered={false} color="warning">
+                                {t("fileBrowser.hidden")}
+                            </Tag>
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                </>
+            ),
             showOnDirOnly: false,
         },
         {
@@ -1646,7 +1792,14 @@ export const FileBrowser: React.FC<{
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
                                         record.tonieInfo,
-                                        record
+                                        {
+                                            ...record,
+                                            audioUrl:
+                                                encodeURI("/content" + path + "/" + record.name) +
+                                                "?ogg=true&special=" +
+                                                special +
+                                                (overlay ? `&overlay=${overlay}` : ""),
+                                        }
                                     )
                                 }
                             />
@@ -1798,7 +1951,6 @@ export const FileBrowser: React.FC<{
 
     return (
         <>
-            {contextHolder}
             <ConfirmationDialog
                 title={t("fileBrowser.confirmDeleteModal")}
                 open={isConfirmDeleteModalOpen}
@@ -1830,7 +1982,7 @@ export const FileBrowser: React.FC<{
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
-                    tonieCardOrTAFRecord={currentRecord}
+                    tonieCardOrTAFRecord={{ ...currentRecord, audioUrl: currentAudioUrl }}
                     onClose={() => setIsInformationModalOpen(false)}
                     overlay={overlay}
                 />
