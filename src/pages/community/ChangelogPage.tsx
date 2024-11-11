@@ -31,9 +31,10 @@ export const ChangelogPage = () => {
                 "gui: Set Cursor to Default on Filebrowser directory row",
                 "gui: Show disabled Cloud in Boxine status badge https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/164",
                 "gui: Recheck cloud status on certain changes (cloud.enabled, uploaded certs, autoextracted certs in esp32 flashing process) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/167",
-                "gui: Added notification system, own page. Migrated mnessages to notification on tonies page, tonieboxes page, content and library page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/165",
+                "gui: Added notification system, own page. Migrated messages to notification (except settingspages) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/165",
                 "gui: Fixed bug deleting Toniebox https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/174",
                 "gui: Mark hidden Tonies/Tags in content view",
+                "gui: Only allow *.der files to be uploaded on certificate upload",
                 "gui: Some refactoring",
             ],
             commits: [
