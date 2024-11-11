@@ -23,7 +23,6 @@ import AvailableBoxesModal, {
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
-import { handleC2DerDownload } from "../../../../utils/helpers";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -117,9 +116,6 @@ cp certs/server/ca.der certs/client/esp32-fakeca/CA.DER`}
             </Paragraph>
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.checkDumpIsOk")}</Paragraph>
             <h5>{t("tonieboxes.esp32BoxFlashing.legacy.flashCAreplacement")}</h5>
-            <Paragraph>
-                <Button onClick={handleC2DerDownload}>{t("tonieboxes.downloadC2DerFile")}</Button>
-            </Paragraph>
             {t("tonieboxes.esp32BoxFlashing.legacy.flashCAreplacementText1")}
             <Paragraph>
                 <CodeSnippet

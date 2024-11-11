@@ -29,7 +29,6 @@ import AvailableBoxesModal, {
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
-import { handleC2DerDownload } from "../../../../utils/helpers";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -289,9 +288,6 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
         <>
             <h4>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacement")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.flashCAreplacementText1")}</Paragraph>
-            <Paragraph>
-                <Button onClick={handleC2DerDownload}>{t("tonieboxes.downloadC2DerFile")}</Button>
-            </Paragraph>
             <Alert
                 type="warning"
                 showIcon

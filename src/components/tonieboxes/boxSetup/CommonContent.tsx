@@ -12,6 +12,7 @@ import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
 
 import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
 import CodeSnippet from "../../utils/CodeSnippet";
+import { handleC2DerDownload } from "../../../utils/helpers";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -126,6 +127,9 @@ export function certificateIntro(): JSX.Element {
     return (
         <>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.certificatesIntro")}</Paragraph>
+            <Paragraph>
+                <Button onClick={handleC2DerDownload}>{t("tonieboxes.downloadC2DerFile")}</Button>
+            </Paragraph>
             <h4>{t("tonieboxes.boxFlashingCommon.dumpCertificates")}</h4>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.dumpCertificatesIntro1")}</Paragraph>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.dumpCertificatesIntro2")}</Paragraph>
