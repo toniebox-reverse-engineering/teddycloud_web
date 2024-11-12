@@ -577,6 +577,8 @@
             "title": "Journal RTNL"
         },
         "saved": "Paramètre enregistré !",
+        "save": "Enregister",
+        "discard": "Ignorer les modifications",
         "title": "Paramètres",
         "tonieboxes": "tonieboxes",
         "toniesJsonUpdate": "Recharger Tonies.json",
@@ -585,7 +587,7 @@
         "toniesJsonUpdateSuccessful": "Tonies(.custom).json rechargé avec succès!",
         "tryToRestartTC": "Tentative de redémarrer TeddyCloud",
         "warning": "Attention ! Bouton de sauvegarde + Niveau des paramètres",
-        "warningHint": "Les entrées de texte doivent actuellement être enregistrées explicitement jusqu'à ce qu'une meilleure solution soit mise en œuvre. Pour ce faire, cliquez sur le symbole de sauvegarde à la fin du champ. Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
+        "warningHint": "Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
     },
     "tonieArticleSearch": {
         "failedToFetchSearchResults": "Erreur lors de la récupération des modèles",

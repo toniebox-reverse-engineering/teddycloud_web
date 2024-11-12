@@ -577,6 +577,8 @@
             "title": "RTNL Log"
         },
         "saved": "Einstellung gespeichert!",
+        "save": "Speichern",
+        "discard": "Verwerfen",
         "title": "Einstellungen",
         "tonieboxes": "Tonieboxen",
         "toniesJsonUpdate": "Lade Tonies.json",
@@ -585,7 +587,7 @@
         "toniesJsonUpdateSuccessful": "Tonies(.custom).json erfolgreich neu geladen!",
         "tryToRestartTC": "Versuche, TeddyCloud neu zu starten",
         "warning": "Achtung! Speicherbutton + Settings level",
-        "warningHint": "Texteingaben müssen derzeit explizit gespeichert werden, bis eine bessere Lösung implementiert ist. Klicke dazu auf das Speichersymbol am Ende des Feldes. Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
+        "warningHint": "Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
     },
     "tonieArticleSearch": {
         "failedToFetchSearchResults": "Fehler beim Abrufen der Modelle",

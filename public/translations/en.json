@@ -577,6 +577,8 @@
             "title": "RTNL Log"
         },
         "saved": "Setting saved!",
+        "save": "Save",
+        "discard": "Discard changes",
         "title": "Settings",
         "tonieboxes": "tonieboxes",
         "toniesJsonUpdate": "Reload Tonies.json",
@@ -585,7 +587,7 @@
         "toniesJsonUpdateSuccessful": "Tonies(.custom).json reloaded successfully!",
         "tryToRestartTC": "Try to restart TeddyCloud",
         "warning": "Attention! Save button + Settings level",
-        "warningHint": "Text inputs currently have to be saved explicitly until a better solution is implemented. To do this, click on the save symbol at the end of the field. If you are missing settings, increase the 'Settings level'."
+        "warningHint": "If you are missing settings, increase the 'Settings level'."
     },
     "tonieArticleSearch": {
         "failedToFetchSearchResults": "Error fetching models",

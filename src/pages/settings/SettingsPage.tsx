@@ -1,19 +1,20 @@
-import React from "react";
-import { Form, Alert, Divider, Radio, message } from "antd";
-import { Link } from "react-router-dom"; // Import Link from React Router
+import { Alert, Divider, Form, Radio, message } from "antd";
+import { Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom"; // Import Link from React Router
+import { OptionsList, TeddyCloudApi } from "../../api";
+import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
-import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { useEffect, useState } from "react";
-import OptionItem from "../../components/utils/OptionItem";
-import { Formik } from "formik";
+import SettingsDataHandler from "../../data/SettingsDataHandler";
+import { SettingsOptionItem } from "./fields/SettingsOptionItem";
+import SettingsButton from "./SettingsButtons";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -61,6 +62,7 @@ export const SettingsPage = () => {
             const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
             if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
                 setOptions(optionsRequest);
+                SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options);
             }
             setLoading(false);
         };
@@ -85,6 +87,14 @@ export const SettingsPage = () => {
             message.error("Error while sending data to server.");
         }
     };
+
+    const stickyFooter = (
+        <div id="testfooter" className="sticky-footer-panel">
+            <div>
+                <SettingsButton></SettingsButton>
+            </div>
+        </div>
+    );
 
     return (
         <>
@@ -133,67 +143,31 @@ export const SettingsPage = () => {
                                     {options?.options?.map((option, index, array) => {
                                         if (option.iD.includes("core.settings_level")) {
                                             return null;
-                                        }
-                                        const parts = option.iD.split(".");
-                                        const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
-                                        return (
-                                            <React.Fragment key={index}>
-                                                {parts.slice(0, -1).map((part, partIndex) => {
-                                                    if (lastParts[partIndex] !== part) {
-                                                        if (partIndex === 0) {
-                                                            return (
-                                                                <h3
-                                                                    style={{
-                                                                        marginLeft: `${partIndex * 20}px`,
-                                                                        marginBottom: "10px",
-                                                                    }}
-                                                                    key={`category-${part}`}
-                                                                >
-                                                                    Category {part}
-                                                                </h3>
-                                                            );
-                                                        } else {
-                                                            return (
-                                                                <h4
-                                                                    style={{
-                                                                        marginLeft: `${partIndex * 10}px`,
-                                                                        marginTop: "10px",
-                                                                        marginBottom: "10px",
-                                                                    }}
-                                                                    key={`category-${part}`}
-                                                                >
-                                                                    .{part}
-                                                                </h4>
-                                                            );
-                                                        }
-                                                    }
-                                                    return null;
-                                                })}
-                                                <OptionItem option={option} noOverlay={true} key={option.iD} />
-                                            </React.Fragment>
-                                        );
-                                    })}
-                                </Form>
-                            </Formik>
-                            <Divider>{t("settings.levelLabel")}</Divider>
-                            <Radio.Group
-                                value={settingsLevel}
-                                onChange={(e) => handleChange(e.target.value)}
-                                style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
-                                disabled={loading}
-                            >
-                                <Radio.Button value="1" key="1">
-                                    Basic
-                                </Radio.Button>
-                                <Radio.Button value="2" key="2">
-                                    Detail
-                                </Radio.Button>
-                                <Radio.Button value="3" key="3">
-                                    Expert
-                                </Radio.Button>
-                            </Radio.Group>
-                        </>
-                    )}
+                                        })}
+                                        <SettingsOptionItem iD={option.iD} />
+                                    </React.Fragment>
+                                );
+                            })}
+                        </Form>
+                    </Formik>
+                    <Divider>{t("settings.levelLabel")}</Divider>
+                    <Radio.Group
+                        value={settingsLevel}
+                        onChange={(e) => handleChange(e.target.value)}
+                        style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
+                        disabled={loading}
+                    >
+                        <Radio.Button value="1" key="1">
+                            Basic
+                        </Radio.Button>
+                        <Radio.Button value="2" key="2">
+                            Detail
+                        </Radio.Button>
+                        <Radio.Button value="3" key="3">
+                            Expert
+                        </Radio.Button>
+                    </Radio.Group>
+                    {stickyFooter}
                 </StyledContent>
             </StyledLayout>
         </>
