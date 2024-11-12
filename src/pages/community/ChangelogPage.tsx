@@ -37,6 +37,7 @@ export const ChangelogPage = () => {
                 "gui: Mark hidden Tonies/Tags in content view",
                 "gui: Only allow *.der files to be uploaded on certificate upload",
                 "gui: Added Download buttons/link to download TeddyCloud CA Certificate https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/177",
+                "gui: Overworked filebrowsers directory visualization and multi select action buttons https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/162",
                 "gui: Some refactoring",
             ],
             commits: [
