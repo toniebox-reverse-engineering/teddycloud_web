@@ -40,34 +40,34 @@ export const SettingsSubNav = () => {
 
     const handleReloadToniesJson = async () => {
         const key = "reloadToniesJson";
-        addLoadingNotification(key, t("settings.toniesJsonReload"), t("settings.toniesJsonReloadInProgress"));
+        addLoadingNotification(key, t("settings.toniesJsonUpdate"), t("settings.toniesJsonUpdateInProgress"));
 
         try {
-            const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonReload");
+            const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonUpdate");
             const data = await response.text();
             setSelectedKey("");
 
             closeLoadingNotification(key);
-            if (data.toString() !== "OK") {
+            if (data.toString() !== "Triggered tonies.json update") {
                 addNotification(
                     NotificationTypeEnum.Error,
-                    t("settings.toniesJsonReloadFailed"),
-                    t("settings.toniesJsonReloadFailed") + ": " + data.toString(),
+                    t("settings.toniesJsonUpdateFailed"),
+                    t("settings.toniesJsonUpdateFailed") + ": " + data.toString(),
                     t("settings.navigationTitle")
                 );
             } else {
                 addNotification(
                     NotificationTypeEnum.Success,
-                    t("settings.toniesJsonReloadSuccessful"),
-                    t("settings.toniesJsonReloadSuccessful"),
+                    t("settings.toniesJsonUpdateSuccessful"),
+                    t("settings.toniesJsonUpdateSuccessful"),
                     t("settings.navigationTitle")
                 );
             }
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,
-                t("settings.toniesJsonReloadFailed"),
-                t("settings.toniesJsonReloadFailed") + ": " + error,
+                t("settings.toniesJsonUpdateFailed"),
+                t("settings.toniesJsonUpdateFailed") + ": " + error,
                 t("settings.navigationTitle")
             );
         }
@@ -100,10 +100,10 @@ export const SettingsSubNav = () => {
         },
         {
             key: "reload_toniesJson",
-            label: <label style={{ cursor: "pointer" }}>{t("settings.toniesJsonReload")}</label>,
+            label: <label style={{ cursor: "pointer" }}>{t("settings.toniesJsonUpdate")}</label>,
             onClick: handleReloadToniesJson,
             icon: React.createElement(SyncOutlined),
-            title: t("settings.toniesJsonReload"),
+            title: t("settings.toniesJsonUpdate"),
         },
         {
             key: "restart_server",
