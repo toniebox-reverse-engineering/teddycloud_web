@@ -9,10 +9,6 @@ import BreadcrumbWrapper, {
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import NotificationsList from "../../components/settings/NotificationsList";
 
-import NotificationExample from "../../utils/testNotification";
-import { Typography } from "antd";
-const { Paragraph } = Typography;
-
 export const NotificationsListPage = () => {
     const { t } = useTranslation();
 
@@ -33,11 +29,6 @@ export const NotificationsListPage = () => {
                 />
                 <StyledContent>
                     <h1>{t(`settings.notifications.title`)}</h1>
-
-                    <Paragraph>
-                        <NotificationExample />
-                    </Paragraph>
-
                     <NotificationsList />
                 </StyledContent>
             </StyledLayout>

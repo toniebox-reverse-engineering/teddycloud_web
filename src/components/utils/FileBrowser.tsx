@@ -29,12 +29,14 @@ import {
     DeleteOutlined,
     EditOutlined,
     FolderAddOutlined,
+    FolderOutlined,
     FormOutlined,
     InboxOutlined,
     NodeExpandOutlined,
     PlayCircleOutlined,
     QuestionCircleOutlined,
     TruckOutlined,
+    UploadOutlined,
 } from "@ant-design/icons";
 import { Key, SortOrder } from "antd/es/table/interface";
 import { DefaultOptionType } from "antd/es/select";
@@ -1561,57 +1563,7 @@ export const FileBrowser: React.FC<{
 
     var columns: any[] = [
         {
-            title:
-                selectedRowKeys.length > 0 ? (
-                    <div style={{ display: "flex", gap: 8, minHeight: 32 }}>
-                        {special === "library" &&
-                        files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length > 0 ? (
-                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
-                                <Button
-                                    icon={<NodeExpandOutlined />}
-                                    onClick={() => showMoveDialog("")}
-                                    disabled={selectedRowKeys.length === 0}
-                                />
-                            </Tooltip>
-                        ) : (
-                            ""
-                        )}
-                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
-                            <Button
-                                icon={<DeleteOutlined />}
-                                onClick={handleMultipleDelete}
-                                disabled={selectedRowKeys.length === 0}
-                            />
-                        </Tooltip>
-                        {withinTafBoundaries(
-                            files.filter(
-                                (item) =>
-                                    selectedRowKeys.includes(item.name) &&
-                                    supportedAudioExtensionsForEncoding.some((ext) =>
-                                        item.name.toLowerCase().endsWith(ext)
-                                    )
-                            ).length
-                        ) && special === "library" ? (
-                            <Tooltip
-                                key="encodeFiles"
-                                title={
-                                    t("fileBrowser.encodeFiles.encodeFiles") +
-                                    supportedAudioExtensionsForEncoding.join(", ")
-                                }
-                            >
-                                <Button
-                                    icon={<CloudSyncOutlined />}
-                                    onClick={showFileEncodeModal}
-                                    disabled={selectedRowKeys.length === 0}
-                                />
-                            </Tooltip>
-                        ) : (
-                            ""
-                        )}
-                    </div>
-                ) : (
-                    <div style={{ minHeight: 32 }}></div>
-                ),
+            title: <div style={{ minHeight: 32 }}></div>,
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
@@ -1657,13 +1609,15 @@ export const FileBrowser: React.FC<{
                 record && (
                     <div key={`name-${record.name}`}>
                         <div className="showSmallDevicesOnly">
-                            <div>
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex" }}>
+                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {record.isDir ? <>{record.name}</> : record.name}
+                                    </div>
                                 </div>
-                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                                {!record.isDir && record.size ? " (" + humanFileSize(record.size) + ")" : ""}
                             </div>
-
                             <div>{record.tonieInfo?.model}</div>
                             <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                 {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
@@ -1672,15 +1626,25 @@ export const FileBrowser: React.FC<{
                             <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
                         </div>
                         <div className="showMediumDevicesOnly">
-                            <div>
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex" }}>
+                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {record.isDir ? <>{record.name}</> : record.name}
+                                    </div>
                                 </div>
-                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                                {!record.isDir && record.size ? " (" + humanFileSize(record.size) + ")" : ""}
                             </div>
                             <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
                         </div>
-                        <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
+                        <div className="showBigDevicesOnly">
+                            <div style={{ display: "flex" }}>
+                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                    {record.isDir ? <>{record.name}</> : record.name}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ),
             filteredValue: [filterText],
@@ -1994,15 +1958,100 @@ export const FileBrowser: React.FC<{
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", width: "100%", marginBottom: 8 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        marginBottom: 8,
+                        minHeight: 32,
+                    }}
+                >
                     {special === "library" ? (
                         <div style={{ width: "100%" }}>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                                <Button size="small" onClick={showCreateDirectoryModal}>
-                                    {t("fileBrowser.createDirectory.createDirectory")}
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, minHeight: 32 }}>
+                                {selectedRowKeys.length > 0 ? (
+                                    <>
+                                        {special === "library" &&
+                                        files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
+                                            .length > 0 ? (
+                                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
+                                                <Button
+                                                    size="small"
+                                                    icon={<NodeExpandOutlined />}
+                                                    onClick={() => showMoveDialog("")}
+                                                    disabled={selectedRowKeys.length === 0}
+                                                >
+                                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                                        {" "}
+                                                        {t("fileBrowser.move")}
+                                                    </div>
+                                                </Button>
+                                            </Tooltip>
+                                        ) : (
+                                            ""
+                                        )}
+                                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
+                                            <Button
+                                                size="small"
+                                                icon={<DeleteOutlined />}
+                                                onClick={handleMultipleDelete}
+                                                disabled={selectedRowKeys.length === 0}
+                                            >
+                                                <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                                    {" "}
+                                                    {t("fileBrowser.delete")}
+                                                </div>
+                                            </Button>
+                                        </Tooltip>
+                                        {withinTafBoundaries(
+                                            files.filter(
+                                                (item) =>
+                                                    selectedRowKeys.includes(item.name) &&
+                                                    supportedAudioExtensionsForEncoding.some((ext) =>
+                                                        item.name.toLowerCase().endsWith(ext)
+                                                    )
+                                            ).length
+                                        ) && special === "library" ? (
+                                            <Tooltip
+                                                key="encodeFiles"
+                                                title={
+                                                    t("fileBrowser.encodeFiles.encodeFiles") +
+                                                    supportedAudioExtensionsForEncoding.join(", ")
+                                                }
+                                            >
+                                                <Button
+                                                    size="small"
+                                                    icon={<CloudSyncOutlined />}
+                                                    onClick={showFileEncodeModal}
+                                                    disabled={selectedRowKeys.length === 0}
+                                                >
+                                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                                        {" "}
+                                                        {t("fileBrowser.encodeFiles.encode")}
+                                                    </div>
+                                                </Button>
+                                            </Tooltip>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
+                                <Button icon={<FolderAddOutlined />} size="small" onClick={showCreateDirectoryModal}>
+                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                        {t("fileBrowser.createDirectory.createDirectory")}
+                                    </div>
                                 </Button>
-                                <Button size="small" onClick={showUploadFilesDragAndDropModal}>
-                                    {t("fileBrowser.upload.showUploadFilesDragNDrop")}
+                                <Button
+                                    icon={<UploadOutlined />}
+                                    size="small"
+                                    onClick={showUploadFilesDragAndDropModal}
+                                >
+                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                        {t("fileBrowser.upload.showUploadFilesDragNDrop")}
+                                    </div>
                                 </Button>
                             </div>
                         </div>
@@ -2010,7 +2059,12 @@ export const FileBrowser: React.FC<{
                         <div></div>
                     )}
                     <div>
-                        <Button size="small" icon={<QuestionCircleOutlined />} onClick={() => setIsHelpModalOpen(true)}>
+                        <Button
+                            size="small"
+                            icon={<QuestionCircleOutlined />}
+                            onClick={() => setIsHelpModalOpen(true)}
+                            style={{ marginLeft: 8 }}
+                        >
                             {t("fileBrowser.help.showHelp")}
                         </Button>
                     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { Typography, Button, Alert, message } from "antd";
+import { Typography, Button, Alert } from "antd";
 
 import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -18,6 +18,8 @@ import BreadcrumbWrapper, {
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -30,6 +32,7 @@ interface LanguageCounts {
 export const HomePage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { addNotification } = useTeddyCloud();
 
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
@@ -65,7 +68,14 @@ export const HomePage = () => {
                     fetchTonieboxes();
                 }
             } catch (error) {
-                message.error("Error: " + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("settings.messages.errorFetchingSetting"),
+                    t("settings.messages.errorFetchingSettingDetails", {
+                        setting: "toniebox.api_access",
+                    }) + error,
+                    t("home.navigationTitle")
+                );
             }
         };
 

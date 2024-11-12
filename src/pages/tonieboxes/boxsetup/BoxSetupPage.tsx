@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Alert, message, theme, Timeline, Typography } from "antd";
+import { Alert, theme, Timeline, Typography } from "antd";
 import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileOutlined } from "@ant-design/icons";
 
 import { forumUrl, telegramGroupUrl } from "../../../constants";
@@ -16,6 +16,9 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { handleTCCADerDownload } from "../../../utils/helpers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -25,6 +28,7 @@ const { useToken } = theme;
 export const BoxSetupPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const { addNotification } = useTeddyCloud();
 
     const [newBoxesAllowed, setNewBoxesAllowed] = useState(true);
 
@@ -34,7 +38,14 @@ export const BoxSetupPage = () => {
                 const newBoxesAllowed = await api.apiGetNewBoxesAllowed();
                 setNewBoxesAllowed(newBoxesAllowed);
             } catch (error) {
-                message.error("Fetching new box allowed: " + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("settings.messages.errorFetchingSetting"),
+                    t("settings.messages.errorFetchingSettingDetails", {
+                        setting: "core.allowNewBox",
+                    }) + error,
+                    t("tonieboxes.navigationTitle")
+                );
             }
         };
         fetchNewBoxesAllowed();
@@ -46,6 +57,17 @@ export const BoxSetupPage = () => {
                 <>
                     <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.setupTeddyCloud")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.setupTeddyCloudText")}</Paragraph>
+                    <ul>
+                        <li>
+                            <Link to="#" onClick={() => handleTCCADerDownload(true)}>
+                                {t("tonieboxes.downloadC2DerFile")} (CC3200)
+                            </Link>{" "}
+                            |{" "}
+                            <Link to="#" onClick={() => handleTCCADerDownload(false)}>
+                                {t("tonieboxes.downloadCADerFile")} (CC3235, ESP32)
+                            </Link>
+                        </li>
+                    </ul>
                 </>
             ),
             dot: <CheckCircleOutlined />,

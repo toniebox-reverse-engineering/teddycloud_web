@@ -21,6 +21,7 @@ export const ChangelogPage = () => {
             changes: [
                 "Stabilization backend",
                 "Added Hide Information in filesV2 Api https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
+                "Provide c2.der symlink",
                 "Added custom_img volume for storing custom images - adapt your docker-compose.yaml according https://github.com/toniebox-reverse-engineering/teddycloud/blob/master/docker/docker-compose.yaml",
                 "gui: Added version overview page",
                 "gui: Added spinning wheel to lists, should also fix https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/129",
@@ -31,9 +32,12 @@ export const ChangelogPage = () => {
                 "gui: Set Cursor to Default on Filebrowser directory row",
                 "gui: Show disabled Cloud in Boxine status badge https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/164",
                 "gui: Recheck cloud status on certain changes (cloud.enabled, uploaded certs, autoextracted certs in esp32 flashing process) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/167",
-                "gui: Added notification system, own page. Migrated mnessages to notification on tonies page, tonieboxes page, content and library page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/165",
+                "gui: Added notification system, own page. Migrated messages to notification (except settingspages) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/165",
                 "gui: Fixed bug deleting Toniebox https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/174",
                 "gui: Mark hidden Tonies/Tags in content view",
+                "gui: Only allow *.der files to be uploaded on certificate upload",
+                "gui: Added Download buttons/link to download TeddyCloud CA Certificate https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/177",
+                "gui: Overworked filebrowsers directory visualization and multi select action buttons https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/162",
                 "gui: Some refactoring",
             ],
             commits: [

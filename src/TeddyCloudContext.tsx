@@ -172,7 +172,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             description,
             icon: <LoadingOutlined />,
             duration: 0,
-            placement: "topRight",
+            placement: "bottomRight",
         });
     };
 

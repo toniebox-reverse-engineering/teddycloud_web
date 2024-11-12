@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Typography, Button, message, Tooltip } from "antd";
+import { Modal, Typography, Button, Tooltip } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 
 import { Record } from "../../types/fileBrowserTypes";
@@ -11,6 +11,8 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import ConfirmationDialog from "./ConfirmationDialog";
 import { useAudioContext } from "../audio/AudioContext";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -41,6 +43,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
 }) => {
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
+    const { addNotification } = useTeddyCloud();
 
     const [isConfirmHideModalOpen, setIsConfirmHideModalOpen] = useState(false);
 
@@ -137,10 +140,20 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         if (onHide && "ruid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.ruid) {
             try {
                 await api.apiPostTeddyCloudContentJson(tonieCardOrTAFRecord.ruid, "hide=true", overlay);
-                message.success(t("tonies.messages.hideTonieSuccessful"));
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("tonies.messages.hideTonieSuccessful"),
+                    t("tonies.messages.hideTonieSuccessfulDetails", { ruid: tonieCardOrTAFRecord.ruid }),
+                    t("tonies.navigationTitle")
+                );
                 onHide(tonieCardOrTAFRecord.ruid);
             } catch (error) {
-                message.error(t("tonies.messages.hideTonieFailed") + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.messages.hideTonieFailed"),
+                    t("tonies.messages.hideTonieFailedDetails", { ruid: tonieCardOrTAFRecord.ruid }) + error,
+                    t("tonies.navigationTitle")
+                );
             }
         }
     };

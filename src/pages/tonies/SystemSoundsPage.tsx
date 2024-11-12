@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { message, Select } from "antd";
+import { Select } from "antd";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 
@@ -17,6 +17,7 @@ import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -24,7 +25,7 @@ const { Option } = Select;
 
 export const SystemSoundsPage = () => {
     const { t } = useTranslation();
-    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
+    const { addNotification, tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [loading, setLoading] = useState(true);
@@ -53,7 +54,12 @@ export const SystemSoundsPage = () => {
                     })
                 );
             } catch (error) {
-                message.error("Fetching Tonies failed: " + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.errorFetchingSystemSounds"),
+                    t("tonies.errorFetchingSystemSounds") + ": " + error,
+                    t("tonies.navigationTitle")
+                );
             } finally {
                 setLoading(false);
             }
@@ -85,7 +91,10 @@ export const SystemSoundsPage = () => {
                             justifyContent: "space-between",
                             alignContent: "center",
                             flexDirection: "row",
+                            flexWrap: "wrap",
+                            gap: 8,
                             alignItems: "center",
+                            marginBottom: 8,
                         }}
                     >
                         <h1>{t("tonies.system-sounds.title")}</h1>

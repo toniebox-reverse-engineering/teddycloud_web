@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { message, Select, Tooltip } from "antd";
+import { Select, Tooltip } from "antd";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 
@@ -17,6 +17,7 @@ import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -28,7 +29,7 @@ interface LanguageCounts {
 
 export const ToniesPage = () => {
     const { t } = useTranslation();
-    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
+    const { addNotification, tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [defaultLanguage, setMaxTag] = useState<string>("");
@@ -63,7 +64,12 @@ export const ToniesPage = () => {
                     })
                 );
             } catch (error) {
-                message.error("Fetching Tonies failed: " + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.errorFetchingTonies"),
+                    t("tonies.errorFetchingTonies") + ": " + error,
+                    t("tonies.navigationTitle")
+                );
                 console.log("error: fetching tonies failed: " + error);
             } finally {
                 setLoading(false);
@@ -121,7 +127,10 @@ export const ToniesPage = () => {
                             justifyContent: "space-between",
                             alignContent: "center",
                             flexDirection: "row",
+                            flexWrap: "wrap",
+                            gap: 8,
                             alignItems: "center",
+                            marginBottom: 8,
                         }}
                     >
                         <h1 style={{ width: "200px" }}>{t("tonies.title")}</h1>
