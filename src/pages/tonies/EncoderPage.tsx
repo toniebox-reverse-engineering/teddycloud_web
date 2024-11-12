@@ -1,26 +1,30 @@
+import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Divider, Input, Space, TreeSelect, Upload, Modal, Tooltip, Form, theme } from "antd";
+import type { InputRef, TreeSelectProps, UploadProps } from "antd";
+import { DefaultOptionType } from "antd/es/select";
 import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import type { InputRef, TreeSelectProps, UploadProps } from "antd";
-import { Button, Divider, Input, Space, TreeSelect, Upload, message, Modal, Tooltip, Form, theme } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
     StyledLayout,
     StyledSider,
 } from "../../components/StyledComponents";
-import { DraggableUploadListItem } from "../../components/utils/DraggableUploadListItem";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
+import { DraggableUploadListItem } from "../../components/utils/DraggableUploadListItem";
 import { MyUploadFile, upload } from "../../utils/encoder";
+import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
 import { createQueryString } from "../../utils/url";
-import { DefaultOptionType } from "antd/es/select";
-
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { invalidCharacters, invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
+import { MAX_FILES } from "../../constants";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -28,12 +32,10 @@ const { useToken } = theme;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
 
-const MAX_FILES = 99;
-
 export const EncoderPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const [messageApi, contextHolder] = message.useMessage();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
 
     const [debugPCMObjects, setDebugPCMObjects] = useState(false);
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
@@ -69,7 +71,7 @@ export const EncoderPage = () => {
         fetchDebugPCM();
 
         const preLoadTreeData = async () => {
-            const newPath = pathFromNodeId(rootTreeNode.id); // Construct API path based on node id
+            const newPath = pathFromNodeId(rootTreeNode.id);
 
             // Simulate an API call to fetch children
             api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
@@ -127,15 +129,22 @@ export const EncoderPage = () => {
     const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
         uploadedFiles++;
         if (uploadedFiles > MAX_FILES) {
-            messageApi.open({
-                type: "error",
-                content: t("tonies.encoder.maxFiles", {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonies.encoder.tooManyFilesError"),
+                t("tonies.encoder.maxFiles", {
                     maxFiles: MAX_FILES,
                 }),
-            });
+                t("tonies.title")
+            );
         }
-
-        setFileList(newFileList.slice(0, MAX_FILES) as MyUploadFile[]);
+        const updatedFileList = newFileList.slice(0, MAX_FILES) as MyUploadFile[];
+        if (updatedFileList.length === 1 && tafFilename === "") {
+            const singleFile = updatedFileList[0];
+            const fileNameWithoutExtension = singleFile.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+            setTafFilename(fileNameWithoutExtension);
+        }
+        setFileList(updatedFileList);
     };
 
     const onRemove = (file: MyUploadFile) => {
@@ -148,13 +157,26 @@ export const EncoderPage = () => {
     const handleUpload = async () => {
         setUploading(true);
         const formData = new FormData();
+        const key = "encoding-" + tafFilename + ".taf";
+        addLoadingNotification(key, t("tonies.encoder.uploading"), t("tonies.encoder.uploading"));
         for (const file of fileList) {
+            addLoadingNotification(
+                key,
+                t("tonies.encoder.uploading"),
+                t("tonies.encoder.uploadingDetails", { file: file.name })
+            );
             try {
                 await new Promise((resolve, reject) =>
                     upload(resolve, reject, formData, fileList, file, debugPCMObjects)
                 );
             } catch (error) {
-                message.error(t("tonies.encoder.errorFileProcessing") + " " + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.encoder.processingError"),
+                    t("tonies.encoder.errorFileProcessing") + error,
+                    t("tonies.title")
+                );
+                closeLoadingNotification(key);
                 setUploading(false);
                 return;
             }
@@ -169,21 +191,44 @@ export const EncoderPage = () => {
         setProcessing(true);
         const queryString = createQueryString(queryParams);
 
-        const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
-
-        const responseData = await response.text();
-        if (response.ok) {
-            message.success(t("tonies.encoder.uploadSuccessful"));
-            setFileList([]);
-            setTafFilename("");
-            setTreeData([rootTreeNode]);
-            setTreeNodeId(rootTreeNode.id);
-        } else {
-            console.log("Upload failed:", responseData);
-            message.error(t("tonies.encoder.uploadFailed"));
+        try {
+            addLoadingNotification(
+                key,
+                t("tonies.encoder.processing"),
+                t("tonies.encoder.processingDetails", { file: tafFilename + ".taf" })
+            );
+            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
+            closeLoadingNotification(key);
+            if (response.ok) {
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("tonies.encoder.uploadSuccessful"),
+                    t("tonies.encoder.uploadSuccessfulDetails", { file: tafFilename + ".taf" }),
+                    t("tonies.title")
+                );
+                setFileList([]);
+                setTafFilename("");
+            } else {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.encoder.uploadFailed"),
+                    t("tonies.encoder.uploadFailedDetails") + response.statusText,
+                    t("tonies.title")
+                );
+            }
+            setProcessing(false);
+            setUploading(false);
+        } catch (err) {
+            closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonies.encoder.uploadFailed"),
+                t("tonies.encoder.uploadFailedDetails") + err,
+                t("tonies.title")
+            );
+            setProcessing(false);
+            setUploading(false);
         }
-        setProcessing(false);
-        setUploading(false);
     };
 
     const props: UploadProps = {
@@ -286,15 +331,36 @@ export const EncoderPage = () => {
                         })
                     );
                     setTreeNodeId(newNodeId);
-                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("fileBrowser.createDirectory.directoryCreated"),
+                        t("fileBrowser.createDirectory.directoryCreatedDetails", {
+                            directory: path + "/" + inputValueCreateDirectory,
+                        }),
+                        t("fileBrowser.title")
+                    );
                     setCreateDirectoryModalOpen(false);
                     setInputValueCreateDirectory("");
                 })
                 .catch((error) => {
-                    message.error(error.message);
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("fileBrowser.createDirectory.directoryCreateFailed"),
+                        t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
+                            directory: path + "/" + inputValueCreateDirectory,
+                        }) + error,
+                        t("fileBrowser.title")
+                    );
                 });
         } catch (error) {
-            message.error(`Error while creating directory`);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.createDirectory.directoryCreateFailed"),
+                t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
+                    directory: path + "/" + inputValueCreateDirectory,
+                }) + error,
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -345,7 +411,6 @@ export const EncoderPage = () => {
 
     return (
         <>
-            {contextHolder}
             <StyledSider>
                 <ToniesSubNav />
             </StyledSider>
@@ -454,6 +519,7 @@ export const EncoderPage = () => {
                                             <Input
                                                 addonAfter=".taf"
                                                 required
+                                                defaultValue={tafFilename}
                                                 style={{
                                                     maxWidth: 300,
                                                 }}

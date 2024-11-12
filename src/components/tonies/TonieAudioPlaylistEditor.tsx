@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, Form, Input, Button, Space, Alert, theme } from "antd";
 import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
+
+import CodeSnippet from "../utils/CodeSnippet";
 import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 export interface FileItem {
@@ -12,7 +12,7 @@ export interface FileItem {
     name: string;
 }
 
-export interface FormValues {
+export interface TAPFormValues {
     type: string;
     audio_id: number;
     filepath: string;
@@ -23,7 +23,7 @@ export interface FormValues {
 export interface TonieAudioPlaylistEditorProps {
     open: boolean;
     initialValuesJson?: string;
-    onCreate: (values: FormValues) => void;
+    onCreate: (values: TAPFormValues) => void;
     onCancel: () => void;
 }
 
@@ -39,7 +39,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const [form] = Form.useForm<FormValues>();
+    const [form] = Form.useForm<TAPFormValues>();
     const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
     const [filebrowserKey, setFilebrowserKey] = useState(0);
@@ -93,7 +93,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     };
 
     const handleOkSelectFile = () => {
-        const currentValues = form.getFieldsValue() as FormValues;
+        const currentValues = form.getFieldsValue() as TAPFormValues;
         let updatedFiles = [...currentValues.files];
 
         if (selectedFileIndex !== -1) {
@@ -139,52 +139,19 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
         setJsonViewerModalOpened(false);
     };
 
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
-
     const jsonViewerModal = (
         <Modal
             footer={jsonViewerModalFooter}
-            width={700}
+            width={1000}
             title={"File (you can copy the content to a *.tap file)"}
             open={jsonViewerModalOpened}
             onCancel={handleJsonViewerModalClose}
         >
             {jsonData ? (
                 <>
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {jsonData}
-                    </SyntaxHighlighter>
+                    <CodeSnippet language="json" code={jsonData} />
                     <div style={{ margin: "16px 0 8px 0" }}>Minimized json:</div>
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {jsonDataMinimized}
-                    </SyntaxHighlighter>
+                    <CodeSnippet language="json" showLineNumbers={false} code={jsonDataMinimized} />
                 </>
             ) : (
                 "Loading..."
@@ -225,7 +192,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                 onOk={() => {
                     form.validateFields()
                         .then(() => {
-                            onCreate(form.getFieldsValue() as FormValues);
+                            onCreate(form.getFieldsValue() as TAPFormValues);
                             //remove that if the API is available
                             setJsonData(JSON.stringify(form.getFieldsValue(), null, 2));
                             setJsonDataMinimized(JSON.stringify(form.getFieldsValue(), null, 0));

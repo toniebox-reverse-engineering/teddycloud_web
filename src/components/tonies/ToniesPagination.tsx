@@ -1,6 +1,6 @@
 import React from "react";
-import { Pagination, Button } from "antd";
 import { useTranslation } from "react-i18next";
+import { Pagination, Button } from "antd";
 
 interface ToniesPaginationProps {
     currentPage: number;

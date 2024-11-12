@@ -1,4 +1,3 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, List } from "antd";
@@ -18,6 +17,71 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.6.3",
+            changes: [
+                "Stabilization backend",
+                "Added Hide Information in filesV2 Api https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
+                "Provide c2.der symlink",
+                "Added custom_img volume for storing custom images - adapt your docker-compose.yaml according https://github.com/toniebox-reverse-engineering/teddycloud/blob/master/docker/docker-compose.yaml",
+                "gui: Added version overview page",
+                "gui: Added spinning wheel to lists, should also fix https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/129",
+                "gui: Extended cc3235 guide based on https://github.com/toniebox-reverse-engineering/teddycloud/issues/232, https://github.com/toniebox-reverse-engineering/teddycloud/issues/230 and https://github.com/toniebox-reverse-engineering/teddycloud/issues/229",
+                "gui: Extended audioplayer, fixed bugs, show info of currently played content (in case of taf), added play icon to each track in tonieinfomodal (only if tracks and trackseconds have the same number of elements), on click plays the chapter directly",
+                "gui: Edit Tonie/Tag: Overworked rollback and empty field functionality https://github.com/toniebox-reverse-engineering/teddycloud/issues/235",
+                "gui: Edit Tonie/Tag: Fixed some bugs",
+                "gui: Set Cursor to Default on Filebrowser directory row",
+                "gui: Show disabled Cloud in Boxine status badge https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/164",
+                "gui: Recheck cloud status on certain changes (cloud.enabled, uploaded certs, autoextracted certs in esp32 flashing process) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/167",
+                "gui: Added notification system, own page. Migrated messages to notification (except settingspages) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/165",
+                "gui: Fixed bug deleting Toniebox https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/174",
+                "gui: Mark hidden Tonies/Tags in content view",
+                "gui: Only allow *.der files to be uploaded on certificate upload",
+                "gui: Added Download buttons/link to download TeddyCloud CA Certificate https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/177",
+                "gui: Overworked filebrowsers directory visualization and multi select action buttons https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/162",
+                "gui: Some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.2...tc_v0.6.3",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.2...tcw_v0.6.3",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-3/812",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.3",
+        },
+        {
+            version: "0.6.2",
+            changes: [
+                "Stabilization backend",
+                "Provide TrackSeconds for Frontend https://github.com/toniebox-reverse-engineering/teddycloud/issues/187",
+                "Fixed bug no update of model in content.json if empty https://github.com/toniebox-reverse-engineering/teddycloud/issues/215",
+                "Added web_version.json for consistency checks, including new setting frontend.ignore_web_version_mismatch",
+                "Added frontend setting frontend.confirm_audioplayer_close",
+                "Fixed some bugs",
+                "gui: Next button in audio player now jumps according tracks of taf",
+                "gui: Show error if something went wrong while encoding new taf (Audio Encoder)",
+                "gui: Added translation overview page in community contribution section",
+                "gui: Improved Audio Encoder, leave selected target folder till reload of page, if only one file is added, take filename as preset for taf filename https://github.com/toniebox-reverse-engineering/teddycloud/issues/223",
+                "gui: Fixed filterbug in FileBrowser Component (List + Select) https://github.com/toniebox-reverse-engineering/teddycloud/issues/224",
+                "gui: Show warning if web_version of gui does not match expected web_version from backend",
+                "gui: Show warning if ogg/opus (taf) is not supported by browser",
+                "gui: Integrated frontend.confirm_audioplayer_close",
+                "gui: Improved Code Snippet Element, show line numbers and added copy functionality",
+                "gui: Added Box setup overview page",
+                "gui: Added Box version identification page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/145",
+                "gui: Added Open Toniebox guide page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/146",
+                "gui: Extended CC3200 Firmware flash section, added custom alt Url Patch generation. https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/126",
+                "gui: Extended CC3200 Firmware flash section, extended Applying Patches step",
+                "gui: Extended CC3235 Firmware flash section, same version as wiki, but additional images flash chip",
+                "gui: Added ESP32 Firmware flash legacy section, same version as wiki",
+                "gui: some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.1...tc_v0.6.2",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.1...tcw_v0.6.2",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-2/773",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.2",
+        },
+        {
             version: "0.6.1",
             changes: [
                 "Stabilization backend",
@@ -29,6 +93,8 @@ export const ChangelogPage = () => {
                 "Support TAF files in taps and server side taf file encoding",
                 "Added API to extract certificates https://github.com/toniebox-reverse-engineering/teddycloud/issues/103",
                 "Initial cert generation generates now a 4096bit long cert https://github.com/toniebox-reverse-engineering/teddycloud/issues/138",
+                "Extended settings api",
+                "Fixed bug updating empty model information if entry was added in tonies.json https://github.com/toniebox-reverse-engineering/teddycloud/issues/215",
                 "Fixed some bugs",
                 "gui: Fixed bug storing source with html special chars",
                 "gui: Fixed bug saving model and source of a tonie/tag at once",
@@ -38,9 +104,11 @@ export const ChangelogPage = () => {
                 "gui: Fixing security weaknesses",
                 "gui: Added file upload to library",
                 'gui: If setting "Category frontend: Split content / model" is disabled, don\'t show the source info in Tonies list and details modal',
-                "gui: added encoding functionality in library",
-                "gui: allow playing all encodable files in teddyCloud",
-                "gui: esp32 flash process - integrated remaining manual steps. Certificate extraction is now also automated",
+                "gui: Added encoding functionality in library",
+                "gui: Allow playing all encodable files in teddyCloud",
+                "gui: ESP32 flash process - integrated remaining manual steps. Certificate extraction is now also automated",
+                "gui: Fixed bug tonieboxes if tonieboxes.custom.json was empty or not available https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/133",
+                "gui: Added Spanish language - feel free to improve translations as current translation is completely done by ChatGPT.",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.0...tc_v0.6.1",
@@ -239,15 +307,17 @@ export const ChangelogPage = () => {
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.changelog.title`)}</h1>
+                    <h1>{t("community.changelog.title")}</h1>
                     <Paragraph>
                         <List
                             dataSource={changelogData}
                             renderItem={(item) => (
                                 <>
-                                    <h2>Version {item.version}</h2>
+                                    <h2>
+                                        {t("community.changelog.version")} {item.version}
+                                    </h2>
                                     <Paragraph>
-                                        <h3>Changes</h3>
+                                        <h3>{t("community.changelog.changes")}</h3>
                                         <ul>
                                             {item.changes.map((change, index) => (
                                                 <li key={index}>{renderChangeEntry(change)}</li>
@@ -256,9 +326,7 @@ export const ChangelogPage = () => {
                                     </Paragraph>
                                     {item.commits && item.commits.length > 0 && (
                                         <>
-                                            <Text strong>
-                                                All contained commits can be found here (teddy cloud repo):
-                                            </Text>
+                                            <Text strong>{t("community.changelog.allCommits")}:</Text>
                                             <ul>
                                                 {item.commits.map((commit, index) => (
                                                     <li key={index}>
@@ -272,7 +340,7 @@ export const ChangelogPage = () => {
                                     )}
                                     {item.discussionLink && (
                                         <>
-                                            <Text strong>Discussion:</Text>
+                                            <Text strong>{t("community.changelog.discussion")}:</Text>
                                             <ul>
                                                 <li>
                                                     <Link to={item.discussionLink} target="_blank">
@@ -284,7 +352,7 @@ export const ChangelogPage = () => {
                                     )}
                                     {item.githubReleaseLink && (
                                         <>
-                                            <Text strong>GitHub Release:</Text>
+                                            <Text strong>{t("community.changelog.githubRelease")}:</Text>
                                             <ul>
                                                 <li>
                                                     <Link to={item.githubReleaseLink} target="_blank">

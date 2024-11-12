@@ -108,7 +108,7 @@ token.*
 
 ### Usage of translations
 
-Please use always `t("...")` instead of hard coded text. Please add the strings in the English, German and French translation Json.
+Please use always `t("...")` instead of hard coded text. Please add the strings in the English, German, French and Spanish translation Json.
 
 ### Adding new API request method
 
@@ -120,6 +120,18 @@ If you need to add a new API request to the TeddyCloud API, please use one of th
 -   or any other already existing method in `TeddyCloudApi.ts`
 
 If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`. We prefer to have all API requests centralized in this file. One reason is the upcoming authentication for accessing the API.
+
+### Linking to other sites
+
+If you need to link to another source, element, or URL, please check if it is already defined in `constants.tsx`. If it is, use the existing variable instead of hardcoding the URL. If it isn’t, consider adding it as a variable in `constants.tsx` - you may need this URL more than once. Defining it as a variable ensures you only need to update it in one place if the URL changes in the future.
+
+The following URLs have already been defined (partial list):
+
+-   tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png"
+-   telegramGroupUrl = "https://t.me/toniebox_reverse_engineering"
+-   forumUrl = "https://forum.revvox.de/"
+-   gitHubUrl = "https://github.com/toniebox-reverse-engineering"
+-   wikiUrl = "https://tonies-wiki.revvox.de/docs/tools/teddycloud/"
 
 ## Tips and Tricks
 
@@ -162,6 +174,7 @@ This project was bootstrapped with [Vite](https://vitejs.dev/).
 ## Typicale development workflow:
 
 ### Preconditions
+
 You have `node.js` and `python` installed.
 
 ### Install dotenv
@@ -171,6 +184,7 @@ You have `node.js` and `python` installed.
 `sudo apt install python3-dotenv-cli`
 
 #### Windows
+
 `pip install python-dotenv` \
 followed by \
 `pip install "python-dotenv[cli]"`
@@ -211,3 +225,20 @@ See the section about [deployment](https://vitejs.dev/guide/static-deploy.html) 
 You can learn more in the [Vite documentation](https://vitejs.dev/guide/).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+# Attribution
+
+The **Open Toniebox Guide** (`src\components\tonieboxes\boxSetup\OpenBoxGuide.tsx`) is based on the following two excellent guides from iFixIt.com:
+
+-   [iFixIt[1]] [Toniebox Opening Procedure](https://www.ifixit.com/Guide/Toniebox+Opening+Procedure/124139)
+-   [iFixIt[2]] [Toniebox Teardown](https://www.ifixit.com/Teardown/Toniebox+Teardown/106148)
+
+Both guides were originally written and illustrated by [Tobias Isakeit](https://www.ifixit.com/User/828031/Tobias+Isakeit), who also created all the images used here.
+
+Special thanks to Tobias for providing such clear and detailed instructions!
+
+The icons used are from here:
+
+-   logo.png: https://www.flaticon.com/free-icon/dog_2829818
+
+Thanks for the original authors for these great icons.

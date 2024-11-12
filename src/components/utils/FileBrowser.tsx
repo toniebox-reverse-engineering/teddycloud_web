@@ -5,7 +5,6 @@ import {
     Modal,
     Table,
     Tooltip,
-    message,
     Button,
     Input,
     Breadcrumb,
@@ -19,10 +18,9 @@ import {
     Space,
     Divider,
     Form,
+    Empty,
+    Tag,
 } from "antd";
-import { Key } from "antd/es/table/interface";
-import { SortOrder } from "antd/es/table/interface";
-import { useAudioContext } from "../audio/AudioContext";
 import {
     CloseOutlined,
     CloudServerOutlined,
@@ -31,30 +29,41 @@ import {
     DeleteOutlined,
     EditOutlined,
     FolderAddOutlined,
+    FolderOutlined,
     FormOutlined,
     InboxOutlined,
     NodeExpandOutlined,
     PlayCircleOutlined,
+    QuestionCircleOutlined,
     TruckOutlined,
+    UploadOutlined,
 } from "@ant-design/icons";
+import { Key, SortOrder } from "antd/es/table/interface";
+import { DefaultOptionType } from "antd/es/select";
+import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { useAudioContext } from "../audio/AudioContext";
 import { humanFileSize } from "../../utils/humanFileSize";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { TonieInfo } from "../tonies/TonieCard";
 import ConfirmationDialog from "./ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
 import TonieInformationModal from "./TonieInformationModal";
 
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { DefaultOptionType } from "antd/es/select";
-import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
-import { FileObject } from "../../utils/types";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
+
+import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
+import { FileObject, Record, RecordTafHeader } from "../../types/fileBrowserTypes";
+import CodeSnippet from "./CodeSnippet";
+import HelpModal from "./FileBrowserHelpModal";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { generateUUID } from "../../utils/helpers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -65,21 +74,6 @@ const MAX_FILES = 99;
 const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/", fullPath: "/" };
-
-interface RecordTafHeader {
-    audioId?: any;
-    sha1Hash?: any;
-    size?: number;
-    tracks?: any;
-}
-
-export type Record = {
-    date: number;
-    isDir: boolean;
-    name: string;
-    tafHeader: RecordTafHeader;
-    tonieInfo: TonieInfo;
-};
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -101,13 +95,14 @@ export const FileBrowser: React.FC<{
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
     const { token } = useToken();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
     const navigate = useNavigate();
     const cursorPositionFilterRef = useRef<number | null>(null);
     const inputCreateDirectoryRef = useRef<InputRef>(null);
     const inputEncodeTafFileNameRef = useRef<InputRef>(null);
     const inputRenameTafFileNameRef = useRef<InputRef>(null);
     const inputFilterRef = useRef<InputRef>(null);
-    const [messageApi, contextHolder] = message.useMessage();
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -126,11 +121,12 @@ export const FileBrowser: React.FC<{
     const [filterText, setFilterText] = useState("");
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState<boolean>(false);
 
-    const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
+    const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
+    const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
     const [jsonData, setJsonData] = useState<string>("");
-    const [isJsonViewerModalOpen, setJsonViewerModalOpen] = useState<boolean>(false);
+    const [isJsonViewerModalOpen, setIsJsonViewerModalOpen] = useState<boolean>(false);
 
     const [isTapEditorModalOpen, setIsTapEditorModalOpen] = useState<boolean>(false);
     const [tapEditorKey, setTapEditorKey] = useState<number>(0);
@@ -139,14 +135,14 @@ export const FileBrowser: React.FC<{
     const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
 
     const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
-    const [tafHeaderModalOpened, setTafHeaderModalOpened] = useState<boolean>(false);
+    const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
 
     const [isUnchangedOrEmpty, setIsUnchangedOrEmpty] = useState<boolean>(true);
     const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState<boolean>(false);
     const [hasInvalidChars, setHasInvalidChars] = useState<boolean>(false);
     const [hasError, setHasError] = useState<boolean>(true);
 
-    const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState<boolean>(false);
+    const [isCreateDirectoryModalOpen, setIsCreateDirectoryModalOpen] = useState<boolean>(false);
     const [createDirectoryInputKey, setcreateDirectoryInputKey] = useState<number>(1);
     const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(initialPath);
 
@@ -172,6 +168,11 @@ export const FileBrowser: React.FC<{
     const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState<boolean>(false);
     const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState<number>(0);
     const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
+
+    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const parentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const preLoadTreeData = async () => {
@@ -220,6 +221,7 @@ export const FileBrowser: React.FC<{
     }, [overlay]);
 
     useEffect(() => {
+        setLoading(true);
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
@@ -233,6 +235,17 @@ export const FileBrowser: React.FC<{
                             file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
                     );
                 setFiles(list);
+            })
+            .catch((error) =>
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.messages.errorFetchingDirContent"),
+                    t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
+                    t("fileBrowser.title")
+                )
+            )
+            .finally(() => {
+                setLoading(false);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
@@ -261,26 +274,9 @@ export const FileBrowser: React.FC<{
         setCreateDirectoryPath(path);
     }, [path]);
 
-    // general functions
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
-
-    function generateUUID() {
-        return ([1e7] + "-1e3-4e3-8e3-1e11").replace(/[018]/g, (c) =>
-            (parseInt(c) ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (parseInt(c) / 4)))).toString(16)
-        );
-    }
-
     // breadcrumb functions
     const handleBreadcrumbClick = (dirPath: string) => {
+        setLoading(true);
         if (trackUrl) {
             navigate(`?path=${dirPath}`);
         }
@@ -404,7 +400,13 @@ export const FileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
-            setInformationModalOpen(true);
+            setCurrentAudioUrl(
+                encodeURI("/content" + path + "/" + record.name) +
+                    "?ogg=true&special=" +
+                    special +
+                    (overlay ? `&overlay=${overlay}` : "")
+            );
+            setIsInformationModalOpen(true);
         }
     };
 
@@ -414,11 +416,11 @@ export const FileBrowser: React.FC<{
         fetchJsonData(folder + file);
         setFilterFieldAutoFocus(false);
         setCurrentFile(file);
-        setJsonViewerModalOpen(true);
+        setIsJsonViewerModalOpen(true);
     };
 
     const closeJsonViewer = () => {
-        setJsonViewerModalOpen(false);
+        setIsJsonViewerModalOpen(false);
     };
 
     const fetchJsonData = async (path: string) => {
@@ -432,7 +434,7 @@ export const FileBrowser: React.FC<{
     };
 
     const jsonViewerModalFooter = (
-        <Button type="primary" onClick={() => setJsonViewerModalOpen(false)}>
+        <Button type="primary" onClick={() => setIsJsonViewerModalOpen(false)}>
             {t("tonies.informationModal.ok")}
         </Button>
     );
@@ -441,69 +443,44 @@ export const FileBrowser: React.FC<{
         <Modal
             className="json-viewer"
             footer={jsonViewerModalFooter}
-            width={700}
+            width={800}
             title={"File: " + currentFile}
             open={isJsonViewerModalOpen}
             onCancel={closeJsonViewer}
         >
-            {jsonData ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {JSON.stringify(jsonData, null, 2)}
-                </SyntaxHighlighter>
-            ) : (
-                "Loading..."
-            )}
+            {jsonData ? <CodeSnippet language="json" code={JSON.stringify(jsonData, null, 2)} /> : "Loading..."}
         </Modal>
     );
 
     // taf header viewer functions
     const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
         const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
-        const { tracks, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
+        const { trackSeconds, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
         setFilterFieldAutoFocus(false);
         setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
         setCurrentFile(file);
-        setTafHeaderModalOpened(true);
+        setIsTafHeaderModalOpen(true);
     };
 
     const closeTafHeader = () => {
-        setTafHeaderModalOpened(false);
+        setIsTafHeaderModalOpen(false);
     };
 
     const tafHeaderViewerModal = (
         <Modal
             className="taf-header-viewer"
             footer={
-                <Button type="primary" onClick={() => setTafHeaderModalOpened(false)}>
+                <Button type="primary" onClick={() => setIsTafHeaderModalOpen(false)}>
                     {t("tonies.informationModal.ok")}
                 </Button>
             }
             title={t("tonies.tafHeaderOf") + currentFile}
-            open={tafHeaderModalOpened}
+            open={isTafHeaderModalOpen}
             onCancel={closeTafHeader}
+            width={700}
         >
             {currentRecordTafHeader ? (
-                <SyntaxHighlighter
-                    language="json"
-                    style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                    customStyle={{
-                        padding: 0,
-                        borderRadius: 0,
-                        margin: 0,
-                        border: "none",
-                    }}
-                >
-                    {JSON.stringify(currentRecordTafHeader, null, 2)}
-                </SyntaxHighlighter>
+                <CodeSnippet language="json" code={JSON.stringify(currentRecordTafHeader, null, 2)} />
             ) : (
                 "Loading..."
             )}
@@ -558,32 +535,56 @@ export const FileBrowser: React.FC<{
 
     const handleConfirmMultipleDelete = async () => {
         if (selectedRowKeys.length > 0) {
+            const key = "deletingFiles";
+            addLoadingNotification(key, t("fileBrowser.messages.deleting"), t("fileBrowser.messages.deleting"));
             for (const rowName of selectedRowKeys) {
                 const file = (files as Record[]).find((file) => file.name === rowName);
                 if (file) {
                     const deletePath = path + "/" + file.name;
                     const deleteApiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
-                    await deleteFile(deletePath, deleteApiCall);
+                    await deleteFile(deletePath, deleteApiCall, true);
                 }
             }
+            closeLoadingNotification(key);
+
             setRebuildList((prev) => !prev);
             setIsConfirmMultipleDeleteModalOpen(false);
             setSelectedRowKeys([]);
         } else {
-            message.warning("No rows selected for deletion.");
+            addNotification(
+                NotificationTypeEnum.Warning,
+                t("tonies.messages.noRowsSelected"),
+                t("tonies.messages.noRowsSelectedForDeletion"),
+                t("fileBrowser.title")
+            );
         }
     };
 
-    const deleteFile = async (deletePath: string, apiCall: string) => {
-        const loadingMessage = message.loading(t("fileBrowser.messages.deleting"), 0);
+    const deleteFile = async (deletePath: string, apiCall: string, flagMultiple?: boolean) => {
+        const key = "deletingFiles";
+        addLoadingNotification(
+            key,
+            t("fileBrowser.messages.deleting"),
+            t("fileBrowser.messages.deletingDetails", {
+                file: deletePath,
+            })
+        );
+
         try {
             const deleteUrl = `/api/fileDelete${apiCall}`;
             const response = await api.apiPostTeddyCloudRaw(deleteUrl, deletePath);
 
             const data = await response.text();
-            loadingMessage();
+
+            !flagMultiple && closeLoadingNotification(key);
+
             if (data === "OK") {
-                message.success(t("fileBrowser.messages.deleteSuccessful", { file: deletePath }));
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("fileBrowser.messages.deleteSuccessful"),
+                    t("fileBrowser.messages.deleteSuccessfulDetails", { file: deletePath }),
+                    t("fileBrowser.title")
+                );
                 const idToRemove = findNodeIdByFullPath(deletePath + "/", treeData);
                 if (idToRemove) {
                     setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
@@ -592,11 +593,21 @@ export const FileBrowser: React.FC<{
                     setCreateDirectoryPath(path);
                 }
             } else {
-                message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${data}`);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.messages.deleteFailed"),
+                    `${t("fileBrowser.messages.deleteFailedDetails", { file: deletePath })}: ${data}`,
+                    t("fileBrowser.title")
+                );
             }
         } catch (error) {
-            loadingMessage();
-            message.error(`${t("fileBrowser.messages.deleteFailed", { file: deletePath })}: ${error}`);
+            !flagMultiple && closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.messages.deleteFailed"),
+                `${t("fileBrowser.messages.deleteFailedDetails", { file: deletePath })}: ${error}`,
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -606,12 +617,12 @@ export const FileBrowser: React.FC<{
         setHasNewDirectoryInvalidChars(false);
         setcreateDirectoryInputKey((prevKey) => prevKey + 1);
         setFilterFieldAutoFocus(false);
-        setCreateDirectoryModalOpen(true);
+        setIsCreateDirectoryModalOpen(true);
     };
 
     const closeCreateDirectoryModal = () => {
         setFilterFieldAutoFocus(false);
-        setCreateDirectoryModalOpen(false);
+        setIsCreateDirectoryModalOpen(false);
     };
 
     const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
@@ -656,16 +667,37 @@ export const FileBrowser: React.FC<{
                             setTreeNodeId(newNodeId);
                         }
                     }
-                    message.success(t("fileBrowser.createDirectory.directoryCreated"));
-                    setCreateDirectoryModalOpen(false);
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("fileBrowser.createDirectory.directoryCreated"),
+                        t("fileBrowser.createDirectory.directoryCreatedDetails", {
+                            directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                        }),
+                        t("fileBrowser.title")
+                    );
+                    setIsCreateDirectoryModalOpen(false);
                     setRebuildList((prev) => !prev);
                     setCreateDirectoryPath(path);
                 })
                 .catch((error) => {
-                    message.error(error.message);
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("fileBrowser.createDirectory.directoryCreateFailed"),
+                        t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
+                            directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                        }) + error,
+                        t("fileBrowser.title")
+                    );
                 });
         } catch (error) {
-            message.error(`Error while creating directory`);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.createDirectory.directoryCreateFailed"),
+                t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
+                    directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                }) + error,
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -708,44 +740,48 @@ export const FileBrowser: React.FC<{
     );
 
     // move / rename functions
-    const moveRenameFile = async (source: string, target: string, moving: boolean) => {
+    const moveRenameFile = async (source: string, target: string, moving: boolean, flagMultiple?: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
-        const loadingMessage = message.loading(
+        const key = moving ? "move-file" : "rename-file";
+        addLoadingNotification(
+            key,
             moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
-            0
+            moving
+                ? t("fileBrowser.messages.movingDetails", { file: source })
+                : t("fileBrowser.messages.renamingDetails", { file: source })
         );
         try {
             const moveUrl = `/api/fileMove${"?special=" + special + (overlay ? `&overlay=${overlay}` : "")}`;
             const response = await api.apiPostTeddyCloudRaw(moveUrl, body);
 
             const data = await response.text();
-            loadingMessage();
+            !flagMultiple && closeLoadingNotification(key);
             if (data === "OK") {
-                message.success(
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    moving ? t("fileBrowser.messages.movingSuccessful") : t("fileBrowser.messages.renamingSuccessful"),
                     moving
-                        ? t("fileBrowser.messages.movingSuccessful", { file: source })
-                        : t("fileBrowser.messages.renamingSuccessful", { file: source })
+                        ? t("fileBrowser.messages.movingSuccessfulDetails", { fileSource: source, fileTarget: target })
+                        : t("fileBrowser.messages.renamingSuccessfulDetails", {
+                              fileSource: source,
+                              fileTarget: target,
+                          }),
+                    t("fileBrowser.title")
                 );
             } else {
-                message.error(
-                    `${
-                        moving
-                            ? t("fileBrowser.messages.movingFailed", { file: source })
-                            : t("fileBrowser.messages.renamingFailed", { file: source })
-                    }: ${data}`
-                );
                 throw data;
             }
         } catch (error) {
-            loadingMessage();
-            message.error(
-                `${
-                    moving
-                        ? t("fileBrowser.messages.movingFailed", { file: source })
-                        : t("fileBrowser.messages.renamingFailed", { file: source })
-                }: ${error}`
+            !flagMultiple && closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                moving ? t("fileBrowser.messages.movingFailed") : t("fileBrowser.messages.renamingFailed"),
+                (moving
+                    ? t("fileBrowser.messages.movingFailedDetails", { fileSource: source, fileTarget: target })
+                    : t("fileBrowser.messages.renamingFailedDetails", { fileSource: source, fileTarget: target })) +
+                    error,
+                t("fileBrowser.title")
             );
-            throw error;
         }
     };
 
@@ -762,28 +798,34 @@ export const FileBrowser: React.FC<{
     };
 
     const handleSingleMove = async (source: string, target: string) => {
-        try {
-            await moveRenameFile(source + "/" + currentFile, target + "/" + currentFile, true);
-            setRebuildList((prev) => !prev);
-            setIsMoveFileModalOpen(false);
-            setTreeNodeId(rootTreeNode.id);
-        } catch (error) {}
+        await moveRenameFile(source + "/" + currentFile, target + "/" + currentFile, true);
+        setRebuildList((prev) => !prev);
+        setIsMoveFileModalOpen(false);
+        setTreeNodeId(rootTreeNode.id);
     };
 
     const handleMultipleMove = async (source: string, target: string) => {
         if (selectedRowKeys.length > 0) {
+            const key = "move-file";
+            addLoadingNotification(key, t("fileBrowser.messages.moving"), t("fileBrowser.messages.moving"));
             for (const rowName of selectedRowKeys) {
                 const file = (files as Record[]).find((file) => file.name === rowName);
                 if (file && !file.isDir) {
-                    await moveRenameFile(source + "/" + file.name, target + "/" + file.name, true);
+                    await moveRenameFile(source + "/" + file.name, target + "/" + file.name, true, true);
                 }
             }
+            closeLoadingNotification(key);
             setRebuildList((prev) => !prev);
             setIsMoveFileModalOpen(false);
             setSelectedRowKeys([]);
             setTreeNodeId(rootTreeNode.id);
         } else {
-            message.warning("No rows selected for moving.");
+            addNotification(
+                NotificationTypeEnum.Warning,
+                t("tonies.messages.noRowsSelected"),
+                t("tonies.messages.noRowsSelectedForMoving"),
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -1036,26 +1078,47 @@ export const FileBrowser: React.FC<{
     const encodeFiles = async () => {
         setProcessing(true);
         const newTafFilename = inputEncodeTafFileNameRef?.current?.input?.value;
-        const hideLoading = message.loading(t("fileBrowser.encodeFiles.encodingInProgress"), 0);
+        const key = "encoding-" + newTafFilename;
+        addLoadingNotification(
+            key,
+            t("fileBrowser.encodeFiles.encoding"),
+            t("fileBrowser.encodeFiles.encodingInProgress")
+        );
+        const target = getPathFromNodeId(treeNodeId) + "/" + newTafFilename + ".taf";
         const body =
             encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
-            `&target=${encodeURIComponent(getPathFromNodeId(treeNodeId) + "/" + newTafFilename + ".taf")}`;
+            `&target=${encodeURIComponent(target)}`;
         try {
             const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
             if (response.ok) {
-                hideLoading();
-                message.success(t("fileBrowser.encodeFiles.encodingSuccessful"));
+                closeLoadingNotification(key);
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("fileBrowser.encodeFiles.encodingSuccessful"),
+                    t("fileBrowser.encodeFiles.encodingSuccessfulDetails", { file: target }),
+                    t("fileBrowser.title")
+                );
                 setIsEncodeFilesModalOpen(false);
                 setTreeNodeId("1");
                 setSelectedRowKeys([]);
                 setRebuildList(!rebuildList);
             } else {
-                hideLoading();
-                message.error(t("fileBrowser.encodeFiles.encodingFailed"));
+                closeLoadingNotification(key);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.encodeFiles.encodingFailed"),
+                    t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }).replace(": ", ""),
+                    t("fileBrowser.title")
+                );
             }
         } catch (err) {
-            hideLoading();
-            message.error(t("fileBrowser.encodeFiles.encodingFailed"));
+            closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.encodeFiles.encodingFailed"),
+                t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }) + err,
+                t("fileBrowser.title")
+            );
         }
         setProcessing(false);
     };
@@ -1246,9 +1309,15 @@ export const FileBrowser: React.FC<{
         }
         setUploading(true);
         let failure = false;
+        const key = "uploading-" + files.length + "-" + new Date();
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            const hideLoading = message.loading(t("fileBrowser.upload.uploadInProgress", { file: file.name }), 0);
+            addLoadingNotification(
+                key,
+                t("fileBrowser.upload.uploading"),
+                t("fileBrowser.upload.uploadInProgress", { file: file.name })
+            );
             const formData = new FormData();
             formData.append(file.name, file.originFileObj);
             try {
@@ -1257,34 +1326,57 @@ export const FileBrowser: React.FC<{
                     formData
                 );
                 if (response.ok) {
-                    hideLoading();
                     setUploadFileList((prevList) => prevList.filter((f) => f.uid !== file.uid));
-                    message.success(t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }));
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("fileBrowser.upload.uploadedFile"),
+                        t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }),
+                        t("fileBrowser.title")
+                    );
                 } else {
                     failure = true;
-                    hideLoading();
                     setUploadFileList((prevList) =>
                         prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f))
                     );
-                    message.error(t("fileBrowser.upload.uploadFailedForFile", { file: file.name }));
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("fileBrowser.upload.uploadedFileFailed"),
+                        t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
+                        t("fileBrowser.title")
+                    );
                 }
             } catch (err) {
                 failure = true;
-                hideLoading();
-                message.error(t("fileBrowser.upload.uploadFailedForFile", { file: file.name }));
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.upload.uploadedFileFailed"),
+                    t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
+                    t("fileBrowser.title")
+                );
                 setUploadFileList((prevList) =>
                     prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f))
                 );
             }
         }
 
+        closeLoadingNotification(key);
         if (failure) {
             setRebuildList(!rebuildList);
-            message.error(t("fileBrowser.upload.uploadFailed"));
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.upload.uploadFailed"),
+                t("fileBrowser.upload.uploadFailed"),
+                t("fileBrowser.title")
+            );
         } else {
             setRebuildList(!rebuildList);
             setIsOpenUploadDragAndDropModal(false);
-            message.success(t("fileBrowser.upload.uploadSuccessful"));
+            addNotification(
+                NotificationTypeEnum.Success,
+                t("fileBrowser.upload.uploadSuccessful"),
+                t("fileBrowser.upload.uploadSuccessfulDetails"),
+                t("fileBrowser.title")
+            );
         }
         setUploading(false);
     };
@@ -1334,46 +1426,54 @@ export const FileBrowser: React.FC<{
 
     // migrate content functions
     const migrateContent2Lib = (ruid: string, libroot: boolean, overlay?: string) => {
-        try {
-            messageApi.open({
-                type: "loading",
-                content: t("fileBrowser.messages.migrationOngoing"),
-                duration: 0,
-            });
+        const key = "migrating-" + ruid;
 
+        try {
+            addLoadingNotification(
+                key,
+                t("fileBrowser.messages.migrationOngoing"),
+                t("fileBrowser.messages.migrationOngoingDetails", { ruid: ruid })
+            );
             const body = `ruid=${ruid}&libroot=${libroot}`;
 
             api.apiPostTeddyCloudRaw("/api/migrateContent2Lib", body, overlay)
                 .then((response) => response.text())
                 .then((data) => {
-                    messageApi.destroy();
-
+                    closeLoadingNotification(key);
                     if (data === "OK") {
-                        messageApi.open({
-                            type: "success",
-                            content: t("fileBrowser.messages.migrationSuccessful"),
-                        });
+                        addNotification(
+                            NotificationTypeEnum.Success,
+                            t("fileBrowser.messages.migrationSuccessful"),
+                            t("fileBrowser.messages.migrationSuccessfulDetails", { ruid: ruid }),
+                            t("fileBrowser.title")
+                        );
                         setRebuildList((prev) => !prev);
                     } else {
-                        messageApi.open({
-                            type: "error",
-                            content: t("fileBrowser.messages.migrationFailed") + ": " + data,
-                        });
+                        addNotification(
+                            NotificationTypeEnum.Success,
+                            t("fileBrowser.messages.migrationFailed"),
+                            t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }).replace(": ", ""),
+                            t("fileBrowser.title")
+                        );
                     }
                 })
                 .catch((error) => {
-                    messageApi.destroy();
-                    messageApi.open({
-                        type: "error",
-                        content: t("fileBrowser.messages.migrationFailed") + ": " + error,
-                    });
+                    closeLoadingNotification(key);
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("fileBrowser.messages.migrationFailed"),
+                        t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }) + error,
+                        t("fileBrowser.title")
+                    );
                 });
         } catch (error) {
-            messageApi.destroy();
-            messageApi.open({
-                type: "error",
-                content: t("fileBrowser.messages.migrationFailed") + ": " + error,
-            });
+            closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Success,
+                t("fileBrowser.messages.migrationFailed"),
+                t("fileBrowser.messages.migrationFailedDetails", { ruid: ruid }) + error,
+                t("fileBrowser.title")
+            );
         }
     };
 
@@ -1393,6 +1493,10 @@ export const FileBrowser: React.FC<{
         setFilterFieldAutoFocus(true);
     };
 
+    const handleFilterFieldInputBlur = () => {
+        setFilterFieldAutoFocus(false);
+    };
+
     // table functions
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
@@ -1403,6 +1507,7 @@ export const FileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
+        setLoading(true);
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
             navigate(`?path=${newPath}`);
@@ -1458,75 +1563,40 @@ export const FileBrowser: React.FC<{
 
     var columns: any[] = [
         {
-            title:
-                selectedRowKeys.length > 0 ? (
-                    <div style={{ display: "flex", gap: 8, minHeight: 32 }}>
-                        {files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length > 0 ? (
-                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
-                                <Button
-                                    icon={<NodeExpandOutlined />}
-                                    onClick={() => showMoveDialog("")}
-                                    disabled={selectedRowKeys.length === 0}
-                                />
-                            </Tooltip>
-                        ) : (
-                            ""
-                        )}
-                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
-                            <Button
-                                icon={<DeleteOutlined />}
-                                onClick={handleMultipleDelete}
-                                disabled={selectedRowKeys.length === 0}
-                            />
-                        </Tooltip>
-                        {withinTafBoundaries(
-                            files.filter(
-                                (item) =>
-                                    selectedRowKeys.includes(item.name) &&
-                                    supportedAudioExtensionsForEncoding.some((ext) =>
-                                        item.name.toLowerCase().endsWith(ext)
-                                    )
-                            ).length
-                        ) && special === "library" ? (
-                            <Tooltip
-                                key="encodeFiles"
-                                title={
-                                    t("fileBrowser.encodeFiles.encodeFiles") +
-                                    supportedAudioExtensionsForEncoding.join(", ")
-                                }
-                            >
-                                <Button
-                                    icon={<CloudSyncOutlined />}
-                                    onClick={showFileEncodeModal}
-                                    disabled={selectedRowKeys.length === 0}
-                                />
-                            </Tooltip>
-                        ) : (
-                            ""
-                        )}
-                    </div>
-                ) : (
-                    <div style={{ minHeight: 32 }}></div>
-                ),
+            title: <div style={{ minHeight: 32 }}></div>,
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
             width: 10,
-            render: (picture: string, record: any) =>
-                record && record.tonieInfo?.picture ? (
-                    <img
-                        key={`picture-${record.name}`}
-                        src={record.tonieInfo.picture}
-                        alt={t("tonies.content.toniePicture")}
-                        onClick={() => showInformationModal(record)}
-                        style={{
-                            width: 100,
-                            cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
-                        }}
-                    />
-                ) : (
-                    <></>
-                ),
+            render: (picture: string, record: any) => (
+                <>
+                    {record && record.tonieInfo?.picture ? (
+                        <>
+                            <img
+                                key={`picture-${record.name}`}
+                                src={record.tonieInfo.picture}
+                                alt={t("tonies.content.toniePicture")}
+                                onClick={() => showInformationModal(record)}
+                                style={{
+                                    width: 100,
+                                    cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
+                                }}
+                            />
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                    {record.hide ? (
+                        <div style={{ textAlign: "center" }}>
+                            <Tag bordered={false} color="warning">
+                                {t("fileBrowser.hidden")}
+                            </Tag>
+                        </div>
+                    ) : (
+                        ""
+                    )}
+                </>
+            ),
             showOnDirOnly: false,
         },
         {
@@ -1539,13 +1609,15 @@ export const FileBrowser: React.FC<{
                 record && (
                     <div key={`name-${record.name}`}>
                         <div className="showSmallDevicesOnly">
-                            <div>
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex" }}>
+                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {record.isDir ? <>{record.name}</> : record.name}
+                                    </div>
                                 </div>
-                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                                {!record.isDir && record.size ? " (" + humanFileSize(record.size) + ")" : ""}
                             </div>
-
                             <div>{record.tonieInfo?.model}</div>
                             <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                 {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
@@ -1554,15 +1626,25 @@ export const FileBrowser: React.FC<{
                             <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
                         </div>
                         <div className="showMediumDevicesOnly">
-                            <div>
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex" }}>
+                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {record.isDir ? <>{record.name}</> : record.name}
+                                    </div>
                                 </div>
-                                {!record.isDir && record.size ? "(" + humanFileSize(record.size) + ")" : ""}
+                                {!record.isDir && record.size ? " (" + humanFileSize(record.size) + ")" : ""}
                             </div>
                             <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
                         </div>
-                        <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
+                        <div className="showBigDevicesOnly">
+                            <div style={{ display: "flex" }}>
+                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                    {record.isDir ? <>{record.name}</> : record.name}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ),
             filteredValue: [filterText],
@@ -1657,36 +1739,10 @@ export const FileBrowser: React.FC<{
 
                 // taf file
                 if (record.tafHeader) {
-                    // migration to lib possible
-                    if (special !== "library") {
-                        actions.push(
-                            <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
-                                <CloudServerOutlined
-                                    onClick={() =>
-                                        migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)
-                                    }
-                                    style={{ margin: "0 8px 0 0" }}
-                                />
-                            </Tooltip>
-                        );
-                        actions.push(
-                            <Tooltip
-                                key={`action-migrate-root-${record.name}`}
-                                title={t("fileBrowser.migrateContentToLibRoot")}
-                            >
-                                <TruckOutlined
-                                    onClick={() =>
-                                        migrateContent2Lib(path.replace("/", "") + record.name, true, overlay)
-                                    }
-                                    style={{ margin: "0 8px 0 0" }}
-                                />
-                            </Tooltip>
-                        );
-                    }
                     actions.push(
                         <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
                             <PlayCircleOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() =>
                                     playAudio(
                                         encodeURI(
@@ -1699,17 +1755,51 @@ export const FileBrowser: React.FC<{
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
+                                        record.tonieInfo,
+                                        {
+                                            ...record,
+                                            audioUrl:
+                                                encodeURI("/content" + path + "/" + record.name) +
+                                                "?ogg=true&special=" +
+                                                special +
+                                                (overlay ? `&overlay=${overlay}` : ""),
+                                        }
                                     )
                                 }
                             />
                         </Tooltip>
                     );
+                    // migration to lib possible
+                    if (special !== "library") {
+                        actions.push(
+                            <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
+                                <CloudServerOutlined
+                                    onClick={() =>
+                                        migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)
+                                    }
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                        actions.push(
+                            <Tooltip
+                                key={`action-migrate-root-${record.name}`}
+                                title={t("fileBrowser.migrateContentToLibRoot")}
+                            >
+                                <TruckOutlined
+                                    onClick={() =>
+                                        migrateContent2Lib(path.replace("/", "") + record.name, true, overlay)
+                                    }
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                    }
                 } else if (supportedAudioExtensionsForEncoding.some((ending) => record.name.endsWith(ending))) {
                     actions.push(
                         <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
                             <PlayCircleOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() =>
                                     playAudio(
                                         encodeURI(
@@ -1734,14 +1824,14 @@ export const FileBrowser: React.FC<{
                     actions.push(
                         <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tap.edit")}>
                             <EditOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
                             />
                         </Tooltip>
                     );
                     actions.push(
                         <Tooltip key={`action-copy-${record.name}`} title={t("fileBrowser.tap.copy")}>
-                            <CopyOutlined style={{ margin: "0 8px 0 0" }} />
+                            <CopyOutlined style={{ margin: "4px 8px 4px 0", padding: 4 }} />
                         </Tooltip>
                     );
                 }
@@ -1749,33 +1839,36 @@ export const FileBrowser: React.FC<{
                     actions.push(
                         <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
                             <EditOutlined
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTafMetaDataClick(path, record)}
                             />
                         </Tooltip>
                     );
                 }
-                // include the rename icon on files
-                if (!record.isDir && record.name !== "..") {
-                    actions.push(
-                        <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
-                            <FormOutlined
-                                onClick={() => showRenameDialog(record.name)}
-                                style={{ margin: "0 8px 0 0" }}
-                            />
-                        </Tooltip>
-                    );
-                }
-                // include the move icon on files
-                if (!record.isDir && record.name !== "..") {
-                    actions.push(
-                        <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
-                            <NodeExpandOutlined
-                                onClick={() => showMoveDialog(record.name)}
-                                style={{ margin: "0 8px 0 0" }}
-                            />
-                        </Tooltip>
-                    );
+                // only in library move and rename
+                if (special === "library") {
+                    // include the rename icon on files
+                    if (!record.isDir && record.name !== "..") {
+                        actions.push(
+                            <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
+                                <FormOutlined
+                                    onClick={() => showRenameDialog(record.name)}
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                    }
+                    // include the move icon on files
+                    if (!record.isDir && record.name !== "..") {
+                        actions.push(
+                            <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
+                                <NodeExpandOutlined
+                                    onClick={() => showMoveDialog(record.name)}
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                />
+                            </Tooltip>
+                        );
+                    }
                 }
                 // include the delete action
                 if (record.name !== "..") {
@@ -1789,7 +1882,7 @@ export const FileBrowser: React.FC<{
                                         "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
                                     )
                                 }
-                                style={{ margin: "0 8px 0 0" }}
+                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
                             />
                         </Tooltip>
                     );
@@ -1818,9 +1911,10 @@ export const FileBrowser: React.FC<{
         });
     }
 
+    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+
     return (
         <>
-            {contextHolder}
             <ConfirmationDialog
                 title={t("fileBrowser.confirmDeleteModal")}
                 open={isConfirmDeleteModalOpen}
@@ -1846,11 +1940,14 @@ export const FileBrowser: React.FC<{
             {moveFileModal}
             {renameFileModal}
             {encodeFilesModal}
+            {isHelpModalOpen && (
+                <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+            )}
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
-                    tonieCardOrTAFRecord={currentRecord}
-                    onClose={() => setInformationModalOpen(false)}
+                    tonieCardOrTAFRecord={{ ...currentRecord, audioUrl: currentAudioUrl }}
+                    onClose={() => setIsInformationModalOpen(false)}
                     overlay={overlay}
                 />
             ) : (
@@ -1861,97 +1958,199 @@ export const FileBrowser: React.FC<{
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
-                {special === "library" ? (
-                    <div style={{ width: "100%", marginBottom: 8 }}>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                            <Button size="small" onClick={showCreateDirectoryModal} style={{ marginBottom: 8 }}>
-                                {t("fileBrowser.createDirectory.createDirectory")}
-                            </Button>
-
-                            <Button size="small" onClick={showUploadFilesDragAndDropModal} style={{ marginBottom: 8 }}>
-                                {t("fileBrowser.upload.showUploadFilesDragNDrop")}
-                            </Button>
-                        </div>
-                    </div>
-                ) : (
-                    ""
-                )}
-            </div>
-            <Table
-                dataSource={files}
-                columns={columns}
-                rowKey={(record) => record.name}
-                pagination={false}
-                onRow={(record) => ({
-                    onDoubleClick: () => {
-                        if (record.isDir) {
-                            handleDirClick(record.name);
-                        } else if (record.name.includes(".json") || record.name.includes(".tap")) {
-                            showJsonViewer(path + "/" + record.name);
-                        } else if (record.tafHeader) {
-                            showTafHeader(record.name, record.tafHeader);
-                        }
-                    },
-                })}
-                rowClassName={rowClassName}
-                rowSelection={{
-                    selectedRowKeys,
-                    onChange: onSelectChange,
-                    getCheckboxProps: (record: Record) => ({
-                        disabled: record.name === "..", // Disable checkbox for rows with name '..'
-                    }),
-                    onSelectAll: (selected: boolean, selectedRows: any[]) => {
-                        const selectedKeys = selected
-                            ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
-                            : [];
-                        setSelectedRowKeys(selectedKeys);
-                    },
-                }}
-                components={{
-                    // Override the header to include custom search row
-                    header: {
-                        wrapper: (props: any) => {
-                            return <thead {...props} />;
-                        },
-                        row: (props: any) => {
-                            return (
-                                <>
-                                    <tr {...props} />
-                                    <tr>
-                                        <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
-                                            <Input
-                                                placeholder={t("fileBrowser.filter")}
-                                                value={filterText}
-                                                onChange={handleFilterChange}
-                                                onFocus={handleFilterFieldInputFocus}
-                                                ref={inputFilterRef} // Assign ref to input element
-                                                style={{ width: "100%" }}
-                                                autoFocus={filterFieldAutoFocus}
-                                                addonAfter={
-                                                    <CloseOutlined
-                                                        onClick={clearFilterField}
-                                                        disabled={filterText.length === 0}
-                                                        style={{
-                                                            color:
-                                                                filterText.length === 0
-                                                                    ? token.colorTextDisabled
-                                                                    : token.colorText,
-                                                            cursor: filterText.length === 0 ? "default" : "pointer",
-                                                        }}
-                                                    />
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        width: "100%",
+                        marginBottom: 8,
+                        minHeight: 32,
+                    }}
+                >
+                    {special === "library" ? (
+                        <div style={{ width: "100%" }}>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, minHeight: 32 }}>
+                                {selectedRowKeys.length > 0 ? (
+                                    <>
+                                        {special === "library" &&
+                                        files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
+                                            .length > 0 ? (
+                                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
+                                                <Button
+                                                    size="small"
+                                                    icon={<NodeExpandOutlined />}
+                                                    onClick={() => showMoveDialog("")}
+                                                    disabled={selectedRowKeys.length === 0}
+                                                >
+                                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                                        {" "}
+                                                        {t("fileBrowser.move")}
+                                                    </div>
+                                                </Button>
+                                            </Tooltip>
+                                        ) : (
+                                            ""
+                                        )}
+                                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
+                                            <Button
+                                                size="small"
+                                                icon={<DeleteOutlined />}
+                                                onClick={handleMultipleDelete}
+                                                disabled={selectedRowKeys.length === 0}
+                                            >
+                                                <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                                    {" "}
+                                                    {t("fileBrowser.delete")}
+                                                </div>
+                                            </Button>
+                                        </Tooltip>
+                                        {withinTafBoundaries(
+                                            files.filter(
+                                                (item) =>
+                                                    selectedRowKeys.includes(item.name) &&
+                                                    supportedAudioExtensionsForEncoding.some((ext) =>
+                                                        item.name.toLowerCase().endsWith(ext)
+                                                    )
+                                            ).length
+                                        ) && special === "library" ? (
+                                            <Tooltip
+                                                key="encodeFiles"
+                                                title={
+                                                    t("fileBrowser.encodeFiles.encodeFiles") +
+                                                    supportedAudioExtensionsForEncoding.join(", ")
                                                 }
-                                            />
-                                        </th>
-                                    </tr>
-                                </>
-                            );
+                                            >
+                                                <Button
+                                                    size="small"
+                                                    icon={<CloudSyncOutlined />}
+                                                    onClick={showFileEncodeModal}
+                                                    disabled={selectedRowKeys.length === 0}
+                                                >
+                                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                                        {" "}
+                                                        {t("fileBrowser.encodeFiles.encode")}
+                                                    </div>
+                                                </Button>
+                                            </Tooltip>
+                                        ) : (
+                                            ""
+                                        )}
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
+                                <Button icon={<FolderAddOutlined />} size="small" onClick={showCreateDirectoryModal}>
+                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                        {t("fileBrowser.createDirectory.createDirectory")}
+                                    </div>
+                                </Button>
+                                <Button
+                                    icon={<UploadOutlined />}
+                                    size="small"
+                                    onClick={showUploadFilesDragAndDropModal}
+                                >
+                                    <div className="showBigDevicesOnly showMediumDevicesOnly">
+                                        {t("fileBrowser.upload.showUploadFilesDragNDrop")}
+                                    </div>
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div></div>
+                    )}
+                    <div>
+                        <Button
+                            size="small"
+                            icon={<QuestionCircleOutlined />}
+                            onClick={() => setIsHelpModalOpen(true)}
+                            style={{ marginLeft: 8 }}
+                        >
+                            {t("fileBrowser.help.showHelp")}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+            <div className="test" style={{ position: "relative" }} ref={parentRef}>
+                {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
+                <Table
+                    dataSource={files}
+                    columns={columns}
+                    rowKey={(record) => record.name}
+                    pagination={false}
+                    onRow={(record) => ({
+                        onDoubleClick: () => {
+                            if (record.isDir) {
+                                handleDirClick(record.name);
+                            } else if (record.name.includes(".json") || record.name.includes(".tap")) {
+                                showJsonViewer(path + "/" + record.name);
+                            } else if (record.tafHeader) {
+                                showTafHeader(record.name, record.tafHeader);
+                            }
                         },
-                        cell: (props: any) => {
-                            return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
+                        style: { cursor: record.isDir ? "context-menu" : "unset" },
+                    })}
+                    rowClassName={rowClassName}
+                    rowSelection={{
+                        selectedRowKeys,
+                        onChange: onSelectChange,
+                        getCheckboxProps: (record: Record) => ({
+                            disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                        }),
+                        onSelectAll: (selected: boolean, selectedRows: any[]) => {
+                            const selectedKeys = selected
+                                ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                : [];
+                            setSelectedRowKeys(selectedKeys);
                         },
-                    },
-                }}
-            />
+                    }}
+                    components={{
+                        // Override the header to include custom search row
+                        header: {
+                            wrapper: (props: any) => {
+                                return <thead {...props} />;
+                            },
+                            row: (props: any) => {
+                                return (
+                                    <>
+                                        <tr {...props} />
+                                        <tr>
+                                            <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
+                                                <Input
+                                                    placeholder={t("fileBrowser.filter")}
+                                                    value={filterText}
+                                                    onChange={handleFilterChange}
+                                                    onFocus={handleFilterFieldInputFocus}
+                                                    onBlur={handleFilterFieldInputBlur}
+                                                    ref={inputFilterRef} // Assign ref to input element
+                                                    style={{ width: "100%" }}
+                                                    autoFocus={filterFieldAutoFocus}
+                                                    addonAfter={
+                                                        <CloseOutlined
+                                                            onClick={clearFilterField}
+                                                            disabled={filterText.length === 0}
+                                                            style={{
+                                                                color:
+                                                                    filterText.length === 0
+                                                                        ? token.colorTextDisabled
+                                                                        : token.colorText,
+                                                                cursor: filterText.length === 0 ? "default" : "pointer",
+                                                            }}
+                                                        />
+                                                    }
+                                                />
+                                            </th>
+                                        </tr>
+                                    </>
+                                );
+                            },
+                            cell: (props: any) => {
+                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 8 }} />;
+                            },
+                        },
+                    }}
+                    locale={{ emptyText: noData }}
+                />
+            </div>
             <TonieAudioPlaylistEditor
                 open={isTapEditorModalOpen}
                 key={tapEditorKey}

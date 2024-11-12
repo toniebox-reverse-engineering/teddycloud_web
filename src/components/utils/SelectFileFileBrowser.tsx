@@ -1,40 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Table, Tooltip, message, Input, Breadcrumb, InputRef, theme } from "antd";
+import { Table, Tooltip, Input, Breadcrumb, InputRef, theme, Empty } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
-import { useAudioContext } from "../audio/AudioContext";
-import { CloseOutlined, PlayCircleOutlined } from "@ant-design/icons";
-import { TonieInfo } from "../tonies/TonieCard";
-import TonieInformationModal from "./TonieInformationModal";
+import { CloseOutlined, FolderOutlined, PlayCircleOutlined } from "@ant-design/icons";
+
+import { Record } from "../../types/fileBrowserTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
+import TonieInformationModal from "./TonieInformationModal";
+import { useAudioContext } from "../audio/AudioContext";
+import { humanFileSize } from "../../utils/humanFileSize";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
-const MAX_FILES = 99;
-
 const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
-
-interface RecordTafHeader {
-    audioId?: any;
-    sha1Hash?: any;
-    size?: number;
-    tracks?: any;
-}
-
-export type Record = {
-    date: number;
-    isDir: boolean;
-    name: string;
-    tafHeader: RecordTafHeader;
-    tonieInfo: TonieInfo;
-};
 
 export const SelectFileFileBrowser: React.FC<{
     special: string;
@@ -58,6 +47,8 @@ export const SelectFileFileBrowser: React.FC<{
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
     const { token } = useToken();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
     const location = useLocation();
     const navigate = useNavigate();
     const inputRefFilter = useRef<InputRef>(null);
@@ -70,9 +61,13 @@ export const SelectFileFileBrowser: React.FC<{
 
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
+    const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
     const [filterText, setFilterText] = useState("");
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const parentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setSelectedRowKeys([]);
@@ -91,6 +86,7 @@ export const SelectFileFileBrowser: React.FC<{
     }, [overlay]);
 
     useEffect(() => {
+        setLoading(true);
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
@@ -105,6 +101,17 @@ export const SelectFileFileBrowser: React.FC<{
                             file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
                     );
                 setFiles(list);
+            })
+            .catch((error) =>
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("fileBrowser.messages.errorFetchingDirContent"),
+                    t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
+                    t("fileBrowser.title")
+                )
+            )
+            .finally(() => {
+                setLoading(false);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
@@ -119,6 +126,12 @@ export const SelectFileFileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
+            setCurrentAudioUrl(
+                encodeURI("/content" + path + "/" + record.name) +
+                    "?ogg=true&special=" +
+                    special +
+                    (overlay ? `&overlay=${overlay}` : "")
+            );
             setInformationModalOpen(true);
         }
     };
@@ -179,6 +192,9 @@ export const SelectFileFileBrowser: React.FC<{
     const handleFilterFieldInputFocus = () => {
         setFilterFieldAutoFocus(true);
     };
+    const handleFilterFieldInputBlur = () => {
+        setFilterFieldAutoFocus(false);
+    };
 
     // table functions
     const rowClassName = (record: any) => {
@@ -197,16 +213,22 @@ export const SelectFileFileBrowser: React.FC<{
                     );
                 });
                 if (rowCount !== newSelectedRowKeys.length) {
-                    message.warning(
-                        t("fileBrowser.selectAllowedFileTypesOnly", { fileTypes: filetypeFilter.join(", ") })
+                    addNotification(
+                        NotificationTypeEnum.Warning,
+                        t("fileBrowser.fileTypesWarning"),
+                        t("fileBrowser.selectAllowedFileTypesOnly", { fileTypes: filetypeFilter.join(", ") }),
+                        t("fileBrowser.title")
                     );
                 }
             }
             if (newSelectedRowKeys.length > maxSelectedRows) {
-                message.warning(
+                addNotification(
+                    NotificationTypeEnum.Warning,
+                    t("fileBrowser.maxSelectedRowsWarning"),
                     t("fileBrowser.maxSelectedRows", {
                         maxSelectedRows: maxSelectedRows,
-                    })
+                    }),
+                    t("fileBrowser.title")
                 );
             } else {
                 setSelectedRowKeys(newSelectedRowKeys);
@@ -219,6 +241,7 @@ export const SelectFileFileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
+        setLoading(true);
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
             navigate(`?path=${newPath}`);
@@ -268,10 +291,6 @@ export const SelectFileFileBrowser: React.FC<{
         return a.isDir ? -1 : 1;
     };
 
-    const withinTafBoundaries = (numberOfFiles: number) => {
-        return numberOfFiles > 0 && numberOfFiles <= MAX_FILES;
-    };
-
     var columns: any[] = [
         {
             title: "",
@@ -306,26 +325,36 @@ export const SelectFileFileBrowser: React.FC<{
                 record && (
                     <div key={`name-${record.name}`}>
                         <div className="showSmallDevicesOnly">
-                            <div>
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex" }}>
+                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {record.isDir ? <>{record.name}</> : record.name}
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div>{record.tonieInfo?.model}</div>
-                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                    (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                                <div>{record.tonieInfo?.model}</div>
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                    {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+                                        (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                                </div>
                             </div>
                         </div>
                         <div className="showMediumDevicesOnly">
-                            <div>
+                            <div style={{ display: "flex" }}>
+                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
                                 <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                    {record.isDir ? <>{record.name}</> : record.name}
                                 </div>
                             </div>
                         </div>
-                        <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
+                        <div className="showBigDevicesOnly">
+                            <div style={{ display: "flex" }}>
+                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                    {record.isDir ? <>{record.name}</> : record.name}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ),
             filteredValue: [filterText],
@@ -334,7 +363,10 @@ export const SelectFileFileBrowser: React.FC<{
                 return (
                     record.name === ".." ||
                     record.name.toLowerCase().includes(text) ||
-                    (!record.isDir && "tafHeader" in record) ||
+                    (!record.isDir &&
+                        "tafHeader" in record &&
+                        record.tafHeader.size &&
+                        humanFileSize(record.tafHeader.size).toString().includes(text)) ||
                     ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.model.toLowerCase().includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
@@ -413,7 +445,15 @@ export const SelectFileFileBrowser: React.FC<{
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
+                                        record.tonieInfo,
+                                        {
+                                            ...record,
+                                            audioUrl:
+                                                encodeURI("/content" + path + "/" + record.name) +
+                                                "?ogg=true&special=" +
+                                                special +
+                                                (overlay ? `&overlay=${overlay}` : ""),
+                                        }
                                     )
                                 }
                             />
@@ -466,13 +506,14 @@ export const SelectFileFileBrowser: React.FC<{
             return false;
         });
     }
+    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
     return (
         <>
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
-                    tonieCardOrTAFRecord={currentRecord}
+                    tonieCardOrTAFRecord={{ ...currentRecord, audioUrl: currentAudioUrl }}
                     onClose={() => setInformationModalOpen(false)}
                     overlay={overlay}
                 />
@@ -485,90 +526,96 @@ export const SelectFileFileBrowser: React.FC<{
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
                 </div>
             </div>
-            <Table
-                dataSource={files}
-                columns={columns}
-                rowKey={(record) => record.name}
-                pagination={false}
-                onRow={(record) => ({
-                    onDoubleClick: () => {
-                        if (record.isDir) {
-                            handleDirClick(record.name);
-                        } else {
-                            const newSelectedKeys = selectedRowKeys.includes(record.name)
-                                ? selectedRowKeys.filter((key) => key !== record.name)
-                                : [...selectedRowKeys, record.name];
+            <div className="test" style={{ position: "relative" }} ref={parentRef}>
+                {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
+                <Table
+                    dataSource={files}
+                    columns={columns}
+                    rowKey={(record) => record.name}
+                    pagination={false}
+                    onRow={(record) => ({
+                        onDoubleClick: () => {
+                            if (record.isDir) {
+                                handleDirClick(record.name);
+                            } else {
+                                const newSelectedKeys = selectedRowKeys.includes(record.name)
+                                    ? selectedRowKeys.filter((key) => key !== record.name)
+                                    : [...selectedRowKeys, record.name];
 
-                            onSelectChange(newSelectedKeys);
-                        }
-                    },
-                })}
-                rowClassName={rowClassName}
-                rowSelection={
-                    maxSelectedRows > 0
-                        ? {
-                              selectedRowKeys,
-                              onChange: onSelectChange,
-                          }
-                        : {
-                              selectedRowKeys,
-                              onChange: onSelectChange,
-                              getCheckboxProps: (record: Record) => ({
-                                  disabled: record.name === "..", // Disable checkbox for rows with name '..'
-                              }),
-                              onSelectAll: (selected: boolean, selectedRows: any[]) => {
-                                  const selectedKeys = selected
-                                      ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
-                                      : [];
-                                  setSelectedRowKeys(selectedKeys);
-                              },
-                          }
-                }
-                components={{
-                    // Override the header to include custom search row
-                    header: {
-                        wrapper: (props: any) => {
-                            return <thead {...props} />;
+                                onSelectChange(newSelectedKeys);
+                            }
                         },
-                        row: (props: any) => {
-                            return (
-                                <>
-                                    <tr {...props} />
-                                    <tr>
-                                        <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
-                                            <Input
-                                                placeholder={t("fileBrowser.filter")}
-                                                value={filterText}
-                                                onChange={handleFilterChange}
-                                                onFocus={handleFilterFieldInputFocus}
-                                                ref={inputRefFilter} // Assign ref to input element
-                                                style={{ width: "100%" }}
-                                                autoFocus={filterFieldAutoFocus}
-                                                addonAfter={
-                                                    <CloseOutlined
-                                                        onClick={clearFilterField}
-                                                        disabled={filterText.length === 0}
-                                                        style={{
-                                                            color:
-                                                                filterText.length === 0
-                                                                    ? token.colorTextDisabled
-                                                                    : token.colorText,
-                                                            cursor: filterText.length === 0 ? "default" : "pointer",
-                                                        }}
-                                                    />
-                                                }
-                                            />
-                                        </th>
-                                    </tr>
-                                </>
-                            );
+                        style: { cursor: record.isDir ? "context-menu" : "unset" },
+                    })}
+                    rowClassName={rowClassName}
+                    rowSelection={
+                        maxSelectedRows > 0
+                            ? {
+                                  selectedRowKeys,
+                                  onChange: onSelectChange,
+                              }
+                            : {
+                                  selectedRowKeys,
+                                  onChange: onSelectChange,
+                                  getCheckboxProps: (record: Record) => ({
+                                      disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                                  }),
+                                  onSelectAll: (selected: boolean, selectedRows: any[]) => {
+                                      const selectedKeys = selected
+                                          ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                          : [];
+                                      setSelectedRowKeys(selectedKeys);
+                                  },
+                              }
+                    }
+                    components={{
+                        // Override the header to include custom search row
+                        header: {
+                            wrapper: (props: any) => {
+                                return <thead {...props} />;
+                            },
+                            row: (props: any) => {
+                                return (
+                                    <>
+                                        <tr {...props} />
+                                        <tr>
+                                            <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
+                                                <Input
+                                                    placeholder={t("fileBrowser.filter")}
+                                                    value={filterText}
+                                                    onChange={handleFilterChange}
+                                                    onFocus={handleFilterFieldInputFocus}
+                                                    onBlur={handleFilterFieldInputBlur}
+                                                    ref={inputRefFilter} // Assign ref to input element
+                                                    style={{ width: "100%" }}
+                                                    autoFocus={filterFieldAutoFocus}
+                                                    addonAfter={
+                                                        <CloseOutlined
+                                                            onClick={clearFilterField}
+                                                            disabled={filterText.length === 0}
+                                                            style={{
+                                                                color:
+                                                                    filterText.length === 0
+                                                                        ? token.colorTextDisabled
+                                                                        : token.colorText,
+                                                                cursor: filterText.length === 0 ? "default" : "pointer",
+                                                            }}
+                                                        />
+                                                    }
+                                                />
+                                            </th>
+                                        </tr>
+                                    </>
+                                );
+                            },
+                            cell: (props: any) => {
+                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 8 }} />;
+                            },
                         },
-                        cell: (props: any) => {
-                            return <th {...props} style={{ position: "sticky", top: 0, zIndex: 20 }} />;
-                        },
-                    },
-                }}
-            />
+                    }}
+                    locale={{ emptyText: noData }}
+                />
+            </div>
         </>
     );
 };

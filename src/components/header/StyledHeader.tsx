@@ -1,21 +1,30 @@
-import { useTranslation } from "react-i18next";
-import { Header } from "antd/es/layout/layout";
-import styled from "styled-components";
-import { MenuOutlined } from "@ant-design/icons";
-import logoImg from "../../assets/logo.png";
-import { Button, Drawer, Menu, MenuProps } from "antd";
-import { Link, useLocation } from "react-router-dom";
-import { ServerStatus } from "./ServerStatus";
 import { useEffect, useState } from "react";
-import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import { Button, Drawer, Menu, MenuProps, Modal, theme } from "antd";
+import { Header } from "antd/es/layout/layout";
+import { MenuOutlined } from "@ant-design/icons";
+
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import logoImg from "../../assets/logo.png";
+
+import { ServerStatus } from "./ServerStatus";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
-import { theme } from "antd";
+import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import NotificationButton from "../utils/NotificationButton";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
 const StyledLogo = styled.img`
     height: 32px;
 `;
+
 const StyledHeaderComponent = styled(Header)`
     color: white;
     display: flex;
@@ -40,6 +49,7 @@ const StyledLeftPart = styled.div`
 export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const { unconfirmedCount } = useTeddyCloud();
     const [navOpen, setNavOpen] = useState(false);
     const location = useLocation();
 
@@ -87,12 +97,70 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
     if (!selectedKey) selectedKey = "/";
     if (selectedKey === "home") selectedKey = "/";
 
+    const showWarningDialogMismatchFrontendBackend = () => {
+        Modal.error({
+            title: t("home.error"),
+            content: t("home.errorWebVersionMismatch"),
+            okText: t("home.errorConfirm"),
+        });
+    };
+
+    useEffect(() => {
+        const checkVersionMismatch = async () => {
+            const fetchIgnoreWebVersionMismatch = async () => {
+                try {
+                    const ignoreWebVersionMismatchResponse = await api.apiGetTeddyCloudSettingRaw(
+                        "frontend.ignore_web_version_mismatch"
+                    );
+                    const ignoreWebVersionMismatch = (await ignoreWebVersionMismatchResponse.text()) === "true";
+                    return ignoreWebVersionMismatch;
+                } catch (err) {
+                    console.log("Something went wrong getting ignoreWebVersionMismatch.");
+                    return false;
+                }
+            };
+
+            const fetchWebGitShaMatching = async () => {
+                try {
+                    const expectedWebGitShaResponse = await api.apiGetTeddyCloudSettingRaw(
+                        "internal.version_web.git_sha"
+                    );
+                    const expectedWebGitSha = await expectedWebGitShaResponse.text();
+
+                    const actualWebGitShaResponse = await fetch(
+                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + `/web/web_version.json`
+                    );
+                    const actualWebGitShaData = await actualWebGitShaResponse.json();
+                    const actualWebGitSha = actualWebGitShaData.web_gitSha;
+
+                    console.log("expected Web Git Sha: ", expectedWebGitSha);
+                    console.log("actual Web Git Sha: ", actualWebGitSha);
+
+                    if (expectedWebGitSha !== actualWebGitSha) {
+                        showWarningDialogMismatchFrontendBackend();
+                    }
+                } catch (err) {
+                    console.log("Something went wrong getting gitSha.");
+                }
+            };
+
+            if (import.meta.env.MODE === "production") {
+                const ignoreMismatch = await fetchIgnoreWebVersionMismatch();
+                if (!ignoreMismatch) {
+                    await fetchWebGitShaMatching();
+                }
+            }
+        };
+
+        checkVersionMismatch();
+    }, []);
+
     return (
         <StyledHeaderComponent>
             <Link to="/" style={{ color: "white" }}>
                 <StyledLeftPart>
                     <StyledLogo src={logoImg} />
-                    <HiddenMobile> TeddyCloud Server</HiddenMobile>
+                    <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud Server</HiddenMobile>
                 </StyledLeftPart>
             </Link>
             <HiddenMobile>
@@ -102,7 +170,7 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                     items={mainNav}
                     selectedKeys={[selectedKey]}
                     style={{
-                        width: "calc(100vw - 480px)",
+                        width: "calc(100vw - 510px)",
                         background: "#141414 !important",
                     }}
                 />
@@ -111,7 +179,8 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                 <ServerStatus />
                 {themeSwitch}
                 <StyledLanguageSwitcher />
-                <HiddenDesktop>
+                <NotificationButton notificationCount={unconfirmedCount} />
+                <HiddenDesktop style={{ marginLeft: 8 }}>
                     <Button
                         className="barsMenu"
                         type="primary"

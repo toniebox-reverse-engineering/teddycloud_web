@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useField } from "formik";
-import FormItem from "antd/es/form/FormItem";
 import { Switch, SwitchProps, message, Checkbox } from "antd";
+import FormItem from "antd/es/form/FormItem";
+import { useField } from "formik";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 type SwitchFieldProps = {
     name: string;
@@ -20,6 +22,7 @@ type SwitchFieldProps = {
 
 const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
     const { t } = useTranslation();
+    const { setFetchCloudStatus } = useTeddyCloud();
     const { name, label, valueConverter, description, overlayed: initialOverlayed, overlayId, ...switchProps } = props;
     const [field, meta, { setValue }] = useField(name!);
     const [overlayed, setOverlayed] = useState(initialOverlayed);
@@ -95,6 +98,11 @@ const SwitchField = (props: SwitchFieldProps & SwitchProps) => {
                             .then(() => {
                                 triggerWriteConfig();
                                 message.success(t("settings.saved"));
+                            })
+                            .then(() => {
+                                if (name === "cloud.enabled") {
+                                    setFetchCloudStatus((prev) => !prev);
+                                }
                             })
                             .catch((e) => {
                                 message.error("Error while saving config to file.");

@@ -1,6 +1,9 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import { StatsList, TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
@@ -8,8 +11,6 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
-import { StatsList, TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

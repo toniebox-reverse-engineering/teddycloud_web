@@ -10,7 +10,7 @@ export function upload(
     formData: FormData,
     fileList: MyUploadFile<any>[],
     file: MyUploadFile<any>,
-    debugPCMObjects?: boolean,
+    debugPCMObjects?: boolean
 ) {
     const reader = new FileReader();
 

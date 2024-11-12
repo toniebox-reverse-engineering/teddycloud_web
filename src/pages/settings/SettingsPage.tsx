@@ -15,6 +15,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import SettingsDataHandler from "../../data/SettingsDataHandler";
 import { SettingsOptionItem } from "./fields/SettingsOptionItem";
 import SettingsButton from "./SettingsButtons";
+import LoadingSpinner from "../../components/utils/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -34,7 +35,7 @@ export const SettingsPage = () => {
     const [options, setOptions] = useState<OptionsList | undefined>();
 
     const [settingsLevel, setSettingsLevel] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchSettingsLevel = async () => {
@@ -66,7 +67,7 @@ export const SettingsPage = () => {
             setLoading(false);
         };
 
-        fetchOptions();
+        settingsLevel ? fetchOptions() : "";
     }, [settingsLevel]);
 
     const triggerWriteConfig = async () => {
@@ -125,53 +126,22 @@ export const SettingsPage = () => {
                         style={{ margin: "8px 0" }}
                     />
                     <Divider>{t("settings.title")}</Divider>
-                    <Formik
-                        //validationSchema={settingsValidationSchema}
-                        initialValues={{
-                            test: "test",
-                        }}
-                        onSubmit={(values: any) => {
-                            // nothing to submit because of field onchange
-                        }}
-                    >
-                        <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
-                            {options?.options?.map((option, index, array) => {
-                                if (option.iD.includes("core.settings_level")) {
-                                    return null;
-                                }
-                                const parts = option.iD.split(".");
-                                const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
-                                return (
-                                    <React.Fragment key={index}>
-                                        {parts.slice(0, -1).map((part, partIndex) => {
-                                            if (lastParts[partIndex] !== part) {
-                                                if (partIndex === 0) {
-                                                    return (
-                                                        <h3
-                                                            style={{
-                                                                marginLeft: `${partIndex * 20}px`,
-                                                                marginBottom: "10px",
-                                                            }}
-                                                            key={`category-${part}`}
-                                                        >
-                                                            Category {part}
-                                                        </h3>
-                                                    );
-                                                } else {
-                                                    return (
-                                                        <h4
-                                                            style={{
-                                                                marginLeft: `${partIndex * 10}px`,
-                                                                marginTop: "10px",
-                                                                marginBottom: "10px",
-                                                            }}
-                                                            key={`category-${part}`}
-                                                        >
-                                                            .{part}
-                                                        </h4>
-                                                    );
-                                                }
-                                            }
+                    {loading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <>
+                            <Formik
+                                //validationSchema={settingsValidationSchema}
+                                initialValues={{
+                                    test: "test",
+                                }}
+                                onSubmit={(values: any) => {
+                                    // nothing to submit because of field onchange
+                                }}
+                            >
+                                <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
+                                    {options?.options?.map((option, index, array) => {
+                                        if (option.iD.includes("core.settings_level")) {
                                             return null;
                                         })}
                                         <SettingsOptionItem iD={option.iD} />

@@ -1,4 +1,7 @@
-import { MenuProps, message } from "antd";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { MenuProps } from "antd";
 import {
     SafetyCertificateOutlined,
     SettingOutlined,
@@ -6,25 +9,23 @@ import {
     FileSearchOutlined,
     SyncOutlined,
     HistoryOutlined,
+    BellOutlined,
 } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { StyledSubMenu } from "../StyledComponents";
-import { restartServer } from "../../utils/restartServer";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import { StyledSubMenu } from "../StyledComponents";
+import { restartServer } from "../../utils/restartServer";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SettingsSubNav = () => {
     const { t } = useTranslation();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
     const [selectedKey, setSelectedKey] = useState("");
-    const [messageApi, contextHolder] = message.useMessage();
-    const handleRestartServer = async () => {
-        await restartServer(true);
-        setSelectedKey("");
-    };
 
     const extractBaseUrl = (fullUrl: URL) => {
         const url = new URL(fullUrl);
@@ -32,33 +33,43 @@ export const SettingsSubNav = () => {
         return `${url.protocol}//${url.hostname}${port}`;
     };
 
+    const handleRestartServer = async () => {
+        await restartServer(true, addNotification, addLoadingNotification, closeLoadingNotification);
+        setSelectedKey("");
+    };
+
     const handleReloadToniesJson = async () => {
-        const hideLoading = message.loading(t("settings.toniesJsonReloadInProgress"), 0);
+        const key = "reloadToniesJson";
+        addLoadingNotification(key, t("settings.toniesJsonUpdate"), t("settings.toniesJsonUpdateInProgress"));
 
         try {
-            const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonReload");
+            const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonUpdate");
             const data = await response.text();
             setSelectedKey("");
 
-            if (data.toString() !== "OK") {
-                hideLoading();
-                messageApi.open({
-                    type: "error",
-                    content: t("settings.toniesJsonReloadFailed"),
-                });
+            closeLoadingNotification(key);
+            if (data.toString() !== "Triggered tonies.json update") {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("settings.toniesJsonUpdateFailed"),
+                    t("settings.toniesJsonUpdateFailed") + ": " + data.toString(),
+                    t("settings.navigationTitle")
+                );
             } else {
-                hideLoading();
-                messageApi.open({
-                    type: "success",
-                    content: t("settings.toniesJsonReloadSuccessful"),
-                });
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("settings.toniesJsonUpdateSuccessful"),
+                    t("settings.toniesJsonUpdateSuccessful"),
+                    t("settings.navigationTitle")
+                );
             }
         } catch (error) {
-            hideLoading();
-            messageApi.open({
-                type: "error",
-                content: t("settings.toniesJsonReloadFailed"),
-            });
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.toniesJsonUpdateFailed"),
+                t("settings.toniesJsonUpdateFailed") + ": " + error,
+                t("settings.navigationTitle")
+            );
         }
     };
 
@@ -82,11 +93,17 @@ export const SettingsSubNav = () => {
             title: t("settings.rtnl.navigationTitle"),
         },
         {
+            key: "notifications",
+            label: <Link to="/settings/notifications">{t("settings.notifications.navigationTitle")}</Link>,
+            icon: React.createElement(BellOutlined),
+            title: t("settings.notifications.navigationTitle"),
+        },
+        {
             key: "reload_toniesJson",
-            label: <label style={{ cursor: "pointer" }}>{t("settings.toniesJsonReload")}</label>,
+            label: <label style={{ cursor: "pointer" }}>{t("settings.toniesJsonUpdate")}</label>,
             onClick: handleReloadToniesJson,
             icon: React.createElement(SyncOutlined),
-            title: t("settings.toniesJsonReload"),
+            title: t("settings.toniesJsonUpdate"),
         },
         {
             key: "restart_server",
@@ -109,7 +126,6 @@ export const SettingsSubNav = () => {
 
     return (
         <>
-            {contextHolder}
             <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />
         </>
     );

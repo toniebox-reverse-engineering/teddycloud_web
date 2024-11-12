@@ -34,6 +34,14 @@ export default defineConfig(({ command, mode }) => {
                     rewrite: (path) => path.replace(/^\/img_unknown\.png/, `${baseApiUrl}/web/img_unknown.png`),
                     secure: false,
                 },
+                // if you are storing some content locally in teddycloud, for example custom images in http://teddycloud.local/custom_img/
+                // and they are not displayed if you run it in dev mode, you can adapt this to proxy all requests
+                // from /custom_img/*.* to http://teddycloud.local/custom_img/*.*
+                "/custom_img": {
+                    target: "http://teddycloud.local",
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/custom_img/, "/custom_img"),
+                },
             },
         },
     };

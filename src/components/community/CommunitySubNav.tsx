@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
 import {
     LikeOutlined,
@@ -7,14 +10,39 @@ import {
     BranchesOutlined,
     FileTextOutlined,
     QuestionCircleOutlined,
+    GlobalOutlined,
 } from "@ant-design/icons";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+
+import { forumUrl } from "../../constants";
+
 import { StyledSubMenu } from "../StyledComponents";
 
 export const CommunitySubNav = () => {
     const { t } = useTranslation();
+    const [openKeys, setOpenKeys] = useState<string[]>([]);
+
+    const updateOpenKeys = (pathname: string) => {
+        const newKeys: string[] = [];
+        if (pathname.includes("/contribution")) {
+            newKeys.push("contribution");
+        }
+        setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
+    };
+
+    useEffect(() => {
+        updateOpenKeys(location.pathname);
+    }, [location.pathname]);
+
+    const onOpenChange = (keys: string[]) => {
+        const latestOpenKey = keys.find((key) => !openKeys.includes(key));
+        const latestCloseKey = openKeys.find((key) => !keys.includes(key));
+
+        if (latestOpenKey) {
+            setOpenKeys((prevKeys) => [...prevKeys, latestOpenKey]);
+        } else if (latestCloseKey) {
+            setOpenKeys((prevKeys) => prevKeys.filter((key) => key !== latestCloseKey));
+        }
+    };
 
     const subnav: MenuProps["items"] = [
         {
@@ -32,7 +60,10 @@ export const CommunitySubNav = () => {
         {
             key: "contribution",
             label: (
-                <Link to="/community/contribution" style={{ color: "currentColor" }}>
+                <Link
+                    to="/community/contribution"
+                    style={{ color: "currentColor", display: "flex", alignItems: "center", padding: "0 50px 0 0" }}
+                >
                     {t("community.contribution.navigationTitle")}
                 </Link>
             ),
@@ -48,6 +79,16 @@ export const CommunitySubNav = () => {
                     ),
                     icon: React.createElement(FileTextOutlined),
                     title: t("community.contribution.toniesJson.navigationTitle"),
+                },
+                {
+                    key: "translation",
+                    label: (
+                        <Link to="/community/contribution/translations">
+                            {t("community.translations.navigationTitle")}
+                        </Link>
+                    ),
+                    icon: React.createElement(GlobalOutlined),
+                    title: t("community.translations.navigationTitle"),
                 },
             ],
         },
@@ -66,7 +107,7 @@ export const CommunitySubNav = () => {
         {
             key: "Forum",
             label: (
-                <Link to="https://forum.revvox.de/" target="_blank">
+                <Link to={forumUrl} target="_blank">
                     {t("community.forum.navigationTitle")}
                 </Link>
             ),
@@ -75,5 +116,14 @@ export const CommunitySubNav = () => {
         },
     ];
 
-    return <StyledSubMenu mode="inline" defaultOpenKeys={["sub"]} items={subnav} />;
+    return (
+        <StyledSubMenu
+            mode="inline"
+            defaultOpenKeys={["sub"]}
+            openKeys={openKeys}
+            selectedKeys={[]}
+            onOpenChange={onOpenChange}
+            items={subnav}
+        />
+    );
 };

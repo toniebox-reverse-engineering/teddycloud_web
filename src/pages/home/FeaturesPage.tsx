@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+
+import { gitHubTCCommitTreeBaseUrl } from "../../constants";
+
+import { TeddyCloudApi } from "../../api/apis/TeddyCloudApi";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
 import BreadcrumbWrapper, {
     HiddenDesktop,
     StyledContent,
@@ -7,9 +14,6 @@ import BreadcrumbWrapper, {
     StyledSider,
 } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
-import { Link } from "react-router-dom";
-import { TeddyCloudApi } from "../../api/apis/TeddyCloudApi";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 interface FeatureItems {
     [key: string]: string | FeatureGroup;
@@ -84,10 +88,7 @@ export const FeaturesPage = () => {
                     <p>{t("home.features.description")}</p>
                     <p>
                         Build:{" "}
-                        <Link
-                            to={"https://github.com/toniebox-reverse-engineering/teddycloud/tree/" + commitGitShaShort}
-                            target="_blank"
-                        >
+                        <Link to={gitHubTCCommitTreeBaseUrl + commitGitShaShort} target="_blank">
                             {version.replace(versionShort, "")}
                         </Link>
                     </p>
