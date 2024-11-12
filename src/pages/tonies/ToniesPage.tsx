@@ -127,7 +127,10 @@ export const ToniesPage = () => {
                             justifyContent: "space-between",
                             alignContent: "center",
                             flexDirection: "row",
+                            flexWrap: "wrap",
+                            gap: 8,
                             alignItems: "center",
+                            marginBottom: 8,
                         }}
                     >
                         <h1 style={{ width: "200px" }}>{t("tonies.title")}</h1>

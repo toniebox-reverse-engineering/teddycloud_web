@@ -243,7 +243,7 @@
                     "title": "Actions de sélection multiple"
                 },
                 "openDirectory": {
-                    "text": "Double-cliquez sur un répertoire pour l'ouvrir. Les répertoires sont marqués par des crochets et affichent <DIR> comme taille.",
+                    "text": "Double-cliquez sur un répertoire pour l'ouvrir. Les répertoires ont une icône de dossier devant et affichent <DIR> comme taille.",
                     "title": "Ouvrir le répertoire"
                 },
                 "openTAFViewer": {

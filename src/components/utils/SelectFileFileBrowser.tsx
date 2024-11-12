@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Table, Tooltip, Input, Breadcrumb, InputRef, theme, Empty } from "antd";
 import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
-import { CloseOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { CloseOutlined, FolderOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
 import { Record } from "../../types/fileBrowserTypes";
 
@@ -325,26 +325,36 @@ export const SelectFileFileBrowser: React.FC<{
                 record && (
                     <div key={`name-${record.name}`}>
                         <div className="showSmallDevicesOnly">
-                            <div>
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                <div style={{ display: "flex" }}>
+                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {record.isDir ? <>{record.name}</> : record.name}
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div>{record.tonieInfo?.model}</div>
-                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                    (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                                <div>{record.tonieInfo?.model}</div>
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                    {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+                                        (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                                </div>
                             </div>
                         </div>
                         <div className="showMediumDevicesOnly">
-                            <div>
+                            <div style={{ display: "flex" }}>
+                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
                                 <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? "[" + record.name + "]" : record.name}{" "}
+                                    {record.isDir ? <>{record.name}</> : record.name}
                                 </div>
                             </div>
                         </div>
-                        <div className="showBigDevicesOnly">{record.isDir ? "[" + record.name + "]" : record.name}</div>
+                        <div className="showBigDevicesOnly">
+                            <div style={{ display: "flex" }}>
+                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                    {record.isDir ? <>{record.name}</> : record.name}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ),
             filteredValue: [filterText],

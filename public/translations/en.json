@@ -243,7 +243,7 @@
                     "title": "Multi-Selection Actions"
                 },
                 "openDirectory": {
-                    "text": "Double-click on a directory to open it. Directories are marked by square brackets and show <DIR> as size.",
+                    "text": "Double-click on a directory to open it. Directories have a folder icon in front and show <DIR> as their size.",
                     "title": "Open Directory"
                 },
                 "openTAFViewer": {

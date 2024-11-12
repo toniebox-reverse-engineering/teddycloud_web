@@ -243,7 +243,7 @@
                     "title": "Acciones de selección múltiple"
                 },
                 "openDirectory": {
-                    "text": "Haz doble clic en un directorio para abrirlo. Los directorios están marcados con corchetes y muestran <DIR> como tamaño.",
+                    "text": "Haz doble clic en un directorio para abrirlo. Los directorios tienen un icono de carpeta al frente y muestran <DIR> como tamaño.",
                     "title": "Abrir directorio"
                 },
                 "openTAFViewer": {

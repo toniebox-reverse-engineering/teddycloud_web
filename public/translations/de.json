@@ -166,7 +166,7 @@
         "encodeFiles": {
             "addFiles": "Dateien hinzufügen",
             "cancel": "Abbrechen",
-            "encode": "Konvertiere",
+            "encode": "Konvertieren",
             "encodeFiles": "Markierte Dateien in eine taf-Datei konvertieren. Nur die folgenden Dateitypen werden berücksichtigt: ",
             "encoding": "Kodierung",
             "encodingFailed": "Konvertierung fehlgeschlagen!",
@@ -243,7 +243,7 @@
                     "title": "Mehrfachauswahl-Aktionen"
                 },
                 "openDirectory": {
-                    "text": "Doppelklicke auf ein Verzeichnis, um es zu öffnen. Verzeichnisse sind in eckigen Klammern gekennzeichnet und zeigen <DIR> als Größe.",
+                    "text": "Doppelklicke auf ein Verzeichnis, um es zu öffnen. Verzeichnisse haben ein Ordner-Icon vorangestellt und zeigen <DIR> als Größe.",
                     "title": "Verzeichnis öffnen"
                 },
                 "openTAFViewer": {
