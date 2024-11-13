@@ -1,4 +1,4 @@
-import { t } from "i18next";
+import { t, TFunction } from "i18next";
 import { TeddyCloudApi } from "../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
@@ -25,12 +25,12 @@ export default class SettingsDataHandler {
     private listeners: (() => void)[] = [];
     private idListeners: { iD: string; listener: () => {} }[] = [];
     private addNotification!: (type: NotificationTypeEnum, message: string, description: string, title: string) => void;
-    private t!: (key: string, options?: any) => string;
+    private t!: TFunction;
     private constructor() {}
 
     public static initialize(
         addNotification: (type: NotificationTypeEnum, message: string, description: string, title: string) => void,
-        t: (key: string, options?: any) => string
+        t: TFunction
     ) {
         if (!SettingsDataHandler.instance) {
             SettingsDataHandler.instance = new SettingsDataHandler();
