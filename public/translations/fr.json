@@ -570,7 +570,7 @@
         "overlayDisabled": "Superposition désactivée !",
         "overlayEnabled": "Superposition activée !",
         "overlayed": "superposé",
-        "resetDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été réinitialisé avec succès à la valeur par défaut.",
+        "resetToTCDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été réinitialisée avec succès à la valeur de TeddyCloud.",
         "restartComplete": "Redémarrage du serveur TeddyCloud réussi !",
         "restartFailed": "Échec du redémarrage du serveur TeddyCloud !",
         "restartInProgress": "Redémarrage de TeddyCloud en cours...",

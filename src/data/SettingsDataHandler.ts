@@ -145,7 +145,7 @@ export default class SettingsDataHandler {
                         NotificationTypeEnum.Success,
                         t("settings.saved"),
                         reset
-                            ? t("settings.resetDetails", {
+                            ? t("settings.resetToTCDetails", {
                                   setting: setting.label,
                                   overlay: setting.overlayId !== undefined ? ` [${setting.overlayId}]` : "",
                               })

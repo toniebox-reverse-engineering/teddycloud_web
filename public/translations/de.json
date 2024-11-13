@@ -570,7 +570,7 @@
         "overlayDisabled": "Overlayed deaktiviert!",
         "overlayEnabled": "Overlayed aktiviert!",
         "overlayed": "überschrieben",
-        "resetDetails": "Die Einstellung \"{{setting}}\"{{overlay}} wurde erfolgreich auf den Standardwert zurückgesetzt.",
+        "resetToTCDetails": "Die Einstellung \"{{setting}}\"{{overlay}} wurde erfolgreich auf den TeddyCloud-Wert zurückgesetzt.",
         "restartComplete": "Neustart TeddyCloud Server erfolgreich!",
         "restartFailed": "Neustart TeddyCloud Server fehlgeschlagen!",
         "restartInProgress": "TeddyCloud wird gestartet...",

@@ -569,7 +569,7 @@
         "overlayDisabled": "Superposición deshabilitada",
         "overlayEnabled": "Superposición habilitada",
         "overlayed": "superpuesto",
-        "resetDetails": "La configuración \"{{setting}}\"{{overlay}} se ha restablecido con éxito al valor predeterminado.",
+        "resetToTCDetails": "La configuración \"{{setting}}\"{{overlay}}  se restableció correctamente al valor de TeddyCloud.",
         "restartComplete": "¡Reinicio del servidor TeddyCloud exitoso!",
         "restartFailed": "Error al reiniciar el servidor TeddyCloud",
         "restartInProgress": "TeddyCloud se está reiniciando...",
