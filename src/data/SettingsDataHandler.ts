@@ -85,13 +85,21 @@ export default class SettingsDataHandler {
         this.listeners.forEach((listener) => listener());
     }
 
-    //TODO: save changes to server (batched)
-    public saveAll() {
-        this.settings.forEach(async (setting) => {
+    public async saveAll() {
+        const triggerWriteConfig = async () => {
+            await api.apiTriggerWriteConfigGet();
+        };
+
+        const savePromises = this.settings.map(async (setting) => {
             if (setting.initialValue !== setting.value || setting.initialOverlayed !== setting.overlayed) {
-                await this.saveSingleSetting(setting);
+                return this.saveSingleSetting(setting);
             }
         });
+
+        await Promise.all(savePromises);
+
+        await triggerWriteConfig();
+
         this.settings.forEach((setting) => {
             setting.initialValue = setting.value;
             setting.initialOverlayed = setting.overlayed !== undefined ? setting.overlayed : undefined;
@@ -101,18 +109,11 @@ export default class SettingsDataHandler {
     }
 
     private saveSingleSetting(setting: Setting) {
-        const triggerWriteConfig = async () => {
-            await api.apiTriggerWriteConfigGet();
-        };
-
         try {
             const reset = setting.overlayId !== undefined && setting.overlayed === false ? true : false;
 
             return api
                 .apiPostTeddyCloudSetting(setting.iD, setting.value, setting.overlayId, reset)
-                .then(() => {
-                    triggerWriteConfig();
-                })
                 .then(() => {
                     this.addNotification(
                         NotificationTypeEnum.Success,
