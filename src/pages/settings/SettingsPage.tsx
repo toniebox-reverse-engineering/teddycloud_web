@@ -272,7 +272,7 @@ export const SettingsPage = () => {
                         value={settingsLevel}
                         onChange={(e) => handleChange(e.target.value)}
                         style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
-                        disabled={loading}
+                        disabled={loading || SettingsDataHandler.getInstance().hasUnchangedChanges()}
                     >
                         <Radio.Button value="1" key="1">
                             Basic
