@@ -37,7 +37,7 @@ const { useToken } = theme;
 export const SettingsPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { addNotification } = useTeddyCloud();
+    const { addNotification, setFetchCloudStatus } = useTeddyCloud();
 
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [footerHeight, setFooterHeight] = useState(51);
@@ -45,7 +45,7 @@ export const SettingsPage = () => {
     const [settingsLevel, setSettingsLevel] = useState("");
     const [loading, setLoading] = useState(true);
 
-    SettingsDataHandler.initialize(addNotification, t);
+    SettingsDataHandler.initialize(addNotification, t, setFetchCloudStatus);
 
     useEffect(() => {
         const fetchSettingsLevel = async () => {
