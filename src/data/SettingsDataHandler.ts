@@ -96,16 +96,23 @@ export default class SettingsDataHandler {
             }
         });
 
-        await Promise.all(savePromises);
-
-        await triggerWriteConfig();
-
-        this.settings.forEach((setting) => {
-            setting.initialValue = setting.value;
-            setting.initialOverlayed = setting.overlayed !== undefined ? setting.overlayed : undefined;
-        });
-        this.unsavedChanges = false;
-        this.callAllListeners();
+        try {
+            await Promise.all(savePromises);
+            await triggerWriteConfig();
+            this.settings.forEach((setting) => {
+                setting.initialValue = setting.value;
+                setting.initialOverlayed = setting.overlayed !== undefined ? setting.overlayed : undefined;
+            });
+            this.unsavedChanges = false;
+            this.callAllListeners();
+        } catch (e) {
+            this.addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.errorWhileSavingConfig"),
+                t("settings.errorWhileSavingConfigDetails") + e,
+                t("settings.navigationTitle")
+            );
+        }
     }
 
     private saveSingleSetting(setting: Setting) {
