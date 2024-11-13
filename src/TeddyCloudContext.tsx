@@ -155,7 +155,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             description,
             showProgress: true,
             pauseOnHover: true,
-            placement: "bottomRight",
+            placement: "topRight",
         });
 
         setNotifications((prevNotifications) => {
@@ -172,7 +172,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             description,
             icon: <LoadingOutlined />,
             duration: 0,
-            placement: "bottomRight",
+            placement: "topRight",
         });
     };
 
