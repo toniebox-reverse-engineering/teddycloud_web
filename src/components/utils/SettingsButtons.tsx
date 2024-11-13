@@ -2,7 +2,6 @@ import { Button } from "antd";
 import { t } from "i18next";
 import { FunctionComponent, useEffect, useState } from "react";
 import SettingsDataHandler from "../../data/SettingsDataHandler";
-import { Overlay } from "antd/es/popconfirm/PurePanel";
 
 interface SettingsButtonProps {
     onClose?: () => void;
