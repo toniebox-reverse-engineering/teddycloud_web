@@ -16,7 +16,7 @@ type InputNumberFieldProps = {
 export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
     const { t } = useTranslation();
     const { name, label, description, overlayed: initialOverlayed } = props;
-    const [field, meta, helpers] = useField<number | undefined>(name!);
+    const [field, meta] = useField<number | undefined>(name!);
     const [overlayed, setOverlayed] = useState<boolean | undefined>(initialOverlayed); // State to track overlayed boolean
 
     const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value);
@@ -26,11 +26,14 @@ export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
             overlayed !== undefined ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed : undefined
         );
     };
+
     SettingsDataHandler.getInstance().addIdListener(idListener, name);
 
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
     const validateStatus = meta.touched && meta.error ? "error" : undefined;
+
+    let value = fieldValue as number;
 
     const addonAfter = [
         overlayed === undefined ? null : (
@@ -56,12 +59,11 @@ export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
         >
             <InputNumber
                 {...field}
-                value={fieldValue as number}
+                value={value}
                 onChange={(value) => {
                     SettingsDataHandler.getInstance().changeSetting(name, value ?? 0, overlayed);
                     setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                 }}
-                onBlur={() => helpers.setTouched(true)}
                 {...(overlayed !== undefined ? { addonAfter } : null)}
                 disabled={!overlayed && overlayed !== undefined}
             />

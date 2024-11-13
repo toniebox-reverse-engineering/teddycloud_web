@@ -29,6 +29,8 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string; onClose?: () => v
     const [showArrow, setShowArrow] = useState(true);
     const [reloadCount, setReloadCount] = useState(0);
 
+    SettingsDataHandler.initialize(addNotification, t);
+
     useEffect(() => {
         const listener = () => setReloadCount((prev) => prev + 1);
         const settingsHandler = SettingsDataHandler.getInstance();
@@ -60,6 +62,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string; onClose?: () => v
 
     useEffect(() => {
         if (!settingsLevel) return;
+
         const fetchOptions = async () => {
             setLoading(true);
             const optionsRequest = (await api.apiGetIndexGet(overlay)) as OptionsList;
@@ -80,12 +83,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string; onClose?: () => v
         ) as HTMLElement | null;
 
         if (modalContentElement) {
-            console.log(modalContentElement.scrollTop);
-            console.log(modalContentElement.clientHeight);
-            console.log(modalContentElement.scrollHeight);
-
             const updateFooterHeightAndScrollState = () => {
-                console.log("Scroll detected");
                 setShowArrow(
                     modalContentElement.scrollTop + modalContentElement.clientHeight <
                         modalContentElement.scrollHeight - 20

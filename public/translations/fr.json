@@ -511,6 +511,10 @@
     "settings": {
         "keepScrolling": "Continuez à faire défiler pour voir plus d'options.",
         "close": "Fermer",
+        "resetDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été réinitialisé avec succès à la valeur par défaut.",
+        "saveDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été enregistré avec succès.",
+        "errorFetchingFieldValue": "Erreur lors de la récupération de la valeur",
+        "errorFetchingFieldValueDetails": "Erreur lors de la récupération de la valeur pour \"{{setting}}\"{{overlay}}:",
         "certificates": {
             "hint": "Voici les certificats utilisés pour l'utilisation générale de TeddyCloud. Des certificats spécifiques peuvent être utilisés pour vos Tonieboxes. Pour les changer, allez à ",
             "information": "Informations",

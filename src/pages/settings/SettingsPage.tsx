@@ -1,4 +1,4 @@
-import { Alert, Divider, Form, Radio, message, theme } from "antd";
+import { Alert, Divider, Form, Radio, theme } from "antd";
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,6 +16,8 @@ import SettingsDataHandler from "../../data/SettingsDataHandler";
 import { SettingsOptionItem } from "../../components/form/SettingsOptionItem";
 import SettingsButton from "../../components/utils/SettingsButtons";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -35,12 +37,15 @@ const { useToken } = theme;
 export const SettingsPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const { addNotification } = useTeddyCloud();
 
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [footerHeight, setFooterHeight] = useState(51);
     const [showArrow, setShowArrow] = useState(true);
     const [settingsLevel, setSettingsLevel] = useState("");
     const [loading, setLoading] = useState(true);
+
+    SettingsDataHandler.initialize(addNotification, t);
 
     useEffect(() => {
         const fetchSettingsLevel = async () => {
@@ -62,6 +67,7 @@ export const SettingsPage = () => {
     }, []);
 
     useEffect(() => {
+        if (!settingsLevel) return;
         const fetchOptions = async () => {
             setLoading(true);
             const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
@@ -79,17 +85,27 @@ export const SettingsPage = () => {
         try {
             await api.apiTriggerWriteConfigGet();
         } catch (error) {
-            message.error("Error while saving config to file.");
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.errorWhileSavingConfig"),
+                t("settings.errorWhileSavingConfigDetails") + error,
+                t("tonieboxes.navigationTitle")
+            );
         }
     };
 
     const handleChange = async (value: any) => {
         try {
-            api.apiPostTeddyCloudSetting("core.settings_level", value);
+            await api.apiPostTeddyCloudSetting("core.settings_level", value);
             triggerWriteConfig();
             setSettingsLevel(value);
         } catch (e) {
-            message.error("Error while sending data to server.");
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.errorWhileSavingConfig"),
+                t("settings.errorWhileSavingConfigDetails") + e,
+                t("tonieboxes.navigationTitle")
+            );
         }
     };
 
@@ -192,62 +208,66 @@ export const SettingsPage = () => {
                         style={{ margin: "8px 0" }}
                     />
                     <Divider>{t("settings.title")}</Divider>
-                    <Formik
-                        //validationSchema={settingsValidationSchema}
-                        initialValues={{
-                            test: "test",
-                        }}
-                        onSubmit={(values: any) => {
-                            // nothing to submit because of field onchange
-                        }}
-                    >
-                        <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
-                            {options?.options?.map((option, index, array) => {
-                                if (option.iD.includes("core.settings_level")) {
-                                    return null;
-                                }
-                                const parts = option.iD.split(".");
-                                const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
-                                return (
-                                    <React.Fragment key={index}>
-                                        {parts.slice(0, -1).map((part, partIndex) => {
-                                            if (lastParts[partIndex] !== part) {
-                                                if (partIndex === 0) {
-                                                    return (
-                                                        <h3
-                                                            style={{
-                                                                marginLeft: `${partIndex * 20}px`,
-                                                                marginBottom: "10px",
-                                                            }}
-                                                            key={`category-${part}`}
-                                                        >
-                                                            Category {part}
-                                                        </h3>
-                                                    );
-                                                } else {
-                                                    return (
-                                                        <h4
-                                                            style={{
-                                                                marginLeft: `${partIndex * 10}px`,
-                                                                marginTop: "10px",
-                                                                marginBottom: "10px",
-                                                            }}
-                                                            key={`category-${part}`}
-                                                        >
-                                                            .{part}
-                                                        </h4>
-                                                    );
+                    {loading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        <Formik
+                            //validationSchema={settingsValidationSchema}
+                            initialValues={{
+                                test: "test",
+                            }}
+                            onSubmit={(values: any) => {
+                                // nothing to submit because of field onchange
+                            }}
+                        >
+                            <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
+                                {options?.options?.map((option, index, array) => {
+                                    if (option.iD.includes("core.settings_level")) {
+                                        return null;
+                                    }
+                                    const parts = option.iD.split(".");
+                                    const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
+                                    return (
+                                        <React.Fragment key={index}>
+                                            {parts.slice(0, -1).map((part, partIndex) => {
+                                                if (lastParts[partIndex] !== part) {
+                                                    if (partIndex === 0) {
+                                                        return (
+                                                            <h3
+                                                                style={{
+                                                                    marginLeft: `${partIndex * 20}px`,
+                                                                    marginBottom: "10px",
+                                                                }}
+                                                                key={`category-${part}`}
+                                                            >
+                                                                Category {part}
+                                                            </h3>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <h4
+                                                                style={{
+                                                                    marginLeft: `${partIndex * 10}px`,
+                                                                    marginTop: "10px",
+                                                                    marginBottom: "10px",
+                                                                }}
+                                                                key={`category-${part}`}
+                                                            >
+                                                                .{part}
+                                                            </h4>
+                                                        );
+                                                    }
                                                 }
-                                            }
-                                            return null;
-                                        })}
-                                        <SettingsOptionItem noOverlay={true} iD={option.iD} />
-                                    </React.Fragment>
-                                );
-                            })}
-                        </Form>
-                    </Formik>
-                    <Divider>{t("settings.levelLabel")}</Divider>
+                                                return null;
+                                            })}
+                                            <SettingsOptionItem noOverlay={true} iD={option.iD} />
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </Form>
+                        </Formik>
+                    )}
+                    ;<Divider>{t("settings.levelLabel")}</Divider>
                     <Radio.Group
                         value={settingsLevel}
                         onChange={(e) => handleChange(e.target.value)}

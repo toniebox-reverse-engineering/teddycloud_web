@@ -1,7 +1,7 @@
-import { message } from "antd";
 import { t } from "i18next";
 import { TeddyCloudApi } from "../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
+import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
 
 export interface Setting {
     description: string;
@@ -24,16 +24,29 @@ export default class SettingsDataHandler {
     private unsavedChanges: boolean = false;
     private listeners: (() => void)[] = [];
     private idListeners: { iD: string; listener: () => {} }[] = [];
-
+    private addNotification!: (type: NotificationTypeEnum, message: string, description: string, title: string) => void;
+    private t!: (key: string, options?: any) => string;
     private constructor() {}
+
+    public static initialize(
+        addNotification: (type: NotificationTypeEnum, message: string, description: string, title: string) => void,
+        t: (key: string, options?: any) => string
+    ) {
+        if (!SettingsDataHandler.instance) {
+            SettingsDataHandler.instance = new SettingsDataHandler();
+            SettingsDataHandler.instance.addNotification = addNotification;
+            SettingsDataHandler.instance.t = t;
+        }
+        return SettingsDataHandler.instance;
+    }
 
     public hasUnchangedChanges() {
         return this.unsavedChanges;
     }
 
     public static getInstance() {
-        if (SettingsDataHandler.instance === undefined) {
-            SettingsDataHandler.instance = new SettingsDataHandler();
+        if (!SettingsDataHandler.instance) {
+            throw new Error("SettingsDataHandler not initialized. Call initialize() first.");
         }
         return SettingsDataHandler.instance;
     }
@@ -46,7 +59,6 @@ export default class SettingsDataHandler {
             setting.overlayId = overlayId;
         });
         this.settings = data;
-        console.log(data);
     }
 
     public addListener(listener: () => void) {
@@ -76,11 +88,14 @@ export default class SettingsDataHandler {
     //TODO: save changes to server (batched)
     public saveAll() {
         this.settings.forEach(async (setting) => {
-            if (setting.initialValue !== setting.value) {
+            if (setting.initialValue !== setting.value || setting.initialOverlayed !== setting.overlayed) {
                 await this.saveSingleSetting(setting);
             }
         });
-        this.settings.forEach((setting) => (setting.initialValue = setting.value));
+        this.settings.forEach((setting) => {
+            setting.initialValue = setting.value;
+            setting.initialOverlayed = setting.overlayed !== undefined ? setting.overlayed : undefined;
+        });
         this.unsavedChanges = false;
         this.callAllListeners();
     }
@@ -91,19 +106,46 @@ export default class SettingsDataHandler {
         };
 
         try {
-            const reset = setting.overlayed === undefined && setting.overlayed === false ? true : false;
+            const reset = setting.overlayed !== undefined && setting.overlayed === false ? true : false;
 
             return api
                 .apiPostTeddyCloudSetting(setting.iD, setting.value, setting.overlayId, reset)
                 .then(() => {
                     triggerWriteConfig();
-                    message.success(t("settings.saved") + ": " + setting.label);
+                })
+                .then(() => {
+                    this.addNotification(
+                        NotificationTypeEnum.Success,
+                        t("settings.saved"),
+                        reset
+                            ? t("settings.resetDetails", {
+                                  setting: setting.label,
+                                  overlay: setting.overlayed !== undefined ? ` [${setting.overlayId}]` : "",
+                              })
+                            : t("settings.saveDetails", {
+                                  setting: setting.label,
+                                  overlay: setting.overlayed !== undefined ? ` [${setting.overlayId}]` : "",
+                              }),
+                        setting.overlayed === undefined
+                            ? t("settings.navigationTitle")
+                            : t("tonieboxes.navigationTitle")
+                    );
                 })
                 .catch((e) => {
-                    message.error("Error while sending data to file: " + setting.label);
+                    this.addNotification(
+                        NotificationTypeEnum.Error,
+                        t("settings.errorWhileSavingConfig") + setting.label,
+                        t("settings.errorWhileSavingConfigDetails") + e,
+                        t("tonieboxes.navigationTitle")
+                    );
                 });
         } catch (e) {
-            message.error("Error while sending data to server: " + setting.label);
+            this.addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.errorWhileSavingConfig") + setting.label,
+                t("settings.errorWhileSavingConfigDetails") + e,
+                t("tonieboxes.navigationTitle")
+            );
             return Promise<null>;
         }
     }
@@ -129,10 +171,12 @@ export default class SettingsDataHandler {
             if (typeof settingToChange.initialValue === typeof newValue) {
                 settingToChange.value = newValue;
                 if (settingToChange.initialValue === settingToChange.value) {
-                    //check all settings and if the save button should still be shown
                     this.unsavedChanges = false;
                     this.settings.forEach((setting) => {
                         if (setting.initialValue !== setting.value) {
+                            this.unsavedChanges = true;
+                        }
+                        if (setting.initialOverlayed !== setting.overlayed) {
                             this.unsavedChanges = true;
                         }
                     });
@@ -156,22 +200,60 @@ export default class SettingsDataHandler {
     public changeSettingOverlayed(iD: string, newOverlayed: boolean) {
         const settingToChange = this.settings.find((setting) => setting.iD === iD);
         if (settingToChange) {
-            console.log(newOverlayed);
             settingToChange.overlayed = newOverlayed;
-
             if (newOverlayed === false) {
                 const fetchFieldValue = () => {
                     try {
                         api.apiGetTeddyCloudSettingRaw(iD)
                             .then((response) => response.text())
                             .then((fieldValue) => {
-                                this.changeSetting(iD, fieldValue, newOverlayed);
+                                let typedFieldValue: boolean | number | string;
+
+                                if (settingToChange.type === "bool") {
+                                    typedFieldValue = fieldValue === "true";
+                                } else if (settingToChange.type === "uint") {
+                                    typedFieldValue = parseInt(fieldValue, 10);
+                                    if (isNaN(typedFieldValue)) {
+                                        console.warn(
+                                            `Expected a number for setting type "uint", but got "${fieldValue}". Defaulting to 0.`
+                                        );
+                                        typedFieldValue = 0;
+                                    }
+                                } else {
+                                    typedFieldValue = fieldValue;
+                                }
+
+                                this.changeSetting(iD, typedFieldValue, newOverlayed);
                             })
                             .catch((error) => {
-                                message.error(`Error fetching field value: ${error}`);
+                                this.addNotification(
+                                    NotificationTypeEnum.Error,
+                                    t("settings.errorFetchingFieldValue"),
+                                    t("tonieboxes.errorFetchingFieldValueDetails", {
+                                        setting: settingToChange.label,
+                                        overlay:
+                                            settingToChange.overlayed !== undefined
+                                                ? ` [${settingToChange.overlayId}]`
+                                                : "",
+                                    }) + error,
+                                    settingToChange.overlayed === undefined
+                                        ? t("settings.navigationTitle")
+                                        : t("tonieboxes.navigationTitle")
+                                );
                             });
                     } catch (error) {
-                        message.error(`Error fetching field value: ${error}`);
+                        this.addNotification(
+                            NotificationTypeEnum.Error,
+                            t("settings.errorFetchingFieldValue"),
+                            t("tonieboxes.errorFetchingFieldValueDetails", {
+                                setting: settingToChange.label,
+                                overlay:
+                                    settingToChange.overlayed !== undefined ? ` [${settingToChange.overlayId}]` : "",
+                            }) + error,
+                            settingToChange.overlayed === undefined
+                                ? t("settings.navigationTitle")
+                                : t("tonieboxes.navigationTitle")
+                        );
                     }
                 };
 
@@ -179,7 +261,6 @@ export default class SettingsDataHandler {
             }
 
             if (settingToChange.initialOverlayed === settingToChange.overlayed) {
-                //check all settings and if the save button should still be shown
                 this.unsavedChanges = false;
                 this.settings.forEach((setting) => {
                     if (setting.initialValue !== setting.value) {

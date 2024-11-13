@@ -30,7 +30,10 @@ export const SettingsSwitchField = (props: SwitchFieldProps) => {
             overlayed !== undefined ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed : undefined
         );
     };
+
     SettingsDataHandler.getInstance().addIdListener(idListener, name);
+
+    let value = fieldValue as boolean;
 
     return (
         <FormItem
@@ -41,7 +44,7 @@ export const SettingsSwitchField = (props: SwitchFieldProps) => {
         >
             <Switch
                 {...field}
-                checked={fieldValue as boolean}
+                checked={value}
                 onChange={(value) => {
                     SettingsDataHandler.getInstance().changeSetting(name, value, overlayed);
                     setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);

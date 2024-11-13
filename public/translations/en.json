@@ -511,6 +511,10 @@
     "settings": {
         "keepScrolling": "Keep scrolling to see more options.",
         "close": "Close",
+        "resetDetails": "Setting \"{{setting}}\"{{overlay}} successfully resetted to default value.",
+        "saveDetails": "Setting \"{{setting}}\"{{overlay}} successfully saved.",
+        "errorFetchingFieldValue": "Error fetching field value",
+        "errorFetchingFieldValueDetails": "Error fetching field value for \"{{setting}}\"{{overlay}}:",
         "certificates": {
             "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
             "information": "Information",
