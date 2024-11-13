@@ -98,7 +98,26 @@ export default class SettingsDataHandler {
 
         try {
             await Promise.all(savePromises);
-            await triggerWriteConfig();
+
+            // workaround as sometimes triggerWriteConfig() leads to a mysterious 404...
+            // after that happens, the next call also produces a 404,
+            // so three attempts are now made in that case at most
+            let retryCount = 0;
+            let triggerWriteSuccess = false;
+
+            while (retryCount < 3 && !triggerWriteSuccess) {
+                try {
+                    await triggerWriteConfig();
+                    triggerWriteSuccess = true;
+                } catch (e) {
+                    retryCount++;
+                    if (retryCount === 3) {
+                        throw new Error(`Failed to trigger write config after 3 attempts: ${e}`);
+                    }
+                    console.log(`Retrying triggerWriteConfig... attempt ${retryCount}`);
+                }
+            }
+
             this.settings.forEach((setting) => {
                 setting.initialValue = setting.value;
                 setting.initialOverlayed = setting.overlayed !== undefined ? setting.overlayed : undefined;
