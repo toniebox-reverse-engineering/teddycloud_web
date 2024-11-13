@@ -1,8 +1,8 @@
+import { Dispatch, SetStateAction } from "react";
 import { t, TFunction } from "i18next";
 import { TeddyCloudApi } from "../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
-import { Dispatch, SetStateAction } from "react";
 
 export interface Setting {
     description: string;
