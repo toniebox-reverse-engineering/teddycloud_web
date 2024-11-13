@@ -509,6 +509,8 @@
         "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
+        "keepScrolling": "Weiter scrollen, um weitere Optionen zu sehen.",
+        "close": "Schließen",
         "certificates": {
             "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
@@ -586,7 +588,7 @@
         "toniesJsonUpdateInProgress": "Lade Tonies(.custom).json...",
         "toniesJsonUpdateSuccessful": "Tonies(.custom).json erfolgreich neu geladen!",
         "tryToRestartTC": "Versuche, TeddyCloud neu zu starten",
-        "warning": "Achtung! Speicherbutton + Settings level",
+        "warning": "Achtung! Settings level",
         "warningHint": "Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
     },
     "tonieArticleSearch": {

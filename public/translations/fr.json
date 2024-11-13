@@ -509,6 +509,8 @@
         "teddycloudStatusOnline": "Le serveur TeddyCloud fonctionne correctement"
     },
     "settings": {
+        "keepScrolling": "Continuez à faire défiler pour voir plus d'options.",
+        "close": "Fermer",
         "certificates": {
             "hint": "Voici les certificats utilisés pour l'utilisation générale de TeddyCloud. Des certificats spécifiques peuvent être utilisés pour vos Tonieboxes. Pour les changer, allez à ",
             "information": "Informations",
@@ -586,7 +588,7 @@
         "toniesJsonUpdateInProgress": "Chargement de Tonies(.custom).json...",
         "toniesJsonUpdateSuccessful": "Tonies(.custom).json rechargé avec succès!",
         "tryToRestartTC": "Tentative de redémarrer TeddyCloud",
-        "warning": "Attention ! Bouton de sauvegarde + Niveau des paramètres",
+        "warning": "Attention ! Niveau des paramètres",
         "warningHint": "Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
     },
     "tonieArticleSearch": {

@@ -1,4 +1,4 @@
-import { Alert, Divider, Form, Radio, message } from "antd";
+import { Alert, Divider, Form, Radio, message, theme } from "antd";
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,8 +13,8 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import SettingsDataHandler from "../../data/SettingsDataHandler";
-import { SettingsOptionItem } from "./fields/SettingsOptionItem";
-import SettingsButton from "./SettingsButtons";
+import { SettingsOptionItem } from "../../components/form/SettingsOptionItem";
+import SettingsButton from "../../components/utils/SettingsButtons";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -30,10 +30,15 @@ const settingsValidationSchema = Yup.object().shape({
 });
  */
 
+const { useToken } = theme;
+
 export const SettingsPage = () => {
     const { t } = useTranslation();
-    const [options, setOptions] = useState<OptionsList | undefined>();
+    const { token } = useToken();
 
+    const [options, setOptions] = useState<OptionsList | undefined>();
+    const [footerHeight, setFooterHeight] = useState(51);
+    const [showArrow, setShowArrow] = useState(true);
     const [settingsLevel, setSettingsLevel] = useState("");
     const [loading, setLoading] = useState(true);
 
@@ -62,7 +67,7 @@ export const SettingsPage = () => {
             const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
             if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
                 setOptions(optionsRequest);
-                SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options);
+                SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options, undefined);
             }
             setLoading(false);
         };
@@ -88,9 +93,70 @@ export const SettingsPage = () => {
         }
     };
 
-    const stickyFooter = (
-        <div id="testfooter" className="sticky-footer-panel">
-            <div>
+    useEffect(() => {
+        const footerElement = document.querySelector("footer") as HTMLElement | null;
+        const updateFooterHeightAndScrollState = () => {
+            if (footerElement) {
+                setFooterHeight(footerElement.offsetHeight || 0);
+            }
+
+            const scrollTop = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const fullHeight = document.documentElement.scrollHeight;
+
+            if (scrollTop + windowHeight >= fullHeight - 20) {
+                setShowArrow(false);
+            } else {
+                setShowArrow(true);
+            }
+        };
+
+        let resizeObserver: ResizeObserver | null = null;
+        if (footerElement) {
+            setFooterHeight(footerElement.offsetHeight || 0);
+            resizeObserver = new ResizeObserver((entries) => {
+                for (let entry of entries) {
+                    const target = entry.target as HTMLElement;
+                    if (target === footerElement) {
+                        setFooterHeight(target.offsetHeight);
+                    }
+                }
+                updateFooterHeightAndScrollState();
+            });
+            resizeObserver.observe(footerElement);
+        }
+
+        window.addEventListener("scroll", updateFooterHeightAndScrollState);
+        window.addEventListener("resize", updateFooterHeightAndScrollState);
+
+        updateFooterHeightAndScrollState();
+
+        return () => {
+            window.removeEventListener("scroll", updateFooterHeightAndScrollState);
+            window.removeEventListener("resize", updateFooterHeightAndScrollState);
+            if (resizeObserver) {
+                resizeObserver.disconnect();
+            }
+        };
+    }, []);
+
+    const savePanel = (
+        <div
+            style={{
+                position: "sticky",
+                bottom: footerHeight - 1,
+                padding: "16px 0",
+                marginBottom: -24,
+                backgroundColor: token.colorBgContainer,
+                zIndex: 1001,
+            }}
+            id="save-panel"
+            className="sticky-save-panel"
+        >
+            <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                <div style={{ padding: 8, fontSize: "smaller", color: token.colorTextDescription }}>
+                    {showArrow && t("settings.keepScrolling")}
+                </div>
                 <SettingsButton></SettingsButton>
             </div>
         </div>
@@ -121,30 +187,61 @@ export const SettingsPage = () => {
                     <Alert
                         message={t("settings.warning")}
                         description=<div>{t("settings.warningHint")}</div>
-                        type="warning"
+                        type="info"
                         showIcon
                         style={{ margin: "8px 0" }}
                     />
                     <Divider>{t("settings.title")}</Divider>
-                    {loading ? (
-                        <LoadingSpinner />
-                    ) : (
-                        <>
-                            <Formik
-                                //validationSchema={settingsValidationSchema}
-                                initialValues={{
-                                    test: "test",
-                                }}
-                                onSubmit={(values: any) => {
-                                    // nothing to submit because of field onchange
-                                }}
-                            >
-                                <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
-                                    {options?.options?.map((option, index, array) => {
-                                        if (option.iD.includes("core.settings_level")) {
+                    <Formik
+                        //validationSchema={settingsValidationSchema}
+                        initialValues={{
+                            test: "test",
+                        }}
+                        onSubmit={(values: any) => {
+                            // nothing to submit because of field onchange
+                        }}
+                    >
+                        <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
+                            {options?.options?.map((option, index, array) => {
+                                if (option.iD.includes("core.settings_level")) {
+                                    return null;
+                                }
+                                const parts = option.iD.split(".");
+                                const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
+                                return (
+                                    <React.Fragment key={index}>
+                                        {parts.slice(0, -1).map((part, partIndex) => {
+                                            if (lastParts[partIndex] !== part) {
+                                                if (partIndex === 0) {
+                                                    return (
+                                                        <h3
+                                                            style={{
+                                                                marginLeft: `${partIndex * 20}px`,
+                                                                marginBottom: "10px",
+                                                            }}
+                                                            key={`category-${part}`}
+                                                        >
+                                                            Category {part}
+                                                        </h3>
+                                                    );
+                                                } else {
+                                                    return (
+                                                        <h4
+                                                            style={{
+                                                                marginLeft: `${partIndex * 10}px`,
+                                                                marginTop: "10px",
+                                                                marginBottom: "10px",
+                                                            }}
+                                                            key={`category-${part}`}
+                                                        >
+                                                            .{part}
+                                                        </h4>
+                                                    );
+                                                }
+                                            }
                                             return null;
                                         })}
-                                        <SettingsOptionItem iD={option.iD} />
+                                        <SettingsOptionItem noOverlay={true} iD={option.iD} />
                                     </React.Fragment>
                                 );
                             })}
@@ -167,7 +264,7 @@ export const SettingsPage = () => {
                             Expert
                         </Radio.Button>
                     </Radio.Group>
-                    {stickyFooter}
+                    {savePanel}
                 </StyledContent>
             </StyledLayout>
         </>

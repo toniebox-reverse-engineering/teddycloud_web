@@ -481,8 +481,10 @@ export const TonieboxCard: React.FC<{
             open={isEditSettingsModalOpen}
             onOk={handleEditSettingsOk}
             onCancel={handleEditSettingsCancel}
+            footer={null}
+            wrapClassName={"overlay-" + tonieboxCard.ID}
         >
-            <TonieboxSettingsPage overlay={tonieboxCard.ID} key={modalKey} />
+            <TonieboxSettingsPage onClose={handleEditSettingsCancel} overlay={tonieboxCard.ID} key={modalKey} />
         </Modal>
     );
 

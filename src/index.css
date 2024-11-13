@@ -40,21 +40,6 @@ code {
     border-top: 8px solid orange;
 }
 
-.sticky-footer-panel div {
-    position: fixed;
-    bottom: 2px;
-    right: 15px;
-    padding-right: 12px;
-    padding-left: 12px;
-    padding-bottom: 8px;
-    margin-bottom: 0px;
-    z-index: 11;
-}
-
-.sticky-footer-panel div div {
-    padding: 0 !important;
-}
-
 .sticky-footer .ant-modal-footer {
     position: sticky;
     bottom: 0;

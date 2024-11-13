@@ -509,6 +509,8 @@
         "teddycloudStatusOnline": "Servidor de Teddycloud funcionando correctamente"
     },
     "settings": {
+        "keepScrolling": "Sigue desplazándote para ver más opciones.",
+        "close": "Cerrar",
         "certificates": {
             "hint": "Estos son los certificados utilizados para el uso general de TeddyCloud. Se pueden usar certificados específicos para tus Tonieboxes. Para cambiarlos, ve a ",
             "information": "Información",
@@ -584,7 +586,7 @@
         "toniesJsonUpdateInProgress": "Cargando Tonies(.custom).json...",
         "toniesJsonUpdateSuccessful": "¡Tonies(.custom).json recargado con éxito!",
         "tryToRestartTC": "Intentando reiniciar TeddyCloud",
-        "warning": "¡Atención! Botón Guardar + Nivel de configuración",
+        "warning": "¡Atención! Nivel de configuración",
         "warningHint": "Actualmente, los campos de texto deben guardarse explícitamente hasta que se implemente una mejor solución. Para hacerlo, haz clic en el símbolo de guardar al final del campo. Si faltan configuraciones, aumenta el 'Nivel de configuración'."
     },
     "tonieArticleSearch": {
