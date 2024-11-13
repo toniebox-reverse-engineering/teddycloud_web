@@ -2,6 +2,7 @@ import { t, TFunction } from "i18next";
 import { TeddyCloudApi } from "../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
+import { Dispatch, SetStateAction } from "react";
 
 export interface Setting {
     description: string;
@@ -26,16 +27,20 @@ export default class SettingsDataHandler {
     private idListeners: { iD: string; listener: () => {} }[] = [];
     private addNotification!: (type: NotificationTypeEnum, message: string, description: string, title: string) => void;
     private t!: TFunction;
+    private setFetchCloudStatus!: Dispatch<SetStateAction<boolean>> | undefined;
+
     private constructor() {}
 
     public static initialize(
         addNotification: (type: NotificationTypeEnum, message: string, description: string, title: string) => void,
-        t: TFunction
+        t: TFunction,
+        setFetchCloudStatus?: Dispatch<SetStateAction<boolean>>
     ) {
         if (!SettingsDataHandler.instance) {
             SettingsDataHandler.instance = new SettingsDataHandler();
             SettingsDataHandler.instance.addNotification = addNotification;
             SettingsDataHandler.instance.t = t;
+            SettingsDataHandler.instance.setFetchCloudStatus = setFetchCloudStatus || undefined;
         }
         return SettingsDataHandler.instance;
     }
@@ -157,6 +162,11 @@ export default class SettingsDataHandler {
                             ? t("settings.navigationTitle")
                             : t("tonieboxes.navigationTitle")
                     );
+                })
+                .then(() => {
+                    if (setting.iD === "cloud.enabled" && this.setFetchCloudStatus) {
+                        this.setFetchCloudStatus((prev) => !prev);
+                    }
                 })
                 .catch((e) => {
                     this.addNotification(
