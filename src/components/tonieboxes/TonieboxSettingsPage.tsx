@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Divider, Form, Radio } from "antd";
+import { Alert, Divider, Form, Radio, theme } from "antd";
 import { Formik } from "formik";
 
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import LoadingSpinner from "../utils/LoadingSpinner";
-import OptionItem from "../utils/OptionItem";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { useTeddyCloud } from "../../TeddyCloudContext";
+import { SettingsOptionItem } from "../form/SettingsOptionItem";
+import SettingsButton from "../utils/SettingsButtons";
+import SettingsDataHandler from "../../data/SettingsDataHandler";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay }) => {
+const { useToken } = theme;
+
+export const TonieboxSettingsPage: React.FC<{ overlay: string; onClose?: () => void }> = ({ overlay, onClose }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
+
     const { addNotification } = useTeddyCloud();
 
     const [options, setOptions] = useState<OptionsList | undefined>();
     const [settingsLevel, setSettingsLevel] = useState("");
     const [loading, setLoading] = useState(true);
+    const [showArrow, setShowArrow] = useState(true);
+    const [reloadCount, setReloadCount] = useState(0);
+
+    SettingsDataHandler.initialize(addNotification, t);
+
+    useEffect(() => {
+        const listener = () => setReloadCount((prev) => prev + 1);
+        const settingsHandler = SettingsDataHandler.getInstance();
+        settingsHandler.addListener(listener);
+
+        return () => {
+            settingsHandler.removeListener(listener);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchSettingsLevel = async () => {
@@ -41,18 +61,42 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
     }, []);
 
     useEffect(() => {
+        if (!settingsLevel) return;
+
         const fetchOptions = async () => {
             setLoading(true);
             const optionsRequest = (await api.apiGetIndexGet(overlay)) as OptionsList;
             if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
                 setOptions(optionsRequest);
+                SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options, overlay);
             }
-
             setLoading(false);
         };
 
-        fetchOptions();
-    }, [overlay, settingsLevel]);
+        settingsLevel ? fetchOptions() : "";
+    }, [settingsLevel]);
+
+    useEffect(() => {
+        if (loading) return;
+        const modalContentElement = document.querySelector(
+            ".ant-modal-wrap.overlay-" + overlay.toUpperCase()
+        ) as HTMLElement | null;
+
+        if (modalContentElement) {
+            const updateFooterHeightAndScrollState = () => {
+                setShowArrow(
+                    modalContentElement.scrollTop + modalContentElement.clientHeight <
+                        modalContentElement.scrollHeight - 20
+                );
+            };
+            modalContentElement.addEventListener("scroll", updateFooterHeightAndScrollState);
+            modalContentElement.addEventListener("resize", updateFooterHeightAndScrollState);
+            return () => {
+                modalContentElement.removeEventListener("scroll", updateFooterHeightAndScrollState);
+                window.removeEventListener("resize", updateFooterHeightAndScrollState);
+            };
+        }
+    }, [loading]);
 
     const triggerWriteConfig = async () => {
         try {
@@ -82,12 +126,34 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
         }
     };
 
+    const savePanel = (
+        <div
+            style={{
+                position: "sticky",
+                bottom: 0,
+                padding: "16px 0",
+                marginBottom: 8,
+                backgroundColor: token.colorBgContainer,
+                zIndex: 1001,
+            }}
+            id="save-panel"
+            className="sticky-save-panel"
+        >
+            <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                <div style={{ padding: 8, fontSize: "smaller", color: token.colorTextDescription }}>
+                    {showArrow && t("settings.keepScrolling")}
+                </div>
+                <SettingsButton onClose={onClose}></SettingsButton>
+            </div>
+        </div>
+    );
+
     return (
         <>
             <Alert
                 message={t("settings.warning")}
                 description=<div>{t("settings.warningHint")}</div>
-                type="warning"
+                type="info"
                 showIcon
                 style={{ margin: "8px" }}
             />
@@ -140,7 +206,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                                     const parts = option.iD.split(".");
                                     const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
                                     return (
-                                        <React.Fragment key={`option-${option.iD}`}>
+                                        <React.Fragment key={index}>
                                             {parts.slice(0, -1).map((part, partIndex) => {
                                                 if (lastParts[partIndex] !== part) {
                                                     if (partIndex === 0) {
@@ -172,11 +238,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                                                 }
                                                 return null;
                                             })}
-                                            <OptionItem
-                                                option={option}
-                                                overlayId={overlay}
-                                                key={`option-item-${option.iD}`}
-                                            />
+                                            <SettingsOptionItem iD={option.iD} overlayId={overlay} />
                                         </React.Fragment>
                                     );
                                 })
@@ -188,12 +250,13 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string }> = ({ overlay })
                         value={settingsLevel}
                         onChange={(e) => handleChange(e.target.value)}
                         style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
-                        disabled={loading}
+                        disabled={loading || SettingsDataHandler.getInstance().hasUnchangedChanges()}
                     >
                         <Radio.Button value="1">Basic</Radio.Button>
                         <Radio.Button value="2">Detail</Radio.Button>
                         <Radio.Button value="3">Expert</Radio.Button>
                     </Radio.Group>
+                    {savePanel}
                 </>
             )}
         </>

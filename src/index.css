@@ -52,11 +52,11 @@ code {
     padding: 20px 24px 0;
 }
 
-.ant-form-item .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+.ant-form-item .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
     display: none;
 }
 
-.ant-form-item .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
+.ant-form-item .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
     color: #ff4d4f !important;
     display: inline-block;
     margin-inline-end: 4px;
@@ -101,7 +101,7 @@ code {
 }
 
 .ant-steps .ant-steps-item-process.ant-steps-item-in-progress .ant-steps-item-icon::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -164,8 +164,8 @@ code {
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */
-.ant-list .ant-row>div,
-.ant-list .ant-row>div,
+.ant-list .ant-row > div,
+.ant-list .ant-row > div,
 .ant-list .ant-row .ant-col:first-child {
     display: flex;
 }
