@@ -106,7 +106,7 @@ export default class SettingsDataHandler {
         };
 
         try {
-            const reset = setting.overlayed !== undefined && setting.overlayed === false ? true : false;
+            const reset = setting.overlayId !== undefined && setting.overlayed === false ? true : false;
 
             return api
                 .apiPostTeddyCloudSetting(setting.iD, setting.value, setting.overlayId, reset)
@@ -120,13 +120,13 @@ export default class SettingsDataHandler {
                         reset
                             ? t("settings.resetDetails", {
                                   setting: setting.label,
-                                  overlay: setting.overlayed !== undefined ? ` [${setting.overlayId}]` : "",
+                                  overlay: setting.overlayId !== undefined ? ` [${setting.overlayId}]` : "",
                               })
                             : t("settings.saveDetails", {
                                   setting: setting.label,
-                                  overlay: setting.overlayed !== undefined ? ` [${setting.overlayId}]` : "",
+                                  overlay: setting.overlayId !== undefined ? ` [${setting.overlayId}]` : "",
                               }),
-                        setting.overlayed === undefined
+                        setting.overlayId === undefined
                             ? t("settings.navigationTitle")
                             : t("tonieboxes.navigationTitle")
                     );
@@ -136,7 +136,9 @@ export default class SettingsDataHandler {
                         NotificationTypeEnum.Error,
                         t("settings.errorWhileSavingConfig") + setting.label,
                         t("settings.errorWhileSavingConfigDetails") + e,
-                        t("tonieboxes.navigationTitle")
+                        setting.overlayId === undefined
+                            ? t("settings.navigationTitle")
+                            : t("tonieboxes.navigationTitle")
                     );
                 });
         } catch (e) {
@@ -144,7 +146,7 @@ export default class SettingsDataHandler {
                 NotificationTypeEnum.Error,
                 t("settings.errorWhileSavingConfig") + setting.label,
                 t("settings.errorWhileSavingConfigDetails") + e,
-                t("tonieboxes.navigationTitle")
+                setting.overlayId === undefined ? t("settings.navigationTitle") : t("tonieboxes.navigationTitle")
             );
             return Promise<null>;
         }
@@ -229,14 +231,14 @@ export default class SettingsDataHandler {
                                 this.addNotification(
                                     NotificationTypeEnum.Error,
                                     t("settings.errorFetchingFieldValue"),
-                                    t("tonieboxes.errorFetchingFieldValueDetails", {
+                                    t("settings.errorFetchingFieldValueDetails", {
                                         setting: settingToChange.label,
                                         overlay:
-                                            settingToChange.overlayed !== undefined
+                                            settingToChange.overlayId !== undefined
                                                 ? ` [${settingToChange.overlayId}]`
                                                 : "",
                                     }) + error,
-                                    settingToChange.overlayed === undefined
+                                    settingToChange.overlayId === undefined
                                         ? t("settings.navigationTitle")
                                         : t("tonieboxes.navigationTitle")
                                 );
@@ -245,12 +247,12 @@ export default class SettingsDataHandler {
                         this.addNotification(
                             NotificationTypeEnum.Error,
                             t("settings.errorFetchingFieldValue"),
-                            t("tonieboxes.errorFetchingFieldValueDetails", {
+                            t("setting.errorFetchingFieldValueDetails", {
                                 setting: settingToChange.label,
                                 overlay:
-                                    settingToChange.overlayed !== undefined ? ` [${settingToChange.overlayId}]` : "",
+                                    settingToChange.overlayId !== undefined ? ` [${settingToChange.overlayId}]` : "",
                             }) + error,
-                            settingToChange.overlayed === undefined
+                            settingToChange.overlayId === undefined
                                 ? t("settings.navigationTitle")
                                 : t("tonieboxes.navigationTitle")
                         );
