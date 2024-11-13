@@ -509,12 +509,6 @@
         "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
-        "keepScrolling": "Weiter scrollen, um weitere Optionen zu sehen.",
-        "close": "Schließen",
-        "resetDetails": "Die Einstellung \"{{setting}}\"{{overlay}} wurde erfolgreich auf den Standardwert zurückgesetzt.",
-        "saveDetails": "Die Einstellung \"{{setting}}\"{{overlay}} wurde erfolgreich gespeichert.",
-        "errorFetchingFieldValue": "Fehler beim Abrufen des Werts",
-        "errorFetchingFieldValueDetails": "Fehler beim Abrufen des Werts für \"{{setting}}\"{{overlay}}:",
         "certificates": {
             "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
@@ -528,6 +522,10 @@
             "uploadSuccessfulDetails": "Zertifikat {{filename}} erfolgreich hochgeladen.",
             "uploadText": "Klicke oder ziehe die Client-Zertifikate zum Hochladen in diesen Bereich"
         },
+        "close": "Schließen",
+        "discard": "Verwerfen",
+        "errorFetchingFieldValue": "Fehler beim Abrufen des Werts",
+        "errorFetchingFieldValueDetails": "Fehler beim Abrufen des Werts für \"{{setting}}\"{{overlay}}:",
         "errorFetchingSetting": "Fehler beim Abrufen der Einstellung!",
         "errorFetchingSettingDetails": "Fehler beim Abrufen der Einstellung \"{{setting}}\": ",
         "errorSettingSettingsLevel": "Fehler beim Festlegen des Settings level",
@@ -540,6 +538,7 @@
         },
         "hint": "Dies sind die Default-Einstellungen. Einige der Einstellungen können von deinen Toniebox spezifischen Einstellungen überschrieben werden. Um diese zu ändern, gehe zu ",
         "information": "Information",
+        "keepScrolling": "Weiter scrollen, um weitere Optionen zu sehen.",
         "legacyGui": "Alte Admin-GUI",
         "levelLabel": "Settings level",
         "navigationTitle": "Einstellungen",
@@ -571,6 +570,7 @@
         "overlayDisabled": "Overlayed deaktiviert!",
         "overlayEnabled": "Overlayed aktiviert!",
         "overlayed": "überschrieben",
+        "resetDetails": "Die Einstellung \"{{setting}}\"{{overlay}} wurde erfolgreich auf den Standardwert zurückgesetzt.",
         "restartComplete": "Neustart TeddyCloud Server erfolgreich!",
         "restartFailed": "Neustart TeddyCloud Server fehlgeschlagen!",
         "restartInProgress": "TeddyCloud wird gestartet...",
@@ -582,9 +582,9 @@
             "navigationTitle": "RTNL log",
             "title": "RTNL Log"
         },
-        "saved": "Einstellung gespeichert!",
         "save": "Speichern",
-        "discard": "Verwerfen",
+        "saveDetails": "Die Einstellung \"{{setting}}\"{{overlay}} wurde erfolgreich gespeichert.",
+        "saved": "Einstellung gespeichert!",
         "title": "Einstellungen",
         "tonieboxes": "Tonieboxen",
         "toniesJsonUpdate": "Lade Tonies.json",

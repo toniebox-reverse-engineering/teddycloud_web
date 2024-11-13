@@ -509,12 +509,6 @@
         "teddycloudStatusOnline": "Le serveur TeddyCloud fonctionne correctement"
     },
     "settings": {
-        "keepScrolling": "Continuez à faire défiler pour voir plus d'options.",
-        "close": "Fermer",
-        "resetDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été réinitialisé avec succès à la valeur par défaut.",
-        "saveDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été enregistré avec succès.",
-        "errorFetchingFieldValue": "Erreur lors de la récupération de la valeur",
-        "errorFetchingFieldValueDetails": "Erreur lors de la récupération de la valeur pour \"{{setting}}\"{{overlay}}:",
         "certificates": {
             "hint": "Voici les certificats utilisés pour l'utilisation générale de TeddyCloud. Des certificats spécifiques peuvent être utilisés pour vos Tonieboxes. Pour les changer, allez à ",
             "information": "Informations",
@@ -528,6 +522,10 @@
             "uploadSuccessfulDetails": "Certificat {{filename}} téléchargé avec succès.",
             "uploadText": "Cliquez ou faites glisser les certificats clients dans cette zone pour les télécharger"
         },
+        "close": "Fermer",
+        "discard": "Ignorer les modifications",
+        "errorFetchingFieldValue": "Erreur lors de la récupération de la valeur",
+        "errorFetchingFieldValueDetails": "Erreur lors de la récupération de la valeur pour \"{{setting}}\"{{overlay}}:",
         "errorFetchingSetting": "Erreur lors de la récupération du paramètre !",
         "errorFetchingSettingDetails": "Erreur lors de la récupération du paramètre \"{{setting}}\": ",
         "errorSettingSettingsLevel": "Erreur lors de la configuration du niveau des paramètres",
@@ -540,6 +538,7 @@
         },
         "hint": "Ce sont les paramètres par défaut. Certains paramètres peuvent être remplacés par chacun de vos Tonieboxes. Pour modifier ces paramètres, allez à ",
         "information": "Informations",
+        "keepScrolling": "Continuez à faire défiler pour voir plus d'options.",
         "legacyGui": "Ancienne GUI Admin",
         "levelLabel": "Niveau des paramètres",
         "navigationTitle": "Paramètres",
@@ -571,6 +570,7 @@
         "overlayDisabled": "Superposition désactivée !",
         "overlayEnabled": "Superposition activée !",
         "overlayed": "superposé",
+        "resetDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été réinitialisé avec succès à la valeur par défaut.",
         "restartComplete": "Redémarrage du serveur TeddyCloud réussi !",
         "restartFailed": "Échec du redémarrage du serveur TeddyCloud !",
         "restartInProgress": "Redémarrage de TeddyCloud en cours...",
@@ -582,9 +582,9 @@
             "navigationTitle": "Journal RTNL",
             "title": "Journal RTNL"
         },
-        "saved": "Paramètre enregistré !",
         "save": "Enregister",
-        "discard": "Ignorer les modifications",
+        "saveDetails": "Le paramètre \"{{setting}}\"{{overlay}} a été enregistré avec succès.",
+        "saved": "Paramètre enregistré !",
         "title": "Paramètres",
         "tonieboxes": "tonieboxes",
         "toniesJsonUpdate": "Recharger Tonies.json",
