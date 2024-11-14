@@ -133,7 +133,7 @@ export const TonieboxSettingsPage: React.FC<{ overlay: string; onClose?: () => v
                 bottom: 0,
                 padding: "16px 0",
                 marginBottom: 8,
-                backgroundColor: token.colorBgContainer,
+                backgroundColor: token.colorBgElevated,
                 zIndex: 1001,
             }}
             id="save-panel"
