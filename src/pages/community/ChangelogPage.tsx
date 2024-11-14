@@ -38,6 +38,7 @@ export const ChangelogPage = () => {
                 "gui: Only allow *.der files to be uploaded on certificate upload",
                 "gui: Added Download buttons/link to download TeddyCloud CA Certificate https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/177",
                 "gui: Overworked filebrowsers directory visualization and multi select action buttons https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/162",
+                "gui: Overworked settings forms: Instead of autosaving and manual save of strings, there is a new save button to store the changed settings https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/23",
                 "gui: Some refactoring",
             ],
             commits: [

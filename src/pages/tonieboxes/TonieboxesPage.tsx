@@ -36,8 +36,8 @@ export const TonieboxesPage = () => {
             } catch (error) {
                 addNotification(
                     NotificationTypeEnum.Error,
-                    t("tonieboxes.messages.errorFetchingTonieboxes"),
-                    t("tonieboxes.messages.errorFetchingTonieboxes") + ": " + error,
+                    t("tonieboxes.errorFetchingTonieboxes"),
+                    t("tonieboxes.errorFetchingTonieboxes") + ": " + error,
                     t("tonieboxes.navigationTitle")
                 );
             }

@@ -1,22 +1,14 @@
 import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from "react";
 import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
 
-import { TeddyCloudApi } from "./api";
-import { defaultAPIConfig } from "./config/defaultApiConfig";
 import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
 import { generateUUID } from "./utils/helpers";
-
-const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
     setFetchCloudStatus: Dispatch<SetStateAction<boolean>>;
     notifications: NotificationRecord[];
-    tonieBoxContentDirs: Array<[string, string[], string]>;
-    overlay: string;
-    setOverlay: (overlay: string) => void;
     addNotification: (
         type: NotificationType,
         message: string,
@@ -30,16 +22,12 @@ interface TeddyCloudContextType {
     unconfirmedCount: number;
     clearAllNotifications: () => void;
     removeNotifications: (uuid: string[]) => void;
-    handleContentOverlayChange: (overlay: string) => void;
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
     fetchCloudStatus: false,
     setFetchCloudStatus: () => {},
     notifications: [],
-    tonieBoxContentDirs: [],
-    overlay: "",
-    setOverlay: () => {},
     addNotification: () => {},
     addLoadingNotification: () => {},
     closeLoadingNotification: () => {},
@@ -47,7 +35,6 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     unconfirmedCount: 0,
     clearAllNotifications: () => {},
     removeNotifications: () => {},
-    handleContentOverlayChange: () => {},
 });
 
 interface TeddyCloudProviderProps {
@@ -58,64 +45,8 @@ interface TeddyCloudProviderProps {
 export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProviderProps) {
     const [fetchCloudStatus, setFetchCloudStatus] = useState<boolean>(false);
     const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
-    const [tonieBoxContentDirs, setTonieboxContentDirs] = useState<Array<[string, string[], string]>>([]);
-    const [overlay, setOverlay] = useState("");
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-    // Content dir overlay handling
-    useEffect(() => {
-        if (linkOverlay) {
-            setOverlay(linkOverlay);
-            localStorage.setItem("contentOverlay", linkOverlay);
-        } else {
-            const savedOverlay = localStorage.getItem("contentOverlay");
-            if (savedOverlay) setOverlay(savedOverlay);
-        }
-    }, [linkOverlay]);
-
-    useEffect(() => {
-        const fetchContentDirs = async () => {
-            const tonieboxData = await api.apiGetTonieboxesIndex();
-            const tonieboxContentDirs = await Promise.all(
-                tonieboxData.map(async (toniebox) => {
-                    const contentDir = await api.apiGetTonieboxContentDir(toniebox.ID);
-                    return [contentDir, toniebox.boxName, toniebox.ID] as [string, string, string];
-                })
-            );
-
-            const groupedContentDirs = tonieboxContentDirs.reduce((acc, [contentDir, boxName, boxID]) => {
-                const existingGroupIndex = acc.findIndex((group) => group[0] === contentDir);
-                if (existingGroupIndex !== -1) {
-                    acc[existingGroupIndex][1].push(boxName);
-                    if (overlay === boxID) {
-                        setOverlay(acc[existingGroupIndex][2]);
-                    }
-                } else {
-                    acc.push([contentDir, [boxName], boxID]);
-                }
-                return acc;
-            }, [] as [string, string[], string][]);
-
-            const contentDir = await api.apiGetTonieboxContentDir("");
-            if (!groupedContentDirs.some((group) => group[0] === contentDir)) {
-                groupedContentDirs.push(["", ["TeddyCloud Default Content Dir"], ""]);
-            }
-
-            if (!overlay) {
-                const firstBoxId = groupedContentDirs.length > 0 ? groupedContentDirs[0][2] : "";
-                setOverlay(firstBoxId);
-                localStorage.setItem("contentOverlay", firstBoxId);
-            }
-            setTonieboxContentDirs(groupedContentDirs);
-        };
-        fetchContentDirs();
-    }, [overlay]);
-
-    const handleContentOverlayChange = (newOverlay: string) => {
-        setOverlay(newOverlay);
-        localStorage.setItem("contentOverlay", newOverlay);
-    };
 
     // Notifications
 
@@ -155,7 +86,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             description,
             showProgress: true,
             pauseOnHover: true,
-            placement: "bottomRight",
+            placement: "topRight",
         });
 
         setNotifications((prevNotifications) => {
@@ -172,7 +103,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             description,
             icon: <LoadingOutlined />,
             duration: 0,
-            placement: "bottomRight",
+            placement: "topRight",
         });
     };
 
@@ -216,9 +147,6 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 fetchCloudStatus,
                 setFetchCloudStatus,
                 notifications,
-                tonieBoxContentDirs,
-                overlay,
-                setOverlay,
                 addNotification,
                 addLoadingNotification,
                 closeLoadingNotification,
@@ -226,7 +154,6 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 unconfirmedCount,
                 clearAllNotifications,
                 removeNotifications,
-                handleContentOverlayChange,
             }}
         >
             {children}

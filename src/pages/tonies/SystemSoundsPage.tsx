@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Select } from "antd";
 
@@ -18,6 +19,7 @@ import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -25,7 +27,12 @@ const { Option } = Select;
 
 export const SystemSoundsPage = () => {
     const { t } = useTranslation();
-    const { addNotification, tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
+    const { addNotification } = useTeddyCloud();
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const linkOverlay = searchParams.get("overlay");
+    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTonieboxContent(linkOverlay);
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [loading, setLoading] = useState(true);
