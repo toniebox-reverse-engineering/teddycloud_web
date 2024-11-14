@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import { Select } from "antd";
 
 import BreadcrumbWrapper, {
@@ -9,13 +10,16 @@ import BreadcrumbWrapper, {
 } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/utils/FileBrowser";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 
 const { Option } = Select;
 
 export const ContentPage = () => {
     const { t } = useTranslation();
-    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTeddyCloud();
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const linkOverlay = searchParams.get("overlay");
+    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTonieboxContent(linkOverlay);
 
     return (
         <>
