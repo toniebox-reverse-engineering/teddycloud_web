@@ -902,7 +902,7 @@
                     "secondSlot": "Second original firmware slot",
                     "thirdSlot": "Third original firmware slot"
                 },
-                "inCaseText": "In case that there are some files that do not exist on the box, the command may exit with an error and thus never will properly created the backup.bin, split the command into two: ",
+                "inCaseText": "In case that there are some files that do not exist on the box, the command may exit with an error and thus never will properly create the backup.bin, split the command into two: ",
                 "installingBootloaderStage2": {
                     "here": "here",
                     "intro": "Copy over all the contents of the sd folder to the sd card of the toniebox. Copy over the original bootloader (mcuimg.bin from your backup) to the first ofw slot sd:/revvox/boot/ng-ofw1.bin. Now the HackieboxNG bootloader will instantly boot the original bootloader and run the original firmware.",
