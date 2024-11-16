@@ -835,7 +835,7 @@
             "bootloaderInstalled": "Bootloader erfolgreich installiert",
             "certificates": {
                 "alreadyAvailable": "Die Zertifikate ca.der, client.der und private.der sollten bereits hier verfügbar sein:",
-                "extractAgain": "Falls nicht, stelle sicher, dass du Schritt 1 korrekt ausgeführt hast. Du kannst die Dateien auch erneut mit dem cc3200-Tool von der Box extrahieren (dein PC sollte weiterhin über UART und Debug-Port mit der Toniebox verbunden sein)."
+                "extractAgain": "Falls nicht, stelle sicher, dass du Schritt 2 korrekt ausgeführt hast. Du kannst die Dateien auch erneut mit dem cc3200-Tool von der Box extrahieren (dein PC sollte weiterhin über UART und Debug-Port mit der Toniebox verbunden sein)."
             },
             "certificatesDumpedCAreplacementFlashed": "Zertifikate entnommen und CA-Ersatz geflasht",
             "checkBoxes": "Verfügbare Boxen anzeigen",
