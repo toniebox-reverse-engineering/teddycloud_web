@@ -25,12 +25,58 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 const { Paragraph } = Typography;
 const { useToken } = theme;
 
+type UrlData = {
+    id: string;
+    url: string;
+    title: string;
+};
+
 export const BoxSetupPage = () => {
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification } = useTeddyCloud();
 
     const [newBoxesAllowed, setNewBoxesAllowed] = useState(true);
+
+    const [reachableNewbieGuideUrls, setReachableNewbieGuideUrls] = useState<UrlData[]>([]);
+    const NewbieGuideUrls: UrlData[] = [
+        {
+            id: "cc3200",
+            url: "https://forum.revvox.de/t/teddycloud-cc3200-newbie-guide/925/1",
+            title: "TeddyCloud CC3200 Newbie HowTo",
+        },
+        {
+            id: "cc3235",
+            url: "https://forum.revvox.de/t/teddycloud-cc3235-newbie-howto/899/1",
+            title: "TeddyCloud CC3235 Newbie HowTo",
+        },
+        {
+            id: "esp32",
+            url: "https://forum.revvox.de/t/teddycloud-esp32-newbie-documentation-deprecated/112/1",
+            title: "TeddyCloud ESP32 Newbie HowTo",
+        },
+    ];
+
+    const checkUrls = async () => {
+        const results = await Promise.all(
+            NewbieGuideUrls.map(async ({ id, url, title }) => {
+                try {
+                    const response = await fetch(url, { method: "HEAD", mode: "no-cors" });
+                    if (response.status === 0) {
+                        return { id, url, title };
+                    }
+                } catch {
+                    // Do nothing on error
+                }
+                return null;
+            })
+        );
+        setReachableNewbieGuideUrls(results.filter((result) => result !== null) as UrlData[]);
+    };
+
+    useEffect(() => {
+        checkUrls();
+    }, []);
 
     useEffect(() => {
         const fetchNewBoxesAllowed = async () => {
@@ -124,6 +170,20 @@ export const BoxSetupPage = () => {
                             <Link to="/tonieboxes/boxsetup/cc3235/flashing">CC3235</Link>
                         </li>
                     </ul>
+                    {reachableNewbieGuideUrls.length > 0 && (
+                        <Paragraph>
+                            <Paragraph>{t("tonieboxes.boxSetup.newbieGuides")}</Paragraph>
+                            <ul>
+                                {reachableNewbieGuideUrls.map(({ id, url, title }) => (
+                                    <li key={id}>
+                                        <a href={url} target="_blank">
+                                            {title}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Paragraph>
+                    )}
                 </>
             ),
             dot: <DeliveredProcedureOutlined />,

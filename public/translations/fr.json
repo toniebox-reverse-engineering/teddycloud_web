@@ -725,6 +725,7 @@
                 "version": "version"
             },
             "navigationTitle": "Ajouter Toniebox",
+            "newbieGuides": "Il existe plusieurs guides pour débutants disponibles sur le forum Revvox. Tu pourrais aussi y jeter un œil :",
             "openBoxGuide": {
                 "alternativeGuidelineVideo": "Sinon, tu peux regarder le guide suivant sur YouTube :",
                 "finally": "Tu peux maintenant accéder au PCB pour identifier la version de ta Toniebox et la modifier !",
@@ -754,6 +755,10 @@
             "setupTeddyCloud": "Configurer TeddyCloud",
             "setupTeddyCloudText": "Félicitations ! En atteignant cette page, vous avez réussi à configurer TeddyCloud !",
             "title": "Ajoutez votre Toniebox à TeddyCloud",
+            "uploadCertificateButton": "Télécharger les certificats",
+            "uploadCertificateIntro": "Tu devrais télécharger les certificats extraits dans TeddyCloud si c’est ta première Toniebox ou si tu souhaites désigner cette Toniebox comme celle utilisée pour télécharger du contenu depuis le cloud original de Tonies. De plus, tu dois ajouter les certificats à la Toniebox dans TeddyCloud. Pour cela, rends-toi dans la section 'Tonieboxes', clique sur l’icône de certificat et télécharge les certificats à nouveau.",
+            "uploadCertificates": "Télécharger les certificats (ca.der, client.der et private.der)",
+            "uploadCertificatesToBox": "Si ta Toniebox est affichée, rends-toi dans la section 'Tonieboxes' et télécharge les certificats extraits lors de l’étape précédente dans la nouvelle boîte ajoutée. Utilise l’icône de certificat dans le pied de la carte de la boîte pour terminer le téléchargement:",
             "useIt": "Utilisez-la !",
             "useItText": "Vous pouvez maintenant attribuer du contenu personnalisé à vos Tonies ou à des étiquettes personnalisées, vous détendre et profiter des possibilités infinies de votre Toniebox déverrouillée !"
         },

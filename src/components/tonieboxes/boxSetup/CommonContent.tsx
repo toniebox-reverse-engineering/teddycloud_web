@@ -13,6 +13,7 @@ import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
 import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
 import CodeSnippet from "../../utils/CodeSnippet";
 import { handleTCCADerDownload } from "../../../utils/helpers";
+import { CertificateDragNDrop } from "../../form/CertificatesDragAndDrop";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -342,6 +343,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                     {t("tonieboxes.availableBoxModal.troubleShooting")}
                 </Link>
             </Paragraph>
+
             <h4>{t("tonieboxes.availableBoxModal.availableBoxes", { boxVersion: boxVersion })}</h4>
             {loading ? (
                 <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
@@ -356,8 +358,55 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                     locale={{ emptyText: renderEmpty() }}
                 />
             )}
+            {tonieboxes.filter((box) => box.version === boxVersion).length > 0 ? (
+                <Paragraph style={{ marginTop: 16 }}>
+                    {t("tonieboxes.boxSetup.uploadCertificatesToBox")}
+                    <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>
+                </Paragraph>
+            ) : (
+                ""
+            )}
         </Modal>
     );
 };
 
 export default AvailableBoxesModal;
+
+export const CertificateUploadElement: React.FC = ({}) => {
+    const { t } = useTranslation();
+    const [isCertificateUploadModalOpen, setIsCertificateUploadModalOpen] = useState(false);
+
+    const showCertificateUploadModal = () => {
+        setIsCertificateUploadModalOpen(true);
+    };
+
+    const handleClose = () => {
+        setIsCertificateUploadModalOpen(false);
+    };
+
+    const certificateUploadModal = (
+        <Modal
+            title={t("tonieboxes.boxSetup.uploadCertificates")}
+            open={isCertificateUploadModalOpen}
+            onCancel={handleClose}
+            footer={
+                <Button type="primary" onClick={handleClose}>
+                    {t("settings.close")}
+                </Button>
+            }
+            cancelText="Close"
+        >
+            <CertificateDragNDrop />
+        </Modal>
+    );
+
+    return (
+        <>
+            <Paragraph>{t("tonieboxes.boxSetup.uploadCertificateIntro")}</Paragraph>
+            <Paragraph>
+                <Button onClick={showCertificateUploadModal}>{t("tonieboxes.boxSetup.uploadCertificateButton")}</Button>
+                {certificateUploadModal}
+            </Paragraph>
+        </>
+    );
+};

@@ -523,6 +523,7 @@
             "uploadText": "Haz clic o arrastra los certificados del cliente a esta área para subir"
         },
         "close": "Cerrar",
+        "discard": "Descartar cambios",
         "errorFetchingFieldValue": "Error al obtener el valor",
         "errorFetchingFieldValueDetails": "Error al obtener el valor para \"{{setting}}\"{{overlay}}:",
         "errorFetchingSetting": "¡Error al obtener la configuración!",
@@ -581,6 +582,7 @@
             "navigationTitle": "Registro RTNL",
             "title": "Registro RTNL"
         },
+        "save": "Guardar",
         "saveDetails": "La configuración \"{{setting}}\"{{overlay}} se ha guardado con éxito.",
         "saved": "¡Configuración guardada!",
         "title": "Configuración",
@@ -723,6 +725,7 @@
                 "version": "versión"
             },
             "navigationTitle": "Añadir Toniebox",
+            "newbieGuides": "Hay varias guías para principiantes disponibles en el foro de Revvox. Tal vez quieras echarles un vistazo también:",
             "openBoxGuide": {
                 "alternativeGuidelineVideo": "Alternativamente, puedes ver la siguiente guía en YouTube:",
                 "finally": "¡Ahora puedes acceder al PCB para identificar la versión de tu Toniebox y modificarla!",
@@ -752,6 +755,10 @@
             "setupTeddyCloud": "Configurar TeddyCloud",
             "setupTeddyCloudText": "¡Felicidades! Al llegar a esta página, ¡has configurado TeddyCloud con éxito!",
             "title": "Añade tu Toniebox a TeddyCloud",
+            "uploadCertificateButton": "Subir certificados",
+            "uploadCertificateIntro": "Debes subir los certificados extraídos a TeddyCloud si esta es tu primera Toniebox o si quieres designar esta Toniebox como la que descarga contenido desde la nube original de Tonies. Además, necesitas añadir los certificados a la Toniebox dentro de TeddyCloud. Para hacerlo, ve a la sección 'Tonieboxes', haz clic en el icono de certificado y sube los certificados nuevamente.",
+            "uploadCertificates": "Subir certificados (ca.der, client.der y private.der)",
+            "uploadCertificatesToBox": "Si tu Toniebox aparece, ve a la sección 'Tonieboxes' y sube los certificados extraídos durante el paso anterior a la nueva caja añadida. Usa el icono de certificado en el pie de la tarjeta de la caja para completar la carga:",
             "useIt": "¡Úsala!",
             "useItText": "Ahora puedes asignar contenido personalizado a tus Tonies o etiquetas personalizadas, relajarte y disfrutar de las infinitas posibilidades de tu Toniebox liberada."
         },

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
-import { Alert, Button, Collapse, Divider, Image, Steps, Tabs, TabsProps, Typography } from "antd";
+import { Alert, Button, Collapse, Divider, Image, Modal, Steps, Tabs, TabsProps, Typography } from "antd";
 import { CheckSquareOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
@@ -25,10 +25,12 @@ import BreadcrumbWrapper, {
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import AvailableBoxesModal, {
     certificateIntro,
+    CertificateUploadElement,
     dnsForTeddyCloud,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
+import { CertificateDragNDrop } from "../../../../components/form/CertificatesDragAndDrop";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -337,6 +339,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                     code={`cc3200tool -if cc32xx-flash.bin -d cc32xx read_all_files extract/`}
                 />
             </Paragraph>
+            <CertificateUploadElement />
             {commonCAcontent}
             <Paragraph>
                 <CodeSnippet
@@ -377,6 +380,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                     code={`cc3200tool -if backupCC3235-1.bin -d cc32xx read_all_files extract/`}
                 />
             </Paragraph>
+            <CertificateUploadElement />
             {commonCAcontent}
             <Paragraph>
                 <CodeSnippet

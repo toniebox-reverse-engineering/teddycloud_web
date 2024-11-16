@@ -16,7 +16,10 @@ import BreadcrumbWrapper, {
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
-import AvailableBoxesModal, { certificateIntro } from "../../../../components/tonieboxes/boxSetup/CommonContent";
+import AvailableBoxesModal, {
+    certificateIntro,
+    CertificateUploadElement,
+} from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -106,10 +109,15 @@ export const CC3200BoxFlashingPage = () => {
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
-            {certificateIntro(true)}
-            <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/" target="_blank">
-                {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
-            </Link>
+            <Paragraph>
+                {certificateIntro(true)}
+                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/" target="_blank">
+                    {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
+                </Link>
+            </Paragraph>
+            <Paragraph>
+                <CertificateUploadElement />
+            </Paragraph>
             <h4>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacement")}</h4>
             <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/flash-ca/cc3200/" target="_blank">
                 {t("tonieboxes.cc3200BoxFlashing.flashCAreplacementLink")}
