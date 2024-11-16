@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
-import { Alert, Button, Collapse, Divider, Image, Modal, Steps, Tabs, TabsProps, Typography } from "antd";
+import { Alert, Button, Collapse, Divider, Image, Steps, Tabs, TabsProps, Typography } from "antd";
 import { CheckSquareOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
@@ -27,10 +27,10 @@ import AvailableBoxesModal, {
     certificateIntro,
     CertificateUploadElement,
     dnsForTeddyCloud,
+    installCC3200Tool,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
-import { CertificateDragNDrop } from "../../../../components/form/CertificatesDragAndDrop";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -267,13 +267,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
             <Link to="https://www.flashrom.org/" target="_blank">
                 {t("tonieboxes.cc3235BoxFlashing.installflashromtoolLink")}
             </Link>
-            <h4>{t("tonieboxes.cc3235BoxFlashing.installCC3200tool")}</h4>
-            <Link
-                to="https://github.com/toniebox-reverse-engineering/cc3200tool?tab=readme-ov-file#installation"
-                target="_blank"
-            >
-                {t("tonieboxes.cc3235BoxFlashing.installCC3200toolLink")}
-            </Link>
+            {installCC3200Tool()}
             <h4>{t("tonieboxes.cc3235BoxFlashing.hwToolSpecific")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.hwToolSpecificText")}</Paragraph>
             <Tabs

@@ -2,7 +2,22 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
 import { Link } from "react-router-dom";
-import { Alert, Button, Col, Collapse, Divider, Form, Input, Row, Steps, Table, Typography } from "antd";
+import {
+    Alert,
+    Button,
+    Col,
+    Collapse,
+    Divider,
+    Form,
+    Image,
+    Input,
+    Row,
+    Steps,
+    Table,
+    Tabs,
+    TabsProps,
+    Typography,
+} from "antd";
 import { RightOutlined, CodeOutlined, LeftOutlined, CheckSquareOutlined, EyeOutlined } from "@ant-design/icons";
 
 import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
@@ -19,7 +34,13 @@ import { detectColorScheme } from "../../../../utils/browserUtils";
 import AvailableBoxesModal, {
     certificateIntro,
     CertificateUploadElement,
+    installCC3200Tool,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
+
+import cc3200debugPort from "../../../../assets/boxSetup/cc3200_debugPort.jpg";
+import cc3200tagConnector from "../../../../assets/boxSetup/cc3200_tagConnector.png";
+import cc3200WiresAsTagConnect from "../../../../assets/boxSetup/cc3200_wiresAsTagConnector.png";
+import cc3200cfwUpdate from "../../../../assets/boxSetup/cc3200_installCfwFlashUpload.png";
 
 const { Paragraph } = Typography;
 const { Step } = Steps;
@@ -57,6 +78,76 @@ export const CC3200BoxFlashingPage = () => {
     ];
 
     // step 0 - preparations
+    const debugPortUARTData = [
+        {
+            key: "1",
+            toniebox1: "GND",
+            toniebox2: "",
+            uart: "GND",
+        },
+        {
+            key: "2",
+            toniebox1: "TX",
+            toniebox2: "",
+            uart: "RX",
+        },
+        {
+            key: "3",
+            toniebox1: "RX",
+            toniebox2: "",
+            uart: "TX",
+        },
+        {
+            key: "4",
+            toniebox1: "RST",
+            toniebox2: "",
+            uart: "DTR",
+        },
+        {
+            key: "5",
+            toniebox1: "VCC",
+            toniebox2: "SOP2*",
+            uart: "",
+        },
+        {
+            key: "6",
+            toniebox1: "SOP2",
+            toniebox2: "VCC*",
+            uart: "",
+        },
+    ];
+
+    const debugPortUARTColumns = [
+        {
+            title: "Toniebox",
+            dataIndex: "toniebox1",
+            key: "toniebox1",
+        },
+        {
+            title: "Toniebox",
+            dataIndex: "toniebox2",
+            key: "toniebox2",
+        },
+        {
+            title: "UART",
+            dataIndex: "uart",
+            key: "uart",
+        },
+    ];
+
+    const TonieboxUARTTable = () => {
+        return (
+            <Table
+                dataSource={debugPortUARTData}
+                columns={debugPortUARTColumns}
+                pagination={false}
+                bordered
+                size="small"
+                style={{ width: 300 }}
+            />
+        );
+    };
+
     const contentStep0 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.preparations")}</h3>
@@ -77,31 +168,283 @@ export const CC3200BoxFlashingPage = () => {
                     {t("tonieboxes.cc3235BoxFlashing.preparationTextLink")}
                 </Link>
             </Paragraph>
-            <h4>{t("tonieboxes.cc3200BoxFlashing.installCC3200tool")}</h4>
-            <Link
-                to="https://github.com/toniebox-reverse-engineering/cc3200tool?tab=readme-ov-file#installation"
-                target="_blank"
-            >
-                {t("tonieboxes.cc3200BoxFlashing.installCC3200toolLink")}
-            </Link>
+            {installCC3200Tool()}
             <h4>{t("tonieboxes.cc3200BoxFlashing.connectToToniebox")}</h4>
-            <Link to="https://tonies-wiki.revvox.de/docs/wiki/cc3200/debug-port/" target="_blank">
-                {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxLink")}
-            </Link>
+            <Paragraph></Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxIntro")}
+                <Paragraph>
+                    <Image
+                        src={cc3200debugPort}
+                        style={{ maxHeight: 200, width: "auto", marginTop: 8 }}
+                        alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
+                    />
+                </Paragraph>
+                <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableIntro")}</Paragraph>
+                {TonieboxUARTTable()}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectDebugPortText1")}
+                <Link
+                    to="https://www.tag-connect.com/product/tc2050-idc-nl-10-pin-no-legs-cable-with-ribbon-connector"
+                    target="_blank"
+                >
+                    TC2050-IDC-NL TagConnector
+                </Link>
+                {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectDebugPortText2")}
+            </Paragraph>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "center",
+                    flexWrap: "wrap",
+                    gap: 16,
+                }}
+            >
+                <Image.PreviewGroup>
+                    <div style={{ maxHeight: 200, justifyItems: "center" }}>
+                        <Image
+                            src={cc3200tagConnector}
+                            style={{ maxWidth: 200, height: "auto" }}
+                            alt={t("tonieboxes.cc3200BoxFlashing.tagConnector")}
+                        />
+                        <p style={{ marginTop: 8 }}>{t("tonieboxes.cc3200BoxFlashing.tagConnector")}</p>
+                    </div>
+                    <div style={{ maxHeight: 200, justifyItems: "center" }}>
+                        <Image
+                            src={cc3200WiresAsTagConnect}
+                            style={{ maxWidth: 200, height: "auto" }}
+                            alt={t("tonieboxes.cc3200BoxFlashing.usingThinWiresAsTagConnector")}
+                        />
+                        <p style={{ marginTop: 8 }}>{t("tonieboxes.cc3200BoxFlashing.usingThinWiresAsTagConnector")}</p>
+                    </div>
+                </Image.PreviewGroup>
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxText")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxProceed")}</Paragraph>
         </>
     );
 
     // step 1 - custom bootloader
+    const importantTBFilesData = [
+        {
+            key: "/cert/ca.der",
+            file: "/cert/ca.der",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.caDer"),
+        },
+        {
+            key: "/cert/private.der",
+            file: "/cert/private.der",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.privateDer"),
+        },
+        {
+            key: "/cert/client.der",
+            file: "/cert/client.der",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.clientDer"),
+        },
+        {
+            key: "/sys/mcuimg.bin",
+            file: "/sys/mcuimg.bin",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.originalBootloader"),
+        },
+        {
+            key: "/sys/mcuimg1.bin",
+            file: "/sys/mcuimg1.bin",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.firstSlot"),
+        },
+        {
+            key: "/sys/mcuimg2.bin",
+            file: "/sys/mcuimg2.bin",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.secondSlot"),
+        },
+        {
+            key: "/sys/mcuimg3.bin",
+            file: "/sys/mcuimg3.bin",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.thirdSlot"),
+        },
+        {
+            key: "/sys/mcubootinfo.bin",
+            file: "/sys/mcubootinfo.bin",
+            description: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.mcuBootInfo"),
+        },
+    ];
+
+    const importantTBFilesColumns = [
+        {
+            title: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.file"),
+            dataIndex: "file",
+            key: "file",
+        },
+        {
+            title: t("tonieboxes.cc3200BoxFlashing.installingBootloader.importantTBFiles.description"),
+            dataIndex: "description",
+            key: "description",
+        },
+    ];
+
+    const importantTBFilesTable = () => {
+        return <Table dataSource={importantTBFilesData} columns={importantTBFilesColumns} pagination={false} />;
+    };
+
+    const firstInstallationTab = (
+        <>
+            <b>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.moveOriginal")}</b>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.moveOriginalText1")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.moveOriginalText2")}
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -p COM3 write_file ExtractedFromBox/sys/mcuimg.bin /sys/pre-img.bin`}
+                />
+            </Paragraph>
+            <b> {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.installPreloader")}</b>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.installPreloaderText1")}
+            </Paragraph>
+            <CodeSnippet language="shell" code={`c3200tool -p COM3 write_file flash/sys/mcuimg.bin /sys/mcuimg.bin`} />
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.installPreloaderText2")}
+            </Paragraph>
+        </>
+    );
+
+    const existingInstallationUpdateTab = (
+        <>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.intro")}</Paragraph>
+            <b>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.backup")}</b>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.backupText")}
+            </Paragraph>
+            <CodeSnippet language="url" code={`http://*.*.*.*/api/ajax?cmd=get-flash-file&filepath=/sys/pre-img.bin`} />
+            <b>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.copyOverPreloader")}</b>
+            <Paragraph>
+                <div style={{ maxHeight: 400, justifyItems: "center" }}>
+                    <Image
+                        src={cc3200cfwUpdate}
+                        style={{ maxHeight: 400, width: "auto" }}
+                        alt={t(
+                            "tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.updatingCFWUsingOldCFWWebGui"
+                        )}
+                    />
+                </div>
+            </Paragraph>
+            <Paragraph>
+                <ul>
+                    <li>
+                        {t(
+                            "tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.copyOverPreloaderStep1"
+                        )}
+                    </li>
+                    <li>
+                        {t(
+                            "tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.copyOverPreloaderStep2"
+                        )}
+                    </li>
+                    <li>
+                        {t(
+                            "tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.copyOverPreloaderStep3"
+                        )}
+                    </li>
+                    <li>
+                        {t(
+                            "tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.copyOverPreloaderStep4"
+                        )}
+                    </li>
+                    <li>
+                        {t(
+                            "tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.copyOverPreloaderStep5"
+                        )}
+                    </li>
+                </ul>
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.outro")}</Paragraph>
+            <CodeSnippet language="url" code={`http://*.*.*.*/api/ajax?cmd=get-flash-file&filepath=/sys/mcuimg.bin`} />
+        </>
+    );
+
+    const preloaderInstallation: TabsProps["items"] = [
+        {
+            key: "firstTime",
+            label: t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.title"),
+            children: firstInstallationTab,
+        },
+        {
+            key: "updateExisting",
+            label: t("tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.title"),
+            children: existingInstallationUpdateTab,
+        },
+    ];
+
     const contentStep1 = (
         <>
             <h3>{t("tonieboxes.cc3200BoxFlashing.bootloader")}</h3>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.intro")}</Paragraph>
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -p COM3 read_all_files ExtractedFromBox/ read_flash backup.bin`}
+                />
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.resetCommand")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.inCaseText")}</Paragraph>
+            <Paragraph>
+                <CodeSnippet language="shell" code={`cc3200tool -p COM3 read_all_files ExtractedFromBox/ `} />
+            </Paragraph>
+            <Paragraph>
+                <CodeSnippet language="shell" code={`cc3200tool -p COM3 read_flash backup.bin`} />
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.verifyBackup")}</Paragraph>
+            <Paragraph>{importantTBFilesTable()}</Paragraph>
             <h4>{t("tonieboxes.cc3200BoxFlashing.installBootloader")}</h4>
-            <Link
-                to="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/install/"
-                target="_blank"
-            >
-                {t("tonieboxes.cc3200BoxFlashing.installBootloaderLink")}
-            </Link>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadText1")}
+                <Link to="https://github.com/toniebox-reverse-engineering/hackiebox_cfw_ng/releases" target="_blank">
+                    {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadLink")}
+                </Link>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadText2")}
+            </Paragraph>
+            <h5>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.preface.title")}</h5>
+            <Paragraph>
+                <Paragraph> {t("tonieboxes.cc3200BoxFlashing.installingBootloader.preface.intro")}</Paragraph>
+                <Paragraph>
+                    <ul>
+                        <li>
+                            {t("tonieboxes.cc3200BoxFlashing.installingBootloader.stage1")}
+                            <ul>
+                                <li>
+                                    {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.title")}
+                                </li>
+                                <li>
+                                    {t("tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.title")}
+                                </li>
+                            </ul>
+                        </li>
+                        <li>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.stage2")}</li>
+                    </ul>
+                </Paragraph>
+            </Paragraph>
+            <h5>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.stage1")}</h5>
+            <Tabs items={preloaderInstallation} indicator={{ size: (origin) => origin - 20, align: "center" }} />
+            <h5>{t("tonieboxes.cc3200BoxFlashing.installingBootloader.stage2")}</h5>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.installingBootloaderStage2.intro")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.installingBootloaderStage2.text1")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.installingBootloaderStage2.text2")}
+                <Link
+                    to="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/bootloader/"
+                    target="_blank"
+                >
+                    {t("tonieboxes.cc3200BoxFlashing.installingBootloader.installingBootloaderStage2.here")}
+                </Link>
+                .
+            </Paragraph>
         </>
     );
 
@@ -109,19 +452,26 @@ export const CC3200BoxFlashingPage = () => {
     const contentStep2 = (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
+            <Paragraph>{certificateIntro(true)}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.certificates.alreadyAvailable")}</Paragraph>
             <Paragraph>
-                {certificateIntro(true)}
-                <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/dump-certs/cc3200/" target="_blank">
-                    {t("tonieboxes.cc3200BoxFlashing.dumpCertificatesLink")}
-                </Link>
+                <CodeSnippet language="shell" code={`/currentDir/ExtractedFromBox/cert/.`} />
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.certificates.extractAgain")}</Paragraph>
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -p COM3 read_file /cert/ca.der ExtractedFromBox/cert/ca.der read_file /cert/private.der ExtractedFromBox/cert/private.der read_file /cert/client.der ExtractedFromBox/cert/client.der`}
+                />
             </Paragraph>
             <Paragraph>
                 <CertificateUploadElement />
             </Paragraph>
             <h4>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacement")}</h4>
-            <Link to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/flash-ca/cc3200/" target="_blank">
-                {t("tonieboxes.cc3200BoxFlashing.flashCAreplacementLink")}
-            </Link>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementIntro")}</Paragraph>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementText")}</Paragraph>
+            <CodeSnippet language="shell" code={`cc3200tool -p COM3 write_file server/ca.der /cert/c2.der`} />
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementOutro")}</Paragraph>
         </>
     );
 
@@ -518,7 +868,27 @@ export const CC3200BoxFlashingPage = () => {
                 style={{ marginBottom: 16 }}
             />
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.section2_part1")}</Paragraph>
+            <CodeSnippet
+                language="json"
+                code={`{
+    "general": {
+        "activeImg": "ofw2",
+        ...`}
+            />
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.section2_part2")}</Paragraph>
+            <CodeSnippet
+                language="json"
+                code={`...
+    "ofw2": {
+        "checkHash": true,
+        "hashFile": false,
+        "watchdog": true,
+        "ofwFix": true,
+        "ofwSimBL": true,
+        "patches": ["altCa.305", "altUrl.custom.305"]
+    },
+...`}
+            />
             <Collapse
                 size="small"
                 items={[

@@ -41,6 +41,7 @@ export const ChangelogPage = () => {
                 "gui: Overworked settings forms: Instead of autosaving and manual save of strings, there is a new save button to store the changed settings https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/23",
                 "gui: Box flashing section: Added links to the great newbie guides in the forum thanks to marco79cgn, chuckf and Wurst420!",
                 "gui: Added Certificate upload to box flashing",
+                "gui: Completed CC3200 Flashing guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/130",
                 "gui: Some refactoring",
             ],
             commits: [
