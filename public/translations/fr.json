@@ -1054,6 +1054,8 @@
         "errorFetchingTonieboxes": "Erreur lors de la récupération des Tonieboxes",
         "esp32BoxFlashing": {
             "attention": "Attention",
+            "baudRate": "Taux de baud : ",
+            "baudRateInfo": "Si tu rencontres des problèmes pour lire ou écrire dans la mémoire flash, essaie de changer le taux de baud. La valeur par défaut est 921600.",
             "browserNotSupported": "La fonctionnalité de flashage intégré de la boîte ESP32 ne peut être utilisée qu'avec des navigateurs prenant en charge l'API Web Serial. Malheureusement, votre navigateur actuel ne prend pas en charge cette fonctionnalité. Veuillez utiliser un navigateur qui prend en charge l'API Web Serial, comme Chrome ou Edge.",
             "esp32flasher": {
                 "automatically": "Automatiquement",

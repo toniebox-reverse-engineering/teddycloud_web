@@ -1054,6 +1054,8 @@
         "errorFetchingTonieboxes": "Error al obtener las Tonieboxes",
         "esp32BoxFlashing": {
             "attention": "Atención",
+            "baudRate": "Velocidad de transmisión: ",
+            "baudRateInfo": "Si tienes problemas para leer o escribir en la memoria flash, prueba a cambiar la velocidad de transmisión. El valor predeterminado es 921600.",
             "browserNotSupported": "La funcionalidad de flasheo integrado de la caja ESP32 solo se puede utilizar con navegadores que admiten la API Web Serial. Desafortunadamente, tu navegador actual no admite esta función. Por favor, utiliza un navegador que soporte la API Web Serial, como Chrome o Edge.",
             "esp32flasher": {
                 "automatically": "Automáticamente",

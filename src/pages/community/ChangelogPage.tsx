@@ -42,6 +42,7 @@ export const ChangelogPage = () => {
                 "gui: Box flashing section: Added links to the great newbie guides in the forum thanks to marco79cgn, chuckf and Wurst420!",
                 "gui: Added Certificate upload to box flashing",
                 "gui: Completed CC3200 Flashing guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/130",
+                "gui: Added selection of baudrate in ESP32 flash process https://github.com/toniebox-reverse-engineering/teddycloud/issues/101, https://github.com/toniebox-reverse-engineering/teddycloud/issues/258",
                 "gui: Some refactoring",
             ],
             commits: [

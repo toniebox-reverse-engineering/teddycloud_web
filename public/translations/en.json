@@ -1054,6 +1054,8 @@
         "errorFetchingTonieboxes": "Error fetching Tonieboxes",
         "esp32BoxFlashing": {
             "attention": "Attention",
+            "baudRate": "Baudrate: ",
+            "baudRateInfo": "If you encounter issues reading or writing to the flash, try changing the baud rate. The default is 921600.",
             "browserNotSupported": "The integrated ESP32 Box flashing functionality can only be used with browsers that support the Web Serial API. Unfortunately, your current browser does not support this feature. Please use a browser that supports the Web Serial API, such as Chrome or Edge.",
             "esp32flasher": {
                 "automatically": "Automatically",
