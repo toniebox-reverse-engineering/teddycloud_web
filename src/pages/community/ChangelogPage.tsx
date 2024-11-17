@@ -20,7 +20,9 @@ export const ChangelogPage = () => {
             version: "0.6.3",
             changes: [
                 "Stabilization backend",
+                "Fixed some memory leaks",
                 "Added Hide Information in filesV2 Api https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
+                "Added retain option last will in MQTT https://github.com/toniebox-reverse-engineering/teddycloud/issues/251",
                 "Provide c2.der symlink",
                 "Added custom_img volume for storing custom images - adapt your docker-compose.yaml according https://github.com/toniebox-reverse-engineering/teddycloud/blob/master/docker/docker-compose.yaml",
                 "gui: Added version overview page",
