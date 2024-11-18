@@ -185,6 +185,11 @@ export const TonieboxesSubNav = () => {
                                         setNavOpen(false);
                                         setSubNavOpen(false);
                                     }}
+                                    style={{
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        color: "currentColor",
+                                    }}
                                 >
                                     {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
                                 </Link>
