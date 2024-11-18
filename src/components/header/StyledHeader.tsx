@@ -4,10 +4,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Button, Drawer, Menu, MenuProps, Modal, theme } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { MenuOutlined } from "@ant-design/icons";
-
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { MenuOutlined, PlusOutlined } from "@ant-design/icons";
 
 import logoImg from "../../assets/logo.png";
 
@@ -16,8 +13,11 @@ import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import NotificationButton from "../utils/NotificationButton";
 import { useTeddyCloud } from "../../TeddyCloudContext";
-
-const api = new TeddyCloudApi(defaultAPIConfig());
+import { HomeSubNav } from "../home/HomeSubNav";
+import { CommunitySubNav } from "../community/CommunitySubNav";
+import { SettingsSubNav } from "../settings/SettingsSubNav";
+import { ToniesSubNav } from "../tonies/ToniesSubNav";
+import { TonieboxesSubNav } from "../tonieboxes/TonieboxesSubNav";
 
 const { useToken } = theme;
 
@@ -46,12 +46,30 @@ const StyledLeftPart = styled.div`
     align-items: center;
 `;
 
+const StyledMenu = styled(Menu)`
+    .ant-menu-title-content {
+        width: 100%;
+    }
+`;
+
+const NoHoverButton = styled(Button)`
+    &:hover {
+        background: transparent !important;
+    }
+`;
 export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { unconfirmedCount } = useTeddyCloud();
-    const [navOpen, setNavOpen] = useState(false);
+    const { unconfirmedCount, navOpen, setNavOpen, subNavOpen, setSubNavOpen, currentTCSection, setCurrentTCSection } =
+        useTeddyCloud();
     const location = useLocation();
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     useEffect(() => {
         const themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
@@ -65,31 +83,69 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
         }
     }, [token.colorBgBase]);
 
+    const NavItem = ({ title, to, isMobile = false }: { title: string; to: string; isMobile?: boolean }) => {
+        const handleLinkClick = () => {
+            setNavOpen(false); // Use the function directly from the parent
+        };
+
+        const handleButtonClick = () => {
+            setCurrentTCSection(title); // Use the function directly from the parent
+            if (isMobile) {
+                setSubNavOpen(true); // Use the function directly from the parent
+            }
+        };
+
+        if (isMobile) {
+            return (
+                <div
+                    style={{
+                        display: "flex",
+                        gap: 16,
+                        width: "100%",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    <Link to={to} onClick={handleLinkClick}>
+                        {title}
+                    </Link>
+                    <NoHoverButton
+                        type="text"
+                        style={{ width: "100%", justifyContent: "end" }}
+                        icon={<PlusOutlined style={{ margin: 16 }} />}
+                        onClick={handleButtonClick}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <Link to={to} onClick={handleLinkClick}>
+                {title}
+            </Link>
+        );
+    };
+
     const mainNav: MenuProps["items"] = [
         {
             key: "/",
-            label: <Link to="/">{t("home.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("home.navigationTitle")} to="/" isMobile={isMobile} />,
         },
         {
             key: "tonies",
-            label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("tonies.navigationTitle")} to="/tonies" isMobile={isMobile} />,
         },
         {
             key: "tonieboxes",
-            label: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("tonieboxes.navigationTitle")} to="/tonieboxes" isMobile={isMobile} />,
         },
         {
             key: "settings",
-            label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("settings.navigationTitle")} to="/settings" isMobile={isMobile} />,
         },
         {
             key: "community",
-            label: <Link to="/community">{t("community.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("community.navigationTitle")} to="/community" isMobile={isMobile} />,
         },
     ];
 
@@ -97,63 +153,21 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
     if (!selectedKey) selectedKey = "/";
     if (selectedKey === "home") selectedKey = "/";
 
-    const showWarningDialogMismatchFrontendBackend = () => {
-        Modal.error({
-            title: t("home.error"),
-            content: t("home.errorWebVersionMismatch"),
-            okText: t("home.errorConfirm"),
-        });
+    const renderSubNav = () => {
+        if (currentTCSection === t("community.navigationTitle")) {
+            return <CommunitySubNav />;
+        }
+        if (currentTCSection === t("settings.navigationTitle")) {
+            return <SettingsSubNav />;
+        }
+        if (currentTCSection === t("tonies.navigationTitle")) {
+            return <ToniesSubNav />;
+        }
+        if (currentTCSection === t("tonieboxes.navigationTitle")) {
+            return <TonieboxesSubNav />;
+        }
+        return <HomeSubNav />;
     };
-
-    useEffect(() => {
-        const checkVersionMismatch = async () => {
-            const fetchIgnoreWebVersionMismatch = async () => {
-                try {
-                    const ignoreWebVersionMismatchResponse = await api.apiGetTeddyCloudSettingRaw(
-                        "frontend.ignore_web_version_mismatch"
-                    );
-                    const ignoreWebVersionMismatch = (await ignoreWebVersionMismatchResponse.text()) === "true";
-                    return ignoreWebVersionMismatch;
-                } catch (err) {
-                    console.log("Something went wrong getting ignoreWebVersionMismatch.");
-                    return false;
-                }
-            };
-
-            const fetchWebGitShaMatching = async () => {
-                try {
-                    const expectedWebGitShaResponse = await api.apiGetTeddyCloudSettingRaw(
-                        "internal.version_web.git_sha"
-                    );
-                    const expectedWebGitSha = await expectedWebGitShaResponse.text();
-
-                    const actualWebGitShaResponse = await fetch(
-                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + `/web/web_version.json`
-                    );
-                    const actualWebGitShaData = await actualWebGitShaResponse.json();
-                    const actualWebGitSha = actualWebGitShaData.web_gitSha;
-
-                    console.log("expected Web Git Sha: ", expectedWebGitSha);
-                    console.log("actual Web Git Sha: ", actualWebGitSha);
-
-                    if (expectedWebGitSha !== actualWebGitSha) {
-                        showWarningDialogMismatchFrontendBackend();
-                    }
-                } catch (err) {
-                    console.log("Something went wrong getting gitSha.");
-                }
-            };
-
-            if (import.meta.env.MODE === "production") {
-                const ignoreMismatch = await fetchIgnoreWebVersionMismatch();
-                if (!ignoreMismatch) {
-                    await fetchWebGitShaMatching();
-                }
-            }
-        };
-
-        checkVersionMismatch();
-    }, []);
 
     return (
         <StyledHeaderComponent>
@@ -187,8 +201,16 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                         onClick={() => setNavOpen(true)}
                         icon={<MenuOutlined />}
                     />
-                    <Drawer placement="right" open={navOpen} onClose={() => setNavOpen(false)}>
-                        <Menu mode="vertical" items={mainNav} selectedKeys={[selectedKey]} />
+                    <Drawer placement="right" open={navOpen} onClose={() => setNavOpen(false)} title="TeddyCloud">
+                        <StyledMenu mode="vertical" items={mainNav} selectedKeys={[selectedKey]} />
+                        <Drawer
+                            placement="right"
+                            open={subNavOpen}
+                            onClose={() => setSubNavOpen(false)}
+                            title={currentTCSection}
+                        >
+                            {renderSubNav()}
+                        </Drawer>
                     </Drawer>
                 </HiddenDesktop>
             </StyledRightPart>

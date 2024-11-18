@@ -11,12 +11,7 @@ import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-ki
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { DraggableUploadListItem } from "../../components/utils/DraggableUploadListItem";
 import { MyUploadFile, upload } from "../../utils/encoder";
@@ -415,9 +410,6 @@ export const EncoderPage = () => {
                 <ToniesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <ToniesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

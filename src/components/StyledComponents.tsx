@@ -24,7 +24,7 @@ export const StyledSubMenu = styled(Menu)`
 
 export const StyledSider = styled(Sider)`
     width: 200px;
-    @media (max-width: 768px) {
+    @media (max-width: 767px) {
         display: none;
         margin: 8px;
     }
@@ -46,13 +46,13 @@ export const StyledContent = styled(Layout.Content)`
 `;
 
 export const HiddenDesktop = styled.span`
-    @media (min-width: 768px) {
+    @media (min-width: 767px) {
         display: none;
     }
 `;
 
 export const HiddenMobile = styled.span`
-    @media (max-width: 768px) {
+    @media (max-width: 767px) {
         display: none;
     }
 `;

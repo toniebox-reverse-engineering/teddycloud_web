@@ -8,12 +8,7 @@ import { TonieCardProps } from "../../types/tonieTypes";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
@@ -81,9 +76,6 @@ export const SystemSoundsPage = () => {
                 <ToniesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <ToniesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

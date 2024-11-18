@@ -16,12 +16,7 @@ import cc3235CH341Sop82 from "../../../../assets/boxSetup/02_CH341A_sop8_2.jpg";
 import cc3235CH341Sop83 from "../../../../assets/boxSetup/02_CH341A_sop8_3.jpg";
 import cc3235CH341Sop8remove from "../../../../assets/boxSetup/02_CH341A_sop8_remove.jpg";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import AvailableBoxesModal, {
     certificateIntro,
@@ -491,9 +486,6 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

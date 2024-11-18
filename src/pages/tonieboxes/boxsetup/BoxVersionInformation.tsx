@@ -3,12 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, Col, List, Row, Typography } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 
 const { Paragraph, Title } = Typography;
@@ -115,9 +110,6 @@ export const BoxVersionInformationPage = () => {
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

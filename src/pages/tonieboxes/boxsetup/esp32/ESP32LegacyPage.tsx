@@ -9,12 +9,7 @@ import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
 
 import tbEsp32FlashESPtoolScreen from "../../../../assets/boxSetup/esp32_write_patched_image_with_esptools.png";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../../components/StyledComponents";
 import AvailableBoxesModal, {
     certificateIntro,
     connectESP32Explanation,
@@ -225,9 +220,6 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

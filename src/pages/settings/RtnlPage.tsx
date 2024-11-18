@@ -4,12 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Switch, Typography, Divider, Button } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { detectColorScheme } from "../../utils/browserUtils";
 
@@ -173,9 +168,6 @@ export const RtnlPage = () => {
                 <SettingsSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <SettingsSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("settings.rtnl.navigationTitle") }]}
                 />

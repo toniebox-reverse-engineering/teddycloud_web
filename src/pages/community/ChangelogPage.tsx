@@ -2,12 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, List } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
 const { Paragraph, Text } = Typography;
@@ -45,6 +40,7 @@ export const ChangelogPage = () => {
                 "gui: Added Certificate upload to box flashing",
                 "gui: Completed CC3200 Flashing guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/130",
                 "gui: Added selection of baudrate in ESP32 flash process https://github.com/toniebox-reverse-engineering/teddycloud/issues/101, https://github.com/toniebox-reverse-engineering/teddycloud/issues/258",
+                "gui: Overworked mobile menu layout: section menus now part of the drawer and not shown always on each page, use + icon in mobile to expand menu",
                 "gui: Some refactoring",
             ],
             commits: [
@@ -303,9 +299,6 @@ export const ChangelogPage = () => {
                 <CommunitySubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <CommunitySubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

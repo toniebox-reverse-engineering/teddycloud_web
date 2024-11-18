@@ -22,6 +22,12 @@ interface TeddyCloudContextType {
     unconfirmedCount: number;
     clearAllNotifications: () => void;
     removeNotifications: (uuid: string[]) => void;
+    navOpen: boolean;
+    setNavOpen: (show: boolean) => void;
+    subNavOpen: boolean;
+    setSubNavOpen: (show: boolean) => void;
+    currentTCSection: string;
+    setCurrentTCSection: (section: string) => void;
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
@@ -35,6 +41,12 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     unconfirmedCount: 0,
     clearAllNotifications: () => {},
     removeNotifications: () => {},
+    navOpen: false,
+    setNavOpen: () => {},
+    subNavOpen: false,
+    setSubNavOpen: () => {},
+    currentTCSection: "",
+    setCurrentTCSection: () => {},
 });
 
 interface TeddyCloudProviderProps {
@@ -47,6 +59,11 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
     const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // subnaves
+    const [navOpen, setNavOpen] = useState<boolean>(false);
+    const [subNavOpen, setSubNavOpen] = useState<boolean>(false);
+    const [currentTCSection, setCurrentTCSection] = useState<string>("");
 
     // Notifications
 
@@ -154,6 +171,12 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 unconfirmedCount,
                 clearAllNotifications,
                 removeNotifications,
+                navOpen,
+                setNavOpen,
+                subNavOpen,
+                setSubNavOpen,
+                currentTCSection,
+                setCurrentTCSection,
             }}
         >
             {children}

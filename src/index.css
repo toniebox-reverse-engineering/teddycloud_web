@@ -138,7 +138,7 @@ code {
     width: 75px !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 767px) {
     .showSmallDevicesOnly {
         display: none;
     }
@@ -149,7 +149,7 @@ code {
     }
 }
 
-@media (min-width: 768px) and (max-width: 1199px) {
+@media (min-width: 767px) and (max-width: 1199px) {
     .showMediumDevicesOnly {
         display: block;
     }

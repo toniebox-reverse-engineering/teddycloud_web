@@ -14,12 +14,7 @@ import pcbesp32Image from "../../../assets/boxSetup/esp32_pcb.png";
 import pcbesp32ImagePreview from "../../../assets/boxSetup/esp32_pcb_preview.png";
 import chipesp32Image from "../../../assets/boxSetup/esp32.jpg";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 
 const { Paragraph } = Typography;
@@ -193,9 +188,6 @@ export const IdentifyBoxVersionPage = () => {
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
