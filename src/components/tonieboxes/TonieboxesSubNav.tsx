@@ -90,7 +90,11 @@ export const TonieboxesSubNav = () => {
             label: (
                 <Link
                     to="/tonieboxes/boxsetup"
-                    style={{ color: "currentColor" }}
+                    style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "currentColor",
+                    }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

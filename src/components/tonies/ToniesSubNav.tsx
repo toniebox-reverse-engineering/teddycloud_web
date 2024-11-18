@@ -52,7 +52,18 @@ export const ToniesSubNav = () => {
         },
         {
             key: "custom-json",
-            label: <label style={{ cursor: "pointer" }}>{t("tonies.addToniesCustomJsonEntry")}</label>,
+            label: (
+                <label
+                    style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "currentColor",
+                        cursor: "pointer",
+                    }}
+                >
+                    {t("tonies.addToniesCustomJsonEntry")}
+                </label>
+            ),
             onClick: () => {
                 handleAddNewCustomButtonClick();
                 setNavOpen(false);
@@ -82,6 +93,11 @@ export const ToniesSubNav = () => {
             label: (
                 <Link
                     to="/tonies/tap"
+                    style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "currentColor",
+                    }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

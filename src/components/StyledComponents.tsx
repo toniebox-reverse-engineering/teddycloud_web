@@ -23,10 +23,9 @@ export const StyledSubMenu = styled(Menu)`
 `;
 
 export const StyledSider = styled(Sider)`
-    width: 200px;
+    min-width: 230px !important;
     @media (max-width: 767px) {
         display: none;
-        margin: 8px;
     }
 `;
 
