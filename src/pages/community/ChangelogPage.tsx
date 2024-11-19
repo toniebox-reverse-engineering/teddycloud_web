@@ -18,6 +18,7 @@ export const ChangelogPage = () => {
                 "Fixed some memory leaks",
                 "Added Hide Information in filesV2 Api https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
                 "Added retain option last will in MQTT https://github.com/toniebox-reverse-engineering/teddycloud/issues/251",
+                "Support image caching for tonieboxes images (using setting tonie_json.cache_images) https://github.com/toniebox-reverse-engineering/teddycloud/issues/220",
                 "Provide c2.der symlink",
                 "Added custom_img volume for storing custom images - adapt your docker-compose.yaml according https://github.com/toniebox-reverse-engineering/teddycloud/blob/master/docker/docker-compose.yaml",
                 "gui: Added version overview page",
