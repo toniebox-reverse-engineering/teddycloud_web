@@ -65,8 +65,8 @@ export const BoxVersionInformationPage = () => {
                             <List
                                 dataSource={version.pros}
                                 renderItem={(item) => (
-                                    <List.Item>
-                                        <CheckOutlined style={{ color: "green", marginRight: 8 }} />
+                                    <List.Item style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
+                                        <CheckOutlined style={{ color: "green", marginRight: 8, marginTop: 4 }} />
                                         <Paragraph style={{ marginBottom: 0, textAlign: "right" }}>{item}</Paragraph>
                                     </List.Item>
                                 )}
@@ -85,8 +85,8 @@ export const BoxVersionInformationPage = () => {
                             <List
                                 dataSource={version.cons}
                                 renderItem={(item) => (
-                                    <List.Item>
-                                        <CloseOutlined style={{ color: "red", marginRight: 8 }} />
+                                    <List.Item style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
+                                        <CloseOutlined style={{ color: "red", marginRight: 8, marginTop: 4 }} />
                                         <Paragraph style={{ marginBottom: 0, textAlign: "right" }}>{item}</Paragraph>
                                     </List.Item>
                                 )}
