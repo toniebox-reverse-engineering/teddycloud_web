@@ -259,7 +259,7 @@ export const SettingsPage = () => {
                             </Form>
                         </Formik>
                     )}
-                    ;<Divider>{t("settings.levelLabel")}</Divider>
+                    <Divider>{t("settings.levelLabel")}</Divider>
                     <Radio.Group
                         value={settingsLevel}
                         onChange={(e) => handleChange(e.target.value)}
