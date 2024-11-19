@@ -21,7 +21,7 @@ code {
 }
 
 .ant-menu.ant-menu-dark {
-    background: #141414;
+    background: #141414 !important;
 }
 
 .ant-list-header {
@@ -136,6 +136,12 @@ code {
 .ant-table-cell img {
     margin: -7px !important;
     width: 75px !important;
+}
+
+@media (max-width: 767px) {
+    .ant-menu {
+        background: transparent !important;
+    }
 }
 
 @media (min-width: 767px) {

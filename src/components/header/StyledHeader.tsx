@@ -202,7 +202,12 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                         icon={<MenuOutlined />}
                     />
                     <Drawer placement="right" open={navOpen} onClose={() => setNavOpen(false)} title="TeddyCloud">
-                        <StyledMenu mode="vertical" items={mainNav} selectedKeys={[selectedKey]} />
+                        <StyledMenu
+                            mode="vertical"
+                            items={mainNav}
+                            selectedKeys={[selectedKey]}
+                            style={{ background: "transparent", borderRight: "none" }}
+                        />
                         <Drawer
                             placement="right"
                             open={subNavOpen}
