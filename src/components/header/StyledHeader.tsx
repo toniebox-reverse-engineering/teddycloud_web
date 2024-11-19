@@ -72,6 +72,13 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
     }, []);
 
     useEffect(() => {
+        if (!isMobile) {
+            setSubNavOpen(false);
+            setNavOpen(false);
+        }
+    }, [isMobile]);
+
+    useEffect(() => {
         const themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
         if (themeColorMetaTag) {
             themeColorMetaTag.setAttribute("content", token.colorBgBase);
