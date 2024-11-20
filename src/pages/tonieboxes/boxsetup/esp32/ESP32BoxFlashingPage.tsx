@@ -1,16 +1,31 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../../../i18n";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Collapse, Divider, Form, Input, Progress, Row, Steps, Typography } from "antd";
+import {
+    Alert,
+    Button,
+    Col,
+    Collapse,
+    Divider,
+    Form,
+    Input,
+    Progress,
+    Row,
+    Select,
+    Steps,
+    Tooltip,
+    Typography,
+} from "antd";
 import {
     CodeOutlined,
     DownloadOutlined,
     EyeOutlined,
     FileAddOutlined,
     LeftOutlined,
+    QuestionCircleOutlined,
     RightOutlined,
     SafetyCertificateOutlined,
     SyncOutlined,
@@ -22,12 +37,7 @@ import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog";
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
@@ -71,6 +81,7 @@ interface ESP32Flasher {
 
 const { Paragraph, Text } = Typography;
 const { Step } = Steps;
+const { Option } = Select;
 
 export const ESP32BoxFlashingPage = () => {
     const { t } = useTranslation();
@@ -125,9 +136,14 @@ export const ESP32BoxFlashingPage = () => {
     });
 
     const [isSupported, setIsSupported] = useState(false);
+    const [baudRate, setBaudRate] = useState(921600);
 
-    const baudRate = 921600;
+    const baudRates = [300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600];
     const romBaudRate = 115200;
+
+    const handleBaurateChange = (value: SetStateAction<number>) => {
+        setBaudRate(value);
+    };
 
     function arrayBufferToBstr(arrayBuffer: any) {
         const u8Array = new Uint8Array(arrayBuffer);
@@ -1591,9 +1607,6 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
@@ -1602,7 +1615,41 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
+                    <Paragraph
+                        style={{
+                            display: "flex",
+                            gap: 8,
+                            flexWrap: "wrap",
+                            justifyContent: "space-between",
+                            alignItems: "flex-end",
+                        }}
+                    >
+                        <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
+                        <Paragraph
+                            style={{
+                                fontSize: "small",
+                                display: "flex",
+                                gap: 8,
+                                width: 210,
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                            }}
+                        >
+                            <div style={{ textAlign: "end", textWrap: "nowrap" }}>
+                                {t("tonieboxes.esp32BoxFlashing.baudRate")}
+                            </div>
+                            <Select defaultValue={baudRate} onChange={handleBaurateChange}>
+                                {baudRates.map((rate) => (
+                                    <Option key={rate} value={rate}>
+                                        {rate}
+                                    </Option>
+                                ))}
+                            </Select>{" "}
+                            <Tooltip title={t("tonieboxes.esp32BoxFlashing.baudRateInfo")} placement="top">
+                                <QuestionCircleOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
+                            </Tooltip>
+                        </Paragraph>
+                    </Paragraph>
                     {!httpsActive ? (
                         <>
                             <Alert

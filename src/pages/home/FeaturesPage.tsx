@@ -7,12 +7,7 @@ import { gitHubTCCommitTreeBaseUrl } from "../../constants";
 import { TeddyCloudApi } from "../../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 
 interface FeatureItems {
@@ -76,9 +71,6 @@ export const FeaturesPage = () => {
                 <HomeSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <HomeSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("home.features.navigationTitle") }]}
                 />

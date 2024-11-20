@@ -2,12 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { Select } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/utils/FileBrowser";
 import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
@@ -27,9 +22,6 @@ export const ContentPage = () => {
                 <ToniesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <ToniesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

@@ -6,12 +6,7 @@ import { TonieboxCardProps } from "../../types/tonieboxTypes";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { useTeddyCloud } from "../../TeddyCloudContext";
@@ -82,9 +77,6 @@ export const TonieboxesPage = () => {
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("tonieboxes.navigationTitle") }]}
                 />

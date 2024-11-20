@@ -13,6 +13,7 @@ import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
 import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
 import CodeSnippet from "../../utils/CodeSnippet";
 import { handleTCCADerDownload } from "../../../utils/helpers";
+import { CertificateDragNDrop } from "../../form/CertificatesDragAndDrop";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
     status: string;
@@ -135,6 +136,58 @@ export function certificateIntro(asC2Der: boolean): JSX.Element {
             <h4>{t("tonieboxes.boxFlashingCommon.dumpCertificates")}</h4>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.dumpCertificatesIntro1")}</Paragraph>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.dumpCertificatesIntro2")}</Paragraph>
+        </>
+    );
+}
+
+export function installCC3200Tool(): JSX.Element {
+    const { t } = useTranslation();
+    return (
+        <>
+            <h4>{t("tonieboxes.boxFlashingCommon.installCC3200Tool.title")}</h4>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.installCC3200Tool.intro")}</Paragraph>
+            <ul>
+                <li>
+                    {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pythonText1")}
+                    <Link to="https://www.python.org/downloads/" target="_blank">
+                        {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pythonTextLink")}
+                    </Link>
+                    {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pythonText2")}
+                </li>
+                <li>
+                    {t("tonieboxes.boxFlashingCommon.installCC3200Tool.gitText1")}
+                    <Link to="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git" target="_blank">
+                        {t("tonieboxes.boxFlashingCommon.installCC3200Tool.gitTextLink")}
+                    </Link>
+                    {t("tonieboxes.boxFlashingCommon.installCC3200Tool.gitText2")}
+                </li>
+                <li>
+                    {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pipText1")}
+                    <Link to="https://pip.pypa.io/en/stable/installation/" target="_blank">
+                        {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pipTextLink")}
+                    </Link>
+                    {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pipText2")}
+                </li>
+            </ul>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.installCC3200Tool.text")}</Paragraph>
+
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`pip install git+git://github.com/toniebox-reverse-engineering/cc3200tool.git`}
+                />
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.installCC3200Tool.textAlternatively")}</Paragraph>
+            <Paragraph>
+                <CodeSnippet
+                    language="shell"
+                    code={`pip install git+https://github.com/toniebox-reverse-engineering/cc3200tool.git`}
+                />
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.installCC3200Tool.moreInformation")}</Paragraph>
+            <Link to="https://github.com/toniebox-reverse-engineering/cc3200tool" target="_blank">
+                {t("tonieboxes.boxFlashingCommon.installCC3200Tool.link")}
+            </Link>
         </>
     );
 }
@@ -342,6 +395,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                     {t("tonieboxes.availableBoxModal.troubleShooting")}
                 </Link>
             </Paragraph>
+
             <h4>{t("tonieboxes.availableBoxModal.availableBoxes", { boxVersion: boxVersion })}</h4>
             {loading ? (
                 <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
@@ -356,8 +410,55 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                     locale={{ emptyText: renderEmpty() }}
                 />
             )}
+            {tonieboxes.filter((box) => box.version === boxVersion).length > 0 ? (
+                <Paragraph style={{ marginTop: 16 }}>
+                    {t("tonieboxes.boxSetup.uploadCertificatesToBox")}
+                    <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>
+                </Paragraph>
+            ) : (
+                ""
+            )}
         </Modal>
     );
 };
 
 export default AvailableBoxesModal;
+
+export const CertificateUploadElement: React.FC = ({}) => {
+    const { t } = useTranslation();
+    const [isCertificateUploadModalOpen, setIsCertificateUploadModalOpen] = useState(false);
+
+    const showCertificateUploadModal = () => {
+        setIsCertificateUploadModalOpen(true);
+    };
+
+    const handleClose = () => {
+        setIsCertificateUploadModalOpen(false);
+    };
+
+    const certificateUploadModal = (
+        <Modal
+            title={t("tonieboxes.boxSetup.uploadCertificates")}
+            open={isCertificateUploadModalOpen}
+            onCancel={handleClose}
+            footer={
+                <Button type="primary" onClick={handleClose}>
+                    {t("settings.close")}
+                </Button>
+            }
+            cancelText="Close"
+        >
+            <CertificateDragNDrop />
+        </Modal>
+    );
+
+    return (
+        <>
+            <Paragraph>{t("tonieboxes.boxSetup.uploadCertificateIntro")}</Paragraph>
+            <Paragraph>
+                <Button onClick={showCertificateUploadModal}>{t("tonieboxes.boxSetup.uploadCertificateButton")}</Button>
+                {certificateUploadModal}
+            </Paragraph>
+        </>
+    );
+};

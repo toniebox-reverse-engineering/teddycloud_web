@@ -84,15 +84,14 @@ export const StyledFooter = () => {
                                 </HiddenDesktop>
                                 <HiddenMobile>{version}</HiddenMobile>
                             </Link>
-                            <HiddenMobile style={{ paddingLeft: 8 }}>
-                                -
-                                <HeartFilled style={{ paddingLeft: 8, color: "#eb2f96" }} /> {t("footer.sponsorText")}{" "}
-                                <b>
-                                    <Link to={gitHubSponsoringUrl} target="_blank">
-                                        {t("footer.sponsor")}
-                                    </Link>
-                                </b>
-                            </HiddenMobile>
+                            <div style={{ paddingLeft: 8 }}>-</div>
+                            <HeartFilled style={{ color: "#eb2f96", paddingLeft: 8 }} />
+                            <HiddenMobile style={{ paddingLeft: 8 }}>{t("footer.sponsorText")} </HiddenMobile>
+                            <b>
+                                <Link to={gitHubSponsoringUrl} target="_blank" style={{ paddingLeft: 8 }}>
+                                    {t("footer.sponsor")}
+                                </Link>
+                            </b>
                         </small>
                     </div>
                 </StyledCenterPart>

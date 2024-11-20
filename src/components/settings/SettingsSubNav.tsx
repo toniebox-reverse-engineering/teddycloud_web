@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
@@ -11,6 +11,7 @@ import {
     HistoryOutlined,
     BellOutlined,
 } from "@ant-design/icons";
+import i18n from "../../i18n";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -24,8 +25,13 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SettingsSubNav = () => {
     const { t } = useTranslation();
+    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const currentLanguage = i18n.language;
     const [selectedKey, setSelectedKey] = useState("");
+    useEffect(() => {
+        setCurrentTCSection(t("settings.navigationTitle"));
+    }, [currentLanguage]);
 
     const extractBaseUrl = (fullUrl: URL) => {
         const url = new URL(fullUrl);
@@ -76,46 +82,101 @@ export const SettingsSubNav = () => {
     const subnav: MenuProps["items"] = [
         {
             key: "general",
-            label: <Link to="/settings">{t("settings.general.navigationTitle")}</Link>,
+            label: (
+                <Link
+                    to="/settings"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("settings.general.navigationTitle")}
+                </Link>
+            ),
             icon: React.createElement(SettingOutlined),
             title: t("settings.general.navigationTitle"),
         },
         {
             key: "certificates",
-            label: <Link to="/settings/certificates">{t("settings.certificates.navigationTitle")}</Link>,
+            label: (
+                <Link
+                    to="/settings/certificates"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("settings.certificates.navigationTitle")}
+                </Link>
+            ),
             icon: React.createElement(SafetyCertificateOutlined),
             title: t("settings.certificates.navigationTitle"),
         },
         {
             key: "rtnl",
-            label: <Link to="/settings/rtnl">{t("settings.rtnl.navigationTitle")}</Link>,
+            label: (
+                <Link
+                    to="/settings/rtnl"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("settings.rtnl.navigationTitle")}
+                </Link>
+            ),
             icon: React.createElement(FileSearchOutlined),
             title: t("settings.rtnl.navigationTitle"),
         },
         {
             key: "notifications",
-            label: <Link to="/settings/notifications">{t("settings.notifications.navigationTitle")}</Link>,
+            label: (
+                <Link
+                    to="/settings/notifications"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("settings.notifications.navigationTitle")}
+                </Link>
+            ),
             icon: React.createElement(BellOutlined),
             title: t("settings.notifications.navigationTitle"),
         },
         {
             key: "reload_toniesJson",
             label: <label style={{ cursor: "pointer" }}>{t("settings.toniesJsonUpdate")}</label>,
-            onClick: handleReloadToniesJson,
+            onClick: () => {
+                handleReloadToniesJson();
+                setNavOpen(false);
+                setSubNavOpen(false);
+            },
             icon: React.createElement(SyncOutlined),
             title: t("settings.toniesJsonUpdate"),
         },
         {
             key: "restart_server",
             label: <label style={{ cursor: "pointer" }}>{t("settings.restartServer")}</label>,
-            onClick: handleRestartServer,
+            onClick: () => {
+                handleRestartServer();
+                setNavOpen(false);
+                setSubNavOpen(false);
+            },
             icon: React.createElement(PoweroffOutlined),
             title: t("settings.restartServer"),
         },
         {
             key: "legacy",
             label: (
-                <Link to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`} target="_blank">
+                <Link
+                    to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`}
+                    target="_blank"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
                     {t("settings.legacyGui")}
                 </Link>
             ),
@@ -124,9 +185,5 @@ export const SettingsSubNav = () => {
         },
     ];
 
-    return (
-        <>
-            <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />
-        </>
-    );
+    return <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />;
 };

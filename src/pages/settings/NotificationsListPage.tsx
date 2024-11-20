@@ -1,11 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import NotificationsList from "../../components/settings/NotificationsList";
 
@@ -18,9 +13,6 @@ export const NotificationsListPage = () => {
                 <SettingsSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <SettingsSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

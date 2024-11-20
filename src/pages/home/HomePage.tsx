@@ -9,12 +9,7 @@ import { TonieCardProps } from "../../types/tonieTypes";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { ToniesList } from "../../components/tonies/ToniesList";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
@@ -168,9 +163,6 @@ export const HomePage = () => {
                 <HomeSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <HomeSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper items={[{ title: t("home.navigationTitle") }]} />
                 <StyledContent>
                     <Paragraph>

@@ -1,12 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
 const { Paragraph } = Typography;
@@ -39,9 +34,6 @@ export const ContributionPage = () => {
                 <CommunitySubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <CommunitySubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

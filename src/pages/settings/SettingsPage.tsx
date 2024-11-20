@@ -5,12 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom"; // Import Link from React Router
 import { OptionsList, TeddyCloudApi } from "../../api";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import SettingsDataHandler from "../../data/SettingsDataHandler";
 import { SettingsOptionItem } from "../../components/form/SettingsOptionItem";
@@ -164,7 +159,7 @@ export const SettingsPage = () => {
                 padding: "16px 0",
                 marginBottom: -24,
                 backgroundColor: token.colorBgContainer,
-                zIndex: 1001,
+                zIndex: 501,
             }}
             id="save-panel"
             className="sticky-save-panel"
@@ -184,9 +179,6 @@ export const SettingsPage = () => {
                 <SettingsSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <SettingsSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("settings.navigationTitle") }]}
                 />
@@ -267,7 +259,7 @@ export const SettingsPage = () => {
                             </Form>
                         </Formik>
                     )}
-                    ;<Divider>{t("settings.levelLabel")}</Divider>
+                    <Divider>{t("settings.levelLabel")}</Divider>
                     <Radio.Group
                         value={settingsLevel}
                         onChange={(e) => handleChange(e.target.value)}

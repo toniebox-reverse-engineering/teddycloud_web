@@ -2,12 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography, List } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
 const { Paragraph, Text } = Typography;
@@ -20,7 +15,10 @@ export const ChangelogPage = () => {
             version: "0.6.3",
             changes: [
                 "Stabilization backend",
+                "Fixed some memory leaks",
                 "Added Hide Information in filesV2 Api https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
+                "Added retain option last will in MQTT https://github.com/toniebox-reverse-engineering/teddycloud/issues/251",
+                "Support image caching for tonieboxes images (using setting tonie_json.cache_images) https://github.com/toniebox-reverse-engineering/teddycloud/issues/220",
                 "Provide c2.der symlink",
                 "Added custom_img volume for storing custom images - adapt your docker-compose.yaml according https://github.com/toniebox-reverse-engineering/teddycloud/blob/master/docker/docker-compose.yaml",
                 "gui: Added version overview page",
@@ -39,6 +37,11 @@ export const ChangelogPage = () => {
                 "gui: Added Download buttons/link to download TeddyCloud CA Certificate https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/177",
                 "gui: Overworked filebrowsers directory visualization and multi select action buttons https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/162",
                 "gui: Overworked settings forms: Instead of autosaving and manual save of strings, there is a new save button to store the changed settings https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/23",
+                "gui: Box flashing section: Added links to the great newbie guides in the forum thanks to marco79cgn, chuckf and Wurst420!",
+                "gui: Added Certificate upload to box flashing",
+                "gui: Completed CC3200 Flashing guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/130",
+                "gui: Added selection of baudrate in ESP32 flash process https://github.com/toniebox-reverse-engineering/teddycloud/issues/101, https://github.com/toniebox-reverse-engineering/teddycloud/issues/258",
+                "gui: Overworked mobile menu layout: section menus now part of the drawer and not shown always on each page, use + icon in mobile to expand menu",
                 "gui: Some refactoring",
             ],
             commits: [
@@ -297,9 +300,6 @@ export const ChangelogPage = () => {
                 <CommunitySubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <CommunitySubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

@@ -16,16 +16,13 @@ import cc3235CH341Sop82 from "../../../../assets/boxSetup/02_CH341A_sop8_2.jpg";
 import cc3235CH341Sop83 from "../../../../assets/boxSetup/02_CH341A_sop8_3.jpg";
 import cc3235CH341Sop8remove from "../../../../assets/boxSetup/02_CH341A_sop8_remove.jpg";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import AvailableBoxesModal, {
     certificateIntro,
+    CertificateUploadElement,
     dnsForTeddyCloud,
+    installCC3200Tool,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
@@ -265,13 +262,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
             <Link to="https://www.flashrom.org/" target="_blank">
                 {t("tonieboxes.cc3235BoxFlashing.installflashromtoolLink")}
             </Link>
-            <h4>{t("tonieboxes.cc3235BoxFlashing.installCC3200tool")}</h4>
-            <Link
-                to="https://github.com/toniebox-reverse-engineering/cc3200tool?tab=readme-ov-file#installation"
-                target="_blank"
-            >
-                {t("tonieboxes.cc3235BoxFlashing.installCC3200toolLink")}
-            </Link>
+            {installCC3200Tool()}
             <h4>{t("tonieboxes.cc3235BoxFlashing.hwToolSpecific")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.hwToolSpecificText")}</Paragraph>
             <Tabs
@@ -337,6 +328,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                     code={`cc3200tool -if cc32xx-flash.bin -d cc32xx read_all_files extract/`}
                 />
             </Paragraph>
+            <CertificateUploadElement />
             {commonCAcontent}
             <Paragraph>
                 <CodeSnippet
@@ -377,6 +369,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                     code={`cc3200tool -if backupCC3235-1.bin -d cc32xx read_all_files extract/`}
                 />
             </Paragraph>
+            <CertificateUploadElement />
             {commonCAcontent}
             <Paragraph>
                 <CodeSnippet
@@ -493,9 +486,6 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

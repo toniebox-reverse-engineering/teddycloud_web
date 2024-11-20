@@ -3,12 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, Col, List, Row, Typography } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 
 const { Paragraph, Title } = Typography;
@@ -70,8 +65,8 @@ export const BoxVersionInformationPage = () => {
                             <List
                                 dataSource={version.pros}
                                 renderItem={(item) => (
-                                    <List.Item>
-                                        <CheckOutlined style={{ color: "green", marginRight: 8 }} />
+                                    <List.Item style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
+                                        <CheckOutlined style={{ color: "green", marginRight: 8, marginTop: 4 }} />
                                         <Paragraph style={{ marginBottom: 0, textAlign: "right" }}>{item}</Paragraph>
                                     </List.Item>
                                 )}
@@ -90,8 +85,8 @@ export const BoxVersionInformationPage = () => {
                             <List
                                 dataSource={version.cons}
                                 renderItem={(item) => (
-                                    <List.Item>
-                                        <CloseOutlined style={{ color: "red", marginRight: 8 }} />
+                                    <List.Item style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
+                                        <CloseOutlined style={{ color: "red", marginRight: 8, marginTop: 4 }} />
                                         <Paragraph style={{ marginBottom: 0, textAlign: "right" }}>{item}</Paragraph>
                                     </List.Item>
                                 )}
@@ -115,9 +110,6 @@ export const BoxVersionInformationPage = () => {
                 <TonieboxesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <TonieboxesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

@@ -4,12 +4,7 @@ import { Typography } from "antd";
 
 import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
 const { Paragraph } = Typography;
@@ -23,9 +18,6 @@ export const CommunityPage = () => {
                 <CommunitySubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <CommunitySubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("community.navigationTitle") }]}
                 />

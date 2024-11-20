@@ -2,12 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Alert, Typography } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
 import { CertificateDragNDrop } from "../../../components/form/CertificatesDragAndDrop";
 import { SettingsSubNav } from "../../../components/settings/SettingsSubNav";
 
@@ -21,9 +16,6 @@ export const CertificatesPage = () => {
                 <SettingsSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <SettingsSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

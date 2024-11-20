@@ -5,19 +5,27 @@ import { MenuProps } from "antd";
 import {
     DeliveredProcedureOutlined,
     InfoCircleOutlined,
+    MinusOutlined,
     OrderedListOutlined,
+    PlusOutlined,
     PlusSquareOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
+import i18n from "../../i18n";
 
+import { useTeddyCloud } from "../../TeddyCloudContext";
 import { StyledSubMenu } from "../StyledComponents";
 import { TonieboxIcon } from "../utils/TonieboxIcon";
 
 export const TonieboxesSubNav = () => {
     const { t } = useTranslation();
+    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
     const location = useLocation();
-
     const [openKeys, setOpenKeys] = useState<string[]>([]);
+    const currentLanguage = i18n.language;
+    useEffect(() => {
+        setCurrentTCSection(t("tonieboxes.navigationTitle"));
+    }, [openKeys, currentLanguage]);
 
     const updateOpenKeys = (pathname: string) => {
         const newKeys: string[] = [];
@@ -50,11 +58,27 @@ export const TonieboxesSubNav = () => {
         }
     };
 
+    const customExpandIcon = ({ isOpen }: { isOpen?: boolean }) => {
+        const isExpanded = isOpen ?? false;
+        return isExpanded ? (
+            <MinusOutlined style={{ margin: "16px 0 16px 16px" }} />
+        ) : (
+            <PlusOutlined style={{ margin: "16px 0 16px 16px" }} />
+        );
+    };
+
     const subnav: MenuProps["items"] = [
         {
             key: "tonieboxes",
             label: (
-                <Link to="/tonieboxes" style={{ marginLeft: 8 }}>
+                <Link
+                    to="/tonieboxes"
+                    style={{ marginLeft: 8 }}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
                     {t("tonieboxes.navigationTitle")}
                 </Link>
             ),
@@ -64,7 +88,18 @@ export const TonieboxesSubNav = () => {
         {
             key: "boxsetup",
             label: (
-                <Link to="/tonieboxes/boxsetup" style={{ color: "currentColor" }}>
+                <Link
+                    to="/tonieboxes/boxsetup"
+                    style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "currentColor",
+                    }}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
                     {t("tonieboxes.boxSetup.navigationTitle")}
                 </Link>
             ),
@@ -74,7 +109,13 @@ export const TonieboxesSubNav = () => {
                 {
                     key: "boxversioninfo",
                     label: (
-                        <Link to="/tonieboxes/boxsetup/boxversioninfo">
+                        <Link
+                            to="/tonieboxes/boxsetup/boxversioninfo"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
                             {t("tonieboxes.boxSetup.boxVersion.navigationTitle")}
                         </Link>
                     ),
@@ -84,7 +125,13 @@ export const TonieboxesSubNav = () => {
                 {
                     key: "identifyboxversion",
                     label: (
-                        <Link to="/tonieboxes/boxsetup/identifyboxversion">
+                        <Link
+                            to="/tonieboxes/boxsetup/identifyboxversion"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
                             {t("tonieboxes.boxSetup.identifyVersion.navigationTitle")}
                         </Link>
                     ),
@@ -94,7 +141,13 @@ export const TonieboxesSubNav = () => {
                 {
                     key: "openbox",
                     label: (
-                        <Link to="/tonieboxes/boxsetup/openboxguide">
+                        <Link
+                            to="/tonieboxes/boxsetup/openboxguide"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
                             {t("tonieboxes.boxSetup.openBoxGuide.navigationTitle")}
                         </Link>
                     ),
@@ -112,6 +165,10 @@ export const TonieboxesSubNav = () => {
                                 alignItems: "center",
                                 padding: "0 50px 0 0",
                             }}
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
                         >
                             {t("tonieboxes.esp32BoxFlashing.navigationTitle")}
                         </Link>
@@ -122,7 +179,18 @@ export const TonieboxesSubNav = () => {
                         {
                             key: "esp32legacy",
                             label: (
-                                <Link to="/tonieboxes/boxsetup/esp32/legacy">
+                                <Link
+                                    to="/tonieboxes/boxsetup/esp32/legacy"
+                                    onClick={() => {
+                                        setNavOpen(false);
+                                        setSubNavOpen(false);
+                                    }}
+                                    style={{
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        color: "currentColor",
+                                    }}
+                                >
                                     {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
                                 </Link>
                             ),
@@ -134,7 +202,13 @@ export const TonieboxesSubNav = () => {
                 {
                     key: "cc3200",
                     label: (
-                        <Link to="/tonieboxes/boxsetup/cc3200/flashing">
+                        <Link
+                            to="/tonieboxes/boxsetup/cc3200/flashing"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
                             {t("tonieboxes.cc3200BoxFlashing.navigationTitle")}
                         </Link>
                     ),
@@ -144,7 +218,13 @@ export const TonieboxesSubNav = () => {
                 {
                     key: "cc3235",
                     label: (
-                        <Link to="/tonieboxes/boxsetup/cc3235/flashing">
+                        <Link
+                            to="/tonieboxes/boxsetup/cc3235/flashing"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
                             {t("tonieboxes.cc3235BoxFlashing.navigationTitle")}
                         </Link>
                     ),
@@ -163,6 +243,7 @@ export const TonieboxesSubNav = () => {
             selectedKeys={[]}
             onOpenChange={onOpenChange}
             items={subnav}
+            expandIcon={({ isOpen }) => customExpandIcon({ isOpen })}
         />
     );
 };
