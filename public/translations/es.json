@@ -1053,6 +1053,8 @@
         "errorFetchingModels": "Error al obtener los modelos de Tonieboxes",
         "errorFetchingTonieboxes": "Error al obtener las Tonieboxes",
         "esp32BoxFlashing": {
+            "adaptBaudrateOnProblems": "Consejo",
+            "adaptBaudrateOnProblemsText": "Si el progreso se congela o se queda atascado mientras lees o escribes en la memoria flash, intenta ajustar la velocidad en baudios usando el campo de selección \"Velocidad de transmisión\" en la parte superior.",
             "attention": "Atención",
             "baudRate": "Velocidad de transmisión: ",
             "baudRateInfo": "Si tienes problemas para leer o escribir en la memoria flash, prueba a cambiar la velocidad de transmisión. El valor predeterminado es 921600.",

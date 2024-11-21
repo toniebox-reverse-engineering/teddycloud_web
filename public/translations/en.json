@@ -1053,6 +1053,8 @@
         "errorFetchingModels": "Error fetching Tonieboxes Models",
         "errorFetchingTonieboxes": "Error fetching Tonieboxes",
         "esp32BoxFlashing": {
+            "adaptBaudrateOnProblems": "Hint",
+            "adaptBaudrateOnProblemsText": "If the progress freezes or gets stuck while reading or writing flash memory, try adjusting the baud rate using the select field \"Baudrate\" at the top.",
             "attention": "Attention",
             "baudRate": "Baudrate: ",
             "baudRateInfo": "If you encounter issues reading or writing to the flash, try changing the baud rate. The default is 921600.",

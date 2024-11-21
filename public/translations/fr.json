@@ -1053,6 +1053,8 @@
         "errorFetchingModels": "Erreur lors de la récupération des modèles de Tonieboxes",
         "errorFetchingTonieboxes": "Erreur lors de la récupération des Tonieboxes",
         "esp32BoxFlashing": {
+            "adaptBaudrateOnProblems": "Astuce",
+            "adaptBaudrateOnProblemsText": "Si le processus se fige ou reste bloqué lors de la lecture ou de l'écriture de la mémoire flash, essaie de modifier le débit en bauds avec le champ de sélection \"Taux de baud\" en haut.",
             "attention": "Attention",
             "baudRate": "Taux de baud : ",
             "baudRateInfo": "Si tu rencontres des problèmes pour lire ou écrire dans la mémoire flash, essaie de changer le taux de baud. La valeur par défaut est 921600.",

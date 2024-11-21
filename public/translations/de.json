@@ -1053,6 +1053,8 @@
         "errorFetchingModels": "Fehler beim Abrufen der Toniebox-Modelle",
         "errorFetchingTonieboxes": "Fehler beim Abrufen der Tonieboxen",
         "esp32BoxFlashing": {
+            "adaptBaudrateOnProblems": "Hinweis",
+            "adaptBaudrateOnProblemsText": "Wenn der Fortschritt einfriert oder hängen bleibt, während du den Flash-Speicher liest oder beschreibst, versuche, die Baudrate über das Auswahlfeld \"Baudrate\" oben anzupassen.",
             "attention": "Achtung",
             "baudRate": "Baudrate: ",
             "baudRateInfo": "Wenn du Probleme beim Lesen oder Schreiben des Flash-Speichers hast, versuche die Baudrate zu ändern. Der Standardwert ist 921600.",
