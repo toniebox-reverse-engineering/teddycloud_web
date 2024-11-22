@@ -78,6 +78,55 @@
             "navigationTitle": "Foro"
         },
         "navigationTitle": "Comunidad",
+        "supportRequestGuide": {
+            "closing": "Proporcionar este nivel de detalle ayudará a la comunidad a resolver tu problema de manera más efectiva. ¡Gracias!",
+            "example": {
+                "description": "A continuación, se muestra un ejemplo de una solicitud de soporte bien estructurada para ayudarte a comenzar:",
+                "details": "Subject: Error Uploading File in TeddyCloud (Docker)<br /><br />Description:<br />I encountered an error while trying to upload a file in TeddyCloud.<br /><br />1. Actions performed:<br />   - I logged in successfully.<br />   - I went to the upload page and selected a file (testfile.pdf).<br />   - I clicked the upload button.<br /><br />2. Expected outcome:<br />   - The file should upload successfully and appear in the file list.<br /><br />3. Actual outcome:<br />   - An error message appeared: 'Upload failed: Connection lost.'<br /><br />4. Environment details:<br />   - OS: Ubuntu 20.04<br />   - Docker version: 24.0.2<br />   - TeddyCloud container version: 1.3.0<br /><br />5. Logs:<br />   Attached is the log extract (teddycloud_logs.txt) from the time the error occurred.",
+                "title": "Ejemplo de Solicitud de Soporte"
+            },
+            "intro": "Cuando solicitas soporte, proporcionar información detallada y clara ayuda a la comunidad a diagnosticar y resolver tu problema más rápidamente. Sigue estos pasos para asegurarte de que tu solicitud de soporte incluya todos los detalles necesarios. Por favor, formula tu solicitud en inglés para que la mayor cantidad de miembros de la comunidad puedan ayudarte.",
+            "navigationTitle": "Guía de Solicitudes de Soporte",
+            "step1": {
+                "content": "Comienza con un resumen conciso del problema. Menciona cualquier mensaje de error específico que hayas recibido (copia y pega el mensaje exacto si es posible).",
+                "title": "Paso 1: Describe Claramente el Problema"
+            },
+            "step2": {
+                "intro": "Describe con detalle lo que hiciste hasta que ocurrió el error. Incluye:",
+                "list": [
+                    "Acciones realizadas (por ejemplo, 'Inicié sesión e intenté subir un archivo').",
+                    "Resultado esperado (por ejemplo, 'El archivo debería subirse correctamente').",
+                    "Resultado real (por ejemplo, 'Recibí un mensaje de error: Subida fallida')."
+                ],
+                "title": "Paso 2: Proporciona una Descripción Paso a Paso"
+            },
+            "step3": {
+                "list": [
+                    "Sistema operativo y versión (por ejemplo, Windows 10, Ubuntu 20.04).",
+                    "Si estás utilizando Docker, y su versión.",
+                    "Cualquier otro detalle relevante de configuración."
+                ],
+                "title": "Paso 3: Incluye Información Técnica"
+            },
+            "step4": {
+                "intro": "Proporciona registros para ayudar a diagnosticar el problema. Aquí está cómo:",
+                "list": [
+                    "Incluye la salida del registro desde el momento en que ocurrió el problema.",
+                    "Asegúrate de ocultar la información sensible antes de compartirla."
+                ],
+                "listFirstEntry": "Ejecuta este comando para recopilar registros:",
+                "title": "Paso 4: Adjunta los Registros Relevantes"
+            },
+            "step5": {
+                "content": "Si es posible, incluye capturas de pantalla o una grabación corta de pantalla para demostrar visualmente el problema.",
+                "title": "Paso 5: Capturas de Pantalla o Videos (Opcional)"
+            },
+            "step6": {
+                "content": "Avísanos si ya has intentado pasos de solución de problemas, como reiniciar el servicio o revisar los registros.",
+                "title": "Paso 6: Pasos que Has Tomado para Resolver el Problema"
+            },
+            "title": "Cómo Crear una Buena Solicitud de Soporte"
+        },
         "title": "Comunidad",
         "translations": {
             "allTranslationStrings": "Todas las cadenas de traducción",

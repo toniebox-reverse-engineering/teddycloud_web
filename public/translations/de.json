@@ -78,6 +78,55 @@
             "navigationTitle": "Forum"
         },
         "navigationTitle": "Community",
+        "supportRequestGuide": {
+            "closing": "Diese Detailgenauigkeit wird der Community helfen, dein Problem effektiver zu lösen. Vielen Dank!",
+            "example": {
+                "description": "Nachfolgend ein Beispiel für eine gut strukturierte Support-Anfrage, die dir beim Start helfen soll:",
+                "details": "Subject: Error Uploading File in TeddyCloud (Docker)<br /><br />Description:<br />I encountered an error while trying to upload a file in TeddyCloud.<br /><br />1. Actions performed:<br />   - I logged in successfully.<br />   - I went to the upload page and selected a file (testfile.pdf).<br />   - I clicked the upload button.<br /><br />2. Expected outcome:<br />   - The file should upload successfully and appear in the file list.<br /><br />3. Actual outcome:<br />   - An error message appeared: 'Upload failed: Connection lost.'<br /><br />4. Environment details:<br />   - OS: Ubuntu 20.04<br />   - Docker version: 24.0.2<br />   - TeddyCloud container version: 1.3.0<br /><br />5. Logs:<br />   Attached is the log extract (teddycloud_logs.txt) from the time the error occurred.",
+                "title": "Beispiel für eine Support-Anfrage"
+            },
+            "intro": "Wenn du Unterstützung anforderst, hilft es der Community, dein Problem schneller zu diagnostizieren und zu lösen, wenn du detaillierte und klare Informationen bereitstellst. Folge diesen Schritten, um sicherzustellen, dass deine Support-Anfrage alle notwendigen Details enthält. Bitte formuliere deine Anfrage auf Englisch, damit möglichst viele Mitglieder der Community dir helfen können.",
+            "navigationTitle": "Support-Anfrage-Leitfaden",
+            "step1": {
+                "content": "Beginne mit einer präzisen Zusammenfassung des Problems. Nenne alle spezifischen Fehlermeldungen, die du erhalten hast (kopiere und füge die genaue Nachricht ein, wenn möglich).",
+                "title": "Schritt 1: Beschreibe das Problem klar"
+            },
+            "step2": {
+                "intro": "Beschreibe im Detail, was du bis zum Fehler gemacht hast. Füge Folgendes ein:",
+                "list": [
+                    "Durchgeführte Aktionen (z.B. 'Ich habe mich eingeloggt und versucht, eine Datei hochzuladen').",
+                    "Erwartetes Ergebnis (z.B. 'Die Datei sollte erfolgreich hochgeladen werden').",
+                    "Tatsächliches Ergebnis (z.B. 'Ich habe eine Fehlermeldung erhalten: Upload fehlgeschlagen')."
+                ],
+                "title": "Schritt 2: Gib eine Schritt-für-Schritt-Beschreibung"
+            },
+            "step3": {
+                "list": [
+                    "Betriebssystem und Version (z.B. Windows 10, Ubuntu 20.04).",
+                    "Ob du Docker verwendest und welche Version.",
+                    "Alle anderen relevanten Konfigurationsdetails."
+                ],
+                "title": "Schritt 3: Füge technische Informationen hinzu"
+            },
+            "step4": {
+                "intro": "Stelle Logs zur Verfügung, um das Problem zu diagnostizieren. So geht's:",
+                "list": [
+                    "Füge die Log-Ausgabe aus der Zeit hinzu, als das Problem auftrat.",
+                    "Achte darauf, sensible Informationen vor dem Teilen zu schwärzen."
+                ],
+                "listFirstEntry": "Führe diesen Befehl aus, um Logs zu sammeln:",
+                "title": "Schritt 4: Füge relevante Logs bei"
+            },
+            "step5": {
+                "content": "Wenn möglich, füge Screenshots oder ein kurzes Bildschirm-Video bei, um das Problem visuell darzustellen.",
+                "title": "Schritt 5: Screenshots oder Videos (Optional)"
+            },
+            "step6": {
+                "content": "Lass uns wissen, ob du bereits Fehlerbehebungsschritte versucht hast, wie das Neustarten des Dienstes oder das Überprüfen der Logs.",
+                "title": "Schritt 6: Schritte, die du unternommen hast, um das Problem zu lösen"
+            },
+            "title": "Wie man eine gute Support-Anfrage stellt"
+        },
         "title": "Community",
         "translations": {
             "allTranslationStrings": "Alle Übersetzungsstrings",
