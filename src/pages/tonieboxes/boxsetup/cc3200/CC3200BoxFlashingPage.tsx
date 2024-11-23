@@ -321,7 +321,7 @@ export const CC3200BoxFlashingPage = () => {
                 <div style={{ maxHeight: 400, justifyItems: "center" }}>
                     <Image
                         src={cc3200cfwUpdate}
-                        style={{ maxHeight: 400, width: "auto" }}
+                        style={{ maxHeight: 400, width: "auto", maxWidth: "100%" }}
                         alt={t(
                             "tonieboxes.cc3200BoxFlashing.installingBootloader.existingInstallation.updatingCFWUsingOldCFWWebGui"
                         )}
