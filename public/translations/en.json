@@ -722,6 +722,14 @@
             "preparations": "Preparations"
         },
         "boxSetup": {
+            "UARTHint": {
+                "description": "Please double-check if your UART supports both 3.3V and 5V. In this case, you should find a jumper on the board to select the correct mode. You can see examples of such jumpers here (but there are others):",
+                "imageAlt1": "Jumper Example 1",
+                "imageAlt2": "Jumper Example 2",
+                "imageAlt3": "Jumper Example 3",
+                "title": "Important",
+                "warning": "In any case, make absolutely sure that 3.3V (often labelled 3v3) is set! If you are using the 5V setting, there is a high risk that you will break your Toniebox!"
+            },
             "boxSetupIntro1": "This page provides a complete overview of the steps required to add your Toniebox to TeddyCloud. If you encounter any issues, feel free to visit the",
             "boxSetupIntro2": "or join the",
             "boxSetupIntro3": "for community support.",

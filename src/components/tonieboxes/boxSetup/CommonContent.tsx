@@ -9,6 +9,9 @@ import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import tbEsp32UartClamp from "../../../assets/boxSetup/tb-esp32-uart-clamp.png";
 import tbEsp32UartAnalogClamp from "../../../assets/boxSetup/esp32_pcb_clamp.png";
 import tbEsp32Uart from "../../../assets/boxSetup/tb-esp32-uart.png";
+import jumper1 from "../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_black.jpg";
+import jumper2 from "../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_switch.jpg";
+import jumper3 from "../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_yellow.jpg";
 
 import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
 import CodeSnippet from "../../utils/CodeSnippet";
@@ -28,6 +31,44 @@ interface AvailableBoxesModalProps {
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
+export function uart3v3Hint(): JSX.Element {
+    const { t } = useTranslation();
+
+    return (
+        <Alert
+            type="warning"
+            showIcon
+            message={t("tonieboxes.boxSetup.UARTHint.title")}
+            description={
+                <>
+                    {t("tonieboxes.boxSetup.UARTHint.description")}
+                    <div style={{ marginTop: "8px", display: "flex", gap: 8 }}>
+                        <Image
+                            src={jumper1}
+                            preview={false}
+                            alt={t("tonieboxes.boxSetup.UARTHint.imageAlt1")}
+                            style={{ maxHeight: 75 }}
+                        />
+                        <Image
+                            src={jumper2}
+                            preview={false}
+                            alt={t("tonieboxes.boxSetup.UARTHint.imageAlt2")}
+                            style={{ maxHeight: 75 }}
+                        />
+                        <Image
+                            src={jumper3}
+                            preview={false}
+                            alt={t("tonieboxes.boxSetup.UARTHint.imageAlt3")}
+                            style={{ maxHeight: 75 }}
+                        />
+                    </div>
+                    <div style={{ marginTop: "10px" }}>{t("tonieboxes.boxSetup.UARTHint.warning")}</div>
+                </>
+            }
+        />
+    );
+}
+
 const { Paragraph } = Typography;
 
 export function connectESP32Explanation(): JSX.Element {
@@ -35,6 +76,7 @@ export function connectESP32Explanation(): JSX.Element {
 
     return (
         <>
+            <Paragraph>{uart3v3Hint()}</Paragraph>
             <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1")}</Paragraph>
             <Paragraph
                 style={{

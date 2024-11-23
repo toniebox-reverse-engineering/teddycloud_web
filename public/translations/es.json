@@ -722,6 +722,14 @@
             "preparations": "Preparativos"
         },
         "boxSetup": {
+            "UARTHint": {
+                "description": "Por favor, verifica si tu UART admite tanto 3,3V como 5V. En este caso, deberías encontrar un puente en la placa para seleccionar el modo correcto. Aquí puedes ver ejemplos de esos puentes (aunque hay otros):",
+                "imageAlt1": "Ejemplo de puente 1",
+                "imageAlt2": "Ejemplo de puente 2",
+                "imageAlt3": "Ejemplo de puente 3",
+                "title": "Importante",
+                "warning": "¡Asegúrate absolutamente de que está configurado en 3,3V (a menudo etiquetado como 3v3)! Si usas la configuración de 5V, existe un alto riesgo de que dañes tu Toniebox."
+            },
             "boxSetupIntro1": "Esta página proporciona una visión general completa de los pasos necesarios para añadir tu Toniebox a TeddyCloud. Si encuentras algún problema, no dudes en visitar el",
             "boxSetupIntro2": "o unirte al",
             "boxSetupIntro3": "para recibir soporte de la comunidad.",

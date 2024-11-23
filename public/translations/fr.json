@@ -722,6 +722,14 @@
             "preparations": "Préparations"
         },
         "boxSetup": {
+            "UARTHint": {
+                "description": "Veuillez vérifier si votre UART prend en charge à la fois 3,3V et 5V. Dans ce cas, tu devrais trouver un cavalier sur la carte pour sélectionner le mode correct. Voici des exemples de ces cavaliers (mais il y en a d'autres) :",
+                "imageAlt1": "Exemple de cavalier 1",
+                "imageAlt2": "Exemple de cavalier 2",
+                "imageAlt3": "Exemple de cavalier 3",
+                "title": "Important",
+                "warning": "Assure-toi absolument que 3,3V (souvent étiqueté 3v3) est réglé ! Si tu utilises le réglage 5V, il y a un grand risque que tu endommages ta Toniebox."
+            },
             "boxSetupIntro1": "Cette page fournit un aperçu complet des étapes nécessaires pour ajouter votre Toniebox à TeddyCloud. Si vous rencontrez des problèmes, n'hésitez pas à visiter le",
             "boxSetupIntro2": "ou à rejoindre le",
             "boxSetupIntro3": "pour obtenir de l'aide de la communauté.",

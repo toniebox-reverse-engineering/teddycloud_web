@@ -30,6 +30,7 @@ import AvailableBoxesModal, {
     certificateIntro,
     CertificateUploadElement,
     installCC3200Tool,
+    uart3v3Hint,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
 import cc3200debugPort from "../../../../assets/boxSetup/cc3200_debugPort.jpg";
@@ -175,6 +176,7 @@ export const CC3200BoxFlashingPage = () => {
                         alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
                     />
                 </Paragraph>
+                <Paragraph>{uart3v3Hint()}</Paragraph>
                 <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableIntro")}</Paragraph>
                 {TonieboxUARTTable()}
             </Paragraph>
