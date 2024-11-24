@@ -203,7 +203,7 @@ export const TonieboxCard: React.FC<{
                             top: "0",
                             left: "0",
                         }}
-                    />{" "}
+                    />
                 </Tooltip>
             );
         }
