@@ -65,8 +65,8 @@ export const HomePage = () => {
             } catch (error) {
                 addNotification(
                     NotificationTypeEnum.Error,
-                    t("settings.messages.errorFetchingSetting"),
-                    t("settings.messages.errorFetchingSettingDetails", {
+                    t("settings.errorFetchingSetting"),
+                    t("settings.errorFetchingSettingDetails", {
                         setting: "toniebox.api_access",
                     }) + error,
                     t("home.navigationTitle")
