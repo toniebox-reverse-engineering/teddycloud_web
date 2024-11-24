@@ -1254,6 +1254,10 @@
             "deleting": "Suppression...",
             "deletingDetails": "Suppression de la Toniebox {{mac}} de TeddyCloud"
         },
+        "modelHint": {
+            "action": "pour sélectionner le bon modèle de ta Toniebox",
+            "text": "Clique sur"
+        },
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "Nouvelles Tonieboxes autorisées",
         "newBoxesAllowedText": "Vous pouvez connecter de nouvelles Tonieboxes à TeddyCloud. Une fois que vous avez connecté toutes vos boîtes, veuillez désactiver le réglage \"Autoriser les nouvelles boîtes\" pour des raisons de sécurité.",

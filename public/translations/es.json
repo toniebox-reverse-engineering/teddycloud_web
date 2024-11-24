@@ -1254,6 +1254,10 @@
             "deleting": "Eliminando...",
             "deletingDetails": "Eliminando Toniebox {{mac}} de TeddyCloud"
         },
+        "modelHint": {
+            "action": "para seleccionar el modelo correcto de tu Toniebox",
+            "text": "Haz clic en"
+        },
         "navigationTitle": "Tonieboxes",
         "newBoxesAllowed": "Nuevas Tonieboxes permitidas",
         "newBoxesAllowedText": "Puedes conectar nuevas Tonieboxes a TeddyCloud. Una vez que hayas conectado todas tus cajas, deshabilita la opción \"Permitir nuevas cajas\" por razones de seguridad.",
