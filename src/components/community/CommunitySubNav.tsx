@@ -96,6 +96,22 @@ export const CommunitySubNav = () => {
             title: t("community.faq.navigationTitle"),
         },
         {
+            key: "request",
+            label: (
+                <Link
+                    to="/community/supportrequestguide"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("community.supportRequestGuide.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(QuestionCircleOutlined),
+            title: t("community.supportRequestGuide.navigationTitle"),
+        },
+        {
             key: "contribution",
             label: (
                 <Link

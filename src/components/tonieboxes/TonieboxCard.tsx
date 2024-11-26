@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
 import { Typography, Card, Button, Input, Modal, Divider, Select, theme, Tooltip } from "antd";
 import {
@@ -17,8 +18,6 @@ import {
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
 
-import { tonieboxDefaultImageUrl } from "../../constants";
-
 import { TonieCardProps } from "../../types/tonieTypes";
 import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../types/tonieboxTypes";
 
@@ -28,6 +27,8 @@ import GetBoxModelImages from "../../utils/boxModels";
 import ConfirmationDialog from "../utils/ConfirmationDialog";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+
+import defaultBoxImage from "../../assets/unknown_box.png";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -42,6 +43,8 @@ export const TonieboxCard: React.FC<{
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
+    const currentLanguage = i18n.language;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
@@ -130,7 +133,7 @@ export const TonieboxCard: React.FC<{
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tonieboxCard.ID, tonieboxCard.boxModel]);
+    }, [tonieboxCard.ID, tonieboxCard.boxModel, currentLanguage]);
 
     useEffect(() => {
         if (lastIp && tonieboxVersion === BoxVersionsEnum.cc3200) {
@@ -180,18 +183,28 @@ export const TonieboxCard: React.FC<{
             );
         } else {
             setBoxImage(
-                <img
-                    src={tonieboxDefaultImageUrl}
-                    alt=""
-                    style={{
-                        filter: "opacity(0.20)",
-                        width: "100%",
-                        height: "auto",
-                        position: "absolute",
-                        top: "0",
-                        left: "0",
-                    }}
-                />
+                <Tooltip
+                    title={
+                        <>
+                            {t("tonieboxes.modelHint.text")}{" "}
+                            <EditOutlined key="edit" onClick={() => showModelModal()} />{" "}
+                            {t("tonieboxes.modelHint.action")}!
+                        </>
+                    }
+                    placement="bottom"
+                >
+                    <img
+                        src={defaultBoxImage}
+                        alt=""
+                        style={{
+                            width: "100%",
+                            height: "auto",
+                            position: "absolute",
+                            top: "0",
+                            left: "0",
+                        }}
+                    />
+                </Tooltip>
             );
         }
     };
@@ -649,7 +662,7 @@ export const TonieboxCard: React.FC<{
                         {lastPlayedTonieName}
                         {/* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique */}
                         <img
-                            src={tonieboxDefaultImageUrl}
+                            src={defaultBoxImage}
                             alt=""
                             style={{
                                 position: "relative",

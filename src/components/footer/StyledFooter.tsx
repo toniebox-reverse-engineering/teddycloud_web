@@ -24,7 +24,7 @@ const StyledFooterComponent = styled(Footer)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px 50px;
+    padding: 16px 24px;
     color: white;
 `;
 

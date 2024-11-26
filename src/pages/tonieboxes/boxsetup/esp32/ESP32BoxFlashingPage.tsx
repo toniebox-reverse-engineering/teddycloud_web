@@ -1039,13 +1039,24 @@ export const ESP32BoxFlashingPage = () => {
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash")}</h3>
             {!state.actionInProgress && (
                 <>
-                    <Alert
-                        type="warning"
-                        closeIcon
-                        showIcon
-                        message={t("tonieboxes.hintLatestFirmwareTitle")}
-                        description={t("tonieboxes.hintLatestFirmware")}
-                    ></Alert>
+                    <Paragraph>
+                        <Alert
+                            type="warning"
+                            closeIcon
+                            showIcon
+                            message={t("tonieboxes.hintLatestFirmwareTitle")}
+                            description={t("tonieboxes.hintLatestFirmware")}
+                        ></Alert>
+                    </Paragraph>
+                    <Paragraph>
+                        <Alert
+                            type="info"
+                            closeIcon
+                            showIcon
+                            message={t("tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblems")}
+                            description={t("tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblemsText")}
+                        ></Alert>
+                    </Paragraph>
                     <Paragraph style={{ marginTop: 16 }}>
                         <Alert
                             type="info"

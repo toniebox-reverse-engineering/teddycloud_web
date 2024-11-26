@@ -42,6 +42,7 @@ export const ChangelogPage = () => {
                 "gui: Completed CC3200 Flashing guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/130",
                 "gui: Added selection of baudrate in ESP32 flash process https://github.com/toniebox-reverse-engineering/teddycloud/issues/101, https://github.com/toniebox-reverse-engineering/teddycloud/issues/258",
                 "gui: Overworked mobile menu layout: section menus now part of the drawer and not shown always on each page, use + icon in mobile to expand menu",
+                "gui: Added How to Create a Good Support Request page",
                 "gui: Some refactoring",
             ],
             commits: [

@@ -12,4 +12,5 @@ export const supportedAudioExtensionsFFMPG = [
     ".ac3",
     ".dts",
     ".taf",
+    ".mp4",
 ];
