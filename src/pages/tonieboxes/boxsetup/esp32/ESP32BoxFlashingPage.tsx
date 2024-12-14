@@ -105,7 +105,7 @@ export const ESP32BoxFlashingPage = () => {
 
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState<string>("");
 
-    const [currentStep, setCurrent] = useState(1);
+    const [currentStep, setCurrent] = useState(0);
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
