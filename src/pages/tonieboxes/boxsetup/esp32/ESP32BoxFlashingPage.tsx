@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import {
     Alert,
     Button,
+    Checkbox,
     Col,
     Collapse,
     Divider,
@@ -68,6 +69,8 @@ interface ESP32Flasher {
     showDownload: boolean;
     showFlash: boolean;
     connected: boolean;
+    flagPreviousHostname: boolean;
+    previousHostname: string;
     hostname: string;
     wifi_ssid: string;
     wifi_pass: string;
@@ -102,7 +105,7 @@ export const ESP32BoxFlashingPage = () => {
 
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState<string>("");
 
-    const [currentStep, setCurrent] = useState(0);
+    const [currentStep, setCurrent] = useState(1);
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
@@ -125,6 +128,8 @@ export const ESP32BoxFlashingPage = () => {
         showDownload: false,
         showFlash: false,
         connected: false,
+        flagPreviousHostname: false,
+        previousHostname: "",
         hostname: window.location.hostname,
         wifi_ssid: "",
         wifi_pass: "",
@@ -1295,6 +1300,51 @@ export const ESP32BoxFlashingPage = () => {
                     <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchHost")}</Paragraph>
                     <Form.Item>
                         <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
+                            <Col>
+                                <Checkbox
+                                    checked={state.flagPreviousHostname}
+                                    onChange={(e) => {
+                                        setState((prevState) => ({
+                                            ...prevState,
+                                            flagPreviousHostname: e.target.checked,
+                                        }));
+                                    }}
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.flagPreviousHostname")}
+                                </Checkbox>
+                            </Col>
+                        </Row>
+                    </Form.Item>
+                    {state.flagPreviousHostname && (
+                        <Form.Item>
+                            <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
+                                <Col style={{ flex: "0 0 200px" }}>
+                                    <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.previousHostname")}</label>
+                                </Col>
+                                <Col style={{ flex: "1 1 auto" }}>
+                                    <Input
+                                        type="text"
+                                        value={state.previousHostname}
+                                        onChange={(e) => {
+                                            let value = sanitizeHostname(e.target.value);
+                                            setState((prevState) => ({
+                                                ...prevState,
+                                                previousHostname: value,
+                                            }));
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+                            {state.warningTextHostname && (
+                                <p style={{ color: "#CC3010" }}>
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameTooLong")}
+                                </p>
+                            )}
+                        </Form.Item>
+                    )}
+
+                    <Form.Item>
+                        <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
                             <Col style={{ flex: "0 0 200px", color: state.warningTextHostname ? "#CC3010" : "unset" }}>
                                 <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostname")}</label>
                             </Col>
@@ -1772,7 +1822,11 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                         <div style={{ display: "flex", gap: 8 }}>
                             <Button
                                 icon={<CodeOutlined />}
-                                disabled={disableButtons}
+                                disabled={
+                                    disableButtons ||
+                                    state.hostname === "" ||
+                                    (state.flagPreviousHostname && state.previousHostname === "")
+                                }
                                 type="primary"
                                 onClick={() => patchImage()}
                             >

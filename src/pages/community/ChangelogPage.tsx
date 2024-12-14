@@ -45,6 +45,7 @@ export const ChangelogPage = () => {
                 "gui: Overworked mobile menu layout: section menus now part of the drawer and not shown always on each page, use + icon in mobile to expand menu",
                 "gui: Added How to Create a Good Support Request page",
                 "gui: Added reset shortcut in esp32 flashing process https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/190",
+                "gui: Prepared esp32 flashing with previously set TeddyCloud hostname instead of original one https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/189",
                 "gui: Some refactoring",
             ],
             commits: [

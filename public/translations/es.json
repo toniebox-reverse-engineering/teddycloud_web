@@ -1167,6 +1167,8 @@
                 "hintPatchHost": "Introduce el nombre de host deseado para tu instancia de TeddyCloud.",
                 "hintPatchWifi": "Opcionalmente ingresa las credenciales WiFi para tu Toniebox.",
                 "hintReadESP32ImportFlash": "Ahora desconecta la fuente de alimentación de tu Toniebox. Asegúrate de que el UART opere en modo 3.3V. Conecta tu UART con tu PC y Toniebox. Haz un cortocircuito en los pines J100. Haz clic en \"Leer Flash\" o \"Cargar archivo\", luego elige el puerto COM. Luego conecta tu Toniebox a la alimentación y espera hasta que se complete el paso.",
+                "flagPreviousHostname": "La imagen de flash contiene un nombre de host de TeddyCloud establecido previamente (WIP, actualmente no procesado)",
+                "previousHostname": "Nombre de host antiguo de TeddyCloud:",
                 "hostname": "Nombre de host de TeddyCloud:",
                 "hostnameSettings": "Configuración del nombre de host",
                 "hostnameTooLong": "El nombre de host debe tener menos de 13 caracteres.",

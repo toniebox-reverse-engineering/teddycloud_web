@@ -1168,6 +1168,8 @@
                 "hintPatchWifi": "Optionally enter the WiFi credentials for your Toniebox.",
                 "hintReadESP32ImportFlash": "Now disconnect the powersource of your Toniebox. Make sure that the UART operates in 3.3V mode. Connect your UART with your PC and Toniebox. Short cut the J100 pinholes. Click on \"Read Flash\" or \"Load File\", then choose the COM-Port. Then connect your Toniebox to power and wait till the step is done!",
                 "hostname": "TeddyCloud Hostname:",
+                "flagPreviousHostname": "Flash image contains a previous set hostname of TeddyCloud (WIP, not processed currently)",
+                "previousHostname": "Old TeddyCloud hostname:",
                 "hostnameSettings": "Hostname TeddyCloud",
                 "hostnameTooLong": "The hostname should be less than 13 characters long.",
                 "infoTable": "ESP32 info",
