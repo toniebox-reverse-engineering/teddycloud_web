@@ -27,6 +27,7 @@ import {
     LeftOutlined,
     QuestionCircleOutlined,
     RightOutlined,
+    RollbackOutlined,
     SafetyCertificateOutlined,
     SyncOutlined,
     UploadOutlined,
@@ -77,6 +78,7 @@ interface ESP32Flasher {
     downloadLink: string;
     downloadLinkPatched: string;
     error: boolean;
+    resetBox: boolean;
 }
 
 const { Paragraph, Text } = Typography;
@@ -133,6 +135,7 @@ export const ESP32BoxFlashingPage = () => {
         downloadLink: "",
         downloadLinkPatched: "",
         error: false,
+        resetBox: false,
     });
 
     const [isSupported, setIsSupported] = useState(false);
@@ -153,6 +156,7 @@ export const ESP32BoxFlashingPage = () => {
         }
         return binaryString;
     }
+
     useEffect(() => {
         const fetchCertsDir = async () => {
             const response = await api.apiGetTeddyCloudSettingRaw("core.certdir");
@@ -219,6 +223,12 @@ export const ESP32BoxFlashingPage = () => {
     }, []);
 
     useEffect(() => {
+        if (state.resetBox && state.patchedFlash) {
+            resetFlash();
+        }
+    }, [state.resetBox, state.patchedFlash]);
+
+    useEffect(() => {
         const getContentForStep = () => {
             switch (currentStep) {
                 case 0:
@@ -228,6 +238,9 @@ export const ESP32BoxFlashingPage = () => {
                 case 2:
                     return contentStep2;
                 case 3:
+                    if (state.resetBox) {
+                        return contentStep3resetCase;
+                    }
                     return contentStep3;
                 default:
                     return <div></div>;
@@ -239,7 +252,7 @@ export const ESP32BoxFlashingPage = () => {
     }, [state, currentLanguage]);
 
     useEffect(() => {
-        if (state.proceed) {
+        if (!state.resetBox && state.proceed) {
             next();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -340,76 +353,13 @@ export const ESP32BoxFlashingPage = () => {
             actionInProgress: true,
         }));
 
-        console.log("Read file '" + file + "'");
         const reader = new FileReader();
-        reader.onload = async (e) => {
-            console.log("Connecting to ESP32");
-            const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingReadMac"));
 
-            if (port === null || state.connected) {
-                setState((prevState) => ({
-                    ...prevState,
-                    actionInProgress: false,
-                }));
-                return;
-            }
-
-            setState((prevState) => ({
-                ...prevState,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${state.port}`,
-                showFlash: false,
-                connected: true,
-            }));
-
-            let esploader: ESPLoader | null = null;
-
-            try {
-                const transport = new Transport(port);
-                esploader = new ESPLoader({
-                    transport: transport,
-                    baudrate: baudRate,
-                    romBaudrate: romBaudRate,
-                });
-            } catch (err) {
-                setState((prevState) => ({
-                    ...prevState,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-
-                alert(err);
-                await port.close();
-                return;
-            }
-
-            try {
-                setState((prevState) => ({
-                    ...prevState,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.retrievingMac"),
-                    actionInProgress: true,
-                }));
-
-                await esploader.main();
-
-                let mac = await esploader.chip.readMac(esploader);
-                setState((prevState) => ({
-                    ...prevState,
-                    chipMac: mac,
-                }));
-
-                console.log("Chip MAC: " + mac);
-                await port.close();
-
+        if (state.resetBox) {
+            console.log("Read file '" + file + "' for reset");
+            reader.onload = async (e) => {
+                console.log("Loading file for reset");
                 const arrayBuffer = e.target?.result as ArrayBuffer;
-                const flashData = new Uint8Array(arrayBuffer);
-                const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
-                const blob = new Blob([flashData], { type: "application/octet-stream" });
-                const url = URL.createObjectURL(blob);
-
-                await uploadFlashData(flashData, sanitizedName);
-
                 if (e.target) {
                     setState((prevState) => ({
                         ...prevState,
@@ -417,30 +367,113 @@ export const ESP32BoxFlashingPage = () => {
                         showFlash: true,
                         connected: false,
                         flashName: "from file",
-                        downloadLink: url,
                     }));
                 }
-                console.log("Done");
-            } catch (err) {
+                console.log("Load file done");
+            };
+        } else {
+            console.log("Read file '" + file + "'");
+
+            reader.onload = async (e) => {
+                console.log("Connecting to ESP32");
+                const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingReadMac"));
+
+                if (port === null || state.connected) {
+                    setState((prevState) => ({
+                        ...prevState,
+                        actionInProgress: false,
+                    }));
+                    return;
+                }
+
                 setState((prevState) => ({
                     ...prevState,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${state.port}`,
+                    showFlash: false,
+                    connected: true,
                 }));
-                console.error(err);
-                alert(err);
-                await port.close();
-                return;
-            }
-        };
 
+                let esploader: ESPLoader | null = null;
+
+                try {
+                    const transport = new Transport(port);
+                    esploader = new ESPLoader({
+                        transport: transport,
+                        baudrate: baudRate,
+                        romBaudrate: romBaudRate,
+                    });
+                } catch (err) {
+                    setState((prevState) => ({
+                        ...prevState,
+                        state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
+                        connected: false,
+                        actionInProgress: false,
+                        error: true,
+                    }));
+
+                    alert(err);
+                    await port.close();
+                    return;
+                }
+
+                try {
+                    setState((prevState) => ({
+                        ...prevState,
+                        state: t("tonieboxes.esp32BoxFlashing.esp32flasher.retrievingMac"),
+                        actionInProgress: true,
+                    }));
+
+                    await esploader.main();
+
+                    let mac = await esploader.chip.readMac(esploader);
+                    setState((prevState) => ({
+                        ...prevState,
+                        chipMac: mac,
+                    }));
+
+                    console.log("Chip MAC: " + mac);
+                    await port.close();
+
+                    const arrayBuffer = e.target?.result as ArrayBuffer;
+                    const flashData = new Uint8Array(arrayBuffer);
+                    const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
+                    const blob = new Blob([flashData], { type: "application/octet-stream" });
+                    const url = URL.createObjectURL(blob);
+
+                    await uploadFlashData(flashData, sanitizedName);
+
+                    if (e.target) {
+                        setState((prevState) => ({
+                            ...prevState,
+                            patchedFlash: e.target?.result,
+                            showFlash: true,
+                            connected: false,
+                            flashName: "from file",
+                            downloadLink: url,
+                        }));
+                    }
+                    console.log("Done");
+                } catch (err) {
+                    setState((prevState) => ({
+                        ...prevState,
+                        state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
+                        connected: false,
+                        actionInProgress: false,
+                        error: true,
+                    }));
+                    console.error(err);
+                    alert(err);
+                    await port.close();
+                    return;
+                }
+            };
+        }
         reader.readAsArrayBuffer(file);
         setState((prevState) => ({
             ...prevState,
             actionInProgress: false,
         }));
+
         e.target.value = "";
     };
 
@@ -713,6 +746,159 @@ export const ESP32BoxFlashingPage = () => {
             ...prevState,
             actionInProgress: false,
         }));
+    };
+
+    const resetFlash = async () => {
+        setCurrent(2);
+
+        const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"));
+
+        if (port === null || state.connected) {
+            return;
+        }
+
+        setState((prevState) => ({
+            ...prevState,
+            actionInProgress: true,
+            error: false,
+        }));
+
+        setState((prevState) => ({
+            ...prevState,
+            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${port.getInfo()}`,
+            connected: true,
+        }));
+
+        let esploader: ESPLoader | null = null;
+
+        try {
+            const transport = new Transport(port);
+            esploader = new ESPLoader({
+                transport: transport,
+                baudrate: baudRate,
+                romBaudrate: romBaudRate,
+            });
+        } catch (err) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
+                connected: false,
+                actionInProgress: false,
+                error: true,
+            }));
+            alert(err);
+            await port.close();
+            return;
+        }
+
+        try {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
+            }));
+            await esploader.main();
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connected"),
+                progress: 0,
+                showProgress: true,
+            }));
+
+            let mac = await esploader.chip.readMac(esploader);
+            setState((prevState) => ({
+                ...prevState,
+                chipMac: mac,
+            }));
+            console.log("Chip MAC: " + mac);
+
+            const type = await esploader.chip.getChipDescription(esploader);
+            setState((prevState) => ({
+                ...prevState,
+                chipType: type,
+            }));
+
+            let flash_id = await esploader.readFlashId();
+            /* maybe parse from https://github.com/jhcloos/flashrom/blob/master/flashchips.h */
+            setState((prevState) => ({
+                ...prevState,
+                flashId: "" + flash_id,
+                flashManuf: "" + (flash_id & 0xff),
+                flashDevice: "" + ((flash_id >> 8) & 0xff),
+            }));
+
+            let flash_size = await esploader.getFlashSize();
+            setState((prevState) => ({
+                ...prevState,
+                flashSize: "" + flash_size,
+            }));
+
+            if (flash_size < 0 || flash_size > 16384) {
+                setState((prevState) => ({
+                    ...prevState,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError"),
+                    connected: false,
+                    actionInProgress: false,
+                    error: true,
+                }));
+                await port.close();
+                return;
+            }
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.preparingFlash", {
+                    size: (state.patchedFlash.byteLength / 1024 / 1024).toFixed(0),
+                }),
+            }));
+
+            let fileArray = [];
+            fileArray.push({ data: arrayBufferToBstr(state.patchedFlash), address: 0 });
+            let opts = {
+                fileArray: fileArray,
+                flashSize: "keep",
+                flashMode: "keep",
+                flashFreq: "keep",
+                eraseAll: false,
+                compress: true,
+                reportProgress: (fileIndex: any, written: number, total: number) => {
+                    const prog = (100 * written) / total;
+                    setState((prevState) => ({
+                        ...prevState,
+                        progress: prog,
+                    }));
+                },
+            };
+
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
+                    size: (state.patchedFlash.byteLength / 1024 / 1024).toFixed(0),
+                }),
+            }));
+
+            await esploader.writeFlash(opts);
+
+            await port.close();
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFinished"),
+                connected: false,
+                actionInProgress: false,
+            }));
+
+            setCurrent(3);
+        } catch (err) {
+            setState((prevState) => ({
+                ...prevState,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
+                connected: false,
+                actionInProgress: false,
+                error: true,
+            }));
+            console.error(err);
+            alert(err);
+            await port.close();
+            return;
+        }
     };
 
     const writeFlash = async () => {
@@ -1383,6 +1569,21 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
         </>
     );
 
+    // step 3 - the flashing was successful in case of reset!
+    const contentStep3resetCase = (
+        <>
+            <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleESP32FirmwareFlashed")}</h3>
+            <Paragraph>
+                <Alert
+                    type="success"
+                    description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareReseted")}
+                />
+            </Paragraph>
+            {stepStatusText}
+            {contentProgress}
+        </>
+    );
+
     const [content, setContent] = useState([contentStep0, contentStep1, contentStep2, contentStep3]);
 
     const updateContent = (index: number, newContent: JSX.Element) => {
@@ -1395,10 +1596,28 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
 
     // button functions
     const readFirmware = () => {
+        setState((prevState) => ({
+            ...prevState,
+            resetBox: false,
+        }));
         readFlash();
     };
 
     const loadFile = () => {
+        setState((prevState) => ({
+            ...prevState,
+            resetBox: false,
+        }));
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const doResetBox = () => {
+        setState((prevState) => ({
+            ...prevState,
+            resetBox: true,
+        }));
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
@@ -1516,6 +1735,15 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                             </Paragraph>
                         </div>
                         <div style={{ display: "flex", gap: 8 }}>
+                            <Tooltip title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip")}>
+                                <Button
+                                    icon={<RollbackOutlined />}
+                                    disabled={disableButtons}
+                                    onClick={() => doResetBox()}
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine")}
+                                </Button>
+                            </Tooltip>
                             <Button icon={<FileAddOutlined />} disabled={disableButtons} onClick={() => loadFile()}>
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
                             </Button>
@@ -1569,7 +1797,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                                 icon={<UploadOutlined />}
                                 disabled={disableButtons}
                                 type="primary"
-                                onClick={() => setIsConfirmFlashModalOpen(true)}
+                                onClick={state.resetBox ? resetFlash : () => setIsConfirmFlashModalOpen(true)}
                             >
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
                             </Button>
@@ -1581,9 +1809,13 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                         {previousButton}
                         <div>
-                            <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
-                                {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
-                            </Button>
+                            {state.resetBox ? (
+                                ""
+                            ) : (
+                                <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
+                                    {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
+                                </Button>
+                            )}
                         </div>
                         <div></div>
                     </div>

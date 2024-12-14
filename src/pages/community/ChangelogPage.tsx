@@ -21,6 +21,7 @@ export const ChangelogPage = () => {
                 "Support image caching for tonieboxes images (using setting tonie_json.cache_images) https://github.com/toniebox-reverse-engineering/teddycloud/issues/220",
                 "Provide c2.der symlink",
                 "Added custom_img volume for storing custom images - adapt your docker-compose.yaml according https://github.com/toniebox-reverse-engineering/teddycloud/blob/master/docker/docker-compose.yaml",
+                "Don't disable MQTT on an error https://github.com/toniebox-reverse-engineering/teddycloud/issues/263",
                 "gui: Added version overview page",
                 "gui: Added spinning wheel to lists, should also fix https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/129",
                 "gui: Extended cc3235 guide based on https://github.com/toniebox-reverse-engineering/teddycloud/issues/232, https://github.com/toniebox-reverse-engineering/teddycloud/issues/230 and https://github.com/toniebox-reverse-engineering/teddycloud/issues/229",
@@ -43,6 +44,7 @@ export const ChangelogPage = () => {
                 "gui: Added selection of baudrate in ESP32 flash process https://github.com/toniebox-reverse-engineering/teddycloud/issues/101, https://github.com/toniebox-reverse-engineering/teddycloud/issues/258",
                 "gui: Overworked mobile menu layout: section menus now part of the drawer and not shown always on each page, use + icon in mobile to expand menu",
                 "gui: Added How to Create a Good Support Request page",
+                "gui: Added reset shortcut in esp32 flashing process https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/190",
                 "gui: Some refactoring",
             ],
             commits: [
