@@ -1784,7 +1784,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                                 </Button>
                             </Paragraph>
                         </div>
-                        <div style={{ display: "flex", gap: 8 }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                             <Tooltip title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip")}>
                                 <Button
                                     icon={<RollbackOutlined />}
