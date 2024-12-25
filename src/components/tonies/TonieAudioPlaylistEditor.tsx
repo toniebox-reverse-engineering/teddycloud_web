@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Form, Input, Button, Space, Alert, theme } from "antd";
-import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip } from "antd";
+import {
+    CloseOutlined,
+    FolderOpenOutlined,
+    InfoCircleOutlined,
+    MinusCircleOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
 
 import CodeSnippet from "../utils/CodeSnippet";
 import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
@@ -225,15 +231,43 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     <Form.Item name="type" hidden label="type">
                         <Input type="string" />
                     </Form.Item>
-                    <Form.Item name="audio_id" label="Audio ID">
+                    <Form.Item
+                        name="audio_id"
+                        label={
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <label>{t("tonies.tapEditor.audioId")}</label>
+                                <Tooltip title={t("tonies.tapEditor.audioIdTooltip")}>
+                                    <InfoCircleOutlined />
+                                </Tooltip>
+                            </div>
+                        }
+                    >
                         <Input type="number" />
                     </Form.Item>
-                    <Form.Item name="filepath" label={t("tonies.tapEditor.filePath")}>
+                    <Form.Item
+                        name="filepath"
+                        label={
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <label>{t("tonies.tapEditor.filePath")}</label>
+                                <Tooltip title={t("tonies.tapEditor.filePathTooltip")}>
+                                    <InfoCircleOutlined />
+                                </Tooltip>
+                            </div>
+                        }
+                        rules={[{ required: true, message: t("tonies.tapEditor.filePathRequired") }]}
+                    >
                         <Input onChange={handleSourceInputChange} />
                     </Form.Item>
                     <Form.Item
                         name="name"
-                        label={t("tonies.tapEditor.name")}
+                        label={
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <label>{t("tonies.tapEditor.name")}</label>
+                                <Tooltip title={t("tonies.tapEditor.nameTooltip")}>
+                                    <InfoCircleOutlined />
+                                </Tooltip>
+                            </div>
+                        }
                         rules={[{ required: true, message: t("tonies.tapEditor.nameRequired") }]}
                     >
                         <Input />
@@ -256,7 +290,16 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                         >
                                             <Form.Item
                                                 name={[name, "filepath"]}
-                                                label={t("tonies.tapEditor.filePathContentFile")}
+                                                label={
+                                                    <div style={{ display: "flex", gap: 8 }}>
+                                                        <label>{t("tonies.tapEditor.filePathContentFile")}</label>
+                                                        <Tooltip
+                                                            title={t("tonies.tapEditor.filePathContentFileTooltip")}
+                                                        >
+                                                            <InfoCircleOutlined />
+                                                        </Tooltip>
+                                                    </div>
+                                                }
                                                 rules={[
                                                     {
                                                         required: true,
