@@ -2,6 +2,29 @@
 
 Welcome to the next generation of the TeddyCloud Administration Frontend!
 
+## Docker Deployment
+
+You can run the application in a Docker container. The container is optimized for production use and uses nginx to serve the static files.
+
+### Building the Docker Image
+
+Build the Docker image:
+```bash
+docker build -t teddycloud-web:latest .
+```
+
+### Running the Container
+
+The container serves static files at the /web path. All application configuration (API URL, web base path, etc.) should be configured in your runtime environment where the application is accessed.
+
+Run the container exposing port 80:
+```bash
+docker run -d -p 80:80 teddycloud-web:latest
+```
+
+The application will be available at http://localhost/web
+
+
 If you are using this repository for the first time, please refer to the **General React Information** section first.
 
 ## TeddyCloud configuration
