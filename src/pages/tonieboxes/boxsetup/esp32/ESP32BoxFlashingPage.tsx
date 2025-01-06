@@ -130,7 +130,10 @@ export const ESP32BoxFlashingPage = () => {
         connected: false,
         flagPreviousHostname: false,
         previousHostname: "",
-        hostname: window.location.hostname,
+        hostname:
+            window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
+                ? window.location.hostname
+                : "",
         wifi_ssid: "",
         wifi_pass: "",
         proceed: false,
@@ -643,7 +646,7 @@ export const ESP32BoxFlashingPage = () => {
             }));
 
             const formData = new FormData();
-            formData.append(sanitizedName, new Blob([flashData.buffer]), sanitizedName);
+            formData.append(sanitizedName, new Blob([flashData]), sanitizedName);
 
             const response = await api.apiPostTeddyCloudFormDataRaw(`/api/esp32/uploadFirmware`, formData);
 
