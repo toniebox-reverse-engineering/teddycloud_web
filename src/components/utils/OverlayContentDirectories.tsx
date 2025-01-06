@@ -66,10 +66,10 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSelectChange = (overlay: string) => {
+    const handleContentOverlayChange = (overlay: string) => {
         setOverlay(overlay);
         localStorage.setItem("contentOverlay", overlay);
     };
 
-    return { tonieBoxContentDirs, overlay, handleSelectChange };
+    return { tonieBoxContentDirs, overlay, handleContentOverlayChange };
 };

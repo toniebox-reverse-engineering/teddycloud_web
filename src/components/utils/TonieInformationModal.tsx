@@ -1,39 +1,49 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Typography, Button, message, Tooltip } from "antd";
-import { TonieCardProps } from "../tonies/TonieCard";
-import { Record } from "./FileBrowser";
-import ConfirmationDialog from "./ConfirmationDialog";
+import { Modal, Typography, Button, Tooltip } from "antd";
+import { PlayCircleOutlined } from "@ant-design/icons";
+
+import { Record } from "../../types/fileBrowserTypes";
+import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import ConfirmationDialog from "./ConfirmationDialog";
+import { useAudioContext } from "../audio/AudioContext";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Text } = Typography;
 
-export type TonieCardTAFRecord = TonieCardProps | Record;
+type TonieCardTAFRecord = TonieCardProps | Record;
 
-export type InformationModalProps = {
+interface InformationModalProps {
     open: boolean;
     onClose: () => void;
     tonieCardOrTAFRecord: TonieCardTAFRecord;
+    showSourceInfo?: boolean;
     readOnly?: boolean;
     lastRUIDs?: Array<[string, string, string]>;
     overlay?: string;
     onHide?: (ruid: string) => void;
-};
+}
 
 const TonieInformationModal: React.FC<InformationModalProps> = ({
     open,
     onClose,
     tonieCardOrTAFRecord,
+    showSourceInfo = false,
     readOnly,
     lastRUIDs,
     overlay,
     onHide,
 }) => {
     const { t } = useTranslation();
+    const { playAudio } = useAudioContext();
+    const { addNotification } = useTeddyCloud();
 
     const [isConfirmHideModalOpen, setIsConfirmHideModalOpen] = useState(false);
 
@@ -44,6 +54,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
 
     useEffect(() => {
         if (
+            showSourceInfo &&
             "sourceInfo" in tonieCardOrTAFRecord &&
             ((tonieCardOrTAFRecord.sourceInfo.picture !== tonieCardOrTAFRecord.tonieInfo.picture &&
                 modelTitle !== sourceTitle) ||
@@ -60,6 +71,17 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tonieCardOrTAFRecord, open]);
 
+    const handlePlayPauseClick = async (url: string, startTime?: number) => {
+        playAudio(
+            url,
+            showSourceInfo && "sourceInfo" in tonieCardOrTAFRecord
+                ? tonieCardOrTAFRecord.sourceInfo
+                : tonieCardOrTAFRecord.tonieInfo,
+            tonieCardOrTAFRecord,
+            startTime
+        );
+    };
+
     const toniePlayedOn =
         lastRUIDs && "ruid" in tonieCardOrTAFRecord
             ? lastRUIDs
@@ -68,21 +90,37 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             : null;
 
     const tonieInfoString =
-        tonieCardOrTAFRecord.tonieInfo.series +
-        (tonieCardOrTAFRecord?.tonieInfo.episode ? " - " + tonieCardOrTAFRecord.tonieInfo.episode : "") +
-        (tonieCardOrTAFRecord.tonieInfo.model ? " (" + tonieCardOrTAFRecord.tonieInfo.model + ")" : "");
+        tonieCardOrTAFRecord.tonieInfo?.series +
+        (tonieCardOrTAFRecord?.tonieInfo?.episode ? " - " + tonieCardOrTAFRecord.tonieInfo?.episode : "") +
+        (tonieCardOrTAFRecord.tonieInfo?.model ? " (" + tonieCardOrTAFRecord.tonieInfo?.model + ")" : "");
 
     const modelTitle =
-        `${tonieCardOrTAFRecord.tonieInfo.series}` +
-        (tonieCardOrTAFRecord.tonieInfo.episode ? ` - ${tonieCardOrTAFRecord.tonieInfo.episode}` : "");
+        `${tonieCardOrTAFRecord.tonieInfo?.series}` +
+        (tonieCardOrTAFRecord.tonieInfo?.episode ? ` - ${tonieCardOrTAFRecord.tonieInfo?.episode}` : "");
 
     const sourceTitle =
         "sourceInfo" in tonieCardOrTAFRecord
-            ? `${tonieCardOrTAFRecord.sourceInfo.series}` +
-              (tonieCardOrTAFRecord.sourceInfo.episode ? ` - ${tonieCardOrTAFRecord.sourceInfo.episode}` : "")
+            ? `${tonieCardOrTAFRecord.sourceInfo?.series}` +
+              (tonieCardOrTAFRecord.sourceInfo?.episode ? ` - ${tonieCardOrTAFRecord.sourceInfo?.episode}` : "")
             : "";
 
     const title = informationFromSource ? sourceTitle : modelTitle;
+
+    const trackSecondsMatchSourceTracks = (tonieCardOrTAFRecord: TonieCardTAFRecord, tracksLength: number) => {
+        const trackSeconds =
+            "trackSeconds" in tonieCardOrTAFRecord
+                ? tonieCardOrTAFRecord.trackSeconds
+                : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
+        return trackSeconds?.length === tracksLength;
+    };
+
+    const getTrackStartTime = (tonieCardOrTAFRecord: TonieCardTAFRecord, index: number) => {
+        const trackSeconds =
+            "trackSeconds" in tonieCardOrTAFRecord
+                ? tonieCardOrTAFRecord.trackSeconds
+                : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
+        return (trackSeconds && trackSeconds[index]) || 0;
+    };
 
     // hide tag functions
     const showHideConfirmDialog = () => {
@@ -102,10 +140,20 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         if (onHide && "ruid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.ruid) {
             try {
                 await api.apiPostTeddyCloudContentJson(tonieCardOrTAFRecord.ruid, "hide=true", overlay);
-                message.success(t("tonies.messages.hideTonieSuccessful"));
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("tonies.messages.hideTonieSuccessful"),
+                    t("tonies.messages.hideTonieSuccessfulDetails", { ruid: tonieCardOrTAFRecord.ruid }),
+                    t("tonies.navigationTitle")
+                );
                 onHide(tonieCardOrTAFRecord.ruid);
             } catch (error) {
-                message.error(t("tonies.messages.hideTonieFailed") + error);
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.messages.hideTonieFailed"),
+                    t("tonies.messages.hideTonieFailedDetails", { ruid: tonieCardOrTAFRecord.ruid }) + error,
+                    t("tonies.navigationTitle")
+                );
             }
         }
     };
@@ -176,8 +224,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     {
                         <img
                             src={
-                                tonieCardOrTAFRecord.tonieInfo.picture
-                                    ? tonieCardOrTAFRecord.tonieInfo.picture
+                                tonieCardOrTAFRecord.tonieInfo?.picture
+                                    ? tonieCardOrTAFRecord.tonieInfo?.picture
                                     : "/img_unknown.png"
                             }
                             alt=""
@@ -186,10 +234,16 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     }
                     {informationFromSource ? (
                         <Tooltip
-                            title={t("tonies.alternativeSource", {
-                                originalTonie: '"' + modelTitle + '"',
-                                assignedContent: '"' + sourceTitle + '"',
-                            }).replace(' "" ', " ")}
+                            title={
+                                `${sourceTitle}`
+                                    ? t("tonies.alternativeSource", {
+                                          originalTonie: '"' + modelTitle + '"',
+                                          assignedContent: '"' + sourceTitle + '"',
+                                      }).replace(' "" ', " ")
+                                    : t("tonies.alternativeSourceUnknown", {
+                                          originalTonie: '"' + modelTitle + '"',
+                                      }).replace(' "" ', " ")
+                            }
                             placement="bottom"
                         >
                             <img
@@ -247,19 +301,63 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                 <strong>{t("tonies.infoModal.tracklist")}</strong>
                                 <ol>
                                     {sourceTracks.map((track, index) => (
-                                        <li key={index}>{track}</li>
+                                        <li key={index}>
+                                            {"audioUrl" in tonieCardOrTAFRecord &&
+                                            trackSecondsMatchSourceTracks(
+                                                tonieCardOrTAFRecord,
+                                                tonieCardOrTAFRecord.sourceInfo.tracks?.length
+                                            ) ? (
+                                                <>
+                                                    <PlayCircleOutlined
+                                                        key="playpause"
+                                                        onClick={() =>
+                                                            handlePlayPauseClick(
+                                                                import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                                    tonieCardOrTAFRecord.audioUrl,
+                                                                getTrackStartTime(tonieCardOrTAFRecord, index)
+                                                            )
+                                                        }
+                                                    />{" "}
+                                                </>
+                                            ) : (
+                                                ""
+                                            )}{" "}
+                                            {track}
+                                        </li>
                                     ))}
                                 </ol>
                             </>
                         ) : (
                             <></>
                         )
-                    ) : tonieCardOrTAFRecord.tonieInfo.tracks && tonieCardOrTAFRecord.tonieInfo.tracks.length > 0 ? (
+                    ) : tonieCardOrTAFRecord.tonieInfo?.tracks && tonieCardOrTAFRecord.tonieInfo?.tracks.length > 0 ? (
                         <>
                             <strong>{t("tonies.infoModal.tracklist")}</strong>
                             <ol>
-                                {tonieCardOrTAFRecord.tonieInfo.tracks.map((track, index) => (
-                                    <li key={index}>{track}</li>
+                                {tonieCardOrTAFRecord.tonieInfo?.tracks.map((track, index) => (
+                                    <li key={index}>
+                                        {"audioUrl" in tonieCardOrTAFRecord &&
+                                        trackSecondsMatchSourceTracks(
+                                            tonieCardOrTAFRecord,
+                                            tonieCardOrTAFRecord.tonieInfo.tracks?.length
+                                        ) ? (
+                                            <>
+                                                <PlayCircleOutlined
+                                                    key="playpause"
+                                                    onClick={() =>
+                                                        handlePlayPauseClick(
+                                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                                tonieCardOrTAFRecord.audioUrl,
+                                                            getTrackStartTime(tonieCardOrTAFRecord, index)
+                                                        )
+                                                    }
+                                                />{" "}
+                                            </>
+                                        ) : (
+                                            ""
+                                        )}{" "}
+                                        {track}
+                                    </li>
                                 ))}
                             </ol>
                         </>

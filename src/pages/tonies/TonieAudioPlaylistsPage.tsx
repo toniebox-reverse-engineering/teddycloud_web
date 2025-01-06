@@ -1,15 +1,11 @@
-import { useTranslation } from "react-i18next";
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
-import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { Alert, Button, Typography } from "antd";
-import { FileBrowser } from "../../components/utils/FileBrowser";
-import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Alert, Button, Typography } from "antd";
+
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
+import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
+import { FileBrowser } from "../../components/utils/FileBrowser";
 
 const { Paragraph } = Typography;
 
@@ -28,9 +24,6 @@ export const TonieAudioPlaylistsPage = () => {
                 <ToniesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <ToniesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

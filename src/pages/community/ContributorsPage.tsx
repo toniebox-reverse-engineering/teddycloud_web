@@ -1,15 +1,17 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Space, Typography } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import {
+    gitHubRepositoresUrl,
+    gitHubSponsoringUrl,
+    gitHubTCContributorsUrl,
+    gitHubTCwebContributorsUrl,
+} from "../../constants";
+
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { TonieMeetingElement } from "../../components/TonieMeeting";
-import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -22,9 +24,6 @@ export const ContributorsPage = () => {
                 <CommunitySubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <CommunitySubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
@@ -33,50 +32,46 @@ export const ContributorsPage = () => {
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.contributors.title`)}</h1>
+                    <h1>{t("community.contributors.title")}</h1>
                     <Paragraph>
-                        This project relies on the tireless contributors who offer their free time and skills. Directly
-                        related to TeddyCloud are the contributors of the two projects teddycloud and teddycloud_web:
+                        {t("community.contributors.contributorsIntro")}
                         <Paragraph>
                             <h3>teddycloud</h3>
-                            <div>The most neccessary, but mostly invisible part of your TeddyCloud Server.</div>
-                            <Link
-                                to="https://github.com/toniebox-reverse-engineering/teddycloud/graphs/contributors"
-                                target="_blank"
-                            >
-                                https://github.com/toniebox-reverse-engineering/teddycloud/graphs/contributors
+                            <div>{t("community.contributors.teddyCloud")}</div>
+                            <Link to={gitHubTCContributorsUrl} target="_blank">
+                                {gitHubTCContributorsUrl}
                             </Link>
                         </Paragraph>
                         <Paragraph>
                             <h3>teddycloud_web</h3>
-                            <div>Which is actually this frontend you are using and seeing here.</div>
-                            <Link
-                                to="https://github.com/toniebox-reverse-engineering/teddycloud_web/graphs/contributors"
-                                target="_blank"
-                            >
-                                https://github.com/toniebox-reverse-engineering/teddycloud_web/graphs/contributors
+                            <div>{t("community.contributors.teddyCloudWeb")}</div>
+                            <Link to={gitHubTCwebContributorsUrl} target="_blank">
+                                {gitHubTCwebContributorsUrl}
                             </Link>
                         </Paragraph>
                         <Paragraph>
-                            You can find more contributors to the entire topic complex in the other GitHub repositories
-                            at{" "}
-                            <Link
-                                to="https://github.com/orgs/toniebox-reverse-engineering/repositories"
-                                target="_blank"
-                            >
-                                https://github.com/orgs/toniebox-reverse-engineering/repositories
+                            {t("community.contributors.others")}{" "}
+                            <Link to={gitHubRepositoresUrl} target="_blank">
+                                {gitHubRepositoresUrl}
                             </Link>
                         </Paragraph>
                     </Paragraph>
-                    <Space></Space>
                     <Paragraph>
-                        <div style={{ marginBottom: 24 }}>A big round of applause for them!</div>
+                        <div style={{ marginBottom: 24 }}>{t("community.contributors.bigRoundOfApplause")}</div>
                         <TonieMeetingElement
-                            maxNoOfGuests={100}
+                            maxNoOfGuests={50}
                             toniesSize={150}
                             showQuestionMark={false}
                             height={150}
                         ></TonieMeetingElement>
+                    </Paragraph>
+                    <Space></Space>
+                    <Paragraph>
+                        <h3>{t("community.contributors.supportTeam")}</h3>
+                        <Paragraph>{t("community.contributors.supportTeamText")}</Paragraph>
+                        <Link to={gitHubSponsoringUrl} target="_blank">
+                            {t("community.contributors.supportTeamLink")}
+                        </Link>
                     </Paragraph>
                 </StyledContent>
             </StyledLayout>

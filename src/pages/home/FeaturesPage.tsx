@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
-import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { Link } from "react-router-dom";
+
+import { gitHubTCCommitTreeBaseUrl } from "../../constants";
+
 import { TeddyCloudApi } from "../../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import { HomeSubNav } from "../../components/home/HomeSubNav";
 
 interface FeatureItems {
     [key: string]: string | FeatureGroup;
@@ -72,9 +71,6 @@ export const FeaturesPage = () => {
                 <HomeSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <HomeSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("home.features.navigationTitle") }]}
                 />
@@ -84,10 +80,7 @@ export const FeaturesPage = () => {
                     <p>{t("home.features.description")}</p>
                     <p>
                         Build:{" "}
-                        <Link
-                            to={"https://github.com/toniebox-reverse-engineering/teddycloud/tree/" + commitGitShaShort}
-                            target="_blank"
-                        >
+                        <Link to={gitHubTCCommitTreeBaseUrl + commitGitShaShort} target="_blank">
                             {version.replace(versionShort, "")}
                         </Link>
                     </p>

@@ -1,13 +1,20 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
+import { HeartFilled } from "@ant-design/icons";
 import styled from "styled-components";
 
-import { Link } from "react-router-dom";
-import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
-import AudioPlayerFooter from "./AudioPlayerFooter";
+import { gitHubSponsoringUrl, gitHubTCReleasesUrl } from "../../constants";
 
-import { useEffect, useState } from "react";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import AudioPlayerFooter from "./AudioPlayerFooter";
+import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+
+const { useToken } = theme;
 
 const StyledFooterComponent = styled(Footer)`
     position: fixed;
@@ -17,7 +24,7 @@ const StyledFooterComponent = styled(Footer)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 16px 50px;
+    padding: 16px 24px;
     color: white;
 `;
 
@@ -30,6 +37,8 @@ const StyledCenterPart = styled.div`
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const StyledFooter = () => {
+    const { t } = useTranslation();
+    const { token } = useToken();
     const [footerHeight, setFooterHeight] = useState(0);
 
     const [version, setVersion] = useState("");
@@ -68,16 +77,21 @@ export const StyledFooter = () => {
                 </StyledCenterPart>
                 <StyledCenterPart>
                     <div>
-                        <small>
-                            <Link
-                                to="https://github.com/toniebox-reverse-engineering/teddycloud/releases/"
-                                target="_blank"
-                            >
+                        <small style={{ display: "flex", color: token.colorText }}>
+                            <Link to={gitHubTCReleasesUrl} target="_blank">
                                 <HiddenDesktop>
                                     {versionShort} ({gitShaShort})
                                 </HiddenDesktop>
                                 <HiddenMobile>{version}</HiddenMobile>
                             </Link>
+                            <div style={{ paddingLeft: 8 }}>-</div>
+                            <HeartFilled style={{ color: "#eb2f96", paddingLeft: 8 }} />
+                            <HiddenMobile style={{ paddingLeft: 8 }}>{t("footer.sponsorText")} </HiddenMobile>
+                            <b>
+                                <Link to={gitHubSponsoringUrl} target="_blank" style={{ paddingLeft: 8 }}>
+                                    {t("footer.sponsor")}
+                                </Link>
+                            </b>
                         </small>
                     </div>
                 </StyledCenterPart>

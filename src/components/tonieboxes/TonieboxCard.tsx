@@ -1,48 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
-import { Typography, Card, Button, Input, message, Modal, Divider, Select, theme, Tooltip } from "antd";
+import { Typography, Card, Button, Input, Modal, Divider, Select, theme, Tooltip } from "antd";
 import {
     EditOutlined,
     SafetyCertificateOutlined,
-    CloseOutlined,
     SettingOutlined,
     WifiOutlined,
     SaveFilled,
     DeleteOutlined,
     LockOutlined,
     LinkOutlined,
+    RollbackOutlined,
 } from "@ant-design/icons";
+
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { OptionsList, TeddyCloudApi } from "../../api";
+
+import { TonieCardProps } from "../../types/tonieTypes";
+import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../types/tonieboxTypes";
+
 import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
-import { TonieCardProps } from "../../components/tonies/TonieCard";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
 import GetBoxModelImages from "../../utils/boxModels";
 import ConfirmationDialog from "../utils/ConfirmationDialog";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+
+import defaultBoxImage from "../../assets/unknown_box.png";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
+
 const { Paragraph, Text } = Typography;
 const { Meta } = Card;
 const { useToken } = theme;
-
-export type TonieboxCardList = {
-    boxes: TonieboxCardProps[];
-};
-
-export type TonieboxCardProps = {
-    ID: string;
-    commonName: string;
-    boxName: string;
-    boxModel: string;
-};
-
-interface TonieboxImage {
-    id: string;
-    name: string;
-    img_src: string;
-    crop?: number[];
-}
 
 export const TonieboxCard: React.FC<{
     tonieboxCard: TonieboxCardProps;
@@ -50,9 +42,11 @@ export const TonieboxCard: React.FC<{
 }> = ({ tonieboxCard, tonieboxImages }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
+    const currentLanguage = i18n.language;
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [messageApi, contextHolder] = message.useMessage();
     const [tonieboxStatus, setTonieboxStatus] = useState<boolean>(false);
     const [tonieboxVersion, setTonieboxVersion] = useState<string>("");
     const [lastOnline, setLastOnline] = useState<string>("");
@@ -89,18 +83,18 @@ export const TonieboxCard: React.FC<{
 
         const fetchTonieboxVersion = async () => {
             const tonieboxVersion = await api.apiGetTonieboxVersion(tonieboxCard.ID);
-            const BoxVersions: { [key: string]: string } = {
-                "0": "UNKNOWN",
-                "1": "CC3200",
-                "2": "CC3235",
-                "3": "ESP32",
+            const BoxVersions: { [key: string]: BoxVersionsEnum } = {
+                "0": BoxVersionsEnum.unknown,
+                "1": BoxVersionsEnum.cc3200,
+                "2": BoxVersionsEnum.cc3235,
+                "3": BoxVersionsEnum.esp32,
             };
 
             if (tonieboxVersion in BoxVersions) {
                 const version = BoxVersions[tonieboxVersion as keyof typeof BoxVersions];
                 setTonieboxVersion(version);
             } else {
-                setTonieboxVersion("UNKNOWN");
+                setTonieboxVersion(BoxVersionsEnum.unknown);
             }
         };
         fetchTonieboxVersion();
@@ -139,10 +133,10 @@ export const TonieboxCard: React.FC<{
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tonieboxCard.ID, tonieboxCard.boxModel]);
+    }, [tonieboxCard.ID, tonieboxCard.boxModel, currentLanguage]);
 
     useEffect(() => {
-        if (lastIp && tonieboxVersion === "CC3200") {
+        if (lastIp && tonieboxVersion === BoxVersionsEnum.cc3200) {
             // only if lastIp is set and box version is CC3200
             // we check for CFW using battery status API call
             try {
@@ -166,13 +160,14 @@ export const TonieboxCard: React.FC<{
     const boxModelImages = GetBoxModelImages();
 
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
-        boxModelImages.map((v) => {
+        boxModelImages.boxModelImages.map((v) => {
             return { label: v.name, value: v.id };
         })
     );
 
     const selectBoxImage = (id: string) => {
         const selectedImage = tonieboxImages.find((item: { id: string }) => item.id === id);
+
         if (selectedImage) {
             setBoxImage(
                 <img
@@ -188,18 +183,28 @@ export const TonieboxCard: React.FC<{
             );
         } else {
             setBoxImage(
-                <img
-                    src="https://cdn.tonies.de/thumbnails/03-0009-i.png"
-                    alt=""
-                    style={{
-                        filter: "opacity(0.20)",
-                        width: "100%",
-                        height: "auto",
-                        position: "absolute",
-                        top: "0",
-                        left: "0",
-                    }}
-                />
+                <Tooltip
+                    title={
+                        <>
+                            {t("tonieboxes.modelHint.text")}{" "}
+                            <EditOutlined key="edit" onClick={() => showModelModal()} />{" "}
+                            {t("tonieboxes.modelHint.action")}!
+                        </>
+                    }
+                    placement="bottom"
+                >
+                    <img
+                        src={defaultBoxImage}
+                        alt=""
+                        style={{
+                            width: "100%",
+                            height: "auto",
+                            position: "absolute",
+                            top: "0",
+                            left: "0",
+                        }}
+                    />
+                </Tooltip>
             );
         }
     };
@@ -283,12 +288,14 @@ export const TonieboxCard: React.FC<{
         }
         setIsModelModalOpen(true);
     };
+
     const handleModelCancel = () => {
         setSelectedModel(activeModel);
         setTonieBoxName(tonieboxName);
         setBoxName(tonieboxName);
         setIsModelModalOpen(false);
     };
+
     const handleModelSave = async () => {
         selectBoxImage(selectedModel);
         setActiveModel(selectedModel);
@@ -301,20 +308,38 @@ export const TonieboxCard: React.FC<{
                 .then(() => {
                     triggerWriteConfig();
                 })
-                .catch((e) => {
-                    message.error(t("tonieboxes.editModelModal.errorWhileSavingConfig"));
-                });
-            message.success(t("tonieboxes.editModelModal.successOnModelChange"));
-        } catch (error) {
-            message.error(
-                t("tonieboxes.editModelModal.errorOnModelChange", {
-                    error: error,
+                .then(() => {
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("tonieboxes.editModelModal.successOnModelChange"),
+                        t("tonieboxes.editModelModal.successOnModelChangeDetails", {
+                            model: selectedModel,
+                            mac: tonieboxCard.ID,
+                        }),
+                        t("tonieboxes.navigationTitle")
+                    );
                 })
+                .catch((e) => {
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("settings.errorWhileSavingConfig"),
+                        t("settings.errorWhileSavingConfigDetails") + e,
+                        t("tonieboxes.navigationTitle")
+                    );
+                });
+        } catch (error) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonieboxes.editModelModal.errorOnModelChange"),
+                t("tonieboxes.editModelModal.errorOnModelChangeDetails", { mac: tonieboxCard.ID, error: error }),
+                t("tonieboxes.navigationTitle")
             );
         }
     };
+
     const handleBoxNameSave = async () => {
         setTonieBoxName(boxName);
+
         const triggerWriteConfig = async () => {
             await api.apiTriggerWriteConfigGet();
         };
@@ -324,15 +349,31 @@ export const TonieboxCard: React.FC<{
                 .then(() => {
                     triggerWriteConfig();
                 })
-                .catch((e) => {
-                    message.error(t("tonieboxes.editModelModal.errorWhileSavingConfig"));
-                });
-            message.success(t("tonieboxes.editModelModal.successOnNameChange"));
-        } catch (error) {
-            message.error(
-                t("tonieboxes.editModelModal.errorOnNameChange", {
-                    error: error,
+                .then(() => {
+                    addNotification(
+                        NotificationTypeEnum.Success,
+                        t("tonieboxes.editModelModal.successOnNameChange"),
+                        t("tonieboxes.editModelModal.successOnNameChangeDetails", {
+                            name: boxName,
+                            mac: tonieboxCard.ID,
+                        }),
+                        t("tonieboxes.navigationTitle")
+                    );
                 })
+                .catch((e) => {
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("settings.errorWhileSavingConfig"),
+                        t("settings.errorWhileSavingConfigDetails") + e,
+                        t("tonieboxes.navigationTitle")
+                    );
+                });
+        } catch (error) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonieboxes.editModelModal.errorOnNameChange"),
+                t("tonieboxes.editModelModal.errorOnNameChangeDetails", { mac: tonieboxCard.ID, error: error }),
+                t("tonieboxes.navigationTitle")
             );
         }
     };
@@ -357,9 +398,8 @@ export const TonieboxCard: React.FC<{
 
     const handleSaveChanges = async () => {
         setIsModelModalOpen(false);
-        if (boxName !== tonieboxName) handleBoxNameSave();
-
-        if (activeModel !== selectedModel) handleModelSave();
+        if (boxName !== tonieboxName) await handleBoxNameSave();
+        if (activeModel !== selectedModel) await handleModelSave();
     };
 
     const editTonieboxModalFooter = (
@@ -404,7 +444,7 @@ export const TonieboxCard: React.FC<{
                     value={boxName}
                     onChange={(e) => setBoxName(e.target.value)}
                     addonBefore={
-                        <CloseOutlined
+                        <RollbackOutlined
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
                                 color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,
@@ -433,7 +473,7 @@ export const TonieboxCard: React.FC<{
             onCancel={handleUploadCertificatesCancel}
         >
             <Paragraph>
-                {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")} :{" "}
+                {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")}{" "}
                 <i>{options?.options?.find((option: { iD: string }) => option.iD === "core.certdir")?.value}</i>{" "}
                 <small>
                     {options?.options?.find((option: { iD: string }) => option.iD === "core.certdir")?.overlayed
@@ -454,48 +494,73 @@ export const TonieboxCard: React.FC<{
             open={isEditSettingsModalOpen}
             onOk={handleEditSettingsOk}
             onCancel={handleEditSettingsCancel}
+            footer={null}
+            wrapClassName={"overlay-" + tonieboxCard.ID}
         >
-            <TonieboxSettingsPage overlay={tonieboxCard.ID} key={modalKey} />
+            <TonieboxSettingsPage onClose={handleEditSettingsCancel} overlay={tonieboxCard.ID} key={modalKey} />
         </Modal>
     );
 
     const deleteToniebox = () => {
+        const key = "loading" + tonieboxCard.ID;
+
         try {
-            messageApi.open({
-                type: "loading",
-                content: t("tonieboxes.messages.deleting"),
-                duration: 0,
-            });
-            api.apiPostTeddyCloudSetting("removeOverlay", null, tonieboxCard.ID)
+            addLoadingNotification(
+                key,
+                t("tonieboxes.messages.deleting"),
+                t("tonieboxes.messages.deletingDetails", { mac: tonieboxCard.ID })
+            );
+
+            api.apiPostTeddyCloudRaw("/api/settings/removeOverlay?overlay=" + tonieboxCard.ID)
                 .then((response) => response.text())
                 .then((data) => {
-                    messageApi.destroy();
+                    closeLoadingNotification(key);
                     if (data === "OK") {
-                        messageApi.open({
-                            type: "success",
-                            content: t("tonieboxes.messages.deleteSuccessful"),
-                        });
+                        addNotification(
+                            NotificationTypeEnum.Success,
+                            t("tonieboxes.messages.deleteSuccessful"),
+                            t("tonieboxes.messages.deleteSuccessfulDetails", {
+                                mac: tonieboxCard.ID,
+                            }),
+                            t("tonieboxes.navigationTitle")
+                        );
                         window.location.reload();
                     } else {
-                        messageApi.open({
-                            type: "error",
-                            content: t("tonieboxes.messages.deleteFailed") + data,
-                        });
+                        addNotification(
+                            NotificationTypeEnum.Error,
+                            t("tonieboxes.messages.deleteFailed"),
+                            t("tonieboxes.messages.deleteFailedDetails", {
+                                mac: tonieboxCard.ID,
+                            }),
+                            t("tonieboxes.navigationTitle")
+                        );
                     }
                 })
                 .catch((error) => {
-                    messageApi.destroy();
-                    messageApi.open({
-                        type: "error",
-                        content: t("tonieboxes.messages.deleteFailed") + error,
-                    });
+                    closeLoadingNotification(key);
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("tonieboxes.messages.deleteFailed"),
+                        t("tonieboxes.messages.deleteFailedDetails", {
+                            mac: tonieboxCard.ID,
+                        }) +
+                            ": " +
+                            error,
+                        t("tonieboxes.navigationTitle")
+                    );
                 });
         } catch (error) {
-            messageApi.destroy();
-            messageApi.open({
-                type: "error",
-                content: t("tonieboxes.messages.deleteFailed") + error,
-            });
+            closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonieboxes.messages.deleteFailed"),
+                t("tonieboxes.messages.deleteFailedDetails", {
+                    mac: tonieboxCard.ID,
+                }) +
+                    ": " +
+                    error,
+                t("tonieboxes.navigationTitle")
+            );
         }
     };
 
@@ -528,7 +593,12 @@ export const TonieboxCard: React.FC<{
         try {
             await api.apiTriggerWriteConfigGet();
         } catch (error) {
-            message.error("Error while saving config to file.");
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("settings.errorWhileSavingConfig"),
+                t("settings.errorWhileSavingConfigDetails") + error,
+                t("tonieboxes.navigationTitle")
+            );
         }
     };
 
@@ -537,26 +607,44 @@ export const TonieboxCard: React.FC<{
             api.apiPostTeddyCloudSetting("toniebox.api_access", !tonieboxAccessApi, tonieboxCard.ID)
                 .then(() => {
                     triggerWriteConfig();
-
                     setTonieboxAccessApi(!tonieboxAccessApi);
-
                     if (tonieboxAccessApi) {
-                        message.success(t("tonieboxes.messages.apiAccessDisabled"));
+                        addNotification(
+                            NotificationTypeEnum.Success,
+                            t("tonieboxes.messages.apiAccessDisabled"),
+                            t("tonieboxes.messages.apiAccessDisabledDetails", {
+                                mac: tonieboxCard.ID,
+                            }),
+                            t("tonieboxes.navigationTitle")
+                        );
                     } else {
-                        message.success(t("tonieboxes.messages.apiAccessEnabled"));
+                        addNotification(
+                            NotificationTypeEnum.Success,
+                            t("tonieboxes.messages.apiAccessEnabled"),
+                            t("tonieboxes.messages.apiAccessEnabledDetails", {
+                                mac: tonieboxCard.ID,
+                            }),
+                            t("tonieboxes.navigationTitle")
+                        );
                     }
                 })
                 .catch((error) => {
                     throw new Error(error.status + " " + error.statusText);
                 });
         } catch (error) {
-            message.error(t("tonieboxes.messages.apiAccessNotChangedError") + error);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonieboxes.messages.apiAccessNotChangedError"),
+                t("tonieboxes.messages.apiAccessNotChangedErrorDetails", {
+                    mac: tonieboxCard.ID,
+                }) + error,
+                t("tonieboxes.navigationTitle")
+            );
         }
     };
 
     return (
         <>
-            {contextHolder}
             <Card
                 hoverable={false}
                 size="default"
@@ -574,7 +662,7 @@ export const TonieboxCard: React.FC<{
                         {lastPlayedTonieName}
                         {/* we need this "hidden image" of the grey toniebox to span the card cover to the right size. not beautiful, but unique */}
                         <img
-                            src={tonieboxImages.find((item: { id: string }) => item.id === "03-0009")?.img_src}
+                            src={defaultBoxImage}
                             alt=""
                             style={{
                                 position: "relative",

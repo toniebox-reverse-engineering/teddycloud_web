@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Col, Row, message, Tooltip, Alert } from "antd";
-import { TonieCardProps } from "./TonieCard";
 import { useTranslation } from "react-i18next";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Modal, Form, Input, Button, Col, Row, Tooltip, Alert } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
+
+import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import CodeSnippet from "../utils/CodeSnippet";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -21,7 +22,7 @@ interface ToniesCustomJsonEditorProps {
     hash?: string;
 }
 
-const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
+export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     open,
     onClose,
     setValue,
@@ -31,6 +32,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     hash,
 }) => {
     const { t } = useTranslation();
+    const { addNotification } = useTeddyCloud();
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -86,6 +88,7 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         setJsonData(values);
         setJsonViewerModalOpened(true);
 
+        /*
         try {
             await api.apiPostTeddyCloudRaw("/api/doSomething", JSON.stringify(values), undefined, undefined, {
                 "Content-Type": "application/json",
@@ -100,11 +103,22 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             }
 
             resetForm();
-            message.success(t("tonies.addNewCustomTonieModal.successfullyCreated"));
+            addNotification(
+                NotificationTypeEnum.Success,
+                t("tonies.addNewCustomTonieModal.successfullyCreated"),
+                t("tonies.addNewCustomTonieModal.successfullyCreatedDetails", { series: values.series, model: values.model }),
+                t("tonies.addToniesCustomJsonEntry")
+            );
             onClose();
         } catch (error) {
-            message.error(t("tonies.addNewCustomTonieModal.failedToCreate") + error);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonies.addNewCustomTonieModal.failedToCreate"),
+                t("tonies.addNewCustomTonieModal.failedToCreateDetails", { series: values.series, model: values.model }) + error,
+                t("tonies.addToniesCustomJsonEntry")
+            );
         }
+        */
     };
 
     const handleOk = () => {
@@ -138,54 +152,24 @@ const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         handleCancel();
     };
 
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
-
     const jsonViewerModal = (
         <Modal
             footer={jsonViewerModalFooter}
-            width={700}
+            width={1000}
             title={"File (you can copy the content to the tonies.custom.json)"}
             open={jsonViewerModalOpened}
             onCancel={handleJsonViewerModalClose}
         >
             {jsonData ? (
                 <>
-                    <SyntaxHighlighter
-                        key="json-readable"
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(jsonData, null, 2)}
-                    </SyntaxHighlighter>
+                    <CodeSnippet key="json-readable" language="json" code={JSON.stringify(jsonData, null, 2)} />
                     <div style={{ margin: "16px 0 8px 0" }}>Minimized json:</div>
-                    <SyntaxHighlighter
+                    <CodeSnippet
                         key="json-minimized"
                         language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {JSON.stringify(jsonData, null, 0)}
-                    </SyntaxHighlighter>
+                        showLineNumbers={false}
+                        code={JSON.stringify(jsonData, null, 0)}
+                    />
                 </>
             ) : (
                 "Loading..."

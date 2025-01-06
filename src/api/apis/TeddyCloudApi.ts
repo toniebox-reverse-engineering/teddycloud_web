@@ -16,8 +16,8 @@ import {
     StatsListToJSON,
 } from "../models";
 
-import { TagTonieCard, TagsTonieCardList, TonieCardProps } from "../../components/tonies/TonieCard";
-import { TonieboxCardList, TonieboxCardProps } from "../../components/tonieboxes/TonieboxCard";
+import { TagTonieCard, TagTonieCardsList, TonieCardProps } from "../../types/tonieTypes";
+import { TonieboxCardsList, TonieboxCardProps } from "../../types/tonieboxTypes";
 
 export interface ApiSetCloudCacheContentPostRequest {
     body: boolean;
@@ -36,9 +36,9 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      */
     async apiGetTonieboxesIndexRaw(
         initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<TonieboxCardList>> {
+    ): Promise<runtime.ApiResponse<TonieboxCardsList>> {
         const response = await this.apiGetTeddyCloudApiRaw(`/api/getBoxes`, undefined, initOverrides);
-        return new runtime.JSONApiResponse<TonieboxCardList>(response);
+        return new runtime.JSONApiResponse<TonieboxCardsList>(response);
     }
 
     /**
@@ -57,12 +57,12 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     async apiGetTagIndexRaw(
         overlay?: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction
-    ): Promise<runtime.ApiResponse<TagsTonieCardList>> {
+    ): Promise<runtime.ApiResponse<TagTonieCardsList>> {
         const queryParameters: any = {};
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.apiGetTeddyCloudApiRaw(`/api/getTagIndex`, overlay, initOverrides);
-        return new runtime.JSONApiResponse<TagsTonieCardList>(response);
+        return new runtime.JSONApiResponse<TagTonieCardsList>(response);
     }
 
     /**
@@ -311,7 +311,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<string> {
         const response = await this.apiGetTeddyCloudSettingRaw("internal.last_connection", overlay, initOverrides);
         const timestamp = await response.text();
-        const date = timestamp ? new Date(parseInt(timestamp, 10) * 1000) : "";
+        const date = timestamp && timestamp !== "0" ? new Date(parseInt(timestamp, 10) * 1000) : "";
         return date.toLocaleString();
     }
 
@@ -562,19 +562,25 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             const blob = new Blob([str], { type: "text/plain" });
             return blob;
         };
-        const response = await this.request(
-            {
-                path: `${path}${overlay ? "?overlay=" + overlay : ""}`,
-                method: "POST",
-                headers: headerParameters,
-                body: stringToBlob(body?.toString() || ""),
-            },
-            initOverrides
-        );
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
+
+        try {
+            const response = await this.request(
+                {
+                    path: `${path}${overlay ? "?overlay=" + overlay : ""}`,
+                    method: "POST",
+                    headers: headerParameters,
+                    body: stringToBlob(body?.toString() || ""),
+                },
+                initOverrides
+            );
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response;
+        } catch (err: any) {
+            return err.response;
         }
-        return response;
     }
 
     /**
@@ -594,15 +600,45 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
         headerParameters: runtime.HTTPHeaders = {}
     ): Promise<Response> {
-        // To Do: Replace fetch with request
-        const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
-            method: "POST",
-            body: formData,
-        });
+        try {
+            // To Do: Replace fetch with request
+            const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
+                method: "POST",
+                body: formData,
+            });
 
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status} ${response.statusText}`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            return response;
+        } catch (err: any) {
+            if (err.response) {
+                return err.response;
+            } else if (err instanceof TypeError) {
+                return new Response(
+                    JSON.stringify({
+                        error: "Network error, please try again later.",
+                        message: err.message,
+                    }),
+                    {
+                        status: 500,
+                        statusText: "Network Error",
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+            } else {
+                return new Response(
+                    JSON.stringify({
+                        error: "An unexpected error occurred.",
+                        message: err,
+                    }),
+                    {
+                        status: 500,
+                        statusText: "Unexpected Error",
+                        headers: { "Content-Type": "application/json" },
+                    }
+                );
+            }
         }
-        return response;
     }
 }

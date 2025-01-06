@@ -1,21 +1,30 @@
-import { useTranslation } from "react-i18next";
-import { Header } from "antd/es/layout/layout";
-import styled from "styled-components";
-import { MenuOutlined } from "@ant-design/icons";
-import logoImg from "../../assets/logo.png";
-import { Button, Drawer, Menu, MenuProps } from "antd";
-import { Link, useLocation } from "react-router-dom";
-import { ServerStatus } from "./ServerStatus";
 import { useEffect, useState } from "react";
-import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+import { Button, Drawer, Menu, MenuProps, Modal, theme } from "antd";
+import { Header } from "antd/es/layout/layout";
+import { MenuOutlined, PlusOutlined } from "@ant-design/icons";
+
+import logoImg from "../../assets/logo.png";
+
+import { ServerStatus } from "./ServerStatus";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
-import { theme } from "antd";
+import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import NotificationButton from "../utils/NotificationButton";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { HomeSubNav } from "../home/HomeSubNav";
+import { CommunitySubNav } from "../community/CommunitySubNav";
+import { SettingsSubNav } from "../settings/SettingsSubNav";
+import { ToniesSubNav } from "../tonies/ToniesSubNav";
+import { TonieboxesSubNav } from "../tonieboxes/TonieboxesSubNav";
 
 const { useToken } = theme;
 
 const StyledLogo = styled.img`
     height: 32px;
 `;
+
 const StyledHeaderComponent = styled(Header)`
     color: white;
     display: flex;
@@ -37,11 +46,37 @@ const StyledLeftPart = styled.div`
     align-items: center;
 `;
 
+const StyledMenu = styled(Menu)`
+    .ant-menu-title-content {
+        width: 100%;
+    }
+`;
+
+const NoHoverButton = styled(Button)`
+    &:hover {
+        background: transparent !important;
+    }
+`;
 export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const [navOpen, setNavOpen] = useState(false);
+    const { unconfirmedCount, navOpen, setNavOpen, subNavOpen, setSubNavOpen, currentTCSection, setCurrentTCSection } =
+        useTeddyCloud();
     const location = useLocation();
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
+        if (!isMobile) {
+            setSubNavOpen(false);
+            setNavOpen(false);
+        }
+    }, [isMobile]);
 
     useEffect(() => {
         const themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
@@ -55,31 +90,69 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
         }
     }, [token.colorBgBase]);
 
+    const NavItem = ({ title, to, isMobile = false }: { title: string; to: string; isMobile?: boolean }) => {
+        const handleLinkClick = () => {
+            setNavOpen(false); // Use the function directly from the parent
+        };
+
+        const handleButtonClick = () => {
+            setCurrentTCSection(title); // Use the function directly from the parent
+            if (isMobile) {
+                setSubNavOpen(true); // Use the function directly from the parent
+            }
+        };
+
+        if (isMobile) {
+            return (
+                <div
+                    style={{
+                        display: "flex",
+                        gap: 16,
+                        width: "100%",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    <Link to={to} onClick={handleLinkClick}>
+                        {title}
+                    </Link>
+                    <NoHoverButton
+                        type="text"
+                        style={{ width: "100%", justifyContent: "end" }}
+                        icon={<PlusOutlined style={{ margin: 16 }} />}
+                        onClick={handleButtonClick}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <Link to={to} onClick={handleLinkClick}>
+                {title}
+            </Link>
+        );
+    };
+
     const mainNav: MenuProps["items"] = [
         {
             key: "/",
-            label: <Link to="/">{t("home.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("home.navigationTitle")} to="/" isMobile={isMobile} />,
         },
         {
             key: "tonies",
-            label: <Link to="/tonies">{t("tonies.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("tonies.navigationTitle")} to="/tonies" isMobile={isMobile} />,
         },
         {
             key: "tonieboxes",
-            label: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("tonieboxes.navigationTitle")} to="/tonieboxes" isMobile={isMobile} />,
         },
         {
             key: "settings",
-            label: <Link to="/settings">{t("settings.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("settings.navigationTitle")} to="/settings" isMobile={isMobile} />,
         },
         {
             key: "community",
-            label: <Link to="/community">{t("community.navigationTitle")}</Link>,
-            onClick: () => setNavOpen(false),
+            label: <NavItem title={t("community.navigationTitle")} to="/community" isMobile={isMobile} />,
         },
     ];
 
@@ -87,12 +160,28 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
     if (!selectedKey) selectedKey = "/";
     if (selectedKey === "home") selectedKey = "/";
 
+    const renderSubNav = () => {
+        if (currentTCSection === t("community.navigationTitle")) {
+            return <CommunitySubNav />;
+        }
+        if (currentTCSection === t("settings.navigationTitle")) {
+            return <SettingsSubNav />;
+        }
+        if (currentTCSection === t("tonies.navigationTitle")) {
+            return <ToniesSubNav />;
+        }
+        if (currentTCSection === t("tonieboxes.navigationTitle")) {
+            return <TonieboxesSubNav />;
+        }
+        return <HomeSubNav />;
+    };
+
     return (
         <StyledHeaderComponent>
             <Link to="/" style={{ color: "white" }}>
                 <StyledLeftPart>
                     <StyledLogo src={logoImg} />
-                    <HiddenMobile> TeddyCloud Server</HiddenMobile>
+                    <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud Server</HiddenMobile>
                 </StyledLeftPart>
             </Link>
             <HiddenMobile>
@@ -102,7 +191,7 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                     items={mainNav}
                     selectedKeys={[selectedKey]}
                     style={{
-                        width: "calc(100vw - 480px)",
+                        width: "calc(100vw - 510px)",
                         background: "#141414 !important",
                     }}
                 />
@@ -111,15 +200,29 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                 <ServerStatus />
                 {themeSwitch}
                 <StyledLanguageSwitcher />
-                <HiddenDesktop>
+                <NotificationButton notificationCount={unconfirmedCount} />
+                <HiddenDesktop style={{ marginLeft: 8 }}>
                     <Button
                         className="barsMenu"
                         type="primary"
                         onClick={() => setNavOpen(true)}
                         icon={<MenuOutlined />}
                     />
-                    <Drawer placement="right" open={navOpen} onClose={() => setNavOpen(false)}>
-                        <Menu mode="vertical" items={mainNav} selectedKeys={[selectedKey]} />
+                    <Drawer placement="right" open={navOpen} onClose={() => setNavOpen(false)} title="TeddyCloud">
+                        <StyledMenu
+                            mode="vertical"
+                            items={mainNav}
+                            selectedKeys={[selectedKey]}
+                            style={{ background: "transparent", borderRight: "none" }}
+                        />
+                        <Drawer
+                            placement="right"
+                            open={subNavOpen}
+                            onClose={() => setSubNavOpen(false)}
+                            title={currentTCSection}
+                        >
+                            {renderSubNav()}
+                        </Drawer>
                     </Drawer>
                 </HiddenDesktop>
             </StyledRightPart>

@@ -1,15 +1,18 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Select, Typography, message } from "antd";
+import { Select, Typography } from "antd";
 import type { SelectProps } from "antd";
+
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 export const RadioStreamSearch: React.FC<{
     placeholder: string;
     onChange: (newValue: string) => void;
 }> = (props) => {
     const { t } = useTranslation();
+    const { addNotification } = useTeddyCloud();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<SelectProps["options"]>([]);
     const [value, setValue] = useState<string>();
 
@@ -68,7 +71,12 @@ export const RadioStreamSearch: React.FC<{
             });
             setData(uniqueData);
         } catch (error) {
-            message.error(t("radioStreamSearch.failedToFetchSearchResults") + error);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("radioStreamSearch.failedToFetchSearchResults"),
+                t("radioStreamSearch.failedToFetchSearchResultsDetails") + error,
+                t("tonies.title")
+            );
             return;
         }
     };
@@ -86,7 +94,6 @@ export const RadioStreamSearch: React.FC<{
             <Typography.Text style={{ fontSize: "small", display: "inline-block", marginTop: "8px" }}>
                 {t("radioStreamSearch.searchLabel")}
             </Typography.Text>
-            {contextHolder}
             <Select
                 showSearch
                 style={{ margin: "8px 0" }}

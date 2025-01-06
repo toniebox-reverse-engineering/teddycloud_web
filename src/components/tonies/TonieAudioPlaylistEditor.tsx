@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Button, Space, Alert, theme } from "antd";
-import { CloseOutlined, FolderOpenOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { FileBrowser } from "../utils/FileBrowser";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip } from "antd";
+import {
+    CloseOutlined,
+    FolderOpenOutlined,
+    InfoCircleOutlined,
+    MinusCircleOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
+
+import CodeSnippet from "../utils/CodeSnippet";
+import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
+import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 export interface FileItem {
     filepath: string;
     name: string;
 }
 
-export interface FormValues {
+export interface TAPFormValues {
     type: string;
     audio_id: number;
     filepath: string;
@@ -22,11 +29,13 @@ export interface FormValues {
 export interface TonieAudioPlaylistEditorProps {
     open: boolean;
     initialValuesJson?: string;
-    onCreate: (values: FormValues) => void;
+    onCreate: (values: TAPFormValues) => void;
     onCancel: () => void;
 }
 
 const { useToken } = theme;
+
+const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     open,
@@ -36,7 +45,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const [form] = Form.useForm<FormValues>();
+    const [form] = Form.useForm<TAPFormValues>();
     const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
     const [filebrowserKey, setFilebrowserKey] = useState(0);
@@ -67,7 +76,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     };
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
-        if (files && files.length > 0) {
+        if (files) {
             const prefix = special === "library" ? "lib:/" : "content:/";
             const newFiles = files.map((file) => ({
                 filepath: prefix + path + "/" + file.name,
@@ -90,7 +99,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     };
 
     const handleOkSelectFile = () => {
-        const currentValues = form.getFieldsValue() as FormValues;
+        const currentValues = form.getFieldsValue() as TAPFormValues;
         let updatedFiles = [...currentValues.files];
 
         if (selectedFileIndex !== -1) {
@@ -136,52 +145,19 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
         setJsonViewerModalOpened(false);
     };
 
-    function detectColorScheme() {
-        const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const storedTheme = localStorage.getItem("theme");
-
-        if (storedTheme === "auto") {
-            return prefersDarkMode ? "dark" : "light";
-        } else {
-            return storedTheme;
-        }
-    }
-
     const jsonViewerModal = (
         <Modal
             footer={jsonViewerModalFooter}
-            width={700}
+            width={1000}
             title={"File (you can copy the content to a *.tap file)"}
             open={jsonViewerModalOpened}
             onCancel={handleJsonViewerModalClose}
         >
             {jsonData ? (
                 <>
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {jsonData}
-                    </SyntaxHighlighter>
+                    <CodeSnippet language="json" code={jsonData} />
                     <div style={{ margin: "16px 0 8px 0" }}>Minimized json:</div>
-                    <SyntaxHighlighter
-                        language="json"
-                        style={detectColorScheme() === "dark" ? oneDark : oneLight}
-                        customStyle={{
-                            padding: 0,
-                            borderRadius: 0,
-                            margin: 0,
-                            border: "none",
-                        }}
-                    >
-                        {jsonDataMinimized}
-                    </SyntaxHighlighter>
+                    <CodeSnippet language="json" showLineNumbers={false} code={jsonDataMinimized} />
                 </>
             ) : (
                 "Loading..."
@@ -222,7 +198,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                 onOk={() => {
                     form.validateFields()
                         .then(() => {
-                            onCreate(form.getFieldsValue() as FormValues);
+                            onCreate(form.getFieldsValue() as TAPFormValues);
                             //remove that if the API is available
                             setJsonData(JSON.stringify(form.getFieldsValue(), null, 2));
                             setJsonDataMinimized(JSON.stringify(form.getFieldsValue(), null, 0));
@@ -255,15 +231,43 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     <Form.Item name="type" hidden label="type">
                         <Input type="string" />
                     </Form.Item>
-                    <Form.Item name="audio_id" label="Audio ID">
+                    <Form.Item
+                        name="audio_id"
+                        label={
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <label>{t("tonies.tapEditor.audioId")}</label>
+                                <Tooltip title={t("tonies.tapEditor.audioIdTooltip")}>
+                                    <InfoCircleOutlined />
+                                </Tooltip>
+                            </div>
+                        }
+                    >
                         <Input type="number" />
                     </Form.Item>
-                    <Form.Item name="filepath" label={t("tonies.tapEditor.filePath")}>
+                    <Form.Item
+                        name="filepath"
+                        label={
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <label>{t("tonies.tapEditor.filePath")}</label>
+                                <Tooltip title={t("tonies.tapEditor.filePathTooltip")}>
+                                    <InfoCircleOutlined />
+                                </Tooltip>
+                            </div>
+                        }
+                        rules={[{ required: true, message: t("tonies.tapEditor.filePathRequired") }]}
+                    >
                         <Input onChange={handleSourceInputChange} />
                     </Form.Item>
                     <Form.Item
                         name="name"
-                        label={t("tonies.tapEditor.name")}
+                        label={
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <label>{t("tonies.tapEditor.name")}</label>
+                                <Tooltip title={t("tonies.tapEditor.nameTooltip")}>
+                                    <InfoCircleOutlined />
+                                </Tooltip>
+                            </div>
+                        }
                         rules={[{ required: true, message: t("tonies.tapEditor.nameRequired") }]}
                     >
                         <Input />
@@ -286,7 +290,16 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                         >
                                             <Form.Item
                                                 name={[name, "filepath"]}
-                                                label={t("tonies.tapEditor.filePathContentFile")}
+                                                label={
+                                                    <div style={{ display: "flex", gap: 8 }}>
+                                                        <label>{t("tonies.tapEditor.filePathContentFile")}</label>
+                                                        <Tooltip
+                                                            title={t("tonies.tapEditor.filePathContentFileTooltip")}
+                                                        >
+                                                            <InfoCircleOutlined />
+                                                        </Tooltip>
+                                                    </div>
+                                                }
                                                 rules={[
                                                     {
                                                         required: true,
@@ -343,11 +356,11 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                     width="auto"
                     footer={selectModalFooter}
                 >
-                    <FileBrowser
+                    <SelectFileFileBrowser
                         maxSelectedRows={99}
                         special="library"
                         trackUrl={false}
-                        selectTafOrTapOnly={false}
+                        filetypeFilter={supportedAudioExtensionsForEncoding}
                         key={filebrowserKey}
                         onFileSelectChange={handleFileSelectChange}
                     />

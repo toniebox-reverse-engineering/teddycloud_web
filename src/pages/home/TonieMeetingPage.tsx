@@ -1,11 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { TonieMeetingElement } from "../../components/TonieMeeting";
 
@@ -20,9 +15,6 @@ export const TonieMeetingPage = () => {
                 <HomeSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <HomeSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("home.tonieMeeting.navigationTitle") }]}
                 />

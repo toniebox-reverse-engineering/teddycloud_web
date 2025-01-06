@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Typography, List, Collapse } from "antd";
 
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
-import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -84,9 +79,6 @@ export const ContributionToniesJsonPage = () => {
                 <CommunitySubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <CommunitySubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { List, Switch, Input, Button, Collapse, Select, CollapseProps } from "antd";
 import { useTranslation } from "react-i18next";
-import { TonieCard, TonieCardProps } from "../../components/tonies/TonieCard";
+import { List, Switch, Input, Button, Collapse, Select, CollapseProps, Empty } from "antd";
+
+import { TonieCardProps } from "../../types/tonieTypes";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
 import ToniesPagination from "./ToniesPagination";
+import { TonieCard } from "../../components/tonies/TonieCard";
+import LoadingSpinner from "../utils/LoadingSpinner";
 import { languageOptions } from "../../utils/languageUtil";
 
-const { Option } = Select;
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
+
+const { Option } = Select;
 
 export const ToniesList: React.FC<{
     tonieCards: TonieCardProps[];
@@ -57,6 +63,7 @@ export const ToniesList: React.FC<{
     const [doLocalStore, setLocalStore] = useState(true);
     const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
     const [listKey, setListKey] = useState(0);
+    const [showSourceInfo, setShowSourceInfo] = useState<boolean>(false);
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -99,6 +106,11 @@ export const ToniesList: React.FC<{
             setLastTonieboxRUIDs(tonieboxLastRUIDs);
         };
         fetchTonieboxes();
+        const fetchShowSourceInfo = async () => {
+            const response = await api.apiGetTeddyCloudSettingRaw("frontend.split_model_content");
+            setShowSourceInfo((await response.text()) === "true" ? true : false);
+        };
+        fetchShowSourceInfo();
     }, []);
 
     const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
@@ -246,6 +258,7 @@ export const ToniesList: React.FC<{
     };
 
     const handleShowAll = () => {
+        setListKey((prevKey) => prevKey + 1);
         setShowAll(true);
         setPaginationEnabled(false);
         storeLocalStorage();
@@ -264,9 +277,6 @@ export const ToniesList: React.FC<{
         storeLocalStorage();
         window.scrollTo(0, 0);
     };
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     const getCurrentPageData = () => {
         if (showAll) {
@@ -541,46 +551,64 @@ export const ToniesList: React.FC<{
         },
     ];
 
-    return (
-        <div className="tonies-list-container">
-            {showFilter ? (
-                <Collapse
-                    items={filterPanelContentItem}
-                    defaultActiveKey={collapsed ? [] : ["search-filter"]}
-                    onChange={() => setCollapsed(!collapsed)}
-                    bordered={false}
-                />
-            ) : (
-                ""
-            )}
-            <List
-                header={showPagination ? listPagination : ""}
-                footer={showPagination ? listPagination : ""}
-                grid={{
-                    gutter: 16,
-                    xs: 1,
-                    sm: 2,
-                    md: 2,
-                    lg: 3,
-                    xl: 4,
-                    xxl: 6,
-                }}
-                dataSource={getCurrentPageData()}
-                key={listKey}
-                renderItem={(tonie) => (
-                    <List.Item id={tonie.ruid}>
-                        <TonieCard
-                            tonieCard={tonie}
-                            lastRUIDs={lastTonieboxRUIDs}
-                            overlay={overlay}
-                            readOnly={readOnly}
-                            defaultLanguage={defaultLanguage}
-                            onHide={handleHideTonieCard}
-                            onUpdate={handleUpdate}
-                        />
-                    </List.Item>
-                )}
-            />
-        </div>
+    const noDataTonies = (
+        <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={
+                <div>
+                    <p>{t("tonies.noData")}</p>
+                    <p>{t("tonies.noDataText")}</p>
+                </div>
+            }
+        />
     );
+
+    if (loading) {
+        return <LoadingSpinner />;
+    } else {
+        return (
+            <div className="tonies-list-container">
+                {showFilter ? (
+                    <Collapse
+                        items={filterPanelContentItem}
+                        defaultActiveKey={collapsed ? [] : ["search-filter"]}
+                        onChange={() => setCollapsed(!collapsed)}
+                        bordered={false}
+                    />
+                ) : (
+                    ""
+                )}
+                <List
+                    header={showPagination ? listPagination : ""}
+                    footer={showPagination ? listPagination : ""}
+                    grid={{
+                        gutter: 16,
+                        xs: 1,
+                        sm: 2,
+                        md: 2,
+                        lg: 3,
+                        xl: 4,
+                        xxl: 6,
+                    }}
+                    dataSource={getCurrentPageData()}
+                    key={listKey}
+                    renderItem={(tonie) => (
+                        <List.Item id={tonie.ruid}>
+                            <TonieCard
+                                tonieCard={tonie}
+                                lastRUIDs={lastTonieboxRUIDs}
+                                overlay={overlay}
+                                readOnly={readOnly}
+                                defaultLanguage={defaultLanguage}
+                                showSourceInfo={showSourceInfo}
+                                onHide={handleHideTonieCard}
+                                onUpdate={handleUpdate}
+                            />
+                        </List.Item>
+                    )}
+                    locale={{ emptyText: noDataTonies }}
+                />
+            </div>
+        );
+    }
 };

@@ -1,15 +1,11 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
-import { HomeSubNav } from "../../components/home/HomeSubNav";
+
 import { StatsList, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import { HomeSubNav } from "../../components/home/HomeSubNav";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -41,9 +37,6 @@ export const StatsPage = () => {
                 <HomeSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <HomeSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[{ title: t("home.navigationTitle") }, { title: t("home.stats.navigationTitle") }]}
                 />

@@ -1,11 +1,6 @@
 import { useTranslation } from "react-i18next";
-import BreadcrumbWrapper, {
-    HiddenDesktop,
-    StyledContent,
-    StyledLayout,
-    StyledSider,
-} from "../../components/StyledComponents";
 
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/utils/FileBrowser";
 
@@ -17,9 +12,6 @@ export const LibraryPage = () => {
                 <ToniesSubNav />
             </StyledSider>
             <StyledLayout>
-                <HiddenDesktop>
-                    <ToniesSubNav />
-                </HiddenDesktop>
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },

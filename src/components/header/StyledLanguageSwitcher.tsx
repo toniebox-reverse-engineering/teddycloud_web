@@ -1,5 +1,5 @@
-import { Dropdown, Space, Tag } from "antd";
 import { useTranslation } from "react-i18next";
+import { Dropdown, Space, Tag } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 
 export const StyledLanguageSwitcher = () => {
@@ -25,12 +25,17 @@ export const StyledLanguageSwitcher = () => {
             label: t("language.french"),
             onClick: () => changeLanguage("fr"),
         },
+        {
+            key: "4",
+            label: t("language.spanish"),
+            onClick: () => changeLanguage("es"),
+        },
     ];
 
     const currentLanguage = i18n.language;
 
     return (
-        <Space>
+        <Space style={{ marginRight: -8 }}>
             <Dropdown menu={{ items }} trigger={["click"]}>
                 <a href="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
                     <Tag color="transparent">

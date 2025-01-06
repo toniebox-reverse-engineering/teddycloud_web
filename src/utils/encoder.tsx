@@ -36,8 +36,14 @@ export function upload(
 
             const upsampledAudioBuffer = await offlineAudioContext.startRendering();
 
+            const numberOfChannels = upsampledAudioBuffer.numberOfChannels;
             const leftChannelData = new Float32Array(upsampledAudioBuffer.getChannelData(0));
-            const rightChannelData = new Float32Array(upsampledAudioBuffer.getChannelData(1));
+
+            // in case of mono input file, use only channel twice
+            const rightChannelData =
+                numberOfChannels > 1
+                    ? new Float32Array(upsampledAudioBuffer.getChannelData(1))
+                    : new Float32Array(upsampledAudioBuffer.getChannelData(0));
 
             const interleavedData = new Int16Array(leftChannelData.length + rightChannelData.length);
             for (let i = 0, j = 0; i < leftChannelData.length; i++, j += 2) {
@@ -69,7 +75,9 @@ export function upload(
         }
     };
 
-    reader.onerror = reject;
+    reader.onerror = () => {
+        reject("Failed to read the file");
+    };
 
     if (file.file) {
         reader.readAsArrayBuffer(file.file);

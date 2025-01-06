@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Select, Tooltip, message } from "antd";
+import { Button, Select, Tooltip } from "antd";
 import type { SelectProps } from "antd";
-import { TonieInfo } from "./TonieCard";
-import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
+
+import { TonieInfo } from "../../types/tonieTypes";
+
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -14,13 +19,10 @@ export const TonieArticleSearch: React.FC<{
     onChange: (newValue: string) => void;
 }> = (props) => {
     const { t } = useTranslation();
-    // this is actually needed that the search works
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [messageApi, contextHolder] = message.useMessage();
+    const { addNotification } = useTeddyCloud();
+
     const [data, setData] = useState<SelectProps["options"]>([]);
     const [value, setValue] = useState<string>();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [tonieInfos, setTonieInfos] = useState<TonieInfo[]>();
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
 
     const handleSearch = async (search: string) => {
@@ -36,7 +38,6 @@ export const TonieArticleSearch: React.FC<{
         try {
             const response = await api.apiGetTeddyCloudApiRaw(path);
             const data = await response.json();
-            setTonieInfos(data);
             const result = data.map((item: TonieInfo) => ({
                 value: item.model,
                 text: "[" + item.model + "] " + item.series + " - " + item.episode,
@@ -44,7 +45,12 @@ export const TonieArticleSearch: React.FC<{
             }));
             setData(result);
         } catch (error) {
-            message.error(t("tonieArticleSearch.failedToFetchSearchResults") + error);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonieArticleSearch.failedToFetchSearchResults"),
+                t("tonieArticleSearch.failedToFetchSearchResultsDetails") + error,
+                t("tonies.navigationTitle")
+            );
             return;
         }
     };
@@ -79,6 +85,7 @@ export const TonieArticleSearch: React.FC<{
                         </div>
                     ),
                 }))}
+                style={{ marginTop: "8px" }}
             />
             <ToniesCustomJsonEditor
                 open={showAddCustomTonieModal}

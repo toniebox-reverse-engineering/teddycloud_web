@@ -1,13 +1,17 @@
-import { Upload, message, UploadFile } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { Upload, UploadFile } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
+
 import { ApiUploadCertPostRequest, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }) => {
     const { t } = useTranslation();
+    const { addNotification, setFetchCloudStatus } = useTeddyCloud();
 
     const handleUpload = async (file: UploadFile<any>) => {
         const formData = new FormData();
@@ -27,18 +31,32 @@ export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }
                 try {
                     triggerWriteConfig();
                 } catch (e) {
-                    message.error("Error while saving config to file.");
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        t("settings.errorWhileSavingConfig"),
+                        t("settings.errorWhileSavingConfigDetails") + e,
+                        overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle")
+                    );
                 }
-                message.success(
-                    t("settings.certificates.uploadSuccessful", {
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("settings.certificates.uploadSuccessful"),
+                    t("settings.certificates.uploadSuccessfulDetails", {
                         filename: file.name,
-                    })
+                    }),
+                    overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle")
                 );
+                setFetchCloudStatus((prev) => !prev);
             } catch (err) {
-                message.error(
-                    t("settings.certificates.uploadFailed", {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("settings.certificates.uploadFailed"),
+                    t("settings.certificates.uploadFailedDetails", {
                         filename: file.name,
-                    })
+                    }) +
+                        ": " +
+                        err,
+                    overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle")
                 );
             }
         };
@@ -49,6 +67,22 @@ export const CertificateDragNDrop: React.FC<{ overlay?: string }> = ({ overlay }
     const props = {
         name: "file",
         multiple: true,
+        beforeUpload: (file: UploadFile) => {
+            if (file.type !== "application/x-x509-ca-cert" && !file.name.endsWith(".der")) {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("settings.certificates.uploadFailed"),
+                    t("settings.certificates.uploadFailedDetails", {
+                        filename: file.name,
+                    }) +
+                        ": " +
+                        t("settings.certificates.invalidFileType"),
+                    overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle")
+                );
+                return Upload.LIST_IGNORE;
+            }
+            return true;
+        },
         customRequest: async (options: any) => {
             const { onSuccess, onError, file } = options;
             try {
