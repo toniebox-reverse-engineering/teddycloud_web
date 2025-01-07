@@ -1568,8 +1568,8 @@ teddycloud --esp32-extract data/firmware/` +
                                                         <Paragraph>
                                                             <pre style={{ fontSize: 12 }}>
                                                                 {`mv ${certDirWithMac}/CLIENT.DER ${certDirWithMac}/client.der
-mv ${certDirWithMac}/PRIVATE.DER ${certDir}/${certDirWithMac}/private.der
-mv ${certDirWithMac}/CA.DER ${certDir}/${certDirWithMac}/ca.der`}
+mv ${certDirWithMac}/PRIVATE.DER ${certDirWithMac}/private.der
+mv ${certDirWithMac}/CA.DER ${certDirWithMac}/ca.der`}
                                                             </pre>
                                                         </Paragraph>
 
