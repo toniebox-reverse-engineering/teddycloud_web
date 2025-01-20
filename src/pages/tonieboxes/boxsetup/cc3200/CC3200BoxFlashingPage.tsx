@@ -301,7 +301,7 @@ export const CC3200BoxFlashingPage = () => {
             <Paragraph>
                 {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.installPreloaderText1")}
             </Paragraph>
-            <CodeSnippet language="shell" code={`c3200tool -p COM3 write_file flash/sys/mcuimg.bin /sys/mcuimg.bin`} />
+            <CodeSnippet language="shell" code={`cc3200tool -p COM3 write_file flash/sys/mcuimg.bin /sys/mcuimg.bin`} />
             <Paragraph>
                 {t("tonieboxes.cc3200BoxFlashing.installingBootloader.firstInstallation.installPreloaderText2")}
             </Paragraph>
