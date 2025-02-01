@@ -20,6 +20,7 @@ import {
     Form,
     Empty,
     Tag,
+    Flex,
 } from "antd";
 import {
     CloseOutlined,
@@ -2091,6 +2092,12 @@ export const FileBrowser: React.FC<{
                     })}
                     rowClassName={rowClassName}
                     rowSelection={{
+                        columnTitle: (checkbox) => (
+                            <Flex gap="small">
+                                {checkbox}
+                                { selectedRowKeys.length > 0 && <>({selectedRowKeys.length})</> }
+                            </Flex>
+                        ),
                         selectedRowKeys,
                         onChange: onSelectChange,
                         getCheckboxProps: (record: Record) => ({
