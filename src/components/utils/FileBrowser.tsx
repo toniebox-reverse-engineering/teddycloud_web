@@ -1955,9 +1955,12 @@ export const FileBrowser: React.FC<{
                 ""
             )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", flexDirection: "row", marginBottom: 8 }}>
+                <div style={{ display: "flex", flexDirection: "row", marginBottom: 8, width: "100%", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
+                    </div>
+                    <div style={{alignSelf: "flex-end"}}>({files.filter(x => x.name != "..").length})</div>
                 </div>
                 <div
                     style={{
