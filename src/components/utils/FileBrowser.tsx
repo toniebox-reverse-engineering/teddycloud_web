@@ -20,6 +20,7 @@ import {
     Form,
     Empty,
     Tag,
+    Flex,
 } from "antd";
 import {
     CloseOutlined,
@@ -1954,9 +1955,12 @@ export const FileBrowser: React.FC<{
                 ""
             )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", flexDirection: "row", marginBottom: 8 }}>
+                <div style={{ display: "flex", flexDirection: "row", marginBottom: 8, width: "100%", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
                     {generateBreadcrumbs(path, handleBreadcrumbClick)}
+                    </div>
+                    <div style={{alignSelf: "flex-end"}}>({files.filter(x => x.name != "..").length})</div>
                 </div>
                 <div
                     style={{
@@ -1975,7 +1979,7 @@ export const FileBrowser: React.FC<{
                                         {special === "library" &&
                                         files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
                                             .length > 0 ? (
-                                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
+                                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple", {selectedRowCount: selectedRowKeys.length})}>
                                                 <Button
                                                     size="small"
                                                     icon={<NodeExpandOutlined />}
@@ -1991,7 +1995,7 @@ export const FileBrowser: React.FC<{
                                         ) : (
                                             ""
                                         )}
-                                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
+                                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple", {selectedRowCount: selectedRowKeys.length})}>
                                             <Button
                                                 size="small"
                                                 icon={<DeleteOutlined />}
@@ -2016,7 +2020,7 @@ export const FileBrowser: React.FC<{
                                             <Tooltip
                                                 key="encodeFiles"
                                                 title={
-                                                    t("fileBrowser.encodeFiles.encodeFiles") +
+                                                    t("fileBrowser.encodeFiles.encodeFiles", {selectedRowCount: selectedRowKeys.length}) +
                                                     supportedAudioExtensionsForEncoding.join(", ")
                                                 }
                                             >
@@ -2091,6 +2095,12 @@ export const FileBrowser: React.FC<{
                     })}
                     rowClassName={rowClassName}
                     rowSelection={{
+                        columnTitle: (checkbox) => (
+                            <Flex gap="small">
+                                {checkbox}
+                                { selectedRowKeys.length > 0 && <>({selectedRowKeys.length})</> }
+                            </Flex>
+                        ),
                         selectedRowKeys,
                         onChange: onSelectChange,
                         getCheckboxProps: (record: Record) => ({
