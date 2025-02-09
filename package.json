@@ -33,6 +33,7 @@
     },
     "devDependencies": {
         "@babel/plugin-transform-private-property-in-object": "^7.25.9",
+        "@types/js-yaml": "^4.0.9",
         "@types/react-syntax-highlighter": "^15.5.13",
         "concurrently": "^8.2.2",
         "cross-env": "^7.0.3"

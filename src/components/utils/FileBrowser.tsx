@@ -22,6 +22,7 @@ import {
     Tag,
     Flex,
 } from "antd";
+import yaml from "js-yaml";
 import {
     CloseOutlined,
     CloudServerOutlined,
@@ -135,7 +136,7 @@ export const FileBrowser: React.FC<{
     const [isTafMetaEditorModalOpen, setIsTafMetaEditorModalOpen] = useState<boolean>(false);
     const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
 
-    const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
+    const [currentRecordYaml, setCurrentRecordYaml] = useState<string>("");
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
 
     const [isUnchangedOrEmpty, setIsUnchangedOrEmpty] = useState<boolean>(true);
@@ -397,6 +398,20 @@ export const FileBrowser: React.FC<{
         />
     );
 
+    // other functions
+    const transformTafHeaderToYaml = (jsonData: RecordTafHeader) => {
+        const transformedData = [
+            {
+                "audio-id": jsonData.audioId,
+                hash: jsonData.sha1Hash,
+                size: jsonData.size,
+                tracks: jsonData.trackSeconds?.length,
+                confidence: 0,
+            },
+        ];
+        return yaml.dump(transformedData).trim();
+    };
+
     // information model functions
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
@@ -455,10 +470,13 @@ export const FileBrowser: React.FC<{
 
     // taf header viewer functions
     const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
-        const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
-        const { trackSeconds, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
         setFilterFieldAutoFocus(false);
-        setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
+
+        if (recordTafHeader.valid) {
+            setCurrentRecordYaml(transformTafHeaderToYaml(recordTafHeader));
+        } else {
+            setCurrentRecordYaml(t("tonies.tafHeaderInvalid"));
+        }
         setCurrentFile(file);
         setIsTafHeaderModalOpen(true);
     };
@@ -480,8 +498,10 @@ export const FileBrowser: React.FC<{
             onCancel={closeTafHeader}
             width={700}
         >
-            {currentRecordTafHeader ? (
-                <CodeSnippet language="json" code={JSON.stringify(currentRecordTafHeader, null, 2)} />
+            {currentRecordYaml ? (
+                <>
+                    <CodeSnippet language="yaml" code={currentRecordYaml} />
+                </>
             ) : (
                 "Loading..."
             )}
@@ -1955,12 +1975,20 @@ export const FileBrowser: React.FC<{
                 ""
             )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", flexDirection: "row", marginBottom: 8, width: "100%", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
-                    {generateBreadcrumbs(path, handleBreadcrumbClick)}
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        marginBottom: 8,
+                        width: "100%",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
+                        {generateBreadcrumbs(path, handleBreadcrumbClick)}
                     </div>
-                    <div style={{alignSelf: "flex-end"}}>({files.filter(x => x.name != "..").length})</div>
+                    <div style={{ alignSelf: "flex-end" }}>({files.filter((x) => x.name != "..").length})</div>
                 </div>
                 <div
                     style={{
@@ -1979,7 +2007,12 @@ export const FileBrowser: React.FC<{
                                         {special === "library" &&
                                         files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
                                             .length > 0 ? (
-                                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple", {selectedRowCount: selectedRowKeys.length})}>
+                                            <Tooltip
+                                                key="moveMultiple"
+                                                title={t("fileBrowser.moveMultiple", {
+                                                    selectedRowCount: selectedRowKeys.length,
+                                                })}
+                                            >
                                                 <Button
                                                     size="small"
                                                     icon={<NodeExpandOutlined />}
@@ -1995,7 +2028,12 @@ export const FileBrowser: React.FC<{
                                         ) : (
                                             ""
                                         )}
-                                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple", {selectedRowCount: selectedRowKeys.length})}>
+                                        <Tooltip
+                                            key="deleteMultiple"
+                                            title={t("fileBrowser.deleteMultiple", {
+                                                selectedRowCount: selectedRowKeys.length,
+                                            })}
+                                        >
                                             <Button
                                                 size="small"
                                                 icon={<DeleteOutlined />}
@@ -2020,8 +2058,9 @@ export const FileBrowser: React.FC<{
                                             <Tooltip
                                                 key="encodeFiles"
                                                 title={
-                                                    t("fileBrowser.encodeFiles.encodeFiles", {selectedRowCount: selectedRowKeys.length}) +
-                                                    supportedAudioExtensionsForEncoding.join(", ")
+                                                    t("fileBrowser.encodeFiles.encodeFiles", {
+                                                        selectedRowCount: selectedRowKeys.length,
+                                                    }) + supportedAudioExtensionsForEncoding.join(", ")
                                                 }
                                             >
                                                 <Button
@@ -2098,7 +2137,7 @@ export const FileBrowser: React.FC<{
                         columnTitle: (checkbox) => (
                             <Flex gap="small">
                                 {checkbox}
-                                { selectedRowKeys.length > 0 && <>({selectedRowKeys.length})</> }
+                                {selectedRowKeys.length > 0 && <>({selectedRowKeys.length})</>}
                             </Flex>
                         ),
                         selectedRowKeys,
