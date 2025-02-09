@@ -1441,6 +1441,7 @@
             "title": "Sonidos del sistema"
         },
         "tafHeaderOf": "TAF-Header de ",
+        "tafHeaderInvalid": "TAF no válido",
         "tap": {
             "navigationTitle": "WIP: Listas de reproducción de audio",
             "title": "WIP: Listas de reproducción de audio de Tonie"
