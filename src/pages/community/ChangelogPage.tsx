@@ -12,6 +12,26 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.6.4",
+            changes: [
+                "Stabilization backend",
+                "Seperate postData parser and increase size",
+                "Add settings for tap / track_pos hash checking",
+                "gui: added track count to taf header viewer https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/203",
+                "gui: changed taf header viewer to show information using yaml, not json https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/204",
+                "gui: fixed typos in CC3200 flash guide https://github.com/toniebox-reverse-engineering/teddycloud/issues/285 & https://github.com/toniebox-reverse-engineering/teddycloud/issues/286",
+                "gui: show number of selected entries / total files in library/content view https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/199",
+                "gui: hide baudrate selection if not necessary https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/195",
+                "gui: Some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.3...tc_v0.6.4",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.3...tcw_v0.6.4",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-4/1422",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.4",
+        },
+        {
             version: "0.6.3",
             changes: [
                 "Stabilization backend",
