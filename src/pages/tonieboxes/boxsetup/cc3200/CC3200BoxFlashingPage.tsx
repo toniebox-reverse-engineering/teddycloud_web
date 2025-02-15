@@ -179,6 +179,7 @@ export const CC3200BoxFlashingPage = () => {
                 <Paragraph>{uart3v3Hint()}</Paragraph>
                 <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableIntro")}</Paragraph>
                 {TonieboxUARTTable()}
+                <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableExplanation")}</Paragraph>
             </Paragraph>
             <Paragraph>
                 {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectDebugPortText1")}
