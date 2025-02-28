@@ -1154,7 +1154,7 @@
                 "extractingCertificatesSuccessfulDetails": "Zertifikate erfolgreich aus \"{{file}}\" extrahiert und in TeddyCloud gespeichert.",
                 "failedToCommunicate": "Kommunikation fehlgeschlagen:",
                 "failedToConnect": "Verbindung fehlgeschlagen:",
-                "flagPreviousHostname": "Das Flash-Image enthält einen zuvor festgelegten TeddyCloud-Hostname (WIP, wird derzeit nicht verarbeitet)",
+                "flagPreviousHostname": "Das Flash-Image enthält einen zuvor festgelegten TeddyCloud-Hostname",
                 "flash": "Flashen",
                 "flashDevice": "Flash-Gerät",
                 "flashEsp32": "ESP32 flashen",

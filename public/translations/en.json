@@ -1154,7 +1154,7 @@
                 "extractingCertificatesSuccessfulDetails": "Certificates successfully extracted from \"{{file}}\" and stored in TeddyCloud.",
                 "failedToCommunicate": "Failed to communicate:",
                 "failedToConnect": "Failed to connect:",
-                "flagPreviousHostname": "Flash image contains a previous set hostname of TeddyCloud (WIP, not processed currently)",
+                "flagPreviousHostname": "Flash image contains a previous set hostname of TeddyCloud",
                 "flash": "Flash",
                 "flashDevice": "Flash Device",
                 "flashEsp32": "Flash ESP32",

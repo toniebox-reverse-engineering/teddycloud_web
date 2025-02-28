@@ -1154,7 +1154,7 @@
                 "extractingCertificatesSuccessfulDetails": "Certificats extraits avec succès depuis \"{{file}}\" et stockés dans TeddyCloud.",
                 "failedToCommunicate": "Échec de la communication :",
                 "failedToConnect": "Échec de la connexion :",
-                "flagPreviousHostname": "L'image flash contient un nom d'hôte TeddyCloud défini précédemment (WIP, non traité actuellement)",
+                "flagPreviousHostname": "L'image flash contient un nom d'hôte TeddyCloud défini précédemment",
                 "flash": "Flasher",
                 "flashDevice": "Périphérique flash",
                 "flashEsp32": "Flasher l'ESP32",

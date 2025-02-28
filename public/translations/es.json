@@ -1154,7 +1154,7 @@
                 "extractingCertificatesSuccessfulDetails": "Certificados extraídos con éxito de \"{{file}}\" y almacenados en TeddyCloud.",
                 "failedToCommunicate": "Error de comunicación:",
                 "failedToConnect": "Error al conectar:",
-                "flagPreviousHostname": "La imagen de flash contiene un nombre de host de TeddyCloud establecido previamente (WIP, actualmente no procesado)",
+                "flagPreviousHostname": "La imagen de flash contiene un nombre de host de TeddyCloud establecido previamente",
                 "flash": "Flashear",
                 "flashDevice": "Flashear dispositivo",
                 "flashEsp32": "Flashear ESP32",
