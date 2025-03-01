@@ -212,6 +212,7 @@
         "date": "Fecha",
         "delete": "Eliminar",
         "deleteMultiple": "{{selectedRowCount}} filas seleccionadas para eliminar",
+        "downloadFile": "Descargar TAF como *.ogg",
         "encodeFiles": {
             "addFiles": "Agregar archivos",
             "cancel": "Cancelar",
@@ -1376,7 +1377,8 @@
             "no": "No",
             "tracklist": "Lista de pistas:",
             "valid": "Válido:",
-            "yes": "Sí"
+            "yes": "Sí",
+            "download": "Descargar TAF como *.ogg"
         },
         "informationModal": {
             "hideTag": "Ocultar Tonie/Etiqueta",

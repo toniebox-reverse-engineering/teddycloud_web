@@ -212,6 +212,7 @@
         "date": "Datum",
         "delete": "Löschen",
         "deleteMultiple": "{{selectedRowCount}} markierte Zeilen löschen",
+        "downloadFile": "Download TAF als *.ogg",
         "encodeFiles": {
             "addFiles": "Dateien hinzufügen",
             "cancel": "Abbrechen",
@@ -1376,7 +1377,8 @@
             "no": "Nein",
             "tracklist": "Trackliste:",
             "valid": "Gültig:",
-            "yes": "Ja"
+            "yes": "Ja",
+            "download": "Download TAF als *.ogg"
         },
         "informationModal": {
             "hideTag": "Tonie/Tag ausblenden",

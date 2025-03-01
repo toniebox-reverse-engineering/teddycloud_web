@@ -29,6 +29,7 @@ export const ChangelogPage = () => {
                 "gui: show number of selected entries / total files in library/content view https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/199",
                 "gui: hide baudrate selection if not necessary https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/195",
                 "gui: added support previous set hostname in esp32 flash process https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/189",
+                "gui: added download possibility to taf files as *.ogg file within Tonie/tag Information modal and filebrowser https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/207",
                 "gui: Some refactoring",
             ],
             commits: [
