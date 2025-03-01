@@ -708,7 +708,11 @@ export const ESP32BoxFlashingPage = () => {
         }));
 
         const response = await api.apiGetTeddyCloudApiRaw(
-            `/api/esp32/patchFirmware?filename=${state.filename}&hostname=${encodeURIComponent(state.hostname)}` +
+            `/api/esp32/patchFirmware?filename=${state.filename}` +
+                (state.previousHostname && state.flagPreviousHostname
+                    ? `&hostname_old=${encodeURIComponent(state.previousHostname)}`
+                    : "") +
+                `&hostname=${encodeURIComponent(state.hostname)}` +
                 (state.wifi_ssid && state.wifi_pass
                     ? `&wifi_ssid=${encodeURIComponent(state.wifi_ssid)}&wifi_pass=${encodeURIComponent(
                           state.wifi_pass

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Typography, Button, Tooltip } from "antd";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import { Modal, Typography, Button, Tooltip, Spin, theme } from "antd";
+import { DownloadOutlined, LoadingOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
 import { Record } from "../../types/fileBrowserTypes";
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -17,6 +17,7 @@ import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Text } = Typography;
+const { useToken } = theme;
 
 type TonieCardTAFRecord = TonieCardProps | Record;
 
@@ -42,6 +43,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     onHide,
 }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
     const { playAudio } = useAudioContext();
     const { addNotification } = useTeddyCloud();
 
@@ -51,6 +53,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     const [informationFromSource, setInformationFromSource] = useState<boolean>(false);
     const [sourcePic, setSourcePic] = useState<string>("");
     const [sourceTracks, setSourceTracks] = useState<string[]>([]);
+
+    const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
     useEffect(() => {
         if (
@@ -80,6 +84,21 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             tonieCardOrTAFRecord,
             startTime
         );
+    };
+
+    const handleDownload = async (url: string, filename: string) => {
+        setIsDownloading(true);
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+        setIsDownloading(false);
     };
 
     const toniePlayedOn =
@@ -363,6 +382,42 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                         </>
                     ) : (
                         <></>
+                    )}
+                    {"exists" in tonieCardOrTAFRecord &&
+                    tonieCardOrTAFRecord.exists &&
+                    "audioUrl" in tonieCardOrTAFRecord ? (
+                        <p
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px",
+                                cursor: isDownloading ? "default" : "pointer",
+                            }}
+                            onClick={
+                                !isDownloading
+                                    ? () =>
+                                          handleDownload(
+                                              import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                                  tonieCardOrTAFRecord.audioUrl,
+                                              sourceTitle ? sourceTitle : modelTitle + ".ogg"
+                                          )
+                                    : undefined
+                            }
+                        >
+                            {isDownloading ? (
+                                <Spin
+                                    size="small"
+                                    indicator={
+                                        <LoadingOutlined style={{ fontSize: 14, color: token.colorText }} spin />
+                                    }
+                                />
+                            ) : (
+                                <DownloadOutlined key="download" />
+                            )}
+                            {t("tonies.infoModal.download")}
+                        </p>
+                    ) : (
+                        ""
                     )}
                 </div>
             </Modal>
