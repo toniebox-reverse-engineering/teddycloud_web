@@ -21,6 +21,7 @@ export const ChangelogPage = () => {
                 "Add field2/field6 of the toniebox settings with unknown functionality",
                 "Always set Toniebox settings, if cloud not enabled or had error",
                 "Save used domains sent via rtnl",
+                "Implemented tbs_tag_removed for CC3200 + ESP32 (new mqtt event, more details: https://github.com/toniebox-reverse-engineering/teddycloud/pull/309)",
                 "Disable keep-alive for boxine upstream https://github.com/toniebox-reverse-engineering/teddycloud/issues/310",
                 "Added hide flag to dirs https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
                 "gui: added track count to taf header viewer https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/203",
