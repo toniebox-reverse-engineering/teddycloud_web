@@ -20,18 +20,23 @@ import {
     Form,
     Empty,
     Tag,
+    Flex,
+    Spin,
 } from "antd";
+import yaml from "js-yaml";
 import {
     CloseOutlined,
     CloudServerOutlined,
     CloudSyncOutlined,
     CopyOutlined,
     DeleteOutlined,
+    DownloadOutlined,
     EditOutlined,
     FolderAddOutlined,
     FolderOutlined,
     FormOutlined,
     InboxOutlined,
+    LoadingOutlined,
     NodeExpandOutlined,
     PlayCircleOutlined,
     QuestionCircleOutlined,
@@ -134,7 +139,7 @@ export const FileBrowser: React.FC<{
     const [isTafMetaEditorModalOpen, setIsTafMetaEditorModalOpen] = useState<boolean>(false);
     const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
 
-    const [currentRecordTafHeader, setCurrentRecordTafHeader] = useState<RecordTafHeader>();
+    const [currentRecordYaml, setCurrentRecordYaml] = useState<string>("");
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
 
     const [isUnchangedOrEmpty, setIsUnchangedOrEmpty] = useState<boolean>(true);
@@ -170,6 +175,8 @@ export const FileBrowser: React.FC<{
     const [selectedNewFilesForEncoding, setSelectedNewFilesForEncoding] = useState<FileObject[]>([]);
 
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+
+    const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
 
     const [loading, setLoading] = useState<boolean>(true);
     const parentRef = useRef<HTMLDivElement>(null);
@@ -396,6 +403,20 @@ export const FileBrowser: React.FC<{
         />
     );
 
+    // other functions
+    const transformTafHeaderToYaml = (jsonData: RecordTafHeader) => {
+        const transformedData = [
+            {
+                "audio-id": jsonData.audioId,
+                hash: jsonData.sha1Hash,
+                size: jsonData.size,
+                tracks: jsonData.trackSeconds?.length,
+                confidence: 0,
+            },
+        ];
+        return yaml.dump(transformedData).trim();
+    };
+
     // information model functions
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
@@ -454,10 +475,13 @@ export const FileBrowser: React.FC<{
 
     // taf header viewer functions
     const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
-        const currentRecordTafHeader: RecordTafHeader = recordTafHeader;
-        const { trackSeconds, ...currentRecordTafHeaderCopy } = currentRecordTafHeader;
         setFilterFieldAutoFocus(false);
-        setCurrentRecordTafHeader(currentRecordTafHeaderCopy);
+
+        if (recordTafHeader.valid) {
+            setCurrentRecordYaml(transformTafHeaderToYaml(recordTafHeader));
+        } else {
+            setCurrentRecordYaml(t("tonies.tafHeaderInvalid"));
+        }
         setCurrentFile(file);
         setIsTafHeaderModalOpen(true);
     };
@@ -479,8 +503,10 @@ export const FileBrowser: React.FC<{
             onCancel={closeTafHeader}
             width={700}
         >
-            {currentRecordTafHeader ? (
-                <CodeSnippet language="json" code={JSON.stringify(currentRecordTafHeader, null, 2)} />
+            {currentRecordYaml ? (
+                <>
+                    <CodeSnippet language="yaml" code={currentRecordYaml} />
+                </>
             ) : (
                 "Loading..."
             )}
@@ -1477,6 +1503,37 @@ export const FileBrowser: React.FC<{
         }
     };
 
+    const handleDownload = async (url: string, filename: string) => {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+    };
+
+    const handleFileDownload = (record: any) => {
+        const fileUrl =
+            encodeURI(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + record.name) +
+            "?ogg=true&special=" +
+            special +
+            (overlay ? `&overlay=${overlay}` : "");
+
+        const fileName =
+            (record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+            (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "");
+
+        setDownloading((prev) => ({ ...prev, [record.name]: true }));
+
+        handleDownload(fileUrl, fileName).finally(() => {
+            setDownloading((prev) => ({ ...prev, [record.name]: false }));
+        });
+    };
+
     // filter functions
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterText(e.target.value);
@@ -1769,6 +1826,22 @@ export const FileBrowser: React.FC<{
                             />
                         </Tooltip>
                     );
+                    actions.push(
+                        downloading[record.name] ? (
+                            <Spin
+                                style={{ margin: "0 6px 0 0", padding: 4 }}
+                                size="small"
+                                indicator={<LoadingOutlined style={{ fontSize: 16, color: token.colorText }} spin />}
+                            />
+                        ) : (
+                            <Tooltip key={`action-download-${record.name}`} title={t("fileBrowser.downloadFile")}>
+                                <DownloadOutlined
+                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
+                                    onClick={() => handleFileDownload(record)}
+                                />
+                            </Tooltip>
+                        )
+                    );
                     // migration to lib possible
                     if (special !== "library") {
                         actions.push(
@@ -1954,9 +2027,20 @@ export const FileBrowser: React.FC<{
                 ""
             )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", flexDirection: "row", marginBottom: 8 }}>
-                    <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
-                    {generateBreadcrumbs(path, handleBreadcrumbClick)}
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        marginBottom: 8,
+                        width: "100%",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
+                        {generateBreadcrumbs(path, handleBreadcrumbClick)}
+                    </div>
+                    <div style={{ alignSelf: "flex-end" }}>({files.filter((x) => x.name != "..").length})</div>
                 </div>
                 <div
                     style={{
@@ -1975,7 +2059,12 @@ export const FileBrowser: React.FC<{
                                         {special === "library" &&
                                         files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
                                             .length > 0 ? (
-                                            <Tooltip key="moveMultiple" title={t("fileBrowser.moveMultiple")}>
+                                            <Tooltip
+                                                key="moveMultiple"
+                                                title={t("fileBrowser.moveMultiple", {
+                                                    selectedRowCount: selectedRowKeys.length,
+                                                })}
+                                            >
                                                 <Button
                                                     size="small"
                                                     icon={<NodeExpandOutlined />}
@@ -1991,7 +2080,12 @@ export const FileBrowser: React.FC<{
                                         ) : (
                                             ""
                                         )}
-                                        <Tooltip key="deleteMultiple" title={t("fileBrowser.deleteMultiple")}>
+                                        <Tooltip
+                                            key="deleteMultiple"
+                                            title={t("fileBrowser.deleteMultiple", {
+                                                selectedRowCount: selectedRowKeys.length,
+                                            })}
+                                        >
                                             <Button
                                                 size="small"
                                                 icon={<DeleteOutlined />}
@@ -2016,8 +2110,9 @@ export const FileBrowser: React.FC<{
                                             <Tooltip
                                                 key="encodeFiles"
                                                 title={
-                                                    t("fileBrowser.encodeFiles.encodeFiles") +
-                                                    supportedAudioExtensionsForEncoding.join(", ")
+                                                    t("fileBrowser.encodeFiles.encodeFiles", {
+                                                        selectedRowCount: selectedRowKeys.length,
+                                                    }) + supportedAudioExtensionsForEncoding.join(", ")
                                                 }
                                             >
                                                 <Button
@@ -2091,6 +2186,12 @@ export const FileBrowser: React.FC<{
                     })}
                     rowClassName={rowClassName}
                     rowSelection={{
+                        columnTitle: (checkbox) => (
+                            <Flex gap="small">
+                                {checkbox}
+                                {selectedRowKeys.length > 0 && <>({selectedRowKeys.length})</>}
+                            </Flex>
+                        ),
                         selectedRowKeys,
                         onChange: onSelectChange,
                         getCheckboxProps: (record: Record) => ({

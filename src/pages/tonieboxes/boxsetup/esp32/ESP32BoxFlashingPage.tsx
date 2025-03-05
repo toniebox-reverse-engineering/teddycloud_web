@@ -708,7 +708,11 @@ export const ESP32BoxFlashingPage = () => {
         }));
 
         const response = await api.apiGetTeddyCloudApiRaw(
-            `/api/esp32/patchFirmware?filename=${state.filename}&hostname=${encodeURIComponent(state.hostname)}` +
+            `/api/esp32/patchFirmware?filename=${state.filename}` +
+                (state.previousHostname && state.flagPreviousHostname
+                    ? `&hostname_old=${encodeURIComponent(state.previousHostname)}`
+                    : "") +
+                `&hostname=${encodeURIComponent(state.hostname)}` +
                 (state.wifi_ssid && state.wifi_pass
                     ? `&wifi_ssid=${encodeURIComponent(state.wifi_ssid)}&wifi_pass=${encodeURIComponent(
                           state.wifi_pass
@@ -1568,8 +1572,8 @@ teddycloud --esp32-extract data/firmware/` +
                                                         <Paragraph>
                                                             <pre style={{ fontSize: 12 }}>
                                                                 {`mv ${certDirWithMac}/CLIENT.DER ${certDirWithMac}/client.der
-mv ${certDirWithMac}/PRIVATE.DER ${certDir}/${certDirWithMac}/private.der
-mv ${certDirWithMac}/CA.DER ${certDir}/${certDirWithMac}/ca.der`}
+mv ${certDirWithMac}/PRIVATE.DER ${certDirWithMac}/private.der
+mv ${certDirWithMac}/CA.DER ${certDirWithMac}/ca.der`}
                                                             </pre>
                                                         </Paragraph>
 
@@ -1925,30 +1929,32 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                         }}
                     >
                         <h1>{t(`tonieboxes.esp32BoxFlashing.title`)}</h1>
-                        <Paragraph
-                            style={{
-                                fontSize: "small",
-                                display: "flex",
-                                gap: 8,
-                                width: 210,
-                                alignItems: "center",
-                                justifyContent: "flex-end",
-                            }}
-                        >
-                            <div style={{ textAlign: "end", textWrap: "nowrap" }}>
-                                {t("tonieboxes.esp32BoxFlashing.baudRate")}
-                            </div>
-                            <Select defaultValue={baudRate} onChange={handleBaurateChange}>
-                                {baudRates.map((rate) => (
-                                    <Option key={rate} value={rate}>
-                                        {rate}
-                                    </Option>
-                                ))}
-                            </Select>{" "}
-                            <Tooltip title={t("tonieboxes.esp32BoxFlashing.baudRateInfo")} placement="top">
-                                <QuestionCircleOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
-                            </Tooltip>
-                        </Paragraph>
+                        {httpsActive && (
+                            <Paragraph
+                                style={{
+                                    fontSize: "small",
+                                    display: "flex",
+                                    gap: 8,
+                                    width: 210,
+                                    alignItems: "center",
+                                    justifyContent: "flex-end",
+                                }}
+                            >
+                                <div style={{ textAlign: "end", textWrap: "nowrap" }}>
+                                    {t("tonieboxes.esp32BoxFlashing.baudRate")}
+                                </div>
+                                <Select defaultValue={baudRate} onChange={handleBaurateChange}>
+                                    {baudRates.map((rate) => (
+                                        <Option key={rate} value={rate}>
+                                            {rate}
+                                        </Option>
+                                    ))}
+                                </Select>{" "}
+                                <Tooltip title={t("tonieboxes.esp32BoxFlashing.baudRateInfo")} placement="top">
+                                    <QuestionCircleOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
+                                </Tooltip>
+                            </Paragraph>
+                        )}
                     </Paragraph>
                     {!httpsActive ? (
                         <>

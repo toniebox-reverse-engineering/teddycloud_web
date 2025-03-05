@@ -12,6 +12,35 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.6.4",
+            changes: [
+                "Stabilization backend",
+                "Seperate postData parser and increase size",
+                "Added settings for tap / track_pos hash checking",
+                "Extended esp32 flash api, added hostname_old https://github.com/toniebox-reverse-engineering/teddycloud/issues/270",
+                "Add field2/field6 of the toniebox settings with unknown functionality",
+                "Always set Toniebox settings, if cloud not enabled or had error",
+                "Save used domains sent via rtnl",
+                "Implemented tbs_tag_removed for CC3200 + ESP32 (new mqtt event, more details: https://github.com/toniebox-reverse-engineering/teddycloud/pull/309)",
+                "Disable keep-alive for boxine upstream https://github.com/toniebox-reverse-engineering/teddycloud/issues/310",
+                "Added hide flag to dirs https://github.com/toniebox-reverse-engineering/teddycloud/issues/234",
+                "gui: added track count to taf header viewer https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/203",
+                "gui: changed taf header viewer to show information using yaml, not json https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/204",
+                "gui: fixed typos and missing explanation in CC3200 flash guide https://github.com/toniebox-reverse-engineering/teddycloud/issues/285 & https://github.com/toniebox-reverse-engineering/teddycloud/issues/286",
+                "gui: show number of selected entries / total files in library/content view https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/199",
+                "gui: hide baudrate selection if not necessary https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/195",
+                "gui: added support previous set hostname in esp32 flash process https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/189",
+                "gui: added download possibility to taf files as *.ogg file within Tonie/tag Information modal and filebrowser https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/207",
+                "gui: Some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.3...tc_v0.6.4",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.3...tcw_v0.6.4",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-4/1422",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.4",
+        },
+        {
             version: "0.6.3",
             changes: [
                 "Stabilization backend",
