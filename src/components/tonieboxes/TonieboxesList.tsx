@@ -12,7 +12,8 @@ import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
-}> = ({ tonieboxCards }) => {
+    readOnly?: boolean;
+}> = ({ tonieboxCards, readOnly = false }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
     const boxModelImages = GetBoxModelImages();
@@ -58,7 +59,11 @@ export const TonieboxesList: React.FC<{
             dataSource={tonieboxCards}
             renderItem={(toniebox) => (
                 <List.Item id={toniebox.ID}>
-                    <TonieboxCard tonieboxCard={toniebox} tonieboxImages={boxModelImages.boxModelImages} />
+                    <TonieboxCard
+                        tonieboxCard={toniebox}
+                        tonieboxImages={boxModelImages.boxModelImages}
+                        readOnly={readOnly}
+                    />
                 </List.Item>
             )}
             locale={{ emptyText: noDataTonieboxes() }}
