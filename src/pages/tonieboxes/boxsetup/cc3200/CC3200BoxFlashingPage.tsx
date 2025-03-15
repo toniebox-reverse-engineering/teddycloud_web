@@ -468,7 +468,7 @@ export const CC3200BoxFlashingPage = () => {
             <h4>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacement")}</h4>
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementIntro")}</Paragraph>
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementText")}</Paragraph>
-            <CodeSnippet language="shell" code={`cc3200tool -p COM3 write_file server/ca.der /cert/c2.der`} />
+            <CodeSnippet language="shell" code={`cc3200tool -p COM3 write_file c2.der /cert/c2.der`} />
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementOutro")}</Paragraph>
         </>
     );
