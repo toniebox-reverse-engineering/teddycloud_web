@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { Typography, Button, Alert } from "antd";
+import { Typography, Button, Alert, Tabs, TabsProps } from "antd";
 
 import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -15,6 +15,8 @@ import { ToniesList } from "../../components/tonies/ToniesList";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
+import { TonieboxCardProps } from "../../types/tonieboxTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -31,11 +33,18 @@ export const HomePage = () => {
 
     // Define the state with TonieCardProps[] type
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
+    const [tonieboxes, setTonieboxes] = useState<TonieboxCardProps[]>([]);
     const [displayIncidentAlert, setDisplayIncidentAlert] = useState(false);
     const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
     const [defaultLanguage, setMaxTag] = useState<string>("");
     const [accessApiEnabled, setAccessApiEnabled] = useState<[string, boolean][]>([]);
     const [loading, setLoading] = useState(true);
+
+    const [activeKey, setActiveKey] = useState<string>(localStorage.getItem("homeActiveTab") ?? "tonies");
+
+    useEffect(() => {
+        localStorage.setItem("homeActiveTab", activeKey);
+    }, [activeKey]);
 
     useEffect(() => {
         const fetchDisplayIncidentAlert = async () => {
@@ -44,6 +53,23 @@ export const HomePage = () => {
         };
 
         fetchDisplayIncidentAlert();
+
+        const fetchTonieboxes = async () => {
+            try {
+                // Perform API call to fetch Toniebox data
+                const tonieboxData = await api.apiGetTonieboxesIndex();
+                setTonieboxes(tonieboxData);
+            } catch (error) {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonieboxes.errorFetchingTonieboxes"),
+                    t("tonieboxes.errorFetchingTonieboxes") + ": " + error,
+                    t("tonieboxes.navigationTitle")
+                );
+            }
+        };
+
+        fetchTonieboxes();
 
         const fetchNewBoxesAllowed = async () => {
             try {
@@ -157,6 +183,51 @@ export const HomePage = () => {
         </>
     ) : null;
 
+    const toniesTab = (
+        <>
+            {loading ? (
+                <LoadingSpinner />
+            ) : (
+                <ToniesList
+                    tonieCards={tonies.filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series).slice(0, 6)}
+                    overlay=""
+                    showFilter={false}
+                    showPagination={false}
+                    readOnly={true}
+                    defaultLanguage={defaultLanguage}
+                />
+            )}
+            <Paragraph>
+                <Button onClick={() => navigate("/tonies")}>
+                    {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})
+                </Button>
+            </Paragraph>
+        </>
+    );
+
+    const tonieboxesTab = (
+        <>
+            {loading ? <LoadingSpinner /> : <TonieboxesList tonieboxCards={tonieboxes.slice(0, 4)} readOnly={true} />}
+            <Paragraph>
+                <Button onClick={() => navigate("/tonieboxes")}>
+                    {t("home.toAllYourTonieboxes")} ({tonieboxes.length})
+                </Button>
+            </Paragraph>
+        </>
+    );
+
+    const toniesAndTonieboxes: TabsProps["items"] = [
+        {
+            key: "tonies",
+            label: <h2 style={{ marginBottom: 0 }}>{t("home.yourTonies")}</h2>,
+            children: toniesTab,
+        },
+        {
+            key: "tonieboxes",
+            label: <h2 style={{ marginBottom: 0 }}>{t("home.yourTonieboxes")}</h2>,
+            children: tonieboxesTab,
+        },
+    ];
     return (
         <>
             <StyledSider>
@@ -189,26 +260,12 @@ export const HomePage = () => {
                         {t("home.forumIntroPart2")}
                     </Paragraph>
                     <Paragraph>
-                        <h2>{t("home.yourTonies")}</h2>
-                        {loading ? (
-                            <LoadingSpinner />
-                        ) : (
-                            <ToniesList
-                                tonieCards={tonies
-                                    .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
-                                    .slice(0, 6)}
-                                overlay=""
-                                showFilter={false}
-                                showPagination={false}
-                                readOnly={true}
-                                defaultLanguage={defaultLanguage}
-                            />
-                        )}
-                        <Paragraph>
-                            <Button onClick={() => navigate("/tonies")}>
-                                {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})
-                            </Button>
-                        </Paragraph>
+                        <Tabs
+                            onChange={(newKey) => setActiveKey(newKey)}
+                            activeKey={activeKey}
+                            items={toniesAndTonieboxes}
+                            indicator={{ size: (origin) => origin - 20, align: "center" }}
+                        />
                     </Paragraph>
                     <Paragraph>
                         <h2>{t("home.helpfulLinks")}</h2>

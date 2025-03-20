@@ -39,7 +39,8 @@ const { useToken } = theme;
 export const TonieboxCard: React.FC<{
     tonieboxCard: TonieboxCardProps;
     tonieboxImages: TonieboxImage[];
-}> = ({ tonieboxCard, tonieboxImages }) => {
+    readOnly?: boolean;
+}> = ({ tonieboxCard, tonieboxImages, readOnly = false }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
@@ -674,47 +675,82 @@ export const TonieboxCard: React.FC<{
                         {boxImage}
                     </div>
                 }
-                actions={[
-                    <>
-                        {!tonieboxAccessApi ? (
-                            <Tooltip title={t("tonieboxes.accessApiDisabled")}>
-                                <LockOutlined
-                                    style={{ color: "red", cursor: "pointer" }}
-                                    onClick={handleApiAccessClick}
-                                />
-                            </Tooltip>
-                        ) : tonieboxStatus ? (
-                            <Tooltip title={t("tonieboxes.online")}>
-                                <WifiOutlined style={{ color: "green", cursor: "default" }} />
-                            </Tooltip>
-                        ) : (
-                            <Tooltip
-                                title={
-                                    t("tonieboxes.offline") +
-                                    (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
-                                }
-                            >
-                                <WifiOutlined
-                                    style={{
-                                        color: token.colorTextDescription,
-                                        cursor: "default",
-                                    }}
-                                />
-                            </Tooltip>
-                        )}
-                    </>,
-                    <EditOutlined key="edit" onClick={() => showModelModal()} />,
-                    <SafetyCertificateOutlined
-                        key="certificate"
-                        style={{ marginRight: 8 }}
-                        onClick={handleUploadCertificatesClick}
-                    />,
-                    <SettingOutlined key="edit" style={{ marginRight: 8 }} onClick={handleEditSettingsClick} />,
-                    <DeleteOutlined key="delete" style={{ marginRight: 8 }} onClick={showDeleteConfirmDialog} />,
-                ]}
+                actions={
+                    !readOnly
+                        ? [
+                              <>
+                                  {!tonieboxAccessApi ? (
+                                      <Tooltip title={t("tonieboxes.accessApiDisabled")}>
+                                          <LockOutlined
+                                              style={{ color: "red", cursor: "pointer" }}
+                                              onClick={handleApiAccessClick}
+                                          />
+                                      </Tooltip>
+                                  ) : tonieboxStatus ? (
+                                      <Tooltip title={t("tonieboxes.online")}>
+                                          <WifiOutlined style={{ color: "green", cursor: "default" }} />
+                                      </Tooltip>
+                                  ) : (
+                                      <Tooltip
+                                          title={
+                                              t("tonieboxes.offline") +
+                                              (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
+                                          }
+                                      >
+                                          <WifiOutlined
+                                              style={{
+                                                  color: token.colorTextDescription,
+                                                  cursor: "default",
+                                              }}
+                                          />
+                                      </Tooltip>
+                                  )}
+                              </>,
+                              <EditOutlined key="edit" onClick={() => showModelModal()} />,
+                              <SafetyCertificateOutlined
+                                  key="certificate"
+                                  style={{ marginRight: 8 }}
+                                  onClick={handleUploadCertificatesClick}
+                              />,
+                              <SettingOutlined
+                                  key="edit"
+                                  style={{ marginRight: 8 }}
+                                  onClick={handleEditSettingsClick}
+                              />,
+                              <DeleteOutlined
+                                  key="delete"
+                                  style={{ marginRight: 8 }}
+                                  onClick={showDeleteConfirmDialog}
+                              />,
+                          ]
+                        : []
+                }
             >
                 <Meta
                     description={[
+                        readOnly ? (
+                            tonieboxStatus ? (
+                                <Tooltip title={t("tonieboxes.online")}>
+                                    <WifiOutlined style={{ color: "green", cursor: "default" }} />{" "}
+                                </Tooltip>
+                            ) : (
+                                <Tooltip
+                                    title={
+                                        t("tonieboxes.offline") +
+                                        (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
+                                    }
+                                >
+                                    <WifiOutlined
+                                        style={{
+                                            color: token.colorTextDescription,
+                                            cursor: "default",
+                                        }}
+                                    />{" "}
+                                </Tooltip>
+                            )
+                        ) : (
+                            ""
+                        ),
                         (tonieboxVersion !== "UNKNOWN" && tonieboxVersion !== undefined && tonieboxVersion !== null
                             ? tonieboxVersion
                             : "MAC") + " ",

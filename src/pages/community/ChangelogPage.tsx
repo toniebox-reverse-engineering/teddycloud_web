@@ -12,6 +12,21 @@ export const ChangelogPage = () => {
 
     const changelogData = [
         {
+            version: "0.6.5",
+            changes: [
+                "Stabilization backend",
+                "Fixed error activating RTNL when using TeddyCloud behind a reverse proxy https://github.com/toniebox-reverse-engineering/teddycloud/issues/291",
+                "gui: Added tonieboxes tab to homepage, user can now choose if he want to see his tonies or tonieboxes. Setting is stored locally.",
+                "gui: Some refactoring",
+            ],
+            commits: [
+                "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.4...tc_v0.6.5",
+                "https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.4...tcw_v0.6.5",
+            ],
+            discussionLink: "https://forum.revvox.de/t/release-notes-0-6-5/1561",
+            githubReleaseLink: "https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.5",
+        },
+        {
             version: "0.6.4",
             changes: [
                 "Stabilization backend",
