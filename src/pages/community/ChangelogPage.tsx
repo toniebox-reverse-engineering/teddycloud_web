@@ -16,7 +16,9 @@ export const ChangelogPage = () => {
             changes: [
                 "Stabilization backend",
                 "Fixed error activating RTNL when using TeddyCloud behind a reverse proxy https://github.com/toniebox-reverse-engineering/teddycloud/issues/291",
+                "Fixed error failed to read incomplete http response header https://github.com/toniebox-reverse-engineering/teddycloud/issues/326",
                 "gui: Added tonieboxes tab to homepage, user can now choose if he want to see his tonies or tonieboxes. Setting is stored locally.",
+                "gui: Changed Radio Browser API Url, try to get a working url from all servers list",
                 "gui: Some refactoring",
             ],
             commits: [
