@@ -1242,7 +1242,7 @@
                 "text": "Le correctif altUrl.305 remplace les URL cloud par des URL personnalisées. Pour l'utiliser, tu dois configurer les entrées DNS pour que prod.revvox et rtnl.revvox pointent vers l'adresse IP de ton serveur TeddyCloud."
             },
             "altUrlFritzBoxPatch": {
-                "CollapseTitle": "Correctif altUrl.tc.fritz.box (altUrl.tc.fritz.box.json)",
+                "CollapseTitle": "Correctif altUrl.tc.fritz.box (altUrl.tc.fritz.box.json, Paramètre par défaut dans ngCfg.json pour l’emplacement de firmware ofw2)",
                 "text": "Si tu as une Fritz!Box, tu peux utiliser le correctif altUrl.tc.fritz.box. Il suffit de définir le nom de ton serveur TeddyCloud sur \"tc\" dans les paramètres de ta Fritz!Box (Réseau domestique -> Réseau -> Connexions réseau -> Modifier)."
             }
         },

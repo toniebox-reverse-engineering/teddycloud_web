@@ -1242,7 +1242,7 @@
                 "text": "Der altUrl.305-Patch ersetzt die Standard-Cloud-URLs durch eigene. Um ihn zu nutzen, musst du die DNS-Einträge für prod.revvox und rtnl.revvox auf die IP-Adresse deines TeddyCloud-Servers setzen."
             },
             "altUrlFritzBoxPatch": {
-                "CollapseTitle": "altUrl.tc.fritz.box Patch (altUrl.tc.fritz.box.json)",
+                "CollapseTitle": "altUrl.tc.fritz.box Patch (altUrl.tc.fritz.box.json, Voreinstellung in ngCfg.json für Firmware-Slot ofw2)",
                 "text": "Wenn du eine Fritz!Box hast, kannst du den altUrl.tc.fritz.box-Patch verwenden. Setze dazu einfach den Namen deines TeddyCloud-Servers in der Fritz!Box auf \"tc\" (Heimnetz -> Netzwerk -> Netzwerkverbindungen -> Bearbeiten)."
             }
         },

@@ -1242,7 +1242,7 @@
                 "text": "El parche altUrl.305 reemplaza las URLs de la nube por otras personalizadas. Para usarlo, tienes que configurar el DNS para que prod.revvox y rtnl.revvox apunten a la dirección IP de tu servidor TeddyCloud."
             },
             "altUrlFritzBoxPatch": {
-                "CollapseTitle": "Parche altUrl.tc.fritz.box (altUrl.tc.fritz.box.json)",
+                "CollapseTitle": "Parche altUrl.tc.fritz.box (altUrl.tc.fritz.box.json, Configuración predeterminada en ngCfg.json para la ranura de firmware ofw2)",
                 "text": "Si tienes un Fritz!Box, puedes usar el parche altUrl.tc.fritz.box. Solo tienes que poner el nombre de tu servidor TeddyCloud como \"tc\" en tu Fritz!Box (Red doméstica -> Red -> Conexiones de red -> Editar)."
             }
         },
