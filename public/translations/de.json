@@ -940,7 +940,7 @@
             "dnsBeware": "Achtung!",
             "dnsBewareText": "Dies wird die Verbindung aller Tonieboxen in deinem Netzwerk unterbrechen, die nicht mit deinem Ersatz-CA gepatcht sind!",
             "dnsHint": "DNS-Anpassungen für TeddyCloud",
-            "dnsText1": "Setze die DNS-Einträge für prod.de.tbs.toys und rtnl.bxcl.de auf die IP-Adresse der teddyCloud-Server.",
+            "dnsText1": "Setze die DNS-Einträge für prod.de.tbs.toys und rtnl.bxcl.de auf die IP-Adresse der TeddyCloud-Server.",
             "dumpCertificates": "Zertifikate für TeddyCloud entnehmen",
             "dumpCertificatesIntro1": "Du benötigst die flash:/cert/ca.der (Boxine CA), flash:/cert/client.der (Client-Zertifikat) und flash:/cert/private.der (Client-Privatschlüssel).",
             "dumpCertificatesIntro2": "Behalte eine Sicherungskopie der Zertifikate, besonders der client.der und private.der. Ohne diese kannst du dich nicht mehr mit der Cloud verbinden!",
