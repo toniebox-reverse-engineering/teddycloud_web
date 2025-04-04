@@ -24,7 +24,7 @@ import { TonieArticleSearch } from "./TonieArticleSearch";
 import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import TonieInformationModal from "../utils/TonieInformationModal";
-import LanguageFlagSVG from "../../utils/languageUtil";
+import { LanguageFlagIcon } from "../../utils/languageUtil";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
@@ -645,14 +645,17 @@ export const TonieCard: React.FC<{
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                             {localTonieCard.tonieInfo.series ? localTonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                         </div>
-                        {defaultLanguage !== localTonieCard.tonieInfo.language ? (
+                        {localTonieCard.tonieInfo.language && defaultLanguage !== localTonieCard.tonieInfo.language ? (
                             <Tooltip
                                 placement="top"
                                 zIndex={2}
                                 title={t("languageUtil." + localTonieCard.tonieInfo.language)}
                             >
                                 <Text style={{ height: 20, width: "auto" }}>
-                                    <LanguageFlagSVG countryCode={localTonieCard.tonieInfo.language} height={20} />
+                                    <LanguageFlagIcon
+                                        name={localTonieCard.tonieInfo.language.toUpperCase().substring(3)}
+                                        height={20}
+                                    />
                                 </Text>
                             </Tooltip>
                         ) : (
