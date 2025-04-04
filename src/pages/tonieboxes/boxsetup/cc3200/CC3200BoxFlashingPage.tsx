@@ -152,7 +152,10 @@ export const CC3200BoxFlashingPage = () => {
                 closeIcon
                 showIcon
                 message={t("tonieboxes.hintLatestFirmwareTitle")}
-                description={t("tonieboxes.hintLatestFirmware")}
+                description=<>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetCC3200")}</Paragraph>
+                </>
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>

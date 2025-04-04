@@ -1497,7 +1497,9 @@
             "redirect": "Proceder a HTTPS",
             "title": "Flasheo de la caja ESP32"
         },
-        "hintLatestFirmware": "Para la configuración inicial de tu Toniebox con TeddyCloud, asegúrate de que tenga el firmware más reciente instalado. Si no estás seguro de si tu Toniebox está actualizada, conéctala a la nube oficial y espera un tiempo para que se complete la actualización de firmware.",
+        "hintLatestFirmware": "Para configurar tu Toniebox con TeddyCloud por primera vez, asegúrate de que tenga instalada la última versión del firmware. Si no estás seguro, conecta la Toniebox a la nube oficial y espera a que se complete la actualización. Además, coloca un Tonie original sobre la caja y comprueba que funciona correctamente.",
+        "hintLatestFirmwareFactoryResetESP32CC3235": "Si has hecho (accidentalmente) un restablecimiento de fábrica en una Toniebox ya flasheada, necesitas volver a flashear el firmware original antes de flashearla de nuevo para usarla con TeddyCloud.",
+        "hintLatestFirmwareFactoryResetCC3200": "Si has hecho (accidentalmente) un restablecimiento de fábrica en una Toniebox flasheada, puede bastar con iniciar OFW1 una vez - no sería necesario volver a flashearla.",
         "hintLatestFirmwareTitle": "Importante",
         "lastOnline": "última conexión",
         "lastPlayedTonie": "Último Tonie reproducido: ",

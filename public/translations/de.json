@@ -1497,7 +1497,9 @@
             "redirect": "Weiter zu HTTPS",
             "title": "ESP32 Box Flashing"
         },
-        "hintLatestFirmware": "Für die Ersteinrichtung deiner Toniebox mit TeddyCloud stelle bitte sicher, dass die neueste Firmware installiert ist. Wenn du dir nicht sicher bist, ob deine Toniebox auf dem neuesten Stand ist, verbinde sie mit der offiziellen Cloud und warte, bis das Firmware-Update abgeschlossen ist.",
+        "hintLatestFirmware": "Für die Ersteinrichtung deiner Toniebox mit TeddyCloud stelle bitte sicher, dass die neueste Firmware installiert ist. Wenn du dir nicht sicher bist, verbinde die Toniebox mit der offiziellen Cloud und warte, bis das Firmware-Update abgeschlossen ist. Lege außerdem einen originalen Tonie auf die Box und prüfe, ob alles funktioniert.",
+        "hintLatestFirmwareFactoryResetESP32CC3235": "Wenn du (aus Versehen) einen Werksreset auf einer geflashten Toniebox durchgeführt hast, musst du zunächst das originale Firmware-Backup flashen, bevor du sie erneut für TeddyCloud flashst.",
+        "hintLatestFirmwareFactoryResetCC3200": "Wenn du (aus Versehen) einen Werksreset auf einer geflashten Toniebox durchgeführt hast, reicht es möglicherweise aus, OFW1 einmal zu starten - ein erneutes Flashen ist dann nicht notwendig.",
         "hintLatestFirmwareTitle": "Wichtig",
         "lastOnline": "zuletzt online",
         "lastPlayedTonie": "Zuletzt gespielter Tonie: ",

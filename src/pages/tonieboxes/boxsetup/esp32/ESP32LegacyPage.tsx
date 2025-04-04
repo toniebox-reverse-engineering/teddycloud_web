@@ -53,7 +53,10 @@ export const ESP32LegacyPage = () => {
                 closeIcon
                 showIcon
                 message={t("tonieboxes.hintLatestFirmwareTitle")}
-                description={t("tonieboxes.hintLatestFirmware")}
+                description=<>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}</Paragraph>
+                </>
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
@@ -228,7 +231,7 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`tonieboxes.esp32BoxFlashing.legacy.title`)}</h1>
+                    <h1>ESP32 {t(`tonieboxes.esp32BoxFlashing.legacy.title`)}</h1>
                     <Divider>{t("tonieboxes.esp32BoxFlashing.legacy.title")}</Divider>
                     <Paragraph style={{ marginTop: 16 }}>
                         <Steps current={currentStep} onChange={onChange}>

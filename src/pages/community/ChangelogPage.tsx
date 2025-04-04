@@ -19,6 +19,10 @@ export const ChangelogPage = () => {
                 "Fixed error failed to read incomplete http response header https://github.com/toniebox-reverse-engineering/teddycloud/issues/326",
                 "gui: Changed Radio Browser API Url, try to get a working url from all servers list",
                 "gui: Added tonieboxes tab to homepage, user can now choose if he want to see his tonies or tonieboxes. Setting is stored locally.",
+                "gui: Added more country flags and languages to tonies list (filter + flags on Toniecard) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/217",
+                "gui: Added tooltip to disabled play-icon on toniecard with hint what to do https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/216",
+                "gui: Improved hint when starting Flashing guides regards latest firmware and factory reset of patched Toniebox https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/208",
+                "gui: Added altUrl-Patches in CC3200 Flash guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/215",
                 "gui: Some refactoring",
             ],
             commits: [
