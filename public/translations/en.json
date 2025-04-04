@@ -1153,7 +1153,7 @@
             "connectToTonieboxText": "Ensure that the UART is configured to 3.3V before connecting the UART programmer to your computer via USB. The green LED on the Toniebox mainboard should stay steadily lit (no flashing or blinking). If it does not, your connections might be loose or incorrect. Disconnect the programmer, double-check all connections, and try again. If you are working with thin wires, consider applying hot glue to secure them in place and prevent any movement. Additionally, ensure that the Toniebox is powered using its charger.",
             "createPatch": "Create altUrl.custom.305.patch",
             "customUrlPatch": "Create a custom URL Patch (altUrl.custom.305.json)",
-            "customUrlPatchHint": "Please create this patch only if the existing altUrl.305.json and altUrl.tc.fritz.box.json patches are not functioning with your current TeddyCloud setup. If they do meet your needs you can proceed by clicking 'Next'.",
+            "customUrlPatchHint": "Please create this patch only if the predefined altUrl.305.json and altUrl.tc.fritz.box.json patches are not functioning with your current TeddyCloud setup. If they do meet your needs you can proceed by clicking 'Next'.",
             "dumpCertificates": "Dump certificates for TeddyCloud",
             "dumpCertificatesLink": "Find instructions for dumping certificates here",
             "flashCAreplacement": "Flash CA replacement for TeddyCloud",
@@ -1234,7 +1234,17 @@
             "proceedWithoutCustomBootloader": "Proceed without the custom bootloader",
             "tagConnector": "Nearly attached Tag Connector",
             "title": "CC3200 Box Flashing",
-            "usingThinWiresAsTagConnector": "Thin wires used as a connector"
+            "usingThinWiresAsTagConnector": "Thin wires used as a connector",
+            "predefinedUrlPatches": "Predefined URL Patches",
+            "predefinedUrlPatchesIntro": "For CC3200 boxes, it's recommended to use an altUrl patch. HackieboxNG includes two predefined altUrl patches ready to use:",
+            "altUrlPatch": {
+                "CollapseTitle": "altURL Patch (altUrl.305.json)",
+                "text": "The altUrl.305 patch replaces the default cloud URLs with custom ones. To use it, configure your DNS so that both prod.revvox and rtnl.revvox point to your TeddyCloud server's IP address."
+            },
+            "altUrlFritzBoxPatch": {
+                "CollapseTitle": "altUrl.tc.fritz.box Patch (altUrl.tc.fritz.box.json)",
+                "text": "If you're using a Fritz!Box, you can apply the altUrl.tc.fritz.box patch. Simply set the name of your TeddyCloud server to \"tc\" in the Fritz!Box settings (Home Network -> Network -> Network Connections -> Edit)."
+            }
         },
         "cc3235BoxFlashing": {
             "certificatesDumpedCAreplacementFlashed": "Certificates dumped and CA replacement flashed",

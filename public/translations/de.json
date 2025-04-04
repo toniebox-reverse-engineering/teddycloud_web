@@ -1153,7 +1153,7 @@
             "connectToTonieboxText": "Stelle sicher, dass der UART auf 3,3V konfiguriert ist, bevor du den UART-Programmer über USB mit deinem Computer verbindest. Die grüne LED auf der Hauptplatine der Toniebox sollte dauerhaft leuchten (ohne zu blinken). Falls dies nicht der Fall ist, sind deine Verbindungen möglicherweise locker oder falsch. Trenne den Programmer, überprüfe alle Verbindungen sorgfältig und versuche es erneut. Wenn du mit dünnen Drähten arbeitest, könntest du Heißkleber verwenden, um sie zu fixieren und Bewegungen zu verhindern. Stelle außerdem sicher, dass die Toniebox über das Ladegerät mit Strom versorgt wird.",
             "createPatch": "Erstelle altUrl.custom.305.patch",
             "customUrlPatch": "Erstelle einen benutzerdefinierten URL-Patch (altUrl.custom.305.json)",
-            "customUrlPatchHint": "Bitte erstelle diesen Patch nur, wenn die vorhandenen Patches altUrl.305.json und altUrl.tc.fritz.box.json mit deiner aktuellen TeddyCloud-Installation nicht funktionieren. Wenn sie deinen Anforderungen entsprechen, kannst du mit 'Weiter' fortfahren.",
+            "customUrlPatchHint": "Bitte erstelle diesen Patch nur, wenn die vordefinierten Patches altUrl.305.json und altUrl.tc.fritz.box.json mit deiner aktuellen TeddyCloud-Installation nicht funktionieren. Wenn sie deinen Anforderungen entsprechen, kannst du mit 'Weiter' fortfahren.",
             "dumpCertificates": "Zertifikate für TeddyCloud entnehmen",
             "dumpCertificatesLink": "Hier findest du die Anleitung zum Entnehmen von Zertifikaten",
             "flashCAreplacement": "CA-Ersatz für TeddyCloud flashen",
@@ -1234,7 +1234,17 @@
             "proceedWithoutCustomBootloader": "Ohne den Custom Bootloader fortfahren",
             "tagConnector": "Fast angeschlossener Tag-Connector",
             "title": "CC3200 Box Flashing",
-            "usingThinWiresAsTagConnector": "Dünne Drähte als Verbinder verwendet"
+            "usingThinWiresAsTagConnector": "Dünne Drähte als Verbinder verwendet",
+            "predefinedUrlPatches": "Vordefinierte URL-Patches",
+            "predefinedUrlPatchesIntro": "Für CC3200-Boxen wird empfohlen, einen altUrl-Patch zu verwenden. HackieboxNG bringt zwei vordefinierte altUrl-Patches bereits mit:",
+            "altUrlPatch": {
+                "CollapseTitle": "altURL Patch (altUrl.305.json)",
+                "text": "Der altUrl.305-Patch ersetzt die Standard-Cloud-URLs durch eigene. Um ihn zu nutzen, musst du die DNS-Einträge für prod.revvox und rtnl.revvox auf die IP-Adresse deines TeddyCloud-Servers setzen."
+            },
+            "altUrlFritzBoxPatch": {
+                "CollapseTitle": "altUrl.tc.fritz.box Patch (altUrl.tc.fritz.box.json)",
+                "text": "Wenn du eine Fritz!Box hast, kannst du den altUrl.tc.fritz.box-Patch verwenden. Setze dazu einfach den Namen deines TeddyCloud-Servers in der Fritz!Box auf \"tc\" (Heimnetz -> Netzwerk -> Netzwerkverbindungen -> Bearbeiten)."
+            }
         },
         "cc3235BoxFlashing": {
             "certificatesDumpedCAreplacementFlashed": "Zertifikate ausgelesen und CA-Ersatz geflasht",
