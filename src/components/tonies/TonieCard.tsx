@@ -581,7 +581,12 @@ export const TonieCard: React.FC<{
                       }
                   />
               ) : (
-                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+                  <Tooltip placement="top" title={t("tonies.noPlayableContentHint")}>
+                      <PlayCircleOutlined
+                          key="playpause"
+                          style={{ cursor: "default", color: token.colorTextDisabled }}
+                      />
+                  </Tooltip>
               ),
               <CloudSyncOutlined
                   key="nocloud"
@@ -615,7 +620,12 @@ export const TonieCard: React.FC<{
               ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
                   <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
               ) : (
-                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+                  <Tooltip placement="top" title={t("tonies.noPlayableContentHint")}>
+                      <PlayCircleOutlined
+                          key="playpause"
+                          style={{ cursor: "default", color: token.colorTextDisabled }}
+                      />
+                  </Tooltip>
               ),
               <CloudSyncOutlined
                   key="nocloud"

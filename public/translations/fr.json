@@ -1530,6 +1530,7 @@
         }
     },
     "tonies": {
+        "noPlayableContentHint": "Aucun contenu disponible pour la lecture. Soit il n'est pas assigné, soit des données sont manquantes provenant du cloud Tonies/Boxine. Placez la figurine sur la boîte pour résoudre ce problème.",
         "addNewCustomTonie": "Créer un nouveau modèle",
         "addNewCustomTonieHint": "Créez un nouveau modèle et assignez-le au tag actuel",
         "addNewCustomTonieModal": {

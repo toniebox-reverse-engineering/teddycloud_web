@@ -1530,6 +1530,7 @@
         }
     },
     "tonies": {
+        "noPlayableContentHint": "Es ist kein Inhalt zum Abspielen verfügbar. Entweder ist er nicht zugewiesen oder es fehlen Daten von der Tonies/Boxine-Cloud. Stelle die Figur auf die Box, um dies zu beheben.",
         "addNewCustomTonie": "Neues Modell anlegen",
         "addNewCustomTonieHint": "Lege ein neues Modell an und weise es dem aktuellen Tag zu",
         "addNewCustomTonieModal": {
