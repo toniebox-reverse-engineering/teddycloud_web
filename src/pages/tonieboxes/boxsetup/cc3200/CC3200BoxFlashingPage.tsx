@@ -493,8 +493,8 @@ export const CC3200BoxFlashingPage = () => {
                 items={[
                     {
                         key: "1",
-                        label: <b>{t("tonieboxes.cc3200BoxFlashing.altUrlPatch.CollapseTitle")}</b>,
-                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlPatch.text")}</Paragraph>,
+                        label: <b>{t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.CollapseTitle")}</b>,
+                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.text")}</Paragraph>,
                     },
                 ]}
                 style={{ marginBottom: 16, marginTop: 16 }}
@@ -504,8 +504,8 @@ export const CC3200BoxFlashingPage = () => {
                 items={[
                     {
                         key: "1",
-                        label: <b>{t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.CollapseTitle")}</b>,
-                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.text")}</Paragraph>,
+                        label: <b>{t("tonieboxes.cc3200BoxFlashing.altUrlPatch.CollapseTitle")}</b>,
+                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlPatch.text")}</Paragraph>,
                     },
                 ]}
                 style={{ marginBottom: 16 }}

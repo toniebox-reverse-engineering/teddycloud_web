@@ -1153,7 +1153,7 @@
             "connectToTonieboxText": "Asegúrate de que el UART esté configurado a 3.3V antes de conectar el programador UART a tu computadora mediante USB. El LED verde en la placa principal de la Toniebox debe permanecer encendido de forma continua (sin parpadear). Si no lo hace, es posible que las conexiones estén flojas o incorrectas. Desconecta el programador, verifica todas las conexiones y vuelve a intentarlo. Si estás trabajando con cables finos, considera usar pegamento caliente para asegurarlos y evitar que se muevan. Además, asegúrate de que la Toniebox esté alimentada mediante su cargador.",
             "createPatch": "Crear altUrl.custom.305.patch",
             "customUrlPatch": "Crear un parche de URL personalizado (altUrl.custom.305.json)",
-            "customUrlPatchHint": "Por favor, crea este parche solo si los parches predefinidos altUrl.305.json y altUrl.tc.fritz.box.json no funcionan con tu configuración actual de TeddyCloud. Si satisfacen tus necesidades, puedes continuar haciendo clic en 'Siguiente'.",
+            "customUrlPatchHint": "Por favor, crea este parche solo si los parches predefinidos altUrl.tc.fritz.box.json y altUrl.305.json no funcionan con tu configuración actual de TeddyCloud. Si satisfacen tus necesidades, puedes continuar haciendo clic en 'Siguiente'.",
             "dumpCertificates": "Extraer certificados para TeddyCloud",
             "dumpCertificatesLink": "Encuentra las instrucciones para extraer certificados aquí",
             "flashCAreplacement": "Flashear reemplazo CA para TeddyCloud",
