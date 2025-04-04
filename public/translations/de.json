@@ -784,7 +784,8 @@
         "en-za": "Englisch (Südafrika)",
         "en-zm": "Englisch (Sambia)",
         "en-zw": "Englisch (Simbabwe)",
-        "undefined": "Andere/undefiniert"
+        "undefined": "Andere/undefiniert",
+        "unknownLanguageCode": "Unbekannter Sprachcode: "
     },
     "radioStreamSearch": {
         "failedToFetchSearchResults": "Abrufen der Radiosender-Suchergebnisse fehlgeschlagen",

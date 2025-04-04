@@ -784,7 +784,8 @@
         "en-za": "English (South Africa)",
         "en-zm": "English (Zambia)",
         "en-zw": "English (Zimbabwe)",
-        "undefined": "Other/undefined"
+        "undefined": "Other/undefined",
+        "unknownLanguageCode": "Unknown language code: "
     },
     "radioStreamSearch": {
         "failedToFetchSearchResults": "Failed to fetch radio stations search results",

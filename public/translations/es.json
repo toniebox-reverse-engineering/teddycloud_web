@@ -784,7 +784,8 @@
         "en-za": "Inglés (Sudáfrica)",
         "en-zm": "Inglés (Zambia)",
         "en-zw": "Inglés (Zimbabue)",
-        "undefined": "Otro/no definido"
+        "undefined": "Otro/no definido",
+        "unknownLanguageCode": "Código de idioma desconocido: "
     },
     "radioStreamSearch": {
         "failedToFetchSearchResults": "No se pudieron obtener los resultados de búsqueda de emisoras de radio",

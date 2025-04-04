@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 
-interface FlagSVGProps {
-    countryCode: string;
-    height: number;
-}
-
 const getFlag = async (code: string) => {
     try {
         const flag = await import(`../assets/country-flags-3x2/${code}.svg`);
-        console.log(flag);
-        return flag.default; // Return the URL for the image
+        return flag.default;
     } catch (error) {
         console.error(`Flag for country code "${code}" not found.`);
         return null;
@@ -27,22 +21,22 @@ export const LanguageFlagIcon: React.FC<LanguageFlagIconProps> = ({ name, height
 
     useEffect(() => {
         const loadFlag = async () => {
-            console.log("Loading flag for:", name);
-            const flagImage = await getFlag(name);
-            console.log(flagImage); // Check what URL we are receiving
+            const flagImage = name ? await getFlag(name) : null;
             if (flagImage) {
-                setFlagUrl(flagImage); // Set the URL for the flag
+                setFlagUrl(flagImage);
+            } else {
+                setFlagUrl(await getFlag("UNKNOWN"));
             }
         };
 
         loadFlag();
-    }, [name]); // Only load the flag when the `name` changes
+    }, [name]);
 
     if (!flagUrl) {
-        return <div>Loading...</div>; // Show a loading state while the flag is being fetched
+        return null;
     }
 
-    return <img src={flagUrl} height={height} {...props} alt={`Flag for ${name}`} />; // Render the flag as an image once it's available
+    return <img src={flagUrl} height={height} {...props} alt={`Flag for ${name}`} />;
 };
 
 export const languageOptions: string[] = [

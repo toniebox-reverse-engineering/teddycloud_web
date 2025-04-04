@@ -784,7 +784,8 @@
         "en-za": "Anglais (Afrique du Sud)",
         "en-zm": "Anglais (Zambie)",
         "en-zw": "Anglais (Zimbabwe)",
-        "undefined": "Autre/indéfini"
+        "undefined": "Autre/indéfini",
+        "unknownLanguageCode": "Code de langue inconnu : "
     },
     "radioStreamSearch": {
         "failedToFetchSearchResults": "Échec de la récupération des résultats de recherche des stations de radio",
