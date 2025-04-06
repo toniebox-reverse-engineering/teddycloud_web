@@ -208,7 +208,11 @@ export const TeddyStudioPage = () => {
                         }}
                     >
                         {results.map((dataset: any, index: number) => (
-                            <div key={index} style={{ display: "flex", gap: "10px" }} className="traveltonieCouple">
+                            <div
+                                key={index}
+                                style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}
+                                className="traveltonieCouple"
+                            >
                                 <div className="coin">
                                     <img src={dataset.pic} alt={dataset.title} style={{ height: "100%" }} />
                                 </div>
