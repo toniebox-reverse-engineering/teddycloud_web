@@ -257,6 +257,9 @@ export const TeddyStudioPage = () => {
                 }
 
                 @media print {
+                    html * {
+                        background-color: white !important;
+                    }
                     body * {
                         visibility: hidden;
                     }
