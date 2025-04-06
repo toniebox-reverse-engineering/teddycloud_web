@@ -22,7 +22,9 @@ export const ChangelogPage = () => {
                 "gui: Added more country flags and languages to tonies list (filter + flags on Toniecard) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/217",
                 "gui: Added tooltip to disabled play-icon on toniecard with hint what to do https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/216",
                 "gui: Improved hint when starting Flashing guides regards latest firmware and factory reset of patched Toniebox https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/208",
+                "gui: Improved UART hint in Flash guides, check for installed driver",
                 "gui: Added altUrl-Patches in CC3200 Flash guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/215",
+                "gui: Added TeddyStudio for creating Traveltonie coin printsheet, based on https://github.com/Raspfarbend/teddystudio by Raspfarbend https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/210",
                 "gui: Some refactoring",
             ],
             commits: [

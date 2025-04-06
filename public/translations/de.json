@@ -1728,6 +1728,19 @@
             "titleCreate": "Neue TAP erstellen",
             "titleEdit": "TAP bearbeiten"
         },
+        "teddystudio": {
+            "navigationTitle": "TeddyStudio",
+            "title": "TeddyStudio",
+            "intro": "Durchsuche alle Tonies und Tags - sowohl offizielle als auch deine eigenen - um dein druckbares Traveltonies (Münze) Blatt zu erstellen.",
+            "placeholder": "Gib einen Suchbegriff ein!",
+            "diameter": "Innen-Durchmesser der Münze",
+            "textFontSize": "Textgröße",
+            "empty": "Leer - Bitte wähle zuerst Tonies oder Tags aus!",
+            "clear": "Blatt löschen",
+            "printPage": "Blatt drucken",
+            "printSheet": "Dein Druckblatt",
+            "settings": "Einstellungen"
+        },
         "title": "Tonies",
         "tonies": {
             "filterBar": {

@@ -10,6 +10,7 @@ import {
     CloudUploadOutlined,
     UnorderedListOutlined,
     UserAddOutlined,
+    FormatPainterOutlined,
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
@@ -51,6 +52,38 @@ export const ToniesSubNav = () => {
             title: t("tonies.tonies.navigationTitle"),
         },
         {
+            key: "encoder",
+            label: (
+                <Link
+                    to="/tonies/encoder"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.encoder.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(CloudUploadOutlined),
+            title: t("tonies.encoder.navigationTitle"),
+        },
+        {
+            key: "teddystudio",
+            label: (
+                <Link
+                    to="/tonies/teddystudio"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.teddystudio.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(FormatPainterOutlined),
+            title: t("tonies.teddystudio.navigationTitle"),
+        },
+        {
             key: "custom-json",
             label: (
                 <label
@@ -72,22 +105,7 @@ export const ToniesSubNav = () => {
             icon: React.createElement(UserAddOutlined),
             title: t("tonies.addToniesCustomJsonEntry"),
         },
-        {
-            key: "encoder",
-            label: (
-                <Link
-                    to="/tonies/encoder"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("tonies.encoder.navigationTitle")}
-                </Link>
-            ),
-            icon: React.createElement(CloudUploadOutlined),
-            title: t("tonies.encoder.navigationTitle"),
-        },
+
         {
             key: "tap",
             label: (

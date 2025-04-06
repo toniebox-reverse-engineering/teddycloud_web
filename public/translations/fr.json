@@ -1728,6 +1728,19 @@
             "titleCreate": "Créer un nouveau TAP",
             "titleEdit": "Modifier le TAP"
         },
+        "teddystudio": {
+            "navigationTitle": "TeddyStudio",
+            "title": "TeddyStudio",
+            "intro": "Recherchez tous les Tonies et étiquettes - à la fois officiels et personnalisés - pour créer votre feuille imprimable de Traveltonies (pièce).",
+            "placeholder": "Entrez un terme de recherche !",
+            "diameter": "Diamètre intérieur de la pièce",
+            "textFontSize": "Taille du texte",
+            "empty": "Vide - Veuillez d'abord sélectionner des Tonies ou des Étiquettes !",
+            "clear": "Effacer la feuille",
+            "printPage": "Imprimer la feuille",
+            "printSheet": "Votre feuille d'impression",
+            "settings": "Paramètres"
+        },
         "title": "Tonies",
         "tonies": {
             "filterBar": {

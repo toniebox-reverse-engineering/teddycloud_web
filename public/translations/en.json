@@ -1728,6 +1728,19 @@
             "titleCreate": "Create new TAP",
             "titleEdit": "Edit TAP"
         },
+        "teddystudio": {
+            "navigationTitle": "TeddyStudio",
+            "title": "TeddyStudio",
+            "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies (coin) sheet.",
+            "placeholder": "Enter a search term!",
+            "diameter": "Coin inner diameter",
+            "textFontSize": "Text size",
+            "empty": "Empty - Please select Tonies or Tags first!",
+            "clear": "Clear sheet",
+            "printPage": "Print sheet",
+            "printSheet": "Your print sheet",
+            "settings": "Settings"
+        },
         "title": "Tonies",
         "tonies": {
             "filterBar": {
