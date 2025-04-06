@@ -1073,6 +1073,7 @@
                 "imageAlt2": "Exemple de cavalier 2",
                 "imageAlt3": "Exemple de cavalier 3",
                 "title": "Important",
+                "updateDriver": "Assure-toi que le dernier pilote UART est installé pour ton appareil. Vérifie dans le Gestionnaire de périphériques. Si aucun pilote n’est installé, télécharge et installe le bon. Le flashage peut ne pas fonctionner correctement avec un pilote générique ou obsolète.",
                 "warning": "Assure-toi absolument que 3,3V (souvent étiqueté 3v3) est réglé ! Si tu utilises le réglage 5V, il y a un grand risque que tu endommages ta Toniebox."
             },
             "uploadCertificateButton": "Télécharger les certificats",

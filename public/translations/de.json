@@ -1073,6 +1073,7 @@
                 "imageAlt2": "Jumper Beispiel 2",
                 "imageAlt3": "Jumper Beispiel 3",
                 "title": "Wichtig",
+                "updateDriver": "Bitte stelle sicher, dass der neueste UART-Treiber für dein Gerät installiert ist. Überprüfe es im Geräte-Manager. Falls kein Treiber installiert ist, lade bitte den passenden Treiber herunter und installiere ihn. Das Flashen funktioniert möglicherweise nicht zuverlässig mit generischen oder veralteten Treibern.",
                 "warning": "Stelle auf jeden Fall sicher, dass 3,3V (oft als 3v3 bezeichnet) eingestellt ist! Wenn du die 5V-Einstellung verwendest, besteht ein hohes Risiko, dass du deine Toniebox beschädigst!"
             },
             "uploadCertificateButton": "Zertifikate hochladen",

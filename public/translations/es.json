@@ -1073,6 +1073,7 @@
                 "imageAlt2": "Ejemplo de puente 2",
                 "imageAlt3": "Ejemplo de puente 3",
                 "title": "Importante",
+                "updateDriver": "Asegúrate de que el controlador UART más reciente esté instalado para tu dispositivo. Verifícalo en el Administrador de dispositivos. Si no hay ningún controlador instalado, descarga e instala el adecuado. El flasheo puede no funcionar correctamente con controladores genéricos o desactualizados.",
                 "warning": "¡Asegúrate absolutamente de que está configurado en 3,3V (a menudo etiquetado como 3v3)! Si usas la configuración de 5V, existe un alto riesgo de que dañes tu Toniebox."
             },
             "uploadCertificateButton": "Subir certificados",

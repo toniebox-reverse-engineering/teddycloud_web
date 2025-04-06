@@ -1073,6 +1073,7 @@
                 "imageAlt2": "Jumper Example 2",
                 "imageAlt3": "Jumper Example 3",
                 "title": "Important",
+                "updateDriver": "Please make sure the latest UART driver is installed for your device. Double-check in your Device Manager. If no driver is installed, please download and install the appropriate one. Flashing may not work reliably with generic or outdated drivers.",
                 "warning": "In any case, make absolutely sure that 3.3V (often labelled 3v3) is set! If you are using the 5V setting, there is a high risk that you will break your Toniebox!"
             },
             "uploadCertificateButton": "Upload certificates",
