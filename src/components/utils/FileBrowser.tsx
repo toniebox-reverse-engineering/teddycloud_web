@@ -121,7 +121,6 @@ export const FileBrowser: React.FC<{
 
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
-    //const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
     const [filterText, setFilterText] = useState("");
