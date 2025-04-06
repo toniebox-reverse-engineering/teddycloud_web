@@ -64,6 +64,8 @@ export const TeddyStudioPage = () => {
         const newDiameter = e.target.value;
         if (!isNaN(Number(newDiameter)) && Number(newDiameter) > 0) {
             setDiameter(`${newDiameter}mm`);
+        } else {
+            setDiameter("");
         }
     };
 
@@ -71,6 +73,8 @@ export const TeddyStudioPage = () => {
         const newTextFontsize = e.target.value;
         if (!isNaN(Number(newTextFontsize)) && Number(newTextFontsize) > 0) {
             setTextFontSize(`${newTextFontsize}px`);
+        } else {
+            setTextFontSize("");
         }
     };
 
@@ -203,8 +207,8 @@ export const TeddyStudioPage = () => {
                             display: "flex",
                             flexWrap: "wrap",
                             gap: "10px",
-                            ["--coin-size" as any]: diameter,
-                            ["--text-font-size" as any]: textFontSize,
+                            ["--coin-size" as any]: diameter !== "" ? diameter : "40mm",
+                            ["--text-font-size" as any]: textFontSize !== "" ? textFontSize : "14px",
                         }}
                     >
                         {results.map((dataset: any, index: number) => (
