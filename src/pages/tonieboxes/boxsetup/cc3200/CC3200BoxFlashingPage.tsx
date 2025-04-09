@@ -152,7 +152,10 @@ export const CC3200BoxFlashingPage = () => {
                 closeIcon
                 showIcon
                 message={t("tonieboxes.hintLatestFirmwareTitle")}
-                description={t("tonieboxes.hintLatestFirmware")}
+                description=<>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetCC3200")}</Paragraph>
+                </>
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
@@ -483,6 +486,30 @@ export const CC3200BoxFlashingPage = () => {
             >
                 {t("tonieboxes.cc3200BoxFlashing.patchesMoreInformationLink")}
             </Link>
+            <h4>{t("tonieboxes.cc3200BoxFlashing.predefinedUrlPatches")}</h4>
+            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.predefinedUrlPatchesIntro")}</Paragraph>
+            <Collapse
+                size="small"
+                items={[
+                    {
+                        key: "1",
+                        label: t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.CollapseTitle"),
+                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.text")}</Paragraph>,
+                    },
+                ]}
+                style={{ marginBottom: 16, marginTop: 16 }}
+            />
+            <Collapse
+                size="small"
+                items={[
+                    {
+                        key: "1",
+                        label: t("tonieboxes.cc3200BoxFlashing.altUrlPatch.CollapseTitle"),
+                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlPatch.text")}</Paragraph>,
+                    },
+                ]}
+                style={{ marginBottom: 16 }}
+            />
             <h4>{t("tonieboxes.cc3200BoxFlashing.customUrlPatch")}</h4>
             <Alert
                 description={t("tonieboxes.cc3200BoxFlashing.customUrlPatchHint")}

@@ -1243,7 +1243,10 @@ export const ESP32BoxFlashingPage = () => {
                             closeIcon
                             showIcon
                             message={t("tonieboxes.hintLatestFirmwareTitle")}
-                            description={t("tonieboxes.hintLatestFirmware")}
+                            description=<>
+                                <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
+                                <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}</Paragraph>
+                            </>
                         ></Alert>
                     </Paragraph>
                     <Paragraph>
@@ -1919,7 +1922,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     ]}
                 />
                 <StyledContent>
-                    <Paragraph
+                    <div
                         style={{
                             display: "flex",
                             gap: 8,
@@ -1955,7 +1958,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                                 </Tooltip>
                             </Paragraph>
                         )}
-                    </Paragraph>
+                    </div>
                     {!httpsActive ? (
                         <>
                             <Alert

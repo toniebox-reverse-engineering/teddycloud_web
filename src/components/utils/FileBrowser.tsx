@@ -121,7 +121,7 @@ export const FileBrowser: React.FC<{
 
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
-    const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+    const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
     const [filterText, setFilterText] = useState("");
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState<boolean>(false);
@@ -336,21 +336,21 @@ export const FileBrowser: React.FC<{
                         .sort((a, b) => {
                             return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
                         })
-                        .map((entry) => {
+                        .map((entry, index) => {
+                            const stringId = String(id); // Ensure `id` is a string
+                            const value = `${stringId}.${index}`;
                             return {
-                                id: id + "." + list.indexOf(entry),
-                                pId: id,
-                                value: id + "." + list.indexOf(entry),
+                                id: value,
+                                pId: stringId,
+                                value,
                                 title: entry.name,
                                 fullPath: `${newPath}/${entry.name}/`,
                             };
                         });
-                    setTreeData(treeData.concat(list));
+                    setTreeData((prev) => prev.concat(list));
                     resolve(true);
                 })
-                .then(() => {
-                    reject();
-                });
+                .catch(reject);
         });
 
     const getPathFromNodeId = (nodeId: string): string => {
@@ -398,7 +398,7 @@ export const FileBrowser: React.FC<{
             treeNodeLabelProp="fullPath"
             placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
             treeExpandedKeys={expandedKeys}
-            onTreeExpand={(keys) => setExpandedKeys(keys)}
+            onTreeExpand={(keys) => setExpandedKeys(keys.map(String))}
             disabled={processing || uploading}
         />
     );

@@ -63,6 +63,7 @@ export function uart3v3Hint(): JSX.Element {
                         />
                     </div>
                     <div style={{ marginTop: "10px" }}>{t("tonieboxes.boxSetup.UARTHint.warning")}</div>
+                    <div style={{ marginTop: "10px" }}>{t("tonieboxes.boxSetup.UARTHint.updateDriver")}</div>
                 </>
             }
         />

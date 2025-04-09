@@ -242,3 +242,9 @@ The icons used are from here:
 -   logo.png: https://www.flaticon.com/free-icon/dog_2829818
 
 Thanks for the original authors for these great icons.
+
+The country flags are derived from here:
+
+-   https://gitlab.com/catamphetamine/country-flag-icons v1.5.18.
+
+Thanks to Nikolay Kuchumov for creating this flag collection!

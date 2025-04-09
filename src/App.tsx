@@ -1,10 +1,11 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
-import { Layout, ConfigProvider, theme } from "antd";
+import { ConfigProvider, Layout, theme } from "antd";
 
 import { BulbOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 
+import { TeddyCloudProvider } from "./TeddyCloudContext";
 import { AudioProvider } from "./components/audio/AudioContext";
 import { StyledFooter } from "./components/footer/StyledFooter";
 import { StyledHeader } from "./components/header/StyledHeader";
@@ -15,11 +16,13 @@ import { ContributionPage } from "./pages/community/ContributionPage";
 import { ContributionToniesJsonPage } from "./pages/community/ContributionToniesJsonPage";
 import { ContributorsPage } from "./pages/community/ContributorsPage";
 import { FAQPage } from "./pages/community/FAQPage";
+import { HowToGetSupportPage } from "./pages/community/HowToGetSupportPage";
 import { TranslationsPage } from "./pages/community/TranslationsPage";
 import { FeaturesPage } from "./pages/home/FeaturesPage";
 import { HomePage } from "./pages/home/HomePage";
 import { StatsPage } from "./pages/home/StatsPage";
 import { TonieMeetingPage } from "./pages/home/TonieMeetingPage";
+import { NotificationsListPage } from "./pages/settings/NotificationsListPage";
 import { RtnlPage } from "./pages/settings/RtnlPage";
 import { SettingsPage } from "./pages/settings/SettingsPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
@@ -36,12 +39,10 @@ import { ContentPage } from "./pages/tonies/ContentPage";
 import { EncoderPage } from "./pages/tonies/EncoderPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
+import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { detectColorScheme } from "./utils/browserUtils";
-import { TeddyCloudProvider } from "./TeddyCloudContext";
-import { NotificationsListPage } from "./pages/settings/NotificationsListPage";
-import { HowToGetSupportPage } from "./pages/community/HowToGetSupportPage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -122,6 +123,7 @@ function App() {
                                         <Route path="/tonies/library" element={<LibraryPage />} />
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />
                                         <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
+                                        <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
                                         <Route path="/tonieboxes" element={<TonieboxesPage />} />
                                         <Route path="/tonieboxes/boxsetup" element={<BoxSetupPage />} />
                                         <Route

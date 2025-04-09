@@ -162,7 +162,10 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                 closeIcon
                 showIcon
                 message={t("tonieboxes.hintLatestFirmwareTitle")}
-                description={t("tonieboxes.hintLatestFirmware")}
+                description=<>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
+                    <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}</Paragraph>
+                </>
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>

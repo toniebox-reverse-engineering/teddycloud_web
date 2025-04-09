@@ -24,7 +24,7 @@ import { TonieArticleSearch } from "./TonieArticleSearch";
 import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
 import { RadioStreamSearch } from "../utils/RadioStreamSearch";
 import TonieInformationModal from "../utils/TonieInformationModal";
-import LanguageFlagSVG from "../../utils/languageUtil";
+import { LanguageFlagIcon } from "../../utils/languageUtil";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
@@ -581,7 +581,12 @@ export const TonieCard: React.FC<{
                       }
                   />
               ) : (
-                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+                  <Tooltip placement="top" title={t("tonies.noPlayableContentHint")}>
+                      <PlayCircleOutlined
+                          key="playpause"
+                          style={{ cursor: "default", color: token.colorTextDisabled }}
+                      />
+                  </Tooltip>
               ),
               <CloudSyncOutlined
                   key="nocloud"
@@ -615,7 +620,12 @@ export const TonieCard: React.FC<{
               ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
                   <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
               ) : (
-                  <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+                  <Tooltip placement="top" title={t("tonies.noPlayableContentHint")}>
+                      <PlayCircleOutlined
+                          key="playpause"
+                          style={{ cursor: "default", color: token.colorTextDisabled }}
+                      />
+                  </Tooltip>
               ),
               <CloudSyncOutlined
                   key="nocloud"
@@ -645,14 +655,20 @@ export const TonieCard: React.FC<{
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                             {localTonieCard.tonieInfo.series ? localTonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                         </div>
-                        {defaultLanguage !== localTonieCard.tonieInfo.language ? (
+                        {localTonieCard.tonieInfo.language && defaultLanguage !== localTonieCard.tonieInfo.language ? (
                             <Tooltip
                                 placement="top"
                                 zIndex={2}
-                                title={t("languageUtil." + localTonieCard.tonieInfo.language)}
+                                title={t("languageUtil." + localTonieCard.tonieInfo.language, {
+                                    defaultValue:
+                                        t("languageUtil.unknownLanguageCode") + localTonieCard.tonieInfo.language,
+                                })}
                             >
                                 <Text style={{ height: 20, width: "auto" }}>
-                                    <LanguageFlagSVG countryCode={localTonieCard.tonieInfo.language} height={20} />
+                                    <LanguageFlagIcon
+                                        name={localTonieCard.tonieInfo.language.toUpperCase().split("-")[1]}
+                                        height={20}
+                                    />
                                 </Text>
                             </Tooltip>
                         ) : (
