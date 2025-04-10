@@ -63,7 +63,21 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             });
         } else {
             const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
-            globalAudio.src = url;
+
+            let sourceElement = globalAudio.querySelector("source");
+            if (!sourceElement) {
+                sourceElement = document.createElement("source");
+                if (matches) {
+                    // if it's an ogg, we have to set the type!
+                    sourceElement.type = "audio/ogg";
+                }
+                globalAudio.appendChild(sourceElement);
+            }
+
+            if (sourceElement.src != url) {
+                sourceElement.src = url;
+                globalAudio.load();
+            }
             if (meta) {
                 setSongImage(meta.picture);
                 setSongArtist(

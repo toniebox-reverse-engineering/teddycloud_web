@@ -14,6 +14,13 @@ export const supportsOggOpus = () => {
     return canPlay === "probably" || canPlay === "maybe";
 };
 
+export const isIOS = () => {
+    return (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent))
+    );
+};
+
 export function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const storedTheme = localStorage.getItem("theme");
