@@ -664,10 +664,10 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 style={{
                     ...styles.container,
                     display: audioPlayerDisplay,
-
-                    height: !(globalAudio?.childNodes.length > 0) ? "0" : "auto",
-                    margin: !(globalAudio?.childNodes.length > 0) ? "-24px" : "0",
-                    marginBottom: !(globalAudio?.childNodes.length > 0) ? "0" : "8px",
+                    visibility: !globalAudio?.querySelector("source") ? "hidden" : "visible",
+                    height: !globalAudio?.querySelector("source") ? "0" : "auto",
+                    margin: !globalAudio?.querySelector("source") ? "-24px" : "0",
+                    marginBottom: !globalAudio?.querySelector("source") ? "0" : "8px",
                     overflow: "hidden",
                 }}
             >
