@@ -21,6 +21,16 @@ export const isIOS = () => {
     );
 };
 
+export const isVolumeControlSupported = (): boolean => {
+    const testAudio = document.createElement("audio");
+    try {
+        testAudio.volume = 0.5;
+        return testAudio.volume === 0.5;
+    } catch (error) {
+        return false;
+    }
+};
+
 export function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const storedTheme = localStorage.getItem("theme");

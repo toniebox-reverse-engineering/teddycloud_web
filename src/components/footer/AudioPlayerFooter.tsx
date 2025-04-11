@@ -20,7 +20,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useAudioContext } from "../audio/AudioContext";
 import TonieInformationModal from "../utils/TonieInformationModal";
 import { getLongestStringByPixelWidth } from "../../utils/helpers";
-import { isIOS } from "../../utils/browserUtils";
+import { isVolumeControlSupported } from "../../utils/browserUtils";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
@@ -625,7 +625,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 ) : (
                     ""
                 )}
-                {!isIOS() ? (
+                {isVolumeControlSupported() ? (
                     <div style={control2Style}>
                         <div style={{ ...styles.controls, position: "relative" }}>
                             <MutedOutlined
