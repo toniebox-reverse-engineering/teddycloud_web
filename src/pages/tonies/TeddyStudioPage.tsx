@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Typography, Input, Button, Divider, theme } from "antd";
+import { Typography, Input, Button, Divider, theme, Checkbox } from "antd";
 import { useTranslation } from "react-i18next";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
@@ -7,6 +7,7 @@ import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { ClearOutlined, DeleteOutlined, PrinterOutlined } from "@ant-design/icons";
+import { LanguageFlagIcon } from "../../utils/languageUtil";
 
 const { Paragraph } = Typography;
 const { Search } = Input;
@@ -22,6 +23,8 @@ export const TeddyStudioPage = () => {
     const [results, setResults] = useState<any[]>([]);
     const [diameter, setDiameter] = useState("40mm");
     const [textFontSize, setTextFontSize] = useState("14px");
+    const [showLanguageFlag, setShowLanguageFlag] = useState<boolean>(false);
+    const [showModelNo, setShowModelNo] = useState<boolean>(false);
 
     const autocompleteRef = useRef(null);
 
@@ -155,7 +158,7 @@ export const TeddyStudioPage = () => {
                     </div>
                     <Divider>{t("tonies.teddystudio.settings")}</Divider>
                     <Paragraph style={{ marginBottom: 16 }}>
-                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
                             <div style={{ display: "flex", alignItems: "baseline" }}>
                                 <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.diameter")}</label>
                                 <Input
@@ -182,6 +185,21 @@ export const TeddyStudioPage = () => {
                                     placeholder={t("tonies.teddystudio.textFontSize")}
                                 />
                             </div>
+                            <Checkbox
+                                style={{ display: "flex", alignItems: "center" }}
+                                checked={showLanguageFlag}
+                                onChange={(e) => setShowLanguageFlag(e.target.checked)}
+                            >
+                                {t("tonies.teddystudio.showLanguageFlag")}
+                            </Checkbox>
+
+                            <Checkbox
+                                style={{ display: "flex", alignItems: "center" }}
+                                checked={showModelNo}
+                                onChange={(e) => setShowModelNo(e.target.checked)}
+                            >
+                                {t("tonies.teddystudio.showModelNo")}
+                            </Checkbox>
                         </div>
                     </Paragraph>
                     <Divider>{t("tonies.teddystudio.printSheet")}</Divider>
@@ -220,9 +238,32 @@ export const TeddyStudioPage = () => {
                                 <div className="coin">
                                     <img src={dataset.pic} alt={dataset.title} style={{ height: "100%" }} />
                                 </div>
-                                <div className="coin" style={{ position: "relative", fontSize: `${textFontSize}` }}>
-                                    <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
-                                    <div>{dataset.episodes}</div>
+                                <div
+                                    className="coin"
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        fontSize: `${textFontSize}`,
+                                        padding: 4,
+                                    }}
+                                >
+                                    <div style={{ height: 12 }}>
+                                        {showLanguageFlag ? (
+                                            <LanguageFlagIcon
+                                                name={dataset.language.toUpperCase().split("-")[1]}
+                                                height={10}
+                                            />
+                                        ) : (
+                                            "   "
+                                        )}
+                                    </div>
+                                    <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
+                                        <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
+                                        <div>{dataset.episodes}</div>
+                                    </div>
+                                    <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
+                                        {showModelNo ? dataset.model : "   "}
+                                    </div>
                                 </div>
                                 <Button
                                     className="deleteButton"
