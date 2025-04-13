@@ -251,7 +251,7 @@ export const TeddyStudioPage = () => {
                                         {showLanguageFlag ? (
                                             <LanguageFlagIcon
                                                 name={dataset.language.toUpperCase().split("-")[1]}
-                                                height={10}
+                                                height={textFontSize}
                                             />
                                         ) : (
                                             "   "
