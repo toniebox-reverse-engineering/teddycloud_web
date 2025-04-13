@@ -244,7 +244,7 @@ export const TeddyStudioPage = () => {
                                         display: "flex",
                                         justifyContent: "space-between",
                                         fontSize: `${textFontSize}`,
-                                        padding: 8,
+                                        padding: "4px 8px 8px 8px",
                                     }}
                                 >
                                     <div style={{ height: 12 }}>
