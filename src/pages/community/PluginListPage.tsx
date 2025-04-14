@@ -18,6 +18,10 @@ import CodeSnippet from "../../components/utils/CodeSnippet";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -105,6 +109,7 @@ export const PluginListPage = () => {
     };
 
     const handleCloseUpload = () => {
+        setFile(null);
         setIsUploadModalOpen(false);
     };
 
@@ -123,11 +128,8 @@ export const PluginListPage = () => {
         setUploading(true);
 
         try {
-            // TODO: Replace with your actual API endpoint
-            const response = await fetch("/api/plugins/upload", {
-                method: "POST",
-                body: formData,
-            });
+            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/plugins/upload`, formData);
+
             if (!response.ok) throw new Error(response.statusText);
             addNotification(
                 NotificationTypeEnum.Success,
@@ -181,9 +183,8 @@ export const PluginListPage = () => {
     const handleConfirmDelete = async () => {
         try {
             // TODO: Replace with actual API endpoint
-            const response = await fetch("/api/plugins/delete/${pluginIdForDeletion}", {
-                method: "POST",
-            });
+            const response = await api.apiPostTeddyCloudRaw(`/api/plugins/delete/${pluginIdForDeletion}`);
+
             if (!response.ok) throw new Error(response.statusText);
             addNotification(
                 NotificationTypeEnum.Success,
@@ -205,8 +206,6 @@ export const PluginListPage = () => {
                 }) + error,
                 t("community.plugins.title")
             );
-        } finally {
-            setUploading(false);
         }
         setIsConfirmDeleteModalOpen(false);
     };

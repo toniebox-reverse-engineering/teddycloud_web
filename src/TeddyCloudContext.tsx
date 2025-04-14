@@ -5,6 +5,10 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
 import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
 import { generateUUID } from "./utils/helpers";
+import { TeddyCloudApi } from "./api";
+import { defaultAPIConfig } from "./config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
@@ -170,7 +174,15 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
     const fetchPlugins = async () => {
         try {
             // @Todo: Add real apicall to get folders
-            const pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio"];
+            let pluginFolders: string[] = [];
+            try {
+                const response = await api.apiGetTeddyCloudApiRaw(`/api/plugins/getPlugins`);
+
+                if (!response.ok) throw new Error(response.statusText);
+            } catch (error) {
+                pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio"];
+            }
+
             const loadedPlugins: PluginMeta[] = [];
 
             for (const folder of pluginFolders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
