@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { Typography, Input, Button, Divider, theme, Checkbox } from "antd";
+import { ClearOutlined, DeleteOutlined, PrinterOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { ClearOutlined, DeleteOutlined, PrinterOutlined } from "@ant-design/icons";
 import { LanguageFlagIcon } from "../../utils/languageUtil";
 
 const { Paragraph } = Typography;

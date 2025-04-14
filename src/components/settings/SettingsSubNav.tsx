@@ -10,6 +10,7 @@ import {
     SyncOutlined,
     HistoryOutlined,
     BellOutlined,
+    CodeSandboxOutlined,
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
@@ -20,18 +21,38 @@ import { StyledSubMenu } from "../StyledComponents";
 import { restartServer } from "../../utils/restartServer";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SettingsSubNav = () => {
     const { t } = useTranslation();
-    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
+    const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
     const currentLanguage = i18n.language;
     const [selectedKey, setSelectedKey] = useState("");
     useEffect(() => {
         setCurrentTCSection(t("settings.navigationTitle"));
     }, [currentLanguage]);
+
+    const pluginItems = plugins
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Settings)
+        .map((plugin) => ({
+            key: `plugin-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/settings/plugin/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(CodeSandboxOutlined),
+            title: plugin.pluginName,
+        }));
 
     const extractBaseUrl = (fullUrl: URL) => {
         const url = new URL(fullUrl);
@@ -183,6 +204,7 @@ export const SettingsSubNav = () => {
             icon: React.createElement(HistoryOutlined),
             title: t("settings.legacyGui"),
         },
+        ...pluginItems,
     ];
 
     return <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />;

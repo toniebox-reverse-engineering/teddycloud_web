@@ -127,6 +127,75 @@
             },
             "title": "How to Create a Good Support Request"
         },
+        "plugins": {
+            "errorLoadingPlugin": "Failed to load metadata for plugin {{pluginname}}",
+            "error": {
+                "title": "Error on loading plugin",
+                "pluginNotFound": "Plugin index.html not found - please check the plugin!",
+                "notification": {
+                    "title": "Error on loading plugin",
+                    "message": "Missing description json - element \"pluginName\" in plugin \"{{pluginId}}\", skipping.",
+                    "missingPluginIndexHtml": "Missing index.html in plugin \"{{pluginId}}\"!"
+                }
+            },
+            "navigationTitle": "TC Plugins",
+            "title": "TeddyCloud Plugins",
+            "intro": "Here you find your added TeddyCloud plugins and you can add new plugins provided by you or the TeddyCloud community!",
+            "installedPlugins": "Installed plugins",
+            "helpTextCreatePlugin": "Some Text about how to create a plugin",
+            "helpButton": "Help",
+            "addButton": "Add",
+            "addButtonTooltip": "Click here to add new Plugins or update existing plugins",
+            "available": "Available Plugins",
+            "by": "by",
+            "visitHomepage": "Visit Plugins Homepage",
+            "empty": "No plugin available",
+            "plugin": "Plugin",
+            "help": {
+                "popoverTitle": "Plugin Help",
+                "title": "Plugin Folder Structure & Requirements",
+                "intro": "To make your plugin discoverable and listed in the Community navigation, it must follow this structure and include a valid index.html and plugin.json file.",
+                "folderStructureTitle": "Plugin Folder Structure:",
+                "descriptionTitle": "plugin.json — Required Metadata",
+                "descriptionIntro": "Every plugin must include a plugin.json file in its root. This file describes the plugin and allows it to be displayed properly in the UI.",
+                "exampleTitle": "Example:",
+                "fieldsTitle": "Fields:",
+                "fields": {
+                    "pluginName": "The title shown in menus (mandatory)",
+                    "description": "Short summary of the plugin",
+                    "author": "Author of the plugin",
+                    "version": "Version of the plugin",
+                    "pluginHomepage": "Homepage of the plugin",
+                    "teddyCloudSection": "Desired section where plugin shall be added to navigation (valid values:  home, tonies, tonieboxes, settings, community)"
+                },
+                "exampleFolderTitle": "Example Folder:",
+                "descriptionExampleTitle": "description.json for example above:"
+            },
+            "open": "Open Plugin",
+            "delete": "Delete",
+            "deletion": {
+                "delete": "Delete",
+                "confirmDeleteModal": "Confirm delete",
+                "confirmDeleteDialog": "Do you really want to delete the plugin \"{{pluginId}}\"?",
+                "errorDeletingPlugin": "Deletion of plugin failed",
+                "errorDeletingPluginDetails": "Deletion of plugin \"{{filename}}\" failed: ",
+                "successDeletingPlugin": "Deletion of plugin successful",
+                "successDeletingPluginDetails": "Deletion of plugin \"{{filename}}\" was successful"
+            },
+            "cancel": "Cancel",
+            "upload": {
+                "add": "Add Plugin",
+                "selectPluginZip": "Select the zipped plugin file",
+                "uploadModal": "Upload a zipped plugin file",
+                "uploadModalHint": "Upload a new or an existing plugin. If the uploaded zipped plugin is already existing in TeddyCloud, it will be overwritten.",
+                "errorUploadingPlugin": "Upload of new plugin failed",
+                "errorUploadingPluginDetails": "Upload of new plugin \"{{filename}}\" failed: ",
+                "successUploadingPlugin": "Upload of new plugin successful",
+                "successUploadingPluginDetails": "Upload of new plugin \"{{filename}}\" was successful",
+                "warningUploadingPlugin": "Please select a file",
+                "warningUploadingPluginDetails": "Please select a zipped plugin file before hitting \"Add Plugin\""
+            }
+        },
         "title": "Community",
         "translations": {
             "allTranslationStrings": "All Translation strings",

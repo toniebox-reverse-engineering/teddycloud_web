@@ -177,7 +177,7 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
     };
 
     return (
-        <StyledHeaderComponent>
+        <StyledHeaderComponent id="teddycloud-header">
             <Link to="/" style={{ color: "white" }}>
                 <StyledLeftPart>
                     <StyledLogo src={logoImg} />

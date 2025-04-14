@@ -3,6 +3,7 @@ import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
 import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
+import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
 import { generateUUID } from "./utils/helpers";
 
 interface TeddyCloudContextType {
@@ -28,6 +29,9 @@ interface TeddyCloudContextType {
     setSubNavOpen: (show: boolean) => void;
     currentTCSection: string;
     setCurrentTCSection: (section: string) => void;
+    plugins: PluginMeta[];
+    getPluginMeta: (pluginId: string) => PluginMeta | undefined;
+    fetchPlugins: () => void;
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
@@ -47,6 +51,9 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     setSubNavOpen: () => {},
     currentTCSection: "",
     setCurrentTCSection: () => {},
+    plugins: [],
+    getPluginMeta: () => undefined,
+    fetchPlugins: () => {},
 });
 
 interface TeddyCloudProviderProps {
@@ -158,6 +165,53 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
     const unconfirmedCount = notifications.filter((notification) => !notification.flagConfirmed).length;
 
+    const [plugins, setPlugins] = useState<PluginMeta[]>([]);
+
+    const fetchPlugins = async () => {
+        try {
+            // @Todo: Add real apicall to get folders
+            const pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio"];
+            const loadedPlugins: PluginMeta[] = [];
+
+            for (const folder of pluginFolders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
+                try {
+                    const res = await fetch(`/web/plugins/${folder}/plugin.json`);
+                    if (!res.ok) throw new Error(`Failed to fetch plugin: ${folder}`);
+                    const meta = await res.json();
+
+                    if (!meta.pluginName) {
+                        console.warn(`Skipping "${folder}" — missing pluginName.`);
+                        continue;
+                    }
+
+                    loadedPlugins.push({
+                        pluginId: folder,
+                        pluginName: meta.pluginName,
+                        author: meta.author || "Unknown",
+                        version: meta.version || "0.0.1",
+                        description: meta.description || "",
+                        pluginHomepage: meta.pluginHomepage,
+                        teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)
+                            ? meta.teddyCloudSection
+                            : null,
+                    });
+                } catch (err) {
+                    console.warn(`Error loading plugin "${folder}":`, err);
+                }
+            }
+
+            setPlugins(loadedPlugins);
+        } catch (error) {
+            console.error("Error loading plugins:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPlugins();
+    }, []);
+
+    const getPluginMeta = (pluginId: string) => plugins.find((p) => p.pluginId === pluginId);
+
     return (
         <TeddyCloudContext.Provider
             value={{
@@ -177,6 +231,9 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 setSubNavOpen,
                 currentTCSection,
                 setCurrentTCSection,
+                plugins,
+                getPluginMeta,
+                fetchPlugins,
             }}
         >
             {children}

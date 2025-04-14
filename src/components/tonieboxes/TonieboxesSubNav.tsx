@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { MenuProps } from "antd";
 import {
+    CodeSandboxOutlined,
     DeliveredProcedureOutlined,
     InfoCircleOutlined,
     MinusOutlined,
@@ -16,16 +17,36 @@ import i18n from "../../i18n";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { StyledSubMenu } from "../StyledComponents";
 import { TonieboxIcon } from "../utils/TonieboxIcon";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const TonieboxesSubNav = () => {
     const { t } = useTranslation();
-    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
+    const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const currentLanguage = i18n.language;
     useEffect(() => {
         setCurrentTCSection(t("tonieboxes.navigationTitle"));
     }, [openKeys, currentLanguage]);
+
+    const pluginItems = plugins
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Tonieboxes)
+        .map((plugin) => ({
+            key: `plugin-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/tonieboxes/plugin/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(CodeSandboxOutlined),
+            title: plugin.pluginName,
+        }));
 
     const updateOpenKeys = (pathname: string) => {
         const newKeys: string[] = [];
@@ -233,6 +254,7 @@ export const TonieboxesSubNav = () => {
                 },
             ],
         },
+        ...pluginItems,
     ];
 
     return (
