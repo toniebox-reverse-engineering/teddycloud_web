@@ -103,7 +103,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                         : [0];
                 setSongTracks(trackSeconds);
             } else {
-                setSongTracks([0]);
+                setSongTracks([]);
                 setTonieCardOrTAFRecord(undefined);
             }
 
