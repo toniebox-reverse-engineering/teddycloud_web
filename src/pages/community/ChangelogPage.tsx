@@ -25,6 +25,7 @@ export const ChangelogPage = () => {
                 "gui: Improved UART hint in Flash guides, check for installed driver",
                 "gui: Added altUrl-Patches in CC3200 Flash guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/215",
                 "gui: Added TeddyStudio for creating Traveltonie coin printsheet, based on https://github.com/Raspfarbend/teddystudio by Raspfarbend https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/210",
+                "gui: Added AudioPlayer support for iOS >= 18.4! Apple finally added ogg/opus support! But: No Volume support in AudioPlayer possible https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/144",
                 "gui: Some refactoring",
             ],
             commits: [

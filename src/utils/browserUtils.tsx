@@ -14,6 +14,23 @@ export const supportsOggOpus = () => {
     return canPlay === "probably" || canPlay === "maybe";
 };
 
+export const isIOS = () => {
+    return (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent))
+    );
+};
+
+export const isVolumeControlSupported = (): boolean => {
+    const testAudio = document.createElement("audio");
+    try {
+        testAudio.volume = 0.5;
+        return testAudio.volume === 0.5;
+    } catch (error) {
+        return false;
+    }
+};
+
 export function detectColorScheme() {
     const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const storedTheme = localStorage.getItem("theme");

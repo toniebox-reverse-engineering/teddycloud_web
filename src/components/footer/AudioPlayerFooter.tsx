@@ -20,6 +20,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useAudioContext } from "../audio/AudioContext";
 import TonieInformationModal from "../utils/TonieInformationModal";
 import { getLongestStringByPixelWidth } from "../../utils/helpers";
+import { isIOS } from "../../utils/browserUtils";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
@@ -92,16 +93,18 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [songTracks, songTitle, songArtist]);
 
     useEffect(() => {
-        setCurrentTrackNo(0);
-        setCurrentTitle("");
-    }, [globalAudio?.src]);
+        if (globalAudio?.querySelector("source")) {
+            setCurrentTrackNo(0);
+            setCurrentTitle("");
+        }
+    }, [globalAudio?.querySelector("source")]);
 
     useEffect(() => {
         onVisibilityChange();
-        if (globalAudio?.src && audioPlayerDisplay === "none") {
+        if (globalAudio?.querySelector("source") && audioPlayerDisplay === "none") {
             setAudioPlayerDisplay("flex");
         }
-    }, [audioPlayerDisplay, globalAudio?.src, onVisibilityChange]);
+    }, [audioPlayerDisplay, globalAudio?.querySelector("source"), onVisibilityChange]);
 
     useEffect(() => {
         const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
@@ -177,8 +180,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     const handleClosePlayer = () => {
         closeClosePlayerPopOver();
-        globalAudio.src = "";
-        globalAudio.removeAttribute("src");
+        while (globalAudio.firstChild) {
+            globalAudio.removeChild(globalAudio.firstChild);
+        }
         globalAudio.load();
         setAudioPlayerDisplay("none");
         onVisibilityChange();
@@ -621,29 +625,33 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 ) : (
                     ""
                 )}
-                <div style={control2Style}>
-                    <div style={{ ...styles.controls, position: "relative" }}>
-                        <MutedOutlined
-                            style={{
-                                ...styles.controlButton,
-                                ...styles.volumeIcon,
-                                display: (volume || 0) === 0 ? "block" : "none",
-                            }}
-                            onClick={handleUnMuteClick}
-                        />
-                        <SoundOutlined
-                            style={{
-                                ...styles.controlButton,
-                                ...styles.volumeIcon,
-                                display: (volume || 0) > 0 ? "block" : "none",
-                            }}
-                            onClick={handleMuteClick}
-                        />
-                        <div style={styles.volumeSlider}>
-                            <Slider min={0} max={100} value={volume || 0} onChange={handleVolumeSliderChange} />
+                {!isIOS() ? (
+                    <div style={control2Style}>
+                        <div style={{ ...styles.controls, position: "relative" }}>
+                            <MutedOutlined
+                                style={{
+                                    ...styles.controlButton,
+                                    ...styles.volumeIcon,
+                                    display: (volume || 0) === 0 ? "block" : "none",
+                                }}
+                                onClick={handleUnMuteClick}
+                            />
+                            <SoundOutlined
+                                style={{
+                                    ...styles.controlButton,
+                                    ...styles.volumeIcon,
+                                    display: (volume || 0) > 0 ? "block" : "none",
+                                }}
+                                onClick={handleMuteClick}
+                            />
+                            <div style={styles.volumeSlider}>
+                                <Slider min={0} max={100} value={volume || 0} onChange={handleVolumeSliderChange} />
+                            </div>
                         </div>
                     </div>
-                </div>
+                ) : (
+                    ""
+                )}
             </span>
         </>
     ) : (
@@ -656,10 +664,10 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 style={{
                     ...styles.container,
                     display: audioPlayerDisplay,
-                    visibility: !globalAudio?.src ? "hidden" : "visible",
-                    height: !globalAudio?.src ? "0" : "auto",
-                    margin: !globalAudio?.src ? "-24px" : "0",
-                    marginBottom: !globalAudio?.src ? "0" : "8px",
+                    visibility: !globalAudio?.querySelector("source") ? "hidden" : "visible",
+                    height: !globalAudio?.querySelector("source") ? "0" : "auto",
+                    margin: !globalAudio?.querySelector("source") ? "-24px" : "0",
+                    marginBottom: !globalAudio?.querySelector("source") ? "0" : "8px",
                     overflow: "hidden",
                 }}
             >
