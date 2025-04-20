@@ -39,8 +39,8 @@ export const CommunitySubNav = () => {
         if (pathname.includes("/contribution")) {
             newKeys.push("contribution");
         }
-        if (pathname.includes("/plugins")) {
-            newKeys.push("plugins");
+        if (pathname.includes("/tcplugins")) {
+            newKeys.push("tcplugins");
         }
         setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
     };
