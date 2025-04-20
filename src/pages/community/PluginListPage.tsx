@@ -278,11 +278,6 @@ export const PluginListPage = () => {
                                     hoverable={false}
                                     size="small"
                                     key={plugin.pluginId}
-                                    styles={{
-                                        header: {
-                                            padding: "20px 4px 0 4px",
-                                        },
-                                    }}
                                     style={{
                                         paddingLeft: 8,
                                         paddingRight: 8,
@@ -294,12 +289,6 @@ export const PluginListPage = () => {
                                         flexDirection: "column",
                                         justifyContent: "space-between",
                                     }}
-                                    cover=<img
-                                        style={{ maxHeight: 180, width: "auto" }}
-                                        alt={`${plugin.pluginName} preview`}
-                                        src={`/web/plugins/${plugin.pluginId}/preview.png`}
-                                        onError={(e) => (e.currentTarget.style.display = "none")}
-                                    />
                                     title={
                                         <div
                                             style={{
@@ -350,6 +339,18 @@ export const PluginListPage = () => {
                                         </Tooltip>,
                                     ]}
                                 >
+                                    <img
+                                        style={{
+                                            maxHeight: 180,
+                                            maxWidth: "100%",
+                                            width: "auto",
+                                            height: "auto",
+                                            borderRadius: 0,
+                                        }}
+                                        alt={`${plugin.pluginName} preview`}
+                                        src={`/web/plugins/${plugin.pluginId}/preview.png`}
+                                        onError={(e) => (e.currentTarget.style.display = "none")}
+                                    />
                                     <Paragraph type="secondary" style={{ marginBottom: 8 }}>
                                         {plugin.author && `${t("community.plugins.by")} ${plugin.author}`}
                                         {plugin.version && ` - v${plugin.version}`}
