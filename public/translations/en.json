@@ -154,7 +154,7 @@
             "help": {
                 "popoverTitle": "Plugin Help",
                 "title": "Plugin Folder Structure & Requirements",
-                "intro": "To make your plugin discoverable and listed in the Community navigation, it must follow this structure and include a valid index.html and plugin.json file.",
+                "intro": "To make your plugin discoverable and listed in the Community navigation, it must follow this structure and include a valid index.html and plugin.json file. An optional preview.png will be shown as an image in the plugins card.",
                 "folderStructureTitle": "Plugin Folder Structure:",
                 "descriptionTitle": "plugin.json — Required Metadata",
                 "descriptionIntro": "Every plugin must include a plugin.json file in its root. This file describes the plugin and allows it to be displayed properly in the UI.",
@@ -169,7 +169,7 @@
                     "teddyCloudSection": "Desired section where plugin shall be added to navigation (valid values:  home, tonies, tonieboxes, settings, community)"
                 },
                 "exampleFolderTitle": "Example Folder:",
-                "descriptionExampleTitle": "description.json for example above:"
+                "descriptionExampleTitle": "plugin.json for example above:"
             },
             "open": "Open Plugin",
             "delete": "Delete",

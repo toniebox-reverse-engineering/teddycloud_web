@@ -199,8 +199,8 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                     loadedPlugins.push({
                         pluginId: folder,
                         pluginName: meta.pluginName,
-                        author: meta.author || "Unknown",
-                        version: meta.version || "0.0.1",
+                        author: meta.author || "",
+                        version: meta.version || "",
                         description: meta.description || "",
                         pluginHomepage: meta.pluginHomepage,
                         teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)

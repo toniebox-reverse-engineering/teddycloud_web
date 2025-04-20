@@ -48,10 +48,10 @@ export const CommunitySubNav = () => {
     const { plugins } = useTeddyCloud();
 
     const pluginItems = plugins.map((plugin) => ({
-        key: `plugins-${plugin.pluginId}`,
+        key: `tcplugins-${plugin.pluginId}`,
         label: (
             <Link
-                to={`/community/plugins/${plugin.pluginId}`}
+                to={`/community/tcplugins/${plugin.pluginId}`}
                 onClick={() => {
                     setNavOpen(false);
                     setSubNavOpen(false);
@@ -124,10 +124,10 @@ export const CommunitySubNav = () => {
             title: t("community.navigationTitle"),
         },
         {
-            key: "plugins",
+            key: "tcplugins",
             label: (
                 <Link
-                    to="/community/plugins"
+                    to="/community/tcplugins"
                     style={{ color: "currentColor", display: "flex", alignItems: "center", padding: "0 50px 0 0" }}
                     onClick={() => {
                         setNavOpen(false);
@@ -138,7 +138,7 @@ export const CommunitySubNav = () => {
                 </Link>
             ),
             icon: React.createElement(AppstoreOutlined),
-            title: t("community.plugin.navigationTitle"),
+            title: t("community.plugins.navigationTitle"),
             children: pluginItems,
         },
         {

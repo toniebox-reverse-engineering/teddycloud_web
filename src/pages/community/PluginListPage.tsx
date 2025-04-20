@@ -51,6 +51,7 @@ export const PluginListPage = () => {
                 code={`your-plugin-name/
     ├── plugin.json
     ├── index.html
+    ├── preview.png
     └── (other plugin files)`}
             />
 
@@ -288,6 +289,12 @@ export const PluginListPage = () => {
                                         flexDirection: "column",
                                         justifyContent: "space-between",
                                     }}
+                                    cover=<img
+                                        style={{ maxHeight: 180, width: "auto" }}
+                                        alt={`${plugin.pluginName} preview`}
+                                        src={`/web/plugins/${plugin.pluginId}/preview.png`}
+                                        onError={(e) => (e.currentTarget.style.display = "none")}
+                                    />
                                     title={
                                         <div
                                             style={{

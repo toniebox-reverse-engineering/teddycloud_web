@@ -162,8 +162,8 @@ function App() {
                                         <Route path="/settings/notifications" element={<NotificationsListPage />} />
                                         <Route path="/settings/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/community" element={<CommunityPage />} />
-                                        <Route path="/community/plugins" element={<PluginListPage />} />
-                                        <Route path="/community/plugins/:pluginId" element={<PluginPage />} />
+                                        <Route path="/community/tcplugins" element={<PluginListPage />} />
+                                        <Route path="/community/tcplugins/:pluginId" element={<PluginPage />} />
                                         <Route path="/community/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/community/faq" element={<FAQPage />} />
                                         <Route
