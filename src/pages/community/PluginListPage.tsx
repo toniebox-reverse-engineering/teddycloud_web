@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Card, List, message, Modal, theme, Tooltip, Typography, Upload } from "antd";
+import { Badge, Button, Card, List, Modal, theme, Tooltip, Typography, Upload } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
@@ -278,6 +278,11 @@ export const PluginListPage = () => {
                                     hoverable={false}
                                     size="small"
                                     key={plugin.pluginId}
+                                    styles={{
+                                        header: {
+                                            padding: "20px 4px 0 4px",
+                                        },
+                                    }}
                                     style={{
                                         paddingLeft: 8,
                                         paddingRight: 8,
@@ -306,7 +311,6 @@ export const PluginListPage = () => {
                                             {plugin.teddyCloudSection ? (
                                                 <Badge.Ribbon
                                                     placement="start"
-                                                    color="grey"
                                                     text={plugin.teddyCloudSection}
                                                     style={{ marginLeft: 8 }}
                                                 >
