@@ -17,6 +17,7 @@ export const ChangelogPage = () => {
                 "Stabilization backend",
                 "Fixed error activating RTNL when using TeddyCloud behind a reverse proxy https://github.com/toniebox-reverse-engineering/teddycloud/issues/291",
                 "Fixed error failed to read incomplete http response header https://github.com/toniebox-reverse-engineering/teddycloud/issues/326",
+                "Added TeddyCloud plugin APIs and new volume plugins fur custom Teddycloud plugins https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
                 "gui: Changed Radio Browser API Url, try to get a working url from all servers list",
                 "gui: Added tonieboxes tab to homepage, user can now choose if he want to see his tonies or tonieboxes. Setting is stored locally.",
                 "gui: Added more country flags and languages to tonies list (filter + flags on Toniecard) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/217",
@@ -26,6 +27,7 @@ export const ChangelogPage = () => {
                 "gui: Added altUrl-Patches in CC3200 Flash guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/215",
                 "gui: Added TeddyStudio for creating Traveltonie coin printsheet, based on https://github.com/Raspfarbend/teddystudio by Raspfarbend https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/210",
                 "gui: Added AudioPlayer support for iOS >= 18.4! Apple finally added ogg/opus support! But: No Volume support in AudioPlayer possible https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/144",
+                "gui: Added support of new TeddyCloud Plugin feature https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
                 "gui: Some refactoring",
             ],
             commits: [
