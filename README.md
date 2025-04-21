@@ -69,6 +69,12 @@ If you just need the http variant, simply call `dotenv -e .env.development.local
 
 There are no complete guidelines defined currently, only some fragments which you shall read and follow.
 
+### Keep changelog up to date
+
+Please keep the changelog up to date. Please add your changes (and link to the related github issue if available) in the changelog here: ChangelogPage.tsx. If you are the first one after a release of a new version, please add a new version block in the inline changelog array.
+
+As this current changelog implementation is "special", feel free to introduce a better solution for it.
+
 ### Design framework
 
 We are using the AntD framework. If you add anything new, try to use AntD components. AntD provides also a wide range of Icons.
