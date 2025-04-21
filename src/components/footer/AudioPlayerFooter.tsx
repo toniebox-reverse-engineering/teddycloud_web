@@ -349,21 +349,34 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [currentTrackTitle, songTitle, songArtist, songImage, songTracks, globalAudio]);
 
     useEffect(() => {
-        if (navigator.mediaSession && globalAudio) {
-            const duration = globalAudio.duration || 0;
-            const position = globalAudio.currentTime || 0;
-            const playbackRate = globalAudio.playbackRate || 1;
-            if (duration < position) return;
-            try {
-                navigator.mediaSession.setPositionState({
-                    duration: duration,
-                    position: position,
-                    playbackRate: playbackRate,
-                });
-            } catch (e) {
-                console.error("Error setting media session position state:", e);
+        const updatePositionState = () => {
+            if (
+                navigator.mediaSession &&
+                globalAudio &&
+                !isNaN(globalAudio.duration) &&
+                globalAudio.duration >= globalAudio.currentTime
+            ) {
+                try {
+                    navigator.mediaSession.setPositionState({
+                        duration: globalAudio.duration,
+                        position: globalAudio.currentTime,
+                        playbackRate: globalAudio.playbackRate,
+                    });
+                } catch (e) {
+                    console.error("Failed to update position state", e);
+                }
             }
+        };
+
+        if (globalAudio) {
+            globalAudio.ontimeupdate = updatePositionState;
         }
+
+        return () => {
+            if (globalAudio) {
+                globalAudio.ontimeupdate = null;
+            }
+        };
     }, [globalAudio]);
 
     // rearrange player for mobile / tablet
