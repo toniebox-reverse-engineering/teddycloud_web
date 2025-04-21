@@ -287,6 +287,7 @@ export const PluginListPage = () => {
                                         color="grey"
                                         size="small"
                                         offset={[-8, 4]}
+                                        key={section}
                                     >
                                         <Tag.CheckableTag
                                             key={section}
