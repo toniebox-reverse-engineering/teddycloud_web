@@ -28,6 +28,7 @@ export const ChangelogPage = () => {
                 "gui: Added TeddyStudio for creating Traveltonie coin printsheet, based on https://github.com/Raspfarbend/teddystudio by Raspfarbend https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/210",
                 "gui: Added AudioPlayer support for iOS >= 18.4! Apple finally added ogg/opus support! But: No Volume support in AudioPlayer possible https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/144",
                 "gui: Added support of new TeddyCloud Plugin feature https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
+                "gui: Fixed bug in media playback position on lock screen https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/166",
                 "gui: Some refactoring",
             ],
             commits: [
