@@ -181,13 +181,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 if (!response.ok) throw new Error(response.statusText);
             } catch (error) {
                 pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio"];
-                addNotification(
-                    NotificationTypeEnum.Warning,
-                    "Fetching plugins using API failed",
-                    "Using fallback plugin list due to an error (API most probably not available yet).",
-                    "TeddyCloudContext",
-                    true
-                );
+                console.warn("Using fallback plugin list due to an error (API most probably not available yet).");
             }
 
             const loadedPlugins: PluginMeta[] = [];
