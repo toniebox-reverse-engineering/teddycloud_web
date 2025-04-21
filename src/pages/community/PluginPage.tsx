@@ -1,7 +1,7 @@
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
-import { Alert, Typography } from "antd";
+import { Alert, Typography, theme } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
@@ -14,9 +14,12 @@ import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 const { Paragraph } = Typography;
+const { useToken } = theme;
+
 export const PluginPage = () => {
     const { pluginId } = useParams<{ pluginId: string }>();
     const { t } = useTranslation();
+    const { token } = useToken();
 
     const { addNotification } = useTeddyCloud();
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -105,8 +108,8 @@ export const PluginPage = () => {
                 #teddycloud-header, #teddycloud-footer, .additional-footer-padding {
                     display: none !important;
                 }
-                body {
-                    background-color: unset !important;
+                .App {
+                    background-color: ${token.colorBgElevated} !important;
                 }
                 .ant-layout {
                     background: unset;                    
@@ -160,6 +163,7 @@ export const PluginPage = () => {
                             border: 0,
                             overflow: "hidden",
                         }}
+                        allow="fullscreen"
                     />
                 </StyledContent>
             </StyledLayout>

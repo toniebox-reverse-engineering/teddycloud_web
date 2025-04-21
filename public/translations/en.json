@@ -148,6 +148,9 @@
             "addButtonTooltip": "Click here to add new Plugins or update existing plugins",
             "available": "Available Plugins",
             "by": "by",
+            "filter": {
+                "unknown": "Section unset"
+            },
             "visitHomepage": "Visit Plugins Homepage",
             "empty": "No plugin available",
             "plugin": "Plugin",

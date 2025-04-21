@@ -46,8 +46,10 @@ const NotificationsList = () => {
             const matchesDate =
                 (!dateRange[0] || notification.date >= dateRange[0]) &&
                 (!dateRange[1] || notification.date <= dateRange[1]);
-            const matchesTitle = notification.title.toLowerCase().includes(titleFilter.toLowerCase());
-            const matchesDescription = notification.description.toLowerCase().includes(descriptionFilter.toLowerCase());
+            const matchesTitle = notification.title?.toLowerCase().includes(titleFilter.toLowerCase());
+            const matchesDescription = notification.description
+                ?.toLowerCase()
+                .includes(descriptionFilter.toLowerCase());
             const matchesType = typeFilter.length === 0 || typeFilter.includes(notification.type);
             const matchesContext = contextFilter.length === 0 || contextFilter.includes(notification.context);
             const matchesStatus =
@@ -92,7 +94,7 @@ const NotificationsList = () => {
             render: (text: NotificationType) => (
                 <div style={{ display: "flex", gap: 8 }}>
                     {isMobile ? "" : notificationIconMap[text]}
-                    {text.charAt(0).toUpperCase() + text.slice(1)}
+                    {text.charAt(0)?.toUpperCase() + text.slice(1)}
                 </div>
             ),
             sorter: (a: NotificationRecord, b: NotificationRecord) => a.type.localeCompare(b.type),

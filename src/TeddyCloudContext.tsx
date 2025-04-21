@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, Se
 import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
-import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
+import { NotificationRecord, NotificationType, NotificationTypeEnum } from "./types/teddyCloudNotificationTypes";
 import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
 import { generateUUID } from "./utils/helpers";
 import { TeddyCloudApi } from "./api";
@@ -181,6 +181,13 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 if (!response.ok) throw new Error(response.statusText);
             } catch (error) {
                 pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio"];
+                addNotification(
+                    NotificationTypeEnum.Warning,
+                    "Fetching plugins using API failed",
+                    "Using fallback plugin list due to an error (API most probably not available yet).",
+                    "TeddyCloudContext",
+                    true
+                );
             }
 
             const loadedPlugins: PluginMeta[] = [];
@@ -193,6 +200,13 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
                     if (!meta.pluginName) {
                         console.warn(`Skipping "${folder}" — missing pluginName.`);
+                        addNotification(
+                            NotificationTypeEnum.Warning,
+                            `Fetching entry pluginName in plugin.json for  "${folder}" failed`,
+                            `Fetching entry pluginName in plugin.json for  "${folder}" failed, so we skip that plugin`,
+                            "TeddyCloudContext",
+                            true
+                        );
                         continue;
                     }
 
@@ -208,12 +222,25 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                             : null,
                     });
                 } catch (err) {
-                    console.warn(`Error loading plugin "${folder}":`, err);
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        `Fetching plugin.json for  "${folder}" failed`,
+                        `Fetching plugin.json for  "${folder}" failed, so we skip that plugin`,
+                        "TeddyCloudContext",
+                        false
+                    );
                 }
             }
 
             setPlugins(loadedPlugins);
         } catch (error) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                "Loading plugins failed",
+                "Loading plugins failed" + error,
+                "TeddyCloudContext",
+                false
+            );
             console.error("Error loading plugins:", error);
         }
     };

@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Card, List, Modal, theme, Tooltip, Typography, Upload } from "antd";
+import { Badge, Button, Card, List, Modal, theme, Tooltip, Typography, Upload, Tag } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     AppstoreAddOutlined,
     DeleteOutlined,
@@ -39,6 +39,16 @@ export const PluginListPage = () => {
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+    const allSections = Array.from(
+        new Set(plugins.map((p) => p.teddyCloudSection || t("community.plugins.filter.unknown")))
+    );
+
+    const [activeSectionFilters, setActiveSectionFilters] = useState<string[]>(allSections);
+
+    useEffect(() => {
+        setActiveSectionFilters(allSections);
+    }, [plugins]);
 
     const contentHelpModal = (
         <Paragraph>
@@ -232,6 +242,12 @@ export const PluginListPage = () => {
         />
     );
 
+    const pluginCountBySection = plugins.reduce<Record<string, number>>((acc, plugin) => {
+        const section = plugin.teddyCloudSection || t("community.plugins.filter.unknown");
+        acc[section] = (acc[section] || 0) + 1;
+        return acc;
+    }, {});
+
     return (
         <>
             <StyledSider>
@@ -262,17 +278,45 @@ export const PluginListPage = () => {
                     </div>
                     <Paragraph>
                         <h2>{t("community.plugins.installedPlugins")}</h2>
+                        <div style={{ marginBottom: 16, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                            {allSections.map((section) => {
+                                const isChecked = activeSectionFilters.includes(section);
+                                return (
+                                    <Badge
+                                        count={pluginCountBySection[section] || 0}
+                                        color="grey"
+                                        size="small"
+                                        offset={[-8, 4]}
+                                    >
+                                        <Tag.CheckableTag
+                                            key={section}
+                                            checked={isChecked}
+                                            onChange={(checked) => {
+                                                setActiveSectionFilters((prev) =>
+                                                    checked ? [...prev, section] : prev.filter((s) => s !== section)
+                                                );
+                                            }}
+                                        >
+                                            <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
+                                        </Tag.CheckableTag>
+                                    </Badge>
+                                );
+                            })}
+                        </div>
                         <List
                             grid={{
                                 gutter: 16,
                                 xs: 1,
                                 sm: 2,
                                 md: 2,
-                                lg: 2,
-                                xl: 2,
-                                xxl: 2,
+                                lg: 3,
+                                xl: 3,
+                                xxl: 4,
                             }}
-                            dataSource={plugins}
+                            dataSource={plugins.filter((plugin) => {
+                                const section = plugin.teddyCloudSection || t("community.plugins.filter.unknown");
+                                return activeSectionFilters.includes(section);
+                            })}
                             renderItem={(plugin) => (
                                 <Card
                                     hoverable={false}
@@ -300,7 +344,10 @@ export const PluginListPage = () => {
                                             {plugin.teddyCloudSection ? (
                                                 <Badge.Ribbon
                                                     placement="start"
-                                                    text={plugin.teddyCloudSection}
+                                                    text={
+                                                        plugin.teddyCloudSection.charAt(0).toUpperCase() +
+                                                        plugin.teddyCloudSection.slice(1)
+                                                    }
                                                     style={{ marginLeft: 8 }}
                                                 >
                                                     <div style={{ marginTop: 28, marginLeft: 16 }}>
