@@ -13,6 +13,8 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
     setFetchCloudStatus: Dispatch<SetStateAction<boolean>>;
+    toniesCloudAvailable: boolean;
+    setToniesCloudAvailable: (cloudEnabled: boolean) => void;
     notifications: NotificationRecord[];
     addNotification: (
         type: NotificationType,
@@ -41,6 +43,8 @@ interface TeddyCloudContextType {
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
     fetchCloudStatus: false,
     setFetchCloudStatus: () => {},
+    toniesCloudAvailable: false,
+    setToniesCloudAvailable: () => {},
     notifications: [],
     addNotification: () => {},
     addLoadingNotification: () => {},
@@ -67,6 +71,8 @@ interface TeddyCloudProviderProps {
 
 export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProviderProps) {
     const [fetchCloudStatus, setFetchCloudStatus] = useState<boolean>(false);
+    const [toniesCloudAvailable, setToniesCloudAvailable] = useState<boolean>(false);
+
     const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -180,7 +186,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
                 if (!response.ok) throw new Error(response.statusText);
             } catch (error) {
-                pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio"];
+                pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio", "teddycloudRepos"];
                 console.warn("Using fallback plugin list due to an error (API most probably not available yet).");
             }
 
@@ -250,6 +256,8 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             value={{
                 fetchCloudStatus,
                 setFetchCloudStatus,
+                toniesCloudAvailable,
+                setToniesCloudAvailable,
                 notifications,
                 addNotification,
                 addLoadingNotification,

@@ -1543,6 +1543,7 @@
         }
     },
     "tonies": {
+        "connectionToBoxineNotAvailable": "Verbindung zu Boxine/Toniecloud nicht möglich. Bitte erlaube den Zugriff, um den Download zu ermöglichen.",
         "noPlayableContentHint": "Es ist kein Inhalt zum Abspielen verfügbar. Entweder ist er nicht zugewiesen oder es fehlen Daten von der Tonies/Boxine-Cloud. Stelle die Figur auf die Box, um dies zu beheben.",
         "addNewCustomTonie": "Neues Modell anlegen",
         "addNewCustomTonieHint": "Lege ein neues Modell an und weise es dem aktuellen Tag zu",

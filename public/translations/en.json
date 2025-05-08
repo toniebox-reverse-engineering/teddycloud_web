@@ -1615,6 +1615,7 @@
         }
     },
     "tonies": {
+        "connectionToBoxineNotAvailable": "Unable to connect to Boxine/Toniecloud. Please enable access to allow downloading.",
         "noPlayableContentHint": "There is no content available to play. Either it's not assigned or data is missing from the Boxine/Tonies cloud. Place the figurine on the box to fix this.",
         "addNewCustomTonie": "Create new model",
         "addNewCustomTonieHint": "Create a new model and assign it to the current tag",

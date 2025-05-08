@@ -12,6 +12,7 @@ import {
     RetweetOutlined,
     RollbackOutlined,
     SaveFilled,
+    StopOutlined,
 } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -46,7 +47,8 @@ export const TonieCard: React.FC<{
 }> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", showSourceInfo = true, onHide, onUpdate }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const { addNotification, addLoadingNotification, closeLoadingNotification, toniesCloudAvailable } = useTeddyCloud();
+
     const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [keyRadioStreamSearch, setKeyRadioStreamSearch] = useState(0);
     const [keyTonieArticleSearch, setKeyTonieArticleSearch] = useState(0);
@@ -618,7 +620,23 @@ export const TonieCard: React.FC<{
                       }
                   />
               ) : downloadTriggerUrl && downloadTriggerUrl.length > 0 ? (
-                  <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
+                  !toniesCloudAvailable ? (
+                      <Tooltip title={t("tonies.connectionToBoxineNotAvailable")}>
+                          <div style={{ position: "relative", display: "inline-block" }}>
+                              <StopOutlined
+                                  style={{
+                                      position: "absolute",
+                                      top: 4,
+                                      left: 0,
+                                      color: token.colorError,
+                                  }}
+                              />
+                              <DownloadOutlined />
+                          </div>
+                      </Tooltip>
+                  ) : (
+                      <DownloadOutlined onClick={handleBackgroundDownload} />
+                  )
               ) : (
                   <Tooltip placement="top" title={t("tonies.noPlayableContentHint")}>
                       <PlayCircleOutlined
