@@ -70,7 +70,7 @@ export const EncoderPage = () => {
             const newPath = pathFromNodeId(rootTreeNode.id);
 
             // Simulate an API call to fetch children
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     var list: any[] = data.files;
@@ -255,7 +255,7 @@ export const EncoderPage = () => {
     const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
         new Promise((resolve, reject) => {
             const newPath = pathFromNodeId(id);
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     let list: any[] = data.files;

@@ -112,7 +112,7 @@ export const FileBrowser: React.FC<{
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const initialPath = queryParams.get("path") || "";
-    const [path, setPath] = useState(initialPath);
+    const [path, setPath] = useState(initialPath.split("/").map(encodeURIComponent).join("/"));
 
     const [files, setFiles] = useState<any[]>([]);
     const [rebuildList, setRebuildList] = useState<boolean>(false);
@@ -185,7 +185,7 @@ export const FileBrowser: React.FC<{
         const preLoadTreeData = async () => {
             const newPath = getPathFromNodeId(rootTreeNode.id);
 
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     var list: any[] = data.files;
@@ -212,7 +212,7 @@ export const FileBrowser: React.FC<{
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const initialPath = queryParams.get("path") || "";
-        setPath(initialPath);
+        setPath(initialPath.split("/").map(encodeURIComponent).join("/"));
     }, []);
 
     useEffect(() => {
@@ -307,13 +307,12 @@ export const FileBrowser: React.FC<{
                 key: "/",
             },
         ];
-
         pathArray.forEach((segment, index) => {
-            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
+            const segmentPath = `${pathArray.slice(0, index + 1).join("/")}`;
             breadcrumbItems.push({
                 title: (
                     <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
-                        {segment}
+                        {decodeURIComponent(segment)}
                     </span>
                 ),
                 key: segmentPath,
@@ -327,7 +326,7 @@ export const FileBrowser: React.FC<{
     const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
         new Promise((resolve, reject) => {
             const newPath = getPathFromNodeId(id);
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     let list: any[] = data.files;
@@ -539,7 +538,7 @@ export const FileBrowser: React.FC<{
     const showDeleteConfirmDialog = (fileName: string, path: string, apiCall: string) => {
         setFilterFieldAutoFocus(false);
         setFileToDelete(fileName);
-        setDeletePath(path);
+        setDeletePath(decodeURIComponent(path));
         setDeleteApiCall(apiCall);
         setIsConfirmDeleteModalOpen(true);
     };
@@ -566,7 +565,7 @@ export const FileBrowser: React.FC<{
             for (const rowName of selectedRowKeys) {
                 const file = (files as Record[]).find((file) => file.name === rowName);
                 if (file) {
-                    const deletePath = path + "/" + file.name;
+                    const deletePath = decodeURIComponent(path) + "/" + file.name;
                     const deleteApiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
                     await deleteFile(deletePath, deleteApiCall, true);
                 }
@@ -608,7 +607,7 @@ export const FileBrowser: React.FC<{
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("fileBrowser.messages.deleteSuccessful"),
-                    t("fileBrowser.messages.deleteSuccessfulDetails", { file: deletePath }),
+                    t("fileBrowser.messages.deleteSuccessfulDetails", { file: deletePath.split("/").slice(-1) }),
                     t("fileBrowser.title")
                 );
                 const idToRemove = findNodeIdByFullPath(deletePath + "/", treeData);
@@ -622,7 +621,9 @@ export const FileBrowser: React.FC<{
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("fileBrowser.messages.deleteFailed"),
-                    `${t("fileBrowser.messages.deleteFailedDetails", { file: deletePath })}: ${data}`,
+                    `${t("fileBrowser.messages.deleteFailedDetails", {
+                        file: deletePath.split("/").slice(-1),
+                    })}: ${data}`,
                     t("fileBrowser.title")
                 );
             }
@@ -631,7 +632,7 @@ export const FileBrowser: React.FC<{
             addNotification(
                 NotificationTypeEnum.Error,
                 t("fileBrowser.messages.deleteFailed"),
-                `${t("fileBrowser.messages.deleteFailedDetails", { file: deletePath })}: ${error}`,
+                `${t("fileBrowser.messages.deleteFailedDetails", { file: deletePath.split("/").slice(-1) })}: ${error}`,
                 t("fileBrowser.title")
             );
         }
@@ -663,7 +664,7 @@ export const FileBrowser: React.FC<{
         try {
             api.apiPostTeddyCloudRaw(
                 `/api/dirCreate?special=library`,
-                createDirectoryPath + "/" + inputValueCreateDirectory
+                decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory
             )
                 .then((response) => {
                     return response.text();
@@ -697,7 +698,7 @@ export const FileBrowser: React.FC<{
                         NotificationTypeEnum.Success,
                         t("fileBrowser.createDirectory.directoryCreated"),
                         t("fileBrowser.createDirectory.directoryCreatedDetails", {
-                            directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                            directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
                         }),
                         t("fileBrowser.title")
                     );
@@ -710,7 +711,7 @@ export const FileBrowser: React.FC<{
                         NotificationTypeEnum.Error,
                         t("fileBrowser.createDirectory.directoryCreateFailed"),
                         t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
-                            directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                            directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
                         }) + error,
                         t("fileBrowser.title")
                     );
@@ -720,7 +721,7 @@ export const FileBrowser: React.FC<{
                 NotificationTypeEnum.Error,
                 t("fileBrowser.createDirectory.directoryCreateFailed"),
                 t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
-                    directory: createDirectoryPath + "/" + inputValueCreateDirectory,
+                    directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
                 }) + error,
                 t("fileBrowser.title")
             );
@@ -742,7 +743,10 @@ export const FileBrowser: React.FC<{
             okButtonProps={{ disabled: isCreateDirectoryButtonDisabled }}
         >
             <Typography style={{ marginBottom: 8 }}>
-                {t("fileBrowser.createDirectory.parentPath") + " " + createDirectoryPath + "/"}{" "}
+                {t("fileBrowser.createDirectory.parentPath") +
+                    " " +
+                    createDirectoryPath.split("/").map(decodeURIComponent).join("/") +
+                    "/"}
             </Typography>
             <Form.Item
                 validateStatus={hasNewDirectoryInvalidChars ? "error" : ""}
@@ -787,10 +791,13 @@ export const FileBrowser: React.FC<{
                     NotificationTypeEnum.Success,
                     moving ? t("fileBrowser.messages.movingSuccessful") : t("fileBrowser.messages.renamingSuccessful"),
                     moving
-                        ? t("fileBrowser.messages.movingSuccessfulDetails", { fileSource: source, fileTarget: target })
+                        ? t("fileBrowser.messages.movingSuccessfulDetails", {
+                              fileSource: source.split("/").slice(-1),
+                              fileTarget: target.split("/").slice(0, -1).join("/") + "/",
+                          })
                         : t("fileBrowser.messages.renamingSuccessfulDetails", {
-                              fileSource: source,
-                              fileTarget: target,
+                              fileSource: source.split("/").slice(-1),
+                              fileTarget: target.split("/").slice(-1),
                           }),
                     t("fileBrowser.title")
                 );
@@ -824,7 +831,7 @@ export const FileBrowser: React.FC<{
     };
 
     const handleSingleMove = async (source: string, target: string) => {
-        await moveRenameFile(source + "/" + currentFile, target + "/" + currentFile, true);
+        await moveRenameFile(decodeURIComponent(source) + "/" + currentFile, target + "/" + currentFile, true);
         setRebuildList((prev) => !prev);
         setIsMoveFileModalOpen(false);
         setTreeNodeId(rootTreeNode.id);
@@ -837,7 +844,12 @@ export const FileBrowser: React.FC<{
             for (const rowName of selectedRowKeys) {
                 const file = (files as Record[]).find((file) => file.name === rowName);
                 if (file && !file.isDir) {
-                    await moveRenameFile(source + "/" + file.name, target + "/" + file.name, true, true);
+                    await moveRenameFile(
+                        decodeURIComponent(source) + "/" + file.name,
+                        target + "/" + file.name,
+                        true,
+                        true
+                    );
                 }
             }
             closeLoadingNotification(key);
@@ -886,8 +898,8 @@ export const FileBrowser: React.FC<{
                         borderBottomRightRadius: currentFile ? 0 : "unset",
                     }}
                     disabled
-                    value={path + "/" + (currentFile ? currentFile : "")}
-                    placeholder={path + "/" + (currentFile ? currentFile : "")}
+                    value={decodeURIComponent(path) + "/" + (currentFile ? currentFile : "")}
+                    placeholder={decodeURIComponent(path) + "/" + (currentFile ? currentFile : "")}
                 />
                 <div>{t("fileBrowser.moveFile.moveTo")}</div>
 
@@ -923,7 +935,11 @@ export const FileBrowser: React.FC<{
 
     const handleRename = async (source: string, newFileName: string) => {
         try {
-            await moveRenameFile(source + "/" + currentFile, source + "/" + newFileName, false);
+            await moveRenameFile(
+                decodeURIComponent(source) + "/" + currentFile,
+                decodeURIComponent(source) + "/" + newFileName,
+                false
+            );
             setRebuildList((prev) => !prev);
             setIsRenameFileModalOpen(false);
         } catch (error) {}
@@ -1348,7 +1364,7 @@ export const FileBrowser: React.FC<{
             formData.append(file.name, file.originFileObj);
             try {
                 const response = await api.apiPostTeddyCloudFormDataRaw(
-                    `/api/fileUpload?path=${encodeURIComponent(path)}&special=${special}`,
+                    `/api/fileUpload?path=${path}&special=${special}`,
                     formData
                 );
                 if (response.ok) {
@@ -1518,7 +1534,9 @@ export const FileBrowser: React.FC<{
 
     const handleFileDownload = (record: any) => {
         const fileUrl =
-            encodeURI(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + "/content" + path + "/" + record.name) +
+            encodeURI(
+                import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + "/content" + decodeURIComponent(path) + "/" + record.name
+            ) +
             "?ogg=true&special=" +
             special +
             (overlay ? `&overlay=${overlay}` : "");
@@ -1564,8 +1582,12 @@ export const FileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
+        console.log(dirPath);
         setLoading(true);
-        const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
+        const newPath =
+            dirPath === ".."
+                ? path.split("/").map(decodeURIComponent).slice(0, -1).map(encodeURIComponent).join("/")
+                : [...path.split("/").map(decodeURIComponent), dirPath].map(encodeURIComponent).join("/");
         if (trackUrl) {
             navigate(`?path=${newPath}`);
         }
@@ -1805,7 +1827,7 @@ export const FileBrowser: React.FC<{
                                         encodeURI(
                                             import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
                                                 "/content" +
-                                                path +
+                                                decodeURIComponent(path) +
                                                 "/" +
                                                 record.name
                                         ) +
@@ -1816,7 +1838,7 @@ export const FileBrowser: React.FC<{
                                         {
                                             ...record,
                                             audioUrl:
-                                                encodeURI("/content" + path + "/" + record.name) +
+                                                encodeURI("/content" + decodeURIComponent(path) + "/" + record.name) +
                                                 "?ogg=true&special=" +
                                                 special +
                                                 (overlay ? `&overlay=${overlay}` : ""),
@@ -1875,13 +1897,11 @@ export const FileBrowser: React.FC<{
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() =>
                                     playAudio(
-                                        encodeURI(
-                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                                "/content" +
-                                                path +
-                                                "/" +
-                                                record.name
-                                        ) +
+                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                            "/content" +
+                                            path +
+                                            "/" +
+                                            record.name +
                                             "?special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
