@@ -26,9 +26,12 @@ export const ChangelogPage = () => {
                 "gui: Improved UART hint in Flash guides, check for installed driver",
                 "gui: Added altUrl-Patches in CC3200 Flash guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/215",
                 "gui: Added TeddyStudio for creating Traveltonie coin printsheet, based on https://github.com/Raspfarbend/teddystudio by Raspfarbend https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/210",
-                "gui: Added AudioPlayer support for iOS >= 18.4! Apple finally added ogg/opus support! But: No Volume support in AudioPlayer possible https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/144",
+                "gui: Added AudioPlayer support for iOS >= 18.4! Apple finally added ogg/opus support! But: No Volume support in AudioPlayer possible and still not working in non-local context in library (tonie overview works fine) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/144",
                 "gui: Added support of new TeddyCloud Plugin feature https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
                 "gui: Fixed bug in media playback position on lock screen https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/166",
+                "gui: Fixed bug in browser and directory tree select with & in path https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/225",
+                "gui: Fixed bug with download icon and disabled Boxine/Toniecloud https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/223",
+                "gui: Set allowed files filter in audio encoder drop down https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/222",
                 "gui: Some refactoring",
             ],
             commits: [
