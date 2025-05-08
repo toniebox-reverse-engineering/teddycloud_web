@@ -20,6 +20,7 @@ import { createQueryString } from "../../utils/url";
 import { MAX_FILES } from "../../constants";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -136,7 +137,7 @@ export const EncoderPage = () => {
         const updatedFileList = newFileList.slice(0, MAX_FILES) as MyUploadFile[];
         if (updatedFileList.length === 1 && tafFilename === "") {
             const singleFile = updatedFileList[0];
-            const fileNameWithoutExtension = singleFile.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+            const fileNameWithoutExtension = singleFile.name.replace(/\.[^/.]+$/, "");
             setTafFilename(fileNameWithoutExtension);
         }
         setFileList(updatedFileList);
@@ -229,6 +230,7 @@ export const EncoderPage = () => {
     const props: UploadProps = {
         listType: "picture",
         multiple: true,
+        accept: supportedAudioExtensionsFFMPG.join(","),
         beforeUpload: (file) => {
             const myFile: MyUploadFile = file;
             myFile.file = file;
