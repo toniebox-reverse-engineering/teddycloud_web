@@ -777,8 +777,8 @@ export const FileBrowser: React.FC<{
             key,
             moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
             moving
-                ? t("fileBrowser.messages.movingDetails", { file: source })
-                : t("fileBrowser.messages.renamingDetails", { file: source })
+                ? t("fileBrowser.messages.movingDetails", { file: source.split("/").slice(-1) })
+                : t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) })
         );
         try {
             const moveUrl = `/api/fileMove${"?special=" + special + (overlay ? `&overlay=${overlay}` : "")}`;
@@ -891,16 +891,13 @@ export const FileBrowser: React.FC<{
                 style={{ marginBottom: 16 }}
             />
             <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
-                <Input
-                    type="text"
-                    style={{
-                        borderTopRightRadius: currentFile ? 0 : "unset",
-                        borderBottomRightRadius: currentFile ? 0 : "unset",
-                    }}
-                    disabled
-                    value={decodeURIComponent(path) + "/" + (currentFile ? currentFile : "")}
-                    placeholder={decodeURIComponent(path) + "/" + (currentFile ? currentFile : "")}
-                />
+                <div style={{ marginBottom: 24, padding: 8, background: token.colorBgContainerDisabled }}>
+                    <ul style={{ maxHeight: "calc(1.5em * 5)", overflowY: "auto" }}>
+                        {selectedRowKeys.map((key, index) => (
+                            <li key={index}>{key.toString()}</li>
+                        ))}
+                    </ul>
+                </div>
                 <div>{t("fileBrowser.moveFile.moveTo")}</div>
 
                 <div style={{ display: "flex" }}>
@@ -2023,6 +2020,13 @@ export const FileBrowser: React.FC<{
                 okText={t("fileBrowser.delete")}
                 cancelText={t("fileBrowser.cancel")}
                 content={t("fileBrowser.confirmMultipleDeleteDialog")}
+                contentDetails={
+                    <ul style={{ maxHeight: "calc(1.5em * 5)", overflowY: "auto" }}>
+                        {selectedRowKeys.map((key, index) => (
+                            <li key={index}>{key.toString()}</li>
+                        ))}
+                    </ul>
+                }
                 handleOk={handleConfirmMultipleDelete}
                 handleCancel={handleCancelDelete}
             />
