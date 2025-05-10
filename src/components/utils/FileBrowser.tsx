@@ -893,9 +893,11 @@ export const FileBrowser: React.FC<{
             <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
                 <div style={{ marginBottom: 24, padding: 8, background: token.colorBgContainerDisabled }}>
                     <ul style={{ maxHeight: "calc(1.5em * 5)", overflowY: "auto" }}>
-                        {selectedRowKeys.map((key, index) => (
-                            <li key={index}>{key.toString()}</li>
-                        ))}
+                        {currentFile ? (
+                            <li key="movFile">{currentFile}</li>
+                        ) : (
+                            selectedRowKeys.map((key, index) => <li key={index}>{key.toString()}</li>)
+                        )}
                     </ul>
                 </div>
                 <div>{t("fileBrowser.moveFile.moveTo")}</div>
