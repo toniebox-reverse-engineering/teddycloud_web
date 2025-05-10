@@ -1734,7 +1734,7 @@
             "title": "TeddyStudio",
             "intro": "Recherchez tous les Tonies et étiquettes - à la fois officiels et personnalisés - pour créer votre feuille imprimable de Traveltonies (pièce).",
             "placeholder": "Entrez un terme de recherche !",
-            "diameter": "Diamètre intérieur de la pièce",
+            "diameter": "Diamètre intérieur",
             "textFontSize": "Taille du texte",
             "showLanguageFlag": "Afficher le drapeau de langue",
             "showModelNo": "Imprimer le numéro de modèle",
@@ -1742,7 +1742,17 @@
             "clear": "Effacer la feuille",
             "printPage": "Imprimer la feuille",
             "printSheet": "Votre feuille d'impression",
-            "settings": "Paramètres"
+            "settings": "Paramètres",
+            "round": "Rond",
+            "square": "Carré",
+            "width": "Largeur",
+            "height": "Hauteur",
+            "labelShape": "Forme de l’étiquette",
+            "labelSpacing": "Espacement",
+            "labelSpacingY": "Espacement Y",
+            "labelSpacingX": "Espacement X",
+            "clearSettings": "Effacer",
+            "saveSettings": "Enregistrer"
         },
         "title": "Tonies",
         "tonies": {

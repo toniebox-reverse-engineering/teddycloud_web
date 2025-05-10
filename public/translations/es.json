@@ -1734,7 +1734,7 @@
             "title": "TeddyStudio",
             "intro": "Busca todos los Tonies y etiquetas - tanto los oficiales como los personalizados - para crear tu hoja imprimible de Traveltonies (moneda).",
             "placeholder": "¡Introduce un término de búsqueda!",
-            "diameter": "Diámetro interior de la moneda",
+            "diameter": "Diámetro interior",
             "textFontSize": "Tamaño de texto",
             "showLanguageFlag": "Mostrar bandera de idioma",
             "showModelNo": "Imprimir número de modelo",
@@ -1742,7 +1742,17 @@
             "clear": "Limpiar hoja",
             "printPage": "Imprimir hoja",
             "printSheet": "Tu hoja para imprimir",
-            "settings": "Configuración"
+            "settings": "Configuración",
+            "round": "Redondo",
+            "square": "Cuadrado",
+            "width": "Ancho",
+            "height": "Alto",
+            "labelShape": "Forma de la etiqueta",
+            "labelSpacing": "Espaciado",
+            "labelSpacingY": "Espaciado Y",
+            "labelSpacingX": "Espaciado X",
+            "clearSettings": "Borrar",
+            "saveSettings": "Guardar"
         },
         "title": "Tonies",
         "tonies": {

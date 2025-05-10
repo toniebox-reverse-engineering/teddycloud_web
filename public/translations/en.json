@@ -1806,7 +1806,7 @@
             "title": "TeddyStudio",
             "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies (coin) sheet.",
             "placeholder": "Enter a search term!",
-            "diameter": "Coin inner diameter",
+            "diameter": "inner diameter",
             "textFontSize": "Text size",
             "showModelNo": "Print model-no.",
             "showLanguageFlag": "Print language flag",
@@ -1814,7 +1814,17 @@
             "clear": "Clear sheet",
             "printPage": "Print sheet",
             "printSheet": "Your print sheet",
-            "settings": "Settings"
+            "settings": "Settings",
+            "round": "Round",
+            "square": "Square",
+            "width": "width",
+            "height": "height",
+            "labelShape": "Label shape",
+            "labelSpacing": "spacing",
+            "labelSpacingY": "Y spacing",
+            "labelSpacingX": "X spacing",
+            "clearSettings": "Clear",
+            "saveSettings": "Save"
         },
         "title": "Tonies",
         "tonies": {

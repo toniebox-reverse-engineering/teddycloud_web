@@ -1734,7 +1734,7 @@
             "title": "TeddyStudio",
             "intro": "Durchsuche alle Tonies und Tags - sowohl offizielle als auch deine eigenen - um dein druckbares Traveltonies (Münze) Blatt zu erstellen.",
             "placeholder": "Gib einen Suchbegriff ein!",
-            "diameter": "Innen-Durchmesser der Münze",
+            "diameter": "Innen-Durchmesser",
             "textFontSize": "Textgröße",
             "showLanguageFlag": "Sprachflagge drucken",
             "showModelNo": "Modellnummer drucken",
@@ -1742,7 +1742,17 @@
             "clear": "Blatt löschen",
             "printPage": "Blatt drucken",
             "printSheet": "Dein Druckblatt",
-            "settings": "Einstellungen"
+            "settings": "Einstellungen",
+            "round": "Rund",
+            "square": "Eckig",
+            "width": "Breite",
+            "height": "Höhe",
+            "labelShape": "Etikettenform",
+            "labelSpacing": "Abstand",
+            "labelSpacingY": "Y",
+            "labelSpacingX": "X",
+            "clearSettings": "Zurücksetzen",
+            "saveSettings": "Speichern"
         },
         "title": "Tonies",
         "tonies": {
