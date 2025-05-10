@@ -1618,6 +1618,8 @@
             "targetDirectory": "Zielpfad auswählen",
             "title": "Audio Encoder",
             "tooManyFilesError": "Zu viele Dateien!",
+            "unsupportedFileType": "Nicht unterstützter Dateityp!",
+            "unsupportedFileTypeDetails": "Die Datei \"{{file}}\" hat einen nicht unterstützten Dateityp!",
             "upload": "Hochladen",
             "uploadFailed": "Hochladen fehlgeschlagen",
             "uploadFailedDetails": "Beim Hochladen ist ein Fehler aufgetreten: ",

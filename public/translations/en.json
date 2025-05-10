@@ -1690,6 +1690,8 @@
             "targetDirectory": "Choose target directory",
             "title": "Audio Encoder",
             "tooManyFilesError": "Too many files!",
+            "unsupportedFileType": "Unsupported file type!",
+            "unsupportedFileTypeDetails": "The file \"{{file}}\" has an unsupported file type!",
             "upload": "Upload",
             "uploadFailed": "Upload failed",
             "uploadFailedDetails": "The upload encountered an error: ",

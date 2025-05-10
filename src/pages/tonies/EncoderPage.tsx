@@ -232,13 +232,26 @@ export const EncoderPage = () => {
         multiple: true,
         accept: supportedAudioExtensionsFFMPG.join(","),
         beforeUpload: (file) => {
+            const isAccepted = supportedAudioExtensionsFFMPG.some((ext) =>
+                file.name.toLowerCase().endsWith(ext.toLowerCase())
+            );
+
+            if (!isAccepted) {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.encoder.unsupportedFileType"),
+                    t("tonies.encoder.unsupportedFileTypeDetails", { file: file.name }),
+                    t("tonies.title")
+                );
+                return Upload.LIST_IGNORE;
+            }
+
             const myFile: MyUploadFile = file;
             myFile.file = file;
-            fileList.push(myFile);
-            setFileList(fileList);
-
+            setFileList((prev) => [...prev, myFile]);
             return false;
         },
+
         fileList,
         onChange: onChange,
         itemRender: (originNode, file) => (

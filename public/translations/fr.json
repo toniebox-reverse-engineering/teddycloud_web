@@ -1618,6 +1618,8 @@
             "targetDirectory": "Choisir le répertoire cible",
             "title": "Encodeur audio",
             "tooManyFilesError": "Trop de fichiers !",
+            "unsupportedFileType": "Type de fichier non pris en charge !",
+            "unsupportedFileTypeDetails": "Le fichier \"{{file}}\" a un type de fichier non pris en charge.",
             "upload": "Télécharger",
             "uploadFailed": "Échec du téléchargement",
             "uploadFailedDetails": "Le téléchargement a rencontré une erreur : ",

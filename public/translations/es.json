@@ -1618,6 +1618,8 @@
             "targetDirectory": "Elegir directorio de destino",
             "title": "Codificador de audio",
             "tooManyFilesError": "¡Demasiados archivos!",
+            "unsupportedFileType": "¡Tipo de archivo no compatible!",
+            "unsupportedFileTypeDetails": "El archivo \"{{file}}\" tiene un tipo de archivo no compatible.",
             "upload": "Subir",
             "uploadFailed": "Fallo de carga",
             "uploadFailedDetails": "La carga encontró un error: ",
