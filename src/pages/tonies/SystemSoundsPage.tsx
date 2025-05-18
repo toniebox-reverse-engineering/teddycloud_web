@@ -125,6 +125,7 @@ export const SystemSoundsPage = () => {
                             tonieCards={tonies.filter((tonie) => tonie.type === "system")}
                             overlay={overlay}
                             readOnly={false}
+                            noLastRuid={true}
                         />
                     )}
                 </StyledContent>
