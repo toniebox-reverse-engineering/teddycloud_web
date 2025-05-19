@@ -1633,6 +1633,76 @@
         },
         "errorFetchingSystemSounds": "Fehler beim Abrufen der System Sounds",
         "errorFetchingTonies": "Fehler beim Abrufen der Tonies",
+        "help": {
+            "title": "Hilfe",
+            "closeButton": "Schließen",
+            "actionItems": {
+                "infoIcon": {
+                    "title": "Tonie/Tag-Informationen",
+                    "text": "Öffnet ein Modal mit wichtigen Details zum Tonie/Tag, einschließlich Titel, Bild, UID, Titelliste und verschiedenen Statusanzeigen:",
+                    "valid": {
+                        "title": "Gültig",
+                        "text": "Zeigt an, ob die zugewiesene Quelle des Tonie/Tags gültig ist.",
+                        "description": "Ein Tonie/Tag gilt als gültig, wenn seine zugewiesene Quelle eine gültige TAF-Datei ist."
+                    },
+                    "exists": {
+                        "title": "Existiert",
+                        "text": "Zeigt an, ob die zugewiesene Quelle des Tonie/Tags im System vorhanden ist.",
+                        "description": "Der Status 'Existiert' wird auf 'ja' gesetzt, wenn die zugewiesene Quelldatei existiert."
+                    },
+                    "download": {
+                        "title": "TAF als .ogg herunterladen",
+                        "text": "Ermöglicht das Herunterladen der TAF-Datei als .ogg-Audiodatei.",
+                        "description": "Wenn verfügbar, kann die verlinkte TAF-Datei als einzelne .ogg-Datei heruntergeladen werden."
+                    },
+                    "hide": {
+                        "title": "Tonie/Tag verbergen",
+                        "text": "Entfernt den Tonie/Tag aus der Übersicht.",
+                        "description": "Du kannst diese Option nutzen, um einen Tonie/Tag auszublenden. Um ihn wieder sichtbar zu machen, platziere ihn auf einer deiner Tonieboxen."
+                    }
+                },
+                "editIcon": {
+                    "title": "Tonie/Tag bearbeiten",
+                    "text": "Öffnet das Bearbeitungsfenster mit folgenden Optionen:",
+                    "source": {
+                        "title": "Quelle",
+                        "text": "Zeigt die aktuell zugewiesene Inhaltsquelle an.",
+                        "description": "Du kannst Inhalte aus deiner Bibliothek (z. B. TAF- oder TAP-Dateien) zuweisen oder eine Stream-URL eingeben."
+                    },
+                    "radioStreamSearch": {
+                        "title": "Radio-Stream-Suche",
+                        "text": "Suche nach Online-Radio-Streams (falls die API von radio-browser.info verfügbar ist).",
+                        "description": "Verwende das Suchfeld, um einen Stream aus der radio-browser-Datenbank zu finden und zuzuweisen."
+                    },
+                    "model": {
+                        "title": "Modell",
+                        "text": "Zeigt das aktuell zugewiesene Modellbild des Tonie/Tags.",
+                        "description": "Suche ein Modell und weise es zu. Das Bild wird in der Übersicht angezeigt."
+                    },
+                    "createNewModel": {
+                        "title": "Neues Modell erstellen (WIP)",
+                        "text": "Erstelle ein neues benutzerdefiniertes Modell für deinen Tonie/Tag.",
+                        "description": "Öffnet ein Fenster, um alle nötigen Details für ein neues Modell einzugeben. Diese Funktion ist noch in Entwicklung."
+                    }
+                },
+                "downloadIcon": {
+                    "title": "Inhalt herunterladen",
+                    "text": "Wenn Cloud-Zugriff aktiviert und autorisiert ist, kannst du hier Inhalte aus der Boxine/Toniecloud herunterladen."
+                },
+                "playIcon": {
+                    "title": "Inhalt abspielen",
+                    "text": "Spielt den dem Tonie/Tag zugewiesenen Inhalt ab. Ist das Symbol grau, ist kein abspielbarer Inhalt zugewiesen."
+                },
+                "cloudIcon": {
+                    "title": "Cloud-Status",
+                    "text": "Grau bedeutet Cloud-Synchronisation ist aktiv, Rot bedeutet deaktiviert. Klicke, um den Status zu ändern."
+                },
+                "liveIcon": {
+                    "title": "Live-Status",
+                    "text": "Rot zeigt den 'Live'-Modus an: Inhalte starten immer von vorne und werden erneut geladen. Wird bei Radiosendern automatisch aktiviert. Klicke zum Umschalten."
+                }
+            }
+        },
         "infoModal": {
             "download": "Download TAF als *.ogg",
             "exists": "Existiert:",

@@ -1633,6 +1633,76 @@
         },
         "errorFetchingSystemSounds": "Error al obtener los sonidos del sistema",
         "errorFetchingTonies": "Error al obtener los Tonies",
+        "help": {
+            "title": "Ayuda",
+            "closeButton": "Cerrar",
+            "actionItems": {
+                "infoIcon": {
+                    "title": "Información de Tonie/Etiqueta",
+                    "text": "Abre una ventana con los detalles clave del Tonie/Etiqueta, incluyendo título, imagen, UID, lista de pistas y varios indicadores de estado:",
+                    "valid": {
+                        "title": "Válido",
+                        "text": "Muestra si la fuente asignada del Tonie/Etiqueta es válida.",
+                        "description": "Un Tonie/Etiqueta se considera válido si su fuente asignada es un archivo TAF válido."
+                    },
+                    "exists": {
+                        "title": "Existe",
+                        "text": "Muestra si la fuente asignada del Tonie/Etiqueta existe en el sistema.",
+                        "description": "El estado 'existe' se muestra como 'sí' si el archivo fuente asignado está presente."
+                    },
+                    "download": {
+                        "title": "Descargar TAF como .ogg",
+                        "text": "Permite descargar el archivo TAF como un archivo de audio .ogg.",
+                        "description": "Si está disponible, puedes descargar el archivo TAF vinculado como un único archivo .ogg."
+                    },
+                    "hide": {
+                        "title": "Ocultar Tonie/Etiqueta",
+                        "text": "Elimina el Tonie/Etiqueta de la vista general.",
+                        "description": "Usa esta opción para ocultar un Tonie/Etiqueta. Para volver a mostrarlo, colócalo en una de tus Tonieboxes."
+                    }
+                },
+                "editIcon": {
+                    "title": "Editar Tonie/Etiqueta",
+                    "text": "Abre la ventana de edición con las siguientes opciones:",
+                    "source": {
+                        "title": "Fuente",
+                        "text": "Muestra la fuente de contenido actualmente asignada.",
+                        "description": "Puedes asignar contenido desde tu biblioteca (por ejemplo, archivos TAF o TAP) o introducir una URL de streaming."
+                    },
+                    "radioStreamSearch": {
+                        "title": "Búsqueda de emisoras",
+                        "text": "Busca emisoras de radio online (disponible si la API de radio-browser.info está activa).",
+                        "description": "Utiliza el campo de búsqueda para encontrar una emisora y asignarla como fuente."
+                    },
+                    "model": {
+                        "title": "Modelo",
+                        "text": "Representa el modelo visual asignado al Tonie/Etiqueta.",
+                        "description": "Busca y asigna un modelo. La imagen se mostrará en la vista general."
+                    },
+                    "createNewModel": {
+                        "title": "Crear nuevo modelo (en desarrollo)",
+                        "text": "Crea un modelo personalizado para tu Tonie/Etiqueta.",
+                        "description": "Abre una ventana para introducir los detalles del nuevo modelo. Esta función aún está en desarrollo."
+                    }
+                },
+                "downloadIcon": {
+                    "title": "Descargar contenido",
+                    "text": "Si tienes acceso y autorización en la nube, al hacer clic podrás descargar contenido desde la nube de Boxine/Tonie."
+                },
+                "playIcon": {
+                    "title": "Reproducir contenido",
+                    "text": "Reproduce el contenido asignado al Tonie/Etiqueta. Si el icono aparece en gris claro, no hay contenido asignado."
+                },
+                "cloudIcon": {
+                    "title": "Estado de la nube",
+                    "text": "El icono gris indica que la sincronización en la nube está habilitada; rojo significa deshabilitada. Haz clic para cambiar el estado."
+                },
+                "liveIcon": {
+                    "title": "Estado en vivo",
+                    "text": "El icono rojo indica modo 'en vivo', lo que significa que el contenido se reinicia desde el principio y se vuelve a descargar. Se activa automáticamente con emisoras. Haz clic para cambiar."
+                }
+            }
+        },
         "infoModal": {
             "download": "Descargar TAF como *.ogg",
             "exists": "Existe:",

@@ -1705,6 +1705,76 @@
         },
         "errorFetchingSystemSounds": "Error fetching system sounds",
         "errorFetchingTonies": "Error fetching Tonies",
+        "help": {
+            "title": "Help",
+            "closeButton": "Close",
+            "actionItems": {
+                "infoIcon": {
+                    "title": "Tonie/Tag Information",
+                    "text": "Opens a modal displaying key details of the Tonie/Tag, including title, image, UID, tracklist and various status indicators:",
+                    "valid": {
+                        "title": "Valid",
+                        "text": "Shows whether the assigned source of the Tonie/Tag is valid.",
+                        "description": "A Tonie/Tag is considered valid if its assigned source is a valid TAF file."
+                    },
+                    "exists": {
+                        "title": "Exists",
+                        "text": "Shows whether the assigned source of the Tonie/Tag exists on the system.",
+                        "description": "The 'exists' status is set to 'yes' if the assigned source file is present."
+                    },
+                    "download": {
+                        "title": "Download TAF as .ogg",
+                        "text": "Enables downloading the TAF file as an .ogg audio file.",
+                        "description": "If available, the linked TAF file can be downloaded as a single .ogg file."
+                    },
+                    "hide": {
+                        "title": "Hide Tonie/Tag",
+                        "text": "Removes the Tonie/Tag from the overview display.",
+                        "description": "Use this option to hide a Tonie/Tag. To show it again, place the Tonie/Tag on one of your Tonieboxes."
+                    }
+                },
+                "editIcon": {
+                    "title": "Edit Tonie/Tag",
+                    "text": "Opens the edit modal with the following configuration options:",
+                    "source": {
+                        "title": "Source",
+                        "text": "Displays the currently assigned content source.",
+                        "description": "You can assign content from your library (e.g., TAF or TAP files) or enter a stream URL."
+                    },
+                    "radioStreamSearch": {
+                        "title": "Radio Stream Search",
+                        "text": "Search online radio streams (available if the radio-browser.info API is accessible).",
+                        "description": "Use the search field to find and assign a stream from the radio-browser database."
+                    },
+                    "model": {
+                        "title": "Model",
+                        "text": "Represents the visual model assigned to the Tonie/Tag.",
+                        "description": "Search for a model and assign it to the Tonie/Tag. The image will be shown in the overview."
+                    },
+                    "createNewModel": {
+                        "title": "Create New Model (WIP)",
+                        "text": "Create a new custom model for your Tonie/Tag.",
+                        "description": "Opens a modal to enter the required details for a new model. This feature is still under development and may not be functional yet."
+                    }
+                },
+                "downloadIcon": {
+                    "title": "Download Content",
+                    "text": "If cloud access is enabled and authorized, clicking this icon will download content from the Boxine/Toniecloud."
+                },
+                "playIcon": {
+                    "title": "Play Content",
+                    "text": "Plays the content assigned to the Tonie/Tag. If the icon appears light gray, no playable content is assigned."
+                },
+                "cloudIcon": {
+                    "title": "Cloud Status",
+                    "text": "A grey icon indicates cloud sync is enabled; red means it's disabled. When enabled, the Tonie/Tag can sync with Boxine/Toniecloud. Click the icon to toggle."
+                },
+                "liveIcon": {
+                    "title": "Live Status",
+                    "text": "A red icon indicates 'live' mode, meaning content will always start from the beginning and re-download. This is automatically enabled for radio streams. Click to toggle."
+                }
+            }
+        },
         "infoModal": {
             "download": "Download TAF as *.ogg",
             "exists": "Exists:",
