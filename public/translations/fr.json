@@ -1636,6 +1636,24 @@
         "help": {
             "title": "Aide",
             "closeButton": "Fermer",
+            "modelImage": {
+                "title": "Image du modèle Tonie/Étiquette",
+                "text": "Affiche la représentation visuelle du Tonie/Étiquette s'il est reconnu. Les Tonies/Étiquettes inconnus affichent un point d'interrogation. Si tu actives le paramètre 'Frontend' → 'Split content / model', deux images peuvent apparaître :",
+                "bigImage": {
+                    "title": "Grande image",
+                    "text": "Représente l'apparence visuelle du Tonie/Étiquette.",
+                    "description": "Cette image reflète le modèle sélectionné assigné au Tonie/Étiquette. Pour le modifier, tu dois assigner un autre modèle."
+                },
+                "smallImage": {
+                    "title": "Petite image",
+                    "text": "Indique la source réelle si elle diffère du modèle assigné.",
+                    "description": "Affichée lorsque la source assignée est différente du modèle sélectionné."
+                }
+            },
+            "blueTopBorder": {
+                "title": "Bord supérieur bleu",
+                "text": "Indique que ce Tonie/Étiquette a été le dernier joué sur au moins une de tes Tonieboxes."
+            },
             "actionItems": {
                 "infoIcon": {
                     "title": "Informations Tonie/Étiquette",

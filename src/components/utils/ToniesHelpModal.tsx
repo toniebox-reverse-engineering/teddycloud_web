@@ -77,9 +77,54 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
         },
     ];
 
-    const tonieCardActionItems = [
+    const modelImage = [
         {
             key: 1,
+            title: t("tonies.help.modelImage.bigImage.title"),
+            text: t("tonies.help.modelImage.bigImage.text"),
+            description: t("tonies.help.modelImage.bigImage.description"),
+        },
+        {
+            key: 2,
+            title: t("tonies.help.modelImage.smallImage.title"),
+            text: t("tonies.help.modelImage.smallImage.text"),
+            description: t("tonies.help.modelImage.smallImage.description"),
+        },
+    ];
+    const tonieCardItems = [
+        {
+            key: 1,
+            title: t("tonies.help.modelImage.title"),
+            text: (
+                <>
+                    {t("tonies.help.modelImage.text")}
+                    <List
+                        size="small"
+                        dataSource={modelImage}
+                        renderItem={(item) => (
+                            <List.Item>
+                                <List.Item.Meta
+                                    title={item.title}
+                                    description={
+                                        <>
+                                            <div>{item.text}</div>
+                                            {item.description && <div>{item.description}</div>}
+                                        </>
+                                    }
+                                />
+                            </List.Item>
+                        )}
+                    />
+                </>
+            ),
+        },
+        {
+            key: 2,
+            title: t("tonies.help.blueTopBorder.title"),
+            text: t("tonies.help.blueTopBorder.text"),
+        },
+        {
+            key: 3,
             avatar: <InfoCircleOutlined />,
             title: t("tonies.help.actionItems.infoIcon.title"),
             text: (
@@ -106,7 +151,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
             ),
         },
         {
-            key: 2,
+            key: 4,
             avatar: <EditOutlined />,
             title: t("tonies.help.actionItems.editIcon.title"),
             text: (
@@ -133,25 +178,25 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
             ),
         },
         {
-            key: 3,
+            key: 5,
             avatar: <DownloadOutlined />,
             title: t("tonies.help.actionItems.downloadIcon.title"),
             text: t("tonies.help.actionItems.downloadIcon.text"),
         },
         {
-            key: 4,
+            key: 6,
             avatar: <PlayCircleOutlined />,
             title: t("tonies.help.actionItems.playIcon.title"),
             text: t("tonies.help.actionItems.playIcon.text"),
         },
         {
-            key: 5,
+            key: 7,
             avatar: <CloudSyncOutlined />,
             title: t("tonies.help.actionItems.cloudIcon.title"),
             text: t("tonies.help.actionItems.cloudIcon.text"),
         },
         {
-            key: 6,
+            key: 8,
             avatar: <RetweetOutlined />,
             title: t("tonies.help.actionItems.liveIcon.title"),
             text: t("tonies.help.actionItems.liveIcon.text"),
@@ -174,7 +219,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
         >
             <List
                 size="small"
-                dataSource={tonieCardActionItems}
+                dataSource={tonieCardItems}
                 renderItem={(item) => (
                     <List.Item>
                         <List.Item.Meta avatar={item.avatar} title={item.title} description={item.text} />

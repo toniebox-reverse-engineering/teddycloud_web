@@ -1636,6 +1636,24 @@
         "help": {
             "title": "Ayuda",
             "closeButton": "Cerrar",
+            "modelImage": {
+                "title": "Imagen de modelo del Tonie/Etiqueta",
+                "text": "Muestra la representación visual del Tonie/Etiqueta si es reconocido. Los Tonies/Etiquetas desconocidos mostrarán un signo de interrogación. Si tienes activada la opción 'Frontend' → 'Split content / model', pueden aparecer dos imágenes:",
+                "bigImage": {
+                    "title": "Imagen grande",
+                    "text": "Representa el aspecto visual del Tonie/Etiqueta.",
+                    "description": "Esta imagen refleja el modelo seleccionado asignado al Tonie/Etiqueta. Para cambiarlo, debes asignar otro modelo."
+                },
+                "smallImage": {
+                    "title": "Imagen pequeña",
+                    "text": "Muestra la fuente real si es diferente del modelo asignado.",
+                    "description": "Se muestra cuando la fuente asignada es distinta al modelo seleccionado."
+                }
+            },
+            "blueTopBorder": {
+                "title": "Borde superior azul",
+                "text": "Indica que este Tonie/Etiqueta fue el último reproducido en al menos una de tus Tonieboxes."
+            },
             "actionItems": {
                 "infoIcon": {
                     "title": "Información de Tonie/Etiqueta",

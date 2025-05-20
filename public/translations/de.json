@@ -1636,6 +1636,24 @@
         "help": {
             "title": "Hilfe",
             "closeButton": "Schließen",
+            "modelImage": {
+                "title": "Tonie/Tag-Modellbild",
+                "text": "Zeigt die visuelle Darstellung des Tonie/Tags, wenn er erkannt wird. Unbekannte Tonies/Tags zeigen ein Fragezeichen. Wenn die Einstellung 'Frontend' → 'Split content / model' aktiviert ist, können zwei Bilder angezeigt werden:",
+                "bigImage": {
+                    "title": "Großes Bild",
+                    "text": "Stellt das Aussehen des Tonie/Tags dar.",
+                    "description": "Dieses Bild zeigt das ausgewählte Modell, das dem Tonie/Tag zugewiesen ist. Um es zu ändern, musst du ein anderes Modell zuweisen."
+                },
+                "smallImage": {
+                    "title": "Kleines Bild",
+                    "text": "Zeigt die tatsächliche Quelle, wenn sie sich vom Modell unterscheidet.",
+                    "description": "Wird angezeigt, wenn die zugewiesene Quelle vom gewählten Modell abweicht."
+                }
+            },
+            "blueTopBorder": {
+                "title": "Blauer oberer Rand",
+                "text": "Zeigt an, dass dieser Tonie/Tag zuletzt auf mindestens einer deiner Tonieboxen abgespielt wurde."
+            },
             "actionItems": {
                 "infoIcon": {
                     "title": "Tonie/Tag-Informationen",

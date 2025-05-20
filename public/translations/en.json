@@ -1708,6 +1708,24 @@
         "help": {
             "title": "Help",
             "closeButton": "Close",
+            "modelImage": {
+                "title": "Tonie/Tag Model Image",
+                "text": "Displays the visual representation of the Tonie/Tag if it's recognized. Unknown Tonies/Tags will show a question mark. If the 'Frontend' → 'Split content / model' setting is enabled, two images may appear:",
+                "bigImage": {
+                    "title": "Big Image",
+                    "text": "Represents the visual appearance of the Tonie/Tag.",
+                    "description": "This image reflects the selected model assigned to the Tonie/Tag. To change it, assign a different model."
+                },
+                "smallImage": {
+                    "title": "Small Image",
+                    "text": "Visual indicator of the actual source if it differs from the assigned model.",
+                    "description": "Displayed when the assigned source is different from the selected model."
+                }
+            },
+            "blueTopBorder": {
+                "title": "Blue Top Border",
+                "text": "Indicates that this Tonie/Tag was the last one played on at least one of your Tonieboxes."
+            },
             "actionItems": {
                 "infoIcon": {
                     "title": "Tonie/Tag Information",
