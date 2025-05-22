@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Card, List, Modal, theme, Tooltip, Typography, Upload, Tag } from "antd";
+import { Badge, Button, Card, List, Modal, theme, Tooltip, Typography, Upload, Tag, Alert } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
@@ -263,12 +263,15 @@ export const PluginListPage = () => {
                 />
                 <StyledContent>
                     <h1>{t("community.plugins.title")}</h1>
+                    {/* WIP remove when implemented */}
+                    <Alert type="warning" showIcon message="WIP - To be added soon" style={{ margin: 32 }} />
+
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}>
                         <Paragraph>{t("community.plugins.intro")}</Paragraph>
                         <Paragraph
                             style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}
                         >
-                            <Button icon={<AppstoreAddOutlined />} onClick={() => setIsUploadModalOpen(true)}>
+                            <Button disabled icon={<AppstoreAddOutlined />} onClick={() => setIsUploadModalOpen(true)}>
                                 {t("community.plugins.addButton")}
                             </Button>
                             <Button icon={<QuestionCircleOutlined />} onClick={() => setIsVisibleHelpModal(true)}>

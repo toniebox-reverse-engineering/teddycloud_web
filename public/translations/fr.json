@@ -78,6 +78,78 @@
             "navigationTitle": "Forum"
         },
         "navigationTitle": "Communauté",
+        "plugins": {
+            "errorLoadingPlugin": "Échec du chargement des métadonnées pour le plugin {{pluginname}}",
+            "error": {
+                "title": "Erreur lors du chargement du plugin",
+                "pluginNotFound": "index.html du plugin introuvable - veuillez vérifier le plugin !",
+                "notification": {
+                    "title": "Erreur lors du chargement du plugin",
+                    "message": "Description json manquante - élément \"pluginName\" dans le plugin \"{{pluginId}}\", ignoré.",
+                    "missingPluginIndexHtml": "index.html manquant dans le plugin \"{{pluginId}}\" !"
+                }
+            },
+            "navigationTitle": "Plugins TC",
+            "title": "Plugins TeddyCloud",
+            "intro": "Vous trouverez ici vos plugins TeddyCloud ajoutés et pouvez ajouter de nouveaux plugins fournis par vous-même ou la communauté TeddyCloud !",
+            "installedPlugins": "Plugins installés",
+            "helpTextCreatePlugin": "Un texte sur la création d'un plugin",
+            "helpButton": "Aide",
+            "addButton": "Ajouter",
+            "addButtonTooltip": "Cliquez ici pour ajouter de nouveaux plugins ou mettre à jour ceux existants",
+            "available": "Plugins disponibles",
+            "by": "par",
+            "filter": {
+                "unknown": "Section non définie"
+            },
+            "visitHomepage": "Visiter la page du plugin",
+            "empty": "Aucun plugin disponible",
+            "plugin": "Plugin",
+            "help": {
+                "popoverTitle": "Aide du plugin",
+                "title": "Structure du dossier plugin et exigences",
+                "intro": "Pour que votre plugin soit détectable et listé dans la navigation Communauté, il doit suivre cette structure et inclure un fichier index.html et plugin.json valides. Un preview.png optionnel sera affiché comme image dans la carte du plugin.",
+                "folderStructureTitle": "Structure du dossier du plugin :",
+                "descriptionTitle": "plugin.json — Métadonnées requises",
+                "descriptionIntro": "Chaque plugin doit inclure un fichier plugin.json à la racine. Ce fichier décrit le plugin et permet son affichage correct dans l’interface.",
+                "exampleTitle": "Exemple :",
+                "fieldsTitle": "Champs :",
+                "fields": {
+                    "pluginName": "Le titre affiché dans les menus (obligatoire)",
+                    "description": "Résumé court du plugin",
+                    "author": "Auteur du plugin",
+                    "version": "Version du plugin",
+                    "pluginHomepage": "Page d'accueil du plugin",
+                    "teddyCloudSection": "Section souhaitée où le plugin doit être ajouté à la navigation (valeurs valides : home, tonies, tonieboxes, settings, community)"
+                },
+                "exampleFolderTitle": "Dossier d'exemple :",
+                "descriptionExampleTitle": "plugin.json pour l'exemple ci-dessus :"
+            },
+            "open": "Ouvrir le plugin",
+            "delete": "Supprimer",
+            "deletion": {
+                "delete": "Supprimer",
+                "confirmDeleteModal": "Confirmer la suppression",
+                "confirmDeleteDialog": "Voulez-vous vraiment supprimer le plugin \"{{pluginId}}\" ?",
+                "errorDeletingPlugin": "Échec de la suppression du plugin",
+                "errorDeletingPluginDetails": "La suppression du plugin \"{{filename}}\" a échoué : ",
+                "successDeletingPlugin": "Plugin supprimé avec succès",
+                "successDeletingPluginDetails": "Le plugin \"{{filename}}\" a été supprimé avec succès"
+            },
+            "cancel": "Annuler",
+            "upload": {
+                "add": "Ajouter un plugin",
+                "selectPluginZip": "Sélectionner le fichier zip du plugin",
+                "uploadModal": "Téléverser un fichier plugin compressé",
+                "uploadModalHint": "Téléversez un plugin nouveau ou existant. Si le plugin compressé existe déjà dans TeddyCloud, il sera écrasé.",
+                "errorUploadingPlugin": "Échec du téléversement du nouveau plugin",
+                "errorUploadingPluginDetails": "Échec du téléversement du nouveau plugin \"{{filename}}\" : ",
+                "successUploadingPlugin": "Plugin téléversé avec succès",
+                "successUploadingPluginDetails": "Le plugin \"{{filename}}\" a été téléversé avec succès",
+                "warningUploadingPlugin": "Veuillez sélectionner un fichier",
+                "warningUploadingPluginDetails": "Veuillez sélectionner un fichier plugin compressé avant de cliquer sur \"Ajouter un plugin\""
+            }
+        },
         "supportRequestGuide": {
             "closing": "Fournir ce niveau de détail aidera la communauté à résoudre ton problème de manière plus efficace. Merci !",
             "example": {

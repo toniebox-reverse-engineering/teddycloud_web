@@ -154,7 +154,7 @@ export const PluginPage = () => {
                     )}
                     <iframe
                         ref={iframeRef}
-                        // @todo check correct path in production
+                        // @Todo: Remove /web in real world
                         src={`/web/plugins/${pluginId}/index.html`}
                         title={`${t("community.plugins.plugin")}: ${pluginId}`}
                         style={{

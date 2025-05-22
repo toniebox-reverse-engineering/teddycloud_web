@@ -179,6 +179,8 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
     const fetchPlugins = async () => {
         try {
+            // WIP, removed for merge
+            return;
             // @Todo: Add real apicall to get folders
             let pluginFolders: string[] = [];
             try {
@@ -194,6 +196,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
             for (const folder of pluginFolders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
                 try {
+                    // @Todo: Remove /web in real world
                     const res = await fetch(`/web/plugins/${folder}/plugin.json`);
                     if (!res.ok) throw new Error(`Failed to fetch plugin: ${folder}`);
                     const meta = await res.json();
