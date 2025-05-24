@@ -1,14 +1,14 @@
 import React from "react";
 import { Select } from "antd";
-
-import GetBoxModelImages from "../../utils/boxModels";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 export const TonieboxModelSearch: React.FC<{
     placeholder: string;
     onChange: (newValue: string) => void;
     value: any;
 }> = (props) => {
-    const boxModelImages = GetBoxModelImages();
+    const { boxModelImages } = useTeddyCloud();
+
     const handleChange = (newValue: string) => {
         props.onChange(newValue);
     };

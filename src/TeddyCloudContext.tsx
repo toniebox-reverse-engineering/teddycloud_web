@@ -7,6 +7,8 @@ import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
 import { generateUUID } from "./utils/helpers";
 import { TeddyCloudApi } from "./api";
 import { defaultAPIConfig } from "./config/defaultApiConfig";
+import GetBoxModelImages from "./utils/boxModels";
+import { TonieboxImage } from "./types/tonieboxTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -38,6 +40,7 @@ interface TeddyCloudContextType {
     plugins: PluginMeta[];
     getPluginMeta: (pluginId: string) => PluginMeta | undefined;
     fetchPlugins: () => void;
+    boxModelImages: { boxModelImages: TonieboxImage[]; loading: boolean };
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
@@ -62,6 +65,10 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     plugins: [],
     getPluginMeta: () => undefined,
     fetchPlugins: () => {},
+    boxModelImages: {
+        boxModelImages: [],
+        loading: false,
+    },
 });
 
 interface TeddyCloudProviderProps {
@@ -254,6 +261,8 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
     const getPluginMeta = (pluginId: string) => plugins.find((p) => p.pluginId === pluginId);
 
+    const boxModelImages = GetBoxModelImages();
+
     return (
         <TeddyCloudContext.Provider
             value={{
@@ -278,6 +287,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 plugins,
                 getPluginMeta,
                 fetchPlugins,
+                boxModelImages,
             }}
         >
             {children}

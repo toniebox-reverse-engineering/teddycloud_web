@@ -6,7 +6,6 @@ import { TonieboxCardProps } from "../../types/tonieboxTypes";
 
 import { TonieboxCard } from "../tonieboxes/TonieboxCard";
 import LoadingSpinner from "../utils/LoadingSpinner";
-import GetBoxModelImages from "../../utils/boxModels";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
@@ -15,8 +14,7 @@ export const TonieboxesList: React.FC<{
     readOnly?: boolean;
 }> = ({ tonieboxCards, readOnly = false }) => {
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
-    const boxModelImages = GetBoxModelImages();
+    const { addNotification, boxModelImages } = useTeddyCloud();
 
     useEffect(() => {
         if (!boxModelImages.loading && boxModelImages.boxModelImages.length === 0) {

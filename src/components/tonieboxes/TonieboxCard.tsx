@@ -23,7 +23,6 @@ import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../types/t
 
 import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
-import GetBoxModelImages from "../../utils/boxModels";
 import ConfirmationDialog from "../utils/ConfirmationDialog";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
@@ -43,7 +42,7 @@ export const TonieboxCard: React.FC<{
 }> = ({ tonieboxCard, tonieboxImages, readOnly = false }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const { addNotification, addLoadingNotification, closeLoadingNotification, boxModelImages } = useTeddyCloud();
 
     const currentLanguage = i18n.language;
 
@@ -157,8 +156,6 @@ export const TonieboxCard: React.FC<{
             }
         }
     }, [lastIp, tonieboxVersion]);
-
-    const boxModelImages = GetBoxModelImages();
 
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
         boxModelImages.boxModelImages.map((v) => {
