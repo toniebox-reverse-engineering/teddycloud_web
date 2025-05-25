@@ -1144,6 +1144,26 @@ export const ESP32BoxFlashingPage = () => {
         },
     ];
 
+    const backupHint = (
+        <Alert
+            type="warning"
+            showIcon
+            message={t("tonieboxes.esp32BoxFlashing.esp32flasher.backupFlash")}
+            description={
+                <>
+                    <Paragraph style={{ marginBottom: 8 }}>
+                        <b>
+                            <a href={state.downloadLink} download={state.filename} title={state.filename}>
+                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
+                            </a>
+                        </b>
+                    </Paragraph>
+                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.importanceBackup")}</Paragraph>
+                </>
+            }
+        />
+    );
+
     const contentProgress = (
         <>
             {state.showProgress && (
@@ -1296,12 +1316,7 @@ export const ESP32BoxFlashingPage = () => {
                 )}
                 {stepStatusText}
                 {!state.actionInProgress && state.downloadLink ? (
-                    <div style={{ marginBottom: 16 }}>
-                        {" "}
-                        <a href={state.downloadLink} download={state.filename} title={state.filename}>
-                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
-                        </a>
-                    </div>
+                    <Paragraph style={{ marginBottom: 16 }}>{backupHint}</Paragraph>
                 ) : (
                     ""
                 )}
