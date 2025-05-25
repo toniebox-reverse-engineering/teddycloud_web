@@ -1151,14 +1151,14 @@ export const ESP32BoxFlashingPage = () => {
             message={t("tonieboxes.esp32BoxFlashing.esp32flasher.backupFlash")}
             description={
                 <>
-                    <Paragraph style={{ marginBottom: 8 }}>
+                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.importanceBackup")}</Paragraph>
+                    <Paragraph style={{ marginTop: 8 }}>
                         <b>
                             <a href={state.downloadLink} download={state.filename} title={state.filename}>
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
                             </a>
                         </b>
                     </Paragraph>
-                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.importanceBackup")}</Paragraph>
                 </>
             }
         />
