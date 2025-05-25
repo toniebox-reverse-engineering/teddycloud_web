@@ -2,21 +2,41 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
-import { ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
+import { CodeSandboxOutlined, ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
 import i18n from "../../i18n";
 
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { StyledSubMenu } from "../StyledComponents";
 import { gitHubSponsoringUrl } from "../../constants";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const HomeSubNav = () => {
     const { t } = useTranslation();
-    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
+    const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const currentLanguage = i18n.language;
 
     useEffect(() => {
         setCurrentTCSection(t("home.navigationTitle"));
     }, [currentLanguage]);
+
+    const pluginItems = plugins
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Home)
+        .map((plugin) => ({
+            key: `plugin-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/home/plugin/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(CodeSandboxOutlined),
+            title: plugin.pluginName,
+        }));
 
     const subnav: MenuProps["items"] = [
         {
@@ -84,6 +104,7 @@ export const HomeSubNav = () => {
             icon: React.createElement(HeartOutlined),
             title: t("home.sponsor.navigationTitle"),
         },
+        ...pluginItems,
         {
             key: "hiddenMeeting",
             label: (

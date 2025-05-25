@@ -43,6 +43,8 @@ import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { detectColorScheme } from "./utils/browserUtils";
+import { PluginListPage } from "./pages/community/PluginListPage";
+import { PluginPage } from "./pages/community/PluginPage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -117,6 +119,7 @@ function App() {
                                         <Route path="/home/stats" element={<StatsPage />} />
                                         <Route path="/home/features" element={<FeaturesPage />} />
                                         <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
+                                        <Route path="/home/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/tonies" element={<ToniesPage />} />
                                         <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
                                         <Route path="/tonies/content" element={<ContentPage />} />
@@ -124,6 +127,7 @@ function App() {
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />
                                         <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
                                         <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
+                                        <Route path="/tonies/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/tonieboxes" element={<TonieboxesPage />} />
                                         <Route path="/tonieboxes/boxsetup" element={<BoxSetupPage />} />
                                         <Route
@@ -151,11 +155,16 @@ function App() {
                                             path="/tonieboxes/boxsetup/cc3235/flashing"
                                             element={<CC3235BoxFlashingPage />}
                                         />
+                                        <Route path="/tonieboxes/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/settings" element={<SettingsPage />} />
                                         <Route path="/settings/certificates" element={<CertificatesPage />} />
                                         <Route path="/settings/rtnl" element={<RtnlPage />} />
                                         <Route path="/settings/notifications" element={<NotificationsListPage />} />
+                                        <Route path="/settings/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/community" element={<CommunityPage />} />
+                                        <Route path="/community/tcplugins" element={<PluginListPage />} />
+                                        <Route path="/community/tcplugins/:pluginId" element={<PluginPage />} />
+                                        <Route path="/community/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/community/faq" element={<FAQPage />} />
                                         <Route
                                             path="/community/supportrequestguide"

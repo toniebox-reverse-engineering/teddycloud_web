@@ -10,7 +10,7 @@ export const Error404Page = () => {
     const { t } = useTranslation();
 
     return (
-        <>
+        <div id="error-404">
             <StyledContent>
                 <Paragraph>
                     <TonieMeetingElement
@@ -22,6 +22,6 @@ export const Error404Page = () => {
                     ></TonieMeetingElement>
                 </Paragraph>
             </StyledContent>
-        </>
+        </div>
     );
 };

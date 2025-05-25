@@ -13,6 +13,8 @@ import {
     GlobalOutlined,
     MinusOutlined,
     PlusOutlined,
+    AppstoreOutlined,
+    CodeSandboxOutlined,
 } from "@ant-design/icons";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 
@@ -20,6 +22,7 @@ import { forumUrl } from "../../constants";
 
 import { StyledSubMenu } from "../StyledComponents";
 import i18n from "../../i18n";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const CommunitySubNav = () => {
     const { t } = useTranslation();
@@ -36,8 +39,49 @@ export const CommunitySubNav = () => {
         if (pathname.includes("/contribution")) {
             newKeys.push("contribution");
         }
+        if (pathname.includes("/tcplugins")) {
+            newKeys.push("tcplugins");
+        }
         setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
     };
+
+    const { plugins } = useTeddyCloud();
+
+    const pluginItems = plugins.map((plugin) => ({
+        key: `tcplugins-${plugin.pluginId}`,
+        label: (
+            <Link
+                to={`/community/tcplugins/${plugin.pluginId}`}
+                onClick={() => {
+                    setNavOpen(false);
+                    setSubNavOpen(false);
+                }}
+            >
+                {plugin.pluginName}
+            </Link>
+        ),
+        icon: React.createElement(CodeSandboxOutlined),
+        title: plugin.pluginName,
+    }));
+
+    const filteredPluginItems = plugins
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Community)
+        .map((plugin) => ({
+            key: `plugin-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/community/plugin/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(CodeSandboxOutlined),
+            title: plugin.pluginName,
+        }));
 
     useEffect(() => {
         updateOpenKeys(location.pathname);
@@ -80,20 +124,22 @@ export const CommunitySubNav = () => {
             title: t("community.navigationTitle"),
         },
         {
-            key: "faq",
+            key: "tcplugins",
             label: (
                 <Link
-                    to="/community/faq"
+                    to="/community/tcplugins"
+                    style={{ color: "currentColor", display: "flex", alignItems: "center", padding: "0 50px 0 0" }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
                     }}
                 >
-                    {t("community.faq.navigationTitle")}
+                    {t("community.plugins.navigationTitle")}
                 </Link>
             ),
-            icon: React.createElement(QuestionCircleOutlined),
-            title: t("community.faq.navigationTitle"),
+            icon: React.createElement(AppstoreOutlined),
+            title: t("community.plugins.navigationTitle"),
+            children: pluginItems,
         },
         {
             key: "request",
@@ -211,6 +257,7 @@ export const CommunitySubNav = () => {
             icon: React.createElement(CommentOutlined),
             title: t("community.forum.navigationTitle"),
         },
+        ...filteredPluginItems,
     ];
 
     return (

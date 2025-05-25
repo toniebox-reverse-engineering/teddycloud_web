@@ -25,8 +25,18 @@ export const ToniesList: React.FC<{
     overlay: string;
     readOnly: boolean;
     defaultLanguage?: string;
+    noLastRuid?: boolean;
     onToniesCardUpdate?: (updatedTonieCard: TonieCardProps) => void;
-}> = ({ tonieCards, showFilter, showPagination, overlay, readOnly, defaultLanguage = "", onToniesCardUpdate }) => {
+}> = ({
+    tonieCards,
+    showFilter,
+    showPagination,
+    overlay,
+    readOnly,
+    defaultLanguage = "",
+    noLastRuid = false,
+    onToniesCardUpdate,
+}) => {
     const { t } = useTranslation();
     const location = useLocation();
 
@@ -105,7 +115,9 @@ export const ToniesList: React.FC<{
             );
             setLastTonieboxRUIDs(tonieboxLastRUIDs);
         };
-        fetchTonieboxes();
+        if (!noLastRuid) {
+            fetchTonieboxes();
+        }
         const fetchShowSourceInfo = async () => {
             const response = await api.apiGetTeddyCloudSettingRaw("frontend.split_model_content");
             setShowSourceInfo((await response.text()) === "true" ? true : false);

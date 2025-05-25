@@ -15,7 +15,7 @@ const apiTC = new TeddyCloudApi(defaultAPIConfig());
 
 export const ServerStatus = () => {
     const { t } = useTranslation();
-    const { fetchCloudStatus } = useTeddyCloud();
+    const { fetchCloudStatus, setToniesCloudAvailable } = useTeddyCloud();
     const [boxineStatus, setBoxineStatus] = useState<boolean>(false);
     const [boxineEnabledStatus, setBoxineEnabledStatus] = useState<boolean>(true);
     const [teddyStatus, setTeddyStatus] = useState<boolean>(false);
@@ -79,6 +79,10 @@ export const ServerStatus = () => {
     useEffect(() => {
         fetchCloudStatusUsingTimeRequests();
     }, [fetchCloudStatus]);
+
+    useEffect(() => {
+        setToniesCloudAvailable(boxineStatus);
+    }, [boxineStatus]);
 
     return (
         <Space>

@@ -2,12 +2,21 @@ import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, Se
 import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
-import { NotificationRecord, NotificationType } from "./types/teddyCloudNotificationTypes";
+import { NotificationRecord, NotificationType, NotificationTypeEnum } from "./types/teddyCloudNotificationTypes";
+import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
 import { generateUUID } from "./utils/helpers";
+import { TeddyCloudApi } from "./api";
+import { defaultAPIConfig } from "./config/defaultApiConfig";
+import GetBoxModelImages from "./utils/boxModels";
+import { TonieboxImage } from "./types/tonieboxTypes";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface TeddyCloudContextType {
     fetchCloudStatus: boolean;
     setFetchCloudStatus: Dispatch<SetStateAction<boolean>>;
+    toniesCloudAvailable: boolean;
+    setToniesCloudAvailable: (cloudEnabled: boolean) => void;
     notifications: NotificationRecord[];
     addNotification: (
         type: NotificationType,
@@ -28,11 +37,17 @@ interface TeddyCloudContextType {
     setSubNavOpen: (show: boolean) => void;
     currentTCSection: string;
     setCurrentTCSection: (section: string) => void;
+    plugins: PluginMeta[];
+    getPluginMeta: (pluginId: string) => PluginMeta | undefined;
+    fetchPlugins: () => void;
+    boxModelImages: { boxModelImages: TonieboxImage[]; loading: boolean };
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
     fetchCloudStatus: false,
     setFetchCloudStatus: () => {},
+    toniesCloudAvailable: false,
+    setToniesCloudAvailable: () => {},
     notifications: [],
     addNotification: () => {},
     addLoadingNotification: () => {},
@@ -47,6 +62,13 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
     setSubNavOpen: () => {},
     currentTCSection: "",
     setCurrentTCSection: () => {},
+    plugins: [],
+    getPluginMeta: () => undefined,
+    fetchPlugins: () => {},
+    boxModelImages: {
+        boxModelImages: [],
+        loading: false,
+    },
 });
 
 interface TeddyCloudProviderProps {
@@ -56,6 +78,8 @@ interface TeddyCloudProviderProps {
 
 export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProviderProps) {
     const [fetchCloudStatus, setFetchCloudStatus] = useState<boolean>(false);
+    const [toniesCloudAvailable, setToniesCloudAvailable] = useState<boolean>(false);
+
     const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -158,11 +182,94 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
     const unconfirmedCount = notifications.filter((notification) => !notification.flagConfirmed).length;
 
+    const [plugins, setPlugins] = useState<PluginMeta[]>([]);
+
+    const fetchPlugins = async () => {
+        try {
+            // WIP, removed for merge
+            return;
+            // @Todo: Add real apicall to get folders
+            let pluginFolders: string[] = [];
+            try {
+                const response = await api.apiGetTeddyCloudApiRaw(`/api/plugins/getPlugins`);
+
+                if (!response.ok) throw new Error(response.statusText);
+            } catch (error) {
+                pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio", "teddycloudRepos"];
+                console.warn("Using fallback plugin list due to an error (API most probably not available yet).");
+            }
+
+            const loadedPlugins: PluginMeta[] = [];
+
+            for (const folder of pluginFolders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
+                try {
+                    // @Todo: Remove /web in real world
+                    const res = await fetch(`/web/plugins/${folder}/plugin.json`);
+                    if (!res.ok) throw new Error(`Failed to fetch plugin: ${folder}`);
+                    const meta = await res.json();
+
+                    if (!meta.pluginName) {
+                        console.warn(`Skipping "${folder}" — missing pluginName.`);
+                        addNotification(
+                            NotificationTypeEnum.Warning,
+                            `Fetching entry pluginName in plugin.json for  "${folder}" failed`,
+                            `Fetching entry pluginName in plugin.json for  "${folder}" failed, so we skip that plugin`,
+                            "TeddyCloudContext",
+                            true
+                        );
+                        continue;
+                    }
+
+                    loadedPlugins.push({
+                        pluginId: folder,
+                        pluginName: meta.pluginName,
+                        author: meta.author || "",
+                        version: meta.version || "",
+                        description: meta.description || "",
+                        pluginHomepage: meta.pluginHomepage,
+                        teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)
+                            ? meta.teddyCloudSection
+                            : null,
+                    });
+                } catch (err) {
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        `Fetching plugin.json for  "${folder}" failed`,
+                        `Fetching plugin.json for  "${folder}" failed, so we skip that plugin`,
+                        "TeddyCloudContext",
+                        false
+                    );
+                }
+            }
+
+            setPlugins(loadedPlugins);
+        } catch (error) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                "Loading plugins failed",
+                "Loading plugins failed" + error,
+                "TeddyCloudContext",
+                false
+            );
+            console.error("Error loading plugins:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPlugins();
+    }, []);
+
+    const getPluginMeta = (pluginId: string) => plugins.find((p) => p.pluginId === pluginId);
+
+    const boxModelImages = GetBoxModelImages();
+
     return (
         <TeddyCloudContext.Provider
             value={{
                 fetchCloudStatus,
                 setFetchCloudStatus,
+                toniesCloudAvailable,
+                setToniesCloudAvailable,
                 notifications,
                 addNotification,
                 addLoadingNotification,
@@ -177,6 +284,10 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 setSubNavOpen,
                 currentTCSection,
                 setCurrentTCSection,
+                plugins,
+                getPluginMeta,
+                fetchPlugins,
+                boxModelImages,
             }}
         >
             {children}

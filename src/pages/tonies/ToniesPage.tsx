@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Select, Tooltip } from "antd";
+import { Button, Select, Tooltip } from "antd";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 
@@ -15,6 +15,8 @@ import LoadingSpinner from "../../components/utils/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import HelpModal from "../../components/utils/ToniesHelpModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -35,6 +37,8 @@ export const ToniesPage = () => {
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [defaultLanguage, setMaxTag] = useState<string>("");
     const [loading, setLoading] = useState(true);
+
+    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
         setTonies((prevTonies) =>
@@ -151,6 +155,17 @@ export const ToniesPage = () => {
                             </Tooltip>
                         ) : (
                             ""
+                        )}
+                        <Button
+                            size="small"
+                            icon={<QuestionCircleOutlined />}
+                            onClick={() => setIsHelpModalOpen(true)}
+                            style={{ marginLeft: 8 }}
+                        >
+                            {t("fileBrowser.help.showHelp")}
+                        </Button>
+                        {isHelpModalOpen && (
+                            <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
                         )}
                     </div>
                     {loading ? (

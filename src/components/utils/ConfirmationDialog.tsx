@@ -1,7 +1,9 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Modal } from "antd";
+import { Alert, Modal, theme } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
+
+const { useToken } = theme;
 
 interface ConfirmationDialogProps {
     title: string;
@@ -10,6 +12,7 @@ interface ConfirmationDialogProps {
     content: string;
     contentHint?: string;
     contentHintTitle?: string;
+    contentDetails?: string | ReactNode;
     open: boolean;
     handleOk: () => void;
     handleCancel: () => void;
@@ -22,11 +25,13 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     content,
     contentHint = "",
     contentHintTitle = "",
+    contentDetails = "",
     open,
     handleOk,
     handleCancel,
 }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
 
     return (
         <Modal
@@ -52,6 +57,11 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                         message={contentHintTitle || t("confirmDialog.contentHintTitle")}
                         description={contentHint}
                     />
+                </div>
+            )}
+            {contentDetails && (
+                <div style={{ marginBottom: 24, padding: 8, background: token.colorBgContainerDisabled }}>
+                    {contentDetails}
                 </div>
             )}
         </Modal>

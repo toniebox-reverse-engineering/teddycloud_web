@@ -69,9 +69,8 @@ export const StyledFooter = () => {
 
     return (
         <>
-            <div style={{ paddingBottom: footerHeight }} />
-
-            <StyledFooterComponent>
+            <div className="additional-footer-padding" style={{ paddingBottom: footerHeight }} />
+            <StyledFooterComponent id="teddycloud-footer">
                 <StyledCenterPart>
                     <AudioPlayerFooter onVisibilityChange={handleAudioPlayerVisibilityChange} />
                 </StyledCenterPart>

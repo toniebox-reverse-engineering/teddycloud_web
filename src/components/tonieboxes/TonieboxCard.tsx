@@ -23,7 +23,6 @@ import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../types/t
 
 import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
 import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
-import GetBoxModelImages from "../../utils/boxModels";
 import ConfirmationDialog from "../utils/ConfirmationDialog";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
@@ -40,10 +39,11 @@ export const TonieboxCard: React.FC<{
     tonieboxCard: TonieboxCardProps;
     tonieboxImages: TonieboxImage[];
     readOnly?: boolean;
-}> = ({ tonieboxCard, tonieboxImages, readOnly = false }) => {
+    checkCC3200CFW?: boolean;
+}> = ({ tonieboxCard, tonieboxImages, readOnly = false, checkCC3200CFW = false }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const { addNotification, addLoadingNotification, closeLoadingNotification, boxModelImages } = useTeddyCloud();
 
     const currentLanguage = i18n.language;
 
@@ -137,7 +137,7 @@ export const TonieboxCard: React.FC<{
     }, [tonieboxCard.ID, tonieboxCard.boxModel, currentLanguage]);
 
     useEffect(() => {
-        if (lastIp && tonieboxVersion === BoxVersionsEnum.cc3200) {
+        if (checkCC3200CFW && lastIp && tonieboxVersion === BoxVersionsEnum.cc3200) {
             // only if lastIp is set and box version is CC3200
             // we check for CFW using battery status API call
             try {
@@ -156,9 +156,7 @@ export const TonieboxCard: React.FC<{
                 setCFWInstalled(false);
             }
         }
-    }, [lastIp, tonieboxVersion]);
-
-    const boxModelImages = GetBoxModelImages();
+    }, [lastIp, tonieboxVersion, checkCC3200CFW]);
 
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
         boxModelImages.boxModelImages.map((v) => {
@@ -647,6 +645,7 @@ export const TonieboxCard: React.FC<{
     return (
         <>
             <Card
+                key={tonieboxCard.ID}
                 hoverable={false}
                 size="default"
                 style={{ background: token.colorBgContainerDisabled, cursor: "default" }}
@@ -730,11 +729,12 @@ export const TonieboxCard: React.FC<{
                     description={[
                         readOnly ? (
                             tonieboxStatus ? (
-                                <Tooltip title={t("tonieboxes.online")}>
+                                <Tooltip key="box-status-online" title={t("tonieboxes.online")}>
                                     <WifiOutlined style={{ color: "green", cursor: "default" }} />{" "}
                                 </Tooltip>
                             ) : (
                                 <Tooltip
+                                    key="box-status-offline"
                                     title={
                                         t("tonieboxes.offline") +
                                         (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
@@ -748,20 +748,21 @@ export const TonieboxCard: React.FC<{
                                     />{" "}
                                 </Tooltip>
                             )
-                        ) : (
-                            ""
-                        ),
-                        (tonieboxVersion !== "UNKNOWN" && tonieboxVersion !== undefined && tonieboxVersion !== null
-                            ? tonieboxVersion
-                            : "MAC") + " ",
+                        ) : null,
+                        <span key="box-version">
+                            {" "}
+                            {(tonieboxVersion !== "UNKNOWN" && tonieboxVersion !== undefined && tonieboxVersion !== null
+                                ? tonieboxVersion
+                                : "MAC") + " "}
+                        </span>,
                         cfwInstalled ? (
-                            <Tooltip title={t("tonieboxes.linkToBoxCFW")}>
+                            <Tooltip key="box-mac-cfw-link" title={t("tonieboxes.linkToBoxCFW")}>
                                 <Link to={"http://" + lastIp} target="_blank">
                                     {getTonieboxIdFormatted()} <LinkOutlined />
                                 </Link>
                             </Tooltip>
                         ) : (
-                            getTonieboxIdFormatted()
+                            <span key="box-mac">{getTonieboxIdFormatted()}</span>
                         ),
                     ]}
                 />

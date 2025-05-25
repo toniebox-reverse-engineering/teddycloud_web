@@ -20,6 +20,7 @@ import { createQueryString } from "../../utils/url";
 import { MAX_FILES } from "../../constants";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -69,7 +70,7 @@ export const EncoderPage = () => {
             const newPath = pathFromNodeId(rootTreeNode.id);
 
             // Simulate an API call to fetch children
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     var list: any[] = data.files;
@@ -136,7 +137,7 @@ export const EncoderPage = () => {
         const updatedFileList = newFileList.slice(0, MAX_FILES) as MyUploadFile[];
         if (updatedFileList.length === 1 && tafFilename === "") {
             const singleFile = updatedFileList[0];
-            const fileNameWithoutExtension = singleFile.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+            const fileNameWithoutExtension = singleFile.name.replace(/\.[^/.]+$/, "");
             setTafFilename(fileNameWithoutExtension);
         }
         setFileList(updatedFileList);
@@ -229,14 +230,28 @@ export const EncoderPage = () => {
     const props: UploadProps = {
         listType: "picture",
         multiple: true,
+        accept: supportedAudioExtensionsFFMPG.join(","),
         beforeUpload: (file) => {
+            const isAccepted = supportedAudioExtensionsFFMPG.some((ext) =>
+                file.name.toLowerCase().endsWith(ext.toLowerCase())
+            );
+
+            if (!isAccepted) {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.encoder.unsupportedFileType"),
+                    t("tonies.encoder.unsupportedFileTypeDetails", { file: file.name }),
+                    t("tonies.title")
+                );
+                return Upload.LIST_IGNORE;
+            }
+
             const myFile: MyUploadFile = file;
             myFile.file = file;
-            fileList.push(myFile);
-            setFileList(fileList);
-
+            setFileList((prev) => [...prev, myFile]);
             return false;
         },
+
         fileList,
         onChange: onChange,
         itemRender: (originNode, file) => (
@@ -253,7 +268,7 @@ export const EncoderPage = () => {
     const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
         new Promise((resolve, reject) => {
             const newPath = pathFromNodeId(id);
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${newPath}&special=library`)
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     let list: any[] = data.files;

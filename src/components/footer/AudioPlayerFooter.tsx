@@ -61,8 +61,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [isTouching, setIsTouching] = useState<boolean>(false);
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
     const [keyInfoModal, setKeyInfoModal] = useState(0);
-    const [currentTitle, setCurrentTitle] = useState<string>("");
-    const [currentTrackNo, setCurrentTrackNo] = useState<number>(0);
+    const [currentTrackTitle, setCurrentTrackTitle] = useState<string>("");
+    const [currentTrackNo, setCurrentTrackNo] = useState<number | undefined>();
     const [songContainerWidth, setSongContainerWidth] = useState<number>(300);
     const [displaySongTitle, setDisplaySongTitle] = useState<string>("");
     const [displaySongArtist, setDisplaySongArtist] = useState<string>("");
@@ -90,12 +90,13 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         calculatePlayerWidth();
         setDisplaySongTitle(songTitle);
         setDisplaySongArtist(songArtist);
+        setCurrentTrackTitle("");
     }, [songTracks, songTitle, songArtist]);
 
     useEffect(() => {
         if (globalAudio?.querySelector("source")) {
             setCurrentTrackNo(0);
-            setCurrentTitle("");
+            setCurrentTrackTitle("");
         }
     }, [globalAudio?.querySelector("source")]);
 
@@ -219,11 +220,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
             if (trackIndex !== -1 && tracks[trackIndex]) {
                 setCurrentTrackNo(trackIndex + 1);
-                setCurrentTitle(tracks[trackIndex]);
+                setCurrentTrackTitle(tracks[trackIndex]);
             }
         } else {
             setCurrentTrackNo(0);
-            setCurrentTitle("");
+            setCurrentTrackTitle("");
         }
     };
 
@@ -324,7 +325,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
         if (navigator.mediaSession) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: currentTitle || songTitle || "",
+                title: currentTrackTitle || songTitle || "",
                 album: songTitle || "",
                 artist: songArtist || "",
                 artwork: [{ src: songImage || "", sizes: "96x96,128x128,192x192,256x256,384x384,512x512" }],
@@ -345,24 +346,37 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentTitle, songTitle, songArtist, songImage, songTracks, globalAudio]);
+    }, [currentTrackTitle, songTitle, songArtist, songImage, songTracks, globalAudio]);
 
     useEffect(() => {
-        if (navigator.mediaSession && globalAudio) {
-            const duration = globalAudio.duration || 0;
-            const position = globalAudio.currentTime || 0;
-            const playbackRate = globalAudio.playbackRate || 1;
-            if (duration < position) return;
-            try {
-                navigator.mediaSession.setPositionState({
-                    duration: duration,
-                    position: position,
-                    playbackRate: playbackRate,
-                });
-            } catch (e) {
-                console.error("Error setting media session position state:", e);
+        const updatePositionState = () => {
+            if (
+                navigator.mediaSession &&
+                globalAudio &&
+                !isNaN(globalAudio.duration) &&
+                globalAudio.duration >= globalAudio.currentTime
+            ) {
+                try {
+                    navigator.mediaSession.setPositionState({
+                        duration: globalAudio.duration,
+                        position: globalAudio.currentTime,
+                        playbackRate: globalAudio.playbackRate,
+                    });
+                } catch (e) {
+                    console.error("Failed to update position state", e);
+                }
             }
+        };
+
+        if (globalAudio) {
+            globalAudio.ontimeupdate = updatePositionState;
         }
+
+        return () => {
+            if (globalAudio) {
+                globalAudio.ontimeupdate = null;
+            }
+        };
     }, [globalAudio]);
 
     // rearrange player for mobile / tablet
@@ -545,8 +559,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             </span>
             <span style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "none" : "flex" }}>
                 <div id="audioPlayer" style={{ ...styles.controls, flexDirection: "column", gap: 8 }}>
-                    {currentTitle ? (
-                        <div style={{ fontSize: "x-small", marginTop: currentTitle ? -20 : 0 }}>
+                    {currentTrackTitle ? (
+                        <div style={{ fontSize: "x-small", marginTop: currentTrackTitle ? -20 : 0 }}>
                             {currentTrackNo}
                             {tonieCardOrTAFRecord &&
                                 ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
@@ -597,7 +611,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 >
                     {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
                     <div className="songContainer" style={songContainerStyle}>
-                        {currentTitle ? <div>{currentTitle}</div> : ""}
+                        {currentTrackTitle ? <div>{currentTrackTitle}</div> : ""}
                         <div>{displaySongArtist}</div>
                         <div>{displaySongTitle}</div>
                     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Empty, List } from "antd";
 
@@ -6,17 +6,20 @@ import { TonieboxCardProps } from "../../types/tonieboxTypes";
 
 import { TonieboxCard } from "../tonieboxes/TonieboxCard";
 import LoadingSpinner from "../utils/LoadingSpinner";
-import GetBoxModelImages from "../../utils/boxModels";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
     readOnly?: boolean;
 }> = ({ tonieboxCards, readOnly = false }) => {
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
-    const boxModelImages = GetBoxModelImages();
+    const { addNotification, boxModelImages } = useTeddyCloud();
+    const [checkCC3200CFW, setCheckCC3200CFW] = useState<boolean>(false);
 
     useEffect(() => {
         if (!boxModelImages.loading && boxModelImages.boxModelImages.length === 0) {
@@ -28,6 +31,15 @@ export const TonieboxesList: React.FC<{
             );
         }
     }, [boxModelImages.loading, boxModelImages.boxModelImages.length]);
+
+    useEffect(() => {
+        const fetchCheckCC3200CFW = async () => {
+            const response = await api.apiGetTeddyCloudSettingRaw("frontend.check_cc300_cfw");
+            const checkCC3200CFW = (await response.text()) === "true";
+            setCheckCC3200CFW(checkCC3200CFW);
+        };
+        fetchCheckCC3200CFW();
+    }, []);
 
     if (boxModelImages.loading) {
         return <LoadingSpinner />;
@@ -63,6 +75,7 @@ export const TonieboxesList: React.FC<{
                         tonieboxCard={toniebox}
                         tonieboxImages={boxModelImages.boxModelImages}
                         readOnly={readOnly}
+                        checkCC3200CFW={checkCC3200CFW}
                     />
                 </List.Item>
             )}

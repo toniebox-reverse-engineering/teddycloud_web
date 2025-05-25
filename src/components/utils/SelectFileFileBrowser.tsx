@@ -88,7 +88,8 @@ export const SelectFileFileBrowser: React.FC<{
     useEffect(() => {
         setLoading(true);
         api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
+            `/api/fileIndexV2?path=${encodeURIComponent(path)}&special=${special}` +
+                (overlay ? `&overlay=${overlay}` : "")
         )
             .then((response) => response.json())
             .then((data) => {
@@ -127,7 +128,7 @@ export const SelectFileFileBrowser: React.FC<{
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
             setCurrentAudioUrl(
-                encodeURI("/content" + path + "/" + record.name) +
+                encodeURI("/content" + decodeURI(path) + "/" + record.name) +
                     "?ogg=true&special=" +
                     special +
                     (overlay ? `&overlay=${overlay}` : "")
