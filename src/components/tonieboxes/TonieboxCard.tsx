@@ -39,7 +39,8 @@ export const TonieboxCard: React.FC<{
     tonieboxCard: TonieboxCardProps;
     tonieboxImages: TonieboxImage[];
     readOnly?: boolean;
-}> = ({ tonieboxCard, tonieboxImages, readOnly = false }) => {
+    checkCC3200CFW?: boolean;
+}> = ({ tonieboxCard, tonieboxImages, readOnly = false, checkCC3200CFW = false }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification, boxModelImages } = useTeddyCloud();
@@ -136,7 +137,7 @@ export const TonieboxCard: React.FC<{
     }, [tonieboxCard.ID, tonieboxCard.boxModel, currentLanguage]);
 
     useEffect(() => {
-        if (lastIp && tonieboxVersion === BoxVersionsEnum.cc3200) {
+        if (checkCC3200CFW && lastIp && tonieboxVersion === BoxVersionsEnum.cc3200) {
             // only if lastIp is set and box version is CC3200
             // we check for CFW using battery status API call
             try {
@@ -155,7 +156,7 @@ export const TonieboxCard: React.FC<{
                 setCFWInstalled(false);
             }
         }
-    }, [lastIp, tonieboxVersion]);
+    }, [lastIp, tonieboxVersion, checkCC3200CFW]);
 
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
         boxModelImages.boxModelImages.map((v) => {
