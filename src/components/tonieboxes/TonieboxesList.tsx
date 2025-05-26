@@ -34,7 +34,7 @@ export const TonieboxesList: React.FC<{
 
     useEffect(() => {
         const fetchCheckCC3200CFW = async () => {
-            const response = await api.apiGetTeddyCloudSettingRaw("frontend.check_cc300_cfw");
+            const response = await api.apiGetTeddyCloudSettingRaw("frontend.check_cc3200_cfw");
             const checkCC3200CFW = (await response.text()) === "true";
             setCheckCC3200CFW(checkCC3200CFW);
         };

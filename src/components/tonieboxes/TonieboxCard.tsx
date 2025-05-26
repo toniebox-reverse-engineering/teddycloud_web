@@ -129,7 +129,7 @@ export const TonieboxCard: React.FC<{
             const lastIp = await response.text();
             setLastIp(lastIp);
         };
-        fetchTonieboxLastIp();
+        checkCC3200CFW && fetchTonieboxLastIp();
 
         selectBoxImage(tonieboxCard.boxModel);
         setSelectedModel(tonieboxCard.boxModel);
