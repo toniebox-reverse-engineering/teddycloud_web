@@ -287,7 +287,7 @@ export const ToniesList: React.FC<{
         setListKey((prevKey) => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const getCurrentPageData = () => {
