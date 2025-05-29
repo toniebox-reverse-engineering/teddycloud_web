@@ -424,6 +424,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
             updatedContent[index] = newContent;
             return updatedContent;
         });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     useEffect(() => {

@@ -944,6 +944,7 @@ export const CC3200BoxFlashingPage = () => {
             updatedContent[index] = newContent;
             return updatedContent;
         });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     useEffect(() => {

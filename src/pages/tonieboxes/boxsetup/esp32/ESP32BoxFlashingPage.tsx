@@ -1667,6 +1667,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
             updatedContent[index] = newContent;
             return updatedContent;
         });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     // button functions
