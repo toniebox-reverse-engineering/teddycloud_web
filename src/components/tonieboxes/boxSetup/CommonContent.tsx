@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Empty, Image, Modal, Spin, Table, Typography } from "antd";
+import { Alert, Button, Empty, Image, Modal, Space, Spin, Table, Typography } from "antd";
 
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
@@ -33,6 +33,7 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 
 export function uart3v3Hint(): JSX.Element {
     const { t } = useTranslation();
+    const { Paragraph, Text } = Typography;
 
     return (
         <Alert
@@ -41,29 +42,52 @@ export function uart3v3Hint(): JSX.Element {
             message={t("tonieboxes.boxSetup.UARTHint.title")}
             description={
                 <>
-                    {t("tonieboxes.boxSetup.UARTHint.description")}
-                    <div style={{ marginTop: "8px", display: "flex", gap: 8 }}>
-                        <Image
-                            src={jumper1}
-                            preview={false}
-                            alt={t("tonieboxes.boxSetup.UARTHint.imageAlt1")}
-                            style={{ maxHeight: 75 }}
-                        />
-                        <Image
-                            src={jumper2}
-                            preview={false}
-                            alt={t("tonieboxes.boxSetup.UARTHint.imageAlt2")}
-                            style={{ maxHeight: 75 }}
-                        />
-                        <Image
-                            src={jumper3}
-                            preview={false}
-                            alt={t("tonieboxes.boxSetup.UARTHint.imageAlt3")}
-                            style={{ maxHeight: 75 }}
-                        />
-                    </div>
-                    <div style={{ marginTop: "10px" }}>{t("tonieboxes.boxSetup.UARTHint.warning")}</div>
-                    <div style={{ marginTop: "10px" }}>{t("tonieboxes.boxSetup.UARTHint.updateDriver")}</div>
+                    <Paragraph>{t("tonieboxes.boxSetup.UARTHint.noUSBCVersion")}</Paragraph>
+                    <Paragraph>{t("tonieboxes.boxSetup.UARTHint.description")}</Paragraph>
+
+                    <ol style={{ paddingLeft: 20 }}>
+                        <li>
+                            <Space direction="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
+                                <Text strong>{t("tonieboxes.boxSetup.UARTHint.voltageCompatibility")}</Text>
+                                <Paragraph>
+                                    <Paragraph>{t("tonieboxes.boxSetup.UARTHint.voltageCompatibilityText1")}</Paragraph>
+                                    <Paragraph>{t("tonieboxes.boxSetup.UARTHint.voltageCompatibilityText2")}</Paragraph>
+                                </Paragraph>
+                                <Space size="small">
+                                    <Image
+                                        src={jumper1}
+                                        preview={false}
+                                        alt={t("tonieboxes.boxSetup.UARTHint.imageAlt1")}
+                                        style={{ maxHeight: 75 }}
+                                    />
+                                    <Image
+                                        src={jumper2}
+                                        preview={false}
+                                        alt={t("tonieboxes.boxSetup.UARTHint.imageAlt2")}
+                                        style={{ maxHeight: 75 }}
+                                    />
+                                    <Image
+                                        src={jumper3}
+                                        preview={false}
+                                        alt={t("tonieboxes.boxSetup.UARTHint.imageAlt3")}
+                                        style={{ maxHeight: 75 }}
+                                    />
+                                </Space>
+                                <Paragraph>
+                                    <Text strong type="danger">
+                                        {t("tonieboxes.boxSetup.UARTHint.warning")}
+                                    </Text>
+                                </Paragraph>
+                            </Space>
+                        </li>
+
+                        <li>
+                            <Space direction="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
+                                <Text strong>{t("tonieboxes.boxSetup.UARTHint.uartDriver")}</Text>
+                                <Paragraph>{t("tonieboxes.boxSetup.UARTHint.updateDriver")}</Paragraph>
+                            </Space>
+                        </li>
+                    </ol>
                 </>
             }
         />
