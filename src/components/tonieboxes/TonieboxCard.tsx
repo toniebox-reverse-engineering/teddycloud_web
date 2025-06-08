@@ -681,13 +681,13 @@ export const TonieboxCard: React.FC<{
                                   {!tonieboxAccessApi ? (
                                       <Tooltip title={t("tonieboxes.accessApiDisabled")}>
                                           <LockOutlined
-                                              style={{ color: "red", cursor: "pointer" }}
+                                              style={{ color: token.colorError, cursor: "pointer" }}
                                               onClick={handleApiAccessClick}
                                           />
                                       </Tooltip>
                                   ) : tonieboxStatus ? (
                                       <Tooltip title={t("tonieboxes.online")}>
-                                          <WifiOutlined style={{ color: "green", cursor: "default" }} />
+                                          <WifiOutlined style={{ color: token.colorSuccess, cursor: "default" }} />
                                       </Tooltip>
                                   ) : (
                                       <Tooltip
@@ -730,7 +730,7 @@ export const TonieboxCard: React.FC<{
                         readOnly ? (
                             tonieboxStatus ? (
                                 <Tooltip key="box-status-online" title={t("tonieboxes.online")}>
-                                    <WifiOutlined style={{ color: "green", cursor: "default" }} />{" "}
+                                    <WifiOutlined style={{ color: token.colorSuccess, cursor: "default" }} />{" "}
                                 </Tooltip>
                             ) : (
                                 <Tooltip

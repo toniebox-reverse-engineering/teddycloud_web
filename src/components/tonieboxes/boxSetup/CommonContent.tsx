@@ -44,7 +44,6 @@ export function uart3v3Hint(): JSX.Element {
                 <>
                     <Paragraph>{t("tonieboxes.boxSetup.UARTHint.noUSBCVersion")}</Paragraph>
                     <Paragraph>{t("tonieboxes.boxSetup.UARTHint.description")}</Paragraph>
-
                     <ol style={{ paddingLeft: 20 }}>
                         <li>
                             <Space direction="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
@@ -80,7 +79,6 @@ export function uart3v3Hint(): JSX.Element {
                                 </Paragraph>
                             </Space>
                         </li>
-
                         <li>
                             <Space direction="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
                                 <Text strong>{t("tonieboxes.boxSetup.UARTHint.uartDriver")}</Text>

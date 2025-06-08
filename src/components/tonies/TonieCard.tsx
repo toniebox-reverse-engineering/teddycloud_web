@@ -592,11 +592,11 @@ export const TonieCard: React.FC<{
               ),
               <CloudSyncOutlined
                   key="nocloud"
-                  style={{ cursor: "default", color: isNoCloud ? "red" : token.colorTextDisabled }}
+                  style={{ cursor: "default", color: isNoCloud ? token.colorError : token.colorTextDisabled }}
               />,
               <RetweetOutlined
                   key="live"
-                  style={{ cursor: "default", color: isLive ? "red" : token.colorTextDisabled }}
+                  style={{ cursor: "default", color: isLive ? token.colorError : token.colorTextDisabled }}
               />,
           ]
         : [
@@ -647,12 +647,12 @@ export const TonieCard: React.FC<{
               ),
               <CloudSyncOutlined
                   key="nocloud"
-                  style={{ color: isNoCloud ? "red" : token.colorTextDescription }}
+                  style={{ color: isNoCloud ? token.colorError : token.colorTextDescription }}
                   onClick={handleNoCloudClick}
               />,
               <RetweetOutlined
                   key="live"
-                  style={{ color: isLive ? "red" : token.colorTextDescription }}
+                  style={{ color: isLive ? token.colorError : token.colorTextDescription }}
                   onClick={handleLiveClick}
               />,
           ];

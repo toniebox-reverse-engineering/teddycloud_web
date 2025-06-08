@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Button, Drawer, Menu, MenuProps, Modal, theme } from "antd";
+import { Button, Drawer, Menu, MenuProps, theme } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { MenuOutlined, PlusOutlined } from "@ant-design/icons";
 

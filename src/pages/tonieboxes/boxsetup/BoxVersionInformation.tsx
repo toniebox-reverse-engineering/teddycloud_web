@@ -1,15 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Card, Col, List, Row, Typography } from "antd";
+import { Card, Col, List, Row, theme, Typography } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 
 const { Paragraph, Title } = Typography;
+const { useToken } = theme;
 
 export const BoxVersionInformationPage = () => {
     const { t } = useTranslation();
+    const { token } = useToken();
 
     interface Version {
         name: string;
@@ -86,7 +88,9 @@ export const BoxVersionInformationPage = () => {
                                 dataSource={version.cons}
                                 renderItem={(item) => (
                                     <List.Item style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
-                                        <CloseOutlined style={{ color: "red", marginRight: 8, marginTop: 4 }} />
+                                        <CloseOutlined
+                                            style={{ color: token.colorError, marginRight: 8, marginTop: 4 }}
+                                        />
                                         <Paragraph style={{ marginBottom: 0, textAlign: "right" }}>{item}</Paragraph>
                                     </List.Item>
                                 )}
