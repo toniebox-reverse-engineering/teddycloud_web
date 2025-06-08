@@ -36,10 +36,6 @@ code {
     background: transparent !important;
 }
 
-.warning .ant-modal-content {
-    border-top: 8px solid orange;
-}
-
 .sticky-footer .ant-modal-footer {
     position: sticky;
     bottom: 0;
@@ -50,20 +46,6 @@ code {
 
 .sticky-footer .ant-modal-content {
     padding: 20px 24px 0;
-}
-
-.ant-form-item .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-    display: none;
-}
-
-.ant-form-item .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
-    color: #ff4d4f !important;
-    display: inline-block;
-    margin-inline-end: 4px;
-    font-family: SimSun, sans-serif;
-    line-height: 1;
-    content: "*";
-    visibility: visible !important;
 }
 
 /* tonie article search - in searchfield display none, but in dropdown displayed */
@@ -190,5 +172,4 @@ code {
     height: 100%;
     align-content: center;
 }
-
 /* end of workaround */

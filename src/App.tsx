@@ -1,6 +1,5 @@
-import "./App.css";
 import { useEffect, useState } from "react";
-import { Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ConfigProvider, Layout, theme } from "antd";
 
 import { BulbOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
