@@ -1667,6 +1667,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
             updatedContent[index] = newContent;
             return updatedContent;
         });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     // button functions
@@ -1933,6 +1934,7 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
+                        { title: t("tonieboxes.boxSetup.navigationTitle") },
                         { title: t("tonieboxes.esp32BoxFlashing.navigationTitle") },
                     ]}
                 />

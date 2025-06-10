@@ -159,6 +159,7 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
             updatedContent[index] = newContent;
             return updatedContent;
         });
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     useEffect(() => {
@@ -227,6 +228,7 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
+                        { title: t("tonieboxes.boxSetup.navigationTitle") },
                         { title: t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle") },
                     ]}
                 />

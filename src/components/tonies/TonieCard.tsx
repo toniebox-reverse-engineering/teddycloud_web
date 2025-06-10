@@ -464,6 +464,7 @@ export const TonieCard: React.FC<{
                                     color: activeSource === selectedSource ? token.colorTextDisabled : token.colorText,
                                     cursor: activeSource === selectedSource ? "default" : "pointer",
                                 }}
+                                className={activeSource === selectedSource ? "disabled" : "enabled"}
                             />,
                         ]}
                         addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
@@ -504,6 +505,7 @@ export const TonieCard: React.FC<{
                                     color: activeModel === selectedModel ? token.colorTextDisabled : token.colorText,
                                     cursor: activeModel === selectedModel ? "default" : "pointer",
                                 }}
+                                className={activeModel === selectedModel ? "disabled" : "enabled"}
                             />,
                         ]}
                     />
@@ -592,11 +594,16 @@ export const TonieCard: React.FC<{
               ),
               <CloudSyncOutlined
                   key="nocloud"
-                  style={{ cursor: "default", color: isNoCloud ? "red" : token.colorTextDisabled }}
+                  className={isNoCloud ? "no-cloud" : "cloud"}
+                  style={{
+                      cursor: "default",
+                      color: isNoCloud ? token.colorError + " !important" : token.colorTextDisabled,
+                  }}
               />,
               <RetweetOutlined
                   key="live"
-                  style={{ cursor: "default", color: isLive ? "red" : token.colorTextDisabled }}
+                  className={isLive ? "live" : "not-live"}
+                  style={{ cursor: "default", color: isLive ? token.colorError : token.colorTextDisabled }}
               />,
           ]
         : [
@@ -647,12 +654,14 @@ export const TonieCard: React.FC<{
               ),
               <CloudSyncOutlined
                   key="nocloud"
-                  style={{ color: isNoCloud ? "red" : token.colorTextDescription }}
+                  className={isNoCloud ? "no-cloud" : "cloud"}
+                  style={{ color: isNoCloud ? token.colorError : token.colorTextDescription }}
                   onClick={handleNoCloudClick}
               />,
               <RetweetOutlined
                   key="live"
-                  style={{ color: isLive ? "red" : token.colorTextDescription }}
+                  className={isLive ? "live" : "not-live"}
+                  style={{ color: isLive ? token.colorError : token.colorTextDescription }}
                   onClick={handleLiveClick}
               />,
           ];

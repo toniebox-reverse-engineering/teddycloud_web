@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Button, Drawer, Menu, MenuProps, Modal, theme } from "antd";
+import { Button, Drawer, Menu, MenuProps, theme } from "antd";
 import { Header } from "antd/es/layout/layout";
 import { MenuOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -180,8 +180,8 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
         <StyledHeaderComponent id="teddycloud-header">
             <Link to="/" style={{ color: "white" }}>
                 <StyledLeftPart>
-                    <StyledLogo src={logoImg} />
-                    <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud Server</HiddenMobile>
+                    <StyledLogo className="teddycloud-logo" src={logoImg} />
+                    <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud</HiddenMobile>
                 </StyledLeftPart>
             </Link>
             <HiddenMobile>
@@ -192,7 +192,6 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
                     selectedKeys={[selectedKey]}
                     style={{
                         width: "calc(100vw - 510px)",
-                        background: "#141414 !important",
                     }}
                 />
             </HiddenMobile>

@@ -38,6 +38,7 @@ export const ChangelogPage = () => {
                 "gui: Some help modal to tonies overview with explanation of all action items",
                 "gui: Reduced number of API calls",
                 "gui: Overworked ux of the move, rename and delete modals",
+                "gui: Added Matrix style",
                 "gui: Some refactoring",
             ],
             commits: [

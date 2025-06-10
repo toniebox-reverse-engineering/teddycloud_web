@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Dropdown, Space, Tag } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 export const StyledLanguageSwitcher = () => {
     const { t, i18n } = useTranslation();
@@ -37,17 +38,12 @@ export const StyledLanguageSwitcher = () => {
     return (
         <Space style={{ marginRight: -8 }}>
             <Dropdown menu={{ items }} trigger={["click"]}>
-                <a href="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
-                    <Tag color="transparent">
+                <Link to="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
+                    <Tag color="transparent" style={{ fontSize: "unset" }}>
                         <GlobalOutlined />{" "}
-                        <strong>
-                            {
-                                items.find((item) => item.onClick && item.onClick.toString().includes(currentLanguage))
-                                    ?.label
-                            }
-                        </strong>
+                        {items.find((item) => item.onClick && item.onClick.toString().includes(currentLanguage))?.label}
                     </Tag>
-                </a>
+                </Link>
             </Dropdown>
         </Space>
     );

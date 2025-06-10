@@ -192,6 +192,7 @@ export const IdentifyBoxVersionPage = () => {
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
+                        { title: t("tonieboxes.boxSetup.navigationTitle") },
                         { title: t("tonieboxes.boxSetup.identifyVersion.navigationTitle") },
                     ]}
                 />

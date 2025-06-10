@@ -2,8 +2,17 @@ import React, { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Modal, theme } from "antd";
 import { WarningOutlined } from "@ant-design/icons";
+import styled from "styled-components";
 
 const { useToken } = theme;
+
+const StyledModal = styled(Modal)<{ warningColor: string }>`
+    &.warning {
+        .ant-modal-content {
+            border-top: 8px solid ${({ warningColor }) => warningColor};
+        }
+    }
+`;
 
 interface ConfirmationDialogProps {
     title: string;
@@ -34,10 +43,12 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     const { token } = useToken();
 
     return (
-        <Modal
+        <StyledModal
+            warningColor={token.colorWarning}
+            className="warning"
             title={
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <WarningOutlined style={{ fontSize: 36, color: "orange", margin: 16 }} />
+                    <WarningOutlined style={{ fontSize: 36, color: token.colorWarning, margin: 16 }} />
                     <div style={{ marginBottom: 16 }}>{title}</div>
                 </div>
             }
@@ -46,7 +57,6 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             onCancel={handleCancel}
             okText={okText}
             cancelText={cancelText}
-            className="warning"
         >
             <div style={{ marginBottom: 24 }}>{content}</div>
             {contentHint && (
@@ -64,7 +74,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                     {contentDetails}
                 </div>
             )}
-        </Modal>
+        </StyledModal>
     );
 };
 
