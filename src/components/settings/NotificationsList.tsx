@@ -287,8 +287,8 @@ const NotificationsList = () => {
     };
 
     return (
-        <div>
-            <h2>{t("settings.notifications.title")}</h2>
+        <>
+            <h1>{t("settings.notifications.title")}</h1>
 
             <Paragraph
                 style={{
@@ -382,7 +382,7 @@ const NotificationsList = () => {
                         : undefined
                 }
             />
-        </div>
+        </>
     );
 };
 

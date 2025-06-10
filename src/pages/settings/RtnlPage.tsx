@@ -169,7 +169,11 @@ export const RtnlPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("settings.rtnl.navigationTitle") }]}
+                    items={[
+                        { title: t("home.navigationTitle") },
+                        { title: t("settings.navigationTitle") },
+                        { title: t("settings.rtnl.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <h1>{t(`settings.rtnl.title`)}</h1>
@@ -181,6 +185,7 @@ export const RtnlPage = () => {
                         <Divider>{t("settings.rtnl.title")}</Divider>
 
                         <div
+                            className="rtnl-log-container"
                             ref={logListRef}
                             style={{
                                 minHeight: "max(40vh, 333px)",

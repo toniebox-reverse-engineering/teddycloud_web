@@ -1156,6 +1156,7 @@ export const CC3200BoxFlashingPage = () => {
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
+                        { title: t("tonieboxes.boxSetup.navigationTitle") },
                         { title: t("tonieboxes.cc3200BoxFlashing.navigationTitle") },
                     ]}
                 />

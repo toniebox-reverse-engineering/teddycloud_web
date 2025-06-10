@@ -17,6 +17,7 @@ export const OpenBoxGuidePage = () => {
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
+                        { title: t("tonieboxes.boxSetup.navigationTitle") },
                         { title: t("tonieboxes.boxSetup.openBoxGuide.navigationTitle") },
                     ]}
                 />

@@ -16,11 +16,11 @@ export const NotificationsListPage = () => {
                 <BreadcrumbWrapper
                     items={[
                         { title: t("home.navigationTitle") },
+                        { title: t("settings.navigationTitle") },
                         { title: t("settings.notifications.navigationTitle") },
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`settings.notifications.title`)}</h1>
                     <NotificationsList />
                 </StyledContent>
             </StyledLayout>

@@ -482,6 +482,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const minimalPlayer = showAudioPlayerMinimal ? (
         <>
             <span
+                className="audioplayer-inner"
                 id="minimalAudioPlayer"
                 style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "flex" : "none", padding: 0 }}
             >
@@ -546,6 +547,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const normalPlayer = !showAudioPlayerMinimal ? (
         <>
             <span
+                className="audioplayer-inner"
                 id="normalAudioPlayer"
                 style={{
                     margin: 0,
@@ -557,7 +559,10 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             >
                 {minMaximizerClose}
             </span>
-            <span style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "none" : "flex" }}>
+            <span
+                className="audioplayer-inner"
+                style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "none" : "flex" }}
+            >
                 <div id="audioPlayer" style={{ ...styles.controls, flexDirection: "column", gap: 8 }}>
                     {currentTrackTitle ? (
                         <div style={{ fontSize: "x-small", marginTop: currentTrackTitle ? -20 : 0 }}>
@@ -675,6 +680,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     return (
         <>
             <div
+                className="audioplayer-container"
                 style={{
                     ...styles.container,
                     display: audioPlayerDisplay,
