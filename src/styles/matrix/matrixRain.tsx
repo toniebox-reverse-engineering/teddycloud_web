@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./MatrixRain.css";
+import "./matrixRain.css";
 
 const MatrixRain = () => {
     const [columns, setColumns] = useState<number[]>([]);
