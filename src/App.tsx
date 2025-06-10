@@ -1,8 +1,9 @@
+import "./styles/matrix/matrix.css";
 import { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ConfigProvider, Layout, theme } from "antd";
 
-import { BulbOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
+import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 
 import { TeddyCloudProvider } from "./TeddyCloudContext";
 import { AudioProvider } from "./components/audio/AudioContext";
@@ -44,6 +45,8 @@ import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { detectColorScheme } from "./utils/browserUtils";
 import { PluginListPage } from "./pages/community/PluginListPage";
 import { PluginPage } from "./pages/community/PluginPage";
+import { matrixAlgorithm as matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
+import MatrixRain from "./styles/matrix/matrixRain";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -62,13 +65,12 @@ function App() {
         return savedTheme || "auto"; // Default to 'auto' if no theme is saved
     });
 
-    const [isDarkMode, setIsDarkMode] = useState(detectColorScheme() === "dark");
-
     // Function to toggle between dark, light, and auto modes
     const toggleTheme = () => {
         setThemeMode((prevMode) => {
             if (prevMode === "dark") return "light";
             else if (prevMode === "light") return "auto";
+            else if (prevMode === "auto") return "matrix";
             else return "dark";
         });
     };
@@ -76,23 +78,32 @@ function App() {
     // Effect to update local storage when theme mode changes
     useEffect(() => {
         localStorage.setItem("theme", themeMode);
-        setIsDarkMode(detectColorScheme() === "dark");
         if (detectColorScheme() === "dark") {
+            updateMetaThemeColor("#000000");
+        } else if (detectColorScheme() === "matrix") {
             updateMetaThemeColor("#000000");
         } else {
             updateMetaThemeColor("#f5f5f5");
+        }
+        if (themeMode === "matrix") {
+            document.body.classList.add("matrix-theme");
+        } else {
+            document.body.classList.remove("matrix-theme");
         }
     }, [themeMode]);
 
     let themeSwitchIcon;
     if (themeMode === "dark") themeSwitchIcon = <MoonOutlined onClick={toggleTheme} />;
     else if (themeMode === "light") themeSwitchIcon = <SunOutlined onClick={toggleTheme} />;
+    else if (themeMode === "matrix")
+        themeSwitchIcon = <CodeOutlined style={{ marginTop: "-2px" }} onClick={toggleTheme} />;
     else themeSwitchIcon = <BulbOutlined onClick={toggleTheme} />;
 
     return (
         <ConfigProvider
             theme={{
-                algorithm: isDarkMode ? darkAlgorithm : defaultAlgorithm,
+                algorithm:
+                    themeMode === "dark" ? darkAlgorithm : themeMode === "matrix" ? matrixAlgorithm : defaultAlgorithm,
                 components: {
                     Slider: {
                         dotSize: 3,
@@ -106,6 +117,7 @@ function App() {
                 },
             }}
         >
+            {themeMode === "matrix" && <MatrixRain />}
             <TeddyCloudProvider>
                 <div className="App">
                     <Layout style={{ minHeight: "100vh" }}>

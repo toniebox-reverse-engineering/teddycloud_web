@@ -149,6 +149,10 @@ code {
     }
 }
 
+.ant-pagination-options-size-changer .ant-select-selection-search input {
+    display: none;
+}
+
 /* workaround to set same card height within a row,
  * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
  * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */

@@ -424,7 +424,6 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
             updatedContent[index] = newContent;
             return updatedContent;
         });
-        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     useEffect(() => {
@@ -444,6 +443,10 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
         updateContent(currentStep, getContentForStep());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentStep, currentLanguage, detectColorScheme(), commonActiveKey]);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [currentStep]);
 
     const prev = () => {
         setCurrent(currentStep - 1);
@@ -494,6 +497,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
                     items={[
                         { title: t("home.navigationTitle") },
                         { title: t("tonieboxes.navigationTitle") },
+                        { title: t("tonieboxes.boxSetup.navigationTitle") },
                         { title: t("tonieboxes.cc3235BoxFlashing.navigationTitle") },
                     ]}
                 />

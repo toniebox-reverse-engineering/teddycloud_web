@@ -444,6 +444,7 @@ export const TonieboxCard: React.FC<{
                     onChange={(e) => setBoxName(e.target.value)}
                     addonBefore={
                         <RollbackOutlined
+                            className={boxName === tonieboxName ? "disabled" : "enabled"}
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
                                 color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,
@@ -681,13 +682,17 @@ export const TonieboxCard: React.FC<{
                                   {!tonieboxAccessApi ? (
                                       <Tooltip title={t("tonieboxes.accessApiDisabled")}>
                                           <LockOutlined
+                                              className="access-disabled"
                                               style={{ color: token.colorError, cursor: "pointer" }}
                                               onClick={handleApiAccessClick}
                                           />
                                       </Tooltip>
                                   ) : tonieboxStatus ? (
                                       <Tooltip title={t("tonieboxes.online")}>
-                                          <WifiOutlined style={{ color: token.colorSuccess, cursor: "default" }} />
+                                          <WifiOutlined
+                                              className="online"
+                                              style={{ color: token.colorSuccess, cursor: "default" }}
+                                          />
                                       </Tooltip>
                                   ) : (
                                       <Tooltip
@@ -697,6 +702,7 @@ export const TonieboxCard: React.FC<{
                                           }
                                       >
                                           <WifiOutlined
+                                              className="offline"
                                               style={{
                                                   color: token.colorTextDescription,
                                                   cursor: "default",
@@ -730,7 +736,10 @@ export const TonieboxCard: React.FC<{
                         readOnly ? (
                             tonieboxStatus ? (
                                 <Tooltip key="box-status-online" title={t("tonieboxes.online")}>
-                                    <WifiOutlined style={{ color: token.colorSuccess, cursor: "default" }} />{" "}
+                                    <WifiOutlined
+                                        className="online"
+                                        style={{ color: token.colorSuccess, cursor: "default" }}
+                                    />{" "}
                                 </Tooltip>
                             ) : (
                                 <Tooltip
@@ -741,6 +750,7 @@ export const TonieboxCard: React.FC<{
                                     }
                                 >
                                     <WifiOutlined
+                                        className="offline"
                                         style={{
                                             color: token.colorTextDescription,
                                             cursor: "default",
