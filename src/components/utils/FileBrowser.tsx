@@ -308,7 +308,7 @@ export const FileBrowser: React.FC<{
             },
         ];
         pathArray.forEach((segment, index) => {
-            const segmentPath = `${pathArray.slice(0, index + 1).join("/")}`;
+            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
             breadcrumbItems.push({
                 title: (
                     <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
