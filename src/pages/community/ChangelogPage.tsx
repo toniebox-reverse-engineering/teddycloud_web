@@ -19,6 +19,7 @@ export const ChangelogPage = () => {
                 "Fixed error failed to read incomplete http response header https://github.com/toniebox-reverse-engineering/teddycloud/issues/326",
                 "Added TeddyCloud plugin APIs and new volume plugins fur custom Teddycloud plugins https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
                 "Added Setting frontend.check_cc3200_cfw https://github.com/toniebox-reverse-engineering/teddycloud/issues/358",
+                "Fixed possible TeddyCloud CA Certificate bug https://github.com/toniebox-reverse-engineering/teddycloud/issues/230",
                 "gui: Changed Radio Browser API Url, try to get a working url from all servers list",
                 "gui: Added tonieboxes tab to homepage, user can now choose if he want to see his tonies or tonieboxes. Setting is stored locally.",
                 "gui: Added more country flags and languages to tonies list (filter + flags on Toniecard) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/217",

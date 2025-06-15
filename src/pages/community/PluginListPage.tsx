@@ -264,7 +264,12 @@ export const PluginListPage = () => {
                 <StyledContent>
                     <h1>{t("community.plugins.title")}</h1>
                     {/* WIP remove when implemented */}
-                    <Alert type="warning" showIcon message="WIP - To be added soon" style={{ margin: 32 }} />
+                    <Alert
+                        type="warning"
+                        showIcon
+                        message="WIP - To be extended soon... meanwhile you can upload plugins manually using any SFTP-Client and add a plugins.json in the plugins-folder (in WWW directory!) which lists the plugin folders like ['PluginA','PluginB']"
+                        style={{ margin: 32 }}
+                    />
 
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}>
                         <Paragraph>{t("community.plugins.intro")}</Paragraph>
@@ -371,7 +376,7 @@ export const PluginListPage = () => {
                                         <Tooltip title={t("community.plugins.open")} key="details">
                                             <DesktopOutlined
                                                 style={{ cursor: "pointer" }}
-                                                onClick={() => navigate(`/community/plugins/${plugin.pluginId}`)}
+                                                onClick={() => navigate(`/community/plugin/${plugin.pluginId}`)}
                                             />
                                         </Tooltip>,
                                         plugin.pluginHomepage && (

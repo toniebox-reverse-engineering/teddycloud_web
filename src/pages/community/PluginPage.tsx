@@ -154,8 +154,7 @@ export const PluginPage = () => {
                     )}
                     <iframe
                         ref={iframeRef}
-                        // @Todo: Remove /web in real world
-                        src={`/web/plugins/${pluginId}/index.html`}
+                        src={`/plugins/${pluginId}/index.html`}
                         title={`${t("community.plugins.plugin")}: ${pluginId}`}
                         style={{
                             width: "100%",
