@@ -12,7 +12,7 @@
 
 .matrix-column {
     position: absolute;
-    top: -100%;
+    top: -110%;
     display: flex;
     flex-direction: column;
     animation-name: matrixScroll;
@@ -29,7 +29,7 @@
 
 @keyframes matrixScroll {
     0% {
-        transform: translateY(-100%);
+        transform: translateY(0%);
         opacity: 0;
     }
     100% {

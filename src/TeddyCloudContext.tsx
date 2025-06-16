@@ -186,25 +186,38 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
     const fetchPlugins = async () => {
         try {
-            // WIP, removed for merge
-            return;
-            // @Todo: Add real apicall to get folders
-            let pluginFolders: string[] = [];
+            let folders: string[] = [];
+
             try {
                 const response = await api.apiGetTeddyCloudApiRaw(`/api/plugins/getPlugins`);
-
                 if (!response.ok) throw new Error(response.statusText);
+                folders = await response.json(); // assuming the API returns a list of folders
             } catch (error) {
-                pluginFolders = ["helloWorld", "ToniesList", "TeddyStudio", "teddycloudRepos"];
-                console.warn("Using fallback plugin list due to an error (API most probably not available yet).");
+                // @ToDo: Remove fallback for WIP till api is available: a manually maintained plugins.json is used
+                console.warn(
+                    "Using fallback plugin list from plugins/plugins.json due to an error (API most probably not available yet)."
+                );
+                try {
+                    const response = await api.apiGetTeddyCloudApiRaw("/plugins/plugins.json");
+                    if (!response.ok) throw new Error("Fallback plugins.json fetch failed");
+                    folders = await response.json();
+                } catch (fallbackErr) {
+                    addNotification(
+                        NotificationTypeEnum.Error,
+                        "Fallback plugin loading failed",
+                        "Both API and fallback plugin list failed",
+                        "TeddyCloudContext",
+                        false
+                    );
+                    return;
+                }
             }
 
             const loadedPlugins: PluginMeta[] = [];
 
-            for (const folder of pluginFolders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
+            for (const folder of folders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
                 try {
-                    // @Todo: Remove /web in real world
-                    const res = await fetch(`/web/plugins/${folder}/plugin.json`);
+                    const res = await api.apiGetTeddyCloudApiRaw(`/plugins/${folder}/plugin.json`);
                     if (!res.ok) throw new Error(`Failed to fetch plugin: ${folder}`);
                     const meta = await res.json();
 
@@ -212,8 +225,8 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                         console.warn(`Skipping "${folder}" — missing pluginName.`);
                         addNotification(
                             NotificationTypeEnum.Warning,
-                            `Fetching entry pluginName in plugin.json for  "${folder}" failed`,
-                            `Fetching entry pluginName in plugin.json for  "${folder}" failed, so we skip that plugin`,
+                            `Fetching entry pluginName in plugin.json for "${folder}" failed`,
+                            `Fetching entry pluginName in plugin.json for "${folder}" failed, so we skip that plugin`,
                             "TeddyCloudContext",
                             true
                         );
@@ -234,8 +247,8 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 } catch (err) {
                     addNotification(
                         NotificationTypeEnum.Error,
-                        `Fetching plugin.json for  "${folder}" failed`,
-                        `Fetching plugin.json for  "${folder}" failed, so we skip that plugin`,
+                        `Fetching plugin.json for "${folder}" failed`,
+                        `Fetching plugin.json for "${folder}" failed, so we skip that plugin`,
                         "TeddyCloudContext",
                         false
                     );
@@ -247,7 +260,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             addNotification(
                 NotificationTypeEnum.Error,
                 "Loading plugins failed",
-                "Loading plugins failed" + error,
+                "Loading plugins failed: " + error,
                 "TeddyCloudContext",
                 false
             );
