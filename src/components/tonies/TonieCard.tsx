@@ -597,7 +597,7 @@ export const TonieCard: React.FC<{
                   className={isNoCloud ? "no-cloud" : "cloud"}
                   style={{
                       cursor: "default",
-                      color: isNoCloud ? token.colorError + " !important" : token.colorTextDisabled,
+                      color: isNoCloud ? token.colorError : token.colorTextDisabled,
                   }}
               />,
               <RetweetOutlined
