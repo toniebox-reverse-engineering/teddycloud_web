@@ -90,6 +90,16 @@
     color: var(--matrix-green) !important;
 }
 
+.matrix-theme .ant-empty-normal,
+.matrix-theme .ant-empty-normal .ant-empty-description {
+    color: var(--matrix-green-dimmest) !important;
+}
+
+.matrix-theme .ant-empty-image svg path {
+    fill: var(--matrix-green-darkest) !important; /* For elements using fill */
+    stroke: var(--matrix-green-less-dark) !important; /* For elements using stroke */
+}
+
 /* === 4. Inputs & Select === */
 .matrix-theme .ant-input::placeholder,
 .matrix-theme .ant-select-selection-search-input::placeholder,
