@@ -40,6 +40,7 @@ export const ChangelogPage = () => {
                 "gui: Reduced number of API calls",
                 "gui: Overworked ux of the move, rename and delete modals",
                 "gui: Added Matrix style",
+                "gui: Tonies overview: search keyword is now also used to filter tonies by source",
                 "gui: Some refactoring",
             ],
             commits: [

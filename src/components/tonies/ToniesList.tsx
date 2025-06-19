@@ -219,7 +219,8 @@ export const ToniesList: React.FC<{
                     (tonie.sourceInfo?.model &&
                         tonie.sourceInfo.model.toLowerCase().includes(searchText.toLowerCase())) ||
                     tonie.ruid.toLowerCase().includes(searchText.toLowerCase()) ||
-                    tonie.uid.toLowerCase().includes(searchText.toLowerCase())
+                    tonie.uid.toLowerCase().includes(searchText.toLowerCase()) ||
+                    tonie.source.toLowerCase().includes(searchText.toLowerCase())
             );
         }
         if (filterLastTonieboxRUIDs) {
