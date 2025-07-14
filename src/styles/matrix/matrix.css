@@ -90,6 +90,16 @@
     color: var(--matrix-green) !important;
 }
 
+.matrix-theme .ant-empty-normal,
+.matrix-theme .ant-empty-normal .ant-empty-description {
+    color: var(--matrix-green-dimmest) !important;
+}
+
+.matrix-theme .ant-empty-image svg path {
+    fill: var(--matrix-green-darkest) !important;
+    stroke: var(--matrix-green-less-dark) !important;
+}
+
 /* === 4. Inputs & Select === */
 .matrix-theme .ant-input::placeholder,
 .matrix-theme .ant-select-selection-search-input::placeholder,
@@ -125,13 +135,16 @@
 }
 
 .matrix-theme .ant-select:not(.ant-select-disabled):focus-visible .ant-select-selector,
+.matrix-theme .ant-select:not(.ant-select-disabled):focus .ant-select-selector,
+.matrix-theme .ant-select-selector:focus-visible,
 .matrix-theme .ant-input-affix-wrapper-focused,
 .matrix-theme .ant-input:focus-visible,
 .matrix-theme .ant-input-number:focus-visible,
 .matrix-theme .ant-input-number-focused,
 .matrix-theme .ant-select-open .ant-select-selector,
 .matrix-theme .ant-picker:focus-visible,
-.matrix-theme .ant-picker-focused {
+.matrix-theme .ant-picker-focused,
+.matrix-theme .ant-tree-select:focus-visible {
     box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.4) !important;
     outline: none;
 }
@@ -340,6 +353,10 @@
     border-radius: 4px;
 }
 
+.matrix-theme .ant-upload-hint {
+    color: var(--matrix-green-dimmest) !important;
+}
+
 /* === 12. Logo Filter === */
 .matrix-theme img.teddycloud-logo {
     display: block;
@@ -446,4 +463,9 @@
 
 .matrix-theme .ant-image-preview-img-wrapper::after {
     color: var(--matrix-green-soft) !important;
+}
+
+/* === tree select === */
+.matrix-theme .ant-select-tree-node-selected {
+    background-color: var(--matrix-green-less-dark) !important;
 }

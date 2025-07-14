@@ -202,13 +202,6 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                     if (!response.ok) throw new Error("Fallback plugins.json fetch failed");
                     folders = await response.json();
                 } catch (fallbackErr) {
-                    addNotification(
-                        NotificationTypeEnum.Error,
-                        "Fallback plugin loading failed",
-                        "Both API and fallback plugin list failed",
-                        "TeddyCloudContext",
-                        false
-                    );
                     return;
                 }
             }

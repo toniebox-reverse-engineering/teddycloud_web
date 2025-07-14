@@ -18,6 +18,7 @@
     animation-name: matrixScroll;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+    text-align: center;
 }
 
 .matrix-char {

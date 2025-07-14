@@ -24,7 +24,7 @@ const MatrixRain = () => {
                         left: `${col * 15}px`,
                         animationDelay: `${Math.random() * 20}s`,
                         animationDuration: `${Math.random() * 12 + 5}s`,
-                        fontSize: `${Math.floor(Math.random() * (22 - 14 + 1)) + 10}px`,
+                        fontSize: `${Math.floor(Math.random() * 9) + 10}px`,
                     }}
                 >
                     {Array.from({ length: 30 }).map((_, j) => (
