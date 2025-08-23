@@ -1502,7 +1502,7 @@
                 "hintFlashESP32": "Disconnect the powersource of your Toniebox once more. Click on \"Flash ESP32\", if necessary choose the COM-Port. Then connect your Toniebox to power and wait till the step is done!",
                 "hintPatchFlash": "To apply the selected/read flash with your TeddyCloud CA certificate and possibly make other adjustments like the TeddyCloud hostname and/or WiFi credentials, click 'Patch' after entering the information or proceed to the next step without patching.",
                 "hintPatchHost": "Enter the desired hostname for your TeddyCloud instance.",
-                "hintPatchWifi": "Optionally enter the WiFi credentials for your Toniebox.",
+                "hintPatchWifi": "Optionally enter the WiFi credentials for your Toniebox. Please only set this if you really need to - usually, if your Toniebox was connected to your WiFi right before patching, you don't need to.",
                 "hintReadESP32ImportFlash": "Now disconnect the powersource of your Toniebox. Make sure that the UART operates in 3.3V mode. Connect your UART with your PC and Toniebox. Short cut the J100 pinholes. Click on \"Read Flash\" or \"Load File\", then choose the COM-Port. Then connect your Toniebox to power and wait till the step is done!",
                 "hostname": "TeddyCloud Hostname:",
                 "hostnameSettings": "Hostname TeddyCloud",
