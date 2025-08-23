@@ -1901,6 +1901,10 @@
         "teddystudio": {
             "clear": "Blatt löschen",
             "clearSettings": "Zurücksetzen",
+            "customImage": "Eigene Bilder",
+            "customImageHint": "Du kannst auch temporär eigene Bilder für deine Traveltonies hinzufügen. Sie werden jedoch nicht dauerhaft gespeichert!",
+            "customImageTitle": "Gib einen Titel ein, der gedruckt werden soll",
+            "customImageUpload": "Eigenes Bild hinzufügen",
             "diameter": "Innen-Durchmesser",
             "empty": "Leer - Bitte wähle zuerst Tonies oder Tags aus!",
             "height": "Höhe",

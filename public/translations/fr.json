@@ -1901,6 +1901,10 @@
         "teddystudio": {
             "clear": "Effacer la feuille",
             "clearSettings": "Effacer",
+            "customImage": "Images personnalisées",
+            "customImageHint": "Vous pouvez également ajouter des images temporaires pour vos Traveltonies. Elles ne seront pas sauvegardées de façon permanente !",
+            "customImageTitle": "Entrez un titre à imprimer",
+            "customImageUpload": "Ajouter votre propre image",
             "diameter": "Diamètre intérieur",
             "empty": "Vide - Veuillez d'abord sélectionner des Tonies ou des Étiquettes !",
             "height": "Hauteur",

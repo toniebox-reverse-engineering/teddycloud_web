@@ -1,6 +1,17 @@
 import { useEffect, useState, useRef } from "react";
-import { Typography, Input, Button, Divider, theme, Checkbox, Radio, RadioChangeEvent, ColorPicker } from "antd";
-import { ClearOutlined, DeleteOutlined, PrinterOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+    Typography,
+    Input,
+    Button,
+    Divider,
+    theme,
+    Checkbox,
+    Radio,
+    RadioChangeEvent,
+    ColorPicker,
+    Upload,
+} from "antd";
+import { ClearOutlined, DeleteOutlined, PlusOutlined, PrinterOutlined, SaveOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
@@ -34,6 +45,19 @@ export const TeddyStudioPage = () => {
     const [labelSpacingX, setLabelSpacingX] = useState<string>("5mm");
     const [labelSpacingY, setLabelSpacingY] = useState<string>("5mm");
     const [labelBackgroundColor, setLabelBackgroundColor] = useState<string>("#ffffff");
+    const [customItems, setCustomItems] = useState<{ image?: string; text?: string }[]>([]);
+
+    const mergedResults = [
+        ...results,
+        ...customItems.map((item) => ({
+            custom: true,
+            text: item.text,
+            pic: item.image,
+            episodes: "",
+            model: "",
+            language: "",
+        })),
+    ];
 
     const autocompleteRef = useRef(null);
 
@@ -119,6 +143,21 @@ export const TeddyStudioPage = () => {
         setAutocompleteList(filtered);
     };
 
+    const handleCustomTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+        const newText = e.target.value;
+        setCustomItems((prev) => prev.map((item, i) => (i === index ? { ...item, text: newText } : item)));
+    };
+
+    const handleRemoveCustomItem = (index: number) => {
+        setCustomItems((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const handleAddCustomImage = (file: File) => {
+        const url = URL.createObjectURL(file);
+        setCustomItems((prev) => [...prev, { image: url, text: "" }]);
+        return false;
+    };
+
     const handleLabelShapeChange = (e: RadioChangeEvent) => {
         setLabelShape(e.target.value);
     };
@@ -175,7 +214,12 @@ export const TeddyStudioPage = () => {
     };
 
     const removeResult = (indexToRemove: number) => {
-        setResults((prev) => prev.filter((_, index) => index !== indexToRemove));
+        if (indexToRemove < results.length) {
+            setResults((prev) => prev.filter((_, index) => index !== indexToRemove));
+        } else {
+            const customIndex = indexToRemove - results.length;
+            setCustomItems((prev) => prev.filter((_, index) => index !== customIndex));
+        }
     };
 
     return (
@@ -242,6 +286,34 @@ export const TeddyStudioPage = () => {
                                 ))}
                             </div>
                         )}
+                    </div>
+                    <Divider>{t("tonies.teddystudio.customImage")}</Divider>
+                    <Paragraph style={{ fontSize: "small" }}>{t("tonies.teddystudio.customImageHint")}</Paragraph>
+                    <div style={{ display: "flex", gap: 16, flexDirection: "column", marginBottom: 16 }}>
+                        {customItems.map((item, idx) => (
+                            <div key={idx} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                {item.image && (
+                                    <img
+                                        src={item.image}
+                                        alt="preview"
+                                        style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8 }}
+                                    />
+                                )}
+
+                                <Input.TextArea
+                                    placeholder={t("tonies.teddystudio.customImageTitle")}
+                                    value={item.text}
+                                    onChange={(e) => handleCustomTextChange(e, idx)}
+                                    style={{ flex: 1 }}
+                                />
+
+                                <Button icon={<DeleteOutlined />} onClick={() => handleRemoveCustomItem(idx)} />
+                            </div>
+                        ))}
+
+                        <Upload showUploadList={false} maxCount={1} beforeUpload={handleAddCustomImage}>
+                            <Button icon={<PlusOutlined />}>{t("tonies.teddystudio.customImageUpload")}</Button>
+                        </Upload>
                     </div>
                     <Divider>{t("tonies.teddystudio.settings")}</Divider>
                     <Paragraph style={{ marginBottom: 16 }}>
@@ -386,7 +458,7 @@ export const TeddyStudioPage = () => {
                         </div>
                     </Paragraph>
                     <Divider>{t("tonies.teddystudio.printSheet")}</Divider>
-                    {results.length > 0 ? (
+                    {mergedResults.length > 0 ? (
                         <Paragraph style={{ marginBottom: 16 }}>
                             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                                 <Button icon={<ClearOutlined />} onClick={() => setResults([])}>
@@ -416,7 +488,7 @@ export const TeddyStudioPage = () => {
                             ["--text-font-size" as any]: textFontSize !== "" ? textFontSize : "14px",
                         }}
                     >
-                        {results.map((dataset: any, index: number) => (
+                        {mergedResults.map((dataset: any, index: number) => (
                             <div
                                 key={index}
                                 style={{ display: "flex", flexWrap: "wrap", gap: `${labelSpacingY} ${labelSpacingX}` }}
@@ -435,7 +507,7 @@ export const TeddyStudioPage = () => {
                                     }}
                                 >
                                     <div style={{ height: 12 }}>
-                                        {showLanguageFlag ? (
+                                        {showLanguageFlag && dataset.language ? (
                                             <LanguageFlagIcon
                                                 name={dataset.language.toUpperCase().split("-")[1]}
                                                 height={textFontSize}
@@ -445,7 +517,21 @@ export const TeddyStudioPage = () => {
                                         )}
                                     </div>
                                     <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                                        <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
+                                        <div
+                                            style={{
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {dataset.series}
+                                        </div>
+                                        <div
+                                            style={{
+                                                whiteSpace: "pre-wrap",
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            {dataset.text}
+                                        </div>
                                         <div>{dataset.episodes}</div>
                                     </div>
                                     <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
