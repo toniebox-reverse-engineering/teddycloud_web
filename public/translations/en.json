@@ -1905,6 +1905,7 @@
             "empty": "Empty - Please select Tonies or Tags first!",
             "height": "height",
             "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies (coin) sheet.",
+            "labelBackgroundColor": "Background",
             "labelShape": "Label shape",
             "labelSpacing": "spacing",
             "labelSpacingX": "X spacing",

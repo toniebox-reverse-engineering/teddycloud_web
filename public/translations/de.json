@@ -1905,6 +1905,7 @@
             "empty": "Leer - Bitte wähle zuerst Tonies oder Tags aus!",
             "height": "Höhe",
             "intro": "Durchsuche alle Tonies und Tags - sowohl offizielle als auch deine eigenen - um dein druckbares Traveltonies (Münze) Blatt zu erstellen.",
+            "labelBackgroundColor": "Hintergrund",
             "labelShape": "Etikettenform",
             "labelSpacing": "Abstand",
             "labelSpacingX": "X",

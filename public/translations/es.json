@@ -1905,6 +1905,7 @@
             "empty": "Vacío - ¡Por favor, selecciona primero Tonies o Etiquetas!",
             "height": "Alto",
             "intro": "Busca todos los Tonies y etiquetas - tanto los oficiales como los personalizados - para crear tu hoja imprimible de Traveltonies (moneda).",
+            "labelBackgroundColor": "Fondo",
             "labelShape": "Forma de la etiqueta",
             "labelSpacing": "Espaciado",
             "labelSpacingX": "Espaciado X",

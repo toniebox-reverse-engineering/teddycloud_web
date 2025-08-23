@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Typography, Input, Button, Divider, theme, Checkbox, Radio, RadioChangeEvent } from "antd";
+import { Typography, Input, Button, Divider, theme, Checkbox, Radio, RadioChangeEvent, ColorPicker } from "antd";
 import { ClearOutlined, DeleteOutlined, PrinterOutlined, SaveOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
@@ -33,6 +33,7 @@ export const TeddyStudioPage = () => {
     const [height, setHeight] = useState("30mm");
     const [labelSpacingX, setLabelSpacingX] = useState<string>("5mm");
     const [labelSpacingY, setLabelSpacingY] = useState<string>("5mm");
+    const [labelBackgroundColor, setLabelBackgroundColor] = useState<string>("#ffffff");
 
     const autocompleteRef = useRef(null);
 
@@ -53,6 +54,7 @@ export const TeddyStudioPage = () => {
             setShowModelNo(data.showModelNo || false);
             setLabelSpacingX(data.labelSpacingX || "5mm");
             setLabelSpacingY(data.labelSpacingY || "5mm");
+            setLabelBackgroundColor(data.labelBackgroundColor || "#ffffff");
         }
     }, []);
 
@@ -67,6 +69,7 @@ export const TeddyStudioPage = () => {
             showModelNo,
             labelSpacingX,
             labelSpacingY,
+            labelBackgroundColor,
         };
         sessionStorage.setItem("labelSettings", JSON.stringify(values));
     };
@@ -82,6 +85,7 @@ export const TeddyStudioPage = () => {
         setShowModelNo(false);
         setLabelSpacingX("5mm");
         setLabelSpacingY("5mm");
+        setLabelBackgroundColor("#ffffff");
     };
 
     const loadJSONData = async () => {
@@ -345,6 +349,17 @@ export const TeddyStudioPage = () => {
                                     placeholder={t("tonies.teddystudio.textFontSize")}
                                 />
                             </div>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <span style={{ marginRight: 8 }}>{t("tonies.teddystudio.labelBackgroundColor")}</span>
+                                <ColorPicker
+                                    value={labelBackgroundColor}
+                                    onChange={(_, hex) => setLabelBackgroundColor(hex)}
+                                    showText
+                                    disabledAlpha
+                                    disabledFormat
+                                    format="hex"
+                                ></ColorPicker>
+                            </div>
                             <Checkbox
                                 style={{ display: "flex", alignItems: "center" }}
                                 checked={showLanguageFlag}
@@ -456,7 +471,7 @@ export const TeddyStudioPage = () => {
                     width: var(--labelElement-width);
                     height: var(--labelElement-height);
                     border-radius: var(--labelElement-radius);
-                    background-color: white;
+                    background-color: ${labelBackgroundColor};
                     border: 1px solid ${token.colorBorder};
                     color: black;
                     display: flex;
@@ -474,6 +489,11 @@ export const TeddyStudioPage = () => {
                 }
 
                 @media print {
+                    * {
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;  /* Standardname, wo unterstützt */
+                    }
+
                     html * {
                         background-color: white !important;
                     }
@@ -492,6 +512,11 @@ export const TeddyStudioPage = () => {
                     .labelElement {
                         border-color: lightgray;
                         margin: 0;
+                        background-color: ${labelBackgroundColor} !important;
+                    }
+                        
+                    .labelElement * {
+                        background-color: ${labelBackgroundColor} !important;
                     }
                     .traveltonieCouple {
                         border: none;
