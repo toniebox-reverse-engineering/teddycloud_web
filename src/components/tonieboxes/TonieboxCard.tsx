@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";

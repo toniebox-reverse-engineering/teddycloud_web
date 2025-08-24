@@ -15,7 +15,8 @@
         "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "jsx": "react-jsx",
-        "types": ["vite/client"]
+        "types": ["vite/client"],
+        "jsxImportSource": "react"
     },
     "include": ["src"]
 }
