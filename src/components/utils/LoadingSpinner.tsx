@@ -2,7 +2,7 @@ import { Spin, theme } from "antd";
 const { useToken } = theme;
 
 interface LoadingSpinnerAsOverlayProps {
-    parentRef: React.RefObject<HTMLDivElement>; // Reference to the parent element
+    parentRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const LoadingSpinnerAsOverlay: React.FC<LoadingSpinnerAsOverlayProps> = ({ parentRef }) => {
