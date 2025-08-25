@@ -624,7 +624,8 @@ export const ESP32BoxFlashingPage = () => {
 
         const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
 
-        const blob = new Blob([flashData], { type: "application/octet-stream" });
+        // (flashData as Uint8Array).buffer as ArrayBuffer is necessary for type safety... just flashData cause typescript error
+        const blob = new Blob([(flashData as Uint8Array).buffer as ArrayBuffer], { type: "application/octet-stream" });
         const url = URL.createObjectURL(blob);
 
         setState((prevState) => ({
@@ -646,7 +647,8 @@ export const ESP32BoxFlashingPage = () => {
             }));
 
             const formData = new FormData();
-            formData.append(sanitizedName, new Blob([flashData]), sanitizedName);
+            // (flashData as Uint8Array).buffer as ArrayBuffer is necessary for type safety... just flashData cause typescript error
+            formData.append(sanitizedName, new Blob([(flashData as Uint8Array).buffer as ArrayBuffer]), sanitizedName);
 
             const response = await api.apiPostTeddyCloudFormDataRaw(`/api/esp32/uploadFirmware`, formData);
 

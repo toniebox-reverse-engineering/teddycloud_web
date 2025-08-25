@@ -1,13 +1,28 @@
 import { useEffect, useState, useRef } from "react";
-import { Typography, Input, Button, Divider, theme, Checkbox, Radio, RadioChangeEvent } from "antd";
-import { ClearOutlined, DeleteOutlined, PrinterOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+    Typography,
+    Input,
+    Button,
+    Divider,
+    theme,
+    Checkbox,
+    Radio,
+    RadioChangeEvent,
+    ColorPicker,
+    Upload,
+    Tooltip,
+} from "antd";
+import { ClearOutlined, DeleteOutlined, PlusOutlined, PrinterOutlined, SaveOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { LanguageFlagIcon } from "../../utils/languageUtil";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const { Paragraph } = Typography;
 const { Search } = Input;
@@ -20,6 +35,8 @@ const stripUnit = (value: string, unit: string) =>
 export const TeddyStudioPage = () => {
     const { t } = useTranslation();
     const { token } = theme.useToken();
+    const { addNotification } = useTeddyCloud();
+
     const [jsonData, setJsonData] = useState<any>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [autocompleteList, setAutocompleteList] = useState([]);
@@ -29,10 +46,25 @@ export const TeddyStudioPage = () => {
     const [showLanguageFlag, setShowLanguageFlag] = useState<boolean>(false);
     const [showModelNo, setShowModelNo] = useState<boolean>(false);
     const [labelShape, setLabelShape] = useState("round"); // or "square"
+    const [printMode, setPrintMode] = useState<"both" | "image" | "text">("both");
     const [width, setWidth] = useState("50mm");
     const [height, setHeight] = useState("30mm");
     const [labelSpacingX, setLabelSpacingX] = useState<string>("5mm");
     const [labelSpacingY, setLabelSpacingY] = useState<string>("5mm");
+    const [labelBackgroundColor, setLabelBackgroundColor] = useState<string>("#ffffff");
+    const [customItems, setCustomItems] = useState<{ image?: string; text?: string }[]>([]);
+
+    const mergedResults = [
+        ...results,
+        ...customItems.map((item) => ({
+            custom: true,
+            text: item.text,
+            pic: item.image,
+            episodes: "",
+            model: "",
+            language: "",
+        })),
+    ];
 
     const autocompleteRef = useRef(null);
 
@@ -53,6 +85,8 @@ export const TeddyStudioPage = () => {
             setShowModelNo(data.showModelNo || false);
             setLabelSpacingX(data.labelSpacingX || "5mm");
             setLabelSpacingY(data.labelSpacingY || "5mm");
+            setLabelBackgroundColor(data.labelBackgroundColor || "#ffffff");
+            setPrintMode(data.printMode || "both");
         }
     }, []);
 
@@ -67,8 +101,16 @@ export const TeddyStudioPage = () => {
             showModelNo,
             labelSpacingX,
             labelSpacingY,
+            labelBackgroundColor,
+            printMode,
         };
         sessionStorage.setItem("labelSettings", JSON.stringify(values));
+        addNotification(
+            NotificationTypeEnum.Success,
+            t("tonies.teddystudio.settingsSavedSuccessful"),
+            t("tonies.teddystudio.settingsSavedSuccessful"),
+            t("tonies.teddystudio.navigationTitle")
+        );
     };
 
     const handleClear = () => {
@@ -82,6 +124,8 @@ export const TeddyStudioPage = () => {
         setShowModelNo(false);
         setLabelSpacingX("5mm");
         setLabelSpacingY("5mm");
+        setLabelBackgroundColor("#ffffff");
+        setPrintMode("both");
     };
 
     const loadJSONData = async () => {
@@ -113,6 +157,21 @@ export const TeddyStudioPage = () => {
             (item: any) => item.title?.toLowerCase().includes(query) || item.series?.toLowerCase().includes(query)
         );
         setAutocompleteList(filtered);
+    };
+
+    const handleCustomTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+        const newText = e.target.value;
+        setCustomItems((prev) => prev.map((item, i) => (i === index ? { ...item, text: newText } : item)));
+    };
+
+    const handleRemoveCustomItem = (index: number) => {
+        setCustomItems((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const handleAddCustomImage = (file: File) => {
+        const url = URL.createObjectURL(file);
+        setCustomItems((prev) => [...prev, { image: url, text: "" }]);
+        return false;
     };
 
     const handleLabelShapeChange = (e: RadioChangeEvent) => {
@@ -171,7 +230,12 @@ export const TeddyStudioPage = () => {
     };
 
     const removeResult = (indexToRemove: number) => {
-        setResults((prev) => prev.filter((_, index) => index !== indexToRemove));
+        if (indexToRemove < results.length) {
+            setResults((prev) => prev.filter((_, index) => index !== indexToRemove));
+        } else {
+            const customIndex = indexToRemove - results.length;
+            setCustomItems((prev) => prev.filter((_, index) => index !== customIndex));
+        }
     };
 
     return (
@@ -239,12 +303,91 @@ export const TeddyStudioPage = () => {
                             </div>
                         )}
                     </div>
+                    <Divider>{t("tonies.teddystudio.customImage")}</Divider>
+                    <Paragraph style={{ fontSize: "small" }}>{t("tonies.teddystudio.customImageHint")}</Paragraph>
+                    <div style={{ display: "flex", gap: 16, flexDirection: "column", marginBottom: 16 }}>
+                        {customItems.map((item, idx) => (
+                            <div key={idx} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                {item.image && (
+                                    <img
+                                        src={item.image}
+                                        alt="preview"
+                                        style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8 }}
+                                    />
+                                )}
+
+                                <Input.TextArea
+                                    placeholder={t("tonies.teddystudio.customImageTitle")}
+                                    value={item.text}
+                                    onChange={(e) => handleCustomTextChange(e, idx)}
+                                    style={{ flex: 1 }}
+                                />
+
+                                <Button icon={<DeleteOutlined />} onClick={() => handleRemoveCustomItem(idx)} />
+                            </div>
+                        ))}
+
+                        <Upload showUploadList={false} maxCount={1} beforeUpload={handleAddCustomImage}>
+                            <Button icon={<PlusOutlined />}>{t("tonies.teddystudio.customImageUpload")}</Button>
+                        </Upload>
+                    </div>
                     <Divider>{t("tonies.teddystudio.settings")}</Divider>
                     <Paragraph style={{ marginBottom: 16 }}>
+                        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
+                            <div>
+                                <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.printMode")}</label>
+                                <Radio.Group
+                                    size="small"
+                                    value={printMode}
+                                    onChange={(e) => setPrintMode(e.target.value)}
+                                    optionType="button"
+                                    buttonStyle="solid"
+                                >
+                                    <Radio.Button value="both">
+                                        <Tooltip title={t("tonies.teddystudio.printModeImageAndTextTooltip")}>
+                                            {t("tonies.teddystudio.printModeImageAndText")}
+                                        </Tooltip>
+                                    </Radio.Button>
+                                    <Radio.Button value="image">
+                                        <Tooltip title={t("tonies.teddystudio.printModeOnlyImageTooltip")}>
+                                            {t("tonies.teddystudio.printModeOnlyImage")}
+                                        </Tooltip>
+                                    </Radio.Button>
+                                    <Radio.Button value="text">
+                                        <Tooltip title={t("tonies.teddystudio.printModeOnlyTextTooltip")}>
+                                            {t("tonies.teddystudio.printModeOnlyText")}
+                                        </Tooltip>
+                                    </Radio.Button>
+                                </Radio.Group>
+                            </div>
+                            {printMode != "image" ? (
+                                <Checkbox
+                                    style={{ display: "flex", alignItems: "center" }}
+                                    checked={showLanguageFlag}
+                                    onChange={(e) => setShowLanguageFlag(e.target.checked)}
+                                >
+                                    {t("tonies.teddystudio.showLanguageFlag")}
+                                </Checkbox>
+                            ) : (
+                                ""
+                            )}
+                            {printMode != "image" ? (
+                                <Checkbox
+                                    style={{ display: "flex", alignItems: "center" }}
+                                    checked={showModelNo}
+                                    onChange={(e) => setShowModelNo(e.target.checked)}
+                                >
+                                    {t("tonies.teddystudio.showModelNo")}
+                                </Checkbox>
+                            ) : (
+                                ""
+                            )}
+                        </div>
                         <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
                             <div style={{ display: "flex", alignItems: "baseline" }}>
                                 <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.labelShape")}</label>
                                 <Radio.Group
+                                    size="small"
                                     optionType="button"
                                     buttonStyle="solid"
                                     value={labelShape}
@@ -259,6 +402,7 @@ export const TeddyStudioPage = () => {
                                 <div style={{ display: "flex", alignItems: "baseline" }}>
                                     <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.diameter")}</label>
                                     <Input
+                                        size="small"
                                         type="number"
                                         value={parseFloat(diameter)}
                                         onChange={handleDiameterChange}
@@ -274,6 +418,7 @@ export const TeddyStudioPage = () => {
                                     <div style={{ display: "flex", alignItems: "baseline" }}>
                                         <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.width")}</label>
                                         <Input
+                                            size="small"
                                             type="number"
                                             value={parseFloat(width)}
                                             onChange={handleWidthChange}
@@ -287,6 +432,7 @@ export const TeddyStudioPage = () => {
                                     <div style={{ display: "flex", alignItems: "baseline" }}>
                                         <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.height")}</label>
                                         <Input
+                                            size="small"
                                             type="number"
                                             value={parseFloat(height)}
                                             onChange={handleHeightChange}
@@ -299,12 +445,17 @@ export const TeddyStudioPage = () => {
                                     </div>
                                 </>
                             )}
-                            <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                                <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.labelSpacing")}</label>
+                            <div style={{ display: "flex", alignItems: "baseline", gap: 16 }}>
+                                <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
+                                    {t("tonies.teddystudio.labelSpacing")}
+                                </label>
                                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
                                     <div style={{ display: "flex", alignItems: "baseline" }}>
-                                        <label style={{ marginRight: 8 }}>X</label>
+                                        <label style={{ marginRight: 8 }}>
+                                            {t("tonies.teddystudio.labelSpacingX")}
+                                        </label>
                                         <Input
+                                            size="small"
                                             type="number"
                                             value={parseFloat(labelSpacingY)}
                                             onChange={handleSpacingChange(setLabelSpacingY)}
@@ -316,8 +467,11 @@ export const TeddyStudioPage = () => {
                                         />
                                     </div>
                                     <div style={{ display: "flex", alignItems: "baseline" }}>
-                                        <label style={{ marginRight: 8 }}>Y</label>
+                                        <label style={{ marginRight: 8 }}>
+                                            {t("tonies.teddystudio.labelSpacingY")}
+                                        </label>
                                         <Input
+                                            size="small"
                                             type="number"
                                             value={parseFloat(labelSpacingX)}
                                             onChange={handleSpacingChange(setLabelSpacingX)}
@@ -331,10 +485,11 @@ export const TeddyStudioPage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
+                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
                             <div style={{ display: "flex", alignItems: "baseline" }}>
                                 <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.textFontSize")}</label>
                                 <Input
+                                    size="small"
                                     type="number"
                                     value={parseFloat(textFontSize)}
                                     onChange={handleTextFontsizeChange}
@@ -345,21 +500,18 @@ export const TeddyStudioPage = () => {
                                     placeholder={t("tonies.teddystudio.textFontSize")}
                                 />
                             </div>
-                            <Checkbox
-                                style={{ display: "flex", alignItems: "center" }}
-                                checked={showLanguageFlag}
-                                onChange={(e) => setShowLanguageFlag(e.target.checked)}
-                            >
-                                {t("tonies.teddystudio.showLanguageFlag")}
-                            </Checkbox>
-
-                            <Checkbox
-                                style={{ display: "flex", alignItems: "center" }}
-                                checked={showModelNo}
-                                onChange={(e) => setShowModelNo(e.target.checked)}
-                            >
-                                {t("tonies.teddystudio.showModelNo")}
-                            </Checkbox>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <span style={{ marginRight: 8 }}>{t("tonies.teddystudio.labelBackgroundColor")}</span>
+                                <ColorPicker
+                                    size="small"
+                                    value={labelBackgroundColor}
+                                    onChange={(_, hex) => setLabelBackgroundColor(hex)}
+                                    showText
+                                    disabledAlpha
+                                    disabledFormat
+                                    format="hex"
+                                ></ColorPicker>
+                            </div>
                         </div>
                         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
                             <Button icon={<ClearOutlined />} onClick={handleClear}>
@@ -371,10 +523,16 @@ export const TeddyStudioPage = () => {
                         </div>
                     </Paragraph>
                     <Divider>{t("tonies.teddystudio.printSheet")}</Divider>
-                    {results.length > 0 ? (
+                    {mergedResults.length > 0 ? (
                         <Paragraph style={{ marginBottom: 16 }}>
                             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                <Button icon={<ClearOutlined />} onClick={() => setResults([])}>
+                                <Button
+                                    icon={<ClearOutlined />}
+                                    onClick={() => {
+                                        setResults([]);
+                                        setCustomItems([]);
+                                    }}
+                                >
                                     {t("tonies.teddystudio.clear")}
                                 </Button>
                                 <Button type="primary" icon={<PrinterOutlined />} onClick={() => window.print()}>
@@ -401,26 +559,33 @@ export const TeddyStudioPage = () => {
                             ["--text-font-size" as any]: textFontSize !== "" ? textFontSize : "14px",
                         }}
                     >
-                        {results.map((dataset: any, index: number) => (
+                        {mergedResults.map((dataset: any, index: number) => (
                             <div
                                 key={index}
                                 style={{ display: "flex", flexWrap: "wrap", gap: `${labelSpacingY} ${labelSpacingX}` }}
                                 className="traveltonieCouple"
                             >
-                                <div className="labelElement">
+                                <div
+                                    className="labelElement"
+                                    style={{ display: printMode == "both" || printMode == "image" ? "flex" : "none" }}
+                                >
                                     <img src={dataset.pic} alt={dataset.title} style={{ height: "100%" }} />
                                 </div>
                                 <div
                                     className="labelElement"
                                     style={{
-                                        display: "flex",
+                                        display: printMode == "both" || printMode == "text" ? "flex" : "none",
                                         justifyContent: "space-between",
                                         fontSize: `${textFontSize}`,
                                         padding: "4px 8px 8px 8px",
                                     }}
                                 >
-                                    <div style={{ height: 12 }}>
-                                        {showLanguageFlag ? (
+                                    <div
+                                        style={{
+                                            height: 12,
+                                        }}
+                                    >
+                                        {showLanguageFlag && dataset.language ? (
                                             <LanguageFlagIcon
                                                 name={dataset.language.toUpperCase().split("-")[1]}
                                                 height={textFontSize}
@@ -430,7 +595,21 @@ export const TeddyStudioPage = () => {
                                         )}
                                     </div>
                                     <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                                        <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
+                                        <div
+                                            style={{
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            {dataset.series}
+                                        </div>
+                                        <div
+                                            style={{
+                                                whiteSpace: "pre-wrap",
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            {dataset.text}
+                                        </div>
                                         <div>{dataset.episodes}</div>
                                     </div>
                                     <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
@@ -456,7 +635,7 @@ export const TeddyStudioPage = () => {
                     width: var(--labelElement-width);
                     height: var(--labelElement-height);
                     border-radius: var(--labelElement-radius);
-                    background-color: white;
+                    background-color: ${labelBackgroundColor};
                     border: 1px solid ${token.colorBorder};
                     color: black;
                     display: flex;
@@ -474,6 +653,11 @@ export const TeddyStudioPage = () => {
                 }
 
                 @media print {
+                    * {
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;  /* Standardname, wo unterstützt */
+                    }
+
                     html * {
                         background-color: white !important;
                     }
@@ -492,6 +676,11 @@ export const TeddyStudioPage = () => {
                     .labelElement {
                         border-color: lightgray;
                         margin: 0;
+                        background-color: ${labelBackgroundColor} !important;
+                    }
+                        
+                    .labelElement * {
+                        background-color: ${labelBackgroundColor} !important;
                     }
                     .traveltonieCouple {
                         border: none;

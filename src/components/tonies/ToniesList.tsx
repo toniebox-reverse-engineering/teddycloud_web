@@ -12,6 +12,7 @@ import ToniesPagination from "./ToniesPagination";
 import { TonieCard } from "../../components/tonies/TonieCard";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import { languageOptions } from "../../utils/languageUtil";
+import { scrollToTop } from "../../utils/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -288,7 +289,7 @@ export const ToniesList: React.FC<{
         setListKey((prevKey) => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => scrollToTop(), 0);
     };
 
     const getCurrentPageData = () => {
