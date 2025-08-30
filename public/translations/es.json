@@ -1715,6 +1715,7 @@
         "exportCompleteInfoToJson": "Exportar marcados - información completa - a JSON",
         "exportCsv": "Exportar marcados como CSV",
         "exportCsvTooltip": "Exporta los tags marcados como archivo CSV con información de serie, episodio y modelo del tag (no del contenido asignado)",
+        "exportToHtml": "Exporta los marcados a HTML",
         "exportToJson": "Exportar marcados a JSON",
         "help": {
             "actionItems": {
@@ -1973,6 +1974,8 @@
             "showPagination": "Mostrar paginación",
             "title": "Tonies"
         },
+        "toniesExportList": "Lista de exportación de Tonies",
+        "toniesExportListCreateDate": "Generado el",
         "unsetTonie": "Tonie/Etiqueta"
     },
     "utils": {

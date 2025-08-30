@@ -193,17 +193,7 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                 if (!response.ok) throw new Error(response.statusText);
                 folders = await response.json(); // assuming the API returns a list of folders
             } catch (error) {
-                // @ToDo: Remove fallback for WIP till api is available: a manually maintained plugins.json is used
-                console.warn(
-                    "Using fallback plugin list from plugins/plugins.json due to an error (API most probably not available yet)."
-                );
-                try {
-                    const response = await api.apiGetTeddyCloudApiRaw("/plugins/plugins.json");
-                    if (!response.ok) throw new Error("Fallback plugins.json fetch failed");
-                    folders = await response.json();
-                } catch (fallbackErr) {
-                    return;
-                }
+                return;
             }
 
             const loadedPlugins: PluginMeta[] = [];

@@ -1715,6 +1715,7 @@
         "exportCompleteInfoToJson": "Export marked - complete info - to JSON",
         "exportCsv": "Export marked as CSV",
         "exportCsvTooltip": "Export marked tags as CSV file with series, episode and model info of the tag (not the assigned content)",
+        "exportToHtml": "Export marked to HTML",
         "exportToJson": "Export marked to JSON",
         "help": {
             "actionItems": {
@@ -1973,6 +1974,8 @@
             "showPagination": "Show pagination",
             "title": "Tonies"
         },
+        "toniesExportList": "Tonies export list",
+        "toniesExportListCreateDate": "Generated on",
         "unsetTonie": "Tonie/Tag"
     },
     "utils": {

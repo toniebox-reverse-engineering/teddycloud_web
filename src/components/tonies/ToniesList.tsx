@@ -25,6 +25,12 @@ import { TonieCard } from "../../components/tonies/TonieCard";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import { languageOptions } from "../../utils/languageUtil";
 import { scrollToTop } from "../../utils/browserUtils";
+import {
+    exportToJSON,
+    exportCompleteInfoToJSON,
+    exportToCSV,
+    exportMarkedToniesHTML,
+} from "../utils/ToniesListExportUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -309,80 +315,17 @@ export const ToniesList: React.FC<{
         setMarkedTonies((prev) => (prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid]));
     };
 
-    const exportToJSON = () => {
-        const rows = tonieCards
-            .filter((card) => markedTonies.includes(card.ruid))
-            .map((card) => ({
-                series: card.tonieInfo.series || t("tonies.unsetTonie"),
-                episode: card.tonieInfo.episode || "",
-                model: card.tonieInfo.model,
-            }));
-
-        const blob = new Blob([JSON.stringify(rows, null, 2)], {
-            type: "application/json;charset=utf-8;",
-        });
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "marked_tonies.json");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const exportCompleteInfoToJSON = () => {
-        const rows = tonieCards.filter((card) => markedTonies.includes(card.ruid));
-        const blob = new Blob([JSON.stringify(rows, null, 2)], {
-            type: "application/json;charset=utf-8;",
-        });
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "marked_tonies.json");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const exportToCSV = () => {
-        const header = "Series,Episode,Model-No\n";
-
-        const rows = tonieCards
-            .filter((card) => markedTonies.includes(card.ruid))
-            .map((card) => {
-                const series = card.tonieInfo.series ? card.tonieInfo.series : t("tonies.unsetTonie");
-                const episode = card.tonieInfo.episode || "";
-                const model = card.tonieInfo.model || "";
-
-                const escape = (str: string) => `"${String(str).replace(/"/g, '""')}"`;
-
-                return `${escape(series)},${escape(episode)},${escape(model)}`;
-            });
-
-        const csvContent = header + rows.join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "marked_tonies.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
     const exportMenu: MenuProps["items"] = [
+        { key: "json", label: t("tonies.exportToJson"), onClick: () => exportToJSON(tonieCards, markedTonies, t) },
         {
-            key: "json",
-            label: t("tonies.exportToJson"),
-            onClick: exportToJSON,
+            key: "html",
+            label: t("tonies.exportToHtmlLinkedImages"),
+            onClick: () => exportMarkedToniesHTML(tonieCards, markedTonies, t),
         },
         {
             key: "complete-info-json",
             label: t("tonies.exportCompleteInfoToJson"),
-            onClick: exportCompleteInfoToJSON,
+            onClick: () => exportCompleteInfoToJSON(tonieCards, markedTonies),
         },
     ];
 
@@ -697,7 +640,7 @@ export const ToniesList: React.FC<{
                         <Dropdown.Button
                             size="small"
                             menu={{ items: exportMenu }}
-                            onClick={exportToCSV}
+                            onClick={() => exportToCSV(tonieCards, markedTonies, t)}
                             disabled={markedTonies.length === 0}
                         >
                             <Tooltip title={t("tonies.exportCsvTooltip")}> {t("tonies.exportCsv")}</Tooltip>

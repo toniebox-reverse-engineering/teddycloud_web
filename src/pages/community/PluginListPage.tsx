@@ -267,7 +267,7 @@ export const PluginListPage = () => {
                     <Alert
                         type="warning"
                         showIcon
-                        message="WIP - To be extended soon... meanwhile you can upload plugins manually using any SFTP-Client and add a plugins.json in the plugins-folder (in WWW directory!) which lists the plugin folders like ['PluginA','PluginB']"
+                        message="WIP - To be extended soon... meanwhile you can upload plugins manually into teddycloud/data/www/plugins using any SFTP-Client"
                         style={{ margin: 32 }}
                     />
 

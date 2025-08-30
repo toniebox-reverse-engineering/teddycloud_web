@@ -695,30 +695,36 @@ export const TonieCard: React.FC<{
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
                             {localTonieCard.tonieInfo.series ? localTonieCard.tonieInfo.series : t("tonies.unsetTonie")}
                         </div>
-                        {localTonieCard.tonieInfo.language && defaultLanguage !== localTonieCard.tonieInfo.language ? (
-                            <Tooltip
-                                placement="top"
-                                zIndex={2}
-                                title={t("languageUtil." + localTonieCard.tonieInfo.language, {
-                                    defaultValue:
-                                        t("languageUtil.unknownLanguageCode") + localTonieCard.tonieInfo.language,
-                                })}
-                            >
-                                <Text style={{ height: 20, width: "auto" }}>
-                                    <LanguageFlagIcon
-                                        name={localTonieCard.tonieInfo.language.toUpperCase().split("-")[1]}
-                                        height={20}
-                                    />
-                                </Text>
-                            </Tooltip>
-                        ) : (
-                            ""
-                        )}
-                        {readOnly ? (
-                            ""
-                        ) : (
-                            <Checkbox checked={marked} onChange={() => onToggleMark && onToggleMark(tonieCard.ruid)} />
-                        )}
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                            {localTonieCard.tonieInfo.language &&
+                            defaultLanguage !== localTonieCard.tonieInfo.language ? (
+                                <Tooltip
+                                    placement="top"
+                                    zIndex={2}
+                                    title={t("languageUtil." + localTonieCard.tonieInfo.language, {
+                                        defaultValue:
+                                            t("languageUtil.unknownLanguageCode") + localTonieCard.tonieInfo.language,
+                                    })}
+                                >
+                                    <Text style={{ height: 20, width: "auto" }}>
+                                        <LanguageFlagIcon
+                                            name={localTonieCard.tonieInfo.language.toUpperCase().split("-")[1]}
+                                            height={20}
+                                        />
+                                    </Text>
+                                </Tooltip>
+                            ) : (
+                                ""
+                            )}
+                            {readOnly ? (
+                                ""
+                            ) : (
+                                <Checkbox
+                                    checked={marked}
+                                    onChange={() => onToggleMark && onToggleMark(tonieCard.ruid)}
+                                />
+                            )}
+                        </div>
                     </div>
                 }
                 cover={
