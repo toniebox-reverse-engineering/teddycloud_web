@@ -717,11 +717,7 @@ export const TonieCard: React.FC<{
                         {readOnly ? (
                             ""
                         ) : (
-                            <Checkbox
-                                checked={marked}
-                                onChange={() => onToggleMark && onToggleMark(tonieCard.ruid)}
-                                style={{ position: "absolute", top: 8, right: 8 }}
-                            />
+                            <Checkbox checked={marked} onChange={() => onToggleMark && onToggleMark(tonieCard.ruid)} />
                         )}
                     </div>
                 }
