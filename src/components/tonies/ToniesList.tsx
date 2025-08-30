@@ -319,7 +319,7 @@ export const ToniesList: React.FC<{
         { key: "json", label: t("tonies.exportToJson"), onClick: () => exportToJSON(tonieCards, markedTonies, t) },
         {
             key: "html",
-            label: t("tonies.exportToHtmlLinkedImages"),
+            label: t("tonies.exportToHtml"),
             onClick: () => exportMarkedToniesHTML(tonieCards, markedTonies, t),
         },
         {
