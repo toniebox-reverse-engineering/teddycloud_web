@@ -635,7 +635,7 @@ export const ToniesList: React.FC<{
                             {markedTonies.length} {t("tonies.marked")}
                         </div>
                         <Button size="small" onClick={() => setMarkedTonies([])} style={{ marginLeft: "8px" }}>
-                            {t("tonies.clearMarks")}
+                            <Tooltip title={t("tonies.clearMarks")}>X</Tooltip>
                         </Button>
                         <Dropdown.Button
                             size="small"
