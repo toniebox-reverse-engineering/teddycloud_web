@@ -2,6 +2,7 @@ import "./styles/matrix/matrix.css";
 import { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ConfigProvider, Layout, theme } from "antd";
+import "@ant-design/v5-patch-for-react-19";
 
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 

@@ -1657,6 +1657,7 @@
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
         "cancel": "Cancel",
+        "clearMarks": "Clear",
         "closeAudioPlayer": "Close player",
         "closeAudioPlayerPopover": "Close stops playback!",
         "confirmHideModal": {
@@ -1711,6 +1712,10 @@
         },
         "errorFetchingSystemSounds": "Error fetching system sounds",
         "errorFetchingTonies": "Error fetching Tonies",
+        "exportCompleteInfoToJson": "Export marked - complete info - to JSON",
+        "exportCsv": "Export marked as CSV",
+        "exportCsvTooltip": "Export marked tags as CSV file with series, episode and model info of the tag (not the assigned content)",
+        "exportToJson": "Export marked to JSON",
         "help": {
             "actionItems": {
                 "cloudIcon": {
@@ -1822,6 +1827,7 @@
             "navigationTitle": "Library",
             "title": "Library"
         },
+        "marked": "tags marked",
         "messages": {
             "cloudAccessBlocked": "Cloud access blocked!",
             "cloudAccessBlockedDetails": "Cloud access blocked for \"{{model}}\" [{{ruid}}]",

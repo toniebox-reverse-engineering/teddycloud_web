@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, theme } from "antd";
+import { Button, Card, Checkbox, Divider, Form, Input, Modal, Tooltip, Typography, theme } from "antd";
 import {
     CloseOutlined,
     CloudSyncOutlined,
@@ -44,7 +44,20 @@ export const TonieCard: React.FC<{
     showSourceInfo?: boolean;
     onHide: (ruid: string) => void;
     onUpdate: (updatedTonieCard: TonieCardProps) => void;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", showSourceInfo = true, onHide, onUpdate }) => {
+    marked?: boolean;
+    onToggleMark: (ruid: string) => void;
+}> = ({
+    tonieCard,
+    lastRUIDs,
+    overlay,
+    readOnly,
+    defaultLanguage = "",
+    showSourceInfo = true,
+    onHide,
+    onUpdate,
+    marked = false,
+    onToggleMark,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification, toniesCloudAvailable } = useTeddyCloud();
@@ -672,11 +685,11 @@ export const TonieCard: React.FC<{
                 hoverable={false}
                 key={localTonieCard.ruid}
                 size="small"
-                style={
-                    toniePlayedOn && toniePlayedOn.length > 0
-                        ? { background: token.colorBgContainerDisabled, borderTop: "3px #1677ff inset" }
-                        : { background: token.colorBgContainerDisabled, paddingTop: "2px" }
-                }
+                style={{
+                    background: marked ? token.colorBgTextHover : token.colorBgContainerDisabled,
+                    borderTop: toniePlayedOn && toniePlayedOn.length > 0 ? "3px #1677ff inset" : "reset",
+                    paddingTop: toniePlayedOn && toniePlayedOn.length > 0 ? "unset" : 2,
+                }}
                 title={
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -700,6 +713,15 @@ export const TonieCard: React.FC<{
                             </Tooltip>
                         ) : (
                             ""
+                        )}
+                        {readOnly ? (
+                            ""
+                        ) : (
+                            <Checkbox
+                                checked={marked}
+                                onChange={() => onToggleMark && onToggleMark(tonieCard.ruid)}
+                                style={{ position: "absolute", top: 8, right: 8 }}
+                            />
                         )}
                     </div>
                 }
