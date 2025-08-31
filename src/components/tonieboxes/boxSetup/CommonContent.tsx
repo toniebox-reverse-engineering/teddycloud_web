@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Empty, Image, Modal, Space, Spin, Table, Typography } from "antd";

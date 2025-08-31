@@ -1,7 +1,19 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { List, Switch, Input, Button, Collapse, Select, CollapseProps, Empty } from "antd";
+import {
+    List,
+    Switch,
+    Input,
+    Button,
+    Collapse,
+    Select,
+    CollapseProps,
+    Empty,
+    Dropdown,
+    MenuProps,
+    Tooltip,
+} from "antd";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 
@@ -13,6 +25,12 @@ import { TonieCard } from "../../components/tonies/TonieCard";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import { languageOptions } from "../../utils/languageUtil";
 import { scrollToTop } from "../../utils/browserUtils";
+import {
+    exportToJSON,
+    exportCompleteInfoToJSON,
+    exportToCSV,
+    exportMarkedToniesHTML,
+} from "../utils/ToniesListExportUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -75,6 +93,7 @@ export const ToniesList: React.FC<{
     const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
     const [listKey, setListKey] = useState(0);
     const [showSourceInfo, setShowSourceInfo] = useState<boolean>(false);
+    const [markedTonies, setMarkedTonies] = useState<string[]>([]);
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -291,6 +310,24 @@ export const ToniesList: React.FC<{
         storeLocalStorage();
         setTimeout(() => scrollToTop(), 0);
     };
+
+    const toggleMarkTonie = (ruid: string) => {
+        setMarkedTonies((prev) => (prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid]));
+    };
+
+    const exportMenu: MenuProps["items"] = [
+        { key: "json", label: t("tonies.exportToJson"), onClick: () => exportToJSON(tonieCards, markedTonies, t) },
+        {
+            key: "html",
+            label: t("tonies.exportToHtml"),
+            onClick: () => exportMarkedToniesHTML(tonieCards, markedTonies, t),
+        },
+        {
+            key: "complete-info-json",
+            label: t("tonies.exportCompleteInfoToJson"),
+            onClick: () => exportCompleteInfoToJSON(tonieCards, markedTonies),
+        },
+    ];
 
     const getCurrentPageData = () => {
         if (showAll) {
@@ -592,6 +629,24 @@ export const ToniesList: React.FC<{
                 ) : (
                     ""
                 )}
+                {markedTonies.length > 0 && (
+                    <div style={{ marginBottom: 8, marginTop: 8, display: "flex", gap: 8, alignItems: "center" }}>
+                        <div style={{ fontSize: "small", textWrap: "nowrap" }}>
+                            {markedTonies.length} {t("tonies.marked")}
+                        </div>
+                        <Button size="small" onClick={() => setMarkedTonies([])} style={{ marginLeft: "8px" }}>
+                            <Tooltip title={t("tonies.clearMarks")}>X</Tooltip>
+                        </Button>
+                        <Dropdown.Button
+                            size="small"
+                            menu={{ items: exportMenu }}
+                            onClick={() => exportToCSV(tonieCards, markedTonies, t)}
+                            disabled={markedTonies.length === 0}
+                        >
+                            <Tooltip title={t("tonies.exportCsvTooltip")}> {t("tonies.exportCsv")}</Tooltip>
+                        </Dropdown.Button>
+                    </div>
+                )}
                 <List
                     header={showPagination ? listPagination : ""}
                     footer={showPagination ? listPagination : ""}
@@ -617,6 +672,8 @@ export const ToniesList: React.FC<{
                                 showSourceInfo={showSourceInfo}
                                 onHide={handleHideTonieCard}
                                 onUpdate={handleUpdate}
+                                marked={markedTonies.includes(tonie.ruid)}
+                                onToggleMark={toggleMarkTonie}
                             />
                         </List.Item>
                     )}
