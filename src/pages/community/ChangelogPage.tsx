@@ -43,6 +43,7 @@ export const ChangelogPage = () => {
                 "gui: Added Matrix style",
                 "gui: Tonies overview: search keyword is now also used to filter tonies by source",
                 "gui: Tonies overview: Cards can be marked and exported as CSV https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/235",
+                "gui: Tonies overview: Added action menu to marked tonies cards (cloud - no cloud, live - not live, hide)",
                 "gui: Updated all used packages to latest versions",
                 "gui: Some refactoring",
             ],

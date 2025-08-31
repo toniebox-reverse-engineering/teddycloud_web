@@ -31,6 +31,8 @@ import {
     exportToCSV,
     exportMarkedToniesHTML,
 } from "../utils/ToniesListExportUtils";
+import { hideMarkedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
+import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -58,6 +60,7 @@ export const ToniesList: React.FC<{
 }) => {
     const { t } = useTranslation();
     const location = useLocation();
+    const { addNotification } = useTeddyCloud();
 
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
     const [searchText, setSearchText] = useState("");
@@ -94,6 +97,11 @@ export const ToniesList: React.FC<{
     const [listKey, setListKey] = useState(0);
     const [showSourceInfo, setShowSourceInfo] = useState<boolean>(false);
     const [markedTonies, setMarkedTonies] = useState<string[]>([]);
+
+    const handleUpdateCard = (updatedCard: TonieCardProps) => {
+        setFilteredTonies((prev) => prev.map((c) => (c.ruid === updatedCard.ruid ? updatedCard : c)));
+        setListKey((prevKey) => prevKey + 1);
+    };
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -258,8 +266,9 @@ export const ToniesList: React.FC<{
     };
 
     const handleHideTonieCard = (ruid: string) => {
-        setFilteredTonies(filteredTonies.filter((tonie) => tonie.ruid !== ruid));
-        setHiddenRuids((prevHiddenRuids) => [...prevHiddenRuids, ruid]);
+        setFilteredTonies((prevFiltered) => prevFiltered.filter((tonie) => tonie.ruid !== ruid));
+        setHiddenRuids((prevHidden) => [...prevHidden, ruid]);
+        setMarkedTonies((prevMarked) => prevMarked.filter((m) => m !== ruid));
         setListKey((prevKey) => prevKey + 1);
     };
 
@@ -326,6 +335,29 @@ export const ToniesList: React.FC<{
             key: "complete-info-json",
             label: t("tonies.exportCompleteInfoToJson"),
             onClick: () => exportCompleteInfoToJSON(tonieCards, markedTonies),
+        },
+    ];
+
+    const actionMenu: MenuProps["items"] = [
+        {
+            key: "unset-no-cloud",
+            label: t("tonies.unsetNoCloud"),
+            onClick: () => setNoCloud(tonieCards, markedTonies, t, overlay, addNotification, false, handleUpdateCard),
+        },
+        {
+            key: "set-live",
+            label: t("tonies.setLive"),
+            onClick: () => setLiveFlag(tonieCards, markedTonies, t, overlay, addNotification, true, handleUpdateCard),
+        },
+        {
+            key: "unset-live",
+            label: t("tonies.unsetLive"),
+            onClick: () => setLiveFlag(tonieCards, markedTonies, t, overlay, addNotification, false, handleUpdateCard),
+        },
+        {
+            key: "hide",
+            label: t("tonies.hideMarkedTags"),
+            onClick: () => hideMarkedTonies(tonieCards, markedTonies, t, overlay, addNotification, handleHideTonieCard),
         },
     ];
 
@@ -630,7 +662,17 @@ export const ToniesList: React.FC<{
                     ""
                 )}
                 {markedTonies.length > 0 && (
-                    <div style={{ marginBottom: 8, marginTop: 8, display: "flex", gap: 8, alignItems: "center" }}>
+                    <div
+                        style={{
+                            marginBottom: 8,
+                            marginTop: 8,
+                            display: "flex",
+                            gap: 8,
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            flexWrap: "wrap",
+                        }}
+                    >
                         <div style={{ fontSize: "small", textWrap: "nowrap" }}>
                             {markedTonies.length} {t("tonies.marked")}
                         </div>
@@ -639,6 +681,26 @@ export const ToniesList: React.FC<{
                         </Button>
                         <Dropdown.Button
                             size="small"
+                            style={{ width: "unset" }}
+                            menu={{ items: actionMenu }}
+                            onClick={() =>
+                                setNoCloud(
+                                    tonieCards,
+                                    markedTonies,
+                                    t,
+                                    overlay,
+                                    addNotification,
+                                    true,
+                                    handleUpdateCard
+                                )
+                            }
+                            disabled={markedTonies.length === 0}
+                        >
+                            {t("tonies.setNoCloud")}
+                        </Dropdown.Button>
+                        <Dropdown.Button
+                            size="small"
+                            style={{ width: "unset" }}
                             menu={{ items: exportMenu }}
                             onClick={() => exportToCSV(tonieCards, markedTonies, t)}
                             disabled={markedTonies.length === 0}
