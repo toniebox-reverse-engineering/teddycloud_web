@@ -670,6 +670,7 @@ export const ToniesList: React.FC<{
                             gap: 8,
                             alignItems: "center",
                             justifyContent: "flex-start",
+                            flexWrap: "wrap",
                         }}
                     >
                         <div style={{ fontSize: "small", textWrap: "nowrap" }}>
