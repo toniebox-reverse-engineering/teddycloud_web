@@ -15,6 +15,8 @@ import {
     Tooltip,
 } from "antd";
 
+import HelpModal from "../../components/utils/ToniesHelpModal";
+
 import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
@@ -31,8 +33,9 @@ import {
     exportToCSV,
     exportMarkedToniesHTML,
 } from "../utils/ToniesListExportUtils";
-import { hideMarkedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
+import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
 import { useTeddyCloud } from "../../TeddyCloudContext";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -96,7 +99,9 @@ export const ToniesList: React.FC<{
     const [hiddenRuids, setHiddenRuids] = useState<String[]>([]);
     const [listKey, setListKey] = useState(0);
     const [showSourceInfo, setShowSourceInfo] = useState<boolean>(false);
-    const [markedTonies, setMarkedTonies] = useState<string[]>([]);
+    const [selectedTonies, setSelectedTonies] = useState<string[]>([]);
+    const [selectionMode, setSelectionMode] = useState<boolean>(false);
+    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
     const handleUpdateCard = (updatedCard: TonieCardProps) => {
         setFilteredTonies((prev) => prev.map((c) => (c.ruid === updatedCard.ruid ? updatedCard : c)));
@@ -186,6 +191,12 @@ export const ToniesList: React.FC<{
         localStorage.setItem(STORAGE_KEY, stateToStore);
     }, [doLocalStore, pageSize, paginationEnabled, showAll]);
 
+    useEffect(() => {
+        if (!selectionMode) {
+            setSelectedTonies([]);
+        }
+    }, [selectionMode]);
+
     const storeLocalStorage = () => {
         setLocalStore(!doLocalStore);
     };
@@ -268,7 +279,7 @@ export const ToniesList: React.FC<{
     const handleHideTonieCard = (ruid: string) => {
         setFilteredTonies((prevFiltered) => prevFiltered.filter((tonie) => tonie.ruid !== ruid));
         setHiddenRuids((prevHidden) => [...prevHidden, ruid]);
-        setMarkedTonies((prevMarked) => prevMarked.filter((m) => m !== ruid));
+        setSelectedTonies((prevMarked) => prevMarked.filter((m) => m !== ruid));
         setListKey((prevKey) => prevKey + 1);
     };
 
@@ -320,44 +331,62 @@ export const ToniesList: React.FC<{
         setTimeout(() => scrollToTop(), 0);
     };
 
-    const toggleMarkTonie = (ruid: string) => {
-        setMarkedTonies((prev) => (prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid]));
+    const toggleSelectTonie = (ruid: string) => {
+        setSelectedTonies((prev) => (prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid]));
     };
+    const selectionMenu: MenuProps["items"] = [
+        {
+            key: "select-all",
+            label: t("tonies.selectMode.selectAll"),
+            onClick: () => setSelectedTonies(tonieCards.map((c) => c.ruid)),
+        },
+        {
+            key: "unselect-all",
+            label: t("tonies.selectMode.unselectAll"),
+            onClick: () => setSelectedTonies([]),
+        },
+    ];
 
     const exportMenu: MenuProps["items"] = [
-        { key: "json", label: t("tonies.exportToJson"), onClick: () => exportToJSON(tonieCards, markedTonies, t) },
+        {
+            key: "json",
+            label: t("tonies.selectMode.exportToJson"),
+            onClick: () => exportToJSON(tonieCards, selectedTonies, t),
+        },
         {
             key: "html",
-            label: t("tonies.exportToHtml"),
-            onClick: () => exportMarkedToniesHTML(tonieCards, markedTonies, t),
+            label: t("tonies.selectMode.exportToHtml"),
+            onClick: () => exportMarkedToniesHTML(tonieCards, selectedTonies, t),
         },
         {
             key: "complete-info-json",
-            label: t("tonies.exportCompleteInfoToJson"),
-            onClick: () => exportCompleteInfoToJSON(tonieCards, markedTonies),
+            label: t("tonies.selectMode.exportCompleteInfoToJson"),
+            onClick: () => exportCompleteInfoToJSON(tonieCards, selectedTonies),
         },
     ];
 
     const actionMenu: MenuProps["items"] = [
         {
             key: "unset-no-cloud",
-            label: t("tonies.unsetNoCloud"),
-            onClick: () => setNoCloud(tonieCards, markedTonies, t, overlay, addNotification, false, handleUpdateCard),
+            label: t("tonies.selectMode.unsetNoCloud"),
+            onClick: () => setNoCloud(tonieCards, selectedTonies, t, overlay, addNotification, false, handleUpdateCard),
         },
         {
             key: "set-live",
-            label: t("tonies.setLive"),
-            onClick: () => setLiveFlag(tonieCards, markedTonies, t, overlay, addNotification, true, handleUpdateCard),
+            label: t("tonies.selectMode.setLive"),
+            onClick: () => setLiveFlag(tonieCards, selectedTonies, t, overlay, addNotification, true, handleUpdateCard),
         },
         {
             key: "unset-live",
-            label: t("tonies.unsetLive"),
-            onClick: () => setLiveFlag(tonieCards, markedTonies, t, overlay, addNotification, false, handleUpdateCard),
+            label: t("tonies.selectMode.unsetLive"),
+            onClick: () =>
+                setLiveFlag(tonieCards, selectedTonies, t, overlay, addNotification, false, handleUpdateCard),
         },
         {
             key: "hide",
-            label: t("tonies.hideMarkedTags"),
-            onClick: () => hideMarkedTonies(tonieCards, markedTonies, t, overlay, addNotification, handleHideTonieCard),
+            label: t("tonies.selectMode.hideSelectedTags"),
+            onClick: () =>
+                hideSelectedTonies(tonieCards, selectedTonies, t, overlay, addNotification, handleHideTonieCard),
         },
     ];
 
@@ -651,6 +680,23 @@ export const ToniesList: React.FC<{
     } else {
         return (
             <div className="tonies-list-container">
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        gap: 8,
+                        flexWrap: "wrap",
+                        alignItems: "baseline",
+                        marginBottom: 8,
+                    }}
+                >
+                    <Button size="small" icon={<QuestionCircleOutlined />} onClick={() => setIsHelpModalOpen(true)}>
+                        {t("fileBrowser.help.showHelp")}
+                    </Button>
+                </div>
+                {isHelpModalOpen && (
+                    <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+                )}
                 {showFilter ? (
                     <Collapse
                         items={filterPanelContentItem}
@@ -661,54 +707,81 @@ export const ToniesList: React.FC<{
                 ) : (
                     ""
                 )}
-                {markedTonies.length > 0 && (
+                <div className="selectionPanel">
                     <div
                         style={{
-                            marginBottom: 8,
-                            marginTop: 8,
                             display: "flex",
+                            justifyContent: "space-between",
                             gap: 8,
-                            alignItems: "center",
-                            justifyContent: "flex-start",
                             flexWrap: "wrap",
+                            alignItems: "baseline",
+                            marginTop: 8,
                         }}
                     >
                         <div style={{ fontSize: "small", textWrap: "nowrap" }}>
-                            {markedTonies.length} {t("tonies.marked")}
+                            {selectionMode && (
+                                <div style={{ marginBottom: 8 }}>
+                                    {selectedTonies.length} {t("tonies.selectMode.selected")}
+                                </div>
+                            )}
                         </div>
-                        <Button size="small" onClick={() => setMarkedTonies([])} style={{ marginLeft: "8px" }}>
-                            <Tooltip title={t("tonies.clearMarks")}>X</Tooltip>
-                        </Button>
-                        <Dropdown.Button
-                            size="small"
-                            style={{ width: "unset" }}
-                            menu={{ items: actionMenu }}
-                            onClick={() =>
-                                setNoCloud(
-                                    tonieCards,
-                                    markedTonies,
-                                    t,
-                                    overlay,
-                                    addNotification,
-                                    true,
-                                    handleUpdateCard
-                                )
-                            }
-                            disabled={markedTonies.length === 0}
-                        >
-                            {t("tonies.setNoCloud")}
-                        </Dropdown.Button>
-                        <Dropdown.Button
-                            size="small"
-                            style={{ width: "unset" }}
-                            menu={{ items: exportMenu }}
-                            onClick={() => exportToCSV(tonieCards, markedTonies, t)}
-                            disabled={markedTonies.length === 0}
-                        >
-                            <Tooltip title={t("tonies.exportCsvTooltip")}> {t("tonies.exportCsv")}</Tooltip>
-                        </Dropdown.Button>
+                        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                            <Button size="small" type="text" onClick={() => setSelectionMode(!selectionMode)}>
+                                {selectionMode ? t("tonies.cancel") : t("tonies.selectMode.select")}
+                            </Button>
+                        </div>
                     </div>
-                )}
+                    {selectionMode && (
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: 8,
+                                alignItems: "center",
+                                justifyContent: "flex-start",
+                                flexWrap: "wrap",
+                            }}
+                        >
+                            <Dropdown.Button
+                                size="small"
+                                style={{ width: "unset" }}
+                                menu={{ items: selectionMenu }}
+                                onClick={() => setSelectedTonies(tonieCards.map((c) => c.ruid))}
+                            >
+                                {t("tonies.selectMode.selectAll")}
+                            </Dropdown.Button>
+                            <Dropdown.Button
+                                size="small"
+                                style={{ width: "unset" }}
+                                menu={{ items: actionMenu }}
+                                onClick={() =>
+                                    setNoCloud(
+                                        tonieCards,
+                                        selectedTonies,
+                                        t,
+                                        overlay,
+                                        addNotification,
+                                        true,
+                                        handleUpdateCard
+                                    )
+                                }
+                                disabled={selectedTonies.length === 0}
+                            >
+                                {t("tonies.selectMode.setNoCloud")}
+                            </Dropdown.Button>
+                            <Dropdown.Button
+                                size="small"
+                                style={{ width: "unset" }}
+                                menu={{ items: exportMenu }}
+                                onClick={() => exportToCSV(tonieCards, selectedTonies, t)}
+                                disabled={selectedTonies.length === 0}
+                            >
+                                <Tooltip title={t("tonies.selectMode.exportCsvTooltip")}>
+                                    {t("tonies.selectMode.exportCsv")}
+                                </Tooltip>
+                            </Dropdown.Button>
+                        </div>
+                    )}
+                </div>
                 <List
                     header={showPagination ? listPagination : ""}
                     footer={showPagination ? listPagination : ""}
@@ -734,8 +807,9 @@ export const ToniesList: React.FC<{
                                 showSourceInfo={showSourceInfo}
                                 onHide={handleHideTonieCard}
                                 onUpdate={handleUpdate}
-                                marked={markedTonies.includes(tonie.ruid)}
-                                onToggleMark={toggleMarkTonie}
+                                selectionMode={selectionMode}
+                                selected={selectedTonies.includes(tonie.ruid)}
+                                onToggleSelect={toggleSelectTonie}
                             />
                         </List.Item>
                     )}

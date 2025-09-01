@@ -44,8 +44,9 @@ export const TonieCard: React.FC<{
     showSourceInfo?: boolean;
     onHide: (ruid: string) => void;
     onUpdate: (updatedTonieCard: TonieCardProps) => void;
-    marked?: boolean;
-    onToggleMark: (ruid: string) => void;
+    selectionMode?: boolean;
+    selected?: boolean;
+    onToggleSelect: (ruid: string) => void;
 }> = ({
     tonieCard,
     lastRUIDs,
@@ -55,8 +56,9 @@ export const TonieCard: React.FC<{
     showSourceInfo = true,
     onHide,
     onUpdate,
-    marked = false,
-    onToggleMark,
+    selectionMode = false,
+    selected = false,
+    onToggleSelect,
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
@@ -686,7 +688,7 @@ export const TonieCard: React.FC<{
                 key={localTonieCard.ruid}
                 size="small"
                 style={{
-                    background: marked ? token.colorBgTextHover : token.colorBgContainerDisabled,
+                    background: selected ? token.colorBgTextHover : token.colorBgContainerDisabled,
                     borderTop: toniePlayedOn && toniePlayedOn.length > 0 ? "3px #1677ff inset" : "reset",
                     paddingTop: toniePlayedOn && toniePlayedOn.length > 0 ? "unset" : 2,
                 }}
@@ -718,11 +720,13 @@ export const TonieCard: React.FC<{
                             )}
                             {readOnly ? (
                                 ""
-                            ) : (
+                            ) : selectionMode ? (
                                 <Checkbox
-                                    checked={marked}
-                                    onChange={() => onToggleMark && onToggleMark(tonieCard.ruid)}
+                                    checked={selected}
+                                    onChange={() => onToggleSelect && onToggleSelect(tonieCard.ruid)}
                                 />
+                            ) : (
+                                ""
                             )}
                         </div>
                     </div>

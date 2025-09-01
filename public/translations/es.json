@@ -1657,7 +1657,6 @@
         "alternativeSource": "Este Tonie {{originalTonie}} tiene asignado el contenido {{assignedContent}}!",
         "alternativeSourceUnknown": "¡Este Tonie {{originalTonie}} tiene asignado contenido alternativo!",
         "cancel": "Cancelar",
-        "clearMarks": "Eliminar marcas",
         "closeAudioPlayer": "Cerrar reproductor",
         "closeAudioPlayerPopover": "¡Cerrar detiene la reproducción!",
         "confirmHideModal": {
@@ -1712,11 +1711,6 @@
         },
         "errorFetchingSystemSounds": "Error al obtener los sonidos del sistema",
         "errorFetchingTonies": "Error al obtener los Tonies",
-        "exportCompleteInfoToJson": "Exportar marcados - información completa - a JSON",
-        "exportCsv": "Exportar marcados como CSV",
-        "exportCsvTooltip": "Exporta los tags marcados como archivo CSV con información de serie, episodio y modelo del tag (no del contenido asignado)",
-        "exportToHtml": "Exporta los marcados a HTML",
-        "exportToJson": "Exportar marcados a JSON",
         "help": {
             "actionItems": {
                 "cloudIcon": {
@@ -1805,7 +1799,6 @@
             },
             "title": "Ayuda"
         },
-        "hideMarkedTags": "Ocultar marcados Tonie",
         "infoModal": {
             "download": "Descargar TAF como *.ogg",
             "exists": "Existe:",
@@ -1829,7 +1822,6 @@
             "navigationTitle": "Biblioteca",
             "title": "Biblioteca"
         },
-        "marked": "Marcado",
         "messages": {
             "cloudAccessBlocked": "¡Acceso a la nube bloqueado!",
             "cloudAccessBlockedDetails": "Acceso a la nube bloqueado para \"{{model}}\" [{{ruid}}]",
@@ -1876,8 +1868,24 @@
             "ok": "OK",
             "selectFile": "Seleccionar archivo"
         },
-        "setLive": "Activar en vivo",
-        "setNoCloud": "Desactivar la nube",
+        "selectMode": {
+            "cancel": "Cancelar",
+            "exportCompleteInfoToJson": "Exportar seleccionados – información completa – JSON",
+            "exportCsv": "Exportar seleccionados como CSV",
+            "exportCsvTooltip": "Exporta los tags seleccionados como archivo CSV con serie, episodio e información del modelo (no el contenido asignado)",
+            "exportToHtml": "Exportar seleccionados a HTML",
+            "exportToJson": "Exportar seleccionados a JSON",
+            "hideSelectedTags": "Ocultar tags seleccionados",
+            "select": "Seleccionar",
+            "selectAll": "Seleccionar todo",
+            "selected": "Tags/Tonies seleccionados",
+            "setLive": "Activar live",
+            "setNoCloud": "Desactivar cloud",
+            "unselectAll": "Deseleccionar todo",
+            "unsetLive": "Desactivar live",
+            "unsetNoCloud": "Activar cloud",
+            "unsetTonie": "Tonie/Tag"
+        },
         "system-sounds": {
             "navigationTitle": "Sonidos del sistema",
             "title": "Sonidos del sistema"
@@ -1978,10 +1986,7 @@
             "title": "Tonies"
         },
         "toniesExportList": "Lista de exportación de Tonies",
-        "toniesExportListCreateDate": "Generado el",
-        "unsetLive": "Desactivar en vivo",
-        "unsetNoCloud": "Activar la nube",
-        "unsetTonie": "Tonie/Etiqueta"
+        "toniesExportListCreateDate": "Generado el"
     },
     "utils": {
         "copied": "¡Copiado!",

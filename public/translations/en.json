@@ -1657,7 +1657,6 @@
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
         "cancel": "Cancel",
-        "clearMarks": "Clear",
         "closeAudioPlayer": "Close player",
         "closeAudioPlayerPopover": "Close stops playback!",
         "confirmHideModal": {
@@ -1712,11 +1711,6 @@
         },
         "errorFetchingSystemSounds": "Error fetching system sounds",
         "errorFetchingTonies": "Error fetching Tonies",
-        "exportCompleteInfoToJson": "Export marked - complete info - to JSON",
-        "exportCsv": "Export marked as CSV",
-        "exportCsvTooltip": "Export marked tags as CSV file with series, episode and model info of the tag (not the assigned content)",
-        "exportToHtml": "Export marked to HTML",
-        "exportToJson": "Export marked to JSON",
         "help": {
             "actionItems": {
                 "cloudIcon": {
@@ -1805,7 +1799,6 @@
             },
             "title": "Help"
         },
-        "hideMarkedTags": "Hide marked tags",
         "infoModal": {
             "download": "Download TAF as *.ogg",
             "exists": "Exists:",
@@ -1829,7 +1822,6 @@
             "navigationTitle": "Library",
             "title": "Library"
         },
-        "marked": "marked",
         "messages": {
             "cloudAccessBlocked": "Cloud access blocked!",
             "cloudAccessBlockedDetails": "Cloud access blocked for \"{{model}}\" [{{ruid}}]",
@@ -1876,8 +1868,24 @@
             "ok": "OK",
             "selectFile": "Select file"
         },
-        "setLive": "Enable live",
-        "setNoCloud": "Disable cloud",
+        "selectMode": {
+            "cancel": "Cancel",
+            "exportCompleteInfoToJson": "Export selected - complete info - to JSON",
+            "exportCsv": "Export selected as CSV",
+            "exportCsvTooltip": "Export selected tags as CSV file with series, episode and model info of the tag (not the assigned content)",
+            "exportToHtml": "Export selected to HTML",
+            "exportToJson": "Export selected to JSON",
+            "hideSelectedTags": "Hide selected tags",
+            "select": "Select",
+            "selectAll": "Select all",
+            "selected": "Tags/Tonies selected",
+            "setLive": "Enable live",
+            "setNoCloud": "Disable cloud",
+            "unselectAll": "Unselect all",
+            "unsetLive": "Disable live",
+            "unsetNoCloud": "Enable cloud",
+            "unsetTonie": "Tonie/Tag"
+        },
         "system-sounds": {
             "navigationTitle": "System Sounds",
             "title": "System Sounds"
@@ -1978,10 +1986,7 @@
             "title": "Tonies"
         },
         "toniesExportList": "Tonies export list",
-        "toniesExportListCreateDate": "Generated on",
-        "unsetLive": "Disable live",
-        "unsetNoCloud": "Enable cloud",
-        "unsetTonie": "Tonie/Tag"
+        "toniesExportListCreateDate": "Generated on"
     },
     "utils": {
         "copied": "Copied!",

@@ -4,17 +4,12 @@ export async function exportMarkedToniesHTML(tonieCards: any[], markedTonies: st
             const card = tonieCards.find((c) => c.ruid === ruid);
             if (!card) return null;
 
-            const cardEl = document.getElementById(ruid);
-            const imgEl = cardEl?.querySelector("img") as HTMLImageElement | null;
-
-            let imgSrc = imgEl?.src || "";
-
             return {
                 ruid,
                 series: card.tonieInfo.series || t("tonies.unsetTonie"),
                 episode: card.tonieInfo.episode || "",
                 model: card.tonieInfo.model,
-                img: imgSrc,
+                img: card.tonieInfo.picture,
             };
         })
     );

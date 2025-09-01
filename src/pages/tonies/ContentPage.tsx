@@ -45,6 +45,7 @@ export const ContentPage = () => {
                         <h1>{t("tonies.content.title")}</h1>
                         {tonieBoxContentDirs.length > 1 ? (
                             <Select
+                                size="small"
                                 id="contentDirectorySelect"
                                 defaultValue=""
                                 onChange={handleContentOverlayChange}

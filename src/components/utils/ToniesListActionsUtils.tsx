@@ -12,14 +12,14 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const setNoCloud = async (
     tonieCards: TonieCardProps[],
-    markedTonies: string[],
+    selectedTonies: string[],
     t: any,
     overlay: any,
     addNotification: Function,
     value: boolean,
     handleUpdateCard: Function
 ) => {
-    const selected = tonieCards.filter((c) => markedTonies.includes(c.ruid));
+    const selected = tonieCards.filter((c) => selectedTonies.includes(c.ruid));
 
     for (const card of selected) {
         const model = `${card.tonieInfo.series}` + (card.tonieInfo.episode ? ` - ${card.tonieInfo.episode}` : "");
@@ -59,14 +59,14 @@ export const setNoCloud = async (
 
 export const setLiveFlag = async (
     tonieCards: TonieCardProps[],
-    markedTonies: string[],
+    selectedTonies: string[],
     t: any,
     overlay: any,
     addNotification: Function,
     value: boolean,
     handleUpdateCard: Function
 ) => {
-    const selected = tonieCards.filter((c) => markedTonies.includes(c.ruid));
+    const selected = tonieCards.filter((c) => selectedTonies.includes(c.ruid));
 
     for (const card of selected) {
         const model = `${card.tonieInfo.series}` + (card.tonieInfo.episode ? ` - ${card.tonieInfo.episode}` : "");
@@ -139,15 +139,15 @@ async function showConfirm(t: any, tonieLabel: string): Promise<boolean> {
     });
 }
 
-export async function hideMarkedTonies(
+export async function hideSelectedTonies(
     tonieCards: TonieCardProps[],
-    markedTonies: string[],
+    selectedTonies: string[],
     t: any,
     overlay: string | undefined,
     addNotification: Function,
     onHide: (ruid: string) => void
 ) {
-    const selected = tonieCards.filter((c) => markedTonies.includes(c.ruid));
+    const selected = tonieCards.filter((c) => selectedTonies.includes(c.ruid));
     for (const card of selected) {
         const model = `${card.tonieInfo.series}` + (card.tonieInfo.episode ? ` - ${card.tonieInfo.episode}` : "");
         const confirm = await showConfirm(t, model);
