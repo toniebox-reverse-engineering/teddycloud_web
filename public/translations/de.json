@@ -1870,12 +1870,12 @@
         },
         "selectMode": {
             "cancel": "Abbrechen",
-            "exportCompleteInfoToJson": "Ausgewählte exportieren – vollständige Informationen – JSON",
-            "exportCsv": "Ausgewählte als CSV exportieren",
-            "exportCsvTooltip": "Exportiert die ausgewählten Tags als CSV-Datei mit Serien-, Episoden- und Modellinformationen (nicht dem zugewiesenen Inhalt)",
-            "exportToHtml": "Ausgewählte nach HTML exportieren",
-            "exportToJson": "Ausgewählte nach JSON exportieren",
-            "hideSelectedTags": "Ausgewählte Tags ausblenden",
+            "exportCompleteInfoToJson": "Exportieren - vollständige Informationen - als JSON",
+            "exportCsv": "Als CSV exportieren",
+            "exportCsvTooltip": "Exportiert die Tonies/Tags als CSV-Datei mit Serien-, Episoden- und Modellinformationen (nicht dem zugewiesenen Inhalt)",
+            "exportToHtml": "Als HTML exportieren",
+            "exportToJson": "Als JSON exportieren",
+            "hideSelectedTags": "Tags ausblenden",
             "select": "Auswählen",
             "selectAll": "Alle auswählen",
             "selected": "Tags/Tonies ausgewählt",
@@ -1884,7 +1884,9 @@
             "unselectAll": "Auswahl aufheben",
             "unsetLive": "Live deaktivieren",
             "unsetNoCloud": "Cloud aktivieren",
-            "unsetTonie": "Tonie/Tag"
+            "unsetTonie": "Tonie/Tag",
+            "cancelButtonTooltip": "Auswahlmodus beenden",
+            "selectButtonTooltip": "Auswahlmodus aktivieren"
         },
         "system-sounds": {
             "navigationTitle": "System Sounds",

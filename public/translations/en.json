@@ -1871,11 +1871,11 @@
         "selectMode": {
             "cancel": "Cancel",
             "exportCompleteInfoToJson": "Export selected - complete info - to JSON",
-            "exportCsv": "Export selected as CSV",
-            "exportCsvTooltip": "Export selected tags as CSV file with series, episode and model info of the tag (not the assigned content)",
-            "exportToHtml": "Export selected to HTML",
-            "exportToJson": "Export selected to JSON",
-            "hideSelectedTags": "Hide selected tags",
+            "exportCsv": "Export as CSV",
+            "exportCsvTooltip": "Export tags as CSV file with series, episode and model info of the Tonie/tag (not the assigned content)",
+            "exportToHtml": "Export to HTML",
+            "exportToJson": "Export to JSON",
+            "hideSelectedTags": "Hide tags",
             "select": "Select",
             "selectAll": "Select all",
             "selected": "Tags/Tonies selected",
@@ -1884,7 +1884,9 @@
             "unselectAll": "Unselect all",
             "unsetLive": "Disable live",
             "unsetNoCloud": "Enable cloud",
-            "unsetTonie": "Tonie/Tag"
+            "unsetTonie": "Tonie/Tag",
+            "cancelButtonTooltip": "Cancel selection mode",
+            "selectButtonTooltip": "Enable selection mode"
         },
         "system-sounds": {
             "navigationTitle": "System Sounds",

@@ -1870,12 +1870,12 @@
         },
         "selectMode": {
             "cancel": "Cancelar",
-            "exportCompleteInfoToJson": "Exportar seleccionados – información completa – JSON",
-            "exportCsv": "Exportar seleccionados como CSV",
-            "exportCsvTooltip": "Exporta los tags seleccionados como archivo CSV con serie, episodio e información del modelo (no el contenido asignado)",
-            "exportToHtml": "Exportar seleccionados a HTML",
-            "exportToJson": "Exportar seleccionados a JSON",
-            "hideSelectedTags": "Ocultar tags seleccionados",
+            "exportCompleteInfoToJson": "Exportar - información completa - a JSON",
+            "exportCsv": "Exportar como CSV",
+            "exportCsvTooltip": "Exporta los Tonies/tags como archivo CSV con serie, episodio e información del modelo (no el contenido asignado)",
+            "exportToHtml": "Exportar a HTML",
+            "exportToJson": "Exportar a JSON",
+            "hideSelectedTags": "Ocultar tags",
             "select": "Seleccionar",
             "selectAll": "Seleccionar todo",
             "selected": "Tags/Tonies seleccionados",
@@ -1884,7 +1884,9 @@
             "unselectAll": "Deseleccionar todo",
             "unsetLive": "Desactivar live",
             "unsetNoCloud": "Activar cloud",
-            "unsetTonie": "Tonie/Tag"
+            "unsetTonie": "Tonie/Tag",
+            "cancelButtonTooltip": "Cancelar modo de selección",
+            "selectButtonTooltip": "Activar modo de selección"
         },
         "system-sounds": {
             "navigationTitle": "Sonidos del sistema",

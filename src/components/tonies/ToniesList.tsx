@@ -336,11 +336,6 @@ export const ToniesList: React.FC<{
     };
     const selectionMenu: MenuProps["items"] = [
         {
-            key: "select-all",
-            label: t("tonies.selectMode.selectAll"),
-            onClick: () => setSelectedTonies(tonieCards.map((c) => c.ruid)),
-        },
-        {
             key: "unselect-all",
             label: t("tonies.selectMode.unselectAll"),
             onClick: () => setSelectedTonies([]),
@@ -726,9 +721,17 @@ export const ToniesList: React.FC<{
                             )}
                         </div>
                         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-                            <Button size="small" type="text" onClick={() => setSelectionMode(!selectionMode)}>
-                                {selectionMode ? t("tonies.cancel") : t("tonies.selectMode.select")}
-                            </Button>
+                            <Tooltip
+                                title={
+                                    selectionMode
+                                        ? t("tonies.selectMode.cancelButtonTooltip")
+                                        : t("tonies.selectMode.selectButtonTooltip")
+                                }
+                            >
+                                <Button size="small" type="default" onClick={() => setSelectionMode(!selectionMode)}>
+                                    {selectionMode ? t("tonies.cancel") : t("tonies.selectMode.select")}
+                                </Button>
+                            </Tooltip>
                         </div>
                     </div>
                     {selectionMode && (
