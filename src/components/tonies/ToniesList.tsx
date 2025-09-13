@@ -27,12 +27,7 @@ import { TonieCard } from "../../components/tonies/TonieCard";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import { languageOptions } from "../../utils/languageUtil";
 import { scrollToTop } from "../../utils/browserUtils";
-import {
-    exportToJSON,
-    exportCompleteInfoToJSON,
-    exportToCSV,
-    exportMarkedToniesHTML,
-} from "../utils/ToniesListExportUtils";
+import { exportToJSON, exportCompleteInfoToJSON, exportToCSV, exportToHTML } from "../utils/ToniesListExportUtils";
 import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { QuestionCircleOutlined } from "@ant-design/icons";
@@ -351,7 +346,12 @@ export const ToniesList: React.FC<{
         {
             key: "html",
             label: t("tonies.selectMode.exportToHtml"),
-            onClick: () => exportMarkedToniesHTML(tonieCards, selectedTonies, t),
+            onClick: () => exportToHTML(tonieCards, selectedTonies, false, t),
+        },
+        {
+            key: "html-inline",
+            label: t("tonies.selectMode.exportToHtmlInline"),
+            onClick: () => exportToHTML(tonieCards, selectedTonies, true, t),
         },
         {
             key: "complete-info-json",

@@ -53,39 +53,45 @@ export const PluginPage = () => {
 
     useEffect(() => {
         const iframe = iframeRef.current;
+        if (!iframe) return;
+
         let hasNotified = false;
+        let prevHeight = 0;
 
         const handleResize = () => {
-            if (iframe && iframe.contentWindow) {
-                try {
-                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+            if (!iframe || !iframe.contentWindow) return;
 
-                    if (doc && doc.body) {
-                        const isError = doc.getElementById("error-404");
-                        if (isError) {
-                            setIsError404(true);
-                            if (!hasNotified) {
-                                hasNotified = true;
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+                if (!doc || !doc.body) return;
 
-                                addNotification(
-                                    NotificationTypeEnum.Error,
-                                    t("community.plugins.error.notification.title"),
-                                    t("community.plugins.error.notification.missingPluginIndexHtml", {
-                                        pluginId: pluginId,
-                                    }),
-                                    t("community.plugins.title")
-                                );
-                            }
-                        } else {
-                            iframe.style.height = doc.body.scrollHeight + 48 + "px";
-                            setIsError404(false);
-                        }
-                    } else {
-                        setIsError404(false);
+                const isError = doc.getElementById("error-404");
+                if (isError) {
+                    setIsError404(true);
+                    if (!hasNotified) {
+                        hasNotified = true;
+                        addNotification(
+                            NotificationTypeEnum.Error,
+                            t("community.plugins.error.notification.title"),
+                            t("community.plugins.error.notification.missingPluginIndexHtml", { pluginId }),
+                            t("community.plugins.title")
+                        );
                     }
-                } catch (err) {
-                    console.warn("Cross-origin content - can't access height.");
+                    return;
+                } else {
+                    setIsError404(false);
                 }
+
+                const newHeight = doc.body.scrollHeight + 48;
+
+                if (prevHeight && newHeight - prevHeight === 48) {
+                    clearInterval(observerInterval);
+                } else {
+                    iframe.style.height = newHeight + "px";
+                }
+                prevHeight = newHeight;
+            } catch (err) {
+                console.warn("Cross-origin content - can't access height.");
             }
         };
 

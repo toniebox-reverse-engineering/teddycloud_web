@@ -94,6 +94,7 @@
                 "successDeletingPlugin": "Deletion of plugin successful",
                 "successDeletingPluginDetails": "Deletion of plugin \"{{filename}}\" was successful"
             },
+            "downloadPluginTemplate": "Download PluginTemplate",
             "empty": "No plugin available",
             "error": {
                 "notification": {
@@ -117,6 +118,7 @@
                 "fields": {
                     "author": "Author of the plugin",
                     "description": "Short summary of the plugin",
+                    "icon": "The icon used for the plugin. Must be a valid Ant Design icon component from https://ant.design/components/icon, e.g. TrophyOutlined, TagsOutlined",
                     "pluginHomepage": "Homepage of the plugin",
                     "pluginName": "The title shown in menus (mandatory)",
                     "teddyCloudSection": "Desired section where plugin shall be added to navigation (valid values:  home, tonies, tonieboxes, settings, community)",
@@ -133,6 +135,7 @@
             "installedPlugins": "Installed plugins",
             "intro": "Here you find your added TeddyCloud plugins and you can add new plugins provided by you or the TeddyCloud community!",
             "navigationTitle": "TC Plugins",
+            "ok": "OK",
             "open": "Open Plugin",
             "plugin": "Plugin",
             "title": "TeddyCloud Plugins",
@@ -1874,6 +1877,7 @@
             "exportCsv": "Export as CSV",
             "exportCsvTooltip": "Export tags as CSV file with series, episode and model info of the Tonie/tag (not the assigned content)",
             "exportToHtml": "Export to HTML",
+            "exportToHtmlInline": "Export to HTM with inline images if possible (slow!)",
             "exportToJson": "Export to JSON",
             "hideSelectedTags": "Hide tags",
             "select": "Select",
@@ -1884,7 +1888,6 @@
             "unselectAll": "Unselect all",
             "unsetLive": "Disable live",
             "unsetNoCloud": "Enable cloud",
-            "unsetTonie": "Tonie/Tag",
             "cancelButtonTooltip": "Cancel selection mode",
             "selectButtonTooltip": "Enable selection mode"
         },
@@ -1988,7 +1991,8 @@
             "title": "Tonies"
         },
         "toniesExportList": "Tonies export list",
-        "toniesExportListCreateDate": "Generated on"
+        "toniesExportListCreateDate": "Generated on",
+        "unsetTonie": "Tonie/Tag"
     },
     "utils": {
         "copied": "Copied!",

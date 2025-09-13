@@ -695,7 +695,9 @@ export const TonieCard: React.FC<{
                 title={
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {localTonieCard.tonieInfo.series ? localTonieCard.tonieInfo.series : t("tonies.unsetTonie")}
+                            {localTonieCard.tonieInfo.series
+                                ? localTonieCard.tonieInfo.series
+                                : t("tonies.unsetTonie") + " " + localTonieCard.tonieInfo.model}
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                             {localTonieCard.tonieInfo.language &&

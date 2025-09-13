@@ -44,6 +44,14 @@ export function detectColorScheme() {
 
 export function scrollToTop() {
     const scroller = document.scrollingElement || document.documentElement || document.body;
+    let isCancelled = false;
+
+    const cancel = () => {
+        isCancelled = true;
+    };
+    window.addEventListener("wheel", cancel, { passive: true });
+    window.addEventListener("touchstart", cancel, { passive: true });
+    window.addEventListener("keydown", cancel, { passive: true });
 
     try {
         scroller.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -53,6 +61,8 @@ export function scrollToTop() {
 
     if (scroller.scrollTop > 0) {
         const step = () => {
+            if (isCancelled) return;
+
             const c = scroller.scrollTop;
             if (c > 0) {
                 scroller.scrollTop = c - Math.max(1, c / 8);
@@ -61,4 +71,19 @@ export function scrollToTop() {
         };
         requestAnimationFrame(step);
     }
+
+    const cleanup = () => {
+        window.removeEventListener("wheel", cancel);
+        window.removeEventListener("touchstart", cancel);
+        window.removeEventListener("keydown", cancel);
+    };
+
+    const checkFinished = () => {
+        if (scroller.scrollTop === 0 || isCancelled) {
+            cleanup();
+        } else {
+            requestAnimationFrame(checkFinished);
+        }
+    };
+    requestAnimationFrame(checkFinished);
 }

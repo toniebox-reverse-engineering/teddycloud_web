@@ -94,6 +94,7 @@
                 "successDeletingPlugin": "Plugin supprimé avec succès",
                 "successDeletingPluginDetails": "Le plugin \"{{filename}}\" a été supprimé avec succès"
             },
+            "downloadPluginTemplate": "Télécharger le modèle de plugin",
             "empty": "Aucun plugin disponible",
             "error": {
                 "notification": {
@@ -117,6 +118,7 @@
                 "fields": {
                     "author": "Auteur du plugin",
                     "description": "Résumé court du plugin",
+                    "icon": "L'icône utilisée pour le plugin. Doit être un composant d'icône Ant Design valide depuis https://ant.design/components/icon, par ex. TrophyOutlined, TagsOutlined",
                     "pluginHomepage": "Page d'accueil du plugin",
                     "pluginName": "Le titre affiché dans les menus (obligatoire)",
                     "teddyCloudSection": "Section souhaitée où le plugin doit être ajouté à la navigation (valeurs valides : home, tonies, tonieboxes, settings, community)",
@@ -133,6 +135,7 @@
             "installedPlugins": "Plugins installés",
             "intro": "Vous trouverez ici vos plugins TeddyCloud ajoutés et pouvez ajouter de nouveaux plugins fournis par vous-même ou la communauté TeddyCloud !",
             "navigationTitle": "Plugins TC",
+            "ok": "OK",
             "open": "Ouvrir le plugin",
             "plugin": "Plugin",
             "title": "Plugins TeddyCloud",
@@ -1874,6 +1877,7 @@
             "exportCsv": "Exporter en CSV",
             "exportCsvTooltip": "Exportez les Tomies/tags au format CSV avec la série, l'épisode et les informations du modèle (pas le contenu assigné)",
             "exportToHtml": "Exporter en HTML",
+            "exportToHtmlInline": "Exporter en HTML avec images intégrées si possible (lent !)",
             "exportToJson": "Exporter en JSON",
             "hideSelectedTags": "Masquer les tags",
             "select": "Sélectionner",
@@ -1884,7 +1888,6 @@
             "unselectAll": "Tout désélectionner",
             "unsetLive": "Désactiver live",
             "unsetNoCloud": "Activer cloud",
-            "unsetTonie": "Tonie/Tag",
             "cancelButtonTooltip": "Annuler le mode de sélection",
             "selectButtonTooltip": "Activer le mode de sélection"
         },
@@ -1988,7 +1991,8 @@
             "title": "Tonies"
         },
         "toniesExportList": "Liste d'export des Tonies",
-        "toniesExportListCreateDate": "Généré le"
+        "toniesExportListCreateDate": "Généré le",
+        "unsetTonie": "Tonie/Tag"
     },
     "utils": {
         "copied": "Copié !",

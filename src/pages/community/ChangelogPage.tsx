@@ -45,6 +45,9 @@ export const ChangelogPage = () => {
                 "gui: Tonies overview: Cards can be marked and exported as CSV https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/235",
                 "gui: Tonies overview: Added action menu to marked tonies cards (cloud - no cloud, live - not live, hide)",
                 "gui: Updated all used packages to latest versions",
+                "gui: Stop auto scroll to top on page change when user manually scrolls",
+                "gui: Show user entered model in tonies card header and information model if it's not found in tonies.(custom.)json",
+                "gui: Added PluginTemplate download, thanks to b1u3n4z9u1 for preparing that template!",
                 "gui: Some refactoring",
             ],
             commits: [

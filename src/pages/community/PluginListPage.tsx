@@ -20,6 +20,7 @@ import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import PluginTemplateDownloadButton from "../../components/utils/PluginTemplateDownload";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -78,6 +79,7 @@ export const PluginListPage = () => {
   "version": "Version of the plugin",
   "pluginHomepage": "Homepage of the plugin",
   "teddyCloudSection": "tonies",
+  "icon": "TrophyOutlined"
 }`}
             />
 
@@ -91,6 +93,7 @@ export const PluginListPage = () => {
                     ["version", t("community.plugins.help.fields.version")],
                     ["pluginHomepage", t("community.plugins.help.fields.pluginHomepage")],
                     ["teddyCloudSection", t("community.plugins.help.fields.teddyCloudSection")],
+                    ["icon", t("community.plugins.help.fields.icon")],
                 ]}
                 renderItem={([field, desc]) => (
                     <List.Item>
@@ -107,8 +110,13 @@ export const PluginListPage = () => {
             open={isVisibleHelpModal}
             title={t("community.plugins.help.popoverTitle")}
             onCancel={() => setIsVisibleHelpModal(false)}
-            onOk={() => setIsVisibleHelpModal(false)}
             cancelButtonProps={{ style: { display: "none" } }}
+            footer={[
+                <PluginTemplateDownloadButton />,
+                <Button key="ok" onClick={() => setIsVisibleHelpModal(false)}>
+                    {t("community.plugins.ok")}
+                </Button>,
+            ]}
         >
             {contentHelpModal}
         </Modal>
@@ -279,6 +287,7 @@ export const PluginListPage = () => {
                             <Button disabled icon={<AppstoreAddOutlined />} onClick={() => setIsUploadModalOpen(true)}>
                                 {t("community.plugins.addButton")}
                             </Button>
+                            {<PluginTemplateDownloadButton />}
                             <Button icon={<QuestionCircleOutlined />} onClick={() => setIsVisibleHelpModal(true)}>
                                 {t("community.plugins.helpButton")}
                             </Button>

@@ -1,6 +1,16 @@
-import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from "react";
+import {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    ReactNode,
+    Dispatch,
+    SetStateAction,
+    ElementType,
+} from "react";
 import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import * as AntIcons from "@ant-design/icons";
 
 import { NotificationRecord, NotificationType, NotificationTypeEnum } from "./types/teddyCloudNotificationTypes";
 import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
@@ -226,6 +236,10 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
                         teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)
                             ? meta.teddyCloudSection
                             : null,
+
+                        icon: (meta.icon && meta.icon in AntIcons
+                            ? AntIcons[meta.icon as keyof typeof AntIcons]
+                            : AntIcons.CodeSandboxOutlined) as ElementType,
                     });
                 } catch (err) {
                     addNotification(
