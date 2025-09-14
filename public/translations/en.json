@@ -555,6 +555,12 @@
                         "01homeAssistantIntegration": "Home Assistant integration (MQTT)"
                     },
                     "title": "MQTT client"
+                },
+                "13plugins": {
+                    "items": {
+                        "01pluginFeature": "extend TeddyCloud functionality by custom plugins"
+                    },
+                    "title": "TeddyCloud Plugins"
                 }
             },
             "futureFeatures": {
