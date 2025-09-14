@@ -11,7 +11,6 @@ import {
     UnorderedListOutlined,
     UserAddOutlined,
     FormatPainterOutlined,
-    CodeSandboxOutlined,
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
@@ -51,7 +50,7 @@ export const ToniesSubNav = () => {
                     {plugin.pluginName}
                 </Link>
             ),
-            icon: React.createElement(CodeSandboxOutlined),
+            icon: React.createElement(plugin.icon),
             title: plugin.pluginName,
         }));
 

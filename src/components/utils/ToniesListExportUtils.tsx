@@ -1,13 +1,54 @@
-export async function exportMarkedToniesHTML(tonieCards: any[], markedTonies: string[], t: (key: string) => string) {
+function getDateTimePrefix() {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    const hh = String(now.getHours()).padStart(2, "0");
+    const min = String(now.getMinutes()).padStart(2, "0");
+    const ss = String(now.getSeconds()).padStart(2, "0");
+    return `${yyyy}${mm}${dd}_${hh}${min}${ss}`;
+}
+
+function toAbsoluteUrl(url: string): string {
+    try {
+        return new URL(url, window.location.origin).href;
+    } catch {
+        return url;
+    }
+}
+
+async function tryInlineImage(url: string): Promise<string> {
+    const absoluteUrl = toAbsoluteUrl(url);
+
+    try {
+        const res = await fetch(absoluteUrl, { mode: "cors" });
+
+        const blob = await res.blob();
+        return await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    } catch {
+        return absoluteUrl; // fallback
+    }
+}
+
+export async function exportToHTML(
+    tonieCards: any[],
+    selectedTonies: string[],
+    inlineImages: boolean,
+    t: (key: string) => string
+) {
     const items = await Promise.all(
-        markedTonies.map(async (ruid) => {
+        selectedTonies.map(async (ruid) => {
             const card = tonieCards.find((c) => c.ruid === ruid);
             if (!card) return null;
 
-            const cardEl = document.getElementById(ruid);
-            const imgEl = cardEl?.querySelector("img") as HTMLImageElement | null;
-
-            let imgSrc = imgEl?.src || "";
+            const imgSrc = inlineImages
+                ? await tryInlineImage(card.tonieInfo.picture)
+                : toAbsoluteUrl(card.tonieInfo.picture);
 
             return {
                 ruid,
@@ -44,7 +85,7 @@ export async function exportMarkedToniesHTML(tonieCards: any[], markedTonies: st
         <li id="export-${item.ruid}">
           <img class="thumb" src="${escapeHtml(item.img)}" alt="${escapeHtml(item.series)}" />
           <div class="info">
-            ${escapeHtml(item.series)} – ${escapeHtml(item.episode)}
+            ${escapeHtml(item.series)} - ${escapeHtml(item.episode)}
             <span class="uid">(${escapeHtml(item.model)})</span>
           </div>
         </li>
@@ -70,7 +111,7 @@ export async function exportMarkedToniesHTML(tonieCards: any[], markedTonies: st
   </div>
 </body></html>`;
 
-    downloadBlob(html, "marked_tonies.html", "text/html");
+    downloadBlob(html, "selected_tonies.html", "text/html");
 }
 
 export function exportToJSON(tonieCards: any[], markedTonies: string[], t: (key: string) => string) {
@@ -82,12 +123,12 @@ export function exportToJSON(tonieCards: any[], markedTonies: string[], t: (key:
             model: card.tonieInfo.model,
         }));
 
-    downloadBlob(JSON.stringify(rows, null, 2), "marked_tonies.json", "application/json");
+    downloadBlob(JSON.stringify(rows, null, 2), "selected_tonies.json", "application/json");
 }
 
 export function exportCompleteInfoToJSON(tonieCards: any[], markedTonies: string[]) {
     const rows = tonieCards.filter((card) => markedTonies.includes(card.ruid));
-    downloadBlob(JSON.stringify(rows, null, 2), "marked_tonies.json", "application/json");
+    downloadBlob(JSON.stringify(rows, null, 2), "selected_tonies.json", "application/json");
 }
 
 export function exportToCSV(tonieCards: any[], markedTonies: string[], t: (key: string) => string) {
@@ -106,7 +147,7 @@ export function exportToCSV(tonieCards: any[], markedTonies: string[], t: (key: 
         });
 
     const csvContent = header + rows.join("\n");
-    downloadBlob(csvContent, "marked_tonies.csv", "text/csv");
+    downloadBlob(csvContent, "selected_tonies.csv", "text/csv");
 }
 
 // --- helpers ---
@@ -124,7 +165,8 @@ function downloadBlob(content: string, filename: string, type: string) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", filename);
+    const prefix = getDateTimePrefix();
+    link.setAttribute("download", prefix + "_" + filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

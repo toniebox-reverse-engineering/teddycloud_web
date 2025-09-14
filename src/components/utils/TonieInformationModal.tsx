@@ -198,7 +198,11 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     const informationModalTitle = (
         <>
             <h3>
-                {title ? title : t("tonies.informationModal.unknownModel")}
+                {title
+                    ? title
+                    : "model" in tonieCardOrTAFRecord.tonieInfo && tonieCardOrTAFRecord.tonieInfo.model
+                    ? t("tonies.unsetTonie") + " " + tonieCardOrTAFRecord.tonieInfo.model
+                    : t("tonies.informationModal.unknownModel")}
                 <br />
                 {"uid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.uid ? (
                     <Text type="secondary">{tonieCardOrTAFRecord.uid}</Text>

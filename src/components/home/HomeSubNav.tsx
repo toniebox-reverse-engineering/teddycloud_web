@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
-import { CodeSandboxOutlined, ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
+import { ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
 import i18n from "../../i18n";
 
 import { useTeddyCloud } from "../../TeddyCloudContext";
@@ -34,7 +34,7 @@ export const HomeSubNav = () => {
                     {plugin.pluginName}
                 </Link>
             ),
-            icon: React.createElement(CodeSandboxOutlined),
+            icon: React.createElement(plugin.icon),
             title: plugin.pluginName,
         }));
 

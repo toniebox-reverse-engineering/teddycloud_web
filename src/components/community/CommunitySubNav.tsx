@@ -14,7 +14,6 @@ import {
     MinusOutlined,
     PlusOutlined,
     AppstoreOutlined,
-    CodeSandboxOutlined,
 } from "@ant-design/icons";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 
@@ -60,7 +59,7 @@ export const CommunitySubNav = () => {
                 {plugin.pluginName}
             </Link>
         ),
-        icon: React.createElement(CodeSandboxOutlined),
+        icon: React.createElement(plugin.icon),
         title: plugin.pluginName,
     }));
 
@@ -79,7 +78,7 @@ export const CommunitySubNav = () => {
                     {plugin.pluginName}
                 </Link>
             ),
-            icon: React.createElement(CodeSandboxOutlined),
+            icon: React.createElement(plugin.icon),
             title: plugin.pluginName,
         }));
 
