@@ -75,7 +75,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             }
 
             if (sourceElement.src != url) {
-                sourceElement.src = url;
+                // encodeUri (here or earlier) does not work, but this "dumb" replace does...
+                sourceElement.src = url.replace("+", "%2B").replace("#", "%23");
                 globalAudio.load();
             }
             if (meta) {
