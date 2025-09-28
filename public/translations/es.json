@@ -1879,6 +1879,7 @@
         },
         "selectMode": {
             "cancel": "Cancelar",
+            "cancelButtonTooltip": "Cancelar modo de selección",
             "exportCompleteInfoToJson": "Exportar - información completa - a JSON",
             "exportCsv": "Exportar como CSV",
             "exportCsvTooltip": "Exporta los Tonies/tags como archivo CSV con serie, episodio e información del modelo (no el contenido asignado)",
@@ -1888,14 +1889,13 @@
             "hideSelectedTags": "Ocultar tags",
             "select": "Seleccionar",
             "selectAll": "Seleccionar todo",
+            "selectButtonTooltip": "Activar modo de selección",
             "selected": "Tags/Tonies seleccionados",
             "setLive": "Activar live",
             "setNoCloud": "Desactivar cloud",
             "unselectAll": "Deseleccionar todo",
             "unsetLive": "Desactivar live",
-            "unsetNoCloud": "Activar cloud",
-            "cancelButtonTooltip": "Cancelar modo de selección",
-            "selectButtonTooltip": "Activar modo de selección"
+            "unsetNoCloud": "Activar cloud"
         },
         "system-sounds": {
             "navigationTitle": "Sonidos del sistema",
@@ -1995,6 +1995,14 @@
             "showAll": "Mostrar todo",
             "showPagination": "Mostrar paginación",
             "title": "Tonies"
+        },
+        "toniesaudioplayer": {
+            "enterFullscreen": "Entrar en pantalla completa",
+            "exitFullscreen": "Salir de pantalla completa",
+            "navigationTitle": "Reproductor de Audio Tonies",
+            "selectTonieToPlay": "Selecciona un Tonie/etiqueta para reproducir",
+            "title": "Reproductor de Audio Tonies",
+            "unknown": "Desconocido"
         },
         "toniesExportList": "Lista de exportación de Tonies",
         "toniesExportListCreateDate": "Generado el",
