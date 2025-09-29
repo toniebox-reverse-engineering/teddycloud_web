@@ -1,9 +1,17 @@
-import { PauseCircleOutlined, PlayCircleOutlined, StepBackwardOutlined, StepForwardOutlined } from "@ant-design/icons";
-import { Button, Card, Modal, Slider, Space, Typography } from "antd";
+import {
+    MutedOutlined,
+    PauseCircleOutlined,
+    PlayCircleOutlined,
+    SoundOutlined,
+    StepBackwardOutlined,
+    StepForwardOutlined,
+    UnorderedListOutlined,
+} from "@ant-design/icons";
+import { Button, Card, List, Modal, Slider, Space, Tooltip, Typography } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TonieCardProps } from "../../types/tonieTypes";
-import { supportsOggOpus } from "../../utils/browserUtils";
+import { isIOS, supportsOggOpus } from "../../utils/browserUtils";
 
 import logoImg from "../../assets/logo.png";
 
@@ -22,6 +30,14 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
     const [currentTrackNo, setCurrentTrackNo] = useState(0);
     const [currentTrackTitle, setCurrentTrackTitle] = useState("");
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isTracklistVisible, setIsTracklistVisible] = useState(false);
+    const [volume, setVolume] = useState(100);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume / 100;
+        }
+    }, [volume]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -89,7 +105,6 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         };
     }, [tonieCard]);
 
-    // MediaSession
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !navigator.mediaSession || !tonieCard) return;
@@ -136,6 +151,63 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         );
     }
 
+    const openTracklist = () => {
+        setIsTracklistVisible(true);
+    };
+
+    const closeTracklist = () => {
+        setIsTracklistVisible(false);
+    };
+
+    const trackSecondsMatchSourceTracks = (tonieCard: TonieCardProps, tracksLength: number) => {
+        return tonieCard.trackSeconds?.length === tracksLength;
+    };
+
+    const getTrackStartTime = (tonieCard: TonieCardProps, index: number) => {
+        const trackSeconds = tonieCard.trackSeconds;
+        return (trackSeconds && trackSeconds[index]) || 0;
+    };
+
+    const tracklistModal = (
+        <Modal
+            title={tonieCard?.tonieInfo?.series || t("tonies.toniesaudioplayer.unknown")}
+            open={isTracklistVisible}
+            onCancel={closeTracklist}
+            footer={null}
+        >
+            {tonieCard?.tonieInfo?.tracks?.length ? (
+                <List
+                    size="small"
+                    dataSource={tonieCard.tonieInfo.tracks}
+                    renderItem={(track: string, index: number) => (
+                        <List.Item>
+                            <div style={{ display: "flex", gap: 16 }}>
+                                {trackSecondsMatchSourceTracks(tonieCard, tonieCard.tonieInfo.tracks?.length) ? (
+                                    <>
+                                        <PlayCircleOutlined
+                                            key="playpause"
+                                            onClick={() => {
+                                                setIsTracklistVisible(false);
+                                                handlePlayPause(getTrackStartTime(tonieCard, index));
+                                            }}
+                                        />{" "}
+                                    </>
+                                ) : (
+                                    ""
+                                )}{" "}
+                                <div>
+                                    {index + 1}. {track}
+                                </div>
+                            </div>
+                        </List.Item>
+                    )}
+                />
+            ) : (
+                <p>{t("tonies.toniesaudioplayer.noTracks", "No tracks available")}</p>
+            )}
+        </Modal>
+    );
+
     const tracks = tonieCard.sourceInfo?.tracks || tonieCard.tonieInfo.tracks || [];
     const trackSeconds = tonieCard.trackSeconds || [];
 
@@ -153,10 +225,15 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         return true;
     };
 
-    const handlePlayPause = () => {
+    const handlePlayPause = (startTime?: number) => {
         if (!audioRef.current || !isLoaded) return;
 
         const audio = audioRef.current;
+
+        if (startTime) {
+            audio.currentTime = startTime;
+        }
+
         if (isPlaying) {
             audio.pause();
             setIsPlaying(false);
@@ -246,6 +323,15 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                         formatter: (val) =>
                             `${Math.floor((val || 0) / 60)}:${String(Math.floor((val || 0) % 60)).padStart(2, "0")}`,
                     }}
+                    marks={
+                        tonieCard.trackSeconds
+                            ? tonieCard.trackSeconds.reduce((acc: Record<number, string>, sec: number) => {
+                                  acc[sec] = " ";
+                                  return acc;
+                              }, {})
+                            : undefined
+                    }
+                    style={{ marginBottom: 8 }}
                 />
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -258,6 +344,12 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
             </div>
 
             <Space style={{ marginTop: 16 }} size="large" align="center">
+                <Button
+                    type="text"
+                    icon={<UnorderedListOutlined style={{ fontSize: 30 }} />}
+                    onClick={() => openTracklist()}
+                    disabled={!isLoaded || tonieCard.tonieInfo.tracks.length == 0}
+                />
                 <Button
                     type="text"
                     icon={<StepBackwardOutlined style={{ fontSize: 30 }} />}
@@ -273,7 +365,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                             <PlayCircleOutlined style={{ fontSize: 40 }} />
                         )
                     }
-                    onClick={handlePlayPause}
+                    onClick={() => handlePlayPause(0)}
                     disabled={!isLoaded}
                 />
                 <Button
@@ -282,8 +374,29 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                     onClick={handleNextTrackButton}
                     disabled={!isLoaded}
                 />
+                <Tooltip
+                    trigger="click"
+                    placement="top"
+                    title={
+                        <div style={{ width: 120 }}>
+                            <Slider min={0} max={100} value={volume} onChange={setVolume} />
+                        </div>
+                    }
+                >
+                    <Button
+                        type="text"
+                        disabled={!isLoaded || isIOS()}
+                        icon={
+                            volume === 0 ? (
+                                <MutedOutlined style={{ fontSize: 30 }} />
+                            ) : (
+                                <SoundOutlined style={{ fontSize: 30 }} />
+                            )
+                        }
+                    />
+                </Tooltip>
             </Space>
-
+            {tracklistModal}
             <audio ref={audioRef} />
         </Card>
     );

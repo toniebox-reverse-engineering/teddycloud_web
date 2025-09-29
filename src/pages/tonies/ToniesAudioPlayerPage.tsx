@@ -36,7 +36,6 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [loading, setLoading] = useState(true);
-    //const [isFullscreen, setIsFullscreen] = useState(false);
 
     const toggleFullscreen = () => {
         if (!document.fullscreenElement && contentRef.current) {

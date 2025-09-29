@@ -16,6 +16,16 @@ export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay
     const [currentTonie, setCurrentTonie] = useState<TonieCardProps>();
     const [hoveredTonieRUID, setHoveredTonieRUID] = useState<string | null>(null);
 
+    const [isTracklistVisible, setIsTracklistVisible] = useState(false);
+
+    const openTracklist = (tonie: TonieCardProps) => {
+        setIsTracklistVisible(true);
+    };
+
+    const closeTracklist = () => {
+        setIsTracklistVisible(false);
+    };
+
     type ArrowProps = {
         onClick?: React.MouseEventHandler<HTMLDivElement>;
     };

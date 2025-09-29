@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Typography, Button, Tooltip, Spin, theme } from "antd";
+import { Modal, Typography, Button, Tooltip, Spin, theme, List } from "antd";
 import { DownloadOutlined, LoadingOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
 import { Record } from "../../types/fileBrowserTypes";
@@ -322,17 +322,19 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                         sourceTracks && sourceTracks.length > 0 ? (
                             <>
                                 <strong>{t("tonies.infoModal.tracklist")}</strong>
-                                <ol>
-                                    {sourceTracks.map((track, index) => (
-                                        <li key={index}>
-                                            {"audioUrl" in tonieCardOrTAFRecord &&
-                                            trackSecondsMatchSourceTracks(
-                                                tonieCardOrTAFRecord,
-                                                tonieCardOrTAFRecord.sourceInfo.tracks?.length
-                                            ) ? (
-                                                <>
+                                <List
+                                    size="small"
+                                    dataSource={sourceTracks}
+                                    renderItem={(track: string, index: number) => (
+                                        <List.Item>
+                                            <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                                                {"audioUrl" in tonieCardOrTAFRecord &&
+                                                trackSecondsMatchSourceTracks(
+                                                    tonieCardOrTAFRecord,
+                                                    tonieCardOrTAFRecord.sourceInfo.tracks?.length
+                                                ) ? (
                                                     <PlayCircleOutlined
-                                                        key="playpause"
+                                                        key={`playpause-${index}`}
                                                         onClick={() =>
                                                             handlePlayPauseClick(
                                                                 import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
@@ -340,15 +342,16 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                                 getTrackStartTime(tonieCardOrTAFRecord, index)
                                                             )
                                                         }
-                                                    />{" "}
-                                                </>
-                                            ) : (
-                                                ""
-                                            )}{" "}
-                                            {track}
-                                        </li>
-                                    ))}
-                                </ol>
+                                                    />
+                                                ) : null}
+
+                                                <div>
+                                                    {index + 1}. {track}
+                                                </div>
+                                            </div>
+                                        </List.Item>
+                                    )}
+                                />
                             </>
                         ) : (
                             <></>
@@ -356,17 +359,19 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     ) : tonieCardOrTAFRecord.tonieInfo?.tracks && tonieCardOrTAFRecord.tonieInfo?.tracks.length > 0 ? (
                         <>
                             <strong>{t("tonies.infoModal.tracklist")}</strong>
-                            <ol>
-                                {tonieCardOrTAFRecord.tonieInfo?.tracks.map((track, index) => (
-                                    <li key={index}>
-                                        {"audioUrl" in tonieCardOrTAFRecord &&
-                                        trackSecondsMatchSourceTracks(
-                                            tonieCardOrTAFRecord,
-                                            tonieCardOrTAFRecord.tonieInfo.tracks?.length
-                                        ) ? (
-                                            <>
+                            <List
+                                size="small"
+                                dataSource={tonieCardOrTAFRecord.tonieInfo?.tracks || []}
+                                renderItem={(track: string, index: number) => (
+                                    <List.Item>
+                                        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                                            {"audioUrl" in tonieCardOrTAFRecord &&
+                                            trackSecondsMatchSourceTracks(
+                                                tonieCardOrTAFRecord,
+                                                tonieCardOrTAFRecord.tonieInfo?.tracks?.length
+                                            ) ? (
                                                 <PlayCircleOutlined
-                                                    key="playpause"
+                                                    key={`playpause-${index}`}
                                                     onClick={() =>
                                                         handlePlayPauseClick(
                                                             import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
@@ -374,15 +379,16 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                             getTrackStartTime(tonieCardOrTAFRecord, index)
                                                         )
                                                     }
-                                                />{" "}
-                                            </>
-                                        ) : (
-                                            ""
-                                        )}{" "}
-                                        {track}
-                                    </li>
-                                ))}
-                            </ol>
+                                                />
+                                            ) : null}
+
+                                            <div>
+                                                {index + 1}. {track}
+                                            </div>
+                                        </div>
+                                    </List.Item>
+                                )}
+                            />
                         </>
                     ) : (
                         <></>
