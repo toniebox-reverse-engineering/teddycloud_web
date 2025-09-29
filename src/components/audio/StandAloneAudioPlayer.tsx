@@ -188,7 +188,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                                             key="playpause"
                                             onClick={() => {
                                                 setIsTracklistVisible(false);
-                                                handlePlayPause(getTrackStartTime(tonieCard, index));
+                                                handlePlay(getTrackStartTime(tonieCard, index));
                                             }}
                                         />{" "}
                                     </>
@@ -225,7 +225,16 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         return true;
     };
 
-    const handlePlayPause = (startTime?: number) => {
+    const handlePause = () => {
+        if (!audioRef.current || !isLoaded) return;
+        const audio = audioRef.current;
+        if (isPlaying) {
+            audio.pause();
+            setIsPlaying(false);
+        }
+    };
+
+    const handlePlay = (startTime?: number) => {
         if (!audioRef.current || !isLoaded) return;
 
         const audio = audioRef.current;
@@ -234,10 +243,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
             audio.currentTime = startTime;
         }
 
-        if (isPlaying) {
-            audio.pause();
-            setIsPlaying(false);
-        } else {
+        if (!isPlaying) {
             audio
                 .play()
                 .then(() => {
@@ -365,7 +371,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                             <PlayCircleOutlined style={{ fontSize: 40 }} />
                         )
                     }
-                    onClick={() => handlePlayPause(0)}
+                    onClick={() => (!isPlaying ? handlePlay() : handlePause())}
                     disabled={!isLoaded}
                 />
                 <Button
