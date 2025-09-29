@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Tooltip, Button } from "antd";
-import { FullscreenOutlined, FullscreenExitOutlined } from "@ant-design/icons";
+import { FullscreenOutlined, FullscreenExitOutlined, ExpandOutlined, ExportOutlined } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -19,9 +19,14 @@ import { useFullscreen } from "../../utils/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const ToniesAudioPlayerPage = () => {
+type ToniesAudioPlayerPageProps = {
+    standalone?: boolean;
+};
+
+export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ standalone = false }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
+    const navigate = useNavigate();
     const contentRef = useRef<HTMLDivElement>(null);
     const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen(contentRef);
     const location = useLocation();
@@ -41,6 +46,11 @@ export const ToniesAudioPlayerPage = () => {
             document.exitFullscreen();
             exitFullscreen();
         }
+    };
+
+    const openStandalone = () => {
+        window.open("tcplayer", "_blank");
+        navigate("/");
     };
 
     useEffect(() => {
@@ -81,7 +91,74 @@ export const ToniesAudioPlayerPage = () => {
         fetchTonies();
     }, [overlay]);
 
-    return (
+    const toniesAudioPlayerContent = (
+        <StyledContent
+            ref={contentRef}
+            className={isFullscreen ? "pseudo-fullscreen" : ""}
+            style={{
+                overflow: "auto",
+                height: "100%",
+            }}
+        >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h1>{t("tonies.toniesaudioplayer.title")}</h1>
+                <div style={{ display: "flex", gap: 8 }}>
+                    <Tooltip
+                        title={
+                            isFullscreen
+                                ? t("tonies.toniesaudioplayer.exitFullscreen")
+                                : t("tonies.toniesaudioplayer.enterFullscreen")
+                        }
+                    >
+                        <Button
+                            type="text"
+                            icon={
+                                isFullscreen ? (
+                                    <FullscreenExitOutlined style={{ fontSize: 20 }} />
+                                ) : (
+                                    <FullscreenOutlined style={{ fontSize: 20 }} />
+                                )
+                            }
+                            onClick={toggleFullscreen}
+                        />
+                    </Tooltip>
+                    {!standalone && (
+                        <Tooltip title={t("tonies.toniesaudioplayer.openStandalone")}>
+                            <Button type="text" icon={<ExportOutlined />} onClick={openStandalone} />
+                        </Tooltip>
+                    )}
+                </div>
+            </div>
+
+            {loading ? (
+                <LoadingSpinner />
+            ) : (
+                <ToniesAudioPlayer
+                    tonieCards={tonies.filter((tonie) => tonie.type === "tag").filter((tonie) => tonie.hide === false)}
+                    overlay={overlay}
+                />
+            )}
+        </StyledContent>
+    );
+
+    return standalone ? (
+        <>
+            <style>
+                {`
+                    .ant-layout-header,
+                    .ant-breadcrumb,
+                    .additional-footer-padding, 
+                    .ant-layout-footer  {
+                        display: none !important;
+                    }
+                `}
+            </style>
+            <BreadcrumbWrapper
+                items={[{ title: t("home.navigationTitle") }, { title: t("tonies.toniesaudioplayer.standaloneTitle") }]}
+            />
+            {toniesAudioPlayerContent}
+        </>
+    ) : (
         <>
             <StyledSider>
                 <ToniesSubNav />
@@ -94,48 +171,7 @@ export const ToniesAudioPlayerPage = () => {
                         { title: t("tonies.toniesaudioplayer.navigationTitle") },
                     ]}
                 />
-                <StyledContent
-                    ref={contentRef}
-                    className={isFullscreen ? "pseudo-fullscreen" : ""}
-                    style={{
-                        overflow: "auto",
-                        height: "100%",
-                    }}
-                >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <h1>{t("tonies.toniesaudioplayer.title")}</h1>
-                        <Tooltip
-                            title={
-                                isFullscreen
-                                    ? t("tonies.toniesaudioplayer.exitFullscreen")
-                                    : t("tonies.toniesaudioplayer.enterFullscreen")
-                            }
-                        >
-                            <Button
-                                type="text"
-                                icon={
-                                    isFullscreen ? (
-                                        <FullscreenExitOutlined style={{ fontSize: 20 }} />
-                                    ) : (
-                                        <FullscreenOutlined style={{ fontSize: 20 }} />
-                                    )
-                                }
-                                onClick={toggleFullscreen}
-                            />
-                        </Tooltip>
-                    </div>
-
-                    {loading ? (
-                        <LoadingSpinner />
-                    ) : (
-                        <ToniesAudioPlayer
-                            tonieCards={tonies
-                                .filter((tonie) => tonie.type === "tag")
-                                .filter((tonie) => tonie.hide === false)}
-                            overlay={overlay}
-                        />
-                    )}
-                </StyledContent>
+                {toniesAudioPlayerContent}
             </StyledLayout>
         </>
     );

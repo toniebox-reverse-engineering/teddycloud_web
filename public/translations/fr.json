@@ -2002,7 +2002,9 @@
             "navigationTitle": "Lecteur Audio Tonies",
             "selectTonieToPlay": "Sélectionne un Tonie/étiquette à lire",
             "title": "Lecteur Audio Tonies",
-            "unknown": "Inconnu"
+            "unknown": "Inconnu",
+            "openStandalone": "Ouvrir le lecteur en mode autonome",
+            "standaloneTitle": "Lecteur Audio"
         },
         "toniesExportList": "Liste d'export des Tonies",
         "toniesExportListCreateDate": "Généré le",

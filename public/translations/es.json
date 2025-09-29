@@ -2002,7 +2002,9 @@
             "navigationTitle": "Reproductor de Audio Tonies",
             "selectTonieToPlay": "Selecciona un Tonie/etiqueta para reproducir",
             "title": "Reproductor de Audio Tonies",
-            "unknown": "Desconocido"
+            "unknown": "Desconocido",
+            "openStandalone": "Abrir el reproductor en modo independiente",
+            "standaloneTitle": "Reproductor de Audio"
         },
         "toniesExportList": "Lista de exportación de Tonies",
         "toniesExportListCreateDate": "Generado el",

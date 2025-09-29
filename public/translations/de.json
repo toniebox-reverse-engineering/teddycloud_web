@@ -2002,7 +2002,9 @@
             "navigationTitle": "Tonies Audio Player",
             "selectTonieToPlay": "Wähle einen Tonie/ein Tag zum Abspielen aus",
             "title": "Tonies Audio Player",
-            "unknown": "Unbekannt"
+            "unknown": "Unbekannt",
+            "openStandalone": "Player im Standalone-Modus öffnen",
+            "standaloneTitle": "Audio Player"
         },
         "toniesExportList": "Tonies-Exportliste",
         "toniesExportListCreateDate": "Erstellt am",

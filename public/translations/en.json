@@ -2002,7 +2002,9 @@
             "navigationTitle": "Tonies Audio Player",
             "selectTonieToPlay": "Select a Tonie/tag to play",
             "title": "Tonies Audio Player",
-            "unknown": "Unknown"
+            "unknown": "Unknown",
+            "openStandalone": "Open Player in standalone mode",
+            "standaloneTitle": "Audio Player"
         },
         "toniesExportList": "Tonies export list",
         "toniesExportListCreateDate": "Generated on",
