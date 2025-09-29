@@ -2004,7 +2004,8 @@
             "title": "Reproductor de Audio Tonies",
             "unknown": "Desconocido",
             "openStandalone": "Abrir el reproductor en modo independiente",
-            "standaloneTitle": "Reproductor de Audio"
+            "standaloneTitle": "Reproductor de Audio",
+            "noTracks": "No hay pistas disponibles"
         },
         "toniesExportList": "Lista de exportación de Tonies",
         "toniesExportListCreateDate": "Generado el",

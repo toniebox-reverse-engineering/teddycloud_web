@@ -2004,7 +2004,8 @@
             "title": "Tonies Audio Player",
             "unknown": "Unbekannt",
             "openStandalone": "Player im Standalone-Modus öffnen",
-            "standaloneTitle": "Audio Player"
+            "standaloneTitle": "Audio Player",
+            "noTracks": "Keine Tracks verfügbar"
         },
         "toniesExportList": "Tonies-Exportliste",
         "toniesExportListCreateDate": "Erstellt am",

@@ -2004,7 +2004,8 @@
             "title": "Lecteur Audio Tonies",
             "unknown": "Inconnu",
             "openStandalone": "Ouvrir le lecteur en mode autonome",
-            "standaloneTitle": "Lecteur Audio"
+            "standaloneTitle": "Lecteur Audio",
+            "noTracks": "Aucune piste disponible"
         },
         "toniesExportList": "Liste d'export des Tonies",
         "toniesExportListCreateDate": "Généré le",

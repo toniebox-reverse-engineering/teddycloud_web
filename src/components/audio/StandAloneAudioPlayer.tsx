@@ -203,7 +203,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                     )}
                 />
             ) : (
-                <p>{t("tonies.toniesaudioplayer.noTracks", "No tracks available")}</p>
+                <p>{t("tonies.toniesaudioplayer.noTracks")}</p>
             )}
         </Modal>
     );
