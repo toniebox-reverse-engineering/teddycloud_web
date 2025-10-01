@@ -170,7 +170,10 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
 
     const tracklistModal = (
         <Modal
-            title={tonieCard?.tonieInfo?.series || t("tonies.toniesaudioplayer.unknown")}
+            title={
+                tonieCard?.tonieInfo?.series + (tonieCard?.tonieInfo.episode && " - " + tonieCard?.tonieInfo.episode) ||
+                t("tonies.toniesaudioplayer.unknown")
+            }
             open={isTracklistVisible}
             onCancel={closeTracklist}
             footer={null}
