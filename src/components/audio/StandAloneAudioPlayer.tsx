@@ -347,9 +347,11 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                 <Text>
                     {Math.floor(progress / 60) ?? 0}:{String(Math.floor(progress % 60) ?? 0).padStart(2, "0")}
                 </Text>
-                <Text>
-                    {Math.floor(duration / 60) ?? 0}:{String(Math.floor(duration % 60) ?? 0).padStart(2, "0")}
-                </Text>
+                {Number.isFinite(duration) && !isNaN(duration) && (
+                    <Text>
+                        {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}
+                    </Text>
+                )}
             </div>
 
             <Space style={{ marginTop: 16 }} size="large" align="center">
