@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Carousel, Card } from "antd";
+import { Carousel, Card, Slider } from "antd";
 import { LeftOutlined, PlayCircleOutlined, RightOutlined } from "@ant-design/icons";
 import { theme } from "antd";
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -8,17 +8,20 @@ import { CarouselRef } from "antd/es/carousel";
 import { t } from "i18next";
 
 const { useToken } = theme;
+type ArrowProps = {
+    onClick?: React.MouseEventHandler<HTMLDivElement>;
+};
 
 export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay: string }> = ({ tonieCards }) => {
     const { token } = useToken();
     const carouselRef = useRef<CarouselRef>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const playerTonieCards = tonieCards.filter((tonie) => tonie.valid || tonie.source.startsWith("http"));
+    const total = playerTonieCards.length;
     const [currentTonie, setCurrentTonie] = useState<TonieCardProps>();
     const [hoveredTonieRUID, setHoveredTonieRUID] = useState<string | null>(null);
-
-    type ArrowProps = {
-        onClick?: React.MouseEventHandler<HTMLDivElement>;
-    };
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [slidesToShow, setSlidesToShow] = useState(6);
 
     const CustomPrevArrow: React.FC<ArrowProps> = ({ onClick }) => (
         <div
@@ -125,6 +128,25 @@ export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay
         };
     }, []);
 
+    useEffect(() => {
+        function handleResize() {
+            const width = window.innerWidth;
+            let newSlidesToShow = settings.slidesToShow;
+
+            for (const bp of settings.responsive || []) {
+                if (width <= bp.breakpoint) {
+                    newSlidesToShow = bp.settings.slidesToShow;
+                }
+            }
+
+            setSlidesToShow(newSlidesToShow);
+        }
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, [settings]);
+
     return (
         <div>
             <div style={{ marginBottom: 16 }}>
@@ -132,88 +154,92 @@ export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay
             </div>
 
             <div className="tonies-carousel" style={{ padding: "0 24px" }} ref={containerRef}>
-                <Carousel {...settings} ref={carouselRef}>
-                    {tonieCards
-                        .filter((tonie) => tonie.valid || tonie.source.startsWith("http"))
-                        .map((tonie) => {
-                            const series =
-                                tonie.sourceInfo?.series ||
-                                tonie.tonieInfo.series ||
-                                t("tonies.toniesaudioplayer.unknown");
-                            const episode = tonie.sourceInfo?.episode || tonie.tonieInfo.episode || "";
-                            const picture = tonie.sourceInfo?.picture || tonie.tonieInfo.picture || "/img_unknown.png";
+                <Carousel {...settings} ref={carouselRef} beforeChange={(_, next) => setCurrentIndex(next)}>
+                    {playerTonieCards.map((tonie) => {
+                        const series =
+                            tonie.sourceInfo?.series || tonie.tonieInfo.series || t("tonies.toniesaudioplayer.unknown");
+                        const episode = tonie.sourceInfo?.episode || tonie.tonieInfo.episode || "";
+                        const picture = tonie.sourceInfo?.picture || tonie.tonieInfo.picture || "/img_unknown.png";
 
-                            return (
-                                <div key={tonie.ruid} style={{ padding: "0 4px", height: 230 }}>
-                                    <Card
-                                        title={series}
-                                        size="small"
-                                        style={{ height: "100%", margin: "0 8px" }}
-                                        cover={
+                        return (
+                            <div key={tonie.ruid} style={{ padding: "0 4px", height: 230 }}>
+                                <Card
+                                    title={series}
+                                    size="small"
+                                    style={{ height: "100%", margin: "0 8px" }}
+                                    cover={
+                                        <div
+                                            style={{
+                                                position: "relative",
+                                                height: 130,
+                                                width: "100%",
+                                            }}
+                                            onMouseEnter={() => setHoveredTonieRUID(tonie.ruid)}
+                                            onMouseLeave={() => setHoveredTonieRUID(null)}
+                                        >
+                                            <img
+                                                src={picture}
+                                                alt={series}
+                                                style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    objectFit: "contain",
+                                                    borderRadius: 4,
+                                                    display: "block",
+                                                    padding: 8,
+                                                }}
+                                            />
+                                            {allLoaded && (
+                                                <PlayCircleOutlined
+                                                    style={{
+                                                        fontSize: 48,
+                                                        color: token.colorText,
+                                                        position: "absolute",
+                                                        top: "50%",
+                                                        left: "50%",
+                                                        transform: "translate(-50%, -50%)",
+                                                        borderRadius: "50%",
+                                                        opacity: hoveredTonieRUID === tonie.ruid ? 0.8 : 0,
+                                                        transition: "opacity 0.3s",
+                                                    }}
+                                                    onClick={() => handlePlay(tonie)}
+                                                />
+                                            )}
+                                        </div>
+                                    }
+                                >
+                                    <Card.Meta
+                                        description={
                                             <div
                                                 style={{
-                                                    position: "relative",
-                                                    height: 130,
-                                                    width: "100%",
+                                                    fontSize: "small",
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: "vertical",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis",
+                                                    lineHeight: "1.1em",
+                                                    maxHeight: "2.4em",
+                                                    minHeight: "2.4em",
                                                 }}
-                                                onMouseEnter={() => setHoveredTonieRUID(tonie.ruid)}
-                                                onMouseLeave={() => setHoveredTonieRUID(null)}
                                             >
-                                                <img
-                                                    src={picture}
-                                                    alt={series}
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        objectFit: "contain",
-                                                        borderRadius: 4,
-                                                        display: "block",
-                                                        padding: 8,
-                                                    }}
-                                                />
-                                                {allLoaded && (
-                                                    <PlayCircleOutlined
-                                                        style={{
-                                                            fontSize: 48,
-                                                            color: token.colorText,
-                                                            position: "absolute",
-                                                            top: "50%",
-                                                            left: "50%",
-                                                            transform: "translate(-50%, -50%)",
-                                                            borderRadius: "50%",
-                                                            opacity: hoveredTonieRUID === tonie.ruid ? 0.8 : 0,
-                                                            transition: "opacity 0.3s",
-                                                        }}
-                                                        onClick={() => handlePlay(tonie)}
-                                                    />
-                                                )}
+                                                {episode}
                                             </div>
                                         }
-                                    >
-                                        <Card.Meta
-                                            description={
-                                                <div
-                                                    style={{
-                                                        fontSize: "small",
-                                                        display: "-webkit-box",
-                                                        WebkitLineClamp: 2,
-                                                        WebkitBoxOrient: "vertical",
-                                                        overflow: "hidden",
-                                                        textOverflow: "ellipsis",
-                                                        lineHeight: "1.1em",
-                                                        maxHeight: "2.4em",
-                                                        minHeight: "2.4em",
-                                                    }}
-                                                >
-                                                    {episode}
-                                                </div>
-                                            }
-                                        />
-                                    </Card>
-                                </div>
-                            );
-                        })}
+                                    />
+                                </Card>
+                            </div>
+                        );
+                    })}
                 </Carousel>
+                <Slider
+                    min={0}
+                    included={false}
+                    tooltip={{ open: false }}
+                    max={Math.max(0, total - slidesToShow)}
+                    value={currentIndex}
+                    onChange={(val) => carouselRef.current?.goTo(val)}
+                />
             </div>
         </div>
     );
