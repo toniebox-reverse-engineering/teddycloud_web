@@ -363,23 +363,25 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                             width: "auto",
                         }}
                     />
-                    <Button
-                        type="text"
-                        onClick={toggleFullscreen}
-                        icon={
-                            isFullscreen ? (
-                                <FullscreenExitOutlined style={{ fontSize: 20 }} />
-                            ) : (
-                                <FullscreenOutlined style={{ fontSize: 20 }} />
-                            )
-                        }
-                        style={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            zIndex: 10,
-                        }}
-                    />
+                    {!isIOS() && (
+                        <Button
+                            type="text"
+                            onClick={toggleFullscreen}
+                            icon={
+                                isFullscreen ? (
+                                    <FullscreenExitOutlined style={{ fontSize: 20 }} />
+                                ) : (
+                                    <FullscreenOutlined style={{ fontSize: 20 }} />
+                                )
+                            }
+                            style={{
+                                position: "absolute",
+                                top: 8,
+                                right: 8,
+                                zIndex: 10,
+                            }}
+                        />
+                    )}
                 </div>
             }
         >
