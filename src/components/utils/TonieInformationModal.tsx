@@ -326,7 +326,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                     size="small"
                                     dataSource={sourceTracks}
                                     renderItem={(track: string, index: number) => (
-                                        <List.Item>
+                                        <List.Item style={{ textAlign: "left" }}>
                                             <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
                                                 {"audioUrl" in tonieCardOrTAFRecord &&
                                                 trackSecondsMatchSourceTracks(

@@ -221,7 +221,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                     size="small"
                     dataSource={tonieCard.tonieInfo.tracks}
                     renderItem={(track: string, index: number) => (
-                        <List.Item>
+                        <List.Item style={{ textAlign: "left" }}>
                             <div style={{ display: "flex", gap: 16 }}>
                                 {trackSecondsMatchSourceTracks(tonieCard, tonieCard.tonieInfo.tracks?.length) ? (
                                     <>
