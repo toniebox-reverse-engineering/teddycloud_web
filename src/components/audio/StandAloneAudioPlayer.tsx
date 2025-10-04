@@ -6,6 +6,8 @@ import {
     StepBackwardOutlined,
     StepForwardOutlined,
     UnorderedListOutlined,
+    FullscreenOutlined,
+    FullscreenExitOutlined,
 } from "@ant-design/icons";
 import { Button, Card, List, Modal, Slider, Space, Tooltip, Typography } from "antd";
 import React, { useEffect, useRef, useState } from "react";
@@ -23,7 +25,9 @@ interface StandAloneAudioPlayerProps {
 
 const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard }) => {
     const audioRef = useRef<HTMLAudioElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation();
+
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -32,12 +36,27 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
     const [isLoaded, setIsLoaded] = useState(false);
     const [isTracklistVisible, setIsTracklistVisible] = useState(false);
     const [volume, setVolume] = useState(100);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = volume / 100;
         }
     }, [volume]);
+
+    const toggleFullscreen = () => {
+        if (!document.fullscreenElement && cardRef.current) {
+            cardRef.current.requestFullscreen().then(() => setIsFullscreen(true));
+        } else if (document.fullscreenElement) {
+            document.exitFullscreen().then(() => setIsFullscreen(false));
+        }
+    };
+
+    useEffect(() => {
+        const handler = () => setIsFullscreen(!!document.fullscreenElement);
+        document.addEventListener("fullscreenchange", handler);
+        return () => document.removeEventListener("fullscreenchange", handler);
+    }, []);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -177,6 +196,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
             open={isTracklistVisible}
             onCancel={closeTracklist}
             footer={null}
+            getContainer={() => cardRef.current || document.body}
         >
             {tonieCard?.tonieInfo?.tracks?.length ? (
                 <List
@@ -253,7 +273,6 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                     setIsPlaying(true);
                 })
                 .catch((err) => {
-                    // Play was interrupted, usually safe to ignore
                     console.warn("Play interrupted:", err);
                 });
         }
@@ -304,109 +323,166 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
 
     return (
         <Card
+            ref={cardRef}
             size="small"
-            style={{ maxWidth: 420, margin: "auto", textAlign: "center", borderRadius: 12 }}
+            style={{
+                maxWidth: isFullscreen ? "100%" : 420,
+                minHeight: isFullscreen ? "600px" : "auto",
+                height: isFullscreen ? "100vh" : "auto",
+                width: isFullscreen ? "95vw" : "auto",
+                margin: "auto",
+                textAlign: "center",
+                borderRadius: 12,
+                display: "flex",
+                flexDirection: "column",
+                boxSizing: "border-box",
+                overflowY: isFullscreen ? "auto" : "visible",
+                overflowX: isFullscreen ? "hidden" : "visible",
+            }}
+            styles={{
+                body: {
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    padding: isFullscreen ? "24px" : "0 16px 16px",
+                    boxSizing: "border-box",
+                },
+                cover: {},
+            }}
             cover={
-                <img
-                    alt={tonieCard.tonieInfo.episode}
-                    src={tonieCard.tonieInfo.picture}
-                    style={{ borderRadius: 12, minHeight: 220, maxHeight: 220, objectFit: "contain", paddingTop: 16 }}
-                />
-            }
-            styles={{ body: { padding: "0 16px 16px" } }}
-        >
-            <Title level={4}>{tonieCard.tonieInfo.episode}</Title>
-            <Text type="secondary">{tonieCard.tonieInfo.series}</Text>
-
-            {currentTrackTitle && (
-                <Text style={{ display: "block", marginTop: 8, fontWeight: 500 }}>{currentTrackTitle}</Text>
-            )}
-
-            <div style={{ marginTop: 16 }}>
-                <Slider
-                    min={0}
-                    max={duration}
-                    value={progress}
-                    onChange={handleSeek}
-                    tooltip={{
-                        formatter: (val) =>
-                            `${Math.floor((val || 0) / 60)}:${String(Math.floor((val || 0) % 60)).padStart(2, "0")}`,
-                    }}
-                    marks={
-                        tonieCard.trackSeconds
-                            ? tonieCard.trackSeconds.reduce((acc: Record<number, string>, sec: number) => {
-                                  acc[sec] = " ";
-                                  return acc;
-                              }, {})
-                            : undefined
-                    }
-                    style={{ marginBottom: 8 }}
-                />
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Text>
-                    {Math.floor(progress / 60) ?? 0}:{String(Math.floor(progress % 60) ?? 0).padStart(2, "0")}
-                </Text>
-                {Number.isFinite(duration) && !isNaN(duration) && (
-                    <Text>
-                        {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}
-                    </Text>
-                )}
-            </div>
-
-            <Space style={{ marginTop: 16 }} size="large" align="center">
-                <Button
-                    type="text"
-                    icon={<UnorderedListOutlined style={{ fontSize: 30 }} />}
-                    onClick={() => openTracklist()}
-                    disabled={!isLoaded || tonieCard.tonieInfo.tracks.length == 0}
-                />
-                <Button
-                    type="text"
-                    icon={<StepBackwardOutlined style={{ fontSize: 30 }} />}
-                    onClick={handlePrevTrackButton}
-                    disabled={!isLoaded}
-                />
-                <Button
-                    type="text"
-                    icon={
-                        isPlaying ? (
-                            <PauseCircleOutlined style={{ fontSize: 40 }} />
-                        ) : (
-                            <PlayCircleOutlined style={{ fontSize: 40 }} />
-                        )
-                    }
-                    onClick={() => (!isPlaying ? handlePlay() : handlePause())}
-                    disabled={!isLoaded}
-                />
-                <Button
-                    type="text"
-                    icon={<StepForwardOutlined style={{ fontSize: 30 }} />}
-                    onClick={handleNextTrackButton}
-                    disabled={!isLoaded}
-                />
-                <Tooltip
-                    trigger="click"
-                    placement="top"
-                    title={
-                        <div style={{ width: 120 }}>
-                            <Slider min={0} max={100} value={volume} onChange={setVolume} />
-                        </div>
-                    }
-                >
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <img
+                        alt={tonieCard.tonieInfo.episode}
+                        src={tonieCard.tonieInfo.picture}
+                        style={{
+                            borderRadius: 12,
+                            objectFit: "contain",
+                            paddingTop: 16,
+                            height: isFullscreen ? "50vh" : 220,
+                            width: "auto",
+                        }}
+                    />
                     <Button
                         type="text"
-                        disabled={!isLoaded || isIOS()}
+                        onClick={toggleFullscreen}
                         icon={
-                            volume === 0 ? (
-                                <MutedOutlined style={{ fontSize: 30 }} />
+                            isFullscreen ? (
+                                <FullscreenExitOutlined style={{ fontSize: 20 }} />
                             ) : (
-                                <SoundOutlined style={{ fontSize: 30 }} />
+                                <FullscreenOutlined style={{ fontSize: 20 }} />
                             )
                         }
+                        style={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            zIndex: 10,
+                        }}
                     />
-                </Tooltip>
-            </Space>
+                </div>
+            }
+        >
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+                <div>
+                    <Title level={4}>{tonieCard.tonieInfo.episode}</Title>
+                    <Text type="secondary">{tonieCard.tonieInfo.series}</Text>
+
+                    {currentTrackTitle && (
+                        <Text style={{ display: "block", marginTop: 8, fontWeight: 500 }}>{currentTrackTitle}</Text>
+                    )}
+
+                    <div style={{ marginTop: 16 }}>
+                        <Slider
+                            min={0}
+                            max={duration}
+                            value={progress}
+                            onChange={handleSeek}
+                            tooltip={{
+                                formatter: (val) =>
+                                    `${Math.floor((val || 0) / 60)}:${String(Math.floor((val || 0) % 60)).padStart(
+                                        2,
+                                        "0"
+                                    )}`,
+                            }}
+                            marks={
+                                tonieCard.trackSeconds
+                                    ? tonieCard.trackSeconds.reduce((acc: Record<number, string>, sec: number) => {
+                                          acc[sec] = " ";
+                                          return acc;
+                                      }, {})
+                                    : undefined
+                            }
+                            style={{ marginBottom: 8 }}
+                        />
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <Text>
+                            {Math.floor(progress / 60) ?? 0}:{String(Math.floor(progress % 60) ?? 0).padStart(2, "0")}
+                        </Text>
+                        {Number.isFinite(duration) && !isNaN(duration) && (
+                            <Text>
+                                {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}
+                            </Text>
+                        )}
+                    </div>
+                </div>
+
+                <Space style={{ marginTop: 16, justifyContent: "center" }} size="large" align="center">
+                    <Button
+                        type="text"
+                        icon={<UnorderedListOutlined style={{ fontSize: 30 }} />}
+                        onClick={() => openTracklist()}
+                        disabled={!isLoaded || tonieCard.tonieInfo.tracks.length == 0}
+                    />
+                    <Button
+                        type="text"
+                        icon={<StepBackwardOutlined style={{ fontSize: 30 }} />}
+                        onClick={handlePrevTrackButton}
+                        disabled={!isLoaded}
+                    />
+                    <Button
+                        type="text"
+                        icon={
+                            isPlaying ? (
+                                <PauseCircleOutlined style={{ fontSize: 40 }} />
+                            ) : (
+                                <PlayCircleOutlined style={{ fontSize: 40 }} />
+                            )
+                        }
+                        onClick={() => (!isPlaying ? handlePlay() : handlePause())}
+                        disabled={!isLoaded}
+                    />
+                    <Button
+                        type="text"
+                        icon={<StepForwardOutlined style={{ fontSize: 30 }} />}
+                        onClick={handleNextTrackButton}
+                        disabled={!isLoaded}
+                    />
+                    <Tooltip
+                        trigger="click"
+                        placement="top"
+                        title={
+                            <div style={{ width: 120 }}>
+                                <Slider min={0} max={100} value={volume} onChange={setVolume} />
+                            </div>
+                        }
+                        getPopupContainer={() => cardRef.current || document.body}
+                    >
+                        <Button
+                            type="text"
+                            disabled={!isLoaded || isIOS()}
+                            icon={
+                                volume === 0 ? (
+                                    <MutedOutlined style={{ fontSize: 30 }} />
+                                ) : (
+                                    <SoundOutlined style={{ fontSize: 30 }} />
+                                )
+                            }
+                        />
+                    </Tooltip>
+                </Space>
+            </div>
             {tracklistModal}
             <audio ref={audioRef} />
         </Card>

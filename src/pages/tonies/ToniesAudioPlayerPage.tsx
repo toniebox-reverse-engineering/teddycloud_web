@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Tooltip, Button } from "antd";
-import { FullscreenOutlined, FullscreenExitOutlined, ExpandOutlined, ExportOutlined } from "@ant-design/icons";
+import { ExportOutlined } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -15,8 +15,6 @@ import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 import { ToniesAudioPlayer } from "../../components/tonies/ToniesAudioPlayer";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
-import { useFullscreen } from "../../utils/browserUtils";
-
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 type ToniesAudioPlayerPageProps = {
@@ -28,7 +26,6 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
     const { addNotification } = useTeddyCloud();
     const navigate = useNavigate();
     const contentRef = useRef<HTMLDivElement>(null);
-    const { isFullscreen, enterFullscreen, exitFullscreen } = useFullscreen(contentRef);
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const linkOverlay = searchParams.get("overlay");
@@ -36,16 +33,6 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [loading, setLoading] = useState(true);
-
-    const toggleFullscreen = () => {
-        if (!document.fullscreenElement && contentRef.current) {
-            contentRef.current.requestFullscreen();
-            enterFullscreen();
-        } else {
-            document.exitFullscreen();
-            exitFullscreen();
-        }
-    };
 
     const openStandalone = () => {
         window.open("tcplayer", "_blank");
@@ -93,7 +80,6 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
     const toniesAudioPlayerContent = (
         <StyledContent
             ref={contentRef}
-            className={isFullscreen ? "pseudo-fullscreen" : ""}
             style={{
                 overflow: "auto",
                 height: "100%",
@@ -102,25 +88,6 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h1>{t("tonies.toniesaudioplayer.title")}</h1>
                 <div style={{ display: "flex", gap: 8 }}>
-                    <Tooltip
-                        title={
-                            isFullscreen
-                                ? t("tonies.toniesaudioplayer.exitFullscreen")
-                                : t("tonies.toniesaudioplayer.enterFullscreen")
-                        }
-                    >
-                        <Button
-                            type="text"
-                            icon={
-                                isFullscreen ? (
-                                    <FullscreenExitOutlined style={{ fontSize: 20 }} />
-                                ) : (
-                                    <FullscreenOutlined style={{ fontSize: 20 }} />
-                                )
-                            }
-                            onClick={toggleFullscreen}
-                        />
-                    </Tooltip>
                     {!standalone && (
                         <Tooltip title={t("tonies.toniesaudioplayer.openStandalone")}>
                             <Button type="text" icon={<ExportOutlined />} onClick={openStandalone} />
