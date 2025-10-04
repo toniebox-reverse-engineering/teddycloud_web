@@ -124,8 +124,8 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
         <StyledContent
             ref={contentRef}
             style={{
-                overflow: "auto",
                 height: "100%",
+                overflowX: "hidden",
             }}
         >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
