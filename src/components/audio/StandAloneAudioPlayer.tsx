@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
     MutedOutlined,
     PauseCircleOutlined,
@@ -9,8 +10,7 @@ import {
     FullscreenOutlined,
     FullscreenExitOutlined,
 } from "@ant-design/icons";
-import { Button, Card, List, Modal, Slider, Space, Tooltip, Typography } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import { Button, Card, List, Modal, Slider, Space, theme, Tooltip, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { TonieCardProps } from "../../types/tonieTypes";
 import { isIOS, supportsOggOpus } from "../../utils/browserUtils";
@@ -18,7 +18,7 @@ import { isIOS, supportsOggOpus } from "../../utils/browserUtils";
 import logoImg from "../../assets/logo.png";
 
 const { Title, Text } = Typography;
-
+const { useToken } = theme;
 interface StandAloneAudioPlayerProps {
     tonieCard?: TonieCardProps;
 }
@@ -27,7 +27,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
     const audioRef = useRef<HTMLAudioElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
     const { t } = useTranslation();
-
+    const { token } = useToken();
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -44,13 +44,19 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         }
     }, [volume]);
 
-    const toggleFullscreen = () => {
-        if (!document.fullscreenElement && cardRef.current) {
-            cardRef.current.requestFullscreen().then(() => setIsFullscreen(true));
-        } else if (document.fullscreenElement) {
-            document.exitFullscreen().then(() => setIsFullscreen(false));
+    useEffect(() => {
+        if (isIOS()) {
+            if (isFullscreen) {
+                document.body.style.overflow = "hidden";
+                document.body.style.position = "fixed";
+                document.body.style.width = "100%";
+            } else {
+                document.body.style.overflow = "";
+                document.body.style.position = "";
+                document.body.style.width = "";
+            }
         }
-    };
+    }, [isFullscreen]);
 
     useEffect(() => {
         const handler = () => setIsFullscreen(!!document.fullscreenElement);
@@ -169,6 +175,18 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
             </Card>
         );
     }
+
+    const toggleFullscreen = () => {
+        if (isIOS()) {
+            setIsFullscreen(!isFullscreen);
+            return;
+        }
+        if (!document.fullscreenElement && cardRef.current) {
+            cardRef.current.requestFullscreen().then(() => setIsFullscreen(true));
+        } else if (document.fullscreenElement) {
+            document.exitFullscreen().then(() => setIsFullscreen(false));
+        }
+    };
 
     const openTracklist = () => {
         setIsTracklistVisible(true);
@@ -321,24 +339,30 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         if (i < trackSeconds.length) audio.currentTime = trackSeconds[i];
     };
 
-    return (
+    const isFullscreenIOS = isFullscreen && isIOS();
+    const isFullscreenNonIOS = isFullscreen && !isIOS();
+
+    const cardStyles: React.CSSProperties = {
+        maxWidth: isFullscreenNonIOS ? "100%" : 420,
+        minHeight: isFullscreenNonIOS ? 600 : undefined,
+        height: isFullscreenNonIOS ? "100vh" : "auto",
+        width: isFullscreenNonIOS ? "95vw" : "auto",
+        margin: "auto",
+        textAlign: "center",
+        borderRadius: isFullscreenIOS ? 0 : 12,
+        border: isFullscreenIOS ? "none" : undefined,
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+        overflowY: isFullscreen ? (isIOS() ? "hidden" : "auto") : "visible",
+        overflowX: isFullscreen ? "hidden" : "visible",
+    };
+
+    const playerCard = (
         <Card
             ref={cardRef}
             size="small"
-            style={{
-                maxWidth: isFullscreen ? "100%" : 420,
-                minHeight: isFullscreen ? "600px" : "auto",
-                height: isFullscreen ? "100vh" : "auto",
-                width: isFullscreen ? "95vw" : "auto",
-                margin: "auto",
-                textAlign: "center",
-                borderRadius: 12,
-                display: "flex",
-                flexDirection: "column",
-                boxSizing: "border-box",
-                overflowY: isFullscreen ? "auto" : "visible",
-                overflowX: isFullscreen ? "hidden" : "visible",
-            }}
+            style={cardStyles}
             styles={{
                 body: {
                     flex: 1,
@@ -363,25 +387,23 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                             width: "auto",
                         }}
                     />
-                    {!isIOS() && (
-                        <Button
-                            type="text"
-                            onClick={toggleFullscreen}
-                            icon={
-                                isFullscreen ? (
-                                    <FullscreenExitOutlined style={{ fontSize: 20 }} />
-                                ) : (
-                                    <FullscreenOutlined style={{ fontSize: 20 }} />
-                                )
-                            }
-                            style={{
-                                position: "absolute",
-                                top: 8,
-                                right: 8,
-                                zIndex: 10,
-                            }}
-                        />
-                    )}
+                    <Button
+                        type="text"
+                        onClick={toggleFullscreen}
+                        icon={
+                            isFullscreen ? (
+                                <FullscreenExitOutlined style={{ fontSize: 20 }} />
+                            ) : (
+                                <FullscreenOutlined style={{ fontSize: 20 }} />
+                            )
+                        }
+                        style={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            zIndex: 10,
+                        }}
+                    />
                 </div>
             }
         >
@@ -389,11 +411,9 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                 <div>
                     <Title level={4}>{tonieCard.tonieInfo.episode}</Title>
                     <Text type="secondary">{tonieCard.tonieInfo.series}</Text>
-
                     {currentTrackTitle && (
                         <Text style={{ display: "block", marginTop: 8, fontWeight: 500 }}>{currentTrackTitle}</Text>
                     )}
-
                     <div style={{ marginTop: 16 }}>
                         <Slider
                             min={0}
@@ -422,6 +442,14 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                         <Text>
                             {Math.floor(progress / 60) ?? 0}:{String(Math.floor(progress % 60) ?? 0).padStart(2, "0")}
                         </Text>
+                        {currentTrackTitle ? (
+                            <div>
+                                {currentTrackNo}
+                                {tonieCard.tonieInfo.tracks.length && <> / {tonieCard.tonieInfo.tracks.length}</>}
+                            </div>
+                        ) : (
+                            ""
+                        )}
                         {Number.isFinite(duration) && !isNaN(duration) && (
                             <Text>
                                 {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}
@@ -429,7 +457,6 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                         )}
                     </div>
                 </div>
-
                 <Space style={{ marginTop: 16, justifyContent: "center" }} size="large" align="center">
                     <Button
                         type="text"
@@ -486,8 +513,37 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
                 </Space>
             </div>
             {tracklistModal}
-            <audio ref={audioRef} />
         </Card>
+    );
+
+    return (
+        <>
+            <audio ref={audioRef} />
+            {isFullscreenIOS ? (
+                <div
+                    className="iOSFullscreenWrapper"
+                    style={{
+                        height: "100% !important",
+                        width: "100% !important",
+                        margin: "0 !important",
+                        padding: "0 !important",
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        right: 0,
+                        zIndex: "1000",
+                        borderRadius: "0 !important",
+                        backgroundColor: token.colorBgContainer,
+                        overflow: "hidden !important",
+                    }}
+                >
+                    {playerCard}
+                </div>
+            ) : (
+                playerCard
+            )}
+        </>
     );
 };
 
