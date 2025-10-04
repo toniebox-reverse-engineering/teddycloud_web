@@ -401,7 +401,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
                             borderRadius: 12,
                             objectFit: "contain",
                             paddingTop: 16,
-                            height: isFullscreen ? "50vh" : 220,
+                            maxHeight: isFullscreen ? "48vh" : 220,
                             width: "auto",
                         }}
                     />
