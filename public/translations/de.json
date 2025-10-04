@@ -2005,7 +2005,11 @@
             "unknown": "Unbekannt",
             "openStandalone": "Player im Standalone-Modus öffnen",
             "standaloneTitle": "Audio Player",
-            "noTracks": "Keine Tracks verfügbar"
+            "noTracks": "Keine Tracks verfügbar",
+            "openInTonieAudioPlayer": "Im Tonies Audio Player öffnen",
+            "continueInFooterAudioPlayer": "Im Fußbereich Audio Player fortsetzen",
+            "shrink": "Audio Player minimieren",
+            "expand": "Audio Player vergrößern"
         },
         "toniesExportList": "Tonies-Exportliste",
         "toniesExportListCreateDate": "Erstellt am",

@@ -21,13 +21,19 @@ const { Title, Text } = Typography;
 const { useToken } = theme;
 interface StandAloneAudioPlayerProps {
     tonieCard?: TonieCardProps;
+    playPosition?: number;
+    onPlayPositionChange?: (position: number) => void;
 }
 
-const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard }) => {
-    const audioRef = useRef<HTMLAudioElement>(null);
-    const cardRef = useRef<HTMLDivElement>(null);
+const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
+    tonieCard,
+    playPosition,
+    onPlayPositionChange,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -35,28 +41,11 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
     const [currentTrackTitle, setCurrentTrackTitle] = useState("");
     const [isLoaded, setIsLoaded] = useState(false);
     const [isTracklistVisible, setIsTracklistVisible] = useState(false);
-    const [volume, setVolume] = useState(100);
     const [isFullscreen, setIsFullscreen] = useState(false);
-
-    useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = volume / 100;
-        }
-    }, [volume]);
-
-    useEffect(() => {
-        if (isIOS()) {
-            if (isFullscreen) {
-                document.body.style.overflow = "hidden";
-                document.body.style.position = "fixed";
-                document.body.style.width = "100%";
-            } else {
-                document.body.style.overflow = "";
-                document.body.style.position = "";
-                document.body.style.width = "";
-            }
-        }
-    }, [isFullscreen]);
+    const [volume, setVolume] = useState(() => {
+        const saved = localStorage.getItem("audioVolume");
+        return saved ? Number(saved) : 100;
+    });
 
     useEffect(() => {
         const handler = () => setIsFullscreen(!!document.fullscreenElement);
@@ -65,8 +54,9 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
     }, []);
 
     useEffect(() => {
+        console.log(tonieCard?.ruid);
         const audio = audioRef.current;
-        if (!audio || !validateSource(url)) return;
+        if (!audio || !validateSource(url) || !tonieCard) return;
 
         while (audio.firstChild) {
             audio.removeChild(audio.firstChild);
@@ -96,6 +86,9 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         const encodedUrl = url.replace("+", "%2B").replace("#", "%23");
         if (sourceElement.src !== encodedUrl) {
             sourceElement.src = encodedUrl;
+            if (playPosition) {
+                audio.currentTime = playPosition;
+            }
             audio.load();
         }
 
@@ -129,6 +122,27 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
             audio.removeEventListener("ended", onEnded);
         };
     }, [tonieCard]);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume / 100;
+        }
+        localStorage.setItem("audioVolume", volume.toString());
+    }, [volume]);
+
+    useEffect(() => {
+        if (isIOS()) {
+            if (isFullscreen) {
+                document.body.style.overflow = "hidden";
+                document.body.style.position = "fixed";
+                document.body.style.width = "100%";
+            } else {
+                document.body.style.overflow = "";
+                document.body.style.position = "";
+                document.body.style.width = "";
+            }
+        }
+    }, [isFullscreen]);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -307,6 +321,10 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({ tonieCard
         const audio = event.currentTarget as HTMLAudioElement;
         setProgress(audio.currentTime);
         setDuration(audio.duration);
+
+        if (onPlayPositionChange) {
+            onPlayPositionChange(audio.currentTime);
+        }
 
         if (tracks.length && trackSeconds.length && tracks.length === trackSeconds.length) {
             const index = trackSeconds.findIndex((start, i) => {

@@ -2005,7 +2005,11 @@
             "unknown": "Inconnu",
             "openStandalone": "Ouvrir le lecteur en mode autonome",
             "standaloneTitle": "Lecteur Audio",
-            "noTracks": "Aucune piste disponible"
+            "noTracks": "Aucune piste disponible",
+            "openInTonieAudioPlayer": "Ouvrir dans le lecteur audio Tonies",
+            "continueInFooterAudioPlayer": "Continuer dans le lecteur audio en bas",
+            "shrink": "Réduire le lecteur audio",
+            "expand": "Agrandir le lecteur audio"
         },
         "toniesExportList": "Liste d'export des Tonies",
         "toniesExportListCreateDate": "Généré le",

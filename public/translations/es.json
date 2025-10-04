@@ -2005,7 +2005,11 @@
             "unknown": "Desconocido",
             "openStandalone": "Abrir el reproductor en modo independiente",
             "standaloneTitle": "Reproductor de Audio",
-            "noTracks": "No hay pistas disponibles"
+            "noTracks": "No hay pistas disponibles",
+            "openInTonieAudioPlayer": "Abrir en Tonies Audio Player",
+            "continueInFooterAudioPlayer": "Continuar en el reproductor de audio del pie de página",
+            "shrink": "Minimizar el reproductor de audio",
+            "expand": "Ampliar el reproductor de audio"
         },
         "toniesExportList": "Lista de exportación de Tonies",
         "toniesExportListCreateDate": "Generado el",

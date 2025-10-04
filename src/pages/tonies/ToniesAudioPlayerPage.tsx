@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Tooltip, Button } from "antd";
-import { ExportOutlined } from "@ant-design/icons";
+import { ExportOutlined, ImportOutlined } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -15,6 +15,7 @@ import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
 import { ToniesAudioPlayer } from "../../components/tonies/ToniesAudioPlayer";
 import LoadingSpinner from "../../components/utils/LoadingSpinner";
+import { useAudioContext } from "../../components/audio/AudioContext";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 type ToniesAudioPlayerPageProps = {
@@ -22,23 +23,38 @@ type ToniesAudioPlayerPageProps = {
 };
 
 export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ standalone = false }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const searchParams = new URLSearchParams(location.search);
+    const tonieRuid = searchParams.get("ruid");
+    const startPosition = Number(searchParams.get("position")) || 0;
+    const linkOverlay = searchParams.get("overlay");
+
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
-    const navigate = useNavigate();
-    const contentRef = useRef<HTMLDivElement>(null);
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const linkOverlay = searchParams.get("overlay");
+    const { playAudio } = useAudioContext();
     const { overlay } = useTonieboxContent(linkOverlay);
+
+    const contentRef = useRef<HTMLDivElement>(null);
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const [currentPlayPosition, setCurrentPlayPosition] = useState<number | undefined>(0);
+    const [currentTonie, setCurrentTonie] = useState<TonieCardProps>();
+    const [playerKey, setPlayerKey] = useState(0);
+
     const openStandalone = () => {
-        window.open("tcplayer", "_blank");
+        if (currentTonie) {
+            const params = new URLSearchParams();
+            params.set("ruid", currentTonie.ruid);
+            params.set("position", (currentPlayPosition ?? 0).toString());
+            window.open(`tcplayer?${params.toString()}`, "_blank");
+        } else {
+            window.open("tcplayer", "_blank");
+        }
         navigate("/");
     };
-
     useEffect(() => {
         const fetchTonies = async () => {
             setLoading(true);
@@ -77,6 +93,33 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
         fetchTonies();
     }, [overlay]);
 
+    const playableTonieCards = useMemo(() => {
+        return tonies
+            .filter((tonie) => tonie.type === "tag")
+            .filter((tonie) => tonie.hide === false)
+            .filter((tonie) => tonie.valid || tonie.source.startsWith("http"));
+    }, [tonies]);
+
+    useEffect(() => {
+        if (tonieRuid && playableTonieCards) {
+            const tonie = playableTonieCards.find((t) => t.ruid === tonieRuid);
+            if (!tonie) {
+                return;
+            }
+            const newTonie = {
+                ...tonie,
+                tonieInfo: {
+                    ...tonie.tonieInfo,
+                    ...tonie.sourceInfo,
+                },
+            };
+            setCurrentTonie(newTonie);
+            setCurrentPlayPosition(startPosition);
+            setPlayerKey((prev) => prev + 1);
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location, playableTonieCards, tonieRuid, startPosition]);
+
     const toniesAudioPlayerContent = (
         <StyledContent
             ref={contentRef}
@@ -88,6 +131,30 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <h1>{t("tonies.toniesaudioplayer.title")}</h1>
                 <div style={{ display: "flex", gap: 8 }}>
+                    {currentTonie && !standalone && (
+                        <Tooltip title={t("tonies.toniesaudioplayer.continueInFooterAudioPlayer")}>
+                            <ImportOutlined
+                                onClick={() => {
+                                    const newTonie = {
+                                        ...currentTonie,
+                                        tonieInfo: {
+                                            ...currentTonie.tonieInfo,
+                                            ...currentTonie.sourceInfo,
+                                        },
+                                    };
+                                    playAudio(
+                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + newTonie.audioUrl,
+                                        newTonie.tonieInfo,
+                                        newTonie,
+                                        currentPlayPosition
+                                    );
+                                    setCurrentTonie(undefined);
+                                    setCurrentPlayPosition(0);
+                                    setPlayerKey((prev) => prev + 1);
+                                }}
+                            />
+                        </Tooltip>
+                    )}
                     {!standalone && (
                         <Tooltip title={t("tonies.toniesaudioplayer.openStandalone")}>
                             <Button type="text" icon={<ExportOutlined />} onClick={openStandalone} />
@@ -100,8 +167,13 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
                 <LoadingSpinner />
             ) : (
                 <ToniesAudioPlayer
-                    tonieCards={tonies.filter((tonie) => tonie.type === "tag").filter((tonie) => tonie.hide === false)}
+                    key={playerKey}
+                    tonieCards={playableTonieCards}
                     overlay={overlay}
+                    preselectedTonieCard={currentTonie}
+                    preselectedPlayPosition={currentPlayPosition}
+                    onToniesChange={(tonie) => setCurrentTonie(tonie)}
+                    onPlayPositionChange={(pos) => setCurrentPlayPosition(pos)}
                 />
             )}
         </StyledContent>

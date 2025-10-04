@@ -8,17 +8,25 @@ import { CarouselRef } from "antd/es/carousel";
 import { t } from "i18next";
 
 const { useToken } = theme;
+
 type ArrowProps = {
     onClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
-export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay: string }> = ({ tonieCards }) => {
+export const ToniesAudioPlayer: React.FC<{
+    tonieCards: TonieCardProps[];
+    overlay: string;
+    preselectedTonieCard?: TonieCardProps;
+    preselectedPlayPosition?: number;
+    onToniesChange?: (toniecard: TonieCardProps | undefined) => void;
+    onPlayPositionChange?: (position: number) => void;
+}> = ({ tonieCards, overlay, preselectedTonieCard, preselectedPlayPosition, onToniesChange, onPlayPositionChange }) => {
     const { token } = useToken();
     const carouselRef = useRef<CarouselRef>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const playerTonieCards = tonieCards.filter((tonie) => tonie.valid || tonie.source.startsWith("http"));
-    const total = playerTonieCards.length;
-    const [currentTonie, setCurrentTonie] = useState<TonieCardProps>();
+    const total = tonieCards.length;
+    const [currentTonie, setCurrentTonie] = useState<TonieCardProps | undefined>(preselectedTonieCard);
+    const [playPosition, setPlayPosition] = useState<number>(preselectedPlayPosition ?? 0);
     const [hoveredTonieRUID, setHoveredTonieRUID] = useState<string | null>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [slidesToShow, setSlidesToShow] = useState(6);
@@ -91,7 +99,22 @@ export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay
         ],
     };
 
-    const handlePlay = (tonie: TonieCardProps) => {
+    useEffect(() => {
+        if (!preselectedTonieCard) {
+            setCurrentTonie(undefined);
+            return;
+        }
+        handlePlay(preselectedTonieCard);
+    }, [preselectedTonieCard]);
+
+    const handlePlay = (tonie: TonieCardProps | undefined) => {
+        if (onToniesChange) {
+            onToniesChange(tonie);
+        }
+        if (!tonie) {
+            setCurrentTonie(undefined);
+            return;
+        }
         if (!allLoaded) return;
         const newTonie = {
             ...tonie,
@@ -100,7 +123,7 @@ export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay
                 ...tonie.sourceInfo,
             },
         };
-
+        setPlayPosition(0);
         setCurrentTonie(newTonie);
     };
 
@@ -150,12 +173,16 @@ export const ToniesAudioPlayer: React.FC<{ tonieCards: TonieCardProps[]; overlay
     return (
         <div>
             <div style={{ marginBottom: 16 }}>
-                <StandAloneAudioPlayer tonieCard={currentTonie} />
+                <StandAloneAudioPlayer
+                    tonieCard={currentTonie}
+                    playPosition={playPosition}
+                    onPlayPositionChange={onPlayPositionChange}
+                />
             </div>
 
             <div className="tonies-carousel" style={{ padding: "0 24px" }} ref={containerRef}>
-                <Carousel {...settings} ref={carouselRef} beforeChange={(_, next) => setCurrentIndex(next)}>
-                    {playerTonieCards.map((tonie) => {
+                <Carousel {...settings} ref={carouselRef} afterChange={(next) => setCurrentIndex(next)}>
+                    {tonieCards.map((tonie) => {
                         const series =
                             tonie.sourceInfo?.series || tonie.tonieInfo.series || t("tonies.toniesaudioplayer.unknown");
                         const episode = tonie.sourceInfo?.episode || tonie.tonieInfo.episode || "";

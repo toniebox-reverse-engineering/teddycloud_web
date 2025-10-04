@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Popover, Progress, Slider, theme } from "antd";
+import { Button, Popover, Progress, Slider, theme, Tooltip } from "antd";
 import {
     PlayCircleOutlined,
     PauseCircleOutlined,
@@ -12,6 +12,7 @@ import {
     ShrinkOutlined,
     ArrowsAltOutlined,
     CloseOutlined,
+    ExportOutlined,
 } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
@@ -21,6 +22,7 @@ import { useAudioContext } from "../audio/AudioContext";
 import TonieInformationModal from "../utils/TonieInformationModal";
 import { getLongestStringByPixelWidth } from "../../utils/helpers";
 import { isIOS } from "../../utils/browserUtils";
+import { useNavigate } from "react-router";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;
@@ -37,6 +39,7 @@ interface AudioPlayerFooterProps {
 
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const { songImage, songArtist, songTitle, songTracks, tonieCardOrTAFRecord } = useAudioContext();
     const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
     const api = new TeddyCloudApi(defaultAPIConfig());
@@ -54,8 +57,14 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         visible: boolean;
     }>({ left: 0, top: 0, visible: false });
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
-    const [volume, setVolume] = useState<number | null>(100);
-    const [lastVolume, setLastVolume] = useState<number | null>(100);
+    const [volume, setVolume] = useState<number | null>(() => {
+        const saved = localStorage.getItem("audioVolume");
+        return saved ? Number(saved) : 100;
+    });
+    const [lastVolume, setLastVolume] = useState<number | null>(() => {
+        const saved = localStorage.getItem("audioVolume");
+        return saved ? Number(saved) : 100;
+    });
     const [closePlayerPopoverOpen, setClosePlayerPopoverOpen] = useState(false);
     const [confirmClose, setConfirmClose] = useState<boolean>(true);
     const [isTouching, setIsTouching] = useState<boolean>(false);
@@ -75,6 +84,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 globalAudio.volume = volume / 100;
             }
         }
+        localStorage.setItem("audioVolume", (volume ?? 0).toString());
     }, [volume, globalAudio]);
 
     useEffect(() => {
@@ -417,11 +427,27 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [onVisibilityChange, isMobile]);
 
     const minMaximizerClose = (
-        <>
+        <div style={{ display: "flex", gap: 8 }}>
+            {tonieCardOrTAFRecord && "ruid" in tonieCardOrTAFRecord && (
+                <Tooltip title={t("tonies.toniesaudioplayer.openInTonieAudioPlayer")}>
+                    <ExportOutlined
+                        onClick={() => {
+                            const params = new URLSearchParams();
+                            params.set("ruid", tonieCardOrTAFRecord.ruid);
+                            params.set("position", timeStringToSeconds(currentPlayPositionFormat).toString());
+                            navigate(`toniesaudioplayer?${params.toString()}`);
+                        }}
+                    />
+                </Tooltip>
+            )}
             {showAudioPlayerMinimal ? (
-                <ArrowsAltOutlined onClick={togglePlayerMinimal} />
+                <Tooltip title={t("tonies.toniesaudioplayer.expand")}>
+                    <ArrowsAltOutlined onClick={togglePlayerMinimal} />
+                </Tooltip>
             ) : (
-                <ShrinkOutlined onClick={togglePlayerMinimal} />
+                <Tooltip title={t("tonies.toniesaudioplayer.shrink")}>
+                    <ShrinkOutlined onClick={togglePlayerMinimal} />
+                </Tooltip>
             )}
             <Popover
                 title={
@@ -442,9 +468,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 placement="top"
                 style={{ right: 8 }}
             >
-                <CloseOutlined style={{ margin: "0 0 0 10px" }} onClick={openClosePlayerPopOver} />
+                <CloseOutlined onClick={openClosePlayerPopOver} />
             </Popover>
-        </>
+        </div>
     );
 
     const progressBar = (
@@ -478,6 +504,20 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             )}
         </>
     );
+
+    function timeStringToSeconds(time: string): number {
+        const parts = time.split(":").map(Number);
+
+        if (parts.length === 2) {
+            const [minutes, seconds] = parts;
+            return minutes * 60 + seconds;
+        } else if (parts.length === 3) {
+            const [hours, minutes, seconds] = parts;
+            return hours * 3600 + minutes * 60 + seconds;
+        }
+
+        throw new Error("Invalid time format");
+    }
 
     const minimalPlayer = showAudioPlayerMinimal ? (
         <>

@@ -2003,9 +2003,13 @@
             "selectTonieToPlay": "Select a Tonie/tag to play",
             "title": "Tonies Audio Player",
             "unknown": "Unknown",
-            "openStandalone": "Open Player in standalone mode",
+            "openStandalone": "Open player in standalone mode",
             "standaloneTitle": "Audio Player",
-            "noTracks": "No tracks available"
+            "noTracks": "No tracks available",
+            "openInTonieAudioPlayer": "Open in Tonies Audio Player",
+            "continueInFooterAudioPlayer": "Continue in footer audio player",
+            "shrink": "Minimize audio player",
+            "expand": "Expand audio player"
         },
         "toniesExportList": "Tonies export list",
         "toniesExportListCreateDate": "Generated on",
