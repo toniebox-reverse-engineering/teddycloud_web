@@ -48,7 +48,7 @@ export const ChangelogPage = () => {
                 "gui: Stop auto scroll to top on page change when user manually scrolls",
                 "gui: Show user entered model in tonies card header and information model if it's not found in tonies.(custom.)json",
                 "gui: Added PluginTemplate download, thanks to b1u3n4z9u1 for preparing that template!",
-                "gui: Added Tonies Audio Player Page, first version, layout optimization to do https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/201",
+                "gui: Added Tonies Audio Player Page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/201",
                 "gui: Some refactoring",
             ],
             commits: [
