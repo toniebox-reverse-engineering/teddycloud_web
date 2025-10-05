@@ -1,3 +1,5 @@
+import { RefObject, useEffect, useState } from "react";
+
 export const isSafari = () => {
     const ua = navigator.userAgent.toLowerCase();
     return ua.includes("safari") && !ua.includes("chrome");
@@ -20,6 +22,55 @@ export const isIOS = () => {
         (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent))
     );
 };
+
+export function useFullscreen<T extends HTMLElement>(elementRef: RefObject<T | null>) {
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useEffect(() => {
+        const handler = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener("fullscreenchange", handler);
+        return () => document.removeEventListener("fullscreenchange", handler);
+    }, []);
+
+    const enterFullscreen = () => {
+        const el = elementRef.current;
+        if (!el) return;
+
+        if (isIOS()) {
+            setIsFullscreen(true);
+        } else if (el.requestFullscreen) {
+            try {
+                el.requestFullscreen();
+                setIsFullscreen(true);
+            } catch (err) {
+                console.warn("Fullscreen request failed, using pseudo fullscreen fallback:", err);
+                setIsFullscreen(true);
+            }
+        } else {
+            setIsFullscreen(true);
+        }
+    };
+
+    const exitFullscreen = () => {
+        if (isIOS()) {
+            setIsFullscreen(false);
+        } else if (document.fullscreenElement) {
+            try {
+                document.exitFullscreen();
+            } catch (err) {
+                console.warn("Exiting fullscreen failed, using pseudo fullscreen fallback:", err);
+                setIsFullscreen(false);
+            }
+        } else {
+            setIsFullscreen(false);
+        }
+    };
+
+    return { isFullscreen, enterFullscreen, exitFullscreen };
+}
 
 export const isVolumeControlSupported = (): boolean => {
     const testAudio = document.createElement("audio");

@@ -47,7 +47,7 @@ export default defineConfig(({ command, mode }) => {
                 "/custom_img": {
                     target: proxyUrl,
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/custom_img/, "/custom_img"),
+                    secure: false,
                 },
             },
         },

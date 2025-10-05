@@ -1,9 +1,7 @@
-import "./styles/matrix/matrix.css";
+import "@ant-design/v5-patch-for-react-19";
+import { ConfigProvider, Layout, theme } from "antd";
 import { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ConfigProvider, Layout, theme } from "antd";
-import "@ant-design/v5-patch-for-react-19";
-
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 
 import { TeddyCloudProvider } from "./TeddyCloudContext";
@@ -18,6 +16,8 @@ import { ContributionToniesJsonPage } from "./pages/community/ContributionTonies
 import { ContributorsPage } from "./pages/community/ContributorsPage";
 import { FAQPage } from "./pages/community/FAQPage";
 import { HowToGetSupportPage } from "./pages/community/HowToGetSupportPage";
+import { PluginListPage } from "./pages/community/PluginListPage";
+import { PluginPage } from "./pages/community/PluginPage";
 import { TranslationsPage } from "./pages/community/TranslationsPage";
 import { FeaturesPage } from "./pages/home/FeaturesPage";
 import { HomePage } from "./pages/home/HomePage";
@@ -42,12 +42,12 @@ import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
+import { ToniesAudioPlayerPage } from "./pages/tonies/ToniesAudioPlayerPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
+import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
 import { detectColorScheme } from "./utils/browserUtils";
-import { PluginListPage } from "./pages/community/PluginListPage";
-import { PluginPage } from "./pages/community/PluginPage";
-import { matrixAlgorithm as matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
 import MatrixRain from "./styles/matrix/matrixRain";
+import "./styles/matrix/matrix.css";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -133,6 +133,11 @@ function App() {
                                         <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
                                         <Route path="/home/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/tonies" element={<ToniesPage />} />
+                                        <Route
+                                            path="/tonies/audioplayer"
+                                            element={<ToniesAudioPlayerPage standalone={false} />}
+                                        />
+                                        <Route path="/audioplayer" element={<ToniesAudioPlayerPage standalone />} />
                                         <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
                                         <Route path="/tonies/content" element={<ContentPage />} />
                                         <Route path="/tonies/library" element={<LibraryPage />} />

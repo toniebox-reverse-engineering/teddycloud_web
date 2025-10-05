@@ -658,6 +658,121 @@ export const ToniesList: React.FC<{
         },
     ];
 
+    const listActions = (
+        <>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    alignItems: "baseline",
+                    marginBottom: 8,
+                }}
+            >
+                <Button size="small" icon={<QuestionCircleOutlined />} onClick={() => setIsHelpModalOpen(true)}>
+                    {t("fileBrowser.help.showHelp")}
+                </Button>
+            </div>
+            {isHelpModalOpen && (
+                <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+            )}
+            {showFilter ? (
+                <Collapse
+                    items={filterPanelContentItem}
+                    defaultActiveKey={collapsed ? [] : ["search-filter"]}
+                    onChange={() => setCollapsed(!collapsed)}
+                    bordered={false}
+                />
+            ) : (
+                ""
+            )}
+            <div className="selectionPanel">
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: 8,
+                        flexWrap: "wrap",
+                        alignItems: "baseline",
+                        marginTop: 8,
+                    }}
+                >
+                    <div style={{ fontSize: "small", textWrap: "nowrap" }}>
+                        {selectionMode && (
+                            <div style={{ marginBottom: 8 }}>
+                                {selectedTonies.length} {t("tonies.selectMode.selected")}
+                            </div>
+                        )}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                        <Tooltip
+                            title={
+                                selectionMode
+                                    ? t("tonies.selectMode.cancelButtonTooltip")
+                                    : t("tonies.selectMode.selectButtonTooltip")
+                            }
+                        >
+                            <Button size="small" type="default" onClick={() => setSelectionMode(!selectionMode)}>
+                                {selectionMode ? t("tonies.cancel") : t("tonies.selectMode.select")}
+                            </Button>
+                        </Tooltip>
+                    </div>
+                </div>
+                {selectionMode && (
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: 8,
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            flexWrap: "wrap",
+                        }}
+                    >
+                        <Dropdown.Button
+                            size="small"
+                            style={{ width: "unset" }}
+                            menu={{ items: selectionMenu }}
+                            onClick={() => setSelectedTonies(tonieCards.map((c) => c.ruid))}
+                        >
+                            {t("tonies.selectMode.selectAll")}
+                        </Dropdown.Button>
+                        <Dropdown.Button
+                            size="small"
+                            style={{ width: "unset" }}
+                            menu={{ items: actionMenu }}
+                            onClick={() =>
+                                setNoCloud(
+                                    tonieCards,
+                                    selectedTonies,
+                                    t,
+                                    overlay,
+                                    addNotification,
+                                    true,
+                                    handleUpdateCard
+                                )
+                            }
+                            disabled={selectedTonies.length === 0}
+                        >
+                            {t("tonies.selectMode.setNoCloud")}
+                        </Dropdown.Button>
+                        <Dropdown.Button
+                            size="small"
+                            style={{ width: "unset" }}
+                            menu={{ items: exportMenu }}
+                            onClick={() => exportToCSV(tonieCards, selectedTonies, t)}
+                            disabled={selectedTonies.length === 0}
+                        >
+                            <Tooltip title={t("tonies.selectMode.exportCsvTooltip")}>
+                                {t("tonies.selectMode.exportCsv")}
+                            </Tooltip>
+                        </Dropdown.Button>
+                    </div>
+                )}
+            </div>
+        </>
+    );
+
     const noDataTonies = (
         <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -675,116 +790,7 @@ export const ToniesList: React.FC<{
     } else {
         return (
             <div className="tonies-list-container">
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        gap: 8,
-                        flexWrap: "wrap",
-                        alignItems: "baseline",
-                        marginBottom: 8,
-                    }}
-                >
-                    <Button size="small" icon={<QuestionCircleOutlined />} onClick={() => setIsHelpModalOpen(true)}>
-                        {t("fileBrowser.help.showHelp")}
-                    </Button>
-                </div>
-                {isHelpModalOpen && (
-                    <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
-                )}
-                {showFilter ? (
-                    <Collapse
-                        items={filterPanelContentItem}
-                        defaultActiveKey={collapsed ? [] : ["search-filter"]}
-                        onChange={() => setCollapsed(!collapsed)}
-                        bordered={false}
-                    />
-                ) : (
-                    ""
-                )}
-                <div className="selectionPanel">
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            gap: 8,
-                            flexWrap: "wrap",
-                            alignItems: "baseline",
-                            marginTop: 8,
-                        }}
-                    >
-                        <div style={{ fontSize: "small", textWrap: "nowrap" }}>
-                            {selectionMode && (
-                                <div style={{ marginBottom: 8 }}>
-                                    {selectedTonies.length} {t("tonies.selectMode.selected")}
-                                </div>
-                            )}
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-                            <Tooltip
-                                title={
-                                    selectionMode
-                                        ? t("tonies.selectMode.cancelButtonTooltip")
-                                        : t("tonies.selectMode.selectButtonTooltip")
-                                }
-                            >
-                                <Button size="small" type="default" onClick={() => setSelectionMode(!selectionMode)}>
-                                    {selectionMode ? t("tonies.cancel") : t("tonies.selectMode.select")}
-                                </Button>
-                            </Tooltip>
-                        </div>
-                    </div>
-                    {selectionMode && (
-                        <div
-                            style={{
-                                display: "flex",
-                                gap: 8,
-                                alignItems: "center",
-                                justifyContent: "flex-start",
-                                flexWrap: "wrap",
-                            }}
-                        >
-                            <Dropdown.Button
-                                size="small"
-                                style={{ width: "unset" }}
-                                menu={{ items: selectionMenu }}
-                                onClick={() => setSelectedTonies(tonieCards.map((c) => c.ruid))}
-                            >
-                                {t("tonies.selectMode.selectAll")}
-                            </Dropdown.Button>
-                            <Dropdown.Button
-                                size="small"
-                                style={{ width: "unset" }}
-                                menu={{ items: actionMenu }}
-                                onClick={() =>
-                                    setNoCloud(
-                                        tonieCards,
-                                        selectedTonies,
-                                        t,
-                                        overlay,
-                                        addNotification,
-                                        true,
-                                        handleUpdateCard
-                                    )
-                                }
-                                disabled={selectedTonies.length === 0}
-                            >
-                                {t("tonies.selectMode.setNoCloud")}
-                            </Dropdown.Button>
-                            <Dropdown.Button
-                                size="small"
-                                style={{ width: "unset" }}
-                                menu={{ items: exportMenu }}
-                                onClick={() => exportToCSV(tonieCards, selectedTonies, t)}
-                                disabled={selectedTonies.length === 0}
-                            >
-                                <Tooltip title={t("tonies.selectMode.exportCsvTooltip")}>
-                                    {t("tonies.selectMode.exportCsv")}
-                                </Tooltip>
-                            </Dropdown.Button>
-                        </div>
-                    )}
-                </div>
+                {!readOnly ? listActions : ""}
                 <List
                     header={showPagination ? listPagination : ""}
                     footer={showPagination ? listPagination : ""}

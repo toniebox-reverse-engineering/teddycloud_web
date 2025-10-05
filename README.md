@@ -226,6 +226,17 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://vitejs.dev/guide/static-deploy.html) for more information.
 
+### `npm run preview`
+
+After building the app, you can test the optimized (minified) production build using this command.
+Unlike React’s development mode, which enables features such as hot reloading, detailed error overlays, and repeated API calls for strict mode checks, the preview mode runs the app exactly as it will behave in production.
+
+This means:
+
+-   API calls are executed only once (no double-invocation from React Strict Mode)
+-   Performance reflects the real-world production setup
+-   You can verify that your build works correctly before deployment
+
 ## Learn More
 
 You can learn more in the [Vite documentation](https://vitejs.dev/guide/).
