@@ -49,9 +49,9 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             const params = new URLSearchParams();
             params.set("ruid", currentTonie.ruid);
             params.set("position", (currentPlayPosition ?? 0).toString());
-            window.open(`tcplayer?${params.toString()}`, "_blank");
+            window.open(`../audioplayer?${params.toString()}`, "_blank");
         } else {
-            window.open("tcplayer", "_blank");
+            window.open("../audioplayer", "_blank");
         }
         navigate("/");
     };

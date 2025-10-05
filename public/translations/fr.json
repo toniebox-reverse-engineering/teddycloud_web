@@ -1999,14 +1999,14 @@
         "toniesaudioplayer": {
             "enterFullscreen": "Passer en plein écran",
             "exitFullscreen": "Quitter le plein écran",
-            "navigationTitle": "Lecteur Audio Tonies",
+            "navigationTitle": "Lecteur Audio",
             "selectTonieToPlay": "Sélectionne un Tonie/étiquette à lire",
-            "title": "Lecteur Audio Tonies",
+            "title": "Lecteur Audio",
             "unknown": "Inconnu",
             "openStandalone": "Ouvrir le lecteur en mode autonome",
             "standaloneTitle": "Lecteur Audio",
             "noTracks": "Aucune piste disponible",
-            "openInTonieAudioPlayer": "Ouvrir dans le lecteur audio Tonies",
+            "openInTonieAudioPlayer": "Ouvrir dans le lecteur audio",
             "continueInFooterAudioPlayer": "Continuer dans le lecteur audio en bas",
             "shrink": "Réduire le lecteur audio",
             "expand": "Agrandir le lecteur audio"

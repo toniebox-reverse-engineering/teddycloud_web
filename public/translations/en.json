@@ -1999,14 +1999,14 @@
         "toniesaudioplayer": {
             "enterFullscreen": "Enter Fullscreen",
             "exitFullscreen": "Exit Fullscreen",
-            "navigationTitle": "Tonies Audio Player",
+            "navigationTitle": "Audio Player",
             "selectTonieToPlay": "Select a Tonie/tag to play",
-            "title": "Tonies Audio Player",
+            "title": "Audio Player",
             "unknown": "Unknown",
             "openStandalone": "Open player in standalone mode",
             "standaloneTitle": "Audio Player",
             "noTracks": "No tracks available",
-            "openInTonieAudioPlayer": "Open in Tonies Audio Player",
+            "openInTonieAudioPlayer": "Open in Audio Player",
             "continueInFooterAudioPlayer": "Continue in footer audio player",
             "shrink": "Minimize audio player",
             "expand": "Expand audio player"

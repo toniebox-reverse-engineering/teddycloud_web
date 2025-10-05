@@ -76,7 +76,7 @@ export const ToniesSubNav = () => {
             key: "tonies-audio-player",
             label: (
                 <Link
-                    to="/toniesaudioplayer"
+                    to="/tonies/audioplayer"
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

@@ -1999,14 +1999,14 @@
         "toniesaudioplayer": {
             "enterFullscreen": "Vollbild starten",
             "exitFullscreen": "Vollbild beenden",
-            "navigationTitle": "Tonies Audio Player",
+            "navigationTitle": "Audio Player",
             "selectTonieToPlay": "Wähle einen Tonie/ein Tag zum Abspielen aus",
-            "title": "Tonies Audio Player",
+            "title": "Audio Player",
             "unknown": "Unbekannt",
             "openStandalone": "Player im Standalone-Modus öffnen",
             "standaloneTitle": "Audio Player",
             "noTracks": "Keine Tracks verfügbar",
-            "openInTonieAudioPlayer": "Im Tonies Audio Player öffnen",
+            "openInTonieAudioPlayer": "Im Audio Player öffnen",
             "continueInFooterAudioPlayer": "Im Fußbereich Audio Player fortsetzen",
             "shrink": "Audio Player minimieren",
             "expand": "Audio Player vergrößern"

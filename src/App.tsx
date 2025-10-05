@@ -134,10 +134,10 @@ function App() {
                                         <Route path="/home/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/tonies" element={<ToniesPage />} />
                                         <Route
-                                            path="/toniesaudioplayer"
+                                            path="/tonies/audioplayer"
                                             element={<ToniesAudioPlayerPage standalone={false} />}
                                         />
-                                        <Route path="/tcplayer" element={<ToniesAudioPlayerPage standalone />} />
+                                        <Route path="/audioplayer" element={<ToniesAudioPlayerPage standalone />} />
                                         <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
                                         <Route path="/tonies/content" element={<ContentPage />} />
                                         <Route path="/tonies/library" element={<LibraryPage />} />

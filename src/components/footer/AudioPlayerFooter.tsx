@@ -435,7 +435,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                             const params = new URLSearchParams();
                             params.set("ruid", tonieCardOrTAFRecord.ruid);
                             params.set("position", timeStringToSeconds(currentPlayPositionFormat).toString());
-                            navigate(`toniesaudioplayer?${params.toString()}`);
+                            navigate(`tonies/audioplayer?${params.toString()}`);
                         }}
                     />
                 </Tooltip>
