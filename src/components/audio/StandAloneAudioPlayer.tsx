@@ -157,7 +157,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
     if (!tonieCard) {
         return (
             <Card
-                style={{ maxWidth: 420, margin: "auto", textAlign: "center", borderRadius: 12 }}
+                style={{ margin: "auto", textAlign: "center", borderRadius: isFullscreen ? 0 : 12 }}
                 cover={
                     <img
                         alt={t("tonies.toniesaudioplayer.unknown")}
@@ -348,13 +348,12 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
     const isFullscreenNonIOS = isFullscreen && !isIOS();
 
     const cardStyles: React.CSSProperties = {
-        maxWidth: isFullscreenNonIOS ? "100%" : 420,
         minHeight: isFullscreenNonIOS ? 600 : undefined,
         height: isFullscreenNonIOS ? "100vh" : "auto",
         width: isFullscreenNonIOS ? "95vw" : "auto",
         margin: "auto",
         textAlign: "center",
-        borderRadius: isFullscreenIOS ? 0 : 12,
+        borderRadius: isFullscreen ? 0 : 12,
         border: isFullscreenIOS ? "none" : undefined,
         display: "flex",
         flexDirection: "column",
