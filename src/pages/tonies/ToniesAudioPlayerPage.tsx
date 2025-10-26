@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "antd";
 import { ExportOutlined, ImportOutlined } from "@ant-design/icons";
@@ -194,7 +194,10 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
                 `}
             </style>
             <BreadcrumbWrapper
-                items={[{ title: t("home.navigationTitle") }, { title: t("tonies.toniesaudioplayer.standaloneTitle") }]}
+                items={[
+                    { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                    { title: t("tonies.toniesaudioplayer.standaloneTitle") },
+                ]}
             />
             {toniesAudioPlayerContent}
         </>
@@ -206,8 +209,8 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonies.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> },
                         { title: t("tonies.toniesaudioplayer.navigationTitle") },
                     ]}
                 />

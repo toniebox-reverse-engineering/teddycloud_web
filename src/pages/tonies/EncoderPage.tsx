@@ -21,6 +21,7 @@ import { MAX_FILES } from "../../constants";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import { Link } from "react-router-dom";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -427,8 +428,8 @@ export const EncoderPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonies.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> },
                         { title: t("tonies.encoder.navigationTitle") },
                     ]}
                 />

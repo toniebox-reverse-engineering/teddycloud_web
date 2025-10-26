@@ -7,6 +7,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import { Link } from "react-router-dom";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -81,9 +82,13 @@ export const ContributionToniesJsonPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
-                        { title: t("community.contribution.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
+                        {
+                            title: (
+                                <Link to="/community/contribution">{t("community.contribution.navigationTitle")}</Link>
+                            ),
+                        },
                         {
                             title: t("community.contribution.toniesJson.navigationTitle"),
                         },

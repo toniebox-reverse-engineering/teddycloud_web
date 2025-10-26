@@ -72,7 +72,10 @@ export const FeaturesPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("home.features.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("home.features.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <h1>{t("home.features.title") + " " + versionShort}</h1>

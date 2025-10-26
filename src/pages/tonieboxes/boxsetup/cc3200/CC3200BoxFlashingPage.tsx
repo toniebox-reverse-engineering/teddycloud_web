@@ -1154,9 +1154,9 @@ export const CC3200BoxFlashingPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonieboxes.navigationTitle") },
-                        { title: t("tonieboxes.boxSetup.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
                         { title: t("tonieboxes.cc3200BoxFlashing.navigationTitle") },
                     ]}
                 />

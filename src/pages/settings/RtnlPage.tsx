@@ -6,6 +6,7 @@ import { Switch, Typography, Divider, Button, theme } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
+import { Link } from "react-router-dom";
 
 const { Paragraph, Text } = Typography;
 const { useToken } = theme;
@@ -170,8 +171,8 @@ export const RtnlPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("settings.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/settings">{t("settings.navigationTitle")}</Link> },
                         { title: t("settings.rtnl.navigationTitle") },
                     ]}
                 />

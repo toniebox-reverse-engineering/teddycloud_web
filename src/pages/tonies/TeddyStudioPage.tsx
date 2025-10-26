@@ -23,6 +23,7 @@ import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { LanguageFlagIcon } from "../../utils/languageUtil";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 const { Search } = Input;
@@ -246,8 +247,8 @@ export const TeddyStudioPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonies.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> },
                         { title: t("tonies.teddystudio.navigationTitle") },
                     ]}
                 />

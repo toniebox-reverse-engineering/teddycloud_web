@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { isValidElement, JSX, ReactElement, ReactNode, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Breadcrumb, Layout, Menu, theme } from "antd";
@@ -10,7 +10,7 @@ const { useToken } = theme;
 const useThemeToken = () => useToken().token;
 
 type BreadcrumbItem = {
-    title: string;
+    title: JSX.Element | string;
 };
 
 type BreadcrumbWrapperProps = {
@@ -60,6 +60,21 @@ export const StyledBreadcrumbItem = styled(Item)`
     padding: 10px;
 `;
 
+const getBreadcrumbText = (node: ReactNode): string => {
+    if (typeof node === "string") return node;
+
+    if (Array.isArray(node)) {
+        return node.map(getBreadcrumbText).join("");
+    }
+
+    if (isValidElement(node)) {
+        const el = node as ReactElement<{ children?: ReactNode }>;
+        return getBreadcrumbText(el.props.children);
+    }
+
+    return "";
+};
+
 const BreadcrumbWrapper: React.FC<BreadcrumbWrapperProps> = ({ items }) => {
     const { t } = useTranslation();
 
@@ -69,7 +84,7 @@ const BreadcrumbWrapper: React.FC<BreadcrumbWrapperProps> = ({ items }) => {
         } else {
             const breadcrumbTitles = items
                 .slice(1)
-                .map((item) => t(item.title))
+                .map((item) => t(getBreadcrumbText(item.title)))
                 .join(" - ");
             document.title = "TeddyCloud - " + breadcrumbTitles;
         }
