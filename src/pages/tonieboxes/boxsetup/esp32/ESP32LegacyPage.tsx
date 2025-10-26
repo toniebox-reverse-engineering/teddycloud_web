@@ -229,7 +229,7 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
                         { title: <Link to="/">{t("home.navigationTitle")}</Link> },
                         { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
                         { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
-                        { title: <>ESP32 {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}</> },
+                        { title: t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle") },
                     ]}
                 />
                 <StyledContent>
