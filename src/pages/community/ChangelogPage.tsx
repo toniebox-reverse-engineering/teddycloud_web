@@ -49,6 +49,7 @@ export const ChangelogPage = () => {
                 "gui: Added PluginTemplate download, thanks to b1u3n4z9u1 for preparing that template!",
                 "gui: Added Tonies Audio Player Page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/201",
                 "gui: Page breadcrumbs are now links",
+                "gui: Updated PWA manifest with additional icons and metadata (favicon, Apple Touch, SVG). Improved support for installation as a standalone Progressive Web App.",
                 "gui: Some refactoring",
                 "gui maintenance: Updated all used packages to latest versions",
             ],
