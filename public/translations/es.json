@@ -1963,7 +1963,15 @@
             "square": "Cuadrada",
             "textFontSize": "Tamaño de texto",
             "title": "TeddyStudio",
-            "width": "Ancho"
+            "width": "Ancho",
+            "paperMarginVertical": "Margen superior/inferior",
+            "paperMarginHorizontal": "Margen izquierdo/derecho",
+            "paperSize": "Tamaño del papel",
+            "paperWidth": "Ancho del papel",
+            "paperHeight": "Altura del papel",
+            "custom": "Personalizado",
+            "labelSettings": "Configuración de etiquetas",
+            "paperSettings": "Configuración de papel"
         },
         "title": "Tonies",
         "tonies": {

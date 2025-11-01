@@ -1963,7 +1963,15 @@
             "square": "Carrée",
             "textFontSize": "Taille du texte",
             "title": "TeddyStudio",
-            "width": "Largeur"
+            "width": "Largeur",
+            "paperMarginVertical": "Marge haut/bas",
+            "paperMarginHorizontal": "Marge gauche/droite",
+            "paperSize": "Format du papier",
+            "paperWidth": "Largeur du papier",
+            "paperHeight": "Hauteur du papier",
+            "custom": "Personnalisé",
+            "labelSettings": "Paramètres de l’étiquette",
+            "paperSettings": "Paramètres du papier"
         },
         "title": "Tonies",
         "tonies": {

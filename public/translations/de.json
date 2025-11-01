@@ -1963,7 +1963,15 @@
             "square": "Eckig",
             "textFontSize": "Textgröße",
             "title": "TeddyStudio",
-            "width": "Breite"
+            "width": "Breite",
+            "paperMarginVertical": "Oberer/unterer Rand",
+            "paperMarginHorizontal": "Linker/rechter Rand",
+            "paperSize": "Papierformat",
+            "paperWidth": "Papierbreite",
+            "paperHeight": "Papierhöhe",
+            "custom": "Benutzerdefiniert",
+            "labelSettings": "Etikett-Einstellungen",
+            "paperSettings": "Papier-Einstellungen"
         },
         "title": "Tonies",
         "tonies": {
