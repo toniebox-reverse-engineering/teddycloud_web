@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Select, Tooltip } from "antd";
 
@@ -115,7 +115,10 @@ export const ToniesPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("tonies.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("tonies.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <div

@@ -3,7 +3,7 @@ import { Badge, Button, Card, List, Modal, theme, Tooltip, Typography, Upload, T
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
     AppstoreAddOutlined,
@@ -264,8 +264,8 @@ export const PluginListPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.plugins.navigationTitle") },
                     ]}
                 />

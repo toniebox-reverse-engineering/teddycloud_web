@@ -1,4 +1,4 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Typography, theme } from "antd";
@@ -32,20 +32,21 @@ export const PluginPage = () => {
     const [breadcrumbItems, setBreadcrumbItems] = useState<any[]>([]);
 
     useEffect(() => {
-        const items = [{ title: t("home.navigationTitle") }];
+        const items = [{ title: <Link to="/">{t("home.navigationTitle")}</Link> }];
 
         if (section === "tonies") {
-            items.push({ title: t("tonies.navigationTitle") });
+            items.push({ title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> });
         } else if (section === "settings") {
-            items.push({ title: t("settings.navigationTitle") });
+            items.push({ title: <Link to="/settings">{t("settings.navigationTitle")}</Link> });
         } else if (section === "tonieboxes") {
-            items.push({ title: t("tonieboxes.navigationTitle") });
+            items.push({ title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> });
         } else if (section === "community") {
-            items.push({ title: t("community.navigationTitle") });
-            if (section2 === "plugins") items.push({ title: t("community.plugins.navigationTitle") });
+            items.push({ title: <Link to="/community">{t("community.navigationTitle")}</Link> });
+            if (section2 === "plugins")
+                items.push({ title: <Link to="/plugins">{t("community.plugins.navigationTitle")}</Link> });
         }
         items.push({
-            title: pluginId || t("community.plugins.plugin"),
+            title: <>{pluginId}</> || <>{t("community.plugins.plugin")}</>,
         });
 
         setBreadcrumbItems(items);

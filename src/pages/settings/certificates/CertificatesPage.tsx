@@ -18,8 +18,8 @@ export const CertificatesPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("settings.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/settings">{t("settings.navigationTitle")}</Link> },
                         { title: t("settings.certificates.navigationTitle") },
                     ]}
                 />

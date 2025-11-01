@@ -4,7 +4,6 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { theme, Tooltip } from "antd";
 import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
-import { detectColorScheme } from "../../utils/browserUtils";
 
 const { useToken } = theme;
 
@@ -47,10 +46,12 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
     };
 
     return (
-        <div style={{ position: "relative" }}>
+        <div
+            style={{ position: "relative", scrollbarColor: `${token.colorTextDescription} ${token.colorBgContainer}` }}
+        >
             <SyntaxHighlighter
                 language={language}
-                style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                style={token.colorBgBase == "#000" || token.colorBgBase == "#000000" ? oneDark : oneLight}
                 customStyle={{
                     padding: "0.5rem",
                     borderRadius: "8px",

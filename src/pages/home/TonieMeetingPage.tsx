@@ -3,6 +3,7 @@ import { Typography } from "antd";
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { TonieMeetingElement } from "../../components/TonieMeeting";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -16,7 +17,10 @@ export const TonieMeetingPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("home.tonieMeeting.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("home.tonieMeeting.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <Paragraph>

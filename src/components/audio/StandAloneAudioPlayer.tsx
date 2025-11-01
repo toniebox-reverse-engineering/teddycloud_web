@@ -34,7 +34,6 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
     const { token } = useToken();
     const audioRef = useRef<HTMLAudioElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
     const [currentTrackNo, setCurrentTrackNo] = useState(0);
@@ -62,8 +61,6 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
             audio.removeChild(audio.firstChild);
         }
         audio.load();
-
-        setIsPlaying(false);
         setProgress(0);
         setDuration(0);
         setCurrentTrackNo(0);
@@ -103,23 +100,19 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
                 }
                 globalAudio.load();
             }
-            setIsPlaying(true);
             audio.play();
         };
 
         const onTimeUpdate = (e: Event) => handleTimeUpdate(e);
-        const onEnded = () => setIsPlaying(false);
 
         audio.addEventListener("loadedmetadata", onLoadedMetadata);
         audio.addEventListener("canplay", onLoadedMetadata);
         audio.addEventListener("timeupdate", onTimeUpdate);
-        audio.addEventListener("ended", onEnded);
 
         return () => {
             audio.removeEventListener("loadedmetadata", onLoadedMetadata);
             audio.removeEventListener("canplay", onLoadedMetadata);
             audio.removeEventListener("timeupdate", onTimeUpdate);
-            audio.removeEventListener("ended", onEnded);
         };
     }, [tonieCard]);
 
@@ -164,7 +157,7 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
     if (!tonieCard) {
         return (
             <Card
-                style={{ maxWidth: 420, margin: "auto", textAlign: "center", borderRadius: 12 }}
+                style={{ margin: "auto", textAlign: "center", borderRadius: isFullscreen ? 0 : 12 }}
                 cover={
                     <img
                         alt={t("tonies.toniesaudioplayer.unknown")}
@@ -283,9 +276,8 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
     const handlePause = () => {
         if (!audioRef.current || !isLoaded) return;
         const audio = audioRef.current;
-        if (isPlaying) {
+        if (isAudioPlaying()) {
             audio.pause();
-            setIsPlaying(false);
         }
     };
 
@@ -298,15 +290,10 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
             audio.currentTime = startTime;
         }
 
-        if (!isPlaying) {
-            audio
-                .play()
-                .then(() => {
-                    setIsPlaying(true);
-                })
-                .catch((err) => {
-                    console.warn("Play interrupted:", err);
-                });
+        if (!isAudioPlaying()) {
+            audio.play().catch((err) => {
+                console.warn("Play interrupted:", err);
+            });
         }
     };
 
@@ -361,19 +348,23 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
     const isFullscreenNonIOS = isFullscreen && !isIOS();
 
     const cardStyles: React.CSSProperties = {
-        maxWidth: isFullscreenNonIOS ? "100%" : 420,
         minHeight: isFullscreenNonIOS ? 600 : undefined,
         height: isFullscreenNonIOS ? "100vh" : "auto",
         width: isFullscreenNonIOS ? "95vw" : "auto",
         margin: "auto",
         textAlign: "center",
-        borderRadius: isFullscreenIOS ? 0 : 12,
+        borderRadius: isFullscreen ? 0 : 12,
         border: isFullscreenIOS ? "none" : undefined,
         display: "flex",
         flexDirection: "column",
         boxSizing: "border-box",
         overflowY: isFullscreen ? (isIOS() ? "hidden" : "auto") : "visible",
         overflowX: isFullscreen ? "hidden" : "visible",
+    };
+
+    const isAudioPlaying = () => {
+        const audio = audioRef.current;
+        return !!(audio && !audio.paused && !audio.ended && audio.currentTime > 0);
     };
 
     const playerCard = (
@@ -491,13 +482,13 @@ const StandAloneAudioPlayer: React.FC<StandAloneAudioPlayerProps> = ({
                     <Button
                         type="text"
                         icon={
-                            isPlaying ? (
+                            isAudioPlaying() ? (
                                 <PauseCircleOutlined style={{ fontSize: 40 }} />
                             ) : (
                                 <PlayCircleOutlined style={{ fontSize: 40 }} />
                             )
                         }
-                        onClick={() => (!isPlaying ? handlePlay() : handlePause())}
+                        onClick={() => (!isAudioPlaying() ? handlePlay() : handlePause())}
                         disabled={!isLoaded}
                     />
                     <Button

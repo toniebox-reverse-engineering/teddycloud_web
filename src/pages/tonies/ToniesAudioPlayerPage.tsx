@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Tooltip, Button } from "antd";
+import { Button } from "antd";
 import { ExportOutlined, ImportOutlined } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
@@ -132,33 +132,35 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
                 <h1>{t("tonies.toniesaudioplayer.title")}</h1>
                 <div style={{ display: "flex", gap: 8 }}>
                     {currentTonie && !standalone && (
-                        <Tooltip title={t("tonies.toniesaudioplayer.continueInFooterAudioPlayer")}>
-                            <ImportOutlined
-                                onClick={() => {
-                                    const newTonie = {
-                                        ...currentTonie,
-                                        tonieInfo: {
-                                            ...currentTonie.tonieInfo,
-                                            ...currentTonie.sourceInfo,
-                                        },
-                                    };
-                                    playAudio(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + newTonie.audioUrl,
-                                        newTonie.tonieInfo,
-                                        newTonie,
-                                        currentPlayPosition
-                                    );
-                                    setCurrentTonie(undefined);
-                                    setCurrentPlayPosition(0);
-                                    setPlayerKey((prev) => prev + 1);
-                                }}
-                            />
-                        </Tooltip>
+                        <ImportOutlined
+                            title={t("tonies.toniesaudioplayer.continueInFooterAudioPlayer")}
+                            onClick={() => {
+                                const newTonie = {
+                                    ...currentTonie,
+                                    tonieInfo: {
+                                        ...currentTonie.tonieInfo,
+                                        ...currentTonie.sourceInfo,
+                                    },
+                                };
+                                playAudio(
+                                    import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + newTonie.audioUrl,
+                                    newTonie.tonieInfo,
+                                    newTonie,
+                                    currentPlayPosition
+                                );
+                                setCurrentTonie(undefined);
+                                setCurrentPlayPosition(0);
+                                setPlayerKey((prev) => prev + 1);
+                            }}
+                        />
                     )}
                     {!standalone && (
-                        <Tooltip title={t("tonies.toniesaudioplayer.openStandalone")}>
-                            <Button type="text" icon={<ExportOutlined />} onClick={openStandalone} />
-                        </Tooltip>
+                        <Button
+                            title={t("tonies.toniesaudioplayer.openStandalone")}
+                            type="text"
+                            icon={<ExportOutlined />}
+                            onClick={openStandalone}
+                        />
                     )}
                 </div>
             </div>
@@ -192,7 +194,10 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
                 `}
             </style>
             <BreadcrumbWrapper
-                items={[{ title: t("home.navigationTitle") }, { title: t("tonies.toniesaudioplayer.standaloneTitle") }]}
+                items={[
+                    { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                    { title: t("tonies.toniesaudioplayer.standaloneTitle") },
+                ]}
             />
             {toniesAudioPlayerContent}
         </>
@@ -204,8 +209,8 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonies.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> },
                         { title: t("tonies.toniesaudioplayer.navigationTitle") },
                     ]}
                 />

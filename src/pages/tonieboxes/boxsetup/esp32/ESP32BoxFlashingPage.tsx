@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, SetStateAction } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
 import { ESPLoader, Transport } from "esptool-js";
 import i18n from "../../../../i18n";
@@ -1934,9 +1934,9 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonieboxes.navigationTitle") },
-                        { title: t("tonieboxes.boxSetup.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
                         { title: t("tonieboxes.esp32BoxFlashing.navigationTitle") },
                     ]}
                 />

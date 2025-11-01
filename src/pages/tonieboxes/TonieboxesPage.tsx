@@ -11,6 +11,7 @@ import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { Link } from "react-router-dom";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -78,7 +79,10 @@ export const TonieboxesPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("tonieboxes.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("tonieboxes.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <h1>{t("tonieboxes.title")}</h1>

@@ -20,7 +20,6 @@ export const ChangelogPage = () => {
                 "Added TeddyCloud plugin APIs and new volume plugins fur custom Teddycloud plugins https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
                 "Added Setting frontend.check_cc3200_cfw https://github.com/toniebox-reverse-engineering/teddycloud/issues/358",
                 "Fixed possible TeddyCloud CA Certificate bug https://github.com/toniebox-reverse-engineering/teddycloud/issues/230",
-                "Added new API getPlugins https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/235",
                 "gui: Changed Radio Browser API Url, try to get a working url from all servers list",
                 "gui: Added tonieboxes tab to homepage, user can now choose if he want to see his tonies or tonieboxes. Setting is stored locally.",
                 "gui: Added more country flags and languages to tonies list (filter + flags on Toniecard) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/217",
@@ -33,6 +32,7 @@ export const ChangelogPage = () => {
                 "gui: WIP Added support of new TeddyCloud Plugin feature (Backend implementation incomplete, upload of new plugins not yet supported) https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
                 "gui: Fixed bug in media playback position on lock screen https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/166",
                 "gui: Fixed bug in browser and directory tree select with & in path https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/225",
+                "gui: Fixed bug playing files with + in name https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/239",
                 "gui: Fixed bug with download icon and disabled Boxine/Toniecloud https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/223",
                 "gui: Set allowed files filter in audio encoder drop down https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/222",
                 "gui: Do not check for CC3200 CFW if setting is not enabled https://github.com/toniebox-reverse-engineering/teddycloud/issues/358",
@@ -44,12 +44,14 @@ export const ChangelogPage = () => {
                 "gui: Tonies overview: search keyword is now also used to filter tonies by source",
                 "gui: Tonies overview: Cards can be marked and exported as CSV https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/235",
                 "gui: Tonies overview: Added action menu to marked tonies cards (cloud - no cloud, live - not live, hide)",
-                "gui: Updated all used packages to latest versions",
                 "gui: Stop auto scroll to top on page change when user manually scrolls",
                 "gui: Show user entered model in tonies card header and information model if it's not found in tonies.(custom.)json",
                 "gui: Added PluginTemplate download, thanks to b1u3n4z9u1 for preparing that template!",
                 "gui: Added Tonies Audio Player Page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/201",
+                "gui: Page breadcrumbs are now links",
+                "gui: Updated PWA manifest with additional icons and metadata (favicon, Apple Touch, SVG). Improved support for installation as a standalone Progressive Web App.",
                 "gui: Some refactoring",
+                "gui maintenance: Updated all used packages to latest versions",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.4...tc_v0.6.5",
@@ -387,8 +389,8 @@ export const ChangelogPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.changelog.navigationTitle") },
                     ]}
                 />

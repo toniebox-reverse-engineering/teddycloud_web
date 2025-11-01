@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Popover, Progress, Slider, theme, Tooltip } from "antd";
+import { Button, Popover, Progress, Slider, theme } from "antd";
 import {
     PlayCircleOutlined,
     PauseCircleOutlined,
@@ -429,25 +429,20 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const minMaximizerClose = (
         <div style={{ display: "flex", gap: 8 }}>
             {tonieCardOrTAFRecord && "ruid" in tonieCardOrTAFRecord && (
-                <Tooltip title={t("tonies.toniesaudioplayer.openInTonieAudioPlayer")}>
-                    <ExportOutlined
-                        onClick={() => {
-                            const params = new URLSearchParams();
-                            params.set("ruid", tonieCardOrTAFRecord.ruid);
-                            params.set("position", timeStringToSeconds(currentPlayPositionFormat).toString());
-                            navigate(`tonies/audioplayer?${params.toString()}`);
-                        }}
-                    />
-                </Tooltip>
+                <ExportOutlined
+                    title={t("tonies.toniesaudioplayer.openInTonieAudioPlayer")}
+                    onClick={() => {
+                        const params = new URLSearchParams();
+                        params.set("ruid", tonieCardOrTAFRecord.ruid);
+                        params.set("position", timeStringToSeconds(currentPlayPositionFormat).toString());
+                        navigate(`tonies/audioplayer?${params.toString()}`);
+                    }}
+                />
             )}
             {showAudioPlayerMinimal ? (
-                <Tooltip title={t("tonies.toniesaudioplayer.expand")}>
-                    <ArrowsAltOutlined onClick={togglePlayerMinimal} />
-                </Tooltip>
+                <ArrowsAltOutlined title={t("tonies.toniesaudioplayer.expand")} onClick={togglePlayerMinimal} />
             ) : (
-                <Tooltip title={t("tonies.toniesaudioplayer.shrink")}>
-                    <ShrinkOutlined onClick={togglePlayerMinimal} />
-                </Tooltip>
+                <ShrinkOutlined title={t("tonies.toniesaudioplayer.shrink")} onClick={togglePlayerMinimal} />
             )}
             <Popover
                 title={

@@ -6,6 +6,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
+import { Link } from "react-router-dom";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -38,7 +39,10 @@ export const StatsPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("home.stats.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("home.stats.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <h1>{t(`home.stats.title`)}</h1>
