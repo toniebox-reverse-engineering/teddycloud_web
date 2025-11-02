@@ -133,14 +133,22 @@ export const ToniesAudioPlayer: React.FC<{
     };
 
     const scrollByHold = (speed: number) => {
-        if (!containerRef.current) return () => {};
         const container = containerRef.current;
+        if (!container) return () => {};
 
-        const interval = setInterval(() => {
+        let active = true;
+
+        const step = () => {
+            if (!active) return;
             container.scrollLeft += speed;
-        }, 10);
+            requestAnimationFrame(step);
+        };
 
-        return () => clearInterval(interval);
+        requestAnimationFrame(step);
+
+        return () => {
+            active = false;
+        };
     };
 
     return (
@@ -154,14 +162,16 @@ export const ToniesAudioPlayer: React.FC<{
             </div>
             <div style={{ position: "relative", width: "100%" }}>
                 <div
-                    onMouseDown={() => {
+                    onMouseDown={(e) => {
+                        stopScroll.current?.();
+                        stopScroll.current = scrollByHold(-scrollSpeed);
+                    }}
+                    onTouchStart={(e) => {
+                        stopScroll.current?.();
                         stopScroll.current = scrollByHold(-scrollSpeed);
                     }}
                     onMouseUp={() => stopScroll.current?.()}
                     onMouseLeave={() => stopScroll.current?.()}
-                    onTouchStart={() => {
-                        stopScroll.current = scrollByHold(-scrollSpeed);
-                    }}
                     onTouchEnd={() => stopScroll.current?.()}
                     style={{
                         position: "absolute",
@@ -173,6 +183,10 @@ export const ToniesAudioPlayer: React.FC<{
                         background: token.colorBgContainer,
                         borderRadius: "50%",
                         padding: 4,
+                        WebkitUserSelect: "none",
+                        userSelect: "none",
+                        WebkitTouchCallout: "none",
+                        touchAction: "none",
                     }}
                 >
                     <LeftOutlined style={{ fontSize: 24 }} />
@@ -268,14 +282,16 @@ export const ToniesAudioPlayer: React.FC<{
                 </div>
 
                 <div
-                    onMouseDown={() => {
+                    onMouseDown={(e) => {
+                        stopScroll.current?.();
+                        stopScroll.current = scrollByHold(scrollSpeed);
+                    }}
+                    onTouchStart={(e) => {
+                        stopScroll.current?.();
                         stopScroll.current = scrollByHold(scrollSpeed);
                     }}
                     onMouseUp={() => stopScroll.current?.()}
                     onMouseLeave={() => stopScroll.current?.()}
-                    onTouchStart={() => {
-                        stopScroll.current = scrollByHold(scrollSpeed);
-                    }}
                     onTouchEnd={() => stopScroll.current?.()}
                     style={{
                         position: "absolute",
@@ -287,6 +303,10 @@ export const ToniesAudioPlayer: React.FC<{
                         background: token.colorBgContainer,
                         borderRadius: "50%",
                         padding: 4,
+                        WebkitUserSelect: "none",
+                        userSelect: "none",
+                        WebkitTouchCallout: "none",
+                        touchAction: "none",
                     }}
                 >
                     <RightOutlined style={{ fontSize: 24 }} />
