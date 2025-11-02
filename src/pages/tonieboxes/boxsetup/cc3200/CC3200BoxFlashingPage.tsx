@@ -30,6 +30,7 @@ import AvailableBoxesModal, {
     certificateIntro,
     CertificateUploadElement,
     installCC3200Tool,
+    TonieboxWifiGuide,
     uart3v3Hint,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
@@ -159,13 +160,7 @@ export const CC3200BoxFlashingPage = () => {
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
-                {t("tonieboxes.cc3235BoxFlashing.preparationText")}{" "}
-                <Link
-                    to="https://support.tonies.com/hc/en-us/articles/4415294030482-How-do-I-set-up-a-Wi-Fi-connection-without-the-setup-assistant"
-                    target="_blank"
-                >
-                    {t("tonieboxes.cc3235BoxFlashing.preparationTextLink")}
-                </Link>
+                <TonieboxWifiGuide />
             </Paragraph>
             {installCC3200Tool()}
             <h4>{t("tonieboxes.cc3200BoxFlashing.connectToToniebox")}</h4>
