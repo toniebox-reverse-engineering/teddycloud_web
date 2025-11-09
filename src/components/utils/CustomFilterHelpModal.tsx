@@ -1,0 +1,94 @@
+import React from "react";
+import { Modal, Typography, Table } from "antd";
+import { useTranslation } from "react-i18next";
+
+const { Paragraph, Text } = Typography;
+
+interface CustomFilterHelpModalProps {
+    visible: boolean;
+    onClose: () => void;
+}
+
+const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, onClose }) => {
+    const { t } = useTranslation();
+
+    const fields = [
+        { field: "series", description: t("tonies.tonies.filterBar.customFilterHelp.fields.series") },
+        { field: "episode", description: t("tonies.tonies.filterBar.customFilterHelp.fields.episode") },
+        { field: "model", description: t("tonies.tonies.filterBar.customFilterHelp.fields.model") },
+        { field: "language", description: t("tonies.tonies.filterBar.customFilterHelp.fields.language") },
+        { field: "exists", description: t("tonies.tonies.filterBar.customFilterHelp.fields.exists") },
+        { field: "valid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.valid") },
+        { field: "live", description: t("tonies.tonies.filterBar.customFilterHelp.fields.live") },
+        { field: "nocloud", description: t("tonies.tonies.filterBar.customFilterHelp.fields.nocloud") },
+        { field: "hasCloudAuth", description: t("tonies.tonies.filterBar.customFilterHelp.fields.hasCloudAuth") },
+    ];
+
+    return (
+        <Modal
+            open={visible}
+            onCancel={onClose}
+            footer={null}
+            title={t("tonies.tonies.filterBar.customFilterHelp.title")}
+            width={700}
+        >
+            <Paragraph>{t("tonies.tonies.filterBar.customFilterHelp.intro")}</Paragraph>
+
+            <Table
+                dataSource={fields}
+                pagination={false}
+                rowKey="field"
+                columns={[
+                    {
+                        title: t("tonies.tonies.filterBar.customFilterHelp.table.field"),
+                        dataIndex: "field",
+                        key: "field",
+                        render: (text) => <Text strong>{text}</Text>,
+                    },
+                    {
+                        title: t("tonies.tonies.filterBar.customFilterHelp.table.description"),
+                        dataIndex: "description",
+                        key: "description",
+                    },
+                ]}
+                style={{ marginBottom: 16 }}
+            />
+
+            <Paragraph>
+                <Text strong>{t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.title")}</Text>
+            </Paragraph>
+            <Paragraph>
+                <Text code>series=Pixi</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.series")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>series=Pixi AND valid</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.and")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>language=de OR language=fr</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.or")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>!nocloud</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.negation")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>unique(series)</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.unique")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>live AND !nocloud AND language=de AND unique(series)</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.combined")}
+            </Paragraph>
+
+            <Paragraph>
+                <Text strong>{t("tonies.tonies.filterBar.customFilterHelp.tips.title")}</Text>
+            </Paragraph>
+            <ul>
+                <li>{t("tonies.tonies.filterBar.customFilterHelp.tips.caseSensitive")}</li>
+                <li>{t("tonies.tonies.filterBar.customFilterHelp.tips.combine")}</li>
+                <li>{t("tonies.tonies.filterBar.customFilterHelp.tips.parentheses")}</li>
+            </ul>
+        </Modal>
+    );
+};
+
+export default CustomFilterHelpModal;

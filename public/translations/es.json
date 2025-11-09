@@ -2004,7 +2004,45 @@
                 "unsetHasCloudAuth": "Sin autenticación en la nube",
                 "unsetLive": "En vivo deshabilitado",
                 "unsetNoCloud": "Nube habilitada",
-                "valid": "Válido Sí"
+                "valid": "Válido Sí",
+                "customFilter": {
+                    "label": "Filtro personalizado (experto)",
+                    "placeholder": "Introduce un filtro personalizado, p. ej., live && !nocloud && language=de"
+                },
+                "customFilterHelp": {
+                    "title": "Ayuda del filtro personalizado",
+                    "intro": "Usa el filtro personalizado para filtrar Tonies con expresiones lógicas y condiciones específicas de campo.",
+                    "fields": {
+                        "series": "El nombre de la serie del Tonie.",
+                        "episode": "El nombre del episodio del Tonie.",
+                        "model": "El modelo del Tonie.",
+                        "language": "El idioma del Tonie.",
+                        "exists": "Si el Tonie existe (true/false).",
+                        "valid": "Si el Tonie es válido (true/false).",
+                        "live": "Si el Tonie está marcado como live (true/false).",
+                        "nocloud": "Si el Tonie está marcado como nocloud (true/false).",
+                        "hasCloudAuth": "Si el Tonie tiene autorización en la nube (true/false)."
+                    },
+                    "table": {
+                        "field": "Campo",
+                        "description": "Descripción"
+                    },
+                    "syntaxExamples": {
+                        "title": "Ejemplos de sintaxis",
+                        "series": "Filtra Tonies cuya serie es 'Pixi'.",
+                        "and": "Filtra Tonies cuya serie es 'Pixi' Y el Tonie es válido.",
+                        "or": "Filtra Tonies con idioma alemán o francés.",
+                        "negation": "Filtra Tonies que tienen acceso a la nube.",
+                        "unique": "Filtra Tonies que son los únicos en su serie.",
+                        "combined": "Filtra Tonies que están en vivo, tienen acceso a la nube, idioma alemán y son únicos en su serie."
+                    },
+                    "tips": {
+                        "title": "Consejos",
+                        "caseSensitive": "Los nombres de campo distinguen mayúsculas y minúsculas; usa minúsculas exactamente como se muestra.",
+                        "combine": "Combina múltiples condiciones con AND / OR y niega con !.",
+                        "parentheses": "Usa paréntesis () para expresiones complejas."
+                    }
+                }
             },
             "navigationTitle": "Tonies",
             "pageSelector": " tonies/página",

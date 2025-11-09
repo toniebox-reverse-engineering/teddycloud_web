@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -13,6 +13,8 @@ import {
     Dropdown,
     MenuProps,
     Tooltip,
+    theme,
+    Divider,
 } from "antd";
 
 import HelpModal from "../../components/utils/ToniesHelpModal";
@@ -30,7 +32,10 @@ import { scrollToTop } from "../../utils/browserUtils";
 import { exportToJSON, exportCompleteInfoToJSON, exportToCSV, exportToHTML } from "../utils/ToniesListExportUtils";
 import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
 import { useTeddyCloud } from "../../TeddyCloudContext";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, WarningOutlined } from "@ant-design/icons";
+import CustomFilterHelpModal from "../utils/CustomFilterHelpModal";
+
+const { useToken } = theme;
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -58,6 +63,7 @@ export const ToniesList: React.FC<{
 }) => {
     const { t } = useTranslation();
     const location = useLocation();
+    const { token } = useToken();
     const { addNotification } = useTeddyCloud();
 
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
@@ -76,6 +82,7 @@ export const ToniesList: React.FC<{
     const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
     const [hasCloudAuthFilter, setHasCloudAuthFilter] = useState(false);
     const [unsetHasCloudAuthFilter, setUnsetHasCloudAuthFilter] = useState(false);
+    const [customFilter, setCustomFilter] = useState("");
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
@@ -97,11 +104,39 @@ export const ToniesList: React.FC<{
     const [selectedTonies, setSelectedTonies] = useState<string[]>([]);
     const [selectionMode, setSelectionMode] = useState<boolean>(false);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+    const [isCustomFilterHelpOpen, setIsCustomFilterHelpOpen] = useState(false);
+    const [customFilterValid, setCustomFilterValid] = useState(true);
+    const [customFilterError, setCustomFilterError] = useState<string | undefined>(undefined);
 
     const handleUpdateCard = (updatedCard: TonieCardProps) => {
         setFilteredTonies((prev) => prev.map((c) => (c.ruid === updatedCard.ruid ? updatedCard : c)));
         setListKey((prevKey) => prevKey + 1);
     };
+
+    const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
+
+    const uniquenessMaps = useMemo(() => {
+        function buildMap(getKey: (t: TonieCardProps) => string) {
+            const counts: Record<string, number> = {};
+            tonieCards.forEach((t) => {
+                const key = getKey(t);
+                counts[key] = (counts[key] || 0) + 1;
+            });
+            return Object.fromEntries(Object.entries(counts).map(([k, c]) => [k, c === 1]));
+        }
+
+        const getEpisode = (t: TonieCardProps) => t.sourceInfo?.episode || t.tonieInfo.episode || "";
+
+        const getSeries = (t: TonieCardProps) => t.sourceInfo?.series || t.tonieInfo.series || "";
+
+        const getModel = (t: TonieCardProps) => t.sourceInfo?.model || t.tonieInfo.model || "";
+
+        return {
+            episode: buildMap(getEpisode),
+            series: buildMap(getSeries),
+            model: buildMap(getModel),
+        };
+    }, [tonieCards]);
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -153,8 +188,6 @@ export const ToniesList: React.FC<{
         fetchShowSourceInfo();
     }, []);
 
-    const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
-
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get("tonieRUID");
@@ -205,6 +238,126 @@ export const ToniesList: React.FC<{
         );
     };
 
+    const debounceRef = useRef<number | undefined>(undefined);
+
+    const handleCustomFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setCustomFilter(value);
+
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
+        }
+
+        debounceRef.current = window.setTimeout(() => {
+            try {
+                const { valid, error } = validateCustomFilter(value); // your validator function
+                setCustomFilterValid(valid);
+                setCustomFilterError(error);
+            } catch (err) {
+                setCustomFilterValid(false);
+                setCustomFilterError("Invalid filter expression");
+            }
+        }, 500);
+    };
+
+    useEffect(() => {
+        return () => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+            }
+        };
+    }, []);
+
+    const FIELD_ACCESSORS: Record<string, (t: TonieCardProps) => any> = {
+        series: (t) => t.sourceInfo?.series || t.tonieInfo.series || "",
+        episode: (t) => t.sourceInfo?.episode || t.tonieInfo.episode || "",
+        model: (t) => t.sourceInfo?.model || t.tonieInfo.model || "",
+        language: (t) => t.sourceInfo?.language || t.tonieInfo.language || "",
+        exists: (t) => t.exists,
+        valid: (t) => t.valid,
+        live: (t) => t.live,
+        nocloud: (t) => t.nocloud,
+        hasCloudAuth: (t) => t.hasCloudAuth,
+    };
+    const VALID_FIELDS = Object.keys(FIELD_ACCESSORS);
+    const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "=="];
+
+    function applyCustomFilter(tonie: TonieCardProps, query: string): boolean {
+        if (!query.trim()) return true;
+        type UniqueField = "series" | "episode" | "model";
+        const checkUnique = (t: TonieCardProps, field: UniqueField) => {
+            const value = FIELD_ACCESSORS[field](t);
+            return uniquenessMaps[field][value] === true;
+        };
+        try {
+            let expr = query.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
+            const tokens = expr.split(/\s+/).map((token) => {
+                // !field
+                const notMatch = token.match(/^!(\w+)$/);
+                if (notMatch && FIELD_ACCESSORS[notMatch[1]]) return `!FIELD_ACCESSORS["${notMatch[1]}"](tonie)`;
+                // field=value
+                const eqMatch = token.match(/^(\w+)=(.+)$/);
+                if (eqMatch && FIELD_ACCESSORS[eqMatch[1]])
+                    return `FIELD_ACCESSORS["${eqMatch[1]}"](tonie) == "${eqMatch[2]}"`;
+                // unique(field)
+                const uniqueMatch = token.match(/^unique\((\w+)\)$/);
+                if (uniqueMatch && ["series", "episode", "model"].includes(uniqueMatch[1])) {
+                    const field = uniqueMatch[1] as UniqueField;
+                    return `checkUnique(tonie, "${field}")`;
+                }
+                // bare field
+                if (FIELD_ACCESSORS[token]) return `FIELD_ACCESSORS["${token}"](tonie)`;
+                return token;
+            });
+            expr = tokens.join(" ");
+            return Function(
+                "tonie",
+                "FIELD_ACCESSORS",
+                "checkUnique",
+                `return (${expr});`
+            )(tonie, FIELD_ACCESSORS, checkUnique);
+        } catch (err) {
+            console.error("Custom filter error:", err);
+            return false;
+        }
+    }
+
+    function validateCustomFilter(input: string): { valid: boolean; error?: string } {
+        if (!input.trim()) return { valid: true };
+
+        try {
+            let expr = input.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
+
+            const tokens = expr.split(/\s+/);
+
+            for (const token of tokens) {
+                const uniqueMatch = token.match(/^unique\((\w+)\)$/);
+                if (uniqueMatch) {
+                    if (!["series", "episode", "model"].includes(uniqueMatch[1])) {
+                        return { valid: false, error: `Invalid field in unique(): ${uniqueMatch[1]}` };
+                    }
+                    continue;
+                }
+                const notMatch = token.match(/^!(\w+)$/);
+                if (notMatch && !VALID_FIELDS.includes(notMatch[1])) {
+                    return { valid: false, error: `Unknown field: ${notMatch[1]}` };
+                }
+                const eqMatch = token.match(/^(\w+)=(.+)$/);
+                if (eqMatch && !VALID_FIELDS.includes(eqMatch[1])) {
+                    return { valid: false, error: `Unknown field: ${eqMatch[1]}` };
+                }
+                if (VALID_FIELDS.includes(token)) continue;
+                if (VALID_OPERATORS.includes(token)) continue;
+                if (!token.match(/^[0-9a-zA-Z_]+$/)) continue;
+
+                return { valid: false, error: `Invalid token: ${token}` };
+            }
+            return { valid: true };
+        } catch (err) {
+            return { valid: false, error: "Syntax error" };
+        }
+    }
+
     const handleFilter = () => {
         let filtered = tonieCards.filter(
             (tonie) =>
@@ -230,15 +383,15 @@ export const ToniesList: React.FC<{
                             : "undefined"
                     )) &&
                 (!validFilter || tonie.valid) &&
-                (!invalidFilter || !tonie.valid) &&
+                (!invalidFilter || tonie.valid === false) &&
                 (!existsFilter || tonie.exists) &&
-                (!notExistsFilter || !tonie.exists) &&
+                (!notExistsFilter || tonie.exists === false) &&
                 (!liveFilter || tonie.live) &&
-                (!unsetLiveFilter || !tonie.live) &&
+                (!unsetLiveFilter || tonie.live === false) &&
                 (!nocloudFilter || tonie.nocloud) &&
-                (!unsetNocloudFilter || !tonie.nocloud) &&
+                (!unsetNocloudFilter || tonie.nocloud === false) &&
                 (!hasCloudAuthFilter || tonie.hasCloudAuth) &&
-                (!unsetHasCloudAuthFilter || !tonie.hasCloudAuth)
+                (!unsetHasCloudAuthFilter || tonie.hasCloudAuth === false)
         );
         if (searchText) {
             filtered = filtered.filter(
@@ -261,7 +414,9 @@ export const ToniesList: React.FC<{
             // Filter by RUID part of the lastTonieboxRUIDs array
             filtered = filtered.filter((tonie) => lastTonieboxRUIDs.some(([ruid]) => ruid === tonie.ruid));
         }
-
+        if (customFilter.trim() !== "") {
+            filtered = filtered.filter((tonie) => applyCustomFilter(tonie, customFilter));
+        }
         if (hiddenRuids) {
             // filter hidden RUIDs always
             filtered = filtered.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
@@ -630,6 +785,36 @@ export const ToniesList: React.FC<{
                             {t("tonies.tonies.filterBar.lastPlayed")}
                         </div>
                     </div>
+                    <div style={{ margin: "8px 0" }}>
+                        <Divider size="small" style={{ marginTop: 16 }} />
+                        <label className="filter-label">{t("tonies.tonies.filterBar.customFilter.label")}</label>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            {!customFilterValid && (
+                                <Tooltip title={customFilterError} placement="right">
+                                    <WarningOutlined
+                                        style={{
+                                            color: token.colorErrorText,
+                                        }}
+                                    />
+                                </Tooltip>
+                            )}
+                            <Input
+                                style={{ margin: "8px 0" }}
+                                placeholder={t("tonies.tonies.filterBar.customFilter.placeholder")}
+                                value={customFilter}
+                                onChange={handleCustomFilterChange}
+                                addonAfter={
+                                    <Button
+                                        icon={<QuestionCircleOutlined />}
+                                        type="text"
+                                        size="small"
+                                        onClick={() => setIsCustomFilterHelpOpen(true)}
+                                        style={{ padding: 0 }}
+                                    />
+                                }
+                            />
+                        </div>
+                    </div>
                     <div
                         style={{
                             display: "flex",
@@ -676,6 +861,12 @@ export const ToniesList: React.FC<{
             </div>
             {isHelpModalOpen && (
                 <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+            )}
+            {isCustomFilterHelpOpen && (
+                <CustomFilterHelpModal
+                    visible={isCustomFilterHelpOpen}
+                    onClose={() => setIsCustomFilterHelpOpen(false)}
+                />
             )}
             {showFilter ? (
                 <Collapse

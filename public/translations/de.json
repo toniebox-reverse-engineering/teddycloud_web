@@ -2004,7 +2004,45 @@
                 "unsetHasCloudAuth": "Cloud auth leer",
                 "unsetLive": "Live deaktiviert",
                 "unsetNoCloud": "Cloud aktiviert",
-                "valid": "Gültig Ja"
+                "valid": "Gültig Ja",
+                "customFilter": {
+                    "label": "Benutzerdefinierter Filter (Experte)",
+                    "placeholder": "Gib einen benutzerdefinierten Filter ein, z. B. live && !nocloud && language=de"
+                },
+                "customFilterHelp": {
+                    "title": "Hilfe zum benutzerdefinierten Filter",
+                    "intro": "Verwende den benutzerdefinierten Filter, um Tonies mit logischen Ausdrücken und feldspezifischen Bedingungen zu filtern.",
+                    "fields": {
+                        "series": "Der Name der Serie des Tonies.",
+                        "episode": "Der Name der Episode des Tonies.",
+                        "model": "Das Modell des Tonies.",
+                        "language": "Die Sprache des Tonies.",
+                        "exists": "Ob der Tonie existiert (true/false).",
+                        "valid": "Ob der Tonie gültig ist (true/false).",
+                        "live": "Ob der Tonie als live markiert ist (true/false).",
+                        "nocloud": "Ob der Tonie als nocloud markiert ist (true/false).",
+                        "hasCloudAuth": "Ob der Tonie Cloud-Zugriff hat (true/false)."
+                    },
+                    "table": {
+                        "field": "Feld",
+                        "description": "Beschreibung"
+                    },
+                    "syntaxExamples": {
+                        "title": "Syntax-Beispiele",
+                        "series": "Filtert Tonies, deren Serie 'Pixi' ist.",
+                        "and": "Filtert Tonies, deren Serie 'Pixi' ist UND der Tonie gültig ist.",
+                        "or": "Filtert Tonies mit entweder deutscher oder französischer Sprache.",
+                        "negation": "Filtert Tonies, die Cloud-Zugriff haben.",
+                        "unique": "Filtert Tonies, die die einzigen in ihrer Serie sind.",
+                        "combined": "Filtert Tonies, die live sind, Cloud-Zugriff haben, deutsche Sprache besitzen und einzigartig in der Serie sind."
+                    },
+                    "tips": {
+                        "title": "Tipps",
+                        "caseSensitive": "Feldnamen sind case-sensitiv; verwende Kleinschreibung genau wie gezeigt.",
+                        "combine": "Kombiniere mehrere Bedingungen mit AND / OR und negiere mit !.",
+                        "parentheses": "Verwende Klammern () für komplexe Ausdrücke."
+                    }
+                }
             },
             "navigationTitle": "Tonies",
             "pageSelector": " Tonies/Seite",
