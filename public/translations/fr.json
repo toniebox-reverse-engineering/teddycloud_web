@@ -1985,6 +1985,44 @@
         "tonies": {
             "filterBar": {
                 "applyFilters": "Appliquer le filtre",
+                "customFilter": {
+                    "label": "Filtre personnalisé (expert)",
+                    "placeholder": "Saisis un filtre personnalisé, par ex., live && !nocloud && language=de"
+                },
+                "customFilterHelp": {
+                    "fields": {
+                        "episode": "Le nom de l'épisode du Tonie.",
+                        "exists": "Si le Tonie existe (true/false).",
+                        "hasCloudAuth": "Si le Tonie a l'autorisation cloud (true/false).",
+                        "language": "La langue du Tonie.",
+                        "live": "Si le Tonie est marqué comme live (true/false).",
+                        "model": "Le modèle du Tonie.",
+                        "nocloud": "Si le Tonie est marqué comme nocloud (true/false).",
+                        "series": "Le nom de la série du Tonie.",
+                        "valid": "Si le Tonie est valide (true/false)."
+                    },
+                    "intro": "Utilise le filtre personnalisé pour filtrer les Tonies avec des expressions logiques et des conditions spécifiques aux champs.",
+                    "syntaxExamples": {
+                        "and": "Filtre les Tonies dont la série est 'Pixi' ET le Tonie est valide.",
+                        "combined": "Filtre les Tonies qui sont live, ont accès au cloud, langue allemande et uniques dans leur série.",
+                        "negation": "Filtre les Tonies qui ont accès au cloud.",
+                        "or": "Filtre les Tonies avec langue allemande ou française.",
+                        "series": "Filtre les Tonies dont la série est 'Pixi'.",
+                        "title": "Exemples de syntaxe",
+                        "unique": "Filtre les Tonies qui sont les seuls dans leur série."
+                    },
+                    "table": {
+                        "description": "Description",
+                        "field": "Champ"
+                    },
+                    "tips": {
+                        "caseSensitive": "Les noms de champs sont sensibles à la casse ; utilise les minuscules exactement comme indiqué.",
+                        "combine": "Combine plusieurs conditions avec AND / OR et nie avec !.",
+                        "parentheses": "Utilise des parenthèses () pour les expressions complexes.",
+                        "title": "Conseils"
+                    },
+                    "title": "Aide du filtre personnalisé"
+                },
                 "episodeFilterPlaceholder": "Épisode",
                 "exists": "Existe Oui",
                 "filterLabel": "Filtrer",
@@ -2004,45 +2042,7 @@
                 "unsetHasCloudAuth": "Pas d'auth cloud",
                 "unsetLive": "Live désactivé",
                 "unsetNoCloud": "Cloud activé",
-                "valid": "Valide Oui",
-                "customFilter": {
-                    "label": "Filtre personnalisé (expert)",
-                    "placeholder": "Saisis un filtre personnalisé, par ex., live && !nocloud && language=de"
-                },
-                "customFilterHelp": {
-                    "title": "Aide du filtre personnalisé",
-                    "intro": "Utilise le filtre personnalisé pour filtrer les Tonies avec des expressions logiques et des conditions spécifiques aux champs.",
-                    "fields": {
-                        "series": "Le nom de la série du Tonie.",
-                        "episode": "Le nom de l'épisode du Tonie.",
-                        "model": "Le modèle du Tonie.",
-                        "language": "La langue du Tonie.",
-                        "exists": "Si le Tonie existe (true/false).",
-                        "valid": "Si le Tonie est valide (true/false).",
-                        "live": "Si le Tonie est marqué comme live (true/false).",
-                        "nocloud": "Si le Tonie est marqué comme nocloud (true/false).",
-                        "hasCloudAuth": "Si le Tonie a l'autorisation cloud (true/false)."
-                    },
-                    "table": {
-                        "field": "Champ",
-                        "description": "Description"
-                    },
-                    "syntaxExamples": {
-                        "title": "Exemples de syntaxe",
-                        "series": "Filtre les Tonies dont la série est 'Pixi'.",
-                        "and": "Filtre les Tonies dont la série est 'Pixi' ET le Tonie est valide.",
-                        "or": "Filtre les Tonies avec langue allemande ou française.",
-                        "negation": "Filtre les Tonies qui ont accès au cloud.",
-                        "unique": "Filtre les Tonies qui sont les seuls dans leur série.",
-                        "combined": "Filtre les Tonies qui sont live, ont accès au cloud, langue allemande et uniques dans leur série."
-                    },
-                    "tips": {
-                        "title": "Conseils",
-                        "caseSensitive": "Les noms de champs sont sensibles à la casse ; utilise les minuscules exactement comme indiqué.",
-                        "combine": "Combine plusieurs conditions avec AND / OR et nie avec !.",
-                        "parentheses": "Utilise des parenthèses () pour les expressions complexes."
-                    }
-                }
+                "valid": "Valide Oui"
             },
             "navigationTitle": "Tonies",
             "pageSelector": " tonies/page",
