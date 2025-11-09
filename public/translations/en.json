@@ -1986,8 +1986,14 @@
             "filterBar": {
                 "applyFilters": "Apply filter",
                 "customFilter": {
+                    "invalidFieldUnique": "Invalid field in unique(): {{field}}",
+                    "invalidToken": "Invalid token: {{token}}",
                     "label": "Custom filter (expert)",
-                    "placeholder": "Enter custom filter, e.g., live && !nocloud && language=de-de"
+                    "placeholder": "Enter custom filter, e.g., live && !nocloud && language=de-de",
+                    "syntaxError": "Syntax error",
+                    "unknownFieldComparison": "Unknown field in comparison: {{field}}",
+                    "unknownFieldNegation": "Unknown field in negation: {{field}}",
+                    "unknownFieldRegex": "Unknown field in regex: {{field}}"
                 },
                 "customFilterHelp": {
                     "fields": {

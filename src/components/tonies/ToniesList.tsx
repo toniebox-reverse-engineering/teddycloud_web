@@ -280,36 +280,74 @@ export const ToniesList: React.FC<{
         hasCloudAuth: (t) => t.hasCloudAuth,
     };
     const VALID_FIELDS = Object.keys(FIELD_ACCESSORS);
-    const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "=="];
+    const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~"];
 
     function applyCustomFilter(tonie: TonieCardProps, query: string): boolean {
         if (!query.trim()) return true;
+
         type UniqueField = "series" | "episode" | "model";
         const checkUnique = (t: TonieCardProps, field: UniqueField) => {
             const value = FIELD_ACCESSORS[field](t);
             return uniquenessMaps[field][value] === true;
         };
+
         try {
             let expr = query.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
-            const tokens = expr.split(/\s+/).map((token) => {
-                // !field
-                const notMatch = token.match(/^!(\w+)$/);
-                if (notMatch && FIELD_ACCESSORS[notMatch[1]]) return `!FIELD_ACCESSORS["${notMatch[1]}"](tonie)`;
-                // field=value
-                const eqMatch = token.match(/^(\w+)=(.+)$/);
-                if (eqMatch && FIELD_ACCESSORS[eqMatch[1]])
-                    return `FIELD_ACCESSORS["${eqMatch[1]}"](tonie) == "${eqMatch[2]}"`;
-                // unique(field)
-                const uniqueMatch = token.match(/^unique\((\w+)\)$/);
-                if (uniqueMatch && ["series", "episode", "model"].includes(uniqueMatch[1])) {
-                    const field = uniqueMatch[1] as UniqueField;
-                    return `checkUnique(tonie, "${field}")`;
+
+            const tokenRegex =
+                /([a-zA-Z_]\w*(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+            const tokens = expr.match(tokenRegex) ?? [];
+
+            const mappedTokens = tokens.map((token) => {
+                token = token.trim();
+
+                // 1) parentheses and logical operators remain as-is
+                if (["(", ")", "&&", "||"].includes(token)) return token;
+
+                // 2) negation !field
+                let m = token.match(/^!(\w+)$/);
+                if (m && FIELD_ACCESSORS[m[1]]) return `!FIELD_ACCESSORS["${m[1]}"](tonie)`;
+
+                // 3) regex field~"pattern"
+                m = token.match(/^([a-zA-Z_]\w*)(\s*~\s*)(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m && FIELD_ACCESSORS[m[1]]) {
+                    const pattern = m[3] ?? m[4] ?? m[5] ?? "";
+                    const safePattern = JSON.stringify(pattern);
+                    return `new RegExp(${safePattern}, "i").test(String(FIELD_ACCESSORS["${m[1]}"](tonie) || ""))`;
                 }
-                // bare field
+
+                // 4) equality and inequality, case-insensitive
+                m = token.match(/^([a-zA-Z_]\w*)\s*(!?=)\s*(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m && FIELD_ACCESSORS[m[1]]) {
+                    const field = m[1];
+                    const operator = m[2]; // '=' or '!='
+                    const value = (m[3] ?? m[4] ?? m[5] ?? "").toLowerCase();
+                    if (operator === "=") {
+                        return `(String(FIELD_ACCESSORS["${field}"](tonie) || "").toLowerCase() === ${JSON.stringify(
+                            value
+                        )})`;
+                    } else {
+                        return `(String(FIELD_ACCESSORS["${field}"](tonie) || "").toLowerCase() !== ${JSON.stringify(
+                            value
+                        )})`;
+                    }
+                }
+
+                // 5) unique(field)
+                m = token.match(/^unique\((\w+)\)$/);
+                if (m && ["series", "episode", "model"].includes(m[1])) {
+                    return `checkUnique(tonie, "${m[1]}")`;
+                }
+
+                // 6) bare boolean field
                 if (FIELD_ACCESSORS[token]) return `FIELD_ACCESSORS["${token}"](tonie)`;
-                return token;
+
+                // 7) fallback: keep as string literal (in case user quotes manually)
+                return JSON.stringify(token);
             });
-            expr = tokens.join(" ");
+
+            expr = mappedTokens.join(" ");
+
             return Function(
                 "tonie",
                 "FIELD_ACCESSORS",
@@ -326,35 +364,81 @@ export const ToniesList: React.FC<{
         if (!input.trim()) return { valid: true };
 
         try {
+            // normalize logical operators
             let expr = input.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
 
-            const tokens = expr.split(/\s+/);
+            // tokenization regex matching all supported token types
+            const tokenRegex =
+                /([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+            const tokens = expr.match(tokenRegex) ?? [];
 
             for (const token of tokens) {
-                const uniqueMatch = token.match(/^unique\((\w+)\)$/);
-                if (uniqueMatch) {
-                    if (!["series", "episode", "model"].includes(uniqueMatch[1])) {
-                        return { valid: false, error: `Invalid field in unique(): ${uniqueMatch[1]}` };
+                const tok = token.trim();
+
+                // parentheses and logical operators are valid
+                if (VALID_OPERATORS.includes(tok)) continue;
+
+                // !field
+                let m = tok.match(/^!(\w+)$/);
+                if (m) {
+                    if (!VALID_FIELDS.includes(m[1])) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldNegation", { field: m[1] }),
+                        };
                     }
                     continue;
                 }
-                const notMatch = token.match(/^!(\w+)$/);
-                if (notMatch && !VALID_FIELDS.includes(notMatch[1])) {
-                    return { valid: false, error: `Unknown field: ${notMatch[1]}` };
-                }
-                const eqMatch = token.match(/^(\w+)=(.+)$/);
-                if (eqMatch && !VALID_FIELDS.includes(eqMatch[1])) {
-                    return { valid: false, error: `Unknown field: ${eqMatch[1]}` };
-                }
-                if (VALID_FIELDS.includes(token)) continue;
-                if (VALID_OPERATORS.includes(token)) continue;
-                if (!token.match(/^[0-9a-zA-Z_]+$/)) continue;
 
-                return { valid: false, error: `Invalid token: ${token}` };
+                // field~"pattern"
+                m = tok.match(/^([a-zA-Z_]\w*)(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+)$/);
+                if (m) {
+                    if (!VALID_FIELDS.includes(m[1])) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldRegex", { field: m[1] }),
+                        };
+                    }
+                    continue;
+                }
+
+                // equality / inequality
+                m = tok.match(/^([a-zA-Z_]\w*)\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+)$/);
+                if (m) {
+                    if (!VALID_FIELDS.includes(m[1])) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldComparison", { field: m[1] }),
+                        };
+                    }
+                    continue;
+                }
+
+                // unique(field)
+                m = tok.match(/^unique\((\w+)\)$/);
+                if (m) {
+                    if (!["series", "episode", "model"].includes(m[1])) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", { field: m[1] }),
+                        };
+                    }
+                    continue;
+                }
+
+                // bare field
+                if (VALID_FIELDS.includes(tok)) continue;
+
+                // fallback invalid token
+                return {
+                    valid: false,
+                    error: t("tonies.tonies.filterBar.customFilter.invalidToken", { token: tok }),
+                };
             }
+
             return { valid: true };
         } catch (err) {
-            return { valid: false, error: "Syntax error" };
+            return { valid: false, error: t("tonies.tonies.filterBar.customFilter.syntaxError") };
         }
     }
 

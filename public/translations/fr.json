@@ -1986,8 +1986,14 @@
             "filterBar": {
                 "applyFilters": "Appliquer le filtre",
                 "customFilter": {
+                    "invalidFieldUnique": "Champ invalide dans unique() : {{field}}",
+                    "invalidToken": "Jeton invalide : {{token}}",
                     "label": "Filtre personnalisé (expert)",
-                    "placeholder": "Saisis un filtre personnalisé, par ex., live && !nocloud && language=de-de"
+                    "placeholder": "Saisis un filtre personnalisé, par ex., live && !nocloud && language=de-de",
+                    "syntaxError": "Erreur de syntaxe",
+                    "unknownFieldComparison": "Champ inconnu dans la comparaison : {{field}}",
+                    "unknownFieldNegation": "Champ inconnu dans la négation : {{field}}",
+                    "unknownFieldRegex": "Champ inconnu dans l'expression régulière : {{field}}"
                 },
                 "customFilterHelp": {
                     "fields": {
