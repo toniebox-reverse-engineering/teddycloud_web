@@ -449,6 +449,9 @@ export const ToniesList: React.FC<{
         setUnsetHasCloudAuthFilter(false);
         setFilterLastTonieboxRUIDs(false);
         setSelectedLanguages([]);
+        setCustomFilter("");
+        setCustomFilterError(undefined);
+        setCustomFilterValid(true);
         const urlWithoutParams = window.location.pathname;
         window.history.pushState({}, "", urlWithoutParams);
         location.search = "";

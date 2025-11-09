@@ -1987,7 +1987,7 @@
                 "applyFilters": "Appliquer le filtre",
                 "customFilter": {
                     "label": "Filtre personnalisé (expert)",
-                    "placeholder": "Saisis un filtre personnalisé, par ex., live && !nocloud && language=de"
+                    "placeholder": "Saisis un filtre personnalisé, par ex., live && !nocloud && language=de-de"
                 },
                 "customFilterHelp": {
                     "fields": {
