@@ -1,4 +1,5 @@
 import {
+    AutoComplete,
     Button,
     Collapse,
     CollapseProps,
@@ -107,6 +108,18 @@ export const ToniesList: React.FC<{
     const [isCustomFilterHelpOpen, setIsCustomFilterHelpOpen] = useState(false);
     const [customFilterValid, setCustomFilterValid] = useState(true);
     const [customFilterError, setCustomFilterError] = useState<string | undefined>(undefined);
+
+    const [customFilterOptions, setCustomFilterOptions] = useState<{ value: string }[]>([]);
+
+    const handleCustomFilterSearch = (value: string) => {
+        const options = getCustomFilterCompletions(value).map((v) => ({ value: v }));
+        setCustomFilterOptions(options);
+    };
+
+    const handleCustomFilterSelect = (selection: string) => {
+        const newValue = customFilter.replace(/([^\s()]+)$/, selection);
+        setCustomFilter(newValue + " ");
+    };
 
     const handleUpdateCard = (updatedCard: TonieCardProps) => {
         setFilteredTonies((prev) => prev.map((c) => (c.ruid === updatedCard.ruid ? updatedCard : c)));
@@ -286,8 +299,63 @@ export const ToniesList: React.FC<{
         tracks: (t) => (t.sourceInfo?.tracks || t.tonieInfo?.tracks || []) as string[],
         trackseconds: (t) => (t.trackSeconds || []) as number[],
     };
-    const VALID_FIELDS = Object.keys(FIELD_ACCESSORS);
+    const VALID_FIELDS = Object.keys(FIELD_ACCESSORS).filter((f) => f !== "trackseconds");
     const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~", ">", "<", ">=", "<="];
+
+    const LOGICALS = ["and", "or"];
+    const FUNCTIONS = [
+        "unique(series)",
+        "unique(episode)",
+        "unique(model)",
+        "tracksecondscount",
+        "trackcount",
+        "track",
+    ];
+
+    const getCustomFilterCompletions = (input: string) => {
+        const trimmed = input.trim();
+        if (!trimmed) return [...VALID_FIELDS, ...LOGICALS, ...FUNCTIONS];
+
+        const lastTokenMatch = trimmed.match(/([^\s()]+)$/);
+        let lastToken = lastTokenMatch ? lastTokenMatch[1] : "";
+
+        const completions: string[] = [];
+
+        const negationMatch = lastToken.match(/^!(\w*)$/);
+        const isNegated = !!negationMatch;
+        if (isNegated) lastToken = negationMatch[1];
+
+        const matchingFields = VALID_FIELDS.filter((f) => f.startsWith(lastToken));
+        completions.push(...matchingFields);
+        completions.push(...LOGICALS.filter((l) => l.startsWith(lastToken)));
+        completions.push(...FUNCTIONS.filter((f) => f.startsWith(lastToken)));
+
+        if (VALID_FIELDS.includes(lastToken)) {
+            const field = lastToken;
+
+            if (["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(field)) {
+                // do nothing
+            } else if (field === "tracks") {
+                completions.push("=", "!=", "~");
+            } else if (["trackseconds", "trackcount", "tracksecondscount"].includes(field)) {
+                completions.push("=", "!=", ">", "<", ">=", "<=");
+            } else {
+                completions.push("=", "!=", "~");
+            }
+        }
+
+        if (/^!?\s*unique\($/.test(lastTokenMatch ? lastTokenMatch[0] : "")) {
+            completions.push("series)", "episode)", "model)");
+        }
+
+        if (isNegated) {
+            return completions.map((c) =>
+                ["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(c) ? `!${c}` : c
+            );
+        }
+
+        return completions;
+    };
 
     function applyCustomFilter(tonie: TonieCardProps, query: string): boolean {
         if (!query.trim()) return true;
@@ -963,21 +1031,28 @@ export const ToniesList: React.FC<{
                                     />
                                 </Tooltip>
                             )}
-                            <Input
-                                style={{ margin: "8px 0" }}
-                                placeholder={t("tonies.tonies.filterBar.customFilter.placeholder")}
+                            <AutoComplete
+                                style={{ width: "100%", margin: "8px 0" }}
+                                options={customFilterOptions}
                                 value={customFilter}
-                                onChange={handleCustomFilterChange}
-                                addonAfter={
-                                    <Button
-                                        icon={<QuestionCircleOutlined />}
-                                        type="text"
-                                        size="small"
-                                        onClick={() => setIsCustomFilterHelpOpen(true)}
-                                        style={{ padding: 0 }}
-                                    />
-                                }
-                            />
+                                onSelect={handleCustomFilterSelect}
+                                onSearch={handleCustomFilterSearch}
+                                filterOption={false}
+                            >
+                                <Input
+                                    placeholder={t("tonies.tonies.filterBar.customFilter.placeholder")}
+                                    onChange={handleCustomFilterChange}
+                                    addonAfter={
+                                        <Button
+                                            icon={<QuestionCircleOutlined />}
+                                            type="text"
+                                            size="small"
+                                            onClick={() => setIsCustomFilterHelpOpen(true)}
+                                            style={{ padding: 0 }}
+                                        />
+                                    }
+                                />
+                            </AutoComplete>
                         </div>
                     </div>
                     <div
