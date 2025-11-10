@@ -17,11 +17,24 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, 
         { field: "episode", description: t("tonies.tonies.filterBar.customFilterHelp.fields.episode") },
         { field: "model", description: t("tonies.tonies.filterBar.customFilterHelp.fields.model") },
         { field: "language", description: t("tonies.tonies.filterBar.customFilterHelp.fields.language") },
+        { field: "picture", description: t("tonies.tonies.filterBar.customFilterHelp.fields.picture") },
+        { field: "uid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.uid") },
+        { field: "ruid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.ruid") },
+        { field: "source", description: t("tonies.tonies.filterBar.customFilterHelp.fields.source") },
         { field: "exists", description: t("tonies.tonies.filterBar.customFilterHelp.fields.exists") },
+        { field: "claimed", description: t("tonies.tonies.filterBar.customFilterHelp.fields.claimed") },
         { field: "valid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.valid") },
         { field: "live", description: t("tonies.tonies.filterBar.customFilterHelp.fields.live") },
         { field: "nocloud", description: t("tonies.tonies.filterBar.customFilterHelp.fields.nocloud") },
         { field: "hasCloudAuth", description: t("tonies.tonies.filterBar.customFilterHelp.fields.hasCloudAuth") },
+        { field: "tracks", description: t("tonies.tonies.filterBar.customFilterHelp.fields.tracks") },
+        { field: "track", description: t("tonies.tonies.filterBar.customFilterHelp.fields.track") },
+        { field: "trackcount", description: t("tonies.tonies.filterBar.customFilterHelp.fields.trackcount") },
+        { field: "trackseconds", description: t("tonies.tonies.filterBar.customFilterHelp.fields.trackseconds") },
+        {
+            field: "tracksecondscount",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.tracksecondscount"),
+        },
     ];
 
     return (
@@ -77,6 +90,33 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, 
             <Paragraph>
                 <Text code>live AND !nocloud AND language=de-de AND unique(series)</Text> -{" "}
                 {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.combined")}
+            </Paragraph>
+            <Paragraph>
+                <Text strong>{t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.tracksTitle")}</Text>
+            </Paragraph>
+            <Paragraph>
+                <Text code>tracks~"Pixi part 1"</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.tracksRegex")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>track="Pixi is alone"</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackExact")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>trackcount{">"}3</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackCount")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>tracksecondscount{">"}=3</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountCompare")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>tracksecondscount=trackcount</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountEqualsTrackCount")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>tracksecondscount!=trackcount</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountNotEqualsTrackCount")}
             </Paragraph>
 
             <Paragraph>

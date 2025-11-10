@@ -2005,7 +2005,17 @@
                         "model": "Das Modell des Tonies.",
                         "nocloud": "Ob der Tonie als nocloud markiert ist (true/false).",
                         "series": "Der Name der Serie des Tonies.",
-                        "valid": "Ob der Tonie gültig ist (true/false)."
+                        "valid": "Ob der Tonie gültig ist (true/false).",
+                        "picture": "Der zugewiesene Bildpfad oder die Bild-URL des Tonies.",
+                        "uid": "Die UID (eindeutige Kennung) des Tonies.",
+                        "ruid": "Die umgedrehte UID des Tonies in Kleinbuchstaben ohne Doppelpunkte (:).",
+                        "source": "Die zugewiesene Quelle des Tonies (taf, tap oder stream).",
+                        "claimed": "Ob dieser Tonie beansprucht wurde (true/false).",
+                        "tracks": "Ein Array mit Tracknamen im Tonie.",
+                        "track": "Suche nach einem exakten Tracknamen im Tonie.",
+                        "trackcount": "Die Anzahl der Tracks im Tonie.",
+                        "trackseconds": "Ein Array mit der Startposition in Sekunden jedes Tracks im Tonie",
+                        "tracksecondscount": "Die Anzahl der Track-Startpositionen im Tonie"
                     },
                     "intro": "Verwende den benutzerdefinierten Filter, um Tonies mit logischen Ausdrücken und feldspezifischen Bedingungen zu filtern.",
                     "syntaxExamples": {
@@ -2015,7 +2025,14 @@
                         "or": "Filtert Tonies mit entweder deutscher oder französischer Sprache.",
                         "series": "Filtert Tonies, deren Serie 'Pixi' ist.",
                         "title": "Syntax-Beispiele",
-                        "unique": "Filtert Tonies, die die einzigen in ihrer Serie sind."
+                        "unique": "Filtert Tonies, die die einzigen in ihrer Serie sind.",
+                        "tracksTitle": "Beispiele für Track-Felder:",
+                        "tracksRegex": "Tracks mit einem Regex-Muster filtern",
+                        "trackExact": "Tracks nach exaktem Namen filtern",
+                        "trackCount": "Nach Anzahl der Tracks filtern",
+                        "trackSecondsCountCompare": "Filter nach der Anzahl der Track-Startpositionen",
+                        "trackSecondsCountEqualsTrackCount": "Filter für Tonies, bei denen die Länge des Track-Startpositions-Arrays der Anzahl der Tracks entspricht",
+                        "trackSecondsCountNotEqualsTrackCount": "Filter für Tonies, bei denen die Länge des Track-Startpositions-Arrays nicht der Anzahl der Tracks entspricht"
                     },
                     "table": {
                         "description": "Beschreibung",

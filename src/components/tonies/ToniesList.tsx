@@ -273,14 +273,21 @@ export const ToniesList: React.FC<{
         episode: (t) => t.sourceInfo?.episode || t.tonieInfo.episode || "",
         model: (t) => t.sourceInfo?.model || t.tonieInfo.model || "",
         language: (t) => t.sourceInfo?.language || t.tonieInfo.language || "",
+        picture: (t) => t.sourceInfo?.picture || t.tonieInfo.picture || "",
         exists: (t) => t.exists,
         valid: (t) => t.valid,
         live: (t) => t.live,
         nocloud: (t) => t.nocloud,
+        uid: (t) => t.uid,
+        ruid: (t) => t.ruid,
+        claimed: (t) => t.claimed,
         hasCloudAuth: (t) => t.hasCloudAuth,
+        source: (t) => t.source,
+        tracks: (t) => (t.sourceInfo?.tracks || t.tonieInfo?.tracks || []) as string[],
+        trackseconds: (t) => (t.trackSeconds || []) as number[],
     };
     const VALID_FIELDS = Object.keys(FIELD_ACCESSORS);
-    const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~"];
+    const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~", ">", "<", ">=", "<="];
 
     function applyCustomFilter(tonie: TonieCardProps, query: string): boolean {
         if (!query.trim()) return true;
@@ -295,7 +302,7 @@ export const ToniesList: React.FC<{
             let expr = query.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
 
             const tokenRegex =
-                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(>=|<=|>|<|=|!=)\s*\d+)|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
             const tokens = expr.match(tokenRegex) ?? [];
 
             const mappedTokens = tokens.map((token) => {
@@ -308,7 +315,57 @@ export const ToniesList: React.FC<{
                 let m = token.match(/^!(\w+)$/);
                 if (m && FIELD_ACCESSORS[m[1]]) return `!FIELD_ACCESSORS["${m[1]}"](tonie)`;
 
-                // 3) regex field~"pattern"
+                // 3) tracks
+
+                // 3.1) tracks~"pattern"
+                m = token.match(/^tracks~(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) {
+                    const pattern = m[1] ?? m[2] ?? m[3] ?? "";
+                    const safePattern = JSON.stringify(pattern);
+                    return `FIELD_ACCESSORS["tracks"](tonie).some(track => new RegExp(${safePattern}, "i").test(track))`;
+                }
+
+                // 3.2) track="ExactTrackName"
+                m = token.match(/^track\s*(!?=)\s*(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) {
+                    const operator = m[1];
+                    const value = (m[2] ?? m[3] ?? m[4] ?? "").toLowerCase();
+                    if (operator === "=" || operator === "==") {
+                        return `FIELD_ACCESSORS["tracks"](tonie).some(track => track.toLowerCase() === ${JSON.stringify(
+                            value
+                        )})`;
+                    } else {
+                        return `!FIELD_ACCESSORS["tracks"](tonie).some(track => track.toLowerCase() === ${JSON.stringify(
+                            value
+                        )})`;
+                    }
+                }
+
+                // 3.3) trackcount comparison
+                m = token.match(/^trackcount\s*(>=|<=|>|<|=|!=)\s*(\d+)$/);
+                if (m) {
+                    let op = m[1] === "=" ? "==" : m[1];
+                    const val = parseInt(m[2], 10);
+                    return `(FIELD_ACCESSORS["tracks"](tonie).length ${op} ${val})`;
+                }
+
+                // 3.4) trackseconds count
+                m = token.match(/^tracksecondscount\s*(>=|<=|>|<|=|!=)\s*(\d+)$/);
+                if (m) {
+                    let op = m[1] === "=" ? "==" : m[1];
+                    const val = parseInt(m[2], 10);
+                    return `((FIELD_ACCESSORS["trackseconds"](tonie) || []).length ${op} ${val})`;
+                }
+
+                // 3.5) tracksecondscount==trackcount
+                if (token === "tracksecondscount=trackcount") {
+                    return `( (FIELD_ACCESSORS["trackseconds"](tonie) || []).length === (FIELD_ACCESSORS["tracks"](tonie) || []).length )`;
+                }
+                if (token === "tracksecondscount!=trackcount") {
+                    return `( (FIELD_ACCESSORS["trackseconds"](tonie) || []).length !== (FIELD_ACCESSORS["tracks"](tonie) || []).length )`;
+                }
+
+                // 4) regex field~"pattern"
                 m = token.match(/^([a-zA-Z_]\w*)(\s*~\s*)(?:"([^"]*)"|'([^']*)'|(.*))$/);
                 if (m && FIELD_ACCESSORS[m[1]]) {
                     const pattern = m[3] ?? m[4] ?? m[5] ?? "";
@@ -316,7 +373,7 @@ export const ToniesList: React.FC<{
                     return `new RegExp(${safePattern}, "i").test(String(FIELD_ACCESSORS["${m[1]}"](tonie) || ""))`;
                 }
 
-                // 4) equality and inequality, case-insensitive
+                // 5) equality and inequality, case-insensitive
                 m = token.match(/^([a-zA-Z_]\w*)\s*(!?=)\s*(?:"([^"]*)"|'([^']*)'|(.*))$/);
                 if (m && FIELD_ACCESSORS[m[1]]) {
                     const field = m[1];
@@ -333,7 +390,7 @@ export const ToniesList: React.FC<{
                     }
                 }
 
-                // 5) unique(field)
+                // 6) unique(field)
                 m = token.match(/^(!?)unique\(\s*(\w+)\s*\)$/);
                 if (m) {
                     const neg = m[1] === "!";
@@ -344,10 +401,10 @@ export const ToniesList: React.FC<{
                     }
                 }
 
-                // 6) bare boolean field
+                // 7) bare boolean field
                 if (FIELD_ACCESSORS[token]) return `FIELD_ACCESSORS["${token}"](tonie)`;
 
-                // 7) fallback: keep as string literal (in case user quotes manually)
+                // 8) fallback: keep as string literal (in case user quotes manually)
                 return JSON.stringify(token);
             });
 
@@ -374,7 +431,7 @@ export const ToniesList: React.FC<{
 
             // tokenization regex matching all supported token types
             const tokenRegex =
-                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(>=|<=|>|<|=|!=)\s*\d+)|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
             const tokens = expr.match(tokenRegex) ?? [];
 
             for (const token of tokens) {
@@ -394,6 +451,21 @@ export const ToniesList: React.FC<{
                     }
                     continue;
                 }
+
+                // Add tokens for tracks/track/tracksecondscount/trackcounts/
+                m = tok.match(/^tracks~(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) continue;
+
+                m = tok.match(/^track\s*(!?=)\s*(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) continue;
+
+                m = tok.match(/^trackcount\s*(>=|<=|>|<|=|!=)\s*\d+$/);
+                if (m) continue;
+
+                m = tok.match(/^tracksecondscount\s*(>=|<=|>|<|=|!=)\s*\d+$/);
+                if (m) continue;
+
+                if (tok === "tracksecondscount=trackcount" || tok === "tracksecondscount!=trackcount") continue;
 
                 // field~"pattern"
                 m = tok.match(/^([a-zA-Z_]\w*)(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+)$/);
