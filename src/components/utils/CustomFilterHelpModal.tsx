@@ -65,7 +65,7 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, 
                 {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.and")}
             </Paragraph>
             <Paragraph>
-                <Text code>language=de OR language=fr</Text> -{" "}
+                <Text code>language=de-de OR language=fr-fr</Text> -{" "}
                 {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.or")}
             </Paragraph>
             <Paragraph>
@@ -75,7 +75,7 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, 
                 <Text code>unique(series)</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.unique")}
             </Paragraph>
             <Paragraph>
-                <Text code>live AND !nocloud AND language=de AND unique(series)</Text> -{" "}
+                <Text code>live AND !nocloud AND language=de-de AND unique(series)</Text> -{" "}
                 {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.combined")}
             </Paragraph>
 

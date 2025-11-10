@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import {
-    List,
-    Switch,
-    Input,
     Button,
     Collapse,
-    Select,
     CollapseProps,
-    Empty,
+    Divider,
     Dropdown,
+    Empty,
+    Input,
+    List,
     MenuProps,
+    Select,
+    Switch,
     Tooltip,
     theme,
-    Divider,
 } from "antd";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 import HelpModal from "../../components/utils/ToniesHelpModal";
 
@@ -24,16 +24,16 @@ import { TonieCardProps } from "../../types/tonieTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import ToniesPagination from "./ToniesPagination";
-import { TonieCard } from "../../components/tonies/TonieCard";
-import LoadingSpinner from "../utils/LoadingSpinner";
-import { languageOptions } from "../../utils/languageUtil";
-import { scrollToTop } from "../../utils/browserUtils";
-import { exportToJSON, exportCompleteInfoToJSON, exportToCSV, exportToHTML } from "../utils/ToniesListExportUtils";
-import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
-import { useTeddyCloud } from "../../TeddyCloudContext";
 import { QuestionCircleOutlined, WarningOutlined } from "@ant-design/icons";
+import { TonieCard } from "../../components/tonies/TonieCard";
+import { useTeddyCloud } from "../../TeddyCloudContext";
+import { scrollToTop } from "../../utils/browserUtils";
+import { languageOptions } from "../../utils/languageUtil";
 import CustomFilterHelpModal from "../utils/CustomFilterHelpModal";
+import LoadingSpinner from "../utils/LoadingSpinner";
+import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
+import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "../utils/ToniesListExportUtils";
+import ToniesPagination from "./ToniesPagination";
 
 const { useToken } = theme;
 
@@ -295,7 +295,7 @@ export const ToniesList: React.FC<{
             let expr = query.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
 
             const tokenRegex =
-                /([a-zA-Z_]\w*(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
             const tokens = expr.match(tokenRegex) ?? [];
 
             const mappedTokens = tokens.map((token) => {
@@ -334,9 +334,14 @@ export const ToniesList: React.FC<{
                 }
 
                 // 5) unique(field)
-                m = token.match(/^unique\((\w+)\)$/);
-                if (m && ["series", "episode", "model"].includes(m[1])) {
-                    return `checkUnique(tonie, "${m[1]}")`;
+                m = token.match(/^(!?)unique\(\s*(\w+)\s*\)$/);
+                if (m) {
+                    const neg = m[1] === "!";
+                    const fieldName = m[2];
+                    if (["series", "episode", "model"].includes(fieldName)) {
+                        const call = `checkUnique(tonie, "${fieldName}")`;
+                        return neg ? `!(${call})` : call;
+                    }
                 }
 
                 // 6) bare boolean field
@@ -369,7 +374,7 @@ export const ToniesList: React.FC<{
 
             // tokenization regex matching all supported token types
             const tokenRegex =
-                /([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
             const tokens = expr.match(tokenRegex) ?? [];
 
             for (const token of tokens) {
@@ -415,12 +420,13 @@ export const ToniesList: React.FC<{
                 }
 
                 // unique(field)
-                m = tok.match(/^unique\((\w+)\)$/);
+                m = tok.match(/^(!?)unique\(\s*(\w+)\s*\)$/);
                 if (m) {
-                    if (!["series", "episode", "model"].includes(m[1])) {
+                    const fieldName = m[2];
+                    if (!["series", "episode", "model"].includes(fieldName)) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", { field: m[1] }),
+                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", { field: fieldName }),
                         };
                     }
                     continue;
