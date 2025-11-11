@@ -1911,6 +1911,7 @@
         },
         "tafHeaderInvalid": "TAF no válido",
         "tafHeaderOf": "TAF-Header de ",
+        "tafHeaderToniesJsonHint": "No debes editar los datos aquí cuando los envíes al tonies-json. ¡Esto incluye el número de pistas, incluso si es diferente del número de pistas en el campo track-desc!",
         "tap": {
             "navigationTitle": "WIP: Listas de reproducción de audio",
             "title": "WIP: Listas de reproducción de audio de Tonie"

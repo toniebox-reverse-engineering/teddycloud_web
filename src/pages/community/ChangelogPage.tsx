@@ -50,6 +50,7 @@ export const ChangelogPage = () => {
                 "gui: Added Tonies Audio Player Page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/201",
                 "gui: Page breadcrumbs are now links",
                 "gui: Added Custom filter option (expert!) in tonies list https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/243",
+                "gui: Added Warning hint on taf header modal https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/247",
                 "gui: Updated PWA manifest with additional icons and metadata (favicon, Apple Touch, SVG). Improved support for installation as a standalone Progressive Web App.",
                 "gui: Some refactoring",
                 "gui maintenance: Updated all used packages to latest versions",

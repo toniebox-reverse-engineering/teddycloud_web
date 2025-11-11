@@ -42,6 +42,9 @@ import {
     QuestionCircleOutlined,
     TruckOutlined,
     UploadOutlined,
+    WarningFilled,
+    WarningOutlined,
+    WarningTwoTone,
 } from "@ant-design/icons";
 import { Key, SortOrder } from "antd/es/table/interface";
 import { DefaultOptionType } from "antd/es/select";
@@ -69,6 +72,7 @@ import CodeSnippet from "./CodeSnippet";
 import HelpModal from "./FileBrowserHelpModal";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { generateUUID } from "../../utils/helpers";
+import Paragraph from "antd/es/skeleton/Paragraph";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -505,6 +509,11 @@ export const FileBrowser: React.FC<{
             {currentRecordYaml ? (
                 <>
                     <CodeSnippet language="yaml" code={currentRecordYaml} />
+                    <Alert
+                        showIcon
+                        type="warning"
+                        message={<div style={{ fontSize: "small" }}>{t("tonies.tafHeaderToniesJsonHint")}</div>}
+                    />
                 </>
             ) : (
                 "Loading..."
