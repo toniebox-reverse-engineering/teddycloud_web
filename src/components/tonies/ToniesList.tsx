@@ -108,18 +108,7 @@ export const ToniesList: React.FC<{
     const [isCustomFilterHelpOpen, setIsCustomFilterHelpOpen] = useState(false);
     const [customFilterValid, setCustomFilterValid] = useState(true);
     const [customFilterError, setCustomFilterError] = useState<string | undefined>(undefined);
-
     const [customFilterOptions, setCustomFilterOptions] = useState<{ value: string }[]>([]);
-
-    const handleCustomFilterSearch = (value: string) => {
-        const options = getCustomFilterCompletions(value).map((v) => ({ value: v }));
-        setCustomFilterOptions(options);
-    };
-
-    const handleCustomFilterSelect = (selection: string) => {
-        const newValue = customFilter.replace(/([^\s()]+)$/, selection);
-        setCustomFilter(newValue + " ");
-    };
 
     const handleUpdateCard = (updatedCard: TonieCardProps) => {
         setFilteredTonies((prev) => prev.map((c) => (c.ruid === updatedCard.ruid ? updatedCard : c)));
@@ -301,7 +290,6 @@ export const ToniesList: React.FC<{
     };
     const VALID_FIELDS = Object.keys(FIELD_ACCESSORS).filter((f) => f !== "trackseconds");
     const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~", ">", "<", ">=", "<="];
-
     const LOGICALS = ["and", "or"];
     const FUNCTIONS = [
         "unique(series)",
@@ -311,6 +299,20 @@ export const ToniesList: React.FC<{
         "trackcount",
         "track",
     ];
+
+    const handleCustomFilterSearch = (value: string) => {
+        const options = getCustomFilterCompletions(value).map((v) => ({ value: v }));
+        setCustomFilterOptions(options);
+    };
+
+    const handleCustomFilterSelect = (selection: string) => {
+        const newValue = customFilter.replace(/([^\s()]+)$/, selection);
+        const updatedFilter = newValue + " ";
+        setCustomFilter(updatedFilter);
+
+        const result = validateCustomFilter(updatedFilter);
+        setCustomFilterValid(result.valid);
+    };
 
     const getCustomFilterCompletions = (input: string) => {
         const trimmed = input.trim();
