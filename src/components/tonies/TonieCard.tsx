@@ -468,7 +468,7 @@ export const TonieCard: React.FC<{
                                     setInputValidationSource({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-source-1" type="vertical" style={{ height: 16 }} />,
                             <RollbackOutlined
                                 key="rollback-source"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -483,7 +483,7 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeSource === selectedSource ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-source-2" type="vertical" style={{ height: 16 }} />,
                         ]}
                         suffix={
                             <FolderOpenOutlined
@@ -518,7 +518,7 @@ export const TonieCard: React.FC<{
                                     setInputValidationModel({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider key="divider-model" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-model-1" type="vertical" style={{ height: 16 }} />,
                             <RollbackOutlined
                                 key="rollback-model"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -532,7 +532,7 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeModel === selectedModel ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-model-2" type="vertical" style={{ height: 16 }} />,
                         ]}
                     />
                     <TonieArticleSearch
