@@ -369,7 +369,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                                             >
                                                                 <Input
                                                                     style={{ width: "100%" }}
-                                                                    addonAfter={
+                                                                    suffix={
                                                                         <Button
                                                                             key={`audio-id-hash-remove-${key}`}
                                                                             type="link"
@@ -417,7 +417,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                                         <Input
                                                             key={"input-track-" + key}
                                                             style={{ width: "100%" }}
-                                                            addonAfter={
+                                                            suffix={
                                                                 <Button
                                                                     key={`track-remove-${key}`}
                                                                     type="link"

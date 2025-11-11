@@ -391,9 +391,13 @@ export const FileBrowser: React.FC<{
             treeLine
             treeDataSimpleMode
             value={treeNodeId}
-            dropdownStyle={{
-                maxHeight: 400,
-                overflow: "auto",
+            styles={{
+                popup: {
+                    root: {
+                        maxHeight: 400,
+                        overflow: "auto",
+                    },
+                },
             }}
             onChange={setTreeNodeId}
             loadData={onLoadTreeData}
@@ -1294,7 +1298,7 @@ export const FileBrowser: React.FC<{
 
                                     <Input
                                         ref={inputEncodeTafFileNameRef}
-                                        addonAfter=".taf"
+                                        suffix=".taf"
                                         required
                                         status={hasError ? "error" : ""}
                                         onChange={handleFileNameInputChange}
@@ -2260,8 +2264,9 @@ export const FileBrowser: React.FC<{
                                                     ref={inputFilterRef} // Assign ref to input element
                                                     style={{ width: "100%" }}
                                                     autoFocus={filterFieldAutoFocus}
-                                                    addonAfter={
+                                                    suffix={
                                                         <CloseOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={clearFilterField}
                                                             disabled={filterText.length === 0}
                                                             style={{

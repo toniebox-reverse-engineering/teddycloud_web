@@ -419,7 +419,7 @@ export const TeddyStudioPage = () => {
                                                         min={1}
                                                         max={240}
                                                         style={{ width: 120 }}
-                                                        addonAfter="mm"
+                                                        suffix="mm"
                                                         placeholder={t("tonies.teddystudio.diameter")}
                                                     />
                                                 </div>
@@ -437,7 +437,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={240}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.width")}
                                                         />
                                                     </div>
@@ -453,7 +453,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={240}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.height")}
                                                         />
                                                     </div>
@@ -483,7 +483,7 @@ export const TeddyStudioPage = () => {
                                                             min={0}
                                                             max={100}
                                                             style={{ width: 120, marginRight: 8 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.labelSpacingY")}
                                                         />
                                                     </div>
@@ -499,7 +499,7 @@ export const TeddyStudioPage = () => {
                                                             min={0}
                                                             max={100}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.labelSpacingX")}
                                                         />
                                                     </div>
@@ -561,7 +561,7 @@ export const TeddyStudioPage = () => {
                                                         min={1}
                                                         max={90}
                                                         style={{ width: 120 }}
-                                                        addonAfter="px"
+                                                        suffix="px"
                                                         placeholder={t("tonies.teddystudio.textFontSize")}
                                                     />
                                                 </div>
@@ -653,7 +653,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={500}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                         />
                                                     </div>
                                                     <div style={{ display: "flex", alignItems: "baseline" }}>
@@ -672,7 +672,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={500}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                         />
                                                     </div>
                                                 </>
@@ -701,7 +701,7 @@ export const TeddyStudioPage = () => {
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
-                                                        addonAfter="mm"
+                                                        suffix="mm"
                                                     />
                                                 </div>
                                                 <div style={{ display: "flex", alignItems: "baseline" }}>
@@ -720,7 +720,7 @@ export const TeddyStudioPage = () => {
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
-                                                        addonAfter="mm"
+                                                        suffix="mm"
                                                     />
                                                 </div>
                                             </div>

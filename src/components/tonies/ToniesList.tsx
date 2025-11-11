@@ -1044,7 +1044,7 @@ export const ToniesList: React.FC<{
                                 <Input
                                     placeholder={t("tonies.tonies.filterBar.customFilter.placeholder")}
                                     onChange={handleCustomFilterChange}
-                                    addonAfter={
+                                    suffix={
                                         <Button
                                             icon={<QuestionCircleOutlined />}
                                             type="text"

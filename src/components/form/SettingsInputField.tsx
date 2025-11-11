@@ -34,7 +34,7 @@ export const SettingsInputField = (props: InputFieldProps) => {
 
     let value = fieldValue?.toString();
 
-    const addonAfter = [
+    const suffix = [
         overlayed === undefined ? null : (
             <Checkbox
                 checked={overlayed}
@@ -63,7 +63,7 @@ export const SettingsInputField = (props: InputFieldProps) => {
                     SettingsDataHandler.getInstance().changeSetting(name, changeEventHandler.target.value, overlayed);
                     setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                 }}
-                {...(overlayed !== undefined ? { addonAfter } : null)}
+                {...(overlayed !== undefined ? { suffix } : null)}
                 disabled={!overlayed && overlayed !== undefined}
             />
         </FormItem>

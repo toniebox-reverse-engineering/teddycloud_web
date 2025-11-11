@@ -309,8 +309,9 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                             >
                                                 <Input
                                                     width="auto"
-                                                    addonBefore={
+                                                    prefix={
                                                         <CloseOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => {
                                                                 const newValues = [...form.getFieldsValue().files];
                                                                 newValues[index].filepath = "";
@@ -318,8 +319,11 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                                             }}
                                                         />
                                                     }
-                                                    addonAfter={
-                                                        <FolderOpenOutlined onClick={() => handleEditFile(index)} />
+                                                    suffix={
+                                                        <FolderOpenOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
+                                                            onClick={() => handleEditFile(index)}
+                                                        />
                                                     }
                                                 />
                                             </Form.Item>

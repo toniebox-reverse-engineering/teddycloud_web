@@ -525,7 +525,7 @@ export const EncoderPage = () => {
                                                 ></Button>
                                             </Tooltip>
                                             <Input
-                                                addonAfter=".taf"
+                                                suffix=".taf"
                                                 required
                                                 defaultValue={tafFilename}
                                                 style={{

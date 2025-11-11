@@ -220,8 +220,9 @@ export const IdentifyBoxVersionPage = () => {
                                             setBoxMac(value);
                                             setWarningTextMac(warningText);
                                         }}
-                                        addonBefore={
+                                        suffix={
                                             <CloseOutlined
+                                                onMouseDown={(e) => e.preventDefault()}
                                                 onClick={handleClear}
                                                 style={{
                                                     color: boxMac ? token.colorText : token.colorTextDisabled,
