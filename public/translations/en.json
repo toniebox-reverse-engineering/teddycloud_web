@@ -1911,7 +1911,7 @@
         },
         "tafHeaderInvalid": "Invalid TAF",
         "tafHeaderOf": "TAF-Header of ",
-        "tafHeaderToniesJsonHint": "You must not edit the data here when submutting it to the tonies-json. This includes the track count, even if it is different from the track count in the track-desc field!",
+        "tafHeaderToniesJsonHint": "You must not edit the data here when submitting it to the tonies-json. This includes the track count, even if it is different from the track count in the track-desc field!",
         "tap": {
             "navigationTitle": "WIP: Audio Playlists",
             "title": "WIP: Tonie Audio Playlists"
