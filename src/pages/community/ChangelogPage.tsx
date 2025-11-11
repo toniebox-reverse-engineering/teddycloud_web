@@ -53,6 +53,7 @@ export const ChangelogPage = () => {
                 "gui: Added Warning hint on taf header modal https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/247",
                 "gui: Updated PWA manifest with additional icons and metadata (favicon, Apple Touch, SVG). Improved support for installation as a standalone Progressive Web App.",
                 "gui: Some refactoring",
+                "gui maintenance: Removed deprecations",
                 "gui maintenance: Updated all used packages to latest versions",
             ],
             commits: [

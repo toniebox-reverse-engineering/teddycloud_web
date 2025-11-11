@@ -483,6 +483,7 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeSource === selectedSource ? "disabled" : "enabled"}
                             />,
+                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
                         ]}
                         suffix={
                             <FolderOpenOutlined
@@ -531,6 +532,7 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeModel === selectedModel ? "disabled" : "enabled"}
                             />,
+                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
                         ]}
                     />
                     <TonieArticleSearch

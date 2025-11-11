@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip } from "antd";
+import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip, Divider } from "antd";
 import {
     CloseOutlined,
     FolderOpenOutlined,
@@ -309,7 +309,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                             >
                                                 <Input
                                                     width="auto"
-                                                    prefix={
+                                                    prefix={[
                                                         <CloseOutlined
                                                             onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => {
@@ -317,8 +317,13 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                                                 newValues[index].filepath = "";
                                                                 form.setFieldsValue({ files: newValues });
                                                             }}
-                                                        />
-                                                    }
+                                                        />,
+                                                        <Divider
+                                                            key="divider-source"
+                                                            type="vertical"
+                                                            style={{ height: 16 }}
+                                                        />,
+                                                    ]}
                                                     suffix={
                                                         <FolderOpenOutlined
                                                             onMouseDown={(e) => e.preventDefault()}

@@ -508,9 +508,13 @@ export const EncoderPage = () => {
                                                     maxWidth: 250,
                                                 }}
                                                 value={treeNodeId}
-                                                dropdownStyle={{
-                                                    maxHeight: 400,
-                                                    overflow: "auto",
+                                                styles={{
+                                                    popup: {
+                                                        root: {
+                                                            maxHeight: 400,
+                                                            overflow: "auto",
+                                                        },
+                                                    },
                                                 }}
                                                 onChange={setTreeNodeId}
                                                 loadData={onLoadTreeData}

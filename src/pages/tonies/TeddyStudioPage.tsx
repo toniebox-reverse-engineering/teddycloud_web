@@ -13,7 +13,14 @@ import {
     Tooltip,
     Collapse,
 } from "antd";
-import { ClearOutlined, DeleteOutlined, PlusOutlined, PrinterOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+    ClearOutlined,
+    DeleteOutlined,
+    PlusOutlined,
+    PrinterOutlined,
+    SaveOutlined,
+    SearchOutlined,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import { useTeddyCloud } from "../../TeddyCloudContext";
@@ -279,13 +286,20 @@ export const TeddyStudioPage = () => {
                     <h1>{t("tonies.teddystudio.title")}</h1>
                     <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
                     <div style={{ position: "relative", marginBottom: 8 }}>
-                        <Search
+                        <Input
                             placeholder={t("tonies.teddystudio.placeholder")}
                             value={searchTerm}
                             onChange={(e) => handleSearch(e.target.value)}
-                            onSearch={handleSearch}
+                            onPressEnter={() => handleSearch(searchTerm)}
                             allowClear
                             style={{ width: "100%" }}
+                            suffix={
+                                <SearchOutlined
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={() => handleSearch(searchTerm)}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            }
                         />
                         {autocompleteList.length > 0 && (
                             <div

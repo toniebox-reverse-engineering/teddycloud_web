@@ -25,7 +25,7 @@ import { TonieCardProps } from "../../types/tonieTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import { QuestionCircleOutlined, WarningOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, SearchOutlined, WarningOutlined } from "@ant-design/icons";
 import { TonieCard } from "../../components/tonies/TonieCard";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { scrollToTop } from "../../utils/browserUtils";
@@ -808,14 +808,13 @@ export const ToniesList: React.FC<{
             <label htmlFor="search-field" className="filter-label">
                 {t("tonies.tonies.filterBar.searchLabel")}
             </label>
-            <Input.Search
+            <Input
                 id="search-field"
                 placeholder={t("tonies.tonies.filterBar.searchPlaceholder")}
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                onSearch={handleFilter}
-                enterButton
                 style={{ margin: "8px 0 8px 0" }}
+                suffix={<SearchOutlined onMouseDown={(e) => e.preventDefault()} onClick={handleFilter} />}
             />
             <div className="filter-container">
                 <label className="filter-label">{t("tonies.tonies.filterBar.filterLabel")}</label>

@@ -442,7 +442,7 @@ export const TonieboxCard: React.FC<{
                     name="boxName"
                     value={boxName}
                     onChange={(e) => setBoxName(e.target.value)}
-                    prefix={
+                    prefix={[
                         <RollbackOutlined
                             className={boxName === tonieboxName ? "disabled" : "enabled"}
                             onMouseDown={(e) => e.preventDefault()}
@@ -451,8 +451,9 @@ export const TonieboxCard: React.FC<{
                                 color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,
                                 cursor: boxName === tonieboxName ? "default" : "pointer",
                             }}
-                        />
-                    }
+                        />,
+                        <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                    ]}
                 />
             </Paragraph>
             <Divider orientation="left" orientationMargin="0">
