@@ -14,6 +14,7 @@ import AvailableBoxesModal, {
     certificateIntro,
     connectESP32Explanation,
     dnsForTeddyCloud,
+    TonieboxWifiGuide,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
@@ -60,13 +61,7 @@ export const ESP32LegacyPage = () => {
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
-                {t("tonieboxes.esp32BoxFlashing.legacy.preparationText")}{" "}
-                <Link
-                    to="https://support.tonies.com/hc/en-us/articles/4415294030482-How-do-I-set-up-a-Wi-Fi-connection-without-the-setup-assistant"
-                    target="_blank"
-                >
-                    {t("tonieboxes.esp32BoxFlashing.legacy.preparationTextLink")}
-                </Link>
+                <TonieboxWifiGuide />
             </Paragraph>
             <h4>{t("tonieboxes.esp32BoxFlashing.legacy.installESPTool")}</h4>
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.installESPToolText")}</Paragraph>

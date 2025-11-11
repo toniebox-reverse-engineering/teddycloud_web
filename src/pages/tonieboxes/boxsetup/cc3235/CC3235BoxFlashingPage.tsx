@@ -23,6 +23,7 @@ import AvailableBoxesModal, {
     CertificateUploadElement,
     dnsForTeddyCloud,
     installCC3200Tool,
+    TonieboxWifiGuide,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
@@ -169,13 +170,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
-                {t("tonieboxes.cc3235BoxFlashing.preparationText")}{" "}
-                <Link
-                    to="https://support.tonies.com/hc/en-us/articles/4415294030482-How-do-I-set-up-a-Wi-Fi-connection-without-the-setup-assistant"
-                    target="_blank"
-                >
-                    {t("tonieboxes.cc3235BoxFlashing.preparationTextLink")}
-                </Link>
+                <TonieboxWifiGuide />
             </Paragraph>
             <h4>{t("tonieboxes.cc3235BoxFlashing.locateFlashMemory")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.locateFlashMemoryText")}</Paragraph>

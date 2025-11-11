@@ -1,3 +1,7 @@
+import { Typography } from "antd";
+
+const { Text } = Typography;
+
 export function getLongestStringByPixelWidth(
     stringsArray: string[],
     font = "14px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'"
@@ -32,4 +36,32 @@ export function generateUUID() {
 export const handleTCCADerDownload = (asC2Der: boolean) => {
     const fileUrl = `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}/api/getFile/${asC2Der ? "c2" : "ca"}.der`;
     window.location.href = fileUrl;
+};
+
+export const parseFormattedText = (text: string) => {
+    const parts = text.split(/(\*\*.+?\*\*|_.+?_|`.+?`)/g).filter(Boolean);
+    return parts.map((part, idx) => {
+        if (part.startsWith("**") && part.endsWith("**")) {
+            return (
+                <Text key={idx} strong>
+                    {part.slice(2, -2)}
+                </Text>
+            );
+        }
+        if (part.startsWith("_") && part.endsWith("_")) {
+            return (
+                <Text key={idx} italic>
+                    {part.slice(1, -1)}
+                </Text>
+            );
+        }
+        if (part.startsWith("`") && part.endsWith("`")) {
+            return (
+                <Text key={idx} code>
+                    {part.slice(1, -1)}
+                </Text>
+            );
+        }
+        return <Text key={idx}>{part}</Text>;
+    });
 };

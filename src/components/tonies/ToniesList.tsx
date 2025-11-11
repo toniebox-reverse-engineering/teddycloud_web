@@ -1,19 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import {
-    List,
-    Switch,
-    Input,
+    AutoComplete,
     Button,
     Collapse,
-    Select,
     CollapseProps,
-    Empty,
+    Divider,
     Dropdown,
+    Empty,
+    Input,
+    List,
     MenuProps,
+    Select,
+    Switch,
     Tooltip,
+    theme,
 } from "antd";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 
 import HelpModal from "../../components/utils/ToniesHelpModal";
 
@@ -22,15 +25,18 @@ import { TonieCardProps } from "../../types/tonieTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import ToniesPagination from "./ToniesPagination";
+import { QuestionCircleOutlined, WarningOutlined } from "@ant-design/icons";
 import { TonieCard } from "../../components/tonies/TonieCard";
-import LoadingSpinner from "../utils/LoadingSpinner";
-import { languageOptions } from "../../utils/languageUtil";
-import { scrollToTop } from "../../utils/browserUtils";
-import { exportToJSON, exportCompleteInfoToJSON, exportToCSV, exportToHTML } from "../utils/ToniesListExportUtils";
-import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
 import { useTeddyCloud } from "../../TeddyCloudContext";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { scrollToTop } from "../../utils/browserUtils";
+import { languageOptions } from "../../utils/languageUtil";
+import CustomFilterHelpModal from "../utils/CustomFilterHelpModal";
+import LoadingSpinner from "../utils/LoadingSpinner";
+import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
+import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "../utils/ToniesListExportUtils";
+import ToniesPagination from "./ToniesPagination";
+
+const { useToken } = theme;
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -58,6 +64,7 @@ export const ToniesList: React.FC<{
 }) => {
     const { t } = useTranslation();
     const location = useLocation();
+    const { token } = useToken();
     const { addNotification } = useTeddyCloud();
 
     const [filteredTonies, setFilteredTonies] = useState(tonieCards);
@@ -76,6 +83,7 @@ export const ToniesList: React.FC<{
     const [unsetNocloudFilter, setUnsetNocloudFilter] = useState(false);
     const [hasCloudAuthFilter, setHasCloudAuthFilter] = useState(false);
     const [unsetHasCloudAuthFilter, setUnsetHasCloudAuthFilter] = useState(false);
+    const [customFilter, setCustomFilter] = useState("");
     const [collapsed, setCollapsed] = useState(true);
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
@@ -97,11 +105,40 @@ export const ToniesList: React.FC<{
     const [selectedTonies, setSelectedTonies] = useState<string[]>([]);
     const [selectionMode, setSelectionMode] = useState<boolean>(false);
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+    const [isCustomFilterHelpOpen, setIsCustomFilterHelpOpen] = useState(false);
+    const [customFilterValid, setCustomFilterValid] = useState(true);
+    const [customFilterError, setCustomFilterError] = useState<string | undefined>(undefined);
+    const [customFilterOptions, setCustomFilterOptions] = useState<{ value: string }[]>([]);
 
     const handleUpdateCard = (updatedCard: TonieCardProps) => {
         setFilteredTonies((prev) => prev.map((c) => (c.ruid === updatedCard.ruid ? updatedCard : c)));
         setListKey((prevKey) => prevKey + 1);
     };
+
+    const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
+
+    const uniquenessMaps = useMemo(() => {
+        function buildMap(getKey: (t: TonieCardProps) => string) {
+            const counts: Record<string, number> = {};
+            tonieCards.forEach((t) => {
+                const key = getKey(t);
+                counts[key] = (counts[key] || 0) + 1;
+            });
+            return Object.fromEntries(Object.entries(counts).map(([k, c]) => [k, c === 1]));
+        }
+
+        const getEpisode = (t: TonieCardProps) => t.sourceInfo?.episode || t.tonieInfo.episode || "";
+
+        const getSeries = (t: TonieCardProps) => t.sourceInfo?.series || t.tonieInfo.series || "";
+
+        const getModel = (t: TonieCardProps) => t.sourceInfo?.model || t.tonieInfo.model || "";
+
+        return {
+            episode: buildMap(getEpisode),
+            series: buildMap(getSeries),
+            model: buildMap(getModel),
+        };
+    }, [tonieCards]);
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -153,8 +190,6 @@ export const ToniesList: React.FC<{
         fetchShowSourceInfo();
     }, []);
 
-    const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
-
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get("tonieRUID");
@@ -205,6 +240,356 @@ export const ToniesList: React.FC<{
         );
     };
 
+    const debounceRef = useRef<number | undefined>(undefined);
+
+    const handleCustomFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setCustomFilter(value);
+
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
+        }
+
+        debounceRef.current = window.setTimeout(() => {
+            try {
+                const { valid, error } = validateCustomFilter(value); // your validator function
+                setCustomFilterValid(valid);
+                setCustomFilterError(error);
+            } catch (err) {
+                setCustomFilterValid(false);
+                setCustomFilterError("Invalid filter expression");
+            }
+        }, 500);
+    };
+
+    useEffect(() => {
+        return () => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+            }
+        };
+    }, []);
+
+    const FIELD_ACCESSORS: Record<string, (t: TonieCardProps) => any> = {
+        series: (t) => t.sourceInfo?.series || t.tonieInfo.series || "",
+        episode: (t) => t.sourceInfo?.episode || t.tonieInfo.episode || "",
+        model: (t) => t.sourceInfo?.model || t.tonieInfo.model || "",
+        language: (t) => t.sourceInfo?.language || t.tonieInfo.language || "",
+        picture: (t) => t.sourceInfo?.picture || t.tonieInfo.picture || "",
+        exists: (t) => t.exists,
+        valid: (t) => t.valid,
+        live: (t) => t.live,
+        nocloud: (t) => t.nocloud,
+        uid: (t) => t.uid,
+        ruid: (t) => t.ruid,
+        claimed: (t) => t.claimed,
+        hasCloudAuth: (t) => t.hasCloudAuth,
+        source: (t) => t.source,
+        tracks: (t) => (t.sourceInfo?.tracks || t.tonieInfo?.tracks || []) as string[],
+        trackseconds: (t) => (t.trackSeconds || []) as number[],
+    };
+    const VALID_FIELDS = Object.keys(FIELD_ACCESSORS).filter((f) => f !== "trackseconds");
+    const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~", ">", "<", ">=", "<="];
+    const LOGICALS = ["and", "or"];
+    const FUNCTIONS = [
+        "unique(series)",
+        "unique(episode)",
+        "unique(model)",
+        "tracksecondscount",
+        "trackcount",
+        "track",
+    ];
+
+    const handleCustomFilterSearch = (value: string) => {
+        const options = getCustomFilterCompletions(value).map((v) => ({ value: v }));
+        setCustomFilterOptions(options);
+    };
+
+    const handleCustomFilterSelect = (selection: string) => {
+        const newValue = customFilter.replace(/([^\s()]+)$/, selection);
+        const updatedFilter = newValue + " ";
+        setCustomFilter(updatedFilter);
+
+        const result = validateCustomFilter(updatedFilter);
+        setCustomFilterValid(result.valid);
+    };
+
+    const getCustomFilterCompletions = (input: string) => {
+        const trimmed = input.trim();
+        if (!trimmed) return [...VALID_FIELDS, ...LOGICALS, ...FUNCTIONS];
+
+        const lastTokenMatch = trimmed.match(/([^\s()]+)$/);
+        let lastToken = lastTokenMatch ? lastTokenMatch[1] : "";
+
+        const completions: string[] = [];
+
+        const negationMatch = lastToken.match(/^!(\w*)$/);
+        const isNegated = !!negationMatch;
+        if (isNegated) lastToken = negationMatch[1];
+
+        const matchingFields = VALID_FIELDS.filter((f) => f.startsWith(lastToken));
+        completions.push(...matchingFields);
+        completions.push(...LOGICALS.filter((l) => l.startsWith(lastToken)));
+        completions.push(...FUNCTIONS.filter((f) => f.startsWith(lastToken)));
+
+        if (VALID_FIELDS.includes(lastToken)) {
+            const field = lastToken;
+
+            if (["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(field)) {
+                // do nothing
+            } else if (field === "tracks") {
+                completions.push("=", "!=", "~");
+            } else if (["trackseconds", "trackcount", "tracksecondscount"].includes(field)) {
+                completions.push("=", "!=", ">", "<", ">=", "<=");
+            } else {
+                completions.push("=", "!=", "~");
+            }
+        }
+
+        if (/^!?\s*unique\($/.test(lastTokenMatch ? lastTokenMatch[0] : "")) {
+            completions.push("series)", "episode)", "model)");
+        }
+
+        if (isNegated) {
+            return completions.map((c) =>
+                ["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(c) ? `!${c}` : c
+            );
+        }
+
+        return completions;
+    };
+
+    function applyCustomFilter(tonie: TonieCardProps, query: string): boolean {
+        if (!query.trim()) return true;
+
+        type UniqueField = "series" | "episode" | "model";
+        const checkUnique = (t: TonieCardProps, field: UniqueField) => {
+            const value = FIELD_ACCESSORS[field](t);
+            return uniquenessMaps[field][value] === true;
+        };
+
+        try {
+            let expr = query.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
+
+            const tokenRegex =
+                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(>=|<=|>|<|=|!=)\s*\d+)|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+            const tokens = expr.match(tokenRegex) ?? [];
+
+            const mappedTokens = tokens.map((token) => {
+                token = token.trim();
+
+                // 1) parentheses and logical operators remain as-is
+                if (["(", ")", "&&", "||"].includes(token)) return token;
+
+                // 2) negation !field
+                let m = token.match(/^!(\w+)$/);
+                if (m && FIELD_ACCESSORS[m[1]]) return `!FIELD_ACCESSORS["${m[1]}"](tonie)`;
+
+                // 3) tracks
+
+                // 3.1) tracks~"pattern"
+                m = token.match(/^tracks~(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) {
+                    const pattern = m[1] ?? m[2] ?? m[3] ?? "";
+                    const safePattern = JSON.stringify(pattern);
+                    return `FIELD_ACCESSORS["tracks"](tonie).some(track => new RegExp(${safePattern}, "i").test(track))`;
+                }
+
+                // 3.2) track="ExactTrackName"
+                m = token.match(/^track\s*(!?=)\s*(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) {
+                    const operator = m[1];
+                    const value = (m[2] ?? m[3] ?? m[4] ?? "").toLowerCase();
+                    if (operator === "=" || operator === "==") {
+                        return `FIELD_ACCESSORS["tracks"](tonie).some(track => track.toLowerCase() === ${JSON.stringify(
+                            value
+                        )})`;
+                    } else {
+                        return `!FIELD_ACCESSORS["tracks"](tonie).some(track => track.toLowerCase() === ${JSON.stringify(
+                            value
+                        )})`;
+                    }
+                }
+
+                // 3.3) trackcount comparison
+                m = token.match(/^trackcount\s*(>=|<=|>|<|=|!=)\s*(\d+)$/);
+                if (m) {
+                    let op = m[1] === "=" ? "==" : m[1];
+                    const val = parseInt(m[2], 10);
+                    return `(FIELD_ACCESSORS["tracks"](tonie).length ${op} ${val})`;
+                }
+
+                // 3.4) trackseconds count
+                m = token.match(/^tracksecondscount\s*(>=|<=|>|<|=|!=)\s*(\d+)$/);
+                if (m) {
+                    let op = m[1] === "=" ? "==" : m[1];
+                    const val = parseInt(m[2], 10);
+                    return `((FIELD_ACCESSORS["trackseconds"](tonie) || []).length ${op} ${val})`;
+                }
+
+                // 3.5) tracksecondscount==trackcount
+                if (token === "tracksecondscount=trackcount") {
+                    return `( (FIELD_ACCESSORS["trackseconds"](tonie) || []).length === (FIELD_ACCESSORS["tracks"](tonie) || []).length )`;
+                }
+                if (token === "tracksecondscount!=trackcount") {
+                    return `( (FIELD_ACCESSORS["trackseconds"](tonie) || []).length !== (FIELD_ACCESSORS["tracks"](tonie) || []).length )`;
+                }
+
+                // 4) regex field~"pattern"
+                m = token.match(/^([a-zA-Z_]\w*)(\s*~\s*)(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m && FIELD_ACCESSORS[m[1]]) {
+                    const pattern = m[3] ?? m[4] ?? m[5] ?? "";
+                    const safePattern = JSON.stringify(pattern);
+                    return `new RegExp(${safePattern}, "i").test(String(FIELD_ACCESSORS["${m[1]}"](tonie) || ""))`;
+                }
+
+                // 5) equality and inequality, case-insensitive
+                m = token.match(/^([a-zA-Z_]\w*)\s*(!?=)\s*(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m && FIELD_ACCESSORS[m[1]]) {
+                    const field = m[1];
+                    const operator = m[2]; // '=' or '!='
+                    const value = (m[3] ?? m[4] ?? m[5] ?? "").toLowerCase();
+                    if (operator === "=") {
+                        return `(String(FIELD_ACCESSORS["${field}"](tonie) || "").toLowerCase() === ${JSON.stringify(
+                            value
+                        )})`;
+                    } else {
+                        return `(String(FIELD_ACCESSORS["${field}"](tonie) || "").toLowerCase() !== ${JSON.stringify(
+                            value
+                        )})`;
+                    }
+                }
+
+                // 6) unique(field)
+                m = token.match(/^(!?)unique\(\s*(\w+)\s*\)$/);
+                if (m) {
+                    const neg = m[1] === "!";
+                    const fieldName = m[2];
+                    if (["series", "episode", "model"].includes(fieldName)) {
+                        const call = `checkUnique(tonie, "${fieldName}")`;
+                        return neg ? `!(${call})` : call;
+                    }
+                }
+
+                // 7) bare boolean field
+                if (FIELD_ACCESSORS[token]) return `FIELD_ACCESSORS["${token}"](tonie)`;
+
+                // 8) fallback: keep as string literal (in case user quotes manually)
+                return JSON.stringify(token);
+            });
+
+            expr = mappedTokens.join(" ");
+
+            return Function(
+                "tonie",
+                "FIELD_ACCESSORS",
+                "checkUnique",
+                `return (${expr});`
+            )(tonie, FIELD_ACCESSORS, checkUnique);
+        } catch (err) {
+            console.error("Custom filter error:", err);
+            return false;
+        }
+    }
+
+    function validateCustomFilter(input: string): { valid: boolean; error?: string } {
+        if (!input.trim()) return { valid: true };
+
+        try {
+            // normalize logical operators
+            let expr = input.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
+
+            // tokenization regex matching all supported token types
+            const tokenRegex =
+                /(!?unique\(\s*\w+\s*\))|([a-zA-Z_]\w*(\s*\~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+))|([a-zA-Z_]\w*\s*(>=|<=|>|<|=|!=)\s*\d+)|(![a-zA-Z_]\w*)|(\b[a-zA-Z_]\w*\b)|(\(|\)|&&|\|\|)/g;
+            const tokens = expr.match(tokenRegex) ?? [];
+
+            for (const token of tokens) {
+                const tok = token.trim();
+
+                // parentheses and logical operators are valid
+                if (VALID_OPERATORS.includes(tok)) continue;
+
+                // !field
+                let m = tok.match(/^!(\w+)$/);
+                if (m) {
+                    if (!VALID_FIELDS.includes(m[1])) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldNegation", { field: m[1] }),
+                        };
+                    }
+                    continue;
+                }
+
+                // Add tokens for tracks/track/tracksecondscount/trackcounts/
+                m = tok.match(/^tracks~(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) continue;
+
+                m = tok.match(/^track\s*(!?=)\s*(?:"([^"]*)"|'([^']*)'|(.*))$/);
+                if (m) continue;
+
+                m = tok.match(/^trackcount\s*(>=|<=|>|<|=|!=)\s*\d+$/);
+                if (m) continue;
+
+                m = tok.match(/^tracksecondscount\s*(>=|<=|>|<|=|!=)\s*\d+$/);
+                if (m) continue;
+
+                if (tok === "tracksecondscount=trackcount" || tok === "tracksecondscount!=trackcount") continue;
+
+                // field~"pattern"
+                m = tok.match(/^([a-zA-Z_]\w*)(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+)$/);
+                if (m) {
+                    if (!VALID_FIELDS.includes(m[1])) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldRegex", { field: m[1] }),
+                        };
+                    }
+                    continue;
+                }
+
+                // equality / inequality
+                m = tok.match(/^([a-zA-Z_]\w*)\s*(!?=)\s*(?:"[^"]*"|'[^']*'|[^\s()]+)$/);
+                if (m) {
+                    if (!VALID_FIELDS.includes(m[1])) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldComparison", { field: m[1] }),
+                        };
+                    }
+                    continue;
+                }
+
+                // unique(field)
+                m = tok.match(/^(!?)unique\(\s*(\w+)\s*\)$/);
+                if (m) {
+                    const fieldName = m[2];
+                    if (!["series", "episode", "model"].includes(fieldName)) {
+                        return {
+                            valid: false,
+                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", { field: fieldName }),
+                        };
+                    }
+                    continue;
+                }
+
+                // bare field
+                if (VALID_FIELDS.includes(tok)) continue;
+
+                // fallback invalid token
+                return {
+                    valid: false,
+                    error: t("tonies.tonies.filterBar.customFilter.invalidToken", { token: tok }),
+                };
+            }
+
+            return { valid: true };
+        } catch (err) {
+            return { valid: false, error: t("tonies.tonies.filterBar.customFilter.syntaxError") };
+        }
+    }
+
     const handleFilter = () => {
         let filtered = tonieCards.filter(
             (tonie) =>
@@ -230,15 +615,15 @@ export const ToniesList: React.FC<{
                             : "undefined"
                     )) &&
                 (!validFilter || tonie.valid) &&
-                (!invalidFilter || !tonie.valid) &&
+                (!invalidFilter || tonie.valid === false) &&
                 (!existsFilter || tonie.exists) &&
-                (!notExistsFilter || !tonie.exists) &&
+                (!notExistsFilter || tonie.exists === false) &&
                 (!liveFilter || tonie.live) &&
-                (!unsetLiveFilter || !tonie.live) &&
+                (!unsetLiveFilter || tonie.live === false) &&
                 (!nocloudFilter || tonie.nocloud) &&
-                (!unsetNocloudFilter || !tonie.nocloud) &&
+                (!unsetNocloudFilter || tonie.nocloud === false) &&
                 (!hasCloudAuthFilter || tonie.hasCloudAuth) &&
-                (!unsetHasCloudAuthFilter || !tonie.hasCloudAuth)
+                (!unsetHasCloudAuthFilter || tonie.hasCloudAuth === false)
         );
         if (searchText) {
             filtered = filtered.filter(
@@ -261,7 +646,9 @@ export const ToniesList: React.FC<{
             // Filter by RUID part of the lastTonieboxRUIDs array
             filtered = filtered.filter((tonie) => lastTonieboxRUIDs.some(([ruid]) => ruid === tonie.ruid));
         }
-
+        if (customFilter.trim() !== "") {
+            filtered = filtered.filter((tonie) => applyCustomFilter(tonie, customFilter));
+        }
         if (hiddenRuids) {
             // filter hidden RUIDs always
             filtered = filtered.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
@@ -294,6 +681,9 @@ export const ToniesList: React.FC<{
         setUnsetHasCloudAuthFilter(false);
         setFilterLastTonieboxRUIDs(false);
         setSelectedLanguages([]);
+        setCustomFilter("");
+        setCustomFilterError(undefined);
+        setCustomFilterValid(true);
         const urlWithoutParams = window.location.pathname;
         window.history.pushState({}, "", urlWithoutParams);
         location.search = "";
@@ -630,6 +1020,43 @@ export const ToniesList: React.FC<{
                             {t("tonies.tonies.filterBar.lastPlayed")}
                         </div>
                     </div>
+                    <div style={{ margin: "8px 0" }}>
+                        <Divider size="small" style={{ marginTop: 16 }} />
+                        <label className="filter-label">{t("tonies.tonies.filterBar.customFilter.label")}</label>
+                        <div style={{ display: "flex", gap: 8 }}>
+                            {!customFilterValid && (
+                                <Tooltip title={customFilterError} placement="right">
+                                    <WarningOutlined
+                                        style={{
+                                            color: token.colorErrorText,
+                                        }}
+                                    />
+                                </Tooltip>
+                            )}
+                            <AutoComplete
+                                style={{ width: "100%", margin: "8px 0" }}
+                                options={customFilterOptions}
+                                value={customFilter}
+                                onSelect={handleCustomFilterSelect}
+                                onSearch={handleCustomFilterSearch}
+                                filterOption={false}
+                            >
+                                <Input
+                                    placeholder={t("tonies.tonies.filterBar.customFilter.placeholder")}
+                                    onChange={handleCustomFilterChange}
+                                    addonAfter={
+                                        <Button
+                                            icon={<QuestionCircleOutlined />}
+                                            type="text"
+                                            size="small"
+                                            onClick={() => setIsCustomFilterHelpOpen(true)}
+                                            style={{ padding: 0 }}
+                                        />
+                                    }
+                                />
+                            </AutoComplete>
+                        </div>
+                    </div>
                     <div
                         style={{
                             display: "flex",
@@ -676,6 +1103,12 @@ export const ToniesList: React.FC<{
             </div>
             {isHelpModalOpen && (
                 <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+            )}
+            {isCustomFilterHelpOpen && (
+                <CustomFilterHelpModal
+                    visible={isCustomFilterHelpOpen}
+                    onClose={() => setIsCustomFilterHelpOpen(false)}
+                />
             )}
             {showFilter ? (
                 <Collapse

@@ -1,7 +1,7 @@
 import { useState, useEffect, JSX } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Empty, Image, Modal, Space, Spin, Table, Typography } from "antd";
+import { Alert, Button, Collapse, Empty, Image, Modal, Space, Spin, Table, Typography } from "antd";
 
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
@@ -15,7 +15,7 @@ import jumper3 from "../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_yellow.j
 
 import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
 import CodeSnippet from "../../utils/CodeSnippet";
-import { handleTCCADerDownload } from "../../../utils/helpers";
+import { handleTCCADerDownload, parseFormattedText } from "../../../utils/helpers";
 import { CertificateDragNDrop } from "../../form/CertificatesDragAndDrop";
 
 interface TonieboxPropsWithStatusAndVersion extends TonieboxCardProps {
@@ -31,9 +31,10 @@ interface AvailableBoxesModalProps {
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
+const { Paragraph, Text } = Typography;
+
 export function uart3v3Hint(): JSX.Element {
     const { t } = useTranslation();
-    const { Paragraph, Text } = Typography;
 
     return (
         <Alert
@@ -91,8 +92,6 @@ export function uart3v3Hint(): JSX.Element {
         />
     );
 }
-
-const { Paragraph } = Typography;
 
 export function connectESP32Explanation(): JSX.Element {
     const { t } = useTranslation();
@@ -524,6 +523,47 @@ export const CertificateUploadElement: React.FC = ({}) => {
                 <Button onClick={showCertificateUploadModal}>{t("tonieboxes.boxSetup.uploadCertificateButton")}</Button>
                 {certificateUploadModal}
             </Paragraph>
+        </>
+    );
+};
+
+export const TonieboxWifiGuide: React.FC = ({}) => {
+    const { t } = useTranslation();
+
+    const steps = [
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step1"),
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step2"),
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step3"),
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step4"),
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step5"),
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step6"),
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step7"),
+        t("tonieboxes.boxFlashingCommon.connectTBToWifi.step8"),
+    ];
+
+    return (
+        <>
+            <Paragraph>{t("tonieboxes.boxFlashingCommon.connectTBToWifi.preparationText")}</Paragraph>
+            <Collapse
+                size="small"
+                items={[
+                    {
+                        key: "1",
+                        label: t("tonieboxes.boxFlashingCommon.connectTBToWifi.title"),
+
+                        children: (
+                            <>
+                                {steps.map((step, idx) => (
+                                    <Paragraph key={idx} style={{ marginBottom: 12 }}>
+                                        <Text strong>{idx + 1}. </Text>
+                                        {parseFormattedText(step)}
+                                    </Paragraph>
+                                ))}
+                            </>
+                        ),
+                    },
+                ]}
+            />
         </>
     );
 };
