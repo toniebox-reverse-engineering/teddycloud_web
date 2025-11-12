@@ -9,6 +9,7 @@ import {
     Input,
     List,
     MenuProps,
+    Modal,
     Select,
     Switch,
     Tooltip,
@@ -25,9 +26,10 @@ import { TonieCardProps } from "../../types/tonieTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import { QuestionCircleOutlined, SearchOutlined, WarningOutlined } from "@ant-design/icons";
+import { DeleteOutlined, QuestionCircleOutlined, SearchOutlined, WarningOutlined } from "@ant-design/icons";
 import { TonieCard } from "../../components/tonies/TonieCard";
 import { useTeddyCloud } from "../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { scrollToTop } from "../../utils/browserUtils";
 import { languageOptions } from "../../utils/languageUtil";
 import CustomFilterHelpModal from "../utils/CustomFilterHelpModal";
@@ -110,9 +112,20 @@ export const ToniesList: React.FC<{
     const [customFilterError, setCustomFilterError] = useState<string | undefined>(undefined);
     const [customFilterOptions, setCustomFilterOptions] = useState<{ value: string }[]>([]);
 
+    const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+    const [filterName, setFilterName] = useState("");
+    const [existingFilters, setExistingFilters] = useState({});
+    const [selectedExistingFilter, setSelectedExistingFilter] = useState<string | null>(null);
+
     const handleUpdateCard = (updatedCard: TonieCardProps) => {
         setFilteredTonies((prev) => prev.map((c) => (c.ruid === updatedCard.ruid ? updatedCard : c)));
         setListKey((prevKey) => prevKey + 1);
+    };
+
+    const showFilterModal = () => {
+        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}");
+        setExistingFilters(stored);
+        setIsFilterModalVisible(true);
     };
 
     const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
@@ -590,6 +603,81 @@ export const ToniesList: React.FC<{
         }
     }
 
+    const getFilterSettings = () => {
+        return {
+            seriesFilter,
+            episodeFilter,
+            selectedLanguages,
+            validFilter,
+            invalidFilter,
+            existsFilter,
+            notExistsFilter,
+            liveFilter,
+            unsetLiveFilter,
+            nocloudFilter,
+            unsetNocloudFilter,
+            hasCloudAuthFilter,
+            unsetHasCloudAuthFilter,
+            searchText,
+            filterLastTonieboxRUIDs,
+            customFilter,
+            hiddenRuids,
+        };
+    };
+
+    const saveFilterSettings = (name: string) => {
+        if (!name) {
+            alert("Please provide a name for your filter");
+            return;
+        }
+
+        const existingFilters = JSON.parse(localStorage.getItem("tonieFilters") || "{}");
+        existingFilters[name] = getFilterSettings();
+        localStorage.setItem("tonieFilters", JSON.stringify(existingFilters));
+        console.log(`Filter "${name}" saved!`);
+        addNotification(
+            NotificationTypeEnum.Success,
+            t("tonies.messages.filterSaved"),
+            t("tonies.messages.filterSavedDetails", { name: name }),
+            t("tonies.title")
+        );
+        setIsFilterModalVisible(false);
+    };
+
+    const loadFilterSettings = (name: string) => {
+        const existingFilters = JSON.parse(localStorage.getItem("tonieFilters") || "{}");
+        const filter = existingFilters[name];
+        if (!filter) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonies.messages.noFilterFound"),
+                t("tonies.messages.noFilterFoundWithName", { name: name }),
+                t("tonies.title")
+            );
+            return;
+        }
+
+        setSeriesFilter(filter.seriesFilter);
+        setEpisodeFilter(filter.episodeFilter);
+        setSelectedLanguages(filter.selectedLanguages);
+        setValidFilter(filter.validFilter);
+        setInvalidFilter(filter.invalidFilter);
+        setExistsFilter(filter.existsFilter);
+        setNotExistsFilter(filter.notExistsFilter);
+        setLiveFilter(filter.liveFilter);
+        setUnsetLiveFilter(filter.unsetLiveFilter);
+        setNocloudFilter(filter.nocloudFilter);
+        setUnsetNocloudFilter(filter.unsetNocloudFilter);
+        setHasCloudAuthFilter(filter.hasCloudAuthFilter);
+        setUnsetHasCloudAuthFilter(filter.unsetHasCloudAuthFilter);
+        setSearchText(filter.searchText);
+        setFilterLastTonieboxRUIDs(filter.filterLastTonieboxRUIDs);
+        setCustomFilter(filter.customFilter);
+        setHiddenRuids(filter.hiddenRuids);
+
+        setIsFilterModalVisible(false);
+    };
+
     const handleFilter = () => {
         let filtered = tonieCards.filter(
             (tonie) =>
@@ -801,6 +889,77 @@ export const ToniesList: React.FC<{
                 />
             )}
         </div>
+    );
+
+    const filterModal = (
+        <Modal
+            title={t("tonies.tonies.filterBar.saveLoadFilterModalTitle")}
+            open={isFilterModalVisible}
+            onCancel={() => setIsFilterModalVisible(false)}
+            footer={null}
+        >
+            <label className="filter-label">{t("tonies.tonies.filterBar.enterNewFilterName")}</label>
+            <Input
+                placeholder={t("tonies.tonies.filterBar.enterNewFilterName")}
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                style={{ marginBottom: 16 }}
+            />
+            {Object.keys(existingFilters).length > 0 ? (
+                <>
+                    <label className="filter-label">{t("tonies.tonies.filterBar.selectExistingFilter")}</label>
+                    <div style={{ marginBottom: 16, display: "flex", gap: 8, alignItems: "center" }}>
+                        <Select
+                            placeholder={t("tonies.tonies.filterBar.selectExistingFilter")}
+                            style={{ flex: 1 }}
+                            value={selectedExistingFilter}
+                            onChange={(value) => {
+                                setSelectedExistingFilter(value);
+                                setFilterName(value);
+                            }}
+                        >
+                            {Object.keys(existingFilters).map((key) => (
+                                <Option key={key} value={key}>
+                                    {key}
+                                </Option>
+                            ))}
+                        </Select>
+
+                        <Button
+                            icon={<DeleteOutlined />}
+                            onClick={() => {
+                                if (!selectedExistingFilter) return;
+                                const filters: any = { ...existingFilters };
+                                delete filters[selectedExistingFilter];
+                                localStorage.setItem("tonieFilters", JSON.stringify(filters));
+                                setExistingFilters(filters);
+                                setSelectedExistingFilter(null);
+                                addNotification(
+                                    NotificationTypeEnum.Success,
+                                    t("tonies.messages.filterDeleted"),
+                                    t("tonies.messages.filterDeletedDetails", { name: selectedExistingFilter }),
+                                    t("tonies.title")
+                                );
+                            }}
+                            disabled={!selectedExistingFilter}
+                        />
+                    </div>
+                </>
+            ) : (
+                ""
+            )}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                <Button onClick={() => saveFilterSettings(filterName || selectedExistingFilter || filterName)}>
+                    {t("tonies.tonies.filterBar.saveFilter")}
+                </Button>
+                <Button
+                    onClick={() => selectedExistingFilter && loadFilterSettings(selectedExistingFilter)}
+                    disabled={!selectedExistingFilter}
+                >
+                    {t("tonies.tonies.filterBar.loadFilter")}
+                </Button>
+            </div>
+        </Modal>
     );
 
     const filterPanelContent = (
@@ -1064,6 +1223,9 @@ export const ToniesList: React.FC<{
                             marginTop: 8,
                         }}
                     >
+                        <Button type="default" onClick={showFilterModal} style={{ marginLeft: 16 }}>
+                            {t("tonies.tonies.filterBar.saveLoadFilter")}
+                        </Button>
                         <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>
                             {t("tonies.tonies.filterBar.resetFilters")}
                         </Button>
@@ -1109,6 +1271,7 @@ export const ToniesList: React.FC<{
                     onClose={() => setIsCustomFilterHelpOpen(false)}
                 />
             )}
+            {filterModal}
             {showFilter ? (
                 <Collapse
                     items={filterPanelContentItem}
