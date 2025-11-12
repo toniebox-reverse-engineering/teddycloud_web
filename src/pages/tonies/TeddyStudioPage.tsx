@@ -49,6 +49,7 @@ interface PaperSettings {
     spacingY: string;
     paperFormat: "A4" | "A5" | "Letter" | "Custom";
     labelForm: "round" | "square";
+    labelBorder: boolean;
 }
 
 export const TeddyStudioPage = () => {
@@ -80,6 +81,7 @@ export const TeddyStudioPage = () => {
     const [textColor, setTextColor] = useState(getContrastTextColor(labelBackgroundColor));
     const [showLanguageFlag, setShowLanguageFlag] = useState<boolean>(false);
     const [showModelNo, setShowModelNo] = useState<boolean>(false);
+    const [showLabelBorder, setShowLabelBorder] = useState<boolean>(true);
 
     const [selectedPaper, setSelectedPaper] = useState<string | undefined>();
 
@@ -109,6 +111,7 @@ export const TeddyStudioPage = () => {
                 spacingY: "7mm",
                 paperFormat: "A4",
                 labelForm: "round",
+                labelBorder: false,
             },
         },
         {
@@ -122,6 +125,7 @@ export const TeddyStudioPage = () => {
                 spacingY: "8mm",
                 paperFormat: "A4",
                 labelForm: "square",
+                labelBorder: false,
             },
         },
         // add more if new one are available
@@ -153,6 +157,7 @@ export const TeddyStudioPage = () => {
             setCustomPaperHeight(data.customPaperHeight || "297mm");
             setPaperMarginVertical(data.paperMarginVertical || "10mm");
             setPaperMarginHorizontal(data.paperMarginHorizontal || "10mm");
+            setShowLabelBorder(data.showLabelBorder ?? true);
         }
     }, []);
 
@@ -170,6 +175,7 @@ export const TeddyStudioPage = () => {
             setLabelShape(paper.settings.labelForm);
             setPaperSize(paper.settings.paperFormat);
             setPaperLabelImageBleed(paper.settings.imageBleed);
+            setShowLabelBorder(paper.settings.labelBorder);
         }
         setSelectedPaper(value);
     };
@@ -192,6 +198,7 @@ export const TeddyStudioPage = () => {
             customPaperHeight,
             paperMarginVertical,
             paperMarginHorizontal,
+            showLabelBorder,
         };
         localStorage.setItem("labelSettings", JSON.stringify(values));
         addNotification(
@@ -220,6 +227,7 @@ export const TeddyStudioPage = () => {
         setCustomPaperHeight("297mm");
         setPaperMarginVertical("10mm");
         setPaperMarginHorizontal("10mm");
+        setShowLabelBorder(true);
     };
 
     const loadJSONData = async () => {
@@ -725,6 +733,17 @@ export const TeddyStudioPage = () => {
                                             ) : (
                                                 ""
                                             )}
+                                            <Checkbox
+                                                style={{ display: "flex", alignItems: "center" }}
+                                                checked={showLabelBorder}
+                                                onChange={(e) => {
+                                                    setShowLabelBorder(e.target.checked);
+                                                    setSelectedPaper(undefined);
+                                                }}
+                                            >
+                                                {t("tonies.teddystudio.showLabelBorder")}
+                                            </Checkbox>
+
                                             <div style={{ display: "flex", alignItems: "center" }}>
                                                 <span style={{ marginRight: 8 }}>
                                                     {t("tonies.teddystudio.labelBackgroundColor")}
@@ -1050,7 +1069,7 @@ export const TeddyStudioPage = () => {
                     position: absolute;
                     inset: 0;
                     pointer-events: none;
-                    border: 1px solid ${token.colorBorder};
+                    border: ${showLabelBorder ? "1px" : "0"} solid ${textColor};
                     border-radius: var(--labelElement-radius);
                     box-sizing: border-box;
                     z-index: 1;
