@@ -885,17 +885,6 @@
         "teddycloudStatusOnline": "TeddyCloud Server online"
     },
     "settings": {
-        "guiSettings": {
-            "navigationTitle": "GUI-Einstellungen",
-            "title": "GUI-Einstellungen & lokal gespeicherte Werte",
-            "exportSettings": "Exportieren",
-            "importSettings": "Importieren",
-            "noLocalSettings": "Keine lokal gespeicherten Werte gefunden",
-            "jsonLoaded": "Lokaler Speicher geladen",
-            "jsonLoadedDetails": "Der lokale Speicher wurde erfolgreich geladen!",
-            "jsonLoadFailed": "Laden des lokalen Speichers fehlgeschlagen",
-            "jsonLoadFailedDetails": "Beim Laden des lokalen Speichers ist ein Fehler aufgetreten: "
-        },
         "certificates": {
             "hint": "Diese sind die Zertifikate, die für die allgemeine Nutzung von der TeddyCloud genutzt werden. Für deine Tonieboxen können spezifische genutzt werden. Um diese zu ändern, gehe zu ",
             "information": "Information",
@@ -922,6 +911,17 @@
         "general": {
             "navigationTitle": "Allgemein",
             "title": "Allgemeine Einstellungen"
+        },
+        "guiSettings": {
+            "exportSettings": "Exportieren",
+            "importSettings": "Importieren",
+            "jsonLoaded": "Lokaler Speicher geladen",
+            "jsonLoadedDetails": "Der lokale Speicher wurde erfolgreich geladen!",
+            "jsonLoadFailed": "Laden des lokalen Speichers fehlgeschlagen",
+            "jsonLoadFailedDetails": "Beim Laden des lokalen Speichers ist ein Fehler aufgetreten: ",
+            "navigationTitle": "GUI-Einstellungen",
+            "noLocalSettings": "Keine lokal gespeicherten Werte gefunden",
+            "title": "GUI-Einstellungen & lokal gespeicherte Werte"
         },
         "hint": "Dies sind die Default-Einstellungen. Einige der Einstellungen können von deinen Toniebox spezifischen Einstellungen überschrieben werden. Um diese zu ändern, gehe zu ",
         "information": "Information",

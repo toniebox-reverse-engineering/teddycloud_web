@@ -885,17 +885,6 @@
         "teddycloudStatusOnline": "Le serveur TeddyCloud fonctionne correctement"
     },
     "settings": {
-        "guiSettings": {
-            "navigationTitle": "Paramètres GUI",
-            "title": "Paramètres GUI et valeurs stockées localement",
-            "exportSettings": "Exporter",
-            "importSettings": "Importer",
-            "noLocalSettings": "Aucune valeur locale trouvée",
-            "jsonLoaded": "Stockage local chargé",
-            "jsonLoadedDetails": "Le stockage local a été chargé avec succès !",
-            "jsonLoadFailed": "Échec du chargement du stockage local",
-            "jsonLoadFailedDetails": "Une erreur s'est produite lors du chargement du fichier JSON du stockage local: "
-        },
         "certificates": {
             "hint": "Voici les certificats utilisés pour l'utilisation générale de TeddyCloud. Des certificats spécifiques peuvent être utilisés pour vos Tonieboxes. Pour les changer, allez à ",
             "information": "Informations",
@@ -922,6 +911,17 @@
         "general": {
             "navigationTitle": "Général",
             "title": "Paramètres généraux"
+        },
+        "guiSettings": {
+            "exportSettings": "Exporter",
+            "importSettings": "Importer",
+            "jsonLoaded": "Stockage local chargé",
+            "jsonLoadedDetails": "Le stockage local a été chargé avec succès !",
+            "jsonLoadFailed": "Échec du chargement du stockage local",
+            "jsonLoadFailedDetails": "Une erreur s'est produite lors du chargement du fichier JSON du stockage local: ",
+            "navigationTitle": "Paramètres GUI",
+            "noLocalSettings": "Aucune valeur locale trouvée",
+            "title": "Paramètres GUI et valeurs stockées localement"
         },
         "hint": "Ce sont les paramètres par défaut. Certains paramètres peuvent être remplacés par chacun de vos Tonieboxes. Pour modifier ces paramètres, allez à ",
         "information": "Informations",
