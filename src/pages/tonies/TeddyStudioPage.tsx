@@ -161,7 +161,6 @@ export const TeddyStudioPage = () => {
     }, [labelBackgroundColor]);
 
     const handlePaperSelect = (value: string) => {
-        setSelectedPaper(value);
         const paper = paperOptions.find((p) => p.value === value);
         if (paper) {
             setLabelSpacingX(paper.settings.spacingX);
@@ -172,6 +171,7 @@ export const TeddyStudioPage = () => {
             setPaperSize(paper.settings.paperFormat);
             setPaperLabelImageBleed(paper.settings.imageBleed);
         }
+        setSelectedPaper(value);
     };
 
     const handleSave = () => {
@@ -270,6 +270,7 @@ export const TeddyStudioPage = () => {
 
     const handleLabelShapeChange = (e: RadioChangeEvent) => {
         setLabelShape(e.target.value);
+        setSelectedPaper(undefined);
     };
 
     const handleDiameterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -279,6 +280,7 @@ export const TeddyStudioPage = () => {
         } else {
             setDiameter("");
         }
+        setSelectedPaper(undefined);
     };
 
     const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -288,6 +290,7 @@ export const TeddyStudioPage = () => {
         } else {
             setWidth("");
         }
+        setSelectedPaper(undefined);
     };
 
     const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -297,6 +300,7 @@ export const TeddyStudioPage = () => {
         } else {
             setHeight("");
         }
+        setSelectedPaper(undefined);
     };
 
     const handleSpacingChange = (setter: (value: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -306,6 +310,41 @@ export const TeddyStudioPage = () => {
         } else {
             setter("");
         }
+        setSelectedPaper(undefined);
+    };
+
+    const handlePaperSizeChange = (e: any) => {
+        setPaperSize(e.target.value);
+        setSelectedPaper(undefined);
+    };
+
+    const handleCustomPaperWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = stripUnit(e.target.value, "mm");
+        if (!isNaN(Number(val)) && Number(val) > 0) setCustomPaperWidth(`${val}mm`);
+        setSelectedPaper(undefined);
+    };
+
+    const handleCustomPaperHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = stripUnit(e.target.value, "mm");
+        if (!isNaN(Number(val)) && Number(val) > 0) setCustomPaperHeight(`${val}mm`);
+        setSelectedPaper(undefined);
+    };
+
+    const handlePaperMarginVerticalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = stripUnit(e.target.value, "mm");
+        if (!isNaN(Number(val)) && Number(val) >= 0) setPaperMarginVertical(`${val}mm`);
+        setSelectedPaper(undefined);
+    };
+
+    const handlePaperMarginHorizontalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = stripUnit(e.target.value, "mm");
+        if (!isNaN(Number(val)) && Number(val) >= 0) setPaperMarginHorizontal(`${val}mm`);
+        setSelectedPaper(undefined);
+    };
+
+    const handlePaperLabelImageBleedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = stripUnit(e.target.value, "mm");
+        if (!isNaN(Number(val)) && Number(val) >= 0) setPaperLabelImageBleed(`${val}mm`);
     };
 
     const handleTextFontsizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -718,7 +757,7 @@ export const TeddyStudioPage = () => {
                                                 <Radio.Group
                                                     size="small"
                                                     value={paperSize}
-                                                    onChange={(e) => setPaperSize(e.target.value)}
+                                                    onChange={handlePaperSizeChange}
                                                     optionType="button"
                                                     buttonStyle="solid"
                                                 >
@@ -741,11 +780,7 @@ export const TeddyStudioPage = () => {
                                                             size="small"
                                                             type="number"
                                                             value={parseFloat(customPaperWidth)}
-                                                            onChange={(e) => {
-                                                                const val = stripUnit(e.target.value, "mm");
-                                                                if (!isNaN(Number(val)) && Number(val) > 0)
-                                                                    setCustomPaperWidth(`${val}mm`);
-                                                            }}
+                                                            onChange={handleCustomPaperWidthChange}
                                                             min={1}
                                                             max={500}
                                                             style={{ width: 120 }}
@@ -760,11 +795,7 @@ export const TeddyStudioPage = () => {
                                                             size="small"
                                                             type="number"
                                                             value={parseFloat(customPaperHeight)}
-                                                            onChange={(e) => {
-                                                                const val = stripUnit(e.target.value, "mm");
-                                                                if (!isNaN(Number(val)) && Number(val) > 0)
-                                                                    setCustomPaperHeight(`${val}mm`);
-                                                            }}
+                                                            onChange={handleCustomPaperHeightChange}
                                                             min={1}
                                                             max={500}
                                                             style={{ width: 120 }}
@@ -789,11 +820,7 @@ export const TeddyStudioPage = () => {
                                                         size="small"
                                                         type="number"
                                                         value={parseFloat(paperMarginVertical)}
-                                                        onChange={(e) => {
-                                                            const val = stripUnit(e.target.value, "mm");
-                                                            if (!isNaN(Number(val)) && Number(val) >= 0)
-                                                                setPaperMarginVertical(`${val}mm`);
-                                                        }}
+                                                        onChange={handlePaperMarginVerticalChange}
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
@@ -808,11 +835,7 @@ export const TeddyStudioPage = () => {
                                                         size="small"
                                                         type="number"
                                                         value={parseFloat(paperMarginHorizontal)}
-                                                        onChange={(e) => {
-                                                            const val = stripUnit(e.target.value, "mm");
-                                                            if (!isNaN(Number(val)) && Number(val) >= 0)
-                                                                setPaperMarginHorizontal(`${val}mm`);
-                                                        }}
+                                                        onChange={handlePaperMarginHorizontalChange}
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
@@ -827,11 +850,7 @@ export const TeddyStudioPage = () => {
                                                         size="small"
                                                         type="number"
                                                         value={parseFloat(paperLabelImageBleed)}
-                                                        onChange={(e) => {
-                                                            const val = stripUnit(e.target.value, "mm");
-                                                            if (!isNaN(Number(val)) && Number(val) >= 0)
-                                                                setPaperLabelImageBleed(`${val}mm`);
-                                                        }}
+                                                        onChange={handlePaperLabelImageBleedChange}
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
