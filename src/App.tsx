@@ -48,6 +48,7 @@ import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
 import { detectColorScheme } from "./utils/browserUtils";
 import MatrixRain from "./styles/matrix/matrixRain";
 import "./styles/matrix/matrix.css";
+import { GUISettingsPage } from "./pages/settings/GUISettingsPage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -174,6 +175,7 @@ function App() {
                                         />
                                         <Route path="/tonieboxes/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/settings" element={<SettingsPage />} />
+                                        <Route path="/settings/guisettings" element={<GUISettingsPage />} />
                                         <Route path="/settings/certificates" element={<CertificatesPage />} />
                                         <Route path="/settings/rtnl" element={<RtnlPage />} />
                                         <Route path="/settings/notifications" element={<NotificationsListPage />} />
