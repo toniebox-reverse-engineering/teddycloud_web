@@ -42,6 +42,9 @@ import {
     QuestionCircleOutlined,
     TruckOutlined,
     UploadOutlined,
+    WarningFilled,
+    WarningOutlined,
+    WarningTwoTone,
 } from "@ant-design/icons";
 import { Key, SortOrder } from "antd/es/table/interface";
 import { DefaultOptionType } from "antd/es/select";
@@ -69,6 +72,7 @@ import CodeSnippet from "./CodeSnippet";
 import HelpModal from "./FileBrowserHelpModal";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { generateUUID } from "../../utils/helpers";
+import Paragraph from "antd/es/skeleton/Paragraph";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -387,9 +391,13 @@ export const FileBrowser: React.FC<{
             treeLine
             treeDataSimpleMode
             value={treeNodeId}
-            dropdownStyle={{
-                maxHeight: 400,
-                overflow: "auto",
+            styles={{
+                popup: {
+                    root: {
+                        maxHeight: 400,
+                        overflow: "auto",
+                    },
+                },
             }}
             onChange={setTreeNodeId}
             loadData={onLoadTreeData}
@@ -505,6 +513,11 @@ export const FileBrowser: React.FC<{
             {currentRecordYaml ? (
                 <>
                     <CodeSnippet language="yaml" code={currentRecordYaml} />
+                    <Alert
+                        showIcon
+                        type="warning"
+                        message={<div style={{ fontSize: "small" }}>{t("tonies.tafHeaderToniesJsonHint")}</div>}
+                    />
                 </>
             ) : (
                 "Loading..."
@@ -1285,7 +1298,7 @@ export const FileBrowser: React.FC<{
 
                                     <Input
                                         ref={inputEncodeTafFileNameRef}
-                                        addonAfter=".taf"
+                                        suffix=".taf"
                                         required
                                         status={hasError ? "error" : ""}
                                         onChange={handleFileNameInputChange}
@@ -2251,8 +2264,9 @@ export const FileBrowser: React.FC<{
                                                     ref={inputFilterRef} // Assign ref to input element
                                                     style={{ width: "100%" }}
                                                     autoFocus={filterFieldAutoFocus}
-                                                    addonAfter={
+                                                    suffix={
                                                         <CloseOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={clearFilterField}
                                                             disabled={filterText.length === 0}
                                                             style={{

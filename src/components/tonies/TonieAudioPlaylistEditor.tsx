@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip } from "antd";
+import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip, Divider } from "antd";
 import {
     CloseOutlined,
     FolderOpenOutlined,
@@ -309,17 +309,26 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                             >
                                                 <Input
                                                     width="auto"
-                                                    addonBefore={
+                                                    prefix={[
                                                         <CloseOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => {
                                                                 const newValues = [...form.getFieldsValue().files];
                                                                 newValues[index].filepath = "";
                                                                 form.setFieldsValue({ files: newValues });
                                                             }}
+                                                        />,
+                                                        <Divider
+                                                            key="divider-source"
+                                                            type="vertical"
+                                                            style={{ height: 16 }}
+                                                        />,
+                                                    ]}
+                                                    suffix={
+                                                        <FolderOpenOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
+                                                            onClick={() => handleEditFile(index)}
                                                         />
-                                                    }
-                                                    addonAfter={
-                                                        <FolderOpenOutlined onClick={() => handleEditFile(index)} />
                                                     }
                                                 />
                                             </Form.Item>

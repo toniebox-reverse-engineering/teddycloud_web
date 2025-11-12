@@ -459,17 +459,19 @@ export const TonieCard: React.FC<{
                         value={selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
-                        addonBefore={[
+                        prefix={[
                             <CloseOutlined
                                 key="close-source"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedSource("");
                                     setInputValidationSource({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-source-1" type="vertical" style={{ height: 16 }} />,
                             <RollbackOutlined
                                 key="rollback-source"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedSource(activeSource);
                                     setTempSelectedSource(activeSource);
@@ -481,8 +483,14 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeSource === selectedSource ? "disabled" : "enabled"}
                             />,
+                            <Divider key="divider-source-2" type="vertical" style={{ height: 16 }} />,
                         ]}
-                        addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
+                        suffix={
+                            <FolderOpenOutlined
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => showFileSelectModal()}
+                            />
+                        }
                     />
                     <RadioStreamSearch
                         placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
@@ -501,17 +509,19 @@ export const TonieCard: React.FC<{
                         value={selectedModel}
                         width="auto"
                         onChange={handleModelInputChange}
-                        addonBefore={[
+                        prefix={[
                             <CloseOutlined
                                 key="close-model"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedModel("");
                                     setInputValidationModel({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider key="divider-model" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-model-1" type="vertical" style={{ height: 16 }} />,
                             <RollbackOutlined
                                 key="rollback-model"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedModel(activeModel);
                                     setInputValidationModel({ validateStatus: "", help: "" });
@@ -522,6 +532,7 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeModel === selectedModel ? "disabled" : "enabled"}
                             />,
+                            <Divider key="divider-model-2" type="vertical" style={{ height: 16 }} />,
                         ]}
                     />
                     <TonieArticleSearch

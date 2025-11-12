@@ -98,9 +98,12 @@ export const ContributionToniesJsonPage = () => {
                     <h1>{t(`community.contribution.toniesJson.title`)}</h1>
                     <Paragraph>{t("community.contribution.toniesJson.text")}</Paragraph>
                     <Paragraph>
-                        <Collapse accordion>
-                            {Object.keys(groupedTonieJsonEntries).map((language, index) => (
-                                <Panel header={language} key={index}>
+                        <Collapse
+                            accordion
+                            items={Object.keys(groupedTonieJsonEntries).map((language, index) => ({
+                                key: index,
+                                label: language,
+                                children: (
                                     <List>
                                         {Array.isArray(groupedTonieJsonEntries[language]) &&
                                             groupedTonieJsonEntries[language].map((tonieJsonEntry, subSubIndex) => (
@@ -113,16 +116,16 @@ export const ContributionToniesJsonPage = () => {
                                                                 width: "100px",
                                                                 height: "auto",
                                                             }}
-                                                        ></img>
+                                                        />
                                                         {tonieJsonEntry.model} - {tonieJsonEntry.series} -{" "}
                                                         {tonieJsonEntry.episodes}
                                                     </div>
                                                 </List.Item>
                                             ))}
                                     </List>
-                                </Panel>
-                            ))}
-                        </Collapse>
+                                ),
+                            }))}
+                        />
                     </Paragraph>
                 </StyledContent>
             </StyledLayout>

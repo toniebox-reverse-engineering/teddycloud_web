@@ -12,8 +12,16 @@ import {
     Upload,
     Tooltip,
     Collapse,
+    Select,
 } from "antd";
-import { ClearOutlined, DeleteOutlined, PlusOutlined, PrinterOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+    ClearOutlined,
+    DeleteOutlined,
+    PlusOutlined,
+    PrinterOutlined,
+    SaveOutlined,
+    SearchOutlined,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import { useTeddyCloud } from "../../TeddyCloudContext";
@@ -27,12 +35,21 @@ import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
-const { Search } = Input;
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const stripUnit = (value: string, unit: string) =>
     value.toLowerCase().endsWith(unit) ? value.slice(0, -unit.length) : value;
+
+interface PaperSettings {
+    marginTopBottom: string;
+    marginLeftRight: string;
+    imageBleed: string;
+    spacingX: string;
+    spacingY: string;
+    paperFormat: "A4" | "A5" | "Letter" | "Custom";
+    labelForm: "round" | "square";
+}
 
 export const TeddyStudioPage = () => {
     const { t } = useTranslation();
@@ -44,9 +61,6 @@ export const TeddyStudioPage = () => {
     const [autocompleteList, setAutocompleteList] = useState([]);
     const [results, setResults] = useState<any[]>([]);
     const [diameter, setDiameter] = useState("40mm");
-    const [textFontSize, setTextFontSize] = useState("14px");
-    const [showLanguageFlag, setShowLanguageFlag] = useState<boolean>(false);
-    const [showModelNo, setShowModelNo] = useState<boolean>(false);
     const [labelShape, setLabelShape] = useState<"round" | "square">("round");
     const [printMode, setPrintMode] = useState<"ImageAndText" | "OnlyImage" | "OnlyText">("ImageAndText");
     const [width, setWidth] = useState("50mm");
@@ -60,6 +74,14 @@ export const TeddyStudioPage = () => {
     const [customPaperHeight, setCustomPaperHeight] = useState("297mm");
     const [paperMarginVertical, setPaperMarginVertical] = useState("10mm");
     const [paperMarginHorizontal, setPaperMarginHorizontal] = useState("10mm");
+    const [paperLabelImageBleed, setPaperLabelImageBleed] = useState("0mm");
+
+    const [textFontSize, setTextFontSize] = useState("14px");
+    const [textColor, setTextColor] = useState(getContrastTextColor(labelBackgroundColor));
+    const [showLanguageFlag, setShowLanguageFlag] = useState<boolean>(false);
+    const [showModelNo, setShowModelNo] = useState<boolean>(false);
+
+    const [selectedPaper, setSelectedPaper] = useState<string | undefined>();
 
     const [customItems, setCustomItems] = useState<{ image?: string; text?: string }[]>([]);
 
@@ -73,6 +95,36 @@ export const TeddyStudioPage = () => {
             model: "",
             language: "",
         })),
+    ];
+
+    const paperOptions: { label: string; value: string; settings: PaperSettings }[] = [
+        {
+            label: "Avery 5080",
+            value: "avery5080",
+            settings: {
+                marginTopBottom: "5mm",
+                marginLeftRight: "8mm",
+                imageBleed: "1mm",
+                spacingX: "10mm",
+                spacingY: "7mm",
+                paperFormat: "A4",
+                labelForm: "round",
+            },
+        },
+        {
+            label: "Avery 5160",
+            value: "avery5160",
+            settings: {
+                marginTopBottom: "5mm",
+                marginLeftRight: "8mm",
+                imageBleed: "1mm",
+                spacingX: "12mm",
+                spacingY: "8mm",
+                paperFormat: "A4",
+                labelForm: "square",
+            },
+        },
+        // add more if new one are available
     ];
 
     const autocompleteRef = useRef(null);
@@ -103,6 +155,24 @@ export const TeddyStudioPage = () => {
             setPaperMarginHorizontal(data.paperMarginHorizontal || "10mm");
         }
     }, []);
+
+    useEffect(() => {
+        setTextColor(getContrastTextColor(labelBackgroundColor));
+    }, [labelBackgroundColor]);
+
+    const handlePaperSelect = (value: string) => {
+        setSelectedPaper(value);
+        const paper = paperOptions.find((p) => p.value === value);
+        if (paper) {
+            setLabelSpacingX(paper.settings.spacingX);
+            setLabelSpacingY(paper.settings.spacingY);
+            setPaperMarginVertical(paper.settings.marginTopBottom);
+            setPaperMarginHorizontal(paper.settings.marginLeftRight);
+            setLabelShape(paper.settings.labelForm);
+            setPaperSize(paper.settings.paperFormat);
+            setPaperLabelImageBleed(paper.settings.imageBleed);
+        }
+    };
 
     const handleSave = () => {
         const values = {
@@ -262,6 +332,25 @@ export const TeddyStudioPage = () => {
         }
     };
 
+    function getContrastTextColor(bgColor: string): string {
+        let r: number, g: number, b: number;
+        if (bgColor.startsWith("#")) {
+            const hex = bgColor.slice(1);
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+        } else if (bgColor.startsWith("rgb")) {
+            const values = bgColor.match(/\d+/g)?.map(Number);
+            if (!values) return "black";
+            [r, g, b] = values;
+        } else {
+            return "black";
+        }
+
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return luminance > 0.5 ? "black" : "white";
+    }
+
     return (
         <>
             <StyledSider>
@@ -279,13 +368,20 @@ export const TeddyStudioPage = () => {
                     <h1>{t("tonies.teddystudio.title")}</h1>
                     <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
                     <div style={{ position: "relative", marginBottom: 8 }}>
-                        <Search
+                        <Input
                             placeholder={t("tonies.teddystudio.placeholder")}
                             value={searchTerm}
                             onChange={(e) => handleSearch(e.target.value)}
-                            onSearch={handleSearch}
+                            onPressEnter={() => handleSearch(searchTerm)}
                             allowClear
                             style={{ width: "100%" }}
+                            suffix={
+                                <SearchOutlined
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={() => handleSearch(searchTerm)}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            }
                         />
                         {autocompleteList.length > 0 && (
                             <div
@@ -419,7 +515,7 @@ export const TeddyStudioPage = () => {
                                                         min={1}
                                                         max={240}
                                                         style={{ width: 120 }}
-                                                        addonAfter="mm"
+                                                        suffix="mm"
                                                         placeholder={t("tonies.teddystudio.diameter")}
                                                     />
                                                 </div>
@@ -437,7 +533,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={240}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.width")}
                                                         />
                                                     </div>
@@ -453,7 +549,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={240}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.height")}
                                                         />
                                                     </div>
@@ -483,7 +579,7 @@ export const TeddyStudioPage = () => {
                                                             min={0}
                                                             max={100}
                                                             style={{ width: 120, marginRight: 8 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.labelSpacingY")}
                                                         />
                                                     </div>
@@ -499,7 +595,7 @@ export const TeddyStudioPage = () => {
                                                             min={0}
                                                             max={100}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                             placeholder={t("tonies.teddystudio.labelSpacingX")}
                                                         />
                                                     </div>
@@ -561,7 +657,7 @@ export const TeddyStudioPage = () => {
                                                         min={1}
                                                         max={90}
                                                         style={{ width: 120 }}
-                                                        addonAfter="px"
+                                                        suffix="px"
                                                         placeholder={t("tonies.teddystudio.textFontSize")}
                                                     />
                                                 </div>
@@ -653,7 +749,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={500}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                         />
                                                     </div>
                                                     <div style={{ display: "flex", alignItems: "baseline" }}>
@@ -672,7 +768,7 @@ export const TeddyStudioPage = () => {
                                                             min={1}
                                                             max={500}
                                                             style={{ width: 120 }}
-                                                            addonAfter="mm"
+                                                            suffix="mm"
                                                         />
                                                     </div>
                                                 </>
@@ -701,7 +797,7 @@ export const TeddyStudioPage = () => {
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
-                                                        addonAfter="mm"
+                                                        suffix="mm"
                                                     />
                                                 </div>
                                                 <div style={{ display: "flex", alignItems: "baseline" }}>
@@ -720,7 +816,26 @@ export const TeddyStudioPage = () => {
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
-                                                        addonAfter="mm"
+                                                        suffix="mm"
+                                                    />
+                                                </div>
+                                                <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.paperLabelImageBleed")}
+                                                    </label>
+                                                    <Input
+                                                        size="small"
+                                                        type="number"
+                                                        value={parseFloat(paperLabelImageBleed)}
+                                                        onChange={(e) => {
+                                                            const val = stripUnit(e.target.value, "mm");
+                                                            if (!isNaN(Number(val)) && Number(val) >= 0)
+                                                                setPaperLabelImageBleed(`${val}mm`);
+                                                        }}
+                                                        min={0}
+                                                        max={50}
+                                                        style={{ width: 120 }}
+                                                        suffix="mm"
                                                     />
                                                 </div>
                                             </div>
@@ -731,15 +846,32 @@ export const TeddyStudioPage = () => {
                                                 display: "flex",
                                                 gap: 8,
                                                 flexWrap: "wrap",
-                                                justifyContent: "flex-end",
+                                                justifyContent: "space-between",
                                             }}
                                         >
-                                            <Button icon={<ClearOutlined />} onClick={handleClear}>
-                                                {t("tonies.teddystudio.clearSettings")}
-                                            </Button>
-                                            <Button icon={<SaveOutlined />} onClick={handleSave}>
-                                                {t("tonies.teddystudio.saveSettings")}
-                                            </Button>
+                                            <div style={{ display: "flex", alignItems: "baseline", width: 350 }}>
+                                                <label style={{ marginRight: 8 }}>
+                                                    {t("tonies.teddystudio.predefinedPaperOptions")}
+                                                </label>
+                                                <Select
+                                                    placeholder={t("tonies.teddystudio.selectPredefinedPaperOptions")}
+                                                    value={selectedPaper}
+                                                    onChange={handlePaperSelect}
+                                                    options={paperOptions.map((p) => ({
+                                                        label: p.label,
+                                                        value: p.value,
+                                                    }))}
+                                                    style={{ maxWidth: 200 }}
+                                                />
+                                            </div>
+                                            <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+                                                <Button icon={<ClearOutlined />} onClick={handleClear}>
+                                                    {t("tonies.teddystudio.clearSettings")}
+                                                </Button>
+                                                <Button icon={<SaveOutlined />} onClick={handleSave}>
+                                                    {t("tonies.teddystudio.saveSettings")}
+                                                </Button>
+                                            </div>
                                         </div>
                                     </Paragraph>
                                 ),
@@ -794,18 +926,19 @@ export const TeddyStudioPage = () => {
                                     style={{
                                         display:
                                             printMode == "ImageAndText" || printMode == "OnlyImage" ? "flex" : "none",
+                                        ["--label-bg-image" as any]: `url("${dataset.pic}")`,
                                     }}
-                                >
-                                    <img src={dataset.pic} alt={dataset.title} style={{ height: "100%" }} />
-                                </div>
+                                />
                                 <div
                                     className="labelElement"
                                     style={{
                                         display:
                                             printMode == "ImageAndText" || printMode == "OnlyText" ? "flex" : "none",
                                         justifyContent: "space-between",
-                                        fontSize: `${textFontSize}`,
+                                        fontSize: textFontSize,
                                         padding: "4px 8px 8px 8px",
+                                        flexDirection: "column",
+                                        color: `${textColor}`,
                                     }}
                                 >
                                     <div
@@ -859,22 +992,51 @@ export const TeddyStudioPage = () => {
 
             <style>
                 {`
+
                 .labelElement {
+                    position: relative;
                     width: var(--labelElement-width);
                     height: var(--labelElement-height);
                     border-radius: var(--labelElement-radius);
-                    background-color: ${labelBackgroundColor};
-                    border: 1px solid ${token.colorBorder};
-                    color: black;
                     display: flex;
-                    flex-direction: column;
                     justify-content: center;
                     align-items: center;
                     text-align: center;
                     margin: 10px;
-                    overflow: hidden;
+                    overflow: visible;
                     font-size: var(--text-font-size, 14px);
+                    color: black;
+                    z-index: 0;
                 }
+
+                .labelElement::before {
+                    content: "";
+                    position: absolute;
+                    top: -${paperLabelImageBleed};
+                    left: -${paperLabelImageBleed};
+                    right: -${paperLabelImageBleed};
+                    bottom: -${paperLabelImageBleed};
+                    background-image: var(--label-bg-image);
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-color: ${labelBackgroundColor};
+                    border-radius: var(--labelElement-radius);
+                    z-index: -1; 
+                }
+
+                    
+                .labelElement::after {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    pointer-events: none;
+                    border: 1px solid ${token.colorBorder};
+                    border-radius: var(--labelElement-radius);
+                    box-sizing: border-box;
+                    z-index: 1;
+                }
+
                 .traveltonieCouple {
                     border-radius: 16px;
                     border: 1px dashed ${token.colorBorderSecondary};
