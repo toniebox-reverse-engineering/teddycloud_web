@@ -885,6 +885,17 @@
         "teddycloudStatusOnline": "Servidor de Teddycloud funcionando correctamente"
     },
     "settings": {
+        "guiSettings": {
+            "navigationTitle": "Configuración de GUI",
+            "title": "Configuración de GUI y valores almacenados localmente",
+            "exportSettings": "Exportar",
+            "importSettings": "Importar",
+            "noLocalSettings": "No se encontraron valores locales",
+            "jsonLoaded": "Almacenamiento local cargado",
+            "jsonLoadedDetails": "¡El almacenamiento local se cargó correctamente!",
+            "jsonLoadFailed": "Error al cargar almacenamiento local",
+            "jsonLoadFailedDetails": "Hubo un error al cargar el archivo JSON del almacenamiento local: "
+        },
         "certificates": {
             "hint": "Estos son los certificados utilizados para el uso general de TeddyCloud. Se pueden usar certificados específicos para tus Tonieboxes. Para cambiarlos, ve a ",
             "information": "Información",

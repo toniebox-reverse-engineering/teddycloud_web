@@ -885,6 +885,17 @@
         "teddycloudStatusOnline": "Teddycloud server running fine"
     },
     "settings": {
+        "guiSettings": {
+            "navigationTitle": "GUI Settings",
+            "title": "GUI Settings & Locally Stored Values",
+            "exportSettings": "Export",
+            "importSettings": "Import",
+            "noLocalSettings": "No locally stored values found",
+            "jsonLoaded": "Local Storage loaded",
+            "jsonLoadedDetails": "Local Storage JSON was loaded successfully!",
+            "jsonLoadFailed": "Failed to load Local Storage",
+            "jsonLoadFailedDetails": "There was an error while loading the Local Storage JSON: "
+        },
         "certificates": {
             "hint": "These are the certificates used for general use of the TeddyCloud. Specific ones can be used for your Tonieboxes. To change these, go to ",
             "information": "Information",

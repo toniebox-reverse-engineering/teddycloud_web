@@ -134,7 +134,7 @@ export const TeddyStudioPage = () => {
     }, []);
 
     useEffect(() => {
-        const saved = sessionStorage.getItem("labelSettings");
+        const saved = localStorage.getItem("labelSettings");
         if (saved) {
             const data = JSON.parse(saved);
             setDiameter(data.diameter || "40mm");
@@ -193,7 +193,7 @@ export const TeddyStudioPage = () => {
             paperMarginVertical,
             paperMarginHorizontal,
         };
-        sessionStorage.setItem("labelSettings", JSON.stringify(values));
+        localStorage.setItem("labelSettings", JSON.stringify(values));
         addNotification(
             NotificationTypeEnum.Success,
             t("tonies.teddystudio.settingsSavedSuccessful"),
@@ -203,7 +203,7 @@ export const TeddyStudioPage = () => {
     };
 
     const handleClear = () => {
-        sessionStorage.removeItem("labelSettings");
+        localStorage.removeItem("labelSettings");
         setDiameter("40mm");
         setWidth("50mm");
         setHeight("30mm");
