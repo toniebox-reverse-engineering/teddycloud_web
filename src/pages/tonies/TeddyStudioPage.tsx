@@ -42,8 +42,8 @@ const stripUnit = (value: string, unit: string) =>
     value.toLowerCase().endsWith(unit) ? value.slice(0, -unit.length) : value;
 
 interface PaperSettings {
-    marginTopBottom: string;
-    marginLeftRight: string;
+    marginTop: string;
+    marginLeft: string;
     imageBleed: string;
     spacingX: string;
     spacingY: string;
@@ -73,8 +73,8 @@ export const TeddyStudioPage = () => {
     const [paperSize, setPaperSize] = useState<"A4" | "A5" | "Letter" | "Custom">("A4");
     const [customPaperWidth, setCustomPaperWidth] = useState("210mm");
     const [customPaperHeight, setCustomPaperHeight] = useState("297mm");
-    const [paperMarginVertical, setPaperMarginVertical] = useState("10mm");
-    const [paperMarginHorizontal, setPaperMarginHorizontal] = useState("10mm");
+    const [paperMarginTop, setPaperMarginTop] = useState("10mm");
+    const [paperMarginLeft, setPaperMarginLeft] = useState("10mm");
     const [paperLabelImageBleed, setPaperLabelImageBleed] = useState("0mm");
 
     const [textFontSize, setTextFontSize] = useState("14px");
@@ -104,8 +104,8 @@ export const TeddyStudioPage = () => {
             label: "Avery 5080",
             value: "avery5080",
             settings: {
-                marginTopBottom: "5mm",
-                marginLeftRight: "8mm",
+                marginTop: "5mm",
+                marginLeft: "8mm",
                 imageBleed: "1mm",
                 spacingX: "10mm",
                 spacingY: "7mm",
@@ -115,11 +115,39 @@ export const TeddyStudioPage = () => {
             },
         },
         {
+            label: "Avery L3415 / L7105 / L7780",
+            value: "averyl3415",
+            settings: {
+                marginTop: "13mm",
+                marginLeft: "15mm",
+                imageBleed: "1mm",
+                spacingX: "6mm",
+                spacingY: "6mm",
+                paperFormat: "A4",
+                labelForm: "round",
+                labelBorder: false,
+            },
+        },
+        {
+            label: "Avery 40-RND",
+            value: "avery40rnd",
+            settings: {
+                marginTop: "13mm",
+                marginLeft: "15mm",
+                imageBleed: "1mm",
+                spacingX: "6mm",
+                spacingY: "6mm",
+                paperFormat: "A4",
+                labelForm: "round",
+                labelBorder: false,
+            },
+        },
+        {
             label: "Avery 5160",
             value: "avery5160",
             settings: {
-                marginTopBottom: "5mm",
-                marginLeftRight: "8mm",
+                marginTop: "5mm",
+                marginLeft: "8mm",
                 imageBleed: "1mm",
                 spacingX: "12mm",
                 spacingY: "8mm",
@@ -155,8 +183,8 @@ export const TeddyStudioPage = () => {
             setPaperSize(data.paperSize || "A4");
             setCustomPaperWidth(data.customPaperWidth || "210mm");
             setCustomPaperHeight(data.customPaperHeight || "297mm");
-            setPaperMarginVertical(data.paperMarginVertical || "10mm");
-            setPaperMarginHorizontal(data.paperMarginHorizontal || "10mm");
+            setPaperMarginTop(data.paperMarginVertical || "10mm");
+            setPaperMarginLeft(data.paperMarginHorizontal || "10mm");
             setShowLabelBorder(data.showLabelBorder ?? true);
         }
     }, []);
@@ -170,8 +198,8 @@ export const TeddyStudioPage = () => {
         if (paper) {
             setLabelSpacingX(paper.settings.spacingX);
             setLabelSpacingY(paper.settings.spacingY);
-            setPaperMarginVertical(paper.settings.marginTopBottom);
-            setPaperMarginHorizontal(paper.settings.marginLeftRight);
+            setPaperMarginTop(paper.settings.marginTop);
+            setPaperMarginLeft(paper.settings.marginLeft);
             setLabelShape(paper.settings.labelForm);
             setPaperSize(paper.settings.paperFormat);
             setPaperLabelImageBleed(paper.settings.imageBleed);
@@ -196,8 +224,8 @@ export const TeddyStudioPage = () => {
             paperSize,
             customPaperWidth,
             customPaperHeight,
-            paperMarginVertical,
-            paperMarginHorizontal,
+            paperMarginVertical: paperMarginTop,
+            paperMarginHorizontal: paperMarginLeft,
             showLabelBorder,
         };
         localStorage.setItem("labelSettings", JSON.stringify(values));
@@ -225,8 +253,8 @@ export const TeddyStudioPage = () => {
         setPaperSize("A4");
         setCustomPaperWidth("210mm");
         setCustomPaperHeight("297mm");
-        setPaperMarginVertical("10mm");
-        setPaperMarginHorizontal("10mm");
+        setPaperMarginTop("10mm");
+        setPaperMarginLeft("10mm");
         setShowLabelBorder(true);
     };
 
@@ -338,15 +366,15 @@ export const TeddyStudioPage = () => {
         setSelectedPaper(undefined);
     };
 
-    const handlePaperMarginVerticalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePaperMarginTopChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = stripUnit(e.target.value, "mm");
-        if (!isNaN(Number(val)) && Number(val) >= 0) setPaperMarginVertical(`${val}mm`);
+        if (!isNaN(Number(val)) && Number(val) >= 0) setPaperMarginTop(`${val}mm`);
         setSelectedPaper(undefined);
     };
 
-    const handlePaperMarginHorizontalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePaperMarginLeftChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = stripUnit(e.target.value, "mm");
-        if (!isNaN(Number(val)) && Number(val) >= 0) setPaperMarginHorizontal(`${val}mm`);
+        if (!isNaN(Number(val)) && Number(val) >= 0) setPaperMarginLeft(`${val}mm`);
         setSelectedPaper(undefined);
     };
 
@@ -833,13 +861,13 @@ export const TeddyStudioPage = () => {
                                             >
                                                 <div style={{ display: "flex", alignItems: "baseline" }}>
                                                     <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.paperMarginVertical")}
+                                                        {t("tonies.teddystudio.paperMarginTop")}
                                                     </label>
                                                     <Input
                                                         size="small"
                                                         type="number"
-                                                        value={parseFloat(paperMarginVertical)}
-                                                        onChange={handlePaperMarginVerticalChange}
+                                                        value={parseFloat(paperMarginTop)}
+                                                        onChange={handlePaperMarginTopChange}
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
@@ -848,13 +876,13 @@ export const TeddyStudioPage = () => {
                                                 </div>
                                                 <div style={{ display: "flex", alignItems: "baseline" }}>
                                                     <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.paperMarginHorizontal")}
+                                                        {t("tonies.teddystudio.paperMarginLeft")}
                                                     </label>
                                                     <Input
                                                         size="small"
                                                         type="number"
-                                                        value={parseFloat(paperMarginHorizontal)}
-                                                        onChange={handlePaperMarginHorizontalChange}
+                                                        value={parseFloat(paperMarginLeft)}
+                                                        onChange={handlePaperMarginLeftChange}
                                                         min={0}
                                                         max={50}
                                                         style={{ width: 120 }}
@@ -887,7 +915,7 @@ export const TeddyStudioPage = () => {
                                                 justifyContent: "space-between",
                                             }}
                                         >
-                                            <div style={{ display: "flex", alignItems: "baseline", width: 350 }}>
+                                            <div style={{ display: "flex", alignItems: "baseline", width: 380 }}>
                                                 <label style={{ marginRight: 8 }}>
                                                     {t("tonies.teddystudio.predefinedPaperOptions")}
                                                 </label>
@@ -899,7 +927,7 @@ export const TeddyStudioPage = () => {
                                                         label: p.label,
                                                         value: p.value,
                                                     }))}
-                                                    style={{ maxWidth: 200 }}
+                                                    style={{ maxWidth: 230 }}
                                                 />
                                             </div>
                                             <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
@@ -1083,7 +1111,8 @@ export const TeddyStudioPage = () => {
                 @media print {
                     @page {
                         size: ${paperSize === "Custom" ? `${customPaperWidth} ${customPaperHeight}` : paperSize};
-                        margin: ${paperMarginVertical} ${paperMarginHorizontal};
+                        margin-top: ${paperMarginTop};
+                        margin-left: ${paperMarginLeft};
                     }
 
                     * {
