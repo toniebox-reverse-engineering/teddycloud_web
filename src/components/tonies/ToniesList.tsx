@@ -114,7 +114,7 @@ export const ToniesList: React.FC<{
 
     const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
     const [filterName, setFilterName] = useState("");
-    const [existingFilters, setExistingFilters] = useState({});
+    const [existingFilters, setExistingFilters] = useState<Record<string, TonieFilterSettings>>({});
     const [selectedExistingFilter, setSelectedExistingFilter] = useState<string | null>(null);
 
     const handleUpdateCard = (updatedCard: TonieCardProps) => {
@@ -603,7 +603,27 @@ export const ToniesList: React.FC<{
         }
     }
 
-    const getFilterSettings = () => {
+    interface TonieFilterSettings {
+        seriesFilter: string;
+        episodeFilter: string;
+        selectedLanguages: string[];
+        validFilter: boolean;
+        invalidFilter: boolean;
+        existsFilter: boolean;
+        notExistsFilter: boolean;
+        liveFilter: boolean;
+        unsetLiveFilter: boolean;
+        nocloudFilter: boolean;
+        unsetNocloudFilter: boolean;
+        hasCloudAuthFilter: boolean;
+        unsetHasCloudAuthFilter: boolean;
+        searchText: string;
+        filterLastTonieboxRUIDs: boolean;
+        customFilter: string;
+        hiddenRuids: String[];
+    }
+
+    const getFilterSettings = (): TonieFilterSettings => {
         return {
             seriesFilter,
             episodeFilter,
@@ -621,7 +641,7 @@ export const ToniesList: React.FC<{
             searchText,
             filterLastTonieboxRUIDs,
             customFilter,
-            hiddenRuids,
+            hiddenRuids: hiddenRuids ?? [],
         };
     };
 
@@ -645,8 +665,13 @@ export const ToniesList: React.FC<{
     };
 
     const loadFilterSettings = (name: string) => {
-        const existingFilters = JSON.parse(localStorage.getItem("tonieFilters") || "{}");
+        const existingFilters = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<
+            string,
+            TonieFilterSettings
+        >;
+
         const filter = existingFilters[name];
+
         if (!filter) {
             addNotification(
                 NotificationTypeEnum.Error,
@@ -676,71 +701,94 @@ export const ToniesList: React.FC<{
         setHiddenRuids(filter.hiddenRuids);
 
         setIsFilterModalVisible(false);
+
+        handleFilter(filter);
     };
 
-    const handleFilter = () => {
+    const handleFilter = (filterOverrides?: Partial<TonieFilterSettings>) => {
+        const effectiveSeriesFilter = filterOverrides?.seriesFilter ?? seriesFilter;
+        const effectiveEpisodeFilter = filterOverrides?.episodeFilter ?? episodeFilter;
+        const effectiveSelectedLanguages = filterOverrides?.selectedLanguages ?? selectedLanguages;
+        const effectiveValidFilter = filterOverrides?.validFilter ?? validFilter;
+        const effectiveInvalidFilter = filterOverrides?.invalidFilter ?? invalidFilter;
+        const effectiveExistsFilter = filterOverrides?.existsFilter ?? existsFilter;
+        const effectiveNotExistsFilter = filterOverrides?.notExistsFilter ?? notExistsFilter;
+        const effectiveLiveFilter = filterOverrides?.liveFilter ?? liveFilter;
+        const effectiveUnsetLiveFilter = filterOverrides?.unsetLiveFilter ?? unsetLiveFilter;
+        const effectiveNocloudFilter = filterOverrides?.nocloudFilter ?? nocloudFilter;
+        const effectiveUnsetNocloudFilter = filterOverrides?.unsetNocloudFilter ?? unsetNocloudFilter;
+        const effectiveHasCloudAuthFilter = filterOverrides?.hasCloudAuthFilter ?? hasCloudAuthFilter;
+        const effectiveUnsetHasCloudAuthFilter = filterOverrides?.unsetHasCloudAuthFilter ?? unsetHasCloudAuthFilter;
+        const effectiveSearchText = filterOverrides?.searchText ?? searchText;
+        const effectiveFilterLastTonieboxRUIDs = filterOverrides?.filterLastTonieboxRUIDs ?? filterLastTonieboxRUIDs;
+        const effectiveCustomFilter = filterOverrides?.customFilter ?? customFilter;
+        const effectiveHiddenRuids = filterOverrides?.hiddenRuids ?? hiddenRuids;
+
         let filtered = tonieCards.filter(
             (tonie) =>
                 ((tonie.sourceInfo?.series &&
-                    tonie.sourceInfo.series.toLowerCase().includes(seriesFilter.toLowerCase())) ||
-                    tonie.tonieInfo.series.toLowerCase().includes(seriesFilter.toLowerCase())) &&
+                    tonie.sourceInfo.series.toLowerCase().includes(effectiveSeriesFilter.toLowerCase())) ||
+                    tonie.tonieInfo.series.toLowerCase().includes(effectiveSeriesFilter.toLowerCase())) &&
                 ((tonie.sourceInfo?.episode &&
-                    tonie.sourceInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())) ||
-                    tonie.tonieInfo.episode.toLowerCase().includes(episodeFilter.toLowerCase())) &&
-                (selectedLanguages.length === 0 ||
-                    selectedLanguages.includes(
+                    tonie.sourceInfo.episode.toLowerCase().includes(effectiveEpisodeFilter.toLowerCase())) ||
+                    tonie.tonieInfo.episode.toLowerCase().includes(effectiveEpisodeFilter.toLowerCase())) &&
+                (effectiveSelectedLanguages.length === 0 ||
+                    effectiveSelectedLanguages.includes(
                         tonie.tonieInfo.language !== undefined
                             ? languageOptions.includes(tonie.tonieInfo.language)
                                 ? tonie.tonieInfo.language
                                 : "undefined"
                             : "undefined"
                     ) ||
-                    selectedLanguages.includes(
+                    effectiveSelectedLanguages.includes(
                         tonie.sourceInfo && tonie.sourceInfo.language !== undefined
                             ? languageOptions.includes(tonie.sourceInfo.language)
                                 ? tonie.sourceInfo.language
                                 : "undefined"
                             : "undefined"
                     )) &&
-                (!validFilter || tonie.valid) &&
-                (!invalidFilter || tonie.valid === false) &&
-                (!existsFilter || tonie.exists) &&
-                (!notExistsFilter || tonie.exists === false) &&
-                (!liveFilter || tonie.live) &&
-                (!unsetLiveFilter || tonie.live === false) &&
-                (!nocloudFilter || tonie.nocloud) &&
-                (!unsetNocloudFilter || tonie.nocloud === false) &&
-                (!hasCloudAuthFilter || tonie.hasCloudAuth) &&
-                (!unsetHasCloudAuthFilter || tonie.hasCloudAuth === false)
+                (!effectiveValidFilter || tonie.valid) &&
+                (!effectiveInvalidFilter || tonie.valid === false) &&
+                (!effectiveExistsFilter || tonie.exists) &&
+                (!effectiveNotExistsFilter || tonie.exists === false) &&
+                (!effectiveLiveFilter || tonie.live) &&
+                (!effectiveUnsetLiveFilter || tonie.live === false) &&
+                (!effectiveNocloudFilter || tonie.nocloud) &&
+                (!effectiveUnsetNocloudFilter || tonie.nocloud === false) &&
+                (!effectiveHasCloudAuthFilter || tonie.hasCloudAuth) &&
+                (!effectiveUnsetHasCloudAuthFilter || tonie.hasCloudAuth === false)
         );
-        if (searchText) {
+
+        if (effectiveSearchText) {
             filtered = filtered.filter(
                 (tonie) =>
-                    tonie.tonieInfo.series.toLowerCase().includes(searchText.toLowerCase()) ||
+                    tonie.tonieInfo.series.toLowerCase().includes(effectiveSearchText.toLowerCase()) ||
                     (tonie.sourceInfo?.series &&
-                        tonie.sourceInfo.series.toLowerCase().includes(searchText.toLowerCase())) ||
-                    tonie.tonieInfo.episode.toLowerCase().includes(searchText.toLowerCase()) ||
+                        tonie.sourceInfo.series.toLowerCase().includes(effectiveSearchText.toLowerCase())) ||
+                    tonie.tonieInfo.episode.toLowerCase().includes(effectiveSearchText.toLowerCase()) ||
                     (tonie.sourceInfo?.episode &&
-                        tonie.sourceInfo.episode.toLowerCase().includes(searchText.toLowerCase())) ||
-                    tonie.tonieInfo.model.toLowerCase().includes(searchText.toLowerCase()) ||
+                        tonie.sourceInfo.episode.toLowerCase().includes(effectiveSearchText.toLowerCase())) ||
+                    tonie.tonieInfo.model.toLowerCase().includes(effectiveSearchText.toLowerCase()) ||
                     (tonie.sourceInfo?.model &&
-                        tonie.sourceInfo.model.toLowerCase().includes(searchText.toLowerCase())) ||
-                    tonie.ruid.toLowerCase().includes(searchText.toLowerCase()) ||
-                    tonie.uid.toLowerCase().includes(searchText.toLowerCase()) ||
-                    tonie.source.toLowerCase().includes(searchText.toLowerCase())
+                        tonie.sourceInfo.model.toLowerCase().includes(effectiveSearchText.toLowerCase())) ||
+                    tonie.ruid.toLowerCase().includes(effectiveSearchText.toLowerCase()) ||
+                    tonie.uid.toLowerCase().includes(effectiveSearchText.toLowerCase()) ||
+                    tonie.source.toLowerCase().includes(effectiveSearchText.toLowerCase())
             );
         }
-        if (filterLastTonieboxRUIDs) {
-            // Filter by RUID part of the lastTonieboxRUIDs array
-            filtered = filtered.filter((tonie) => lastTonieboxRUIDs.some(([ruid]) => ruid === tonie.ruid));
+
+        if (effectiveFilterLastTonieboxRUIDs) {
+            filtered = filtered.filter((tonie) => (lastTonieboxRUIDs ?? []).some(([ruid]) => ruid === tonie.ruid));
         }
-        if (customFilter.trim() !== "") {
-            filtered = filtered.filter((tonie) => applyCustomFilter(tonie, customFilter));
+
+        if (effectiveCustomFilter.trim() !== "") {
+            filtered = filtered.filter((tonie) => applyCustomFilter(tonie, effectiveCustomFilter));
         }
-        if (hiddenRuids) {
-            // filter hidden RUIDs always
-            filtered = filtered.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
+
+        if (effectiveHiddenRuids) {
+            filtered = filtered.filter((tonie) => !effectiveHiddenRuids.includes(tonie.ruid));
         }
+
         setCurrentPage(1);
         setFilteredTonies(filtered);
         setListKey((prevKey) => prevKey + 1);
@@ -973,7 +1021,7 @@ export const ToniesList: React.FC<{
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 style={{ margin: "8px 0 8px 0" }}
-                suffix={<SearchOutlined onMouseDown={(e) => e.preventDefault()} onClick={handleFilter} />}
+                suffix={<SearchOutlined onMouseDown={(e) => e.preventDefault()} onClick={() => handleFilter()} />}
             />
             <div className="filter-container">
                 <label className="filter-label">{t("tonies.tonies.filterBar.filterLabel")}</label>
@@ -1229,7 +1277,7 @@ export const ToniesList: React.FC<{
                         <Button onClick={handleResetFilters} style={{ marginLeft: 16 }}>
                             {t("tonies.tonies.filterBar.resetFilters")}
                         </Button>
-                        <Button onClick={handleFilter} style={{ marginLeft: 16 }}>
+                        <Button onClick={() => handleFilter()} style={{ marginLeft: 16 }}>
                             {t("tonies.tonies.filterBar.applyFilters")}
                         </Button>
                     </div>
