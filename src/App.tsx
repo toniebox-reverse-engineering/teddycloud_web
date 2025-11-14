@@ -124,7 +124,7 @@ function App() {
                 <div className="App">
                     <Layout style={{ minHeight: "100vh" }}>
                         <Router basename={import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}>
-                            <StyledHeader themeSwitch={themeSwitchIcon} />
+                            <StyledHeader themeSwitch={themeSwitchIcon} themeMode={themeMode} />
                             <AudioProvider>
                                 <Layout>
                                     <Routes>
