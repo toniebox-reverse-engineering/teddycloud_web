@@ -656,36 +656,28 @@ export const TeddyStudioPage = () => {
                                                                 flexWrap: "wrap",
                                                             }}
                                                         >
-                                                            <div
-                                                                style={{
-                                                                    display: "flex",
-                                                                    alignItems: "baseline",
-                                                                    gap: 8,
-                                                                }}
-                                                            >
-                                                                <Input
-                                                                    size="small"
-                                                                    type="number"
-                                                                    value={parseFloat(width)}
-                                                                    onChange={handleWidthChange}
-                                                                    min={1}
-                                                                    max={240}
-                                                                    style={{ width: 100 }}
-                                                                    suffix="mm"
-                                                                    placeholder={t("tonies.teddystudio.width")}
-                                                                />
-                                                                <Input
-                                                                    size="small"
-                                                                    type="number"
-                                                                    value={parseFloat(height)}
-                                                                    onChange={handleHeightChange}
-                                                                    min={1}
-                                                                    max={240}
-                                                                    style={{ width: 100 }}
-                                                                    suffix="mm"
-                                                                    placeholder={t("tonies.teddystudio.height")}
-                                                                />
-                                                            </div>
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(width)}
+                                                                onChange={handleWidthChange}
+                                                                min={1}
+                                                                max={240}
+                                                                style={{ width: 100 }}
+                                                                suffix="mm"
+                                                                placeholder={t("tonies.teddystudio.width")}
+                                                            />
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(height)}
+                                                                onChange={handleHeightChange}
+                                                                min={1}
+                                                                max={240}
+                                                                style={{ width: 100 }}
+                                                                suffix="mm"
+                                                                placeholder={t("tonies.teddystudio.height")}
+                                                            />
                                                         </div>
                                                     </div>
                                                 )}
@@ -708,37 +700,28 @@ export const TeddyStudioPage = () => {
                                                             flexWrap: "wrap",
                                                         }}
                                                     >
-                                                        <div
-                                                            style={{
-                                                                display: "flex",
-                                                                alignItems: "baseline",
-                                                                gap: 8,
-                                                            }}
-                                                        >
-                                                            <Input
-                                                                size="small"
-                                                                type="number"
-                                                                value={parseFloat(labelSpacingX)}
-                                                                onChange={handleSpacingChange(setLabelSpacingX)}
-                                                                min={0}
-                                                                max={100}
-                                                                style={{ width: 100, marginRight: 8 }}
-                                                                suffix="mm"
-                                                                placeholder={t("tonies.teddystudio.labelSpacingX")}
-                                                            />
-
-                                                            <Input
-                                                                size="small"
-                                                                type="number"
-                                                                value={parseFloat(labelSpacingY)}
-                                                                onChange={handleSpacingChange(setLabelSpacingY)}
-                                                                min={0}
-                                                                max={100}
-                                                                style={{ width: 100 }}
-                                                                suffix="mm"
-                                                                placeholder={t("tonies.teddystudio.labelSpacingY")}
-                                                            />
-                                                        </div>
+                                                        <Input
+                                                            size="small"
+                                                            type="number"
+                                                            value={parseFloat(labelSpacingX)}
+                                                            onChange={handleSpacingChange(setLabelSpacingX)}
+                                                            min={0}
+                                                            max={100}
+                                                            style={{ width: 100 }}
+                                                            suffix="mm"
+                                                            placeholder={t("tonies.teddystudio.labelSpacingX")}
+                                                        />
+                                                        <Input
+                                                            size="small"
+                                                            type="number"
+                                                            value={parseFloat(labelSpacingY)}
+                                                            onChange={handleSpacingChange(setLabelSpacingY)}
+                                                            min={0}
+                                                            max={100}
+                                                            style={{ width: 100 }}
+                                                            suffix="mm"
+                                                            placeholder={t("tonies.teddystudio.labelSpacingY")}
+                                                        />
                                                     </div>
                                                 </div>
 
