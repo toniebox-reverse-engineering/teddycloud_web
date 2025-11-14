@@ -645,8 +645,7 @@ export const TeddyStudioPage = () => {
                                                         }}
                                                     >
                                                         <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
-                                                            {t("tonies.teddystudio.width")}/
-                                                            {t("tonies.teddystudio.height")}
+                                                            {t("tonies.teddystudio.labelSize")}
                                                         </label>
                                                         <div
                                                             style={{
@@ -911,8 +910,7 @@ export const TeddyStudioPage = () => {
                                                         }}
                                                     >
                                                         <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.paperWidth")}/
-                                                            {t("tonies.teddystudio.paperHeight")}
+                                                            {t("tonies.teddystudio.paperCustomSize")}
                                                         </label>
                                                         <div
                                                             style={{
@@ -954,8 +952,7 @@ export const TeddyStudioPage = () => {
                                                     }}
                                                 >
                                                     <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.paperMarginTop")}/
-                                                        {t("tonies.teddystudio.paperMarginLeft")}
+                                                        {t("tonies.teddystudio.paperMargin")}
                                                     </label>
                                                     <div
                                                         style={{
