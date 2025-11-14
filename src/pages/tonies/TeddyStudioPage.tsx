@@ -13,6 +13,7 @@ import {
     Tooltip,
     Collapse,
     Select,
+    Card,
 } from "antd";
 import {
     ClearOutlined,
@@ -529,6 +530,7 @@ export const TeddyStudioPage = () => {
                         </div>
                     </div>
                     <Collapse
+                        bordered={false}
                         items={[
                             {
                                 key: "1",
@@ -545,399 +547,438 @@ export const TeddyStudioPage = () => {
                                 } `,
                                 children: (
                                     <Paragraph style={{ marginBottom: 0 }}>
-                                        <Divider style={{ marginTop: 0 }}>
-                                            {t("tonies.teddystudio.labelSettings")}
-                                        </Divider>
-
                                         <div
                                             style={{
                                                 display: "flex",
-                                                gap: "8px 16px",
-                                                flexWrap: "wrap",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
                                                 marginBottom: 8,
+                                                flexWrap: "wrap",
+                                                gap: 8,
                                             }}
                                         >
-                                            <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                <label style={{ marginRight: 8 }}>
-                                                    {t("tonies.teddystudio.labelShape")}
-                                                </label>
-                                                <Radio.Group
-                                                    size="small"
-                                                    optionType="button"
-                                                    buttonStyle="solid"
-                                                    value={labelShape}
-                                                    onChange={handleLabelShapeChange}
-                                                >
-                                                    <Radio.Button value="round">
-                                                        {t("tonies.teddystudio.round")}
-                                                    </Radio.Button>
-                                                    <Radio.Button value="square">
-                                                        {t("tonies.teddystudio.square")}
-                                                    </Radio.Button>
-                                                </Radio.Group>
-                                            </div>
+                                            <h3 style={{ margin: 0 }}>{t("tonies.teddystudio.settings")}</h3>
 
-                                            {labelShape === "round" ? (
-                                                <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                    <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.diameter")}
-                                                    </label>
-                                                    <Input
-                                                        size="small"
-                                                        type="number"
-                                                        value={parseFloat(diameter)}
-                                                        onChange={handleDiameterChange}
-                                                        min={1}
-                                                        max={240}
-                                                        style={{ width: 120 }}
-                                                        suffix="mm"
-                                                        placeholder={t("tonies.teddystudio.diameter")}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                        <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.width")}
-                                                        </label>
-                                                        <Input
-                                                            size="small"
-                                                            type="number"
-                                                            value={parseFloat(width)}
-                                                            onChange={handleWidthChange}
-                                                            min={1}
-                                                            max={240}
-                                                            style={{ width: 120 }}
-                                                            suffix="mm"
-                                                            placeholder={t("tonies.teddystudio.width")}
-                                                        />
-                                                    </div>
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                        <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.height")}
-                                                        </label>
-                                                        <Input
-                                                            size="small"
-                                                            type="number"
-                                                            value={parseFloat(height)}
-                                                            onChange={handleHeightChange}
-                                                            min={1}
-                                                            max={240}
-                                                            style={{ width: 120 }}
-                                                            suffix="mm"
-                                                            placeholder={t("tonies.teddystudio.height")}
-                                                        />
-                                                    </div>
-                                                </>
-                                            )}
-                                            <div style={{ display: "flex", alignItems: "baseline", gap: "8px 16px" }}>
-                                                <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
-                                                    {t("tonies.teddystudio.labelSpacing")}
-                                                </label>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    gap: 8,
+                                                    flexWrap: "wrap",
+                                                    alignItems: "center",
+                                                }}
+                                            >
                                                 <div
                                                     style={{
                                                         display: "flex",
                                                         alignItems: "baseline",
-                                                        gap: 8,
+                                                        width: 380,
+                                                        justifyContent: "flex-end",
+                                                    }}
+                                                >
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.predefinedPaperOptions")}
+                                                    </label>
+                                                    <Select
+                                                        placeholder={t(
+                                                            "tonies.teddystudio.selectPredefinedPaperOptions"
+                                                        )}
+                                                        value={selectedPaper}
+                                                        onChange={handlePaperSelect}
+                                                        options={paperOptions.map((p) => ({
+                                                            label: p.label,
+                                                            value: p.value,
+                                                        }))}
+                                                        style={{ maxWidth: 230 }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <Card
+                                            size="small"
+                                            title={t("tonies.teddystudio.labelSettings")}
+                                            style={{ marginBottom: 8 }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    gap: "8px 16px",
+                                                    flexWrap: "wrap",
+                                                    marginBottom: 8,
+                                                }}
+                                            >
+                                                <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.labelShape")}
+                                                    </label>
+                                                    <Radio.Group
+                                                        size="small"
+                                                        optionType="button"
+                                                        buttonStyle="solid"
+                                                        value={labelShape}
+                                                        onChange={handleLabelShapeChange}
+                                                    >
+                                                        <Radio.Button value="round">
+                                                            {t("tonies.teddystudio.round")}
+                                                        </Radio.Button>
+                                                        <Radio.Button value="square">
+                                                            {t("tonies.teddystudio.square")}
+                                                        </Radio.Button>
+                                                    </Radio.Group>
+                                                </div>
+
+                                                {labelShape === "round" ? (
+                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                        <label style={{ marginRight: 8 }}>
+                                                            {t("tonies.teddystudio.diameter")}
+                                                        </label>
+                                                        <Input
+                                                            size="small"
+                                                            type="number"
+                                                            value={parseFloat(diameter)}
+                                                            onChange={handleDiameterChange}
+                                                            min={1}
+                                                            max={240}
+                                                            style={{ width: 120 }}
+                                                            suffix="mm"
+                                                            placeholder={t("tonies.teddystudio.diameter")}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                            <label style={{ marginRight: 8 }}>
+                                                                {t("tonies.teddystudio.width")}
+                                                            </label>
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(width)}
+                                                                onChange={handleWidthChange}
+                                                                min={1}
+                                                                max={240}
+                                                                style={{ width: 120 }}
+                                                                suffix="mm"
+                                                                placeholder={t("tonies.teddystudio.width")}
+                                                            />
+                                                        </div>
+                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                            <label style={{ marginRight: 8 }}>
+                                                                {t("tonies.teddystudio.height")}
+                                                            </label>
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(height)}
+                                                                onChange={handleHeightChange}
+                                                                min={1}
+                                                                max={240}
+                                                                style={{ width: 120 }}
+                                                                suffix="mm"
+                                                                placeholder={t("tonies.teddystudio.height")}
+                                                            />
+                                                        </div>
+                                                    </>
+                                                )}
+                                                <div
+                                                    style={{ display: "flex", alignItems: "baseline", gap: "8px 16px" }}
+                                                >
+                                                    <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
+                                                        {t("tonies.teddystudio.labelSpacing")}
+                                                    </label>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            alignItems: "baseline",
+                                                            gap: 8,
+                                                            flexWrap: "wrap",
+                                                        }}
+                                                    >
+                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                            <label style={{ marginRight: 8 }}>
+                                                                {t("tonies.teddystudio.labelSpacingX")}
+                                                            </label>
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(labelSpacingY)}
+                                                                onChange={handleSpacingChange(setLabelSpacingY)}
+                                                                min={0}
+                                                                max={100}
+                                                                style={{ width: 120, marginRight: 8 }}
+                                                                suffix="mm"
+                                                                placeholder={t("tonies.teddystudio.labelSpacingY")}
+                                                            />
+                                                        </div>
+                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                            <label style={{ marginRight: 8 }}>
+                                                                {t("tonies.teddystudio.labelSpacingY")}
+                                                            </label>
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(labelSpacingX)}
+                                                                onChange={handleSpacingChange(setLabelSpacingX)}
+                                                                min={0}
+                                                                max={100}
+                                                                style={{ width: 120 }}
+                                                                suffix="mm"
+                                                                placeholder={t("tonies.teddystudio.labelSpacingX")}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    gap: "8px 16px",
+                                                    flexWrap: "wrap",
+                                                }}
+                                            >
+                                                <div>
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.printMode")}
+                                                    </label>
+                                                    <Radio.Group
+                                                        size="small"
+                                                        value={printMode}
+                                                        onChange={(e) => setPrintMode(e.target.value)}
+                                                        optionType="button"
+                                                        buttonStyle="solid"
+                                                    >
+                                                        <Radio.Button value="ImageAndText">
+                                                            <Tooltip
+                                                                title={t(
+                                                                    "tonies.teddystudio.printModeImageAndTextTooltip"
+                                                                )}
+                                                            >
+                                                                {t("tonies.teddystudio.printModeImageAndText")}
+                                                            </Tooltip>
+                                                        </Radio.Button>
+                                                        <Radio.Button value="OnlyImage">
+                                                            <Tooltip
+                                                                title={t(
+                                                                    "tonies.teddystudio.printModeOnlyImageTooltip"
+                                                                )}
+                                                            >
+                                                                {t("tonies.teddystudio.printModeOnlyImage")}
+                                                            </Tooltip>
+                                                        </Radio.Button>
+                                                        <Radio.Button value="OnlyText">
+                                                            <Tooltip
+                                                                title={t("tonies.teddystudio.printModeOnlyTextTooltip")}
+                                                            >
+                                                                {t("tonies.teddystudio.printModeOnlyText")}
+                                                            </Tooltip>
+                                                        </Radio.Button>
+                                                    </Radio.Group>
+                                                </div>
+                                                {printMode != "OnlyImage" ? (
+                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                        <label style={{ marginRight: 8 }}>
+                                                            {t("tonies.teddystudio.textFontSize")}
+                                                        </label>
+                                                        <Input
+                                                            size="small"
+                                                            type="number"
+                                                            value={parseFloat(textFontSize)}
+                                                            onChange={handleTextFontsizeChange}
+                                                            min={1}
+                                                            max={90}
+                                                            style={{ width: 120 }}
+                                                            suffix="px"
+                                                            placeholder={t("tonies.teddystudio.textFontSize")}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    ""
+                                                )}
+                                                {printMode != "OnlyImage" ? (
+                                                    <Checkbox
+                                                        style={{ display: "flex", alignItems: "center" }}
+                                                        checked={showLanguageFlag}
+                                                        onChange={(e) => setShowLanguageFlag(e.target.checked)}
+                                                    >
+                                                        {t("tonies.teddystudio.showLanguageFlag")}
+                                                    </Checkbox>
+                                                ) : (
+                                                    ""
+                                                )}
+                                                {printMode != "OnlyImage" ? (
+                                                    <Checkbox
+                                                        style={{ display: "flex", alignItems: "center" }}
+                                                        checked={showModelNo}
+                                                        onChange={(e) => setShowModelNo(e.target.checked)}
+                                                    >
+                                                        {t("tonies.teddystudio.showModelNo")}
+                                                    </Checkbox>
+                                                ) : (
+                                                    ""
+                                                )}
+                                                <Checkbox
+                                                    style={{ display: "flex", alignItems: "center" }}
+                                                    checked={showLabelBorder}
+                                                    onChange={(e) => {
+                                                        setShowLabelBorder(e.target.checked);
+                                                        setSelectedPaper(undefined);
+                                                    }}
+                                                >
+                                                    {t("tonies.teddystudio.showLabelBorder")}
+                                                </Checkbox>
+
+                                                <div style={{ display: "flex", alignItems: "center" }}>
+                                                    <span style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.labelBackgroundColor")}
+                                                    </span>
+                                                    <ColorPicker
+                                                        size="small"
+                                                        value={labelBackgroundColor}
+                                                        onChange={(_, hex) => setLabelBackgroundColor(hex)}
+                                                        showText
+                                                        disabledAlpha
+                                                        disabledFormat
+                                                        format="hex"
+                                                    ></ColorPicker>
+                                                </div>
+                                            </div>
+                                        </Card>
+                                        <Card
+                                            size="small"
+                                            title={t("tonies.teddystudio.paperSettings")}
+                                            style={{ marginBottom: 8 }}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "baseline",
+                                                    gap: "8px 16px",
+                                                    flexWrap: "wrap",
+                                                }}
+                                            >
+                                                <div>
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.paperSize")}
+                                                    </label>
+                                                    <Radio.Group
+                                                        size="small"
+                                                        value={paperSize}
+                                                        onChange={handlePaperSizeChange}
+                                                        optionType="button"
+                                                        buttonStyle="solid"
+                                                    >
+                                                        <Radio.Button value="A4">A4</Radio.Button>
+                                                        <Radio.Button value="A5">A5</Radio.Button>
+                                                        <Radio.Button value="Letter">Letter</Radio.Button>
+                                                        <Radio.Button value="Custom">
+                                                            {t("tonies.teddystudio.custom")}
+                                                        </Radio.Button>
+                                                    </Radio.Group>
+                                                </div>
+
+                                                {paperSize === "Custom" && (
+                                                    <>
+                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                            <label style={{ marginRight: 8 }}>
+                                                                {t("tonies.teddystudio.paperWidth")}
+                                                            </label>
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(customPaperWidth)}
+                                                                onChange={handleCustomPaperWidthChange}
+                                                                min={1}
+                                                                max={500}
+                                                                style={{ width: 120 }}
+                                                                suffix="mm"
+                                                            />
+                                                        </div>
+                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                            <label style={{ marginRight: 8 }}>
+                                                                {t("tonies.teddystudio.paperHeight")}
+                                                            </label>
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(customPaperHeight)}
+                                                                onChange={handleCustomPaperHeightChange}
+                                                                min={1}
+                                                                max={500}
+                                                                style={{ width: 120 }}
+                                                                suffix="mm"
+                                                            />
+                                                        </div>
+                                                    </>
+                                                )}
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        alignItems: "baseline",
+                                                        gap: 16,
                                                         flexWrap: "wrap",
                                                     }}
                                                 >
                                                     <div style={{ display: "flex", alignItems: "baseline" }}>
                                                         <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.labelSpacingX")}
+                                                            {t("tonies.teddystudio.paperMarginTop")}
                                                         </label>
                                                         <Input
                                                             size="small"
                                                             type="number"
-                                                            value={parseFloat(labelSpacingY)}
-                                                            onChange={handleSpacingChange(setLabelSpacingY)}
+                                                            value={parseFloat(paperMarginTop)}
+                                                            onChange={handlePaperMarginTopChange}
                                                             min={0}
-                                                            max={100}
-                                                            style={{ width: 120, marginRight: 8 }}
+                                                            max={50}
+                                                            style={{ width: 120 }}
                                                             suffix="mm"
-                                                            placeholder={t("tonies.teddystudio.labelSpacingY")}
                                                         />
                                                     </div>
                                                     <div style={{ display: "flex", alignItems: "baseline" }}>
                                                         <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.labelSpacingY")}
+                                                            {t("tonies.teddystudio.paperMarginLeft")}
                                                         </label>
                                                         <Input
                                                             size="small"
                                                             type="number"
-                                                            value={parseFloat(labelSpacingX)}
-                                                            onChange={handleSpacingChange(setLabelSpacingX)}
+                                                            value={parseFloat(paperMarginLeft)}
+                                                            onChange={handlePaperMarginLeftChange}
                                                             min={0}
-                                                            max={100}
-                                                            style={{ width: 120 }}
-                                                            suffix="mm"
-                                                            placeholder={t("tonies.teddystudio.labelSpacingX")}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                gap: "8px 16px",
-                                                flexWrap: "wrap",
-                                                marginBottom: 8,
-                                            }}
-                                        >
-                                            <div>
-                                                <label style={{ marginRight: 8 }}>
-                                                    {t("tonies.teddystudio.printMode")}
-                                                </label>
-                                                <Radio.Group
-                                                    size="small"
-                                                    value={printMode}
-                                                    onChange={(e) => setPrintMode(e.target.value)}
-                                                    optionType="button"
-                                                    buttonStyle="solid"
-                                                >
-                                                    <Radio.Button value="ImageAndText">
-                                                        <Tooltip
-                                                            title={t("tonies.teddystudio.printModeImageAndTextTooltip")}
-                                                        >
-                                                            {t("tonies.teddystudio.printModeImageAndText")}
-                                                        </Tooltip>
-                                                    </Radio.Button>
-                                                    <Radio.Button value="OnlyImage">
-                                                        <Tooltip
-                                                            title={t("tonies.teddystudio.printModeOnlyImageTooltip")}
-                                                        >
-                                                            {t("tonies.teddystudio.printModeOnlyImage")}
-                                                        </Tooltip>
-                                                    </Radio.Button>
-                                                    <Radio.Button value="OnlyText">
-                                                        <Tooltip
-                                                            title={t("tonies.teddystudio.printModeOnlyTextTooltip")}
-                                                        >
-                                                            {t("tonies.teddystudio.printModeOnlyText")}
-                                                        </Tooltip>
-                                                    </Radio.Button>
-                                                </Radio.Group>
-                                            </div>
-                                            {printMode != "OnlyImage" ? (
-                                                <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                    <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.textFontSize")}
-                                                    </label>
-                                                    <Input
-                                                        size="small"
-                                                        type="number"
-                                                        value={parseFloat(textFontSize)}
-                                                        onChange={handleTextFontsizeChange}
-                                                        min={1}
-                                                        max={90}
-                                                        style={{ width: 120 }}
-                                                        suffix="px"
-                                                        placeholder={t("tonies.teddystudio.textFontSize")}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                ""
-                                            )}
-                                            {printMode != "OnlyImage" ? (
-                                                <Checkbox
-                                                    style={{ display: "flex", alignItems: "center" }}
-                                                    checked={showLanguageFlag}
-                                                    onChange={(e) => setShowLanguageFlag(e.target.checked)}
-                                                >
-                                                    {t("tonies.teddystudio.showLanguageFlag")}
-                                                </Checkbox>
-                                            ) : (
-                                                ""
-                                            )}
-                                            {printMode != "OnlyImage" ? (
-                                                <Checkbox
-                                                    style={{ display: "flex", alignItems: "center" }}
-                                                    checked={showModelNo}
-                                                    onChange={(e) => setShowModelNo(e.target.checked)}
-                                                >
-                                                    {t("tonies.teddystudio.showModelNo")}
-                                                </Checkbox>
-                                            ) : (
-                                                ""
-                                            )}
-                                            <Checkbox
-                                                style={{ display: "flex", alignItems: "center" }}
-                                                checked={showLabelBorder}
-                                                onChange={(e) => {
-                                                    setShowLabelBorder(e.target.checked);
-                                                    setSelectedPaper(undefined);
-                                                }}
-                                            >
-                                                {t("tonies.teddystudio.showLabelBorder")}
-                                            </Checkbox>
-
-                                            <div style={{ display: "flex", alignItems: "center" }}>
-                                                <span style={{ marginRight: 8 }}>
-                                                    {t("tonies.teddystudio.labelBackgroundColor")}
-                                                </span>
-                                                <ColorPicker
-                                                    size="small"
-                                                    value={labelBackgroundColor}
-                                                    onChange={(_, hex) => setLabelBackgroundColor(hex)}
-                                                    showText
-                                                    disabledAlpha
-                                                    disabledFormat
-                                                    format="hex"
-                                                ></ColorPicker>
-                                            </div>
-                                        </div>
-                                        <Divider>{t("tonies.teddystudio.paperSettings")}</Divider>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "baseline",
-                                                gap: "8px 16px",
-                                                flexWrap: "wrap",
-                                                marginBottom: 16,
-                                            }}
-                                        >
-                                            <div>
-                                                <label style={{ marginRight: 8 }}>
-                                                    {t("tonies.teddystudio.paperSize")}
-                                                </label>
-                                                <Radio.Group
-                                                    size="small"
-                                                    value={paperSize}
-                                                    onChange={handlePaperSizeChange}
-                                                    optionType="button"
-                                                    buttonStyle="solid"
-                                                >
-                                                    <Radio.Button value="A4">A4</Radio.Button>
-                                                    <Radio.Button value="A5">A5</Radio.Button>
-                                                    <Radio.Button value="Letter">Letter</Radio.Button>
-                                                    <Radio.Button value="Custom">
-                                                        {t("tonies.teddystudio.custom")}
-                                                    </Radio.Button>
-                                                </Radio.Group>
-                                            </div>
-
-                                            {paperSize === "Custom" && (
-                                                <>
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                        <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.paperWidth")}
-                                                        </label>
-                                                        <Input
-                                                            size="small"
-                                                            type="number"
-                                                            value={parseFloat(customPaperWidth)}
-                                                            onChange={handleCustomPaperWidthChange}
-                                                            min={1}
-                                                            max={500}
+                                                            max={50}
                                                             style={{ width: 120 }}
                                                             suffix="mm"
                                                         />
                                                     </div>
                                                     <div style={{ display: "flex", alignItems: "baseline" }}>
                                                         <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.paperHeight")}
+                                                            {t("tonies.teddystudio.paperLabelImageBleed")}
                                                         </label>
                                                         <Input
                                                             size="small"
                                                             type="number"
-                                                            value={parseFloat(customPaperHeight)}
-                                                            onChange={handleCustomPaperHeightChange}
-                                                            min={1}
-                                                            max={500}
+                                                            value={parseFloat(paperLabelImageBleed)}
+                                                            onChange={handlePaperLabelImageBleedChange}
+                                                            min={0}
+                                                            max={50}
                                                             style={{ width: 120 }}
                                                             suffix="mm"
                                                         />
                                                     </div>
-                                                </>
-                                            )}
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "baseline",
-                                                    gap: 16,
-                                                    flexWrap: "wrap",
-                                                }}
-                                            >
-                                                <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                    <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.paperMarginTop")}
-                                                    </label>
-                                                    <Input
-                                                        size="small"
-                                                        type="number"
-                                                        value={parseFloat(paperMarginTop)}
-                                                        onChange={handlePaperMarginTopChange}
-                                                        min={0}
-                                                        max={50}
-                                                        style={{ width: 120 }}
-                                                        suffix="mm"
-                                                    />
-                                                </div>
-                                                <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                    <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.paperMarginLeft")}
-                                                    </label>
-                                                    <Input
-                                                        size="small"
-                                                        type="number"
-                                                        value={parseFloat(paperMarginLeft)}
-                                                        onChange={handlePaperMarginLeftChange}
-                                                        min={0}
-                                                        max={50}
-                                                        style={{ width: 120 }}
-                                                        suffix="mm"
-                                                    />
-                                                </div>
-                                                <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                    <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.paperLabelImageBleed")}
-                                                    </label>
-                                                    <Input
-                                                        size="small"
-                                                        type="number"
-                                                        value={parseFloat(paperLabelImageBleed)}
-                                                        onChange={handlePaperLabelImageBleedChange}
-                                                        min={0}
-                                                        max={50}
-                                                        style={{ width: 120 }}
-                                                        suffix="mm"
-                                                    />
                                                 </div>
                                             </div>
-                                        </div>
-                                        <Divider />
+                                        </Card>
                                         <div
                                             style={{
                                                 display: "flex",
                                                 gap: 8,
                                                 flexWrap: "wrap",
-                                                justifyContent: "space-between",
+                                                justifyContent: "flex-end",
                                             }}
                                         >
-                                            <div style={{ display: "flex", alignItems: "baseline", width: 380 }}>
-                                                <label style={{ marginRight: 8 }}>
-                                                    {t("tonies.teddystudio.predefinedPaperOptions")}
-                                                </label>
-                                                <Select
-                                                    placeholder={t("tonies.teddystudio.selectPredefinedPaperOptions")}
-                                                    value={selectedPaper}
-                                                    onChange={handlePaperSelect}
-                                                    options={paperOptions.map((p) => ({
-                                                        label: p.label,
-                                                        value: p.value,
-                                                    }))}
-                                                    style={{ maxWidth: 230 }}
-                                                />
-                                            </div>
-                                            <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
-                                                <Button icon={<ClearOutlined />} onClick={handleClear}>
-                                                    {t("tonies.teddystudio.clearSettings")}
-                                                </Button>
-                                                <Button icon={<SaveOutlined />} onClick={handleSave}>
-                                                    {t("tonies.teddystudio.saveSettings")}
-                                                </Button>
-                                            </div>
+                                            <Button icon={<ClearOutlined />} onClick={handleClear}>
+                                                {t("tonies.teddystudio.clearSettings")}
+                                            </Button>
+                                            <Button icon={<SaveOutlined />} onClick={handleSave}>
+                                                {t("tonies.teddystudio.saveSettings")}
+                                            </Button>
                                         </div>
                                     </Paragraph>
                                 ),
