@@ -1975,7 +1975,7 @@
             "labelBackgroundColor": "Hintergrund",
             "labelSettings": "Etikett-Einstellungen",
             "labelShape": "Etikettenform",
-            "labelSize": "Label Breite/Höhe",
+            "labelSize": "Labelbreite/-höhe",
             "labelSpacing": "Abstand",
             "labelSpacingX": "X",
             "labelSpacingY": "Y",
@@ -2011,7 +2011,7 @@
         "tonies": {
             "filterBar": {
                 "applyFilters": "Filter anwenden",
-                "basicFilters": "Grundfilter",
+                "basicFilters": "Basisfilter",
                 "customFilter": {
                     "invalidFieldUnique": "Ungültiges Feld in unique(): {{field}}",
                     "invalidToken": "Ungültiges Token: {{token}}",
