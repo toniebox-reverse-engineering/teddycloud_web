@@ -556,7 +556,15 @@
                     },
                     "title": "MQTT-Client"
                 },
-                "13plugins": {
+                "13TeddyStudio": {
+                    "items": {
+                        "01Description": "Erstelle und drucke deine eigenen Labels für deine individuellen Tags.",
+                        "02Options": "Passe Labelformat, Größe, Abstände und viele weitere Optionen flexibel an.",
+                        "03Paperpresets": "Nutze vorhandene Label-Papier-Presets oder teile neue Presets im Forum oder auf Telegram."
+                    },
+                    "title": "TeddyStudio"
+                },
+                "14plugins": {
                     "items": {
                         "01pluginFeature": "Erweiter die TeddyCloud-Funktionalität durch benutzerdefinierte Plugins"
                     },

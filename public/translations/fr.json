@@ -556,7 +556,15 @@
                     },
                     "title": "Client MQTT"
                 },
-                "13plugins": {
+                "13TeddyStudio": {
+                    "items": {
+                        "01Description": "Créez et imprimez vos propres étiquettes pour vos tags personnalisés.",
+                        "02Options": "Personnalisez le format, la taille, les espacements et de nombreuses autres options d’étiquetage.",
+                        "03Paperpresets": "Utilisez les presets de papier d’étiquettes existants ou partagez-en de nouveaux sur le forum ou sur Telegram."
+                    },
+                    "title": "TeddyStudio"
+                },
+                "14plugins": {
                     "items": {
                         "01pluginFeature": "Étendez les fonctionnalités de TeddyCloud avec des plugins personnalisés"
                     },
