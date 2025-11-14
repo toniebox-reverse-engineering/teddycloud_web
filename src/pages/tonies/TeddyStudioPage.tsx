@@ -108,8 +108,8 @@ export const TeddyStudioPage = () => {
                 marginTop: "5mm",
                 marginLeft: "8mm",
                 imageBleed: "1mm",
-                spacingX: "10mm",
-                spacingY: "7mm",
+                spacingX: "7mm",
+                spacingY: "10mm",
                 paperFormat: "A4",
                 labelForm: "round",
                 labelBorder: false,
@@ -150,8 +150,8 @@ export const TeddyStudioPage = () => {
                 marginTop: "5mm",
                 marginLeft: "8mm",
                 imageBleed: "1mm",
-                spacingX: "12mm",
-                spacingY: "8mm",
+                spacingX: "8mm",
+                spacingY: "12mm",
                 paperFormat: "A4",
                 labelForm: "square",
                 labelBorder: false,
@@ -559,39 +559,16 @@ export const TeddyStudioPage = () => {
                                         >
                                             <h3 style={{ margin: 0 }}>{t("tonies.teddystudio.settings")}</h3>
 
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    gap: 8,
-                                                    flexWrap: "wrap",
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        display: "flex",
-                                                        alignItems: "baseline",
-                                                        width: 380,
-                                                        justifyContent: "flex-end",
-                                                    }}
-                                                >
-                                                    <label style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.predefinedPaperOptions")}
-                                                    </label>
-                                                    <Select
-                                                        placeholder={t(
-                                                            "tonies.teddystudio.selectPredefinedPaperOptions"
-                                                        )}
-                                                        value={selectedPaper}
-                                                        onChange={handlePaperSelect}
-                                                        options={paperOptions.map((p) => ({
-                                                            label: p.label,
-                                                            value: p.value,
-                                                        }))}
-                                                        style={{ maxWidth: 230 }}
-                                                    />
-                                                </div>
-                                            </div>
+                                            <Select
+                                                placeholder={t("tonies.teddystudio.selectPredefinedPaperOptions")}
+                                                value={selectedPaper}
+                                                onChange={handlePaperSelect}
+                                                options={paperOptions.map((p) => ({
+                                                    label: p.label,
+                                                    value: p.value,
+                                                }))}
+                                                style={{ maxWidth: 250 }}
+                                            />
                                         </div>
                                         <Card
                                             size="small"
@@ -600,13 +577,21 @@ export const TeddyStudioPage = () => {
                                         >
                                             <div
                                                 style={{
-                                                    display: "flex",
-                                                    gap: "8px 16px",
-                                                    flexWrap: "wrap",
+                                                    display: "grid",
+                                                    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                                                    gap: 16,
                                                     marginBottom: 8,
+                                                    alignItems: "end",
                                                 }}
                                             >
-                                                <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "baseline",
+                                                        gap: 4,
+                                                    }}
+                                                >
                                                     <label style={{ marginRight: 8 }}>
                                                         {t("tonies.teddystudio.labelShape")}
                                                     </label>
@@ -627,7 +612,14 @@ export const TeddyStudioPage = () => {
                                                 </div>
 
                                                 {labelShape === "round" ? (
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            alignItems: "baseline",
+                                                            gap: 4,
+                                                        }}
+                                                    >
                                                         <label style={{ marginRight: 8 }}>
                                                             {t("tonies.teddystudio.diameter")}
                                                         </label>
@@ -638,52 +630,75 @@ export const TeddyStudioPage = () => {
                                                             onChange={handleDiameterChange}
                                                             min={1}
                                                             max={240}
-                                                            style={{ width: 120 }}
+                                                            style={{ width: 100 }}
                                                             suffix="mm"
                                                             placeholder={t("tonies.teddystudio.diameter")}
                                                         />
                                                     </div>
                                                 ) : (
-                                                    <>
-                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                            <label style={{ marginRight: 8 }}>
-                                                                {t("tonies.teddystudio.width")}
-                                                            </label>
-                                                            <Input
-                                                                size="small"
-                                                                type="number"
-                                                                value={parseFloat(width)}
-                                                                onChange={handleWidthChange}
-                                                                min={1}
-                                                                max={240}
-                                                                style={{ width: 120 }}
-                                                                suffix="mm"
-                                                                placeholder={t("tonies.teddystudio.width")}
-                                                            />
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            alignItems: "baseline",
+                                                            gap: 4,
+                                                        }}
+                                                    >
+                                                        <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
+                                                            {t("tonies.teddystudio.width")}/
+                                                            {t("tonies.teddystudio.height")}
+                                                        </label>
+                                                        <div
+                                                            style={{
+                                                                display: "flex",
+                                                                alignItems: "baseline",
+                                                                gap: 8,
+                                                                flexWrap: "wrap",
+                                                            }}
+                                                        >
+                                                            <div
+                                                                style={{
+                                                                    display: "flex",
+                                                                    alignItems: "baseline",
+                                                                    gap: 8,
+                                                                }}
+                                                            >
+                                                                <Input
+                                                                    size="small"
+                                                                    type="number"
+                                                                    value={parseFloat(width)}
+                                                                    onChange={handleWidthChange}
+                                                                    min={1}
+                                                                    max={240}
+                                                                    style={{ width: 100 }}
+                                                                    suffix="mm"
+                                                                    placeholder={t("tonies.teddystudio.width")}
+                                                                />
+                                                                <Input
+                                                                    size="small"
+                                                                    type="number"
+                                                                    value={parseFloat(height)}
+                                                                    onChange={handleHeightChange}
+                                                                    min={1}
+                                                                    max={240}
+                                                                    style={{ width: 100 }}
+                                                                    suffix="mm"
+                                                                    placeholder={t("tonies.teddystudio.height")}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                            <label style={{ marginRight: 8 }}>
-                                                                {t("tonies.teddystudio.height")}
-                                                            </label>
-                                                            <Input
-                                                                size="small"
-                                                                type="number"
-                                                                value={parseFloat(height)}
-                                                                onChange={handleHeightChange}
-                                                                min={1}
-                                                                max={240}
-                                                                style={{ width: 120 }}
-                                                                suffix="mm"
-                                                                placeholder={t("tonies.teddystudio.height")}
-                                                            />
-                                                        </div>
-                                                    </>
+                                                    </div>
                                                 )}
                                                 <div
-                                                    style={{ display: "flex", alignItems: "baseline", gap: "8px 16px" }}
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "baseline",
+                                                        gap: 4,
+                                                    }}
                                                 >
                                                     <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
-                                                        {t("tonies.teddystudio.labelSpacing")}
+                                                        {t("tonies.teddystudio.labelSpacing")} X/Y
                                                     </label>
                                                     <div
                                                         style={{
@@ -693,26 +708,13 @@ export const TeddyStudioPage = () => {
                                                             flexWrap: "wrap",
                                                         }}
                                                     >
-                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                            <label style={{ marginRight: 8 }}>
-                                                                {t("tonies.teddystudio.labelSpacingX")}
-                                                            </label>
-                                                            <Input
-                                                                size="small"
-                                                                type="number"
-                                                                value={parseFloat(labelSpacingY)}
-                                                                onChange={handleSpacingChange(setLabelSpacingY)}
-                                                                min={0}
-                                                                max={100}
-                                                                style={{ width: 120, marginRight: 8 }}
-                                                                suffix="mm"
-                                                                placeholder={t("tonies.teddystudio.labelSpacingY")}
-                                                            />
-                                                        </div>
-                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                            <label style={{ marginRight: 8 }}>
-                                                                {t("tonies.teddystudio.labelSpacingY")}
-                                                            </label>
+                                                        <div
+                                                            style={{
+                                                                display: "flex",
+                                                                alignItems: "baseline",
+                                                                gap: 8,
+                                                            }}
+                                                        >
                                                             <Input
                                                                 size="small"
                                                                 type="number"
@@ -720,22 +722,64 @@ export const TeddyStudioPage = () => {
                                                                 onChange={handleSpacingChange(setLabelSpacingX)}
                                                                 min={0}
                                                                 max={100}
-                                                                style={{ width: 120 }}
+                                                                style={{ width: 100, marginRight: 8 }}
                                                                 suffix="mm"
                                                                 placeholder={t("tonies.teddystudio.labelSpacingX")}
+                                                            />
+
+                                                            <Input
+                                                                size="small"
+                                                                type="number"
+                                                                value={parseFloat(labelSpacingY)}
+                                                                onChange={handleSpacingChange(setLabelSpacingY)}
+                                                                min={0}
+                                                                max={100}
+                                                                style={{ width: 100 }}
+                                                                suffix="mm"
+                                                                placeholder={t("tonies.teddystudio.labelSpacingY")}
                                                             />
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "baseline",
+                                                        gap: 4,
+                                                    }}
+                                                >
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.labelBackgroundColor")}
+                                                    </label>
+                                                    <ColorPicker
+                                                        size="small"
+                                                        value={labelBackgroundColor}
+                                                        onChange={(_, hex) => setLabelBackgroundColor(hex)}
+                                                        showText
+                                                        disabledAlpha
+                                                        disabledFormat
+                                                        format="hex"
+                                                    ></ColorPicker>
+                                                </div>
                                             </div>
                                             <div
                                                 style={{
-                                                    display: "flex",
-                                                    gap: "8px 16px",
-                                                    flexWrap: "wrap",
+                                                    display: "grid",
+                                                    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                                                    gap: 16,
+                                                    alignItems: "end",
                                                 }}
                                             >
-                                                <div>
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "baseline",
+                                                        gap: 4,
+                                                    }}
+                                                >
                                                     <label style={{ marginRight: 8 }}>
                                                         {t("tonies.teddystudio.printMode")}
                                                     </label>
@@ -774,7 +818,14 @@ export const TeddyStudioPage = () => {
                                                     </Radio.Group>
                                                 </div>
                                                 {printMode != "OnlyImage" ? (
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            alignItems: "baseline",
+                                                            gap: 4,
+                                                        }}
+                                                    >
                                                         <label style={{ marginRight: 8 }}>
                                                             {t("tonies.teddystudio.textFontSize")}
                                                         </label>
@@ -785,7 +836,7 @@ export const TeddyStudioPage = () => {
                                                             onChange={handleTextFontsizeChange}
                                                             min={1}
                                                             max={90}
-                                                            style={{ width: 120 }}
+                                                            style={{ width: 100 }}
                                                             suffix="px"
                                                             placeholder={t("tonies.teddystudio.textFontSize")}
                                                         />
@@ -825,21 +876,6 @@ export const TeddyStudioPage = () => {
                                                 >
                                                     {t("tonies.teddystudio.showLabelBorder")}
                                                 </Checkbox>
-
-                                                <div style={{ display: "flex", alignItems: "center" }}>
-                                                    <span style={{ marginRight: 8 }}>
-                                                        {t("tonies.teddystudio.labelBackgroundColor")}
-                                                    </span>
-                                                    <ColorPicker
-                                                        size="small"
-                                                        value={labelBackgroundColor}
-                                                        onChange={(_, hex) => setLabelBackgroundColor(hex)}
-                                                        showText
-                                                        disabledAlpha
-                                                        disabledFormat
-                                                        format="hex"
-                                                    ></ColorPicker>
-                                                </div>
                                             </div>
                                         </Card>
                                         <Card
@@ -849,13 +885,20 @@ export const TeddyStudioPage = () => {
                                         >
                                             <div
                                                 style={{
-                                                    display: "flex",
-                                                    alignItems: "baseline",
-                                                    gap: "8px 16px",
-                                                    flexWrap: "wrap",
+                                                    display: "grid",
+                                                    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                                                    gap: 16,
+                                                    marginBottom: 8,
                                                 }}
                                             >
-                                                <div>
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "baseline",
+                                                        gap: 4,
+                                                    }}
+                                                >
                                                     <label style={{ marginRight: 8 }}>
                                                         {t("tonies.teddystudio.paperSize")}
                                                     </label>
@@ -876,11 +919,25 @@ export const TeddyStudioPage = () => {
                                                 </div>
 
                                                 {paperSize === "Custom" && (
-                                                    <>
-                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                            <label style={{ marginRight: 8 }}>
-                                                                {t("tonies.teddystudio.paperWidth")}
-                                                            </label>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            alignItems: "baseline",
+                                                            gap: 4,
+                                                        }}
+                                                    >
+                                                        <label style={{ marginRight: 8 }}>
+                                                            {t("tonies.teddystudio.paperWidth")}/
+                                                            {t("tonies.teddystudio.paperHeight")}
+                                                        </label>
+                                                        <div
+                                                            style={{
+                                                                display: "flex",
+                                                                alignItems: "baseline",
+                                                                gap: 8,
+                                                            }}
+                                                        >
                                                             <Input
                                                                 size="small"
                                                                 type="number"
@@ -888,14 +945,9 @@ export const TeddyStudioPage = () => {
                                                                 onChange={handleCustomPaperWidthChange}
                                                                 min={1}
                                                                 max={500}
-                                                                style={{ width: 120 }}
+                                                                style={{ width: 100 }}
                                                                 suffix="mm"
                                                             />
-                                                        </div>
-                                                        <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                            <label style={{ marginRight: 8 }}>
-                                                                {t("tonies.teddystudio.paperHeight")}
-                                                            </label>
                                                             <Input
                                                                 size="small"
                                                                 type="number"
@@ -903,24 +955,32 @@ export const TeddyStudioPage = () => {
                                                                 onChange={handleCustomPaperHeightChange}
                                                                 min={1}
                                                                 max={500}
-                                                                style={{ width: 120 }}
+                                                                style={{ width: 100 }}
                                                                 suffix="mm"
                                                             />
                                                         </div>
-                                                    </>
+                                                    </div>
                                                 )}
+
                                                 <div
                                                     style={{
                                                         display: "flex",
+                                                        flexDirection: "column",
                                                         alignItems: "baseline",
-                                                        gap: 16,
-                                                        flexWrap: "wrap",
+                                                        gap: 4,
                                                     }}
                                                 >
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                        <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.paperMarginTop")}
-                                                        </label>
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.paperMarginTop")}/
+                                                        {t("tonies.teddystudio.paperMarginLeft")}
+                                                    </label>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            alignItems: "baseline",
+                                                            gap: 8,
+                                                        }}
+                                                    >
                                                         <Input
                                                             size="small"
                                                             type="number"
@@ -928,14 +988,9 @@ export const TeddyStudioPage = () => {
                                                             onChange={handlePaperMarginTopChange}
                                                             min={0}
                                                             max={50}
-                                                            style={{ width: 120 }}
+                                                            style={{ width: 100 }}
                                                             suffix="mm"
                                                         />
-                                                    </div>
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                        <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.paperMarginLeft")}
-                                                        </label>
                                                         <Input
                                                             size="small"
                                                             type="number"
@@ -943,25 +998,33 @@ export const TeddyStudioPage = () => {
                                                             onChange={handlePaperMarginLeftChange}
                                                             min={0}
                                                             max={50}
-                                                            style={{ width: 120 }}
+                                                            style={{ width: 100 }}
                                                             suffix="mm"
                                                         />
                                                     </div>
-                                                    <div style={{ display: "flex", alignItems: "baseline" }}>
-                                                        <label style={{ marginRight: 8 }}>
-                                                            {t("tonies.teddystudio.paperLabelImageBleed")}
-                                                        </label>
-                                                        <Input
-                                                            size="small"
-                                                            type="number"
-                                                            value={parseFloat(paperLabelImageBleed)}
-                                                            onChange={handlePaperLabelImageBleedChange}
-                                                            min={0}
-                                                            max={50}
-                                                            style={{ width: 120 }}
-                                                            suffix="mm"
-                                                        />
-                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        alignItems: "baseline",
+                                                        gap: 4,
+                                                    }}
+                                                >
+                                                    <label style={{ marginRight: 8 }}>
+                                                        {t("tonies.teddystudio.paperLabelImageBleed")}
+                                                    </label>
+                                                    <Input
+                                                        size="small"
+                                                        type="number"
+                                                        value={parseFloat(paperLabelImageBleed)}
+                                                        onChange={handlePaperLabelImageBleedChange}
+                                                        min={0}
+                                                        max={50}
+                                                        style={{ width: 100 }}
+                                                        suffix="mm"
+                                                    />
                                                 </div>
                                             </div>
                                         </Card>
