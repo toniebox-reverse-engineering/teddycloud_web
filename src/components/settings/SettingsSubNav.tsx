@@ -112,11 +112,9 @@ export const SettingsSubNav = () => {
     const updateOpenKeys = (pathname: string) => {
         const newKeys: string[] = [];
 
-        if (pathname.includes("/settings")) {
+        if (pathname.includes("/settings/guisettings")) {
             newKeys.push("general");
-            if (pathname.includes("/settings/guisettings")) {
-                newKeys.push("guisettings");
-            }
+            newKeys.push("guisettings");
         }
         setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
     };
