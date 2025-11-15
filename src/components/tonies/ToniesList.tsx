@@ -828,9 +828,11 @@ export const ToniesList: React.FC<{
         location.search = "";
         if (hiddenRuids) {
             // filter hidden RUIDs always
-            tonieCards = tonieCards.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
+            const filteredOutHidden = tonieCards.filter((tonie) => !hiddenRuids.includes(tonie.ruid));
+            setFilteredTonies(filteredOutHidden);
+        } else {
+            setFilteredTonies(tonieCards);
         }
-        setFilteredTonies(tonieCards);
         setListKey((prevKey) => prevKey + 1);
     };
 
@@ -983,9 +985,8 @@ export const ToniesList: React.FC<{
             <>
                 {Object.keys(existingFilters).length > 0 ? (
                     Object.keys(existingFilters).map((key) => (
-                        <div style={{ display: "flex", gap: 8 }}>
+                        <div key={key} style={{ display: "flex", gap: 8 }}>
                             <Button
-                                key={key}
                                 type="text"
                                 style={{ width: "100%", textAlign: "left" }}
                                 onClick={() => {
