@@ -1331,7 +1331,7 @@ export const ToniesList: React.FC<{
             description={
                 <div>
                     <p>{t("tonies.noData")}</p>
-                    <p>{t("tonies.noDataText")}</p>
+                    {tonieCards.length === 0 && <p>{t("tonies.noDataText")}</p>}
                 </div>
             }
         />
