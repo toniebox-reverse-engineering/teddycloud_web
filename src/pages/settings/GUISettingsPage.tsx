@@ -85,6 +85,7 @@ export const GUISettingsPage = () => {
 
     const handleUpload = (file: File) => {
         const reader = new FileReader();
+
         reader.onload = (e) => {
             try {
                 const importedData = JSON.parse(e.target?.result as string);
@@ -96,8 +97,13 @@ export const GUISettingsPage = () => {
                 delete importedData.teddycloudExport;
 
                 Object.entries(importedData).forEach(([key, value]) => {
-                    localStorage.setItem(key, JSON.stringify(value));
+                    if (typeof value === "string") {
+                        localStorage.setItem(key, value);
+                    } else {
+                        localStorage.setItem(key, JSON.stringify(value));
+                    }
                 });
+
                 loadLocalSettings();
 
                 addNotification(
@@ -111,11 +117,12 @@ export const GUISettingsPage = () => {
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("settings.guiSettings.jsonLoadFailed"),
-                    t("settings.guiSettings.jsonLoadFailedDetails") + err,
+                    t("settings.guiSettings.jsonLoadFailedDetails") + String(err),
                     t("settings.title")
                 );
             }
         };
+
         reader.readAsText(file);
         return false;
     };
