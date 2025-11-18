@@ -46,6 +46,7 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [isCustomFilterHelpOpen, setIsCustomFilterHelpOpen] = useState(false);
     const [customFilterOptions, setCustomFilterOptions] = useState<{ value: string }[]>([]);
+    const [filterMenuOpen, setFilterMenuOpen] = useState(false);
 
     const {
         searchText,
@@ -67,7 +68,6 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         customFilterValid,
         customFilterError,
         filterName,
-        popoverOpen,
     } = state;
 
     const {
@@ -88,7 +88,6 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         setFilterLastTonieboxRUIDs,
         setCustomFilter,
         setFilterName,
-        setPopoverOpen,
         getCustomFilterCompletions,
         applyFilters,
         resetFilters,
@@ -147,7 +146,7 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                 onClick={() => {
                     if (filterName) {
                         onLoadFilter(filterName);
-                        setPopoverOpen(false);
+                        setFilterMenuOpen(false);
                     }
                 }}
                 disabled={!filterName}
@@ -220,8 +219,8 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                         <Dropdown
-                            open={popoverOpen}
-                            onOpenChange={(open) => setPopoverOpen(open)}
+                            open={filterMenuOpen}
+                            onOpenChange={(open) => setFilterMenuOpen(open)}
                             menu={{ items: [] }}
                             trigger={["click"]}
                             popupRender={() => (
@@ -430,8 +429,14 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
 
             <Collapse
                 items={filterPanelContentItem}
-                defaultActiveKey={collapsed ? [] : ["search-filter"]}
-                onChange={() => setCollapsed(!collapsed)}
+                activeKey={collapsed ? [] : ["search-filter"]}
+                onChange={(key) => {
+                    const activeKeys = Array.isArray(key) ? key : [key];
+                    const isNowCollapsed = activeKeys.length === 0;
+                    if (isNowCollapsed !== collapsed) {
+                        setCollapsed(isNowCollapsed);
+                    }
+                }}
                 bordered={false}
             />
         </>

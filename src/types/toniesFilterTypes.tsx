@@ -22,7 +22,6 @@ export interface ToniesFilterState extends ToniesFilterSettings {
     customFilterValid: boolean;
     customFilterError?: string;
     filterName: string;
-    popoverOpen: boolean;
 }
 
 export interface ToniesFilterActions {
@@ -44,7 +43,6 @@ export interface ToniesFilterActions {
     setFilterLastTonieboxRUIDs: (v: boolean) => void;
     setCustomFilter: (v: string) => void;
     setFilterName: (v: string) => void;
-    setPopoverOpen: (v: boolean) => void;
 
     // custom filter helpers
     validateCustomFilter: (input: string) => void;

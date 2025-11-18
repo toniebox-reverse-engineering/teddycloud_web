@@ -73,7 +73,6 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         customFilterValid: true,
         customFilterError: undefined,
         filterName: "",
-        popoverOpen: false,
     });
     const [existingFilters, setExistingFilters] = useState<Record<string, ToniesFilterSettings>>({});
 
@@ -712,7 +711,6 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         setFilterLastTonieboxRUIDs: (v) => setPartial({ filterLastTonieboxRUIDs: v }),
         setCustomFilter: (v) => setPartial({ customFilter: v }),
         setFilterName: (v) => setPartial({ filterName: v }),
-        setPopoverOpen: (v) => setPartial({ popoverOpen: v }),
 
         validateCustomFilter,
         getCustomFilterCompletions,
