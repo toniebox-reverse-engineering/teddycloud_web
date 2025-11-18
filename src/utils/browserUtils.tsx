@@ -94,47 +94,63 @@ export function detectColorScheme() {
 }
 
 export function scrollToTop(anchor?: HTMLElement | null) {
+    const startY = window.pageYOffset ?? document.documentElement.scrollTop ?? document.body.scrollTop ?? 0;
+
+    let targetY = 0;
+
     if (anchor) {
-        try {
-            anchor.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-                inline: "nearest",
-            });
-        } catch {
-            anchor.scrollIntoView(true);
-        }
+        const rect = anchor.getBoundingClientRect();
+        targetY = startY + rect.top;
+    }
+
+    if (Math.abs(startY - targetY) < 1) {
         return;
     }
 
-    const scroller = document.scrollingElement || document.documentElement || document.body;
     let isCancelled = false;
 
     const cancel = () => {
         isCancelled = true;
+        cleanup();
     };
-    window.addEventListener("wheel", cancel, { passive: true });
-    window.addEventListener("touchstart", cancel, { passive: true });
-    window.addEventListener("keydown", cancel, { passive: true });
 
-    try {
-        scroller.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    } catch {
-        scroller.scrollTop = 0;
-    }
+    const opts: AddEventListenerOptions = { passive: true };
 
-    const cleanup = () => {
+    window.addEventListener("wheel", cancel, opts);
+    window.addEventListener("touchstart", cancel, opts);
+    window.addEventListener("touchmove", cancel, opts);
+    window.addEventListener("keydown", cancel, opts);
+
+    function cleanup() {
         window.removeEventListener("wheel", cancel);
         window.removeEventListener("touchstart", cancel);
+        window.removeEventListener("touchmove", cancel);
         window.removeEventListener("keydown", cancel);
-    };
+    }
 
-    const checkFinished = () => {
-        if (scroller.scrollTop === 0 || isCancelled) {
-            cleanup();
+    const duration = 400;
+    const startTime = performance.now();
+
+    const step = (now: number) => {
+        if (isCancelled) {
+            return;
+        }
+
+        const elapsed = now - startTime;
+        const t = Math.min(1, elapsed / duration);
+
+        const eased = 1 - Math.pow(1 - t, 3);
+
+        const nextY = startY + (targetY - startY) * eased;
+
+        window.scrollTo(0, nextY);
+
+        if (t < 1 && !isCancelled) {
+            requestAnimationFrame(step);
         } else {
-            requestAnimationFrame(checkFinished);
+            cleanup();
         }
     };
-    requestAnimationFrame(checkFinished);
+
+    requestAnimationFrame(step);
 }
