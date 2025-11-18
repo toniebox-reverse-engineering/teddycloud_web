@@ -182,6 +182,14 @@
     color: var(--matrix-green) !important;
 }
 
+.matrix-theme .ant-radio-button-wrapper-checked .ant-radio-button-label {
+    color: var(--matrix-green-less-dark) !important;
+}
+
+.matrix-theme .ant-input-group-addon .anticon {
+    color: var(--matrix-green-less-dark) !important;
+}
+
 /* === 5. Buttons === */
 .matrix-theme .ant-btn-primary {
     background-color: #00cc00 !important;

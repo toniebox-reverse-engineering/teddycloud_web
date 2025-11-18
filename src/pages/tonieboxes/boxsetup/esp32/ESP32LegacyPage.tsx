@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import i18n from "../../../../i18n";
@@ -14,6 +14,7 @@ import AvailableBoxesModal, {
     certificateIntro,
     connectESP32Explanation,
     dnsForTeddyCloud,
+    TonieboxWifiGuide,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
@@ -60,13 +61,7 @@ export const ESP32LegacyPage = () => {
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
-                {t("tonieboxes.esp32BoxFlashing.legacy.preparationText")}{" "}
-                <Link
-                    to="https://support.tonies.com/hc/en-us/articles/4415294030482-How-do-I-set-up-a-Wi-Fi-connection-without-the-setup-assistant"
-                    target="_blank"
-                >
-                    {t("tonieboxes.esp32BoxFlashing.legacy.preparationTextLink")}
-                </Link>
+                <TonieboxWifiGuide />
             </Paragraph>
             <h4>{t("tonieboxes.esp32BoxFlashing.legacy.installESPTool")}</h4>
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.installESPToolText")}</Paragraph>
@@ -226,9 +221,9 @@ esptool.py -b 921600 write_flash 0x0 tb.esp32.fakeca.bin`}
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonieboxes.navigationTitle") },
-                        { title: t("tonieboxes.boxSetup.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
                         { title: t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle") },
                     ]}
                 />

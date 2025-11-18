@@ -29,9 +29,10 @@ export const ChangelogPage = () => {
                 "gui: Added altUrl-Patches in CC3200 Flash guide https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/215",
                 "gui: Added TeddyStudio for creating Traveltonie coin printsheet, based on https://github.com/Raspfarbend/teddystudio by Raspfarbend https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/210",
                 "gui: Added AudioPlayer support for iOS >= 18.4! Apple finally added ogg/opus support! But: No Volume support in AudioPlayer possible and still not working in non-local context in library (tonie overview works fine) https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/144",
-                "gui: WIP Added support of new TeddyCloud Plugin feature (Backend implementation missing) https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
+                "gui: WIP Added support of new TeddyCloud Plugin feature (Backend implementation incomplete, upload of new plugins not yet supported) https://github.com/toniebox-reverse-engineering/teddycloud/issues/342",
                 "gui: Fixed bug in media playback position on lock screen https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/166",
                 "gui: Fixed bug in browser and directory tree select with & in path https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/225",
+                "gui: Fixed bug playing files with + in name https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/239",
                 "gui: Fixed bug with download icon and disabled Boxine/Toniecloud https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/223",
                 "gui: Set allowed files filter in audio encoder drop down https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/222",
                 "gui: Do not check for CC3200 CFW if setting is not enabled https://github.com/toniebox-reverse-engineering/teddycloud/issues/358",
@@ -41,7 +42,21 @@ export const ChangelogPage = () => {
                 "gui: Overworked ux of the move, rename and delete modals",
                 "gui: Added Matrix style",
                 "gui: Tonies overview: search keyword is now also used to filter tonies by source",
+                "gui: Tonies overview: Cards can be marked and exported as CSV https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/235",
+                "gui: Tonies overview: Added action menu to marked tonies cards (cloud - no cloud, live - not live, hide)",
+                "gui: Stop auto scroll to top on page change when user manually scrolls",
+                "gui: Show user entered model in tonies card header and information model if it's not found in tonies.(custom.)json",
+                "gui: Added PluginTemplate download, thanks to b1u3n4z9u1 for preparing that template!",
+                "gui: Added Tonies Audio Player Page https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/201",
+                "gui: Page breadcrumbs are now links",
+                "gui: Added Custom filter option (expert!) in tonies list https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/243",
+                "gui: Added Warning hint on taf header modal https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/247",
+                "gui: Added possibility to store tonies overview filter settings locally",
+                "gui: Added GUI Settings & Locally Stored Values page with export and import functionality.",
+                "gui: Updated PWA manifest with additional icons and metadata (favicon, Apple Touch, SVG). Improved support for installation as a standalone Progressive Web App.",
                 "gui: Some refactoring",
+                "gui maintenance: Removed deprecations",
+                "gui maintenance: Updated all used packages to latest versions",
             ],
             commits: [
                 "https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.4...tc_v0.6.5",
@@ -379,8 +394,8 @@ export const ChangelogPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.changelog.navigationTitle") },
                     ]}
                 />

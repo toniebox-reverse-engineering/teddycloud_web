@@ -4,6 +4,7 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import CodeSnippet from "../../components/utils/CodeSnippet";
 import { Divider, theme, Typography } from "antd";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -20,8 +21,8 @@ export const HowToGetSupportPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.supportRequestGuide.navigationTitle") },
                     ]}
                 />

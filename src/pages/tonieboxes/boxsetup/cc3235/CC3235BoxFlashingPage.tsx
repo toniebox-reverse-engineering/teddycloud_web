@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
@@ -23,6 +23,7 @@ import AvailableBoxesModal, {
     CertificateUploadElement,
     dnsForTeddyCloud,
     installCC3200Tool,
+    TonieboxWifiGuide,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import CodeSnippet from "../../../../components/utils/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
@@ -169,13 +170,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
-                {t("tonieboxes.cc3235BoxFlashing.preparationText")}{" "}
-                <Link
-                    to="https://support.tonies.com/hc/en-us/articles/4415294030482-How-do-I-set-up-a-Wi-Fi-connection-without-the-setup-assistant"
-                    target="_blank"
-                >
-                    {t("tonieboxes.cc3235BoxFlashing.preparationTextLink")}
-                </Link>
+                <TonieboxWifiGuide />
             </Paragraph>
             <h4>{t("tonieboxes.cc3235BoxFlashing.locateFlashMemory")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.locateFlashMemoryText")}</Paragraph>
@@ -495,9 +490,9 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonieboxes.navigationTitle") },
-                        { title: t("tonieboxes.boxSetup.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
                         { title: t("tonieboxes.cc3235BoxFlashing.navigationTitle") },
                     ]}
                 />

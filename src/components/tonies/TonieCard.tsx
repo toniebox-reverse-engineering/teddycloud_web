@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Card, Divider, Form, Input, Modal, Tooltip, Typography, theme } from "antd";
+import { Button, Card, Checkbox, Divider, Form, Input, Modal, Tooltip, Typography, theme } from "antd";
 import {
     CloseOutlined,
     CloudSyncOutlined,
@@ -44,7 +44,22 @@ export const TonieCard: React.FC<{
     showSourceInfo?: boolean;
     onHide: (ruid: string) => void;
     onUpdate: (updatedTonieCard: TonieCardProps) => void;
-}> = ({ tonieCard, lastRUIDs, overlay, readOnly, defaultLanguage = "", showSourceInfo = true, onHide, onUpdate }) => {
+    selectionMode?: boolean;
+    selected?: boolean;
+    onToggleSelect: (ruid: string) => void;
+}> = ({
+    tonieCard,
+    lastRUIDs,
+    overlay,
+    readOnly,
+    defaultLanguage = "",
+    showSourceInfo = true,
+    onHide,
+    onUpdate,
+    selectionMode = false,
+    selected = false,
+    onToggleSelect,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification, toniesCloudAvailable } = useTeddyCloud();
@@ -444,17 +459,19 @@ export const TonieCard: React.FC<{
                         value={selectedSource}
                         width="auto"
                         onChange={handleSourceInputChange}
-                        addonBefore={[
+                        prefix={[
                             <CloseOutlined
                                 key="close-source"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedSource("");
                                     setInputValidationSource({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-source-1" type="vertical" style={{ height: 16 }} />,
                             <RollbackOutlined
                                 key="rollback-source"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedSource(activeSource);
                                     setTempSelectedSource(activeSource);
@@ -466,8 +483,14 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeSource === selectedSource ? "disabled" : "enabled"}
                             />,
+                            <Divider key="divider-source-2" type="vertical" style={{ height: 16 }} />,
                         ]}
-                        addonAfter={<FolderOpenOutlined onClick={() => showFileSelectModal()} />}
+                        suffix={
+                            <FolderOpenOutlined
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => showFileSelectModal()}
+                            />
+                        }
                     />
                     <RadioStreamSearch
                         placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
@@ -486,17 +509,19 @@ export const TonieCard: React.FC<{
                         value={selectedModel}
                         width="auto"
                         onChange={handleModelInputChange}
-                        addonBefore={[
+                        prefix={[
                             <CloseOutlined
                                 key="close-model"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedModel("");
                                     setInputValidationModel({ validateStatus: "", help: "" });
                                 }}
                             />,
-                            <Divider key="divider-model" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-model-1" type="vertical" style={{ height: 16 }} />,
                             <RollbackOutlined
                                 key="rollback-model"
+                                onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
                                     setSelectedModel(activeModel);
                                     setInputValidationModel({ validateStatus: "", help: "" });
@@ -507,6 +532,7 @@ export const TonieCard: React.FC<{
                                 }}
                                 className={activeModel === selectedModel ? "disabled" : "enabled"}
                             />,
+                            <Divider key="divider-model-2" type="vertical" style={{ height: 16 }} />,
                         ]}
                     />
                     <TonieArticleSearch
@@ -672,35 +698,50 @@ export const TonieCard: React.FC<{
                 hoverable={false}
                 key={localTonieCard.ruid}
                 size="small"
-                style={
-                    toniePlayedOn && toniePlayedOn.length > 0
-                        ? { background: token.colorBgContainerDisabled, borderTop: "3px #1677ff inset" }
-                        : { background: token.colorBgContainerDisabled, paddingTop: "2px" }
-                }
+                style={{
+                    background: selected ? token.colorBgTextHover : token.colorBgContainerDisabled,
+                    borderTop: toniePlayedOn && toniePlayedOn.length > 0 ? "3px #1677ff inset" : "reset",
+                    paddingTop: toniePlayedOn && toniePlayedOn.length > 0 ? "unset" : 2,
+                }}
                 title={
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {localTonieCard.tonieInfo.series ? localTonieCard.tonieInfo.series : t("tonies.unsetTonie")}
+                            {localTonieCard.tonieInfo.series
+                                ? localTonieCard.tonieInfo.series
+                                : t("tonies.unsetTonie") + " " + localTonieCard.tonieInfo.model}
                         </div>
-                        {localTonieCard.tonieInfo.language && defaultLanguage !== localTonieCard.tonieInfo.language ? (
-                            <Tooltip
-                                placement="top"
-                                zIndex={2}
-                                title={t("languageUtil." + localTonieCard.tonieInfo.language, {
-                                    defaultValue:
-                                        t("languageUtil.unknownLanguageCode") + localTonieCard.tonieInfo.language,
-                                })}
-                            >
-                                <Text style={{ height: 20, width: "auto" }}>
-                                    <LanguageFlagIcon
-                                        name={localTonieCard.tonieInfo.language.toUpperCase().split("-")[1]}
-                                        height={20}
-                                    />
-                                </Text>
-                            </Tooltip>
-                        ) : (
-                            ""
-                        )}
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                            {localTonieCard.tonieInfo.language &&
+                            defaultLanguage !== localTonieCard.tonieInfo.language ? (
+                                <Tooltip
+                                    placement="top"
+                                    zIndex={2}
+                                    title={t("languageUtil." + localTonieCard.tonieInfo.language, {
+                                        defaultValue:
+                                            t("languageUtil.unknownLanguageCode") + localTonieCard.tonieInfo.language,
+                                    })}
+                                >
+                                    <Text style={{ height: 20, width: "auto" }}>
+                                        <LanguageFlagIcon
+                                            name={localTonieCard.tonieInfo.language.toUpperCase().split("-")[1]}
+                                            height={20}
+                                        />
+                                    </Text>
+                                </Tooltip>
+                            ) : (
+                                ""
+                            )}
+                            {readOnly ? (
+                                ""
+                            ) : selectionMode ? (
+                                <Checkbox
+                                    checked={selected}
+                                    onChange={() => onToggleSelect && onToggleSelect(tonieCard.ruid)}
+                                />
+                            ) : (
+                                ""
+                            )}
+                        </div>
                     </div>
                 }
                 cover={

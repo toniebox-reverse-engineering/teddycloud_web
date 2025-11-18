@@ -24,6 +24,8 @@ export type TonieCardProps = {
     tonieInfo: TonieInfo;
     sourceInfo: TonieInfo;
     trackSeconds: number[];
+    marked?: boolean;
+    onToggleMark?: (ruid: string) => void;
 };
 
 export type TagTonieCard = {

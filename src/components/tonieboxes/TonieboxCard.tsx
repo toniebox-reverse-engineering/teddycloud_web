@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
@@ -442,16 +442,18 @@ export const TonieboxCard: React.FC<{
                     name="boxName"
                     value={boxName}
                     onChange={(e) => setBoxName(e.target.value)}
-                    addonBefore={
+                    prefix={[
                         <RollbackOutlined
                             className={boxName === tonieboxName ? "disabled" : "enabled"}
+                            onMouseDown={(e) => e.preventDefault()}
                             onClick={() => setBoxName(tonieboxName)}
                             style={{
                                 color: boxName === tonieboxName ? token.colorTextDisabled : token.colorText,
                                 cursor: boxName === tonieboxName ? "default" : "pointer",
                             }}
-                        />
-                    }
+                        />,
+                        <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                    ]}
                 />
             </Paragraph>
             <Divider orientation="left" orientationMargin="0">

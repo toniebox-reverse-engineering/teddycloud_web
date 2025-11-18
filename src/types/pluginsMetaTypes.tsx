@@ -1,3 +1,5 @@
+import { ElementType } from "react";
+
 export enum TeddyCloudSection {
     Tonies = "tonies",
     Home = "home",
@@ -14,4 +16,5 @@ export type PluginMeta = {
     description: string;
     pluginHomepage?: string;
     teddyCloudSection?: TeddyCloudSection;
+    icon: ElementType;
 };

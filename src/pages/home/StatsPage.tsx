@@ -6,6 +6,8 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
+import { Link } from "react-router-dom";
+import { Card, Statistic } from "antd";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -38,18 +40,19 @@ export const StatsPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("home.stats.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("home.stats.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
-                    <h1>{t(`home.stats.title`)}</h1>
-                    {stats?.stats?.map((stat) => {
-                        return (
-                            <div key={stat.iD}>
-                                <h2>{t("home.stats." + stat.iD)}</h2>
-                                <p>{stat.value}</p>
-                            </div>
-                        );
-                    })}
+                    <h1>{t("home.stats.title")}</h1>
+
+                    {stats?.stats?.map((stat) => (
+                        <Card key={stat.iD} style={{ marginBottom: 16, borderRadius: 12 }}>
+                            <Statistic title={t("home.stats." + stat.iD)} value={stat.value} />
+                        </Card>
+                    ))}
                 </StyledContent>
             </StyledLayout>
         </>

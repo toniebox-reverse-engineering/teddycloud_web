@@ -35,7 +35,7 @@ export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
 
     let value = fieldValue as number;
 
-    const addonAfter = [
+    const suffix = [
         overlayed === undefined ? null : (
             <Checkbox
                 checked={overlayed}
@@ -64,7 +64,7 @@ export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
                     SettingsDataHandler.getInstance().changeSetting(name, value ?? 0, overlayed);
                     setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                 }}
-                {...(overlayed !== undefined ? { addonAfter } : null)}
+                {...(overlayed !== undefined ? { suffix } : null)}
                 disabled={!overlayed && overlayed !== undefined}
             />
         </FormItem>

@@ -7,6 +7,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import { Link } from "react-router-dom";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -81,9 +82,13 @@ export const ContributionToniesJsonPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
-                        { title: t("community.contribution.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
+                        {
+                            title: (
+                                <Link to="/community/contribution">{t("community.contribution.navigationTitle")}</Link>
+                            ),
+                        },
                         {
                             title: t("community.contribution.toniesJson.navigationTitle"),
                         },
@@ -93,9 +98,12 @@ export const ContributionToniesJsonPage = () => {
                     <h1>{t(`community.contribution.toniesJson.title`)}</h1>
                     <Paragraph>{t("community.contribution.toniesJson.text")}</Paragraph>
                     <Paragraph>
-                        <Collapse accordion>
-                            {Object.keys(groupedTonieJsonEntries).map((language, index) => (
-                                <Panel header={language} key={index}>
+                        <Collapse
+                            accordion
+                            items={Object.keys(groupedTonieJsonEntries).map((language, index) => ({
+                                key: index,
+                                label: language,
+                                children: (
                                     <List>
                                         {Array.isArray(groupedTonieJsonEntries[language]) &&
                                             groupedTonieJsonEntries[language].map((tonieJsonEntry, subSubIndex) => (
@@ -108,16 +116,16 @@ export const ContributionToniesJsonPage = () => {
                                                                 width: "100px",
                                                                 height: "auto",
                                                             }}
-                                                        ></img>
+                                                        />
                                                         {tonieJsonEntry.model} - {tonieJsonEntry.series} -{" "}
                                                         {tonieJsonEntry.episodes}
                                                     </div>
                                                 </List.Item>
                                             ))}
                                     </List>
-                                </Panel>
-                            ))}
-                        </Collapse>
+                                ),
+                            }))}
+                        />
                     </Paragraph>
                 </StyledContent>
             </StyledLayout>

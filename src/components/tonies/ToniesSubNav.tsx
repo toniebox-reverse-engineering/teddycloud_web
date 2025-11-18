@@ -11,7 +11,7 @@ import {
     UnorderedListOutlined,
     UserAddOutlined,
     FormatPainterOutlined,
-    CodeSandboxOutlined,
+    PlayCircleOutlined,
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
@@ -51,7 +51,7 @@ export const ToniesSubNav = () => {
                     {plugin.pluginName}
                 </Link>
             ),
-            icon: React.createElement(CodeSandboxOutlined),
+            icon: React.createElement(plugin.icon),
             title: plugin.pluginName,
         }));
 
@@ -71,6 +71,22 @@ export const ToniesSubNav = () => {
             ),
             icon: React.createElement(UserOutlined),
             title: t("tonies.tonies.navigationTitle"),
+        },
+        {
+            key: "tonies-audio-player",
+            label: (
+                <Link
+                    to="/tonies/audioplayer"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.toniesaudioplayer.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(PlayCircleOutlined),
+            title: t("tonies.toniesaudioplayer.navigationTitle"),
         },
         {
             key: "encoder",

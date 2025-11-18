@@ -1,6 +1,16 @@
-import { createContext, useContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from "react";
+import {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    ReactNode,
+    Dispatch,
+    SetStateAction,
+    ElementType,
+} from "react";
 import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import * as AntIcons from "@ant-design/icons";
 
 import { NotificationRecord, NotificationType, NotificationTypeEnum } from "./types/teddyCloudNotificationTypes";
 import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
@@ -76,33 +86,57 @@ interface TeddyCloudProviderProps {
     linkOverlay?: string | null;
 }
 
-export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProviderProps) {
-    const [fetchCloudStatus, setFetchCloudStatus] = useState<boolean>(false);
-    const [toniesCloudAvailable, setToniesCloudAvailable] = useState<boolean>(false);
-
+export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
+    const [fetchCloudStatus, setFetchCloudStatus] = useState(false);
+    const [toniesCloudAvailable, setToniesCloudAvailable] = useState(false);
     const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
+    const [navOpen, setNavOpen] = useState(false);
+    const [subNavOpen, setSubNavOpen] = useState(false);
+    const [currentTCSection, setCurrentTCSection] = useState("");
+    const [plugins, setPlugins] = useState<PluginMeta[]>([]);
 
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    // subnaves
-    const [navOpen, setNavOpen] = useState<boolean>(false);
-    const [subNavOpen, setSubNavOpen] = useState<boolean>(false);
-    const [currentTCSection, setCurrentTCSection] = useState<string>("");
-
-    // Notifications
-
     useEffect(() => {
-        const storedNotifications = localStorage.getItem("notifications");
-        if (storedNotifications) {
-            const parsedNotifications: NotificationRecord[] = JSON.parse(storedNotifications);
-            setNotifications(
-                parsedNotifications.map((notification) => ({
-                    ...notification,
-                    date: new Date(notification.date),
-                }))
-            );
+        if ("requestIdleCallback" in window) {
+            (window as any).requestIdleCallback(loadStoredNotifications);
+        } else {
+            setTimeout(loadStoredNotifications, 0);
         }
     }, []);
+
+    function loadStoredNotifications() {
+        try {
+            const stored = localStorage.getItem("notifications");
+            if (!stored) return;
+
+            const parsed = JSON.parse(stored);
+            const chunk = 200;
+            let idx = 0;
+
+            const processChunk = () => {
+                const slice = parsed.slice(idx, idx + chunk).map((n: any) => ({
+                    ...n,
+                    date: new Date(n.date),
+                }));
+
+                setNotifications((prev) => [...prev, ...slice]);
+
+                idx += chunk;
+                if (idx < parsed.length) {
+                    requestIdleCallback(processChunk);
+                }
+            };
+
+            requestIdleCallback(processChunk);
+        } catch (e) {
+            console.error("Failed to load notifications", e);
+        }
+    }
+
+    // ==============================
+    // Notification Handling
+    // ==============================
 
     const addNotification = (
         type: NotificationType,
@@ -121,57 +155,55 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
             flagConfirmed: confirmed !== undefined ? confirmed : type === "success" || type === "info",
         };
 
-        antdNotification.open({
-            type,
-            message: title,
-            description,
-            showProgress: true,
-            pauseOnHover: true,
-            placement: "topRight",
+        setNotifications((prev) => {
+            const updated = [newNotification, ...prev];
+            localStorage.setItem("notifications", JSON.stringify(updated));
+            return updated;
         });
 
-        setNotifications((prevNotifications) => {
-            const updatedNotifications = [newNotification, ...prevNotifications];
-            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
-            return updatedNotifications;
-        });
+        setTimeout(() => {
+            antdNotification.open({
+                type,
+                message: title,
+                description,
+                showProgress: true,
+                pauseOnHover: true,
+                placement: "topRight",
+            });
+        }, 0);
     };
 
-    const addLoadingNotification = (key: string, title: string, description: string) => {
-        antdNotification.open({
-            key,
-            message: title,
-            description,
-            icon: <LoadingOutlined />,
-            duration: 0,
-            placement: "topRight",
-        });
+    const addLoadingNotification = (key: string, message: string, description: string) => {
+        setTimeout(() => {
+            antdNotification.open({
+                key,
+                message,
+                description,
+                icon: <LoadingOutlined />,
+                duration: 0,
+                placement: "topRight",
+            });
+        }, 0);
     };
 
     const closeLoadingNotification = async (key: string) => {
-        setTimeout(() => {
-            antdNotification.destroy(key);
-        }, 300);
-        await sleep(500); // prevent flickering
+        setTimeout(() => antdNotification.destroy(key), 300);
+        await sleep(500);
     };
 
     const confirmNotification = (uuid: string) => {
-        setNotifications((prevNotifications) => {
-            const updatedNotifications = prevNotifications.map((notification) =>
-                notification.uuid === uuid ? { ...notification, flagConfirmed: true } : notification
-            );
-            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
-            return updatedNotifications;
+        setNotifications((prev) => {
+            const updated = prev.map((n) => (n.uuid === uuid ? { ...n, flagConfirmed: true } : n));
+            localStorage.setItem("notifications", JSON.stringify(updated));
+            return updated;
         });
     };
 
-    const removeNotifications = (uuidsToRemove: string[]) => {
-        setNotifications((prevNotifications) => {
-            const updatedNotifications = prevNotifications.filter(
-                (notification) => !uuidsToRemove.includes(notification.uuid)
-            );
-            localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
-            return updatedNotifications;
+    const removeNotifications = (uuids: string[]) => {
+        setNotifications((prev) => {
+            const updated = prev.filter((n) => !uuids.includes(n.uuid));
+            localStorage.setItem("notifications", JSON.stringify(updated));
+            return updated;
         });
     };
 
@@ -180,9 +212,11 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
         localStorage.removeItem("notifications");
     };
 
-    const unconfirmedCount = notifications.filter((notification) => !notification.flagConfirmed).length;
+    const unconfirmedCount = notifications.filter((n) => !n.flagConfirmed).length;
 
-    const [plugins, setPlugins] = useState<PluginMeta[]>([]);
+    // ==============================
+    // Plugin Handling
+    // ==============================
 
     const fetchPlugins = async () => {
         try {
@@ -190,74 +224,86 @@ export function TeddyCloudProvider({ children, linkOverlay }: TeddyCloudProvider
 
             try {
                 const response = await api.apiGetTeddyCloudApiRaw(`/api/plugins/getPlugins`);
-                if (!response.ok) throw new Error(response.statusText);
-                folders = await response.json(); // assuming the API returns a list of folders
-            } catch (error) {
-                // @ToDo: Remove fallback for WIP till api is available: a manually maintained plugins.json is used
-                console.warn(
-                    "Using fallback plugin list from plugins/plugins.json due to an error (API most probably not available yet)."
-                );
-                try {
-                    const response = await api.apiGetTeddyCloudApiRaw("/plugins/plugins.json");
-                    if (!response.ok) throw new Error("Fallback plugins.json fetch failed");
-                    folders = await response.json();
-                } catch (fallbackErr) {
-                    return;
-                }
+                if (response.ok) folders = await response.json();
+            } catch {
+                return;
             }
 
+            folders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+            const requests = folders.map((folder) =>
+                api
+                    .apiGetTeddyCloudApiRaw(`/plugins/${folder}/plugin.json`)
+                    .then(async (res) => {
+                        if (!res.ok) throw new Error(folder);
+                        const meta = await res.json();
+                        return { folder, meta };
+                    })
+                    .catch(() => ({ folder, meta: null }))
+            );
+
+            const results = await Promise.all(requests);
+
             const loadedPlugins: PluginMeta[] = [];
+            const invalid: string[] = [];
+            const failed: string[] = [];
 
-            for (const folder of folders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
-                try {
-                    const res = await api.apiGetTeddyCloudApiRaw(`/plugins/${folder}/plugin.json`);
-                    if (!res.ok) throw new Error(`Failed to fetch plugin: ${folder}`);
-                    const meta = await res.json();
-
-                    if (!meta.pluginName) {
-                        console.warn(`Skipping "${folder}" — missing pluginName.`);
-                        addNotification(
-                            NotificationTypeEnum.Warning,
-                            `Fetching entry pluginName in plugin.json for "${folder}" failed`,
-                            `Fetching entry pluginName in plugin.json for "${folder}" failed, so we skip that plugin`,
-                            "TeddyCloudContext",
-                            true
-                        );
-                        continue;
-                    }
-
-                    loadedPlugins.push({
-                        pluginId: folder,
-                        pluginName: meta.pluginName,
-                        author: meta.author || "",
-                        version: meta.version || "",
-                        description: meta.description || "",
-                        pluginHomepage: meta.pluginHomepage,
-                        teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)
-                            ? meta.teddyCloudSection
-                            : null,
-                    });
-                } catch (err) {
-                    addNotification(
-                        NotificationTypeEnum.Error,
-                        `Fetching plugin.json for "${folder}" failed`,
-                        `Fetching plugin.json for "${folder}" failed, so we skip that plugin`,
-                        "TeddyCloudContext",
-                        false
-                    );
+            for (const { folder, meta } of results) {
+                if (!meta) {
+                    failed.push(folder);
+                    continue;
                 }
+                if (!meta.pluginName) {
+                    invalid.push(folder);
+                    continue;
+                }
+
+                loadedPlugins.push({
+                    pluginId: folder,
+                    pluginName: meta.pluginName,
+                    author: meta.author || "",
+                    version: meta.version || "",
+                    description: meta.description || "",
+                    pluginHomepage: meta.pluginHomepage,
+                    teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)
+                        ? meta.teddyCloudSection
+                        : null,
+                    icon: (meta.icon && meta.icon in AntIcons
+                        ? AntIcons[meta.icon as keyof typeof AntIcons]
+                        : AntIcons.CodeSandboxOutlined) as ElementType,
+                });
             }
 
             setPlugins(loadedPlugins);
+
+            if (invalid.length) {
+                addNotification(
+                    NotificationTypeEnum.Warning,
+                    `Some plugins missing pluginName`,
+                    invalid.join(", "),
+                    "TeddyCloudContext",
+                    true
+                );
+            }
+
+            if (failed.length) {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    `Some plugins failed to load`,
+                    failed.join(", "),
+                    "TeddyCloudContext",
+                    false
+                );
+            }
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,
                 "Loading plugins failed",
-                "Loading plugins failed: " + error,
+                String(error),
                 "TeddyCloudContext",
                 false
             );
-            console.error("Error loading plugins:", error);
+            console.error(error);
         }
     };
 

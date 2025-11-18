@@ -3,7 +3,7 @@ import { Badge, Button, Card, List, Modal, theme, Tooltip, Typography, Upload, T
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
     AppstoreAddOutlined,
@@ -20,6 +20,7 @@ import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import PluginTemplateDownloadButton from "../../components/utils/PluginTemplateDownload";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -78,6 +79,7 @@ export const PluginListPage = () => {
   "version": "Version of the plugin",
   "pluginHomepage": "Homepage of the plugin",
   "teddyCloudSection": "tonies",
+  "icon": "TrophyOutlined"
 }`}
             />
 
@@ -91,6 +93,7 @@ export const PluginListPage = () => {
                     ["version", t("community.plugins.help.fields.version")],
                     ["pluginHomepage", t("community.plugins.help.fields.pluginHomepage")],
                     ["teddyCloudSection", t("community.plugins.help.fields.teddyCloudSection")],
+                    ["icon", t("community.plugins.help.fields.icon")],
                 ]}
                 renderItem={([field, desc]) => (
                     <List.Item>
@@ -107,8 +110,13 @@ export const PluginListPage = () => {
             open={isVisibleHelpModal}
             title={t("community.plugins.help.popoverTitle")}
             onCancel={() => setIsVisibleHelpModal(false)}
-            onOk={() => setIsVisibleHelpModal(false)}
             cancelButtonProps={{ style: { display: "none" } }}
+            footer={[
+                <PluginTemplateDownloadButton />,
+                <Button key="ok" onClick={() => setIsVisibleHelpModal(false)}>
+                    {t("community.plugins.ok")}
+                </Button>,
+            ]}
         >
             {contentHelpModal}
         </Modal>
@@ -256,8 +264,8 @@ export const PluginListPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.plugins.navigationTitle") },
                     ]}
                 />
@@ -267,7 +275,7 @@ export const PluginListPage = () => {
                     <Alert
                         type="warning"
                         showIcon
-                        message="WIP - To be extended soon... meanwhile you can upload plugins manually using any SFTP-Client and add a plugins.json in the plugins-folder (in WWW directory!) which lists the plugin folders like ['PluginA','PluginB']"
+                        message="WIP - To be extended soon... meanwhile you can upload plugins manually into teddycloud/data/www/plugins using any SFTP-Client"
                         style={{ margin: 32 }}
                     />
 
@@ -279,6 +287,7 @@ export const PluginListPage = () => {
                             <Button disabled icon={<AppstoreAddOutlined />} onClick={() => setIsUploadModalOpen(true)}>
                                 {t("community.plugins.addButton")}
                             </Button>
+                            {<PluginTemplateDownloadButton />}
                             <Button icon={<QuestionCircleOutlined />} onClick={() => setIsVisibleHelpModal(true)}>
                                 {t("community.plugins.helpButton")}
                             </Button>

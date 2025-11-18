@@ -57,7 +57,7 @@ const NoHoverButton = styled(Button)`
         background: transparent !important;
     }
 `;
-export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) => {
+export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.ReactNode; themeMode: string }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const { unconfirmedCount, navOpen, setNavOpen, subNavOpen, setSubNavOpen, currentTCSection, setCurrentTCSection } =
@@ -89,6 +89,15 @@ export const StyledHeader = ({ themeSwitch }: { themeSwitch: React.ReactNode }) 
             document.head.appendChild(meta);
         }
     }, [token.colorBgBase]);
+
+    useEffect(() => {
+        const root = document.documentElement;
+        if (themeMode == "matrix") {
+            root.style.scrollbarColor = `#00ff00 #000000`;
+            return;
+        }
+        root.style.scrollbarColor = `${token.colorTextDescription} ${token.colorBgContainer}`;
+    }, [themeMode]);
 
     const NavItem = ({ title, to, isMobile = false }: { title: string; to: string; isMobile?: boolean }) => {
         const handleLinkClick = () => {

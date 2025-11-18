@@ -6,6 +6,7 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/utils/FileBrowser";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -26,8 +27,8 @@ export const TonieAudioPlaylistsPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonies.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> },
                         { title: t("tonies.tap.navigationTitle") },
                     ]}
                 />

@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { MenuProps } from "antd";
 import {
-    CodeSandboxOutlined,
     DeliveredProcedureOutlined,
     InfoCircleOutlined,
     MinusOutlined,
@@ -44,7 +43,7 @@ export const TonieboxesSubNav = () => {
                     {plugin.pluginName}
                 </Link>
             ),
-            icon: React.createElement(CodeSandboxOutlined),
+            icon: React.createElement(plugin.icon),
             title: plugin.pluginName,
         }));
 

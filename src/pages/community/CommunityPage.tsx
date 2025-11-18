@@ -19,7 +19,10 @@ export const CommunityPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("community.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("community.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <h1>{t("community.title")}</h1>

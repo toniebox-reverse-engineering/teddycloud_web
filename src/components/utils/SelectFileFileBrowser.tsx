@@ -590,8 +590,9 @@ export const SelectFileFileBrowser: React.FC<{
                                                     ref={inputRefFilter} // Assign ref to input element
                                                     style={{ width: "100%" }}
                                                     autoFocus={filterFieldAutoFocus}
-                                                    addonAfter={
+                                                    suffix={
                                                         <CloseOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={clearFilterField}
                                                             disabled={filterText.length === 0}
                                                             style={{

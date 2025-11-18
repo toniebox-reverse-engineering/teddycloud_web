@@ -1,4 +1,4 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Typography, theme } from "antd";
@@ -32,20 +32,21 @@ export const PluginPage = () => {
     const [breadcrumbItems, setBreadcrumbItems] = useState<any[]>([]);
 
     useEffect(() => {
-        const items = [{ title: t("home.navigationTitle") }];
+        const items = [{ title: <Link to="/">{t("home.navigationTitle")}</Link> }];
 
         if (section === "tonies") {
-            items.push({ title: t("tonies.navigationTitle") });
+            items.push({ title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> });
         } else if (section === "settings") {
-            items.push({ title: t("settings.navigationTitle") });
+            items.push({ title: <Link to="/settings">{t("settings.navigationTitle")}</Link> });
         } else if (section === "tonieboxes") {
-            items.push({ title: t("tonieboxes.navigationTitle") });
+            items.push({ title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> });
         } else if (section === "community") {
-            items.push({ title: t("community.navigationTitle") });
-            if (section2 === "plugins") items.push({ title: t("community.plugins.navigationTitle") });
+            items.push({ title: <Link to="/community">{t("community.navigationTitle")}</Link> });
+            if (section2 === "plugins")
+                items.push({ title: <Link to="/plugins">{t("community.plugins.navigationTitle")}</Link> });
         }
         items.push({
-            title: pluginId || t("community.plugins.plugin"),
+            title: <>{pluginId}</> || <>{t("community.plugins.plugin")}</>,
         });
 
         setBreadcrumbItems(items);
@@ -53,39 +54,45 @@ export const PluginPage = () => {
 
     useEffect(() => {
         const iframe = iframeRef.current;
+        if (!iframe) return;
+
         let hasNotified = false;
+        let prevHeight = 0;
 
         const handleResize = () => {
-            if (iframe && iframe.contentWindow) {
-                try {
-                    const doc = iframe.contentDocument || iframe.contentWindow.document;
+            if (!iframe || !iframe.contentWindow) return;
 
-                    if (doc && doc.body) {
-                        const isError = doc.getElementById("error-404");
-                        if (isError) {
-                            setIsError404(true);
-                            if (!hasNotified) {
-                                hasNotified = true;
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow.document;
+                if (!doc || !doc.body) return;
 
-                                addNotification(
-                                    NotificationTypeEnum.Error,
-                                    t("community.plugins.error.notification.title"),
-                                    t("community.plugins.error.notification.missingPluginIndexHtml", {
-                                        pluginId: pluginId,
-                                    }),
-                                    t("community.plugins.title")
-                                );
-                            }
-                        } else {
-                            iframe.style.height = doc.body.scrollHeight + 48 + "px";
-                            setIsError404(false);
-                        }
-                    } else {
-                        setIsError404(false);
+                const isError = doc.getElementById("error-404");
+                if (isError) {
+                    setIsError404(true);
+                    if (!hasNotified) {
+                        hasNotified = true;
+                        addNotification(
+                            NotificationTypeEnum.Error,
+                            t("community.plugins.error.notification.title"),
+                            t("community.plugins.error.notification.missingPluginIndexHtml", { pluginId }),
+                            t("community.plugins.title")
+                        );
                     }
-                } catch (err) {
-                    console.warn("Cross-origin content - can't access height.");
+                    return;
+                } else {
+                    setIsError404(false);
                 }
+
+                const newHeight = doc.body.scrollHeight + 48;
+
+                if (prevHeight && newHeight - prevHeight === 48) {
+                    clearInterval(observerInterval);
+                } else {
+                    iframe.style.height = newHeight + "px";
+                }
+                prevHeight = newHeight;
+            } catch (err) {
+                console.warn("Cross-origin content - can't access height.");
             }
         };
 

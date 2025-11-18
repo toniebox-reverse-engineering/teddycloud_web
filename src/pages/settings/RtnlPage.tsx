@@ -2,17 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Switch, Typography, Divider, Button } from "antd";
+import { Switch, Typography, Divider, Button, theme } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
-import { detectColorScheme } from "../../utils/browserUtils";
+import { Link } from "react-router-dom";
 
 const { Paragraph, Text } = Typography;
+const { useToken } = theme;
 
 export const RtnlPage = () => {
     const { t } = useTranslation();
-
+    const { token } = useToken();
     const [logEntries, setLogEntries] = useState<string[]>([]);
     const logListRef = useRef<HTMLDivElement>(null);
     const [rtnlActive, setRtnlActive] = useState(false);
@@ -170,8 +171,8 @@ export const RtnlPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("settings.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/settings">{t("settings.navigationTitle")}</Link> },
                         { title: t("settings.rtnl.navigationTitle") },
                     ]}
                 />
@@ -192,17 +193,22 @@ export const RtnlPage = () => {
                                 maxHeight: "max(40vh, 333px)",
                                 overflow: "auto",
                                 padding: 1,
-                                // the colors are taken from the SyntaxHighlighter oneDark and oneLight Style
-                                background: detectColorScheme() === "dark" ? "hsl(220, 13%, 18%)" : "hsl(230, 1%, 98%)",
+                                backgroundColor: `${token.colorBgContainer} !important`,
+                                scrollbarColor: `${token.colorTextDescription} ${token.colorBgContainer}`,
                             }}
                         >
                             <SyntaxHighlighter
                                 language="log"
-                                style={detectColorScheme() === "dark" ? oneDark : oneLight}
+                                style={
+                                    token.colorBgBase == "#000" || token.colorBgBase == "#000000" ? oneDark : oneLight
+                                }
                                 customStyle={{
                                     borderRadius: 0,
                                     margin: 0,
                                     border: "none",
+                                    width: "max-content",
+                                    minWidth: "100%",
+                                    minHeight: "max(38vh, 320px)",
                                 }}
                             >
                                 {logEntries.join("\n")}

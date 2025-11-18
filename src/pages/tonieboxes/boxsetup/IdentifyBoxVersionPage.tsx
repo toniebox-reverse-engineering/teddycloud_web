@@ -190,9 +190,9 @@ export const IdentifyBoxVersionPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonieboxes.navigationTitle") },
-                        { title: t("tonieboxes.boxSetup.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
                         { title: t("tonieboxes.boxSetup.identifyVersion.navigationTitle") },
                     ]}
                 />
@@ -220,8 +220,9 @@ export const IdentifyBoxVersionPage = () => {
                                             setBoxMac(value);
                                             setWarningTextMac(warningText);
                                         }}
-                                        addonBefore={
+                                        suffix={
                                             <CloseOutlined
+                                                onMouseDown={(e) => e.preventDefault()}
                                                 onClick={handleClear}
                                                 style={{
                                                     color: boxMac ? token.colorText : token.colorTextDisabled,

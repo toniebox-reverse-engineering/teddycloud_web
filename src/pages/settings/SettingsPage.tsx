@@ -180,7 +180,10 @@ export const SettingsPage = () => {
             </StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("settings.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("settings.navigationTitle") },
+                    ]}
                 />
                 <StyledContent>
                     <h1>{t(`settings.title`)}</h1>

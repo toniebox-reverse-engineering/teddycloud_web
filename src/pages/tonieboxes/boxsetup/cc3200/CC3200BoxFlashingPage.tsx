@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../../i18n";
 import { Link } from "react-router-dom";
@@ -30,6 +30,7 @@ import AvailableBoxesModal, {
     certificateIntro,
     CertificateUploadElement,
     installCC3200Tool,
+    TonieboxWifiGuide,
     uart3v3Hint,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 
@@ -159,13 +160,7 @@ export const CC3200BoxFlashingPage = () => {
                 style={{ marginBottom: 16 }}
             ></Alert>
             <Paragraph>
-                {t("tonieboxes.cc3235BoxFlashing.preparationText")}{" "}
-                <Link
-                    to="https://support.tonies.com/hc/en-us/articles/4415294030482-How-do-I-set-up-a-Wi-Fi-connection-without-the-setup-assistant"
-                    target="_blank"
-                >
-                    {t("tonieboxes.cc3235BoxFlashing.preparationTextLink")}
-                </Link>
+                <TonieboxWifiGuide />
             </Paragraph>
             {installCC3200Tool()}
             <h4>{t("tonieboxes.cc3200BoxFlashing.connectToToniebox")}</h4>
@@ -1154,9 +1149,9 @@ export const CC3200BoxFlashingPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonieboxes.navigationTitle") },
-                        { title: t("tonieboxes.boxSetup.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
+                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
                         { title: t("tonieboxes.cc3200BoxFlashing.navigationTitle") },
                     ]}
                 />

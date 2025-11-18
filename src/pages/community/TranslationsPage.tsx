@@ -5,6 +5,7 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import TranslationComparison from "../../components/utils/TranslationComparison";
 import TranslationTable from "../../components/utils/TranslationTable";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -19,8 +20,8 @@ export const TranslationsPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.translations.navigationTitle") },
                     ]}
                 />
