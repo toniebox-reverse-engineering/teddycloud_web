@@ -204,10 +204,6 @@ export const ToniesList: React.FC<{
         }
     }, [selectionMode]);
 
-    useEffect(() => {
-        setListKey((prevKey) => prevKey + 1);
-    }, [filteredTonies]);
-
     const storeLocalStorage = () => {
         setLocalStore((prev) => !prev);
     };
@@ -253,6 +249,12 @@ export const ToniesList: React.FC<{
 
     const toggleSelectTonie = (ruid: string) => {
         setSelectedTonies((prev) => (prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid]));
+    };
+
+    const handleApplyFilters = () => {
+        setCurrentPage(1);
+        setListKey((prevKey) => prevKey + 1);
+        filterActions.applyFilters();
     };
 
     const handleResetFilters = () => {
@@ -405,6 +407,7 @@ export const ToniesList: React.FC<{
                 actions={{
                     ...filterActions,
                     setFilterName,
+                    applyFilters: handleApplyFilters,
                     resetFilters: handleResetFilters,
                 }}
                 existingFilters={existingFilters}
