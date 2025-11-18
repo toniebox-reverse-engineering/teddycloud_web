@@ -437,7 +437,7 @@ export function useToniesFilter(params: UseToniesFilterParams) {
 
         const ops: string[] = [];
 
-        // generische Vergleichsoperatoren
+        // generic comparisons
         ops.push("=", "!=", "~", ">", "<", ">=", "<=");
 
         // is empty / is not empty
@@ -661,21 +661,15 @@ export function useToniesFilter(params: UseToniesFilterParams) {
 
     const saveFilterSettings = (name: string) => {
         if (!name) return;
-        const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_FILTERS) || "{}") as Record<
-            string,
-            ToniesFilterSettings
-        >;
-        const next = { ...existing, [name]: getFilterSettings() };
-        localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
-        setExistingFilters(next);
+        setExistingFilters((prev) => {
+            const next = { ...prev, [name]: getFilterSettings() };
+            localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
+            return next;
+        });
     };
 
     const loadFilterSettings = (name: string): boolean => {
-        const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_FILTERS) || "{}") as Record<
-            string,
-            ToniesFilterSettings
-        >;
-        const filter = existing[name];
+        const filter = existingFilters[name];
         if (!filter) return false;
 
         setState((prev) => ({
@@ -690,15 +684,13 @@ export function useToniesFilter(params: UseToniesFilterParams) {
     };
 
     const deleteFilter = (name: string): boolean => {
-        const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_FILTERS) || "{}") as Record<
-            string,
-            ToniesFilterSettings
-        >;
-        if (!existing[name]) return false;
-        const next = { ...existing };
-        delete next[name];
-        localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
-        setExistingFilters(next);
+        if (!existingFilters[name]) return false;
+
+        setExistingFilters((prev) => {
+            const { [name]: _, ...next } = prev;
+            localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
+            return next;
+        });
         return true;
     };
 
