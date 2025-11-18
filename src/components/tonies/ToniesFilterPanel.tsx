@@ -107,10 +107,27 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
     };
 
     const handleCustomFilterSelect = (selection: string) => {
-        const newValue = customFilter.replace(/([^\s()]+)$/, selection);
+        const current = customFilter || "";
+        const endsWithSpace = /\s$/.test(current);
+        let newValue: string;
+
+        if (!current.trim()) {
+            // Feld war leer → einfach setzen
+            newValue = selection;
+        } else if (endsWithSpace) {
+            // letztes Token ist "fertig", wir hängen neuen Token an
+            newValue = current + selection;
+        } else {
+            // wir ersetzen das letzte Token durch die Auswahl
+            newValue = current.replace(/([^\s()]+)$/, selection);
+        }
+
         const updatedFilter = newValue + " ";
         setCustomFilter(updatedFilter);
         validateCustomFilter(updatedFilter);
+
+        // direkt neue, kontextabhängige Vorschläge für den aktualisierten Ausdruck berechnen
+        handleCustomFilterSearch(updatedFilter);
     };
 
     const menuItems = [

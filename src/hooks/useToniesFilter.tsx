@@ -41,11 +41,9 @@ const FIELD_ACCESSORS: FIELD_ACCESSOR_MAP = {
 
 const VALID_FIELDS = Object.keys(FIELD_ACCESSORS).filter((f) => f !== "trackseconds");
 const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~", ">", "<", ">=", "<="];
-const LOGICALS = ["and", "or"];
+const LOGICALS = ["and", "or", "&&", "||"];
 const FUNCTIONS = ["unique(series)", "unique(episode)", "unique(model)", "tracksecondscount", "trackcount", "track"];
-
-// Felder, für die „is empty“ / „is not empty“ Sinn ergibt
-const EMPTYABLE_FIELDS = ["series", "episode", "model", "source", "language", "picture", "uid", "ruid"];
+const EMPTYABLE_FIELDS = ["series", "episode", "model", "source", "language", "picture"];
 
 type ValidateResult = { valid: boolean; error?: string };
 
@@ -127,7 +125,6 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         try {
             let expr = query.replace(/\band\b/gi, "&&").replace(/\bor\b/gi, "||");
 
-            // „is empty“ / „is not empty“ nach innen auflösen
             expr = expr.replace(/(\w+)\s+is\s+not\s+empty/gi, "isnotempty($1)");
             expr = expr.replace(/(\w+)\s+is\s+empty/gi, "isempty($1)");
 
@@ -438,56 +435,106 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         }
     }
 
+    const suggestionsAfterField = (field: string): string[] => {
+        if (["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(field)) {
+            return [...LOGICALS];
+        }
+
+        const ops: string[] = [];
+
+        // generische Vergleichsoperatoren
+        ops.push("=", "!=", "~", ">", "<", ">=", "<=");
+
+        // is empty / is not empty
+        if (EMPTYABLE_FIELDS.includes(field)) {
+            ops.push("is empty", "is not empty");
+        }
+
+        // startswith / endswith
+        ops.push("startswith", "endswith");
+
+        // in(...) / not in(...)
+        ops.push("in (", "not in (");
+
+        return ops;
+    };
+
     const getCustomFilterCompletionsInternal = (input: string): string[] => {
+        const endsWithSpace = /\s$/.test(input);
         const trimmed = input.trim();
-        if (!trimmed) return [...VALID_FIELDS, ...LOGICALS, ...FUNCTIONS];
 
-        const lastTokenMatch = trimmed.match(/([^\s()]+)$/);
-        let lastToken = lastTokenMatch ? lastTokenMatch[1] : "";
+        if (!trimmed) {
+            return [...VALID_FIELDS, ...LOGICALS, ...FUNCTIONS];
+        }
 
-        const completions: string[] = [];
+        const tokens = trimmed.split(/\s+/);
+        const lastToken = tokens[tokens.length - 1];
+        const prevToken = tokens.length > 1 ? tokens[tokens.length - 2] : null;
 
-        const negationMatch = lastToken.match(/^!(\w*)$/);
+        if (/^!?\s*unique\($/.test(lastToken)) {
+            return ["series)", "episode)", "model)"];
+        }
+
+        if (endsWithSpace) {
+            const prev = lastToken;
+
+            if (VALID_FIELDS.includes(prev)) {
+                return suggestionsAfterField(prev);
+            }
+
+            if (LOGICALS.includes(prev.toLowerCase())) {
+                return [...VALID_FIELDS, "!", "("];
+            }
+
+            if (prev === "(") {
+                return [...VALID_FIELDS, "!", "("];
+            }
+
+            if (prev === ")") {
+                return [...LOGICALS];
+            }
+
+            return [...VALID_FIELDS, ...LOGICALS, ...FUNCTIONS];
+        }
+
+        let current = lastToken;
+        let previous = prevToken;
+
+        const negationMatch = current.match(/^!(\w*)$/);
         const isNegated = !!negationMatch;
-        if (isNegated) lastToken = negationMatch[1];
+        if (isNegated) current = negationMatch[1];
 
-        const matchingFields = VALID_FIELDS.filter((f) => f.startsWith(lastToken));
-        completions.push(...matchingFields);
-        completions.push(...LOGICALS.filter((l) => l.startsWith(lastToken)));
-        completions.push(...FUNCTIONS.filter((f) => f.startsWith(lastToken)));
+        const prefix = current.toLowerCase();
+        const result: string[] = [];
 
-        if (VALID_FIELDS.includes(lastToken)) {
-            const field = lastToken;
-
-            if (["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(field)) {
-                // boolean -> nichts Spezielles
-            } else if (field === "tracks") {
-                completions.push("=", "!=", "~");
-            } else if (["trackseconds", "trackcount", "tracksecondscount"].includes(field)) {
-                completions.push("=", "!=", ">", "<", ">=", "<=");
-            } else {
-                completions.push("=", "!=", "~");
-            }
-
-            if (EMPTYABLE_FIELDS.includes(field)) {
-                completions.push("is empty", "is not empty");
-            }
-
-            completions.push("startswith", "endswith");
-            completions.push("in (", "not in (");
+        if (!previous) {
+            result.push(...VALID_FIELDS.filter((f) => f.toLowerCase().startsWith(prefix)));
+            result.push(...LOGICALS.filter((l) => l.toLowerCase().startsWith(prefix)));
+            result.push(...FUNCTIONS.filter((f) => f.toLowerCase().startsWith(prefix)));
+        } else if (VALID_FIELDS.includes(previous)) {
+            const ops = suggestionsAfterField(previous);
+            result.push(...ops.filter((op) => op.toLowerCase().startsWith(prefix)));
+        } else if (LOGICALS.includes(previous.toLowerCase())) {
+            result.push(...VALID_FIELDS.filter((f) => f.toLowerCase().startsWith(prefix)));
+        } else {
+            result.push(...VALID_FIELDS.filter((f) => f.toLowerCase().startsWith(prefix)));
+            result.push(...LOGICALS.filter((l) => l.toLowerCase().startsWith(prefix)));
+            result.push(...FUNCTIONS.filter((f) => f.toLowerCase().startsWith(prefix)));
         }
 
-        if (/^!?\s*unique\($/.test(lastTokenMatch ? lastTokenMatch[0] : "")) {
-            completions.push("series)", "episode)", "model)");
+        if (/^!?\s*unique\($/.test(current)) {
+            result.push("series)", "episode)", "model)");
         }
+
+        const unique = Array.from(new Set(result));
 
         if (isNegated) {
-            return completions.map((c) =>
+            return unique.map((c) =>
                 ["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(c) ? `!${c}` : c
             );
         }
 
-        return completions;
+        return unique;
     };
 
     const applyFiltersInternal = (overrides?: Partial<ToniesFilterSettings>) => {
