@@ -190,7 +190,7 @@ export const ToniesList: React.FC<{
         handleApplyFilters();
         setUrlFilterPending(false);
         setCurrentPage(1);
-        setTimeout(() => scrollToTop(toniesListRef.current || undefined), 0);
+        setTimeout(() => scrollToTop((!collapsed && toniesListRef.current) || undefined), 0);
     }, [urlFilterPending, filterState.searchText]);
 
     useEffect(() => {
@@ -255,7 +255,7 @@ export const ToniesList: React.FC<{
         setListKey((prevKey) => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
-        setTimeout(() => scrollToTop(toniesListRef.current || undefined), 0);
+        setTimeout(() => scrollToTop((!collapsed && toniesListRef.current) || undefined), 0);
     };
 
     const toggleSelectTonie = (ruid: string) => {
