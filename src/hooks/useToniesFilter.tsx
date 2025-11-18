@@ -109,11 +109,6 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         setExistingFilters(stored);
     }, []);
 
-    useEffect(() => {
-        applyFiltersInternal();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tonieCards, lastTonieboxRUIDs]);
-
     const checkUnique = (t: TonieCardProps, field: "series" | "episode" | "model") => {
         const value = FIELD_ACCESSORS[field](t);
         return uniquenessMaps[field][value] === true;
@@ -603,7 +598,6 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         if (effective.hiddenRuids && effective.hiddenRuids.length > 0) {
             filtered = filtered.filter((tonie) => !effective.hiddenRuids.includes(tonie.ruid));
         }
-
         setFilteredTonies(filtered);
     };
 

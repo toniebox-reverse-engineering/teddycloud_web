@@ -93,7 +93,20 @@ export function detectColorScheme() {
     }
 }
 
-export function scrollToTop() {
+export function scrollToTop(anchor?: HTMLElement | null) {
+    if (anchor) {
+        try {
+            anchor.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+                inline: "nearest",
+            });
+        } catch {
+            anchor.scrollIntoView(true);
+        }
+        return;
+    }
+
     const scroller = document.scrollingElement || document.documentElement || document.body;
     let isCancelled = false;
 
@@ -108,19 +121,6 @@ export function scrollToTop() {
         scroller.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     } catch {
         scroller.scrollTop = 0;
-    }
-
-    if (scroller.scrollTop > 0) {
-        const step = () => {
-            if (isCancelled) return;
-
-            const c = scroller.scrollTop;
-            if (c > 0) {
-                scroller.scrollTop = c - Math.max(1, c / 8);
-                requestAnimationFrame(step);
-            }
-        };
-        requestAnimationFrame(step);
     }
 
     const cleanup = () => {

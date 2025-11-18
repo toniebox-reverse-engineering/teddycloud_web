@@ -224,7 +224,7 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                             onOpenChange={(open) => setPopoverOpen(open)}
                             menu={{ items: [] }}
                             trigger={["click"]}
-                            dropdownRender={() => (
+                            popupRender={() => (
                                 <div
                                     style={{
                                         padding: 12,

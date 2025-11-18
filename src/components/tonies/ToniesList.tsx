@@ -1,5 +1,5 @@
 import { Button, Dropdown, Empty, List, Tooltip } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
@@ -68,7 +68,9 @@ export const ToniesList: React.FC<{
     const [filterName, setFilterName] = useState("");
     const [existingFilters, setExistingFilters] = useState<Record<string, ToniesFilterSettings>>({});
 
-    // Lokale Kopie der Tonies, die wirklich gerendert und gefiltert werden
+    const [urlFilterPending, setUrlFilterPending] = useState(false);
+
+    const toniesListRef = useRef<HTMLDivElement | null>(null);
     const [localTonies, setLocalTonies] = useState<TonieCardProps[]>(tonieCards);
 
     useEffect(() => {
@@ -175,12 +177,21 @@ export const ToniesList: React.FC<{
         if (tonieRUID) {
             filterActions.setSearchText(tonieRUID);
             setCollapsed(false);
-            filterActions.applyFilters();
+            setUrlFilterPending(true);
         }
         setListKey((prevKey) => prevKey + 1);
         setLoading(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search, ruidHash]);
+
+    useEffect(() => {
+        if (!urlFilterPending) return;
+
+        handleApplyFilters();
+        setUrlFilterPending(false);
+        setCurrentPage(1);
+        setTimeout(() => scrollToTop(toniesListRef.current || undefined), 0);
+    }, [urlFilterPending, filterState.searchText]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -244,7 +255,7 @@ export const ToniesList: React.FC<{
         setListKey((prevKey) => prevKey + 1);
         setCurrentPage(current);
         storeLocalStorage();
-        setTimeout(() => scrollToTop(), 0);
+        setTimeout(() => scrollToTop(toniesListRef.current || undefined), 0);
     };
 
     const toggleSelectTonie = (ruid: string) => {
@@ -264,6 +275,7 @@ export const ToniesList: React.FC<{
         location.search = "";
         setCollapsed(true);
         setCurrentPage(1);
+        setListKey((prevKey) => prevKey + 1);
     };
 
     const selectionMenu = [
@@ -374,12 +386,8 @@ export const ToniesList: React.FC<{
             );
             return;
         }
-        addNotification(
-            NotificationTypeEnum.Success,
-            t("tonies.messages.filterLoaded"),
-            t("tonies.messages.filterLoadedDetails", { name }),
-            t("tonies.title")
-        );
+        setCurrentPage(1);
+        setListKey((prevKey) => prevKey + 1);
     };
 
     const handleDeleteFilter = (name: string) => {
@@ -516,6 +524,7 @@ export const ToniesList: React.FC<{
         <div className="tonies-list-container">
             {!readOnly ? listActions : ""}
             <List
+                ref={toniesListRef}
                 header={showPagination ? listPagination : ""}
                 footer={showPagination ? listPagination : ""}
                 grid={{
