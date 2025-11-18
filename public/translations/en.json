@@ -1879,6 +1879,8 @@
             "errorFetchingUpdatedCardDetails": "Error fetching updated card for \"{{model}}\" [{{ruid}}]: ",
             "filterDeleted": "Filter deleted",
             "filterDeletedDetails": "Filter {{name}} was deleted sucessfully!",
+            "filterLoaded": "Filter loaded",
+            "filterLoadedDetails": "Filter {{name}} was loaded sucessfully!",
             "filterSaved": "Filter saved",
             "filterSavedDetails": "Filter {{name}} was saved successfully!",
             "hideTonieFailed": "Failed to hide Tonie/Tag",
@@ -2059,7 +2061,13 @@
                         "trackSecondsCountNotEqualsTrackCount": "Filter for tonies where length of track start position array does not equal number of tracks",
                         "tracksRegex": "Filter tracks using a regex pattern",
                         "tracksTitle": "Track-related examples:",
-                        "unique": "Filters Tonies that are the only one in their series."
+                        "unique": "Filters Tonies that are the only one in their series.",
+                        "isEmpty": "Filters Tonies where the field is empty.",
+                        "isNotEmpty": "Filters Tonies where the field is not empty.",
+                        "startswith": "Filters Tonies where the field starts with the given value.",
+                        "endswith": "Filters Tonies where the field ends with the given value.",
+                        "inList": "Filters Tonies where the field matches any of the given values.",
+                        "notInList": "Filters Tonies where the field matches none of the given values."
                     },
                     "table": {
                         "description": "Description",

@@ -157,6 +157,10 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
 
         setNotifications((prev) => {
             const updated = [newNotification, ...prev];
+            // we limit to 500 notifications stored
+            if (updated.length > 500) {
+                updated.splice(500, updated.length - 500);
+            }
             localStorage.setItem("notifications", JSON.stringify(updated));
             return updated;
         });
