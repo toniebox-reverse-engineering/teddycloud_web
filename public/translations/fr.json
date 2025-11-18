@@ -1879,6 +1879,8 @@
             "errorFetchingUpdatedCardDetails": "Erreur lors de la récupération de la carte mise à jour pour \"{{model}}\" [{{ruid}}]: ",
             "filterDeleted": "Filtre supprimé",
             "filterDeletedDetails": "Le filtre {{name}} a été supprimé avec succès !",
+            "filterLoaded": "Filtre chargé",
+            "filterLoadedDetails": "Le filtre {{name}} a été chargé avec succès !",
             "filterSaved": "Filtre enregistré",
             "filterSavedDetails": "Le filtre {{name}} a été enregistré avec succès !",
             "hideTonieFailed": "Échec de la dissimulation du Tonie/Tag!",
@@ -2059,7 +2061,13 @@
                         "trackSecondsCountNotEqualsTrackCount": "Filtrer les tonies où la longueur du tableau des positions de départ des pistes ne correspond pas au nombre de pistes",
                         "tracksRegex": "Filtrer les pistes avec une expression régulière",
                         "tracksTitle": "Exemples de champs de pistes :",
-                        "unique": "Filtre les Tonies qui sont les seuls dans leur série."
+                        "unique": "Filtre les Tonies qui sont les seuls dans leur série.",
+                        "isEmpty": "Filtre les Tonies dont le champ est vide.",
+                        "isNotEmpty": "Filtre les Tonies dont le champ n'est pas vide.",
+                        "startswith": "Filtre les Tonies dont le champ commence par la valeur indiquée.",
+                        "endswith": "Filtre les Tonies dont le champ se termine par la valeur indiquée.",
+                        "inList": "Filtre les Tonies dont le champ correspond à l'une des valeurs indiquées.",
+                        "notInList": "Filtre les Tonies dont le champ ne correspond à aucune des valeurs indiquées."
                     },
                     "table": {
                         "description": "Description",

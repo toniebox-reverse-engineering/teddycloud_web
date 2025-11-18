@@ -88,6 +88,31 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, 
                 <Text code>unique(series)</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.unique")}
             </Paragraph>
             <Paragraph>
+                <Text code>series is empty</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.isEmpty")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>series is not empty</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.isNotEmpty")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>series startswith Pix</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.startswith")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>model endswith 2023</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.endswith")}
+            </Paragraph>
+
+            <Paragraph>
+                <Text code>language in (de-de, fr-fr)</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.inList")}
+            </Paragraph>
+            <Paragraph>
+                <Text code>language not in (de-de, fr-fr)</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.notInList")}
+            </Paragraph>
+            <Paragraph>
                 <Text code>live AND !nocloud AND language=de-de AND unique(series)</Text> -{" "}
                 {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.combined")}
             </Paragraph>

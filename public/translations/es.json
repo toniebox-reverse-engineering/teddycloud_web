@@ -1879,6 +1879,8 @@
             "errorFetchingUpdatedCardDetails": "Error al obtener la tarjeta actualizada para \"{{model}}\" [{{ruid}}]: ",
             "filterDeleted": "Filtro eliminado",
             "filterDeletedDetails": "¡El filtro {{name}} se eliminó correctamente!",
+            "filterLoaded": "Filtro cargado",
+            "filterLoadedDetails": "¡El filtro {{name}} se cargó correctamente!",
             "filterSaved": "Filtro guardado",
             "filterSavedDetails": "¡El filtro {{name}} se guardó correctamente!",
             "hideTonieFailed": "¡No se pudo ocultar el Tonie/Etiqueta!",
@@ -2059,7 +2061,13 @@
                         "trackSecondsCountNotEqualsTrackCount": "Filtrar tonies donde la longitud del array de posiciones de inicio de pistas no coincide con el número de pistas",
                         "tracksRegex": "Filtrar pistas usando un patrón regex",
                         "tracksTitle": "Ejemplos de campos de pistas:",
-                        "unique": "Filtra Tonies que son los únicos en su serie."
+                        "unique": "Filtra Tonies que son los únicos en su serie.",
+                        "isEmpty": "Filtra Tonies donde el campo está vacío.",
+                        "isNotEmpty": "Filtra Tonies donde el campo no está vacío.",
+                        "startswith": "Filtra Tonies donde el campo comienza con el valor indicado.",
+                        "endswith": "Filtra Tonies donde el campo termina con el valor indicado.",
+                        "inList": "Filtra Tonies donde el campo coincide con alguno de los valores indicados.",
+                        "notInList": "Filtra Tonies donde el campo no coincide con ninguno de los valores indicados."
                     },
                     "table": {
                         "description": "Descripción",
