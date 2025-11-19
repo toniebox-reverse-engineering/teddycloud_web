@@ -15,6 +15,7 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { DraggableUploadListItem } from "../../components/utils/DraggableUploadListItem";
 import { MyUploadFile, upload } from "../../utils/encoder";
+import { WasmTafEncoder, loadWasmEncoder, isWasmEncoderAvailable } from "../../utils/wasmEncoder";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
 import { createQueryString } from "../../utils/url";
 import { MAX_FILES } from "../../constants";
@@ -35,6 +36,9 @@ export const EncoderPage = () => {
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
 
     const [debugPCMObjects, setDebugPCMObjects] = useState(false);
+    const [useFrontendEncoding, setUseFrontendEncoding] = useState(false);
+    const [useFrontendEncodingSetting, setUseFrontendEncodingSetting] = useState(false);
+    const [wasmLoaded, setWasmLoaded] = useState(false);
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
     const [processing, setProcessing] = useState(false);
@@ -66,6 +70,34 @@ export const EncoderPage = () => {
             setDebugPCMObjects(logPCMURLObject);
         };
         fetchDebugPCM();
+
+        const fetchUseFrontendSetting = async () => {
+            try {
+                const response = await api.apiGetTeddyCloudSettingRaw("encode.use_frontend");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const useFrontend = data.toString() === "true";
+                setUseFrontendEncodingSetting(useFrontend);
+                setUseFrontendEncoding(useFrontend);
+
+                // Pre-load WASM if enabled
+                if (useFrontend) {
+                    loadWasmEncoder()
+                        .then(() => {
+                            setWasmLoaded(true);
+                            console.log("WASM encoder pre-loaded");
+                        })
+                        .catch((error) => {
+                            console.error("Failed to pre-load WASM encoder:", error);
+                        });
+                }
+            } catch (error) {
+                console.error("Error fetching encode.use_frontend: ", error);
+            }
+        };
+        fetchUseFrontendSetting();
 
         const preLoadTreeData = async () => {
             const newPath = pathFromNodeId(rootTreeNode.id);
@@ -223,6 +255,85 @@ export const EncoderPage = () => {
                 t("tonies.encoder.uploadFailedDetails") + err,
                 t("tonies.title")
             );
+            setProcessing(false);
+            setUploading(false);
+        }
+    };
+
+    const handleWasmUpload = async () => {
+        setUploading(true);
+        setProcessing(true);
+        const key = "encoding-" + tafFilename + ".taf";
+
+        try {
+            // Ensure WASM is loaded
+            if (!isWasmEncoderAvailable()) {
+                addLoadingNotification(key, t("tonies.encoder.loading"), "Loading WASM encoder...");
+                await loadWasmEncoder();
+                setWasmLoaded(true);
+            }
+            const currentUnixTime = Math.floor(Date.now() / 1000);
+            const audioId = currentUnixTime - 0x50000000;
+            // Encode in browser
+            addLoadingNotification(
+                key,
+                t("tonies.encoder.processing"),
+                "Encoding audio files in browser..."
+            );
+            const tafBlob = await WasmTafEncoder.encodeMultipleFiles(
+                fileList,
+                audioId,
+                (current, total, currentFile) => {
+                    addLoadingNotification(
+                        key,
+                        t("tonies.encoder.processing"),
+                        `Encoding ${current + 1}/${total}: ${currentFile}`
+                    );
+                }
+            );
+            // Upload TAF file
+            addLoadingNotification(
+                key,
+                t("tonies.encoder.uploading"),
+                t("tonies.encoder.uploadingDetails", { file: tafFilename + ".taf" })
+            );
+            const queryParams = {
+                name: tafFilename + ".taf",
+                path: pathFromNodeId(treeNodeId),
+                special: "library",
+            };
+            const queryString = createQueryString(queryParams);
+            const formData = new FormData();
+            formData.append("file", tafBlob, tafFilename + ".taf");
+            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/tafUpload?${queryString}`, formData);
+            closeLoadingNotification(key);
+            if (response.ok) {
+                addNotification(
+                    NotificationTypeEnum.Success,
+                    t("tonies.encoder.uploadSuccessful"),
+                    t("tonies.encoder.uploadSuccessfulDetails", { file: tafFilename + ".taf" }),
+                    t("tonies.title")
+                );
+                setFileList([]);
+                setTafFilename("");
+            } else {
+                addNotification(
+                    NotificationTypeEnum.Error,
+                    t("tonies.encoder.uploadFailed"),
+                    t("tonies.encoder.uploadFailedDetails") + response.statusText,
+                    t("tonies.title")
+                );
+            }
+        } catch (err) {
+            closeLoadingNotification(key);
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonies.encoder.uploadFailed"),
+                t("tonies.encoder.uploadFailedDetails") + err,
+                t("tonies.title")
+            );
+            throw err;
+        } finally {
             setProcessing(false);
             setUploading(false);
         }
@@ -553,12 +664,33 @@ export const EncoderPage = () => {
                                         ) : (
                                             ""
                                         )}
+                                        <div style={{ marginTop: "16px", marginBottom: "8px" }}>
+                                            <Space>
+                                                <span>Encoding Method:</span>
+                                                <Button
+                                                    type={!useFrontendEncoding ? "primary" : "default"}
+                                                    onClick={() => setUseFrontendEncoding(false)}
+                                                    size="small"
+                                                    disabled={uploading}
+                                                >
+                                                    Server-side
+                                                </Button>
+                                                <Button
+                                                    type={useFrontendEncoding ? "primary" : "default"}
+                                                    onClick={() => setUseFrontendEncoding(true)}
+                                                    size="small"
+                                                    disabled={uploading || (!wasmLoaded && !isWasmEncoderAvailable())}
+                                                >
+                                                    Browser-side
+                                                </Button>
+                                            </Space>
+                                        </div>
                                         <Space.Compact
                                             style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}
                                         >
                                             <Button
                                                 type="primary"
-                                                onClick={handleUpload}
+                                                onClick={useFrontendEncoding ? handleWasmUpload : handleUpload}
                                                 disabled={
                                                     fileList.length === 0 || tafFilename === "" || hasInvalidChars
                                                 }
