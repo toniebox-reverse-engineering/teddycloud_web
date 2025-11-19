@@ -46,6 +46,10 @@ export const ToniesList: React.FC<{
     const location = useLocation();
     const { addNotification } = useTeddyCloud();
 
+    // ------------------------
+    // Local state
+    // ------------------------
+
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
     const [pageSize, setPageSize] = useState<number>(() => {
@@ -74,6 +78,10 @@ export const ToniesList: React.FC<{
     const toniesListRef = useRef<HTMLDivElement | null>(null);
     const [localTonies, setLocalTonies] = useState<TonieCardProps[]>(tonieCards);
 
+    // ------------------------
+    // Effects – basic wiring
+    // ------------------------
+
     useEffect(() => {
         setLocalTonies(tonieCards);
     }, [tonieCards]);
@@ -82,6 +90,10 @@ export const ToniesList: React.FC<{
         const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<string, ToniesFilterSettings>;
         setExistingFilters(stored);
     }, []);
+
+    // ------------------------
+    // Derived data / memoized values
+    // ------------------------
 
     const ruidHash = useMemo(() => localTonies.map((tonie) => tonie.ruid).join(","), [localTonies]);
 
@@ -105,6 +117,42 @@ export const ToniesList: React.FC<{
             model: buildMap(getModel),
         };
     }, [localTonies]);
+
+    const {
+        filteredTonies,
+        filterState,
+        filterActions,
+        existingFilters: hookExistingFilters,
+        saveFilterSettings,
+        loadFilterSettings,
+        deleteFilter,
+    } = useToniesFilter({
+        tonieCards: localTonies,
+        lastTonieboxRUIDs,
+        uniquenessMaps,
+    });
+
+    // NOTE: currently unused, but kept for possible future use
+    const filteredRuidSet = useMemo(() => {
+        if (!filteredTonies) return null;
+        return new Set(filteredTonies.map((t) => t.ruid));
+    }, [filteredTonies]);
+
+    // ------------------------
+    // Helpers
+    // ------------------------
+
+    const getBaseList = () => filteredTonies ?? localTonies;
+
+    // ------------------------
+    // Effects – filters / URL / remote data
+    // ------------------------
+
+    useEffect(() => {
+        if (Object.keys(hookExistingFilters).length > 0) {
+            setExistingFilters(hookExistingFilters);
+        }
+    }, [hookExistingFilters]);
 
     useEffect(() => {
         const storedState = localStorage.getItem(STORAGE_KEY);
@@ -152,31 +200,6 @@ export const ToniesList: React.FC<{
         fetchShowSourceInfo();
     }, [noLastRuid]);
 
-    const {
-        filteredTonies,
-        filterState,
-        filterActions,
-        existingFilters: hookExistingFilters,
-        saveFilterSettings,
-        loadFilterSettings,
-        deleteFilter,
-    } = useToniesFilter({
-        tonieCards: localTonies,
-        lastTonieboxRUIDs,
-        uniquenessMaps,
-    });
-
-    const filteredRuidSet = useMemo(() => {
-        if (!filteredTonies) return null;
-        return new Set(filteredTonies.map((t) => t.ruid));
-    }, [filteredTonies]);
-
-    useEffect(() => {
-        if (Object.keys(hookExistingFilters).length > 0) {
-            setExistingFilters(hookExistingFilters);
-        }
-    }, [hookExistingFilters]);
-
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const tonieRUID = searchParams.get("tonieRUID");
@@ -199,6 +222,7 @@ export const ToniesList: React.FC<{
         setTimeout(() => scrollToTop((!collapsed && toniesListRef.current) || undefined), 0);
     }, [urlFilterPending, filterState.searchText]);
 
+    // keep selection consistent with current base list (filtered + local)
     useEffect(() => {
         const baseRuidSet = new Set(getBaseList().map((t) => t.ruid));
         setSelectedTonies((prev) => prev.filter((ruid) => baseRuidSet.has(ruid)));
@@ -226,17 +250,23 @@ export const ToniesList: React.FC<{
         }
     }, [selectionMode]);
 
+    // ------------------------
+    // Handlers – local persistence
+    // ------------------------
+
     const storeLocalStorage = () => {
         setLocalStore((prev) => !prev);
     };
+
+    // ------------------------
+    // Handlers – update / hide single card
+    // ------------------------
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
         setLocalTonies((prev) =>
             prev.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
         );
-        if (onToniesCardUpdate) {
-            onToniesCardUpdate(updatedTonieCard);
-        }
+        onToniesCardUpdate?.(updatedTonieCard);
         setListKey((prevKey) => prevKey + 1);
     };
 
@@ -245,6 +275,10 @@ export const ToniesList: React.FC<{
         setSelectedTonies((prevMarked) => prevMarked.filter((m) => m !== ruid));
         setListKey((prevKey) => prevKey + 1);
     };
+
+    // ------------------------
+    // Handlers – pagination
+    // ------------------------
 
     const handleShowAll = (size?: number) => {
         const effectiveSize = size ?? pageSize;
@@ -269,6 +303,10 @@ export const ToniesList: React.FC<{
         setTimeout(() => scrollToTop((!collapsed && toniesListRef.current) || undefined), 0);
     };
 
+    // ------------------------
+    // Handlers – selection / filters
+    // ------------------------
+
     const toggleSelectTonie = (ruid: string) => {
         setSelectedTonies((prev) => (prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid]));
     };
@@ -288,6 +326,10 @@ export const ToniesList: React.FC<{
         setCurrentPage(1);
         setListKey((prevKey) => prevKey + 1);
     };
+
+    // ------------------------
+    // Menus – selection / export / bulk actions
+    // ------------------------
 
     const selectionMenu = [
         {
@@ -352,7 +394,9 @@ export const ToniesList: React.FC<{
         },
     ];
 
-    const getBaseList = () => filteredTonies ?? localTonies;
+    // ------------------------
+    // Helpers – paging & counts
+    // ------------------------
 
     const getCurrentPageData = () => {
         const base = getBaseList();
@@ -383,6 +427,10 @@ export const ToniesList: React.FC<{
             )}
         </div>
     );
+
+    // ------------------------
+    // Handlers – filter CRUD
+    // ------------------------
 
     const handleSaveFilter = (name: string) => {
         if (!name) return;
@@ -427,6 +475,10 @@ export const ToniesList: React.FC<{
             t("tonies.title")
         );
     };
+
+    // ------------------------
+    // Render helpers
+    // ------------------------
 
     const listActions = (
         <>
@@ -538,6 +590,10 @@ export const ToniesList: React.FC<{
             }
         />
     );
+
+    // ------------------------
+    // Render
+    // ------------------------
 
     if (loading) {
         return <div>Loading...</div>;

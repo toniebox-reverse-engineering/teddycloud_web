@@ -1,55 +1,35 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Card } from "antd";
+import { Card, theme } from "antd";
 import { LeftOutlined, PlayCircleOutlined, RightOutlined } from "@ant-design/icons";
-import { theme } from "antd";
+import { t } from "i18next";
+
 import { TonieCardProps } from "../../types/tonieTypes";
 import StandAloneAudioPlayer from "../audio/StandAloneAudioPlayer";
-import { t } from "i18next";
+
 const { useToken } = theme;
 
-export const ToniesAudioPlayer: React.FC<{
-    tonieCards: TonieCardProps[];
-    overlay: string;
-    preselectedTonieCard?: TonieCardProps;
-    preselectedPlayPosition?: number;
-    onToniesChange?: (toniecard: TonieCardProps | undefined) => void;
-    onPlayPositionChange?: (position: number) => void;
-}> = ({ tonieCards, overlay, preselectedTonieCard, preselectedPlayPosition, onToniesChange, onPlayPositionChange }) => {
-    const { token } = useToken();
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [currentTonie, setCurrentTonie] = useState<TonieCardProps | undefined>(preselectedTonieCard);
-    const [playPosition, setPlayPosition] = useState<number>(preselectedPlayPosition ?? 0);
-    const [hoveredTonieRUID, setHoveredTonieRUID] = useState<string | null>(null);
-    const stopScroll = useRef<(() => void) | null>(null);
-    const scrollSpeed = 20;
+// ------------------------
+// Hooks
+// ------------------------
 
-    const usePageLoaded = () => {
-        const [loaded, setLoaded] = useState(false);
-
-        useEffect(() => {
-            const handleLoad = () => setLoaded(true);
-
-            if (document.readyState === "complete") {
-                setLoaded(true);
-            } else {
-                window.addEventListener("load", handleLoad);
-                return () => window.removeEventListener("load", handleLoad);
-            }
-        }, []);
-
-        return loaded;
-    };
-
-    const allLoaded = usePageLoaded();
+function usePageLoaded(): boolean {
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        if (!preselectedTonieCard) {
-            setCurrentTonie(undefined);
-            return;
-        }
-        handlePlay(preselectedTonieCard);
-    }, [preselectedTonieCard]);
+        const handleLoad = () => setLoaded(true);
 
+        if (document.readyState === "complete") {
+            setLoaded(true);
+        } else {
+            window.addEventListener("load", handleLoad);
+            return () => window.removeEventListener("load", handleLoad);
+        }
+    }, []);
+
+    return loaded;
+}
+
+function useHorizontalDragScroll(containerRef: React.RefObject<HTMLDivElement | null>) {
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
@@ -59,11 +39,7 @@ export const ToniesAudioPlayer: React.FC<{
         let scrollStart = 0;
 
         container.style.userSelect = "none";
-
-        const handleWheel = (e: WheelEvent) => {
-            e.preventDefault();
-            container.scrollLeft += e.deltaY;
-        };
+        container.style.cursor = "grab";
 
         const handleMouseDown = (e: MouseEvent) => {
             isDragging = true;
@@ -83,54 +59,48 @@ export const ToniesAudioPlayer: React.FC<{
             container.style.cursor = "grab";
         };
 
-        container.addEventListener("wheel", handleWheel, { passive: false });
         container.addEventListener("mousedown", handleMouseDown);
         window.addEventListener("mousemove", handleMouseMove);
         window.addEventListener("mouseup", handleMouseUp);
 
-        container.style.cursor = "grab";
-
         return () => {
-            container.removeEventListener("wheel", handleWheel);
             container.removeEventListener("mousedown", handleMouseDown);
             window.removeEventListener("mousemove", handleMouseMove);
             window.removeEventListener("mouseup", handleMouseUp);
         };
-    }, []);
+    }, [containerRef]);
+}
 
+function useWheelHorizontalScroll(containerRef: React.RefObject<HTMLDivElement | null>) {
     useEffect(() => {
-        const stop = () => stopScroll.current?.();
+        const container = containerRef.current;
+        if (!container) return;
 
-        document.addEventListener("mouseup", stop);
-        document.addEventListener("touchend", stop);
-        document.addEventListener("touchcancel", stop);
+        const handleWheel = (e: WheelEvent) => {
+            // Vertikales Scrollen in horizontales umbiegen
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                container.scrollLeft += e.deltaY;
+            }
+        };
+
+        container.addEventListener("wheel", handleWheel, { passive: false });
 
         return () => {
-            document.removeEventListener("mouseup", stop);
-            document.removeEventListener("touchend", stop);
-            document.removeEventListener("touchcancel", stop);
+            container.removeEventListener("wheel", handleWheel);
         };
-    }, []);
+    }, [containerRef]);
+}
 
-    const handlePlay = (tonie: TonieCardProps | undefined) => {
-        if (onToniesChange) {
-            onToniesChange(tonie);
-        }
-        if (!tonie) {
-            setCurrentTonie(undefined);
-            return;
-        }
-        if (!allLoaded) return;
-        const newTonie = {
-            ...tonie,
-            tonieInfo: {
-                ...tonie.tonieInfo,
-                ...tonie.sourceInfo,
-            },
-        };
-        setPlayPosition(0);
-        setCurrentTonie(newTonie);
-    };
+function useHoldToScroll(
+    containerRef: React.RefObject<HTMLDivElement | null>,
+    scrollSpeed: number
+): {
+    startScrollLeft: () => void;
+    startScrollRight: () => void;
+    stopScrolling: () => void;
+} {
+    const stopScrollRef = useRef<(() => void) | null>(null);
 
     const scrollByHold = (speed: number) => {
         const container = containerRef.current;
@@ -151,28 +121,115 @@ export const ToniesAudioPlayer: React.FC<{
         };
     };
 
+    const startScrollLeft = () => {
+        stopScrollRef.current?.();
+        stopScrollRef.current = scrollByHold(-scrollSpeed);
+    };
+
+    const startScrollRight = () => {
+        stopScrollRef.current?.();
+        stopScrollRef.current = scrollByHold(scrollSpeed);
+    };
+
+    const stopScrolling = () => {
+        stopScrollRef.current?.();
+    };
+
+    useEffect(() => {
+        const stop = () => stopScrolling();
+
+        document.addEventListener("mouseup", stop);
+        document.addEventListener("touchend", stop);
+        document.addEventListener("touchcancel", stop);
+
+        return () => {
+            document.removeEventListener("mouseup", stop);
+            document.removeEventListener("touchend", stop);
+            document.removeEventListener("touchcancel", stop);
+        };
+    }, [stopScrolling]);
+
+    return { startScrollLeft, startScrollRight, stopScrolling };
+}
+
+// ------------------------
+// Component
+// ------------------------
+
+export const ToniesAudioPlayer: React.FC<{
+    tonieCards: TonieCardProps[];
+    overlay: string;
+    preselectedTonieCard?: TonieCardProps;
+    preselectedPlayPosition?: number;
+    onToniesChange?: (toniecard: TonieCardProps | undefined) => void;
+    onPlayPositionChange?: (position: number) => void;
+}> = ({ tonieCards, overlay, preselectedTonieCard, preselectedPlayPosition, onToniesChange, onPlayPositionChange }) => {
+    const { token } = useToken();
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
+    const [currentTonie, setCurrentTonie] = useState<TonieCardProps | undefined>(preselectedTonieCard);
+    const [playPosition, setPlayPosition] = useState<number>(preselectedPlayPosition ?? 0);
+    const [hoveredTonieRUID, setHoveredTonieRUID] = useState<string | null>(null);
+
+    const scrollSpeed = 20;
+    const allLoaded = usePageLoaded();
+
+    useHorizontalDragScroll(containerRef);
+    useWheelHorizontalScroll(containerRef);
+    const { startScrollLeft, startScrollRight, stopScrolling } = useHoldToScroll(containerRef, scrollSpeed);
+
+    useEffect(() => {
+        if (!preselectedTonieCard) {
+            setCurrentTonie(undefined);
+            return;
+        }
+        handlePlay(preselectedTonieCard);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [preselectedTonieCard]);
+
+    const handlePlay = (tonie: TonieCardProps | undefined) => {
+        onToniesChange?.(tonie);
+
+        if (!tonie) {
+            setCurrentTonie(undefined);
+            return;
+        }
+
+        if (!allLoaded) return;
+
+        const newTonie: TonieCardProps = {
+            ...tonie,
+            tonieInfo: {
+                ...tonie.tonieInfo,
+                ...tonie.sourceInfo,
+            },
+        };
+
+        setPlayPosition(0);
+        setCurrentTonie(newTonie);
+    };
+
     return (
         <div>
             <div style={{ marginBottom: 16 }}>
                 <StandAloneAudioPlayer
                     tonieCard={currentTonie}
                     playPosition={playPosition}
-                    onPlayPositionChange={onPlayPositionChange}
+                    onPlayPositionChange={(pos) => {
+                        setPlayPosition(pos);
+                        onPlayPositionChange?.(pos);
+                    }}
                 />
             </div>
+
             <div style={{ position: "relative", width: "100%" }}>
+                {/* Left Scroll Button */}
                 <div
-                    onMouseDown={(e) => {
-                        stopScroll.current?.();
-                        stopScroll.current = scrollByHold(-scrollSpeed);
-                    }}
-                    onTouchStart={(e) => {
-                        stopScroll.current?.();
-                        stopScroll.current = scrollByHold(-scrollSpeed);
-                    }}
-                    onMouseUp={() => stopScroll.current?.()}
-                    onMouseLeave={() => stopScroll.current?.()}
-                    onTouchEnd={() => stopScroll.current?.()}
+                    onMouseDown={startScrollLeft}
+                    onTouchStart={startScrollLeft}
+                    onMouseUp={stopScrolling}
+                    onMouseLeave={stopScrolling}
+                    onTouchEnd={stopScrolling}
                     style={{
                         position: "absolute",
                         left: 0,
@@ -191,6 +248,8 @@ export const ToniesAudioPlayer: React.FC<{
                 >
                     <LeftOutlined style={{ fontSize: 24 }} />
                 </div>
+
+                {/* Carousel */}
                 <div
                     className="tonies-carousel"
                     ref={containerRef}
@@ -281,18 +340,13 @@ export const ToniesAudioPlayer: React.FC<{
                     })}
                 </div>
 
+                {/* Right Scroll Button */}
                 <div
-                    onMouseDown={(e) => {
-                        stopScroll.current?.();
-                        stopScroll.current = scrollByHold(scrollSpeed);
-                    }}
-                    onTouchStart={(e) => {
-                        stopScroll.current?.();
-                        stopScroll.current = scrollByHold(scrollSpeed);
-                    }}
-                    onMouseUp={() => stopScroll.current?.()}
-                    onMouseLeave={() => stopScroll.current?.()}
-                    onTouchEnd={() => stopScroll.current?.()}
+                    onMouseDown={startScrollRight}
+                    onTouchStart={startScrollRight}
+                    onMouseUp={stopScrolling}
+                    onMouseLeave={stopScrolling}
+                    onTouchEnd={stopScrolling}
                     style={{
                         position: "absolute",
                         right: 0,

@@ -9,6 +9,7 @@ import {
     WarningOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+
 import { languageOptions } from "../../../utils/languageUtil";
 import CustomFilterHelpModal from "./modals/ToniesCustomFilterHelpModal";
 import HelpModal from "./modals/ToniesHelpModal";
@@ -43,10 +44,18 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
     const { t } = useTranslation();
     const { token } = useToken();
 
+    // ------------------------
+    // Local state
+    // ------------------------
+
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [isCustomFilterHelpOpen, setIsCustomFilterHelpOpen] = useState(false);
     const [customFilterOptions, setCustomFilterOptions] = useState<{ value: string }[]>([]);
     const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+
+    // ------------------------
+    // Destructure state and actions
+    // ------------------------
 
     const {
         searchText,
@@ -94,6 +103,10 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         validateCustomFilter,
     } = actions;
 
+    // ------------------------
+    // Handlers – custom filter
+    // ------------------------
+
     const handleCustomFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setCustomFilter(value);
@@ -123,6 +136,10 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         validateCustomFilter(updatedFilter);
         handleCustomFilterSearch(updatedFilter);
     };
+
+    // ------------------------
+    // Render helpers – filter menu content
+    // ------------------------
 
     const menuItems = [
         <Input
@@ -201,6 +218,10 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
             )}
         </div>,
     ];
+
+    // ------------------------
+    // Render helpers – main panel content
+    // ------------------------
 
     const filterPanelContent = (
         <div style={{ padding: "12px 0" }}>
@@ -377,6 +398,10 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         },
     ];
 
+    // ------------------------
+    // Render – no filter mode
+    // ------------------------
+
     if (!showFilter) {
         return (
             <>
@@ -401,6 +426,10 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         );
     }
 
+    // ------------------------
+    // Render – full filter panel
+    // ------------------------
+
     return (
         <>
             <div
@@ -417,6 +446,7 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                     {t("fileBrowser.help.showHelp")}
                 </Button>
             </div>
+
             {isHelpModalOpen && (
                 <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
             )}
