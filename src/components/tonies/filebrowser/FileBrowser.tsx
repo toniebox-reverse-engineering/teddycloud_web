@@ -13,9 +13,6 @@ import {
     TreeSelectProps,
     TreeSelect,
     Alert,
-    Upload,
-    Space,
-    Divider,
     Form,
     Empty,
     Tag,
@@ -34,7 +31,6 @@ import {
     FolderAddOutlined,
     FolderOutlined,
     FormOutlined,
-    InboxOutlined,
     LoadingOutlined,
     NodeExpandOutlined,
     PlayCircleOutlined,
@@ -44,8 +40,6 @@ import {
 } from "@ant-design/icons";
 import { Key, SortOrder } from "antd/es/table/interface";
 import { DefaultOptionType } from "antd/es/select";
-import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
@@ -57,7 +51,6 @@ import ConfirmationDialog from "../../common/ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
 import TonieInformationModal from "../common/TonieInformationModal";
 
-import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
 import { invalidCharactersAsString, isInputValid } from "../../../utils/fieldInputValidator";
@@ -71,6 +64,7 @@ import { generateUUID } from "../../../utils/helpers";
 
 import CreateDirectoryModal from "./modals/CreateDirectoryModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
+import UploadFilesModal from "./modals/UploadFilesModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -951,7 +945,7 @@ export const FileBrowser: React.FC<{
         </Modal>
     );
 
-    // encode files
+    // encode files (refactored)
     const showFileEncodeModal = () => {
         setEncodeFilesModalKey((prevKey) => prevKey + 1);
         setTreeNodeId(rootTreeNode.id);
@@ -991,150 +985,6 @@ export const FileBrowser: React.FC<{
         setUploadFileList([]);
         setIsOpenUploadDragAndDropModal(false);
     };
-
-    const uploadDraggerProps = {
-        name: "file",
-        multiple: true,
-        fileList: uploadFileList,
-        customRequest: async (options: any) => {
-            const { onSuccess, onError, file } = options;
-            onSuccess("Ok");
-        },
-        onChange(info: any) {
-            const { status, fileList } = info;
-            if (status !== "uploading") {
-                setUploadFileList(fileList);
-                console.log(info.file, info.fileList);
-            }
-        },
-        onDrop(e: any) {
-            console.log("Dropped files", e.dataTransfer.files);
-        },
-        onRemove: (file: any) => {
-            setUploadFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
-        },
-    };
-
-    const handleUploadToTeddycloud = async (files: any[]) => {
-        if (!files.length) {
-            return;
-        }
-        setUploading(true);
-        let failure = false;
-        const key = "uploading-" + files.length + "-" + new Date();
-
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            addLoadingNotification(
-                key,
-                t("fileBrowser.upload.uploading"),
-                t("fileBrowser.upload.uploadInProgress", { file: file.name })
-            );
-            const formData = new FormData();
-            formData.append(file.name, file.originFileObj);
-            try {
-                const response = await api.apiPostTeddyCloudFormDataRaw(
-                    `/api/fileUpload?path=${path}&special=${special}`,
-                    formData
-                );
-                if (response.ok) {
-                    setUploadFileList((prevList) => prevList.filter((f) => f.uid !== file.uid));
-                    addNotification(
-                        NotificationTypeEnum.Success,
-                        t("fileBrowser.upload.uploadedFile"),
-                        t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }),
-                        t("fileBrowser.title")
-                    );
-                } else {
-                    failure = true;
-                    setUploadFileList((prevList) =>
-                        prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f))
-                    );
-                    addNotification(
-                        NotificationTypeEnum.Error,
-                        t("fileBrowser.upload.uploadedFileFailed"),
-                        t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
-                        t("fileBrowser.title")
-                    );
-                }
-            } catch (err) {
-                failure = true;
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("fileBrowser.upload.uploadedFileFailed"),
-                    t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
-                    t("fileBrowser.title")
-                );
-                setUploadFileList((prevList) =>
-                    prevList.map((f) => (f.uid === file.uid ? { ...f, status: "Failed" } : f))
-                );
-            }
-        }
-
-        closeLoadingNotification(key);
-        if (failure) {
-            setRebuildList(!rebuildList);
-            addNotification(
-                NotificationTypeEnum.Error,
-                t("fileBrowser.upload.uploadFailed"),
-                t("fileBrowser.upload.uploadFailed"),
-                t("fileBrowser.title")
-            );
-        } else {
-            setRebuildList(!rebuildList);
-            setIsOpenUploadDragAndDropModal(false);
-            addNotification(
-                NotificationTypeEnum.Success,
-                t("fileBrowser.upload.uploadSuccessful"),
-                t("fileBrowser.upload.uploadSuccessfulDetails"),
-                t("fileBrowser.title")
-            );
-        }
-        setUploading(false);
-    };
-
-    const uploadFileModalFooter = (
-        <div
-            style={{
-                display: "flex",
-                gap: 8,
-                justifyContent: "flex-end",
-                padding: "16px 0",
-                margin: "-24px -24px -12px -24px",
-                background: token.colorBgElevated,
-            }}
-        >
-            <Button onClick={closeUploadDragAndDropModal}>{t("fileBrowser.upload.cancel")}</Button>
-            <Button
-                type="primary"
-                onClick={() => handleUploadToTeddycloud(uploadFileList)}
-                loading={uploading}
-                disabled={uploadFileList.length === 0 || uploading}
-            >
-                {uploading ? t("fileBrowser.upload.uploading") : t("fileBrowser.upload.upload")}
-            </Button>
-        </div>
-    );
-
-    const uploadFileModal = (
-        <Modal
-            className="sticky-footer"
-            title={t("fileBrowser.upload.modalTitle")}
-            open={isOpenUploadDragAndDropModal}
-            onCancel={closeUploadDragAndDropModal}
-            footer={uploadFileModalFooter}
-        >
-            <div style={{ width: "100%", marginBottom: 8 }}>
-                <Upload.Dragger {...uploadDraggerProps} style={{ width: "100%", marginBottom: 8 }}>
-                    <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                    </p>
-                    <p className="ant-upload-text">{t("fileBrowser.upload.uploadText")}</p>
-                    <p className="ant-upload-hint">{t("fileBrowser.upload.uploadHint")}</p>
-                </Upload.Dragger>
-            </div>
-        </Modal>
-    );
 
     // migrate content functions
     const migrateContent2Lib = (ruid: string, libroot: boolean, overlay?: string) => {
@@ -1722,7 +1572,16 @@ export const FileBrowser: React.FC<{
                 setTreeNodeId={setTreeNodeId}
                 setRebuildList={setRebuildList}
             />
-            {uploadFileModal}
+            <UploadFilesModal
+                open={isOpenUploadDragAndDropModal}
+                onClose={closeUploadDragAndDropModal}
+                path={path}
+                special={special}
+                uploadFileList={uploadFileList as any}
+                setUploadFileList={setUploadFileList as any}
+                rebuildList={rebuildList}
+                setRebuildList={setRebuildList}
+            />
             {moveFileModal}
             {renameFileModal}
             <EncodeFilesModal
