@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Button, Divider, Form, Input, Modal, Typography, theme } from "antd";
 import { CloseOutlined, FolderOpenOutlined, RollbackOutlined, SaveFilled } from "@ant-design/icons";
 
-import { TonieArticleSearch } from "./TonieArticleSearch";
-import { RadioStreamSearch } from "./TonieRadioStreamSearch";
+import { TonieArticleSearch } from "../search/TonieArticleSearch";
+import { RadioStreamSearch } from "../search/TonieRadioStreamSearch";
 
 const { useToken } = theme;
 

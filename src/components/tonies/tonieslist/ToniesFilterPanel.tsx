@@ -10,8 +10,8 @@ import {
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { languageOptions } from "../../../utils/languageUtil";
-import CustomFilterHelpModal from "./ToniesCustomFilterHelpModal";
-import HelpModal from "./ToniesHelpModal";
+import CustomFilterHelpModal from "./modals/ToniesCustomFilterHelpModal";
+import HelpModal from "./modals/ToniesHelpModal";
 import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../types/toniesFilterTypes";
 
 const { useToken } = theme;

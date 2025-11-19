@@ -21,8 +21,8 @@ import TonieInformationModal from "../common/TonieInformationModal";
 import { LanguageFlagIcon } from "../../../utils/languageUtil";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
-import { TonieEditModal } from "./TonieEditModal";
-import { TonieSelectFileModal } from "./TonieSelectFileModal";
+import { TonieEditModal } from "./modals/TonieEditModal";
+import { TonieSelectFileModal } from "./modals/TonieSelectFileModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
