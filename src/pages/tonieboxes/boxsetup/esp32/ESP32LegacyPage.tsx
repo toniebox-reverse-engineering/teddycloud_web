@@ -17,7 +17,7 @@ import AvailableBoxesModal, {
     TonieboxWifiGuide,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
-import CodeSnippet from "../../../../components/utils/CodeSnippet";
+import CodeSnippet from "../../../../components/common/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
 
 const { Paragraph } = Typography;

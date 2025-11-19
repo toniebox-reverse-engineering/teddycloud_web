@@ -6,18 +6,18 @@ import { Key } from "antd/es/table/interface";
 import { SortOrder } from "antd/es/table/interface";
 import { CloseOutlined, FolderOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
-import { Record } from "../../types/fileBrowserTypes";
+import { Record } from "../../../types/fileBrowserTypes";
 
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
+import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
 import TonieInformationModal from "./TonieInformationModal";
-import { useAudioContext } from "../audio/AudioContext";
-import { humanFileSize } from "../../utils/humanFileSize";
-import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { useAudioContext } from "../../audio/AudioContext";
+import { humanFileSize } from "../../../utils/humanFileSize";
+import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

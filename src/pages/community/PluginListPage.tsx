@@ -14,13 +14,13 @@ import {
     UploadOutlined,
 } from "@ant-design/icons";
 
-import CodeSnippet from "../../components/utils/CodeSnippet";
+import CodeSnippet from "../../components/common/CodeSnippet";
 import { useTeddyCloud } from "../../TeddyCloudContext";
-import ConfirmationDialog from "../../components/utils/ConfirmationDialog";
+import ConfirmationDialog from "../../components/common/ConfirmationDialog";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import PluginTemplateDownloadButton from "../../components/utils/PluginTemplateDownload";
+import PluginTemplateDownloadButton from "../../components/common/PluginTemplateDownload";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

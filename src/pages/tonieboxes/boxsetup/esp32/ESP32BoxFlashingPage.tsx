@@ -41,9 +41,9 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
-import ConfirmationDialog from "../../../../components/utils/ConfirmationDialog";
+import ConfirmationDialog from "../../../../components/common/ConfirmationDialog";
 import AvailableBoxesModal, { connectESP32Explanation } from "../../../../components/tonieboxes/boxSetup/CommonContent";
-import DotAnimation from "../../../../components/utils/DotAnimation";
+import DotAnimation from "../../../../components/common/DotAnimation";
 import { isWebSerialSupported } from "../../../../utils/checkWebSerialSupport";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";

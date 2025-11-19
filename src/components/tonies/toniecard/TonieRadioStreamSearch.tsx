@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Select, Typography } from "antd";
 import type { SelectProps } from "antd";
 
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 export const RadioStreamSearch: React.FC<{
     placeholder: string;

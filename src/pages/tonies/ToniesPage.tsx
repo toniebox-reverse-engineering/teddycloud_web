@@ -9,12 +9,12 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
-import { ToniesList } from "../../components/tonies/ToniesList";
+import { ToniesList } from "../../components/tonies/tonieslist/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import LoadingSpinner from "../../components/utils/LoadingSpinner";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
+import { useTonieboxContent } from "../../hooks/useTonieboxContentOverlay";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Option } = Select;

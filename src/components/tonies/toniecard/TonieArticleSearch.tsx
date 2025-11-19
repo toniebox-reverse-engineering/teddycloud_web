@@ -3,14 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Button, Select, Tooltip } from "antd";
 import type { SelectProps } from "antd";
 
-import { TonieInfo } from "../../types/tonieTypes";
+import { TonieInfo } from "../../../types/tonieTypes";
 
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import ToniesCustomJsonEditor from "../ToniesCustomJsonEditor";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

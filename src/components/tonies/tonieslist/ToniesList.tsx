@@ -3,19 +3,19 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { TonieCardProps } from "../../types/tonieTypes";
+import { TonieCardProps } from "../../../types/tonieTypes";
 
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import { TonieCard } from "../../components/tonies/TonieCard";
-import { useToniesFilter } from "../../hooks/useToniesFilter";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import type { ToniesFilterSettings } from "../../types/toniesFilterTypes";
-import { scrollToTop } from "../../utils/browserUtils";
-import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
-import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "../utils/ToniesListExportUtils";
+import { TonieCard } from "../toniecard/TonieCard";
+import { useToniesFilter } from "../../../hooks/useToniesFilter";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
+import { scrollToTop } from "../../../utils/browserUtils";
+import { hideSelectedTonies, setLiveFlag, setNoCloud } from "./ToniesListActionsUtils";
+import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "./ToniesListExportUtils";
 import { ToniesFilterPanel } from "./ToniesFilterPanel";
 import ToniesPagination from "./ToniesPagination";
 

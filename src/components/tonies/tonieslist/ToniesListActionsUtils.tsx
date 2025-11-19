@@ -1,12 +1,12 @@
 import { createRoot } from "react-dom/client";
 
-import { TonieCardProps } from "../../types/tonieTypes";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { TonieCardProps } from "../../../types/tonieTypes";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
-import { TeddyCloudApi } from "../../api/apis/TeddyCloudApi";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api/apis/TeddyCloudApi";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import ConfirmationDialog from "./ConfirmationDialog";
+import ConfirmationDialog from "../../common/ConfirmationDialog";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

@@ -1,33 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Card, Checkbox, Divider, Form, Input, Modal, Tooltip, Typography, theme } from "antd";
+import { Button, Card, Checkbox, Tooltip, Typography, theme } from "antd";
 import {
-    CloseOutlined,
     CloudSyncOutlined,
     DownloadOutlined,
     EditOutlined,
-    FolderOpenOutlined,
     InfoCircleOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
-    RollbackOutlined,
-    SaveFilled,
     StopOutlined,
 } from "@ant-design/icons";
 
-import { TonieCardProps } from "../../types/tonieTypes";
+import { TonieCardProps } from "../../../types/tonieTypes";
 
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api";
 
-import { useAudioContext } from "../audio/AudioContext";
-import { TonieArticleSearch } from "./TonieArticleSearch";
-import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
-import { RadioStreamSearch } from "../utils/RadioStreamSearch";
-import TonieInformationModal from "../utils/TonieInformationModal";
-import { LanguageFlagIcon } from "../../utils/languageUtil";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { useAudioContext } from "../../audio/AudioContext";
+import TonieInformationModal from "../common/TonieInformationModal";
+import { LanguageFlagIcon } from "../../../utils/languageUtil";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { TonieEditModal } from "./TonieEditModal";
+import { TonieSelectFileModal } from "./TonieSelectFileModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -140,7 +135,7 @@ export const TonieCard: React.FC<{
     const pictureLooksUnknown = picture.endsWith("img_unknown.png");
 
     const hasPendingChanges =
-        selectedSource !== tonieCard.source || selectedModel !== (tonieCard.tonieInfo.model || "");
+        selectedSource !== (tonieCard.source || "") || selectedModel !== (tonieCard.tonieInfo.model || "");
 
     // ------------------------
     // API helper
@@ -164,7 +159,7 @@ export const TonieCard: React.FC<{
     };
 
     // ------------------------
-    // Handlers – feature flags (nocloud / live)
+    // Handlers – feature flags
     // ------------------------
 
     const handleLiveClick = async () => {
@@ -274,7 +269,6 @@ export const TonieCard: React.FC<{
             );
 
             const response = await api.apiGetTeddyCloudApiRaw(path);
-            // blob used that message is shown after download finished
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const blob = await response.blob();
             closeLoadingNotification(key);
@@ -378,6 +372,7 @@ export const TonieCard: React.FC<{
             throw error;
         }
 
+        // Flags nachziehen
         if (!tonieCard.nocloud) {
             await handleNoCloudClick();
         }
@@ -390,7 +385,7 @@ export const TonieCard: React.FC<{
 
     const handleSaveChanges = async () => {
         try {
-            if (tonieCard.source !== selectedSource) {
+            if ((tonieCard.source || "") !== selectedSource) {
                 await handleSourceSave();
             }
             if ((tonieCard.tonieInfo.model || "") !== selectedModel) {
@@ -402,29 +397,6 @@ export const TonieCard: React.FC<{
         }
         setIsEditModalOpen(false);
         await fetchUpdatedTonieCard();
-    };
-
-    // ------------------------
-    // Handlers – Text / Search
-    // ------------------------
-
-    const handleModelInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedModel(e.target.value);
-    };
-
-    const handleSourceInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSelectedSource(value);
-        setTempSelectedSource(value);
-    };
-
-    const searchModelResultChanged = (newValue: string) => {
-        setSelectedModel(newValue);
-    };
-
-    const searchRadioResultChanged = (newValue: string) => {
-        setSelectedSource(newValue);
-        // hier kein extra "activeSource"-State mehr
     };
 
     // ------------------------
@@ -441,15 +413,31 @@ export const TonieCard: React.FC<{
         }
     };
 
+    const handleCancelSelectFile = () => {
+        setTempSelectedSource(selectedSource);
+        setSelectFileModalOpen(false);
+    };
+
+    const handleConfirmSelectFile = () => {
+        setSelectedSource(tempSelectedSource);
+        setSelectFileModalOpen(false);
+    };
+
     const showFileSelectModal = () => {
         setKeySelectFileFileBrowser((prev) => prev + 1);
         setSelectFileModalOpen(true);
     };
 
-    const handleCancelSelectFile = () => {
-        // Zurück auf aktuellen Eingabewert
-        setTempSelectedSource(selectedSource);
-        setSelectFileModalOpen(false);
+    // ------------------------
+    // Handlers – Search
+    // ------------------------
+
+    const searchModelResultChanged = (newValue: string) => {
+        setSelectedModel(newValue);
+    };
+
+    const searchRadioResultChanged = (newValue: string) => {
+        setSelectedSource(newValue);
     };
 
     // ------------------------
@@ -465,11 +453,7 @@ export const TonieCard: React.FC<{
         setIsEditModalOpen(true);
     };
 
-    // ------------------------
-    // JSX fragments – Modals
-    // ------------------------
-
-    const editModalTitel = (
+    const editModalTitle = (
         <>
             <h3 style={{ lineHeight: 0 }}>
                 {t("tonies.editModal.title")}
@@ -477,167 +461,6 @@ export const TonieCard: React.FC<{
             </h3>
             {tonieCard.tonieInfo.series ? <Text type="secondary">{modelTitle}</Text> : " "}
         </>
-    );
-
-    const editModalFooter = (
-        <Button type="primary" onClick={handleSaveChanges} disabled={!hasPendingChanges}>
-            <SaveFilled key="saveClick" /> {t("tonies.editModal.save")}
-        </Button>
-    );
-
-    const editModal = (
-        <Modal
-            open={isEditModalOpen}
-            onCancel={() => {
-                setIsEditModalOpen(false);
-            }}
-            title={editModalTitel}
-            footer={editModalFooter}
-            width={700}
-        >
-            <Divider orientation="left" orientationMargin="0">
-                {t("tonies.editModal.source")}
-            </Divider>
-            <div>
-                <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
-                    <Input
-                        key="source"
-                        value={selectedSource}
-                        width="auto"
-                        onChange={handleSourceInputChange}
-                        prefix={[
-                            <CloseOutlined
-                                key="close-source"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => {
-                                    setSelectedSource("");
-                                    setInputValidationSource({ validateStatus: "", help: "" });
-                                }}
-                            />,
-                            <Divider key="divider-source-1" type="vertical" style={{ height: 16 }} />,
-                            <RollbackOutlined
-                                key="rollback-source"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => {
-                                    const original = tonieCard.source || "";
-                                    setSelectedSource(original);
-                                    setTempSelectedSource(original);
-                                    setInputValidationSource({ validateStatus: "", help: "" });
-                                }}
-                                style={{
-                                    color:
-                                        (tonieCard.source || "") === selectedSource
-                                            ? token.colorTextDisabled
-                                            : token.colorText,
-                                    cursor: (tonieCard.source || "") === selectedSource ? "default" : "pointer",
-                                }}
-                                className={(tonieCard.source || "") === selectedSource ? "disabled" : "enabled"}
-                            />,
-                            <Divider key="divider-source-2" type="vertical" style={{ height: 16 }} />,
-                        ]}
-                        suffix={
-                            <FolderOpenOutlined onMouseDown={(e) => e.preventDefault()} onClick={showFileSelectModal} />
-                        }
-                    />
-                    <RadioStreamSearch
-                        placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
-                        onChange={searchRadioResultChanged}
-                        key={keyRadioStreamSearch}
-                    />
-                </Form.Item>
-            </div>
-            <Divider orientation="left" orientationMargin="0">
-                {t("tonies.editModal.model")}
-            </Divider>
-            <div>
-                <Form.Item validateStatus={inputValidationModel.validateStatus} help={inputValidationModel.help}>
-                    <Input
-                        key="model"
-                        value={selectedModel}
-                        width="auto"
-                        onChange={handleModelInputChange}
-                        prefix={[
-                            <CloseOutlined
-                                key="close-model"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => {
-                                    setSelectedModel("");
-                                    setInputValidationModel({ validateStatus: "", help: "" });
-                                }}
-                            />,
-                            <Divider key="divider-model-1" type="vertical" style={{ height: 16 }} />,
-                            <RollbackOutlined
-                                key="rollback-model"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => {
-                                    const original = tonieCard.tonieInfo.model || "";
-                                    setSelectedModel(original);
-                                    setInputValidationModel({ validateStatus: "", help: "" });
-                                }}
-                                style={{
-                                    color:
-                                        (tonieCard.tonieInfo.model || "") === selectedModel
-                                            ? token.colorTextDisabled
-                                            : token.colorText,
-                                    cursor: (tonieCard.tonieInfo.model || "") === selectedModel ? "default" : "pointer",
-                                }}
-                                className={(tonieCard.tonieInfo.model || "") === selectedModel ? "disabled" : "enabled"}
-                            />,
-                            <Divider key="divider-model-2" type="vertical" style={{ height: 16 }} />,
-                        ]}
-                    />
-                    <TonieArticleSearch
-                        placeholder={t("tonies.editModal.placeholderSearchForAModel")}
-                        onChange={searchModelResultChanged}
-                        key={keyTonieArticleSearch}
-                    />
-                </Form.Item>
-            </div>
-        </Modal>
-    );
-
-    const selectFileModalFooter = (
-        <div
-            style={{
-                display: "flex",
-                gap: 8,
-                justifyContent: "flex-end",
-                padding: "16px 0",
-                margin: "-24px -24px -12px -24px",
-                background: token.colorBgElevated,
-            }}
-        >
-            <Button onClick={handleCancelSelectFile}>{t("tonies.selectFileModal.cancel")}</Button>
-            <Button
-                type="primary"
-                onClick={() => {
-                    setSelectedSource(tempSelectedSource);
-                    setSelectFileModalOpen(false);
-                }}
-            >
-                {t("tonies.selectFileModal.ok")}
-            </Button>
-        </div>
-    );
-
-    const selectFileModal = (
-        <Modal
-            className="sticky-footer"
-            title={t("tonies.selectFileModal.selectFile")}
-            open={isSelectFileModalOpen}
-            onCancel={handleCancelSelectFile}
-            width="auto"
-            footer={selectFileModalFooter}
-        >
-            <SelectFileFileBrowser
-                key={keySelectFileFileBrowser}
-                special="library"
-                maxSelectedRows={1}
-                trackUrl={false}
-                filetypeFilter={[".taf", ".tap"]}
-                onFileSelectChange={handleFileSelectChange}
-            />
-        </Modal>
     );
 
     // ------------------------
@@ -827,6 +650,7 @@ export const TonieCard: React.FC<{
             >
                 <Meta title={`${tonieCard.tonieInfo.episode}`} description={tonieCard.uid} />
             </Card>
+
             <TonieInformationModal
                 open={isInformationModalOpen}
                 onClose={() => setInformationModalOpen(false)}
@@ -838,8 +662,42 @@ export const TonieCard: React.FC<{
                 overlay={overlay}
                 key={keyInfoModal}
             />
-            {selectFileModal}
-            {editModal}
+
+            <TonieSelectFileModal
+                open={isSelectFileModalOpen}
+                tempSelectedSource={tempSelectedSource}
+                onTempSelectedSourceChange={setTempSelectedSource}
+                onCancel={handleCancelSelectFile}
+                onConfirm={handleConfirmSelectFile}
+                keySelectFileFileBrowser={keySelectFileFileBrowser}
+                onFileSelectChange={handleFileSelectChange}
+            />
+
+            <TonieEditModal
+                open={isEditModalOpen}
+                title={editModalTitle}
+                onCancel={() => setIsEditModalOpen(false)}
+                onSave={handleSaveChanges}
+                selectedSource={selectedSource}
+                onSelectedSourceChange={(value) => {
+                    setSelectedSource(value);
+                    setTempSelectedSource(value);
+                }}
+                originalSource={tonieCard.source || ""}
+                inputValidationSource={inputValidationSource}
+                setInputValidationSource={setInputValidationSource}
+                keyRadioStreamSearch={keyRadioStreamSearch}
+                onSearchRadioChange={searchRadioResultChanged}
+                selectedModel={selectedModel}
+                onSelectedModelChange={setSelectedModel}
+                originalModel={tonieCard.tonieInfo.model || ""}
+                inputValidationModel={inputValidationModel}
+                setInputValidationModel={setInputValidationModel}
+                keyTonieArticleSearch={keyTonieArticleSearch}
+                onSearchModelChange={searchModelResultChanged}
+                hasPendingChanges={hasPendingChanges}
+                onOpenFileSelectModal={showFileSelectModal}
+            />
         </>
     );
 };

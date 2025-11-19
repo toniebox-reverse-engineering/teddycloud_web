@@ -1,6 +1,6 @@
 import React from "react";
 import { Select } from "antd";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
 
 export const TonieboxModelSearch: React.FC<{
     placeholder: string;
@@ -17,7 +17,7 @@ export const TonieboxModelSearch: React.FC<{
         <Select
             showSearch
             value={props.value}
-            placeholder={props.value ? "" : props.placeholder} // Conditionally render the placeholder
+            placeholder={props.value ? "" : props.placeholder}
             defaultActiveFirstOption={false}
             suffixIcon={null}
             filterOption={false}

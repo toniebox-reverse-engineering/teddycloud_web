@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import CodeSnippet from "../../components/utils/CodeSnippet";
+import CodeSnippet from "../../components/common/CodeSnippet";
 import { Divider, theme, Typography } from "antd";
 import { Link } from "react-router-dom";
 

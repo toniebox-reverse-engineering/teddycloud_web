@@ -24,7 +24,7 @@ import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
-import CodeSnippet from "../../../../components/utils/CodeSnippet";
+import CodeSnippet from "../../../../components/common/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
 import AvailableBoxesModal, {
     certificateIntro,

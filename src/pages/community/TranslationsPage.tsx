@@ -3,8 +3,8 @@ import { Typography } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import TranslationComparison from "../../components/utils/TranslationComparison";
-import TranslationTable from "../../components/utils/TranslationTable";
+import TranslationComparison from "../../components/community/translation/TranslationComparison";
+import TranslationTable from "../../components/community/translation/TranslationTable";
 import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
