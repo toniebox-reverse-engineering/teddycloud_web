@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 
 import CodeSnippet from "../common/CodeSnippet";
-import { SelectFileFileBrowser } from "./common/SelectFileFileBrowser";
+import { SelectFileFileBrowser } from "./filebrowser/SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 export interface FileItem {

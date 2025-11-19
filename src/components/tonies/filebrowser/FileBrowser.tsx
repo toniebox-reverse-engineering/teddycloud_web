@@ -12,7 +12,6 @@ import {
     theme,
     TreeSelectProps,
     TreeSelect,
-    Typography,
     Alert,
     Upload,
     Space,
@@ -56,7 +55,7 @@ import { useAudioContext } from "../../audio/AudioContext";
 import { humanFileSize } from "../../../utils/humanFileSize";
 import ConfirmationDialog from "../../common/ConfirmationDialog";
 import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
-import TonieInformationModal from "./TonieInformationModal";
+import TonieInformationModal from "../common/TonieInformationModal";
 
 import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
@@ -69,6 +68,9 @@ import CodeSnippet from "../../common/CodeSnippet";
 import HelpModal from "./FileBrowserHelpModal";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { generateUUID } from "../../../utils/helpers";
+
+import CreateDirectoryModal from "./modals/CreateDirectoryModal";
+import EncodeFilesModal from "./modals/EncodeFilesModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -104,7 +106,6 @@ export const FileBrowser: React.FC<{
 
     const navigate = useNavigate();
     const cursorPositionFilterRef = useRef<number | null>(null);
-    const inputCreateDirectoryRef = useRef<InputRef>(null);
     const inputEncodeTafFileNameRef = useRef<InputRef>(null);
     const inputRenameTafFileNameRef = useRef<InputRef>(null);
     const inputFilterRef = useRef<InputRef>(null);
@@ -143,12 +144,10 @@ export const FileBrowser: React.FC<{
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
 
     const [isUnchangedOrEmpty, setIsUnchangedOrEmpty] = useState<boolean>(true);
-    const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState<boolean>(false);
     const [hasInvalidChars, setHasInvalidChars] = useState<boolean>(false);
     const [hasError, setHasError] = useState<boolean>(true);
 
     const [isCreateDirectoryModalOpen, setIsCreateDirectoryModalOpen] = useState<boolean>(false);
-    const [createDirectoryInputKey, setcreateDirectoryInputKey] = useState<number>(1);
     const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(initialPath);
 
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
@@ -256,16 +255,6 @@ export const FileBrowser: React.FC<{
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
-
-    useEffect(() => {
-        if (isCreateDirectoryModalOpen) {
-            setTimeout(() => {
-                if (inputCreateDirectoryRef.current) {
-                    inputCreateDirectoryRef.current.focus();
-                }
-            }, 0);
-        }
-    }, [isCreateDirectoryModalOpen]);
 
     useEffect(() => {
         if (cursorPositionFilterRef.current !== null && inputFilterRef.current) {
@@ -647,137 +636,6 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    // create directory functions
-    const showCreateDirectoryModal = () => {
-        setIsUnchangedOrEmpty(true);
-        setHasNewDirectoryInvalidChars(false);
-        setcreateDirectoryInputKey((prevKey) => prevKey + 1);
-        setFilterFieldAutoFocus(false);
-        setIsCreateDirectoryModalOpen(true);
-    };
-
-    const closeCreateDirectoryModal = () => {
-        setFilterFieldAutoFocus(false);
-        setIsCreateDirectoryModalOpen(false);
-    };
-
-    const handleCreateDirectoryInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        const value = e.target.value;
-        const inputInvalid = !isInputValid(value.toString());
-        setHasNewDirectoryInvalidChars(inputInvalid);
-        setIsUnchangedOrEmpty(value === "");
-    };
-
-    const createDirectory = () => {
-        const inputValueCreateDirectory = inputCreateDirectoryRef.current?.input?.value || "";
-        try {
-            api.apiPostTeddyCloudRaw(
-                `/api/dirCreate?special=library`,
-                decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory
-            )
-                .then((response) => {
-                    return response.text();
-                })
-                .then((text) => {
-                    if (text !== "OK") {
-                        throw new Error(text);
-                    }
-                    const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData) || rootTreeNode.id;
-                    const newNodeId = `${parentNodeId}.${treeData.length}`;
-                    const nodeExpanded = isNodeExpanded(parentNodeId);
-                    const childNodes = findNodesByParentId(parentNodeId, treeData);
-                    if (nodeExpanded || childNodes.length > 0) {
-                        const newDir = {
-                            id: newNodeId,
-                            pId: parentNodeId,
-                            value: newNodeId,
-                            title: inputValueCreateDirectory,
-                            fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
-                        };
-                        setTreeData(
-                            [...treeData, newDir].sort((a, b) => {
-                                return a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
-                            })
-                        );
-                        if (isMoveFileModalOpen || isEncodeFilesModalOpen) {
-                            setTreeNodeId(newNodeId);
-                        }
-                    }
-                    addNotification(
-                        NotificationTypeEnum.Success,
-                        t("fileBrowser.createDirectory.directoryCreated"),
-                        t("fileBrowser.createDirectory.directoryCreatedDetails", {
-                            directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
-                        }),
-                        t("fileBrowser.title")
-                    );
-                    setIsCreateDirectoryModalOpen(false);
-                    setRebuildList((prev) => !prev);
-                    setCreateDirectoryPath(path);
-                })
-                .catch((error) => {
-                    addNotification(
-                        NotificationTypeEnum.Error,
-                        t("fileBrowser.createDirectory.directoryCreateFailed"),
-                        t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
-                            directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
-                        }) + error,
-                        t("fileBrowser.title")
-                    );
-                });
-        } catch (error) {
-            addNotification(
-                NotificationTypeEnum.Error,
-                t("fileBrowser.createDirectory.directoryCreateFailed"),
-                t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
-                    directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
-                }) + error,
-                t("fileBrowser.title")
-            );
-        }
-    };
-
-    const isCreateDirectoryButtonDisabled = isUnchangedOrEmpty || hasNewDirectoryInvalidChars;
-
-    const createDirectoryModal = (
-        <Modal
-            title={t("fileBrowser.createDirectory.modalTitle")}
-            key={"createDirModal-" + createDirectoryInputKey}
-            open={isCreateDirectoryModalOpen}
-            onCancel={closeCreateDirectoryModal}
-            onOk={createDirectory}
-            okText={t("fileBrowser.createDirectory.create")}
-            cancelText={t("fileBrowser.createDirectory.cancel")}
-            zIndex={1050}
-            okButtonProps={{ disabled: isCreateDirectoryButtonDisabled }}
-        >
-            <Typography style={{ marginBottom: 8 }}>
-                {t("fileBrowser.createDirectory.parentPath") +
-                    " " +
-                    createDirectoryPath.split("/").map(decodeURIComponent).join("/") +
-                    "/"}
-            </Typography>
-            <Form.Item
-                validateStatus={hasNewDirectoryInvalidChars ? "error" : ""}
-                help={
-                    hasNewDirectoryInvalidChars
-                        ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
-                        : ""
-                }
-                required
-            >
-                {" "}
-                <Input
-                    ref={inputCreateDirectoryRef}
-                    type="text"
-                    placeholder={t("fileBrowser.createDirectory.placeholder")}
-                    status={hasNewDirectoryInvalidChars ? "error" : ""}
-                    onChange={handleCreateDirectoryInputChange}
-                />
-            </Form.Item>
-        </Modal>
-    );
-
     // move / rename functions
     const moveRenameFile = async (source: string, target: string, moving: boolean, flagMultiple?: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
@@ -918,7 +776,8 @@ export const FileBrowser: React.FC<{
                             icon={<FolderAddOutlined />}
                             onClick={() => {
                                 setCreateDirectoryPath(getPathFromNodeId(treeNodeId));
-                                showCreateDirectoryModal();
+                                setFilterFieldAutoFocus(false);
+                                setIsCreateDirectoryModalOpen(true);
                             }}
                             style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                         ></Button>
@@ -1094,8 +953,6 @@ export const FileBrowser: React.FC<{
 
     // encode files
     const showFileEncodeModal = () => {
-        setIsUnchangedOrEmpty(true);
-        setHasInvalidChars(false);
         setEncodeFilesModalKey((prevKey) => prevKey + 1);
         setTreeNodeId(rootTreeNode.id);
         const newEncodedFiles: FileObject[] = [];
@@ -1124,201 +981,6 @@ export const FileBrowser: React.FC<{
         setCreateDirectoryPath(path);
         setEncodeFileList([]);
     };
-
-    const encodeFiles = async () => {
-        setProcessing(true);
-        const newTafFilename = inputEncodeTafFileNameRef?.current?.input?.value;
-        const key = "encoding-" + newTafFilename;
-        addLoadingNotification(
-            key,
-            t("fileBrowser.encodeFiles.encoding"),
-            t("fileBrowser.encodeFiles.encodingInProgress")
-        );
-        const target = getPathFromNodeId(treeNodeId) + "/" + newTafFilename + ".taf";
-        const body =
-            encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
-            `&target=${encodeURIComponent(target)}`;
-        try {
-            const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
-            if (response.ok) {
-                closeLoadingNotification(key);
-                addNotification(
-                    NotificationTypeEnum.Success,
-                    t("fileBrowser.encodeFiles.encodingSuccessful"),
-                    t("fileBrowser.encodeFiles.encodingSuccessfulDetails", { file: target }),
-                    t("fileBrowser.title")
-                );
-                setIsEncodeFilesModalOpen(false);
-                setTreeNodeId("1");
-                setSelectedRowKeys([]);
-                setRebuildList(!rebuildList);
-            } else {
-                closeLoadingNotification(key);
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("fileBrowser.encodeFiles.encodingFailed"),
-                    t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }).replace(": ", ""),
-                    t("fileBrowser.title")
-                );
-            }
-        } catch (err) {
-            closeLoadingNotification(key);
-            addNotification(
-                NotificationTypeEnum.Error,
-                t("fileBrowser.encodeFiles.encodingFailed"),
-                t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }) + err,
-                t("fileBrowser.title")
-            );
-        }
-        setProcessing(false);
-    };
-
-    const sensor = useSensor(PointerSensor, {
-        activationConstraint: { distance: 10 },
-    });
-
-    const onDragEnd = ({ active, over }: DragEndEvent) => {
-        if (active.id !== over?.id) {
-            setEncodeFileList((prev) => {
-                const activeIndex = prev.findIndex((i) => i.uid === active.id);
-                const overIndex = prev.findIndex((i) => i.uid === over?.id);
-                return arrayMove(prev, activeIndex, overIndex);
-            });
-        }
-    };
-
-    const onRemove = (file: FileObject) => {
-        const index = encodeFileList.indexOf(file);
-        const newFileList = encodeFileList.slice();
-        newFileList.splice(index, 1);
-        setEncodeFileList(newFileList);
-    };
-
-    const sortFileListAlphabetically = () => {
-        setEncodeFileList((prev) => [...prev].sort((a, b) => a.name.localeCompare(b.name)));
-    };
-
-    const handleFileNameInputChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        const value = e.target.value;
-        const inputInvalid = !isInputValid(value.toString());
-        const errorDetected = (encodeFileList.length > 0 && !value.toString()) || inputInvalid;
-        setHasInvalidChars(inputInvalid);
-        setHasError(errorDetected);
-        setIsUnchangedOrEmpty(value === "");
-    };
-
-    const encodeFilesModal = (
-        <Modal
-            title={t("fileBrowser.encodeFiles.modalTitle")}
-            key={"encodeModal-" + encodeFilesModalKey}
-            open={isEncodeFilesModalOpen}
-            onCancel={closeEncodeFilesModal}
-            onOk={encodeFiles}
-            okText={t("fileBrowser.encodeFiles.encode")}
-            cancelText={t("fileBrowser.encodeFiles.cancel")}
-            zIndex={1000}
-            width="auto"
-            okButtonProps={{ disabled: processing || hasError || isUnchangedOrEmpty || encodeFileList.length === 0 }}
-        >
-            {selectFileModal}
-            <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
-                <SortableContext
-                    items={encodeFileList.map((i) => i.uid)}
-                    strategy={verticalListSortingStrategy}
-                    disabled={processing}
-                >
-                    <Button disabled={processing} onClick={showSelectFileModal}>
-                        {t("fileBrowser.encodeFiles.addFiles")}
-                    </Button>
-                    {encodeFileList.map((file) => (
-                        <DraggableFileObjectListItem
-                            key={file.uid}
-                            originNode={<div>{file.name}</div>}
-                            onRemove={onRemove}
-                            disabled={processing}
-                            fileObjectList={encodeFileList}
-                            file={file}
-                        />
-                    ))}
-                </SortableContext>
-            </DndContext>
-            <Space direction="vertical" style={{ display: "flex" }}>
-                {encodeFileList.length > 0 ? (
-                    <>
-                        <Space
-                            direction="horizontal"
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                alignItems: "flex-start",
-                            }}
-                        >
-                            <Button type="default" disabled={processing} onClick={sortFileListAlphabetically}>
-                                {t("tonies.encoder.sortAlphabetically")}
-                            </Button>
-                        </Space>
-                        <Divider />
-                        <div style={{ width: "100%" }} className="encoder">
-                            <Space direction="vertical" style={{ width: "100%" }}>
-                                <Space.Compact
-                                    direction="horizontal"
-                                    style={{
-                                        width: "100%",
-                                        display: "flex",
-                                        alignItems: "flex-end",
-                                        justifyContent: "flex-end",
-                                    }}
-                                >
-                                    <Input
-                                        type="text"
-                                        style={{
-                                            maxWidth: 180,
-                                            borderTopRightRadius: 0,
-                                            borderBottomRightRadius: 0,
-                                        }}
-                                        disabled
-                                        value={t("tonies.encoder.saveAs")}
-                                    ></Input>
-                                    {folderTreeElement}
-                                    <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
-                                        <Button
-                                            disabled={processing}
-                                            icon={<FolderAddOutlined />}
-                                            onClick={() => {
-                                                setCreateDirectoryPath(getPathFromNodeId(treeNodeId));
-                                                showCreateDirectoryModal();
-                                            }}
-                                            style={{ borderRadius: 0 }}
-                                        ></Button>
-                                    </Tooltip>
-
-                                    <Input
-                                        ref={inputEncodeTafFileNameRef}
-                                        suffix=".taf"
-                                        required
-                                        status={hasError ? "error" : ""}
-                                        onChange={handleFileNameInputChange}
-                                        disabled={processing}
-                                    />
-                                </Space.Compact>
-                                {hasInvalidChars ? (
-                                    <div style={{ textAlign: "end", color: token.colorErrorText }}>
-                                        {t("inputValidator.invalidCharactersDetected", {
-                                            invalidChar: invalidCharactersAsString,
-                                        })}
-                                    </div>
-                                ) : (
-                                    ""
-                                )}
-                            </Space>
-                        </div>
-                    </>
-                ) : (
-                    <></>
-                )}
-            </Space>
-        </Modal>
-    );
 
     // upload files functionality
     const showUploadFilesDragAndDropModal = () => {
@@ -2043,11 +1705,46 @@ export const FileBrowser: React.FC<{
             />
             {jsonViewerModal}
             {tafHeaderViewerModal}
-            {createDirectoryModal}
+            <CreateDirectoryModal
+                open={isCreateDirectoryModalOpen}
+                onClose={() => setIsCreateDirectoryModalOpen(false)}
+                createDirectoryPath={createDirectoryPath}
+                setCreateDirectoryPath={setCreateDirectoryPath}
+                path={path}
+                treeData={treeData as any}
+                setTreeData={setTreeData as any}
+                rootTreeNode={rootTreeNode as any}
+                isNodeExpanded={isNodeExpanded}
+                findNodeIdByFullPath={findNodeIdByFullPath}
+                findNodesByParentId={findNodesByParentId}
+                isMoveFileModalOpen={isMoveFileModalOpen}
+                isEncodeFilesModalOpen={isEncodeFilesModalOpen}
+                setTreeNodeId={setTreeNodeId}
+                setRebuildList={setRebuildList}
+            />
             {uploadFileModal}
             {moveFileModal}
             {renameFileModal}
-            {encodeFilesModal}
+            <EncodeFilesModal
+                open={isEncodeFilesModalOpen}
+                onClose={closeEncodeFilesModal}
+                modalKey={encodeFilesModalKey}
+                special={special}
+                encodeFileList={encodeFileList}
+                setEncodeFileList={setEncodeFileList}
+                treeNodeId={treeNodeId}
+                setTreeNodeId={setTreeNodeId}
+                getPathFromNodeId={getPathFromNodeId}
+                folderTreeElement={folderTreeElement}
+                selectFileModal={selectFileModal}
+                showSelectFileModal={showSelectFileModal}
+                setCreateDirectoryPath={setCreateDirectoryPath}
+                setFilterFieldAutoFocus={setFilterFieldAutoFocus}
+                setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
+                rebuildList={rebuildList}
+                setRebuildList={setRebuildList}
+                setSelectedRowKeys={setSelectedRowKeys}
+            />
             {isHelpModalOpen && (
                 <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
             )}
@@ -2169,7 +1866,14 @@ export const FileBrowser: React.FC<{
                                 ) : (
                                     <></>
                                 )}
-                                <Button icon={<FolderAddOutlined />} size="small" onClick={showCreateDirectoryModal}>
+                                <Button
+                                    icon={<FolderAddOutlined />}
+                                    size="small"
+                                    onClick={() => {
+                                        setFilterFieldAutoFocus(false);
+                                        setIsCreateDirectoryModalOpen(true);
+                                    }}
+                                >
                                     <div className="showBigDevicesOnly showMediumDevicesOnly">
                                         {t("fileBrowser.createDirectory.createDirectory")}
                                     </div>

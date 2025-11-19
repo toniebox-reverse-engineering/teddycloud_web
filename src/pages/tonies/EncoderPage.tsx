@@ -13,7 +13,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { DraggableUploadListItem } from "../../components/tonies/common/DraggableUploadListItem";
+import { DraggableUploadListItem } from "../../components/tonies/filebrowser/DraggableUploadListItem";
 import { MyUploadFile, upload } from "../../utils/encoder";
 import { WasmTafEncoder, loadWasmEncoder, isWasmEncoderAvailable } from "../../utils/wasmEncoder";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
@@ -275,11 +275,7 @@ export const EncoderPage = () => {
             const currentUnixTime = Math.floor(Date.now() / 1000);
             const audioId = currentUnixTime - 0x50000000;
             // Encode in browser
-            addLoadingNotification(
-                key,
-                t("tonies.encoder.processing"),
-                "Encoding audio files in browser..."
-            );
+            addLoadingNotification(key, t("tonies.encoder.processing"), "Encoding audio files in browser...");
             const tafBlob = await WasmTafEncoder.encodeMultipleFiles(
                 fileList,
                 audioId,

@@ -5,7 +5,7 @@ import { Alert, Button, Typography } from "antd";
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/tonies/common/FileBrowser";
+import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
 import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
