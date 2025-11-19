@@ -165,6 +165,11 @@ export const ToniesList: React.FC<{
         uniquenessMaps,
     });
 
+    const filteredRuidSet = useMemo(() => {
+        if (!filteredTonies) return null;
+        return new Set(filteredTonies.map((t) => t.ruid));
+    }, [filteredTonies]);
+
     useEffect(() => {
         if (Object.keys(hookExistingFilters).length > 0) {
             setExistingFilters(hookExistingFilters);
@@ -334,7 +339,11 @@ export const ToniesList: React.FC<{
     ];
 
     const getCurrentPageData = () => {
-        const base = filteredTonies ?? localTonies;
+        let base = localTonies;
+
+        if (filteredRuidSet) {
+            base = localTonies.filter((t) => filteredRuidSet.has(t.ruid));
+        }
 
         if (showAll) {
             return base;
@@ -345,6 +354,10 @@ export const ToniesList: React.FC<{
         }
     };
 
+    const totalCount = filteredRuidSet
+        ? localTonies.filter((t) => filteredRuidSet.has(t.ruid)).length
+        : localTonies.length;
+
     const listPagination = (
         <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
             {!paginationEnabled ? (
@@ -353,7 +366,7 @@ export const ToniesList: React.FC<{
                 <ToniesPagination
                     currentPage={currentPage}
                     onChange={handlePageSizeChange}
-                    total={(filteredTonies ?? localTonies).length}
+                    total={totalCount}
                     pageSize={pageSize}
                     additionalButtonOnClick={() => handleShowAll()}
                 />
