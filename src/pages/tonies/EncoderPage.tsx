@@ -13,7 +13,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { DraggableUploadListItem } from "../../components/tonies/filebrowser/DraggableUploadListItem";
+import { DraggableUploadListItem } from "../../components/tonies/common/DraggableUploadListItem";
 import { MyUploadFile, upload } from "../../utils/encoder";
 import { WasmTafEncoder, loadWasmEncoder, isWasmEncoderAvailable } from "../../utils/wasmEncoder";
 import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
