@@ -25,7 +25,7 @@ import AvailableBoxesModal, {
     installCC3200Tool,
     TonieboxWifiGuide,
 } from "../../../../components/tonieboxes/boxSetup/CommonContent";
-import CodeSnippet from "../../../../components/utils/CodeSnippet";
+import CodeSnippet from "../../../../components/common/CodeSnippet";
 import { detectColorScheme } from "../../../../utils/browserUtils";
 
 const { Paragraph } = Typography;

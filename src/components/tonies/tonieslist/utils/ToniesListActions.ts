@@ -1,23 +1,21 @@
-import { createRoot } from "react-dom/client";
-
-import { TonieCardProps } from "../../types/tonieTypes";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-
-import { TeddyCloudApi } from "../../api/apis/TeddyCloudApi";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-
-import ConfirmationDialog from "./ConfirmationDialog";
+// ToniesListActions.ts
+import { TonieCardProps } from "../../../../types/tonieTypes";
+import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { TeddyCloudApi } from "../../../../api/apis/TeddyCloudApi";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
+
+export type ConfirmFn = (tonieLabel: string) => Promise<boolean>;
 
 export const setNoCloud = async (
     tonieCards: TonieCardProps[],
     selectedTonies: string[],
     t: any,
     overlay: any,
-    addNotification: Function,
+    addNotification: (type: NotificationTypeEnum, title: string, description: string, context: string) => void,
     value: boolean,
-    handleUpdateCard: Function
+    handleUpdateCard: (card: TonieCardProps) => void
 ) => {
     const selected = tonieCards.filter((c) => selectedTonies.includes(c.ruid));
 
@@ -31,14 +29,8 @@ export const setNoCloud = async (
                 NotificationTypeEnum.Success,
                 value ? t("tonies.messages.cloudAccessBlocked") : t("tonies.messages.cloudAccessEnabled"),
                 value
-                    ? t("tonies.messages.cloudAccessBlockedDetails", {
-                          model: model,
-                          ruid: card.ruid,
-                      })
-                    : t("tonies.messages.cloudAccessEnabledDetails", {
-                          model: model,
-                          ruid: card.ruid,
-                      }),
+                    ? t("tonies.messages.cloudAccessBlockedDetails", { model, ruid: card.ruid })
+                    : t("tonies.messages.cloudAccessEnabledDetails", { model, ruid: card.ruid }),
                 t("tonies.title")
             );
             const updated = await api.apiGetTagInfo(card.ruid, overlay);
@@ -62,14 +54,15 @@ export const setLiveFlag = async (
     selectedTonies: string[],
     t: any,
     overlay: any,
-    addNotification: Function,
+    addNotification: (type: NotificationTypeEnum, title: string, description: string, context: string) => void,
     value: boolean,
-    handleUpdateCard: Function
+    handleUpdateCard: (card: TonieCardProps) => void
 ) => {
     const selected = tonieCards.filter((c) => selectedTonies.includes(c.ruid));
 
     for (const card of selected) {
         const model = `${card.tonieInfo.series}` + (card.tonieInfo.episode ? ` - ${card.tonieInfo.episode}` : "");
+
         try {
             await api.apiPostTeddyCloudContentJson(card.ruid, "live=" + value, overlay);
 
@@ -77,14 +70,8 @@ export const setLiveFlag = async (
                 NotificationTypeEnum.Success,
                 value ? t("tonies.messages.liveEnabled") : t("tonies.messages.liveDisabled"),
                 value
-                    ? t("tonies.messages.liveEnabledDetails", {
-                          model: model,
-                          ruid: card.ruid,
-                      })
-                    : t("tonies.messages.liveDisabledDetails", {
-                          model: model,
-                          ruid: card.ruid,
-                      }),
+                    ? t("tonies.messages.liveEnabledDetails", { model, ruid: card.ruid })
+                    : t("tonies.messages.liveDisabledDetails", { model, ruid: card.ruid }),
                 t("tonies.title")
             );
             const updated = await api.apiGetTagInfo(card.ruid, overlay);
@@ -103,55 +90,22 @@ export const setLiveFlag = async (
     }
 };
 
-async function showConfirm(t: any, tonieLabel: string): Promise<boolean> {
-    return new Promise((resolve) => {
-        const div = document.createElement("div");
-        document.body.appendChild(div);
-
-        const root = createRoot(div);
-
-        const handleOk = () => {
-            cleanup();
-            resolve(true);
-        };
-
-        const handleCancel = () => {
-            cleanup();
-            resolve(false);
-        };
-
-        const cleanup = () => {
-            root.unmount();
-            div.remove();
-        };
-
-        root.render(
-            <ConfirmationDialog
-                title={t("tonies.confirmHideModal.title")}
-                open={true}
-                okText={t("tonies.confirmHideModal.hide")}
-                cancelText={t("tonies.confirmHideModal.cancel")}
-                content={t("tonies.confirmHideModal.confirmHideDialog", { tonieToHide: tonieLabel })}
-                handleOk={handleOk}
-                handleCancel={handleCancel}
-            />
-        );
-    });
-}
-
 export async function hideSelectedTonies(
     tonieCards: TonieCardProps[],
     selectedTonies: string[],
     t: any,
     overlay: string | undefined,
-    addNotification: Function,
-    onHide: (ruid: string) => void
+    addNotification: (type: NotificationTypeEnum, title: string, description: string, context: string) => void,
+    onHide: (ruid: string) => void,
+    confirmFn: ConfirmFn
 ) {
     const selected = tonieCards.filter((c) => selectedTonies.includes(c.ruid));
+
     for (const card of selected) {
         const model = `${card.tonieInfo.series}` + (card.tonieInfo.episode ? ` - ${card.tonieInfo.episode}` : "");
-        const confirm = await showConfirm(t, model);
-        if (!confirm) continue;
+
+        const confirmed = await confirmFn(model);
+        if (!confirmed) continue;
 
         try {
             await api.apiPostTeddyCloudContentJson(card.ruid, "hide=true", overlay);

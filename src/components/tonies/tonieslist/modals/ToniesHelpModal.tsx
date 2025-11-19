@@ -1,21 +1,13 @@
 import { t } from "i18next";
-import { List, Modal, Button, Typography } from "antd";
+import { List, Modal, Button } from "antd";
 import {
-    NodeExpandOutlined,
-    DeleteOutlined,
     CloudSyncOutlined,
     PlayCircleOutlined,
-    CloudServerOutlined,
-    TruckOutlined,
     EditOutlined,
-    FormOutlined,
-    CopyOutlined,
     InfoCircleOutlined,
     DownloadOutlined,
     RetweetOutlined,
 } from "@ant-design/icons";
-
-const { Paragraph } = Typography;
 
 interface HelpModalProps {
     isHelpModalOpen: boolean;

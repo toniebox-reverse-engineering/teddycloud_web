@@ -3,15 +3,15 @@ import { useTranslation } from "react-i18next";
 import { Alert, Divider, Form, Radio, theme } from "antd";
 import { Formik } from "formik";
 
-import { OptionsList, TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { OptionsList, TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import LoadingSpinner from "../utils/LoadingSpinner";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { SettingsOptionItem } from "../form/SettingsOptionItem";
-import SettingsButton from "../utils/SettingsButtons";
-import SettingsDataHandler from "../../data/SettingsDataHandler";
+import LoadingSpinner from "../../common/LoadingSpinner";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { SettingsOptionItem } from "../../form/SettingsOptionItem";
+import SettingsButton from "../../common/SettingsButtons";
+import SettingsDataHandler from "../../../data/SettingsDataHandler";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

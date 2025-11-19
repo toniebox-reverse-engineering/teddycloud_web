@@ -11,7 +11,7 @@ import logoImg from "../../assets/logo.png";
 import { ServerStatus } from "./ServerStatus";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
-import NotificationButton from "../utils/NotificationButton";
+import NotificationButton from "../common/NotificationButton";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { HomeSubNav } from "../home/HomeSubNav";
 import { CommunitySubNav } from "../community/CommunitySubNav";

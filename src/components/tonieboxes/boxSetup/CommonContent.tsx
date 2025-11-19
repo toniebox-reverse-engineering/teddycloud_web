@@ -14,7 +14,7 @@ import jumper2 from "../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_switch.j
 import jumper3 from "../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_yellow.jpg";
 
 import { BoxVersionsEnum, TonieboxCardProps } from "../../../types/tonieboxTypes";
-import CodeSnippet from "../../utils/CodeSnippet";
+import CodeSnippet from "../../common/CodeSnippet";
 import { handleTCCADerDownload, parseFormattedText } from "../../../utils/helpers";
 import { CertificateDragNDrop } from "../../form/CertificatesDragAndDrop";
 

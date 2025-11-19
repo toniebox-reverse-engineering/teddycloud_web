@@ -19,7 +19,7 @@ import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import { useAudioContext } from "../audio/AudioContext";
-import TonieInformationModal from "../utils/TonieInformationModal";
+import TonieInformationModal from "../tonies/common/TonieInformationModal";
 import { getLongestStringByPixelWidth } from "../../utils/helpers";
 import { isIOS } from "../../utils/browserUtils";
 import { useNavigate } from "react-router";

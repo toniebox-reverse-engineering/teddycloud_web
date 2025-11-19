@@ -4,8 +4,8 @@ import { Empty, List } from "antd";
 
 import { TonieboxCardProps } from "../../types/tonieboxTypes";
 
-import { TonieboxCard } from "../tonieboxes/TonieboxCard";
-import LoadingSpinner from "../utils/LoadingSpinner";
+import { TonieboxCard } from "./tonieboxcard/TonieboxCard";
+import LoadingSpinner from "../common/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudApi } from "../../api";

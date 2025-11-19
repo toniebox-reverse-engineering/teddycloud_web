@@ -1,6 +1,6 @@
 import React, { JSX, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import i18n from "../../i18n";
+import i18n from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { Typography, Card, Button, Input, Modal, Divider, Select, theme, Tooltip } from "antd";
 import {
@@ -15,19 +15,19 @@ import {
     RollbackOutlined,
 } from "@ant-design/icons";
 
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { OptionsList, TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
+import { OptionsList, TeddyCloudApi } from "../../../api";
 
-import { TonieCardProps } from "../../types/tonieTypes";
-import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../types/tonieboxTypes";
+import { TonieCardProps } from "../../../types/tonieTypes";
+import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../../types/tonieboxTypes";
 
 import { TonieboxSettingsPage } from "./TonieboxSettingsPage";
-import { CertificateDragNDrop } from "../form/CertificatesDragAndDrop";
-import ConfirmationDialog from "../utils/ConfirmationDialog";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { CertificateDragNDrop } from "../../form/CertificatesDragAndDrop";
+import ConfirmationDialog from "../../common/ConfirmationDialog";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
-import defaultBoxImage from "../../assets/unknown_box.png";
+import defaultBoxImage from "../../../assets/unknown_box.png";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

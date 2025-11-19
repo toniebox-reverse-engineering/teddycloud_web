@@ -9,8 +9,8 @@ import {
     PlusOutlined,
 } from "@ant-design/icons";
 
-import CodeSnippet from "../utils/CodeSnippet";
-import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
+import CodeSnippet from "../common/CodeSnippet";
+import { SelectFileFileBrowser } from "./common/SelectFileFileBrowser";
 import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
 
 export interface FileItem {

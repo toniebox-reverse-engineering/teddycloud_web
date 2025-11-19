@@ -9,8 +9,8 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import SettingsDataHandler from "../../data/SettingsDataHandler";
 import { SettingsOptionItem } from "../../components/form/SettingsOptionItem";
-import SettingsButton from "../../components/utils/SettingsButtons";
-import LoadingSpinner from "../../components/utils/LoadingSpinner";
+import SettingsButton from "../../components/common/SettingsButtons";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 

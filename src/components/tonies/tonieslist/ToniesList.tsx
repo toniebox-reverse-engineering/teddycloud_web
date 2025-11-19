@@ -3,21 +3,22 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { TonieCardProps } from "../../types/tonieTypes";
+import { TonieCardProps } from "../../../types/tonieTypes";
 
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import { TonieCard } from "../../components/tonies/TonieCard";
-import { useToniesFilter } from "../../hooks/useToniesFilter";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import type { ToniesFilterSettings } from "../../types/toniesFilterTypes";
-import { scrollToTop } from "../../utils/browserUtils";
-import { hideSelectedTonies, setLiveFlag, setNoCloud } from "../utils/ToniesListActionsUtils";
-import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "../utils/ToniesListExportUtils";
+import { TonieCard } from "../toniecard/TonieCard";
+import { useToniesFilter } from "../../../hooks/useToniesFilter";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
+import { scrollToTop } from "../../../utils/browserUtils";
+import { hideSelectedTonies, setLiveFlag, setNoCloud } from "./utils/ToniesListActions";
+import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "./utils/ToniesListExport";
 import { ToniesFilterPanel } from "./ToniesFilterPanel";
 import ToniesPagination from "./ToniesPagination";
+import { showHideTonieConfirm } from "./ToniesHideConfirm";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -165,6 +166,11 @@ export const ToniesList: React.FC<{
         uniquenessMaps,
     });
 
+    const filteredRuidSet = useMemo(() => {
+        if (!filteredTonies) return null;
+        return new Set(filteredTonies.map((t) => t.ruid));
+    }, [filteredTonies]);
+
     useEffect(() => {
         if (Object.keys(hookExistingFilters).length > 0) {
             setExistingFilters(hookExistingFilters);
@@ -192,6 +198,11 @@ export const ToniesList: React.FC<{
         setCurrentPage(1);
         setTimeout(() => scrollToTop((!collapsed && toniesListRef.current) || undefined), 0);
     }, [urlFilterPending, filterState.searchText]);
+
+    useEffect(() => {
+        const baseRuidSet = new Set(getBaseList().map((t) => t.ruid));
+        setSelectedTonies((prev) => prev.filter((ruid) => baseRuidSet.has(ruid)));
+    }, [filteredTonies, localTonies]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -329,12 +340,22 @@ export const ToniesList: React.FC<{
             key: "hide",
             label: t("tonies.selectMode.hideSelectedTags"),
             onClick: () =>
-                hideSelectedTonies(localTonies, selectedTonies, t, overlay, addNotification, handleHideTonieCard),
+                hideSelectedTonies(
+                    localTonies,
+                    selectedTonies,
+                    t,
+                    overlay,
+                    addNotification,
+                    handleHideTonieCard,
+                    (label) => showHideTonieConfirm(t, label)
+                ),
         },
     ];
 
+    const getBaseList = () => filteredTonies ?? localTonies;
+
     const getCurrentPageData = () => {
-        const base = filteredTonies ?? localTonies;
+        const base = getBaseList();
 
         if (showAll) {
             return base;
@@ -345,6 +366,8 @@ export const ToniesList: React.FC<{
         }
     };
 
+    const totalCount = getBaseList().length;
+
     const listPagination = (
         <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
             {!paginationEnabled ? (
@@ -353,7 +376,7 @@ export const ToniesList: React.FC<{
                 <ToniesPagination
                     currentPage={currentPage}
                     onChange={handlePageSizeChange}
-                    total={(filteredTonies ?? localTonies).length}
+                    total={totalCount}
                     pageSize={pageSize}
                     additionalButtonOnClick={() => handleShowAll()}
                 />
@@ -472,7 +495,7 @@ export const ToniesList: React.FC<{
                             size="small"
                             style={{ width: "unset" }}
                             menu={{ items: selectionMenu }}
-                            onClick={() => setSelectedTonies(localTonies.map((c) => c.ruid))}
+                            onClick={() => setSelectedTonies(getBaseList().map((c) => c.ruid))}
                         >
                             {t("tonies.selectMode.selectAll")}
                         </Dropdown.Button>

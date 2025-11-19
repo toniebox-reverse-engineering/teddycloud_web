@@ -42,37 +42,33 @@ import {
     QuestionCircleOutlined,
     TruckOutlined,
     UploadOutlined,
-    WarningFilled,
-    WarningOutlined,
-    WarningTwoTone,
 } from "@ant-design/icons";
 import { Key, SortOrder } from "antd/es/table/interface";
 import { DefaultOptionType } from "antd/es/select";
 import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
 import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { useAudioContext } from "../audio/AudioContext";
-import { humanFileSize } from "../../utils/humanFileSize";
-import ConfirmationDialog from "./ConfirmationDialog";
-import TonieAudioPlaylistEditor from "../tonies/TonieAudioPlaylistEditor";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useAudioContext } from "../../audio/AudioContext";
+import { humanFileSize } from "../../../utils/humanFileSize";
+import ConfirmationDialog from "../../common/ConfirmationDialog";
+import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
 import TonieInformationModal from "./TonieInformationModal";
 
 import { DraggableFileObjectListItem } from "./DraggableFileObjectListItem";
 import { SelectFileFileBrowser } from "./SelectFileFileBrowser";
-import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
-import { invalidCharactersAsString, isInputValid } from "../../utils/fieldInputValidator";
+import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
+import { invalidCharactersAsString, isInputValid } from "../../../utils/fieldInputValidator";
 
-import { LoadingSpinnerAsOverlay } from "./LoadingSpinner";
-import { FileObject, Record, RecordTafHeader } from "../../types/fileBrowserTypes";
-import CodeSnippet from "./CodeSnippet";
+import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
+import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
+import CodeSnippet from "../../common/CodeSnippet";
 import HelpModal from "./FileBrowserHelpModal";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { generateUUID } from "../../utils/helpers";
-import Paragraph from "antd/es/skeleton/Paragraph";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { generateUUID } from "../../../utils/helpers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
