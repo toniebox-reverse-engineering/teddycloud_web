@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Divider, Input, Space, TreeSelect, Upload, Modal, Tooltip, Form, theme } from "antd";
+import { Button, Divider, Input, Space, TreeSelect, Upload, Modal, Tooltip, Form, theme, Switch } from "antd";
 import type { InputRef, TreeSelectProps, UploadProps } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
@@ -268,18 +268,14 @@ export const EncoderPage = () => {
         try {
             // Ensure WASM is loaded
             if (!isWasmEncoderAvailable()) {
-                addLoadingNotification(key, t("tonies.encoder.loading"), "Loading WASM encoder...");
+                addLoadingNotification(key, t("tonies.encoder.loading"), t("tonies.encoder.loadingWasmEncoder"));
                 await loadWasmEncoder();
                 setWasmLoaded(true);
             }
             const currentUnixTime = Math.floor(Date.now() / 1000);
             const audioId = currentUnixTime - 0x50000000;
             // Encode in browser
-            addLoadingNotification(
-                key,
-                t("tonies.encoder.processing"),
-                "Encoding audio files in browser..."
-            );
+            addLoadingNotification(key, t("tonies.encoder.processing"), t("tonies.encoder.browserEncodingInProgress"));
             const tafBlob = await WasmTafEncoder.encodeMultipleFiles(
                 fileList,
                 audioId,
@@ -664,30 +660,23 @@ export const EncoderPage = () => {
                                         ) : (
                                             ""
                                         )}
-                                        <div style={{ marginTop: "16px", marginBottom: "8px" }}>
-                                            <Space>
-                                                <span>Encoding Method:</span>
-                                                <Button
-                                                    type={!useFrontendEncoding ? "primary" : "default"}
-                                                    onClick={() => setUseFrontendEncoding(false)}
-                                                    size="small"
-                                                    disabled={uploading}
-                                                >
-                                                    Server-side
-                                                </Button>
-                                                <Button
-                                                    type={useFrontendEncoding ? "primary" : "default"}
-                                                    onClick={() => setUseFrontendEncoding(true)}
-                                                    size="small"
-                                                    disabled={uploading || (!wasmLoaded && !isWasmEncoderAvailable())}
-                                                >
-                                                    Browser-side
-                                                </Button>
-                                            </Space>
-                                        </div>
-                                        <Space.Compact
-                                            style={{ display: "flex", justifyContent: "flex-end", marginTop: "8px" }}
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                justifyContent: "flex-end",
+                                                alignItems: "center",
+                                                marginTop: 8,
+                                                gap: 16,
+                                            }}
                                         >
+                                            <Switch
+                                                checkedChildren={t("tonies.encoder.browserSideEncoding")}
+                                                unCheckedChildren={t("tonies.encoder.serverSideEncoding")}
+                                                defaultChecked={useFrontendEncodingSetting}
+                                                value={useFrontendEncoding}
+                                                onClick={() => setUseFrontendEncoding(!useFrontendEncoding)}
+                                            />
                                             <Button
                                                 type="primary"
                                                 onClick={useFrontendEncoding ? handleWasmUpload : handleUpload}
@@ -702,7 +691,7 @@ export const EncoderPage = () => {
                                                         : t("tonies.encoder.uploading")
                                                     : t("tonies.encoder.upload")}
                                             </Button>
-                                        </Space.Compact>
+                                        </div>
                                     </Space>
                                 </div>
                             </>
