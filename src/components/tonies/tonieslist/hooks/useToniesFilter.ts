@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { languageOptions } from "../utils/languageUtil";
-import type { TonieCardProps } from "../types/tonieTypes";
-import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../types/toniesFilterTypes";
+import { languageOptions } from "../../../../utils/languageUtil";
+import type { TonieCardProps } from "../../../../types/tonieTypes";
+import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";
 
 const STORAGE_KEY_FILTERS = "tonieFilters";
 

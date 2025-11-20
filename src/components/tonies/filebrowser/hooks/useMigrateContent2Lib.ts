@@ -1,5 +1,5 @@
-import { TeddyCloudApi } from "../api";
-import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
+import { TeddyCloudApi } from "../../../../api";
+import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 interface UseMigrateContent2LibParams {
     t: (key: string, vars?: any) => string;

@@ -1,21 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {
-    Table,
-    Tooltip,
-    Button,
-    Input,
-    Breadcrumb,
-    InputRef,
-    theme,
-    TreeSelectProps,
-    TreeSelect,
-    Empty,
-    Tag,
-    Flex,
-    Spin,
-} from "antd";
+import { Table, Tooltip, Button, Input, theme, TreeSelectProps, TreeSelect, Empty, Tag, Flex, Spin } from "antd";
 import {
     CloseOutlined,
     CloudServerOutlined,
@@ -51,7 +37,6 @@ import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExte
 import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
 import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
 import HelpModal from "./modals/FileBrowserHelpModal";
-import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { generateUUID } from "../../../utils/helpers";
 
 import CreateDirectoryModal from "./modals/CreateDirectoryModal";
@@ -63,8 +48,9 @@ import TafHeaderModal from "./modals/TafHeaderModal";
 import RenameFileModal from "./modals/RenameFilesModal";
 import MoveFilesModal from "./modals/MoveFilesModal";
 import SelectFilesForEncodingModal from "./modals/SelectFilesForEncodingModal";
-import { useMigrateContent2Lib } from "../../../hooks/useMigrateContent2Lib";
-import { useFileDownload } from "../../../hooks/useFileDownload";
+import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
+import { useFileDownload } from "./hooks/useFileDownload";
+import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -99,25 +85,13 @@ export const FileBrowser: React.FC<{
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
 
     const navigate = useNavigate();
-    const cursorPositionFilterRef = useRef<number | null>(null);
-    const inputFilterRef = useRef<InputRef>(null);
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const initialPath = queryParams.get("path") || "";
-    const [path, setPath] = useState(initialPath.split("/").map(encodeURIComponent).join("/"));
-
-    const [files, setFiles] = useState<any[]>([]);
-    const [rebuildList, setRebuildList] = useState<boolean>(false);
     const [currentFile, setCurrentFile] = useState<string>("");
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
-
-    const [filterText, setFilterText] = useState("");
-    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState<boolean>(false);
 
     const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
@@ -137,7 +111,7 @@ export const FileBrowser: React.FC<{
     const [tafHeaderRecord, setTafHeaderRecord] = useState<RecordTafHeader | null>(null);
 
     const [isCreateDirectoryModalOpen, setIsCreateDirectoryModalOpen] = useState<boolean>(false);
-    const [createDirectoryPath, setCreateDirectoryPath] = useState<string>(initialPath);
+    const [createDirectoryPath, setCreateDirectoryPath] = useState<string>("");
 
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [isConfirmMultipleDeleteModalOpen, setIsConfirmMultipleDeleteModalOpen] = useState(false);
@@ -164,8 +138,38 @@ export const FileBrowser: React.FC<{
 
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
 
-    const [loading, setLoading] = useState<boolean>(true);
-    const parentRef = useRef<HTMLDivElement>(null);
+    const {
+        path,
+        setPath,
+        files,
+        setFiles,
+        rebuildList,
+        setRebuildList,
+        loading,
+        filterText,
+        filterFieldAutoFocus,
+        setFilterFieldAutoFocus,
+        handleFilterChange,
+        clearFilterField,
+        handleFilterFieldInputFocus,
+        handleFilterFieldInputBlur,
+        inputFilterRef,
+        generateBreadcrumbs,
+        handleBreadcrumbClick,
+        getFieldValue,
+        defaultSorter,
+        dirNameSorter,
+        noData,
+        parentRef,
+    } = useFileBrowserCore({
+        mode: "fileBrowser",
+        special,
+        api,
+        overlay,
+        showDirOnly,
+        filetypeFilter,
+        trackUrl,
+    });
 
     useEffect(() => {
         const preLoadTreeData = async () => {
@@ -174,7 +178,7 @@ export const FileBrowser: React.FC<{
             api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
-                    var list: any[] = data.files;
+                    let list: any[] = data.files;
                     list = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
                         .sort((a, b) => {
@@ -193,61 +197,8 @@ export const FileBrowser: React.FC<{
                 });
         };
         preLoadTreeData();
-    }, []);
-
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const initialPath = queryParams.get("path") || "";
-        setPath(initialPath.split("/").map(encodeURIComponent).join("/"));
-    }, []);
-
-    useEffect(() => {
-        if (overlay) {
-            const queryParams = new URLSearchParams(location.search);
-            queryParams.set("path", "");
-            setPath("");
-            const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
-            window.history.replaceState(null, "", newUrl);
-            setRebuildList((prev) => !prev);
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [overlay]);
-
-    useEffect(() => {
-        setLoading(true);
-        api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${path}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                var list: never[] = data.files;
-                if (showDirOnly) list = list.filter((file: any) => file.isDir);
-                if (filetypeFilter.length > 0)
-                    list = list.filter(
-                        (file: any) =>
-                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
-                    );
-                setFiles(list);
-            })
-            .catch((error) =>
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("fileBrowser.messages.errorFetchingDirContent"),
-                    t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
-                    t("fileBrowser.title")
-                )
-            )
-            .finally(() => {
-                setLoading(false);
-            });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [path, special, showDirOnly, rebuildList]);
-
-    useEffect(() => {
-        if (cursorPositionFilterRef.current !== null && inputFilterRef.current) {
-            inputFilterRef.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
-        }
-    }, [filterText]);
+    }, []);
 
     useEffect(() => {
         setCreateDirectoryPath(getPathFromNodeId(treeNodeId));
@@ -257,48 +208,7 @@ export const FileBrowser: React.FC<{
         setCreateDirectoryPath(path);
     }, [path]);
 
-    // breadcrumb functions
-    const handleBreadcrumbClick = (dirPath: string) => {
-        setLoading(true);
-        if (trackUrl) {
-            navigate(`?path=${dirPath}`);
-        }
-        if (path === dirPath) {
-            setRebuildList((prev) => !prev);
-        }
-        setFilterFieldAutoFocus(false);
-        setPath(dirPath);
-    };
-
-    const generateBreadcrumbs = (path: string, handleBreadcrumbClick: { (dirPath: string): void }) => {
-        const pathArray = path.split("/").filter((segment) => segment);
-
-        const breadcrumbItems = [
-            {
-                title: (
-                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick("")}>
-                        {t("fileBrowser.root")}
-                    </span>
-                ),
-                key: "/",
-            },
-        ];
-        pathArray.forEach((segment, index) => {
-            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
-            breadcrumbItems.push({
-                title: (
-                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
-                        {decodeURIComponent(segment)}
-                    </span>
-                ),
-                key: segmentPath,
-            });
-        });
-
-        return <Breadcrumb items={breadcrumbItems} />;
-    };
-
-    // directory tree
+    // directory tree helpers
     const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
         new Promise((resolve, reject) => {
             const newPath = getPathFromNodeId(id);
@@ -312,7 +222,7 @@ export const FileBrowser: React.FC<{
                             return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
                         })
                         .map((entry, index) => {
-                            const stringId = String(id); // Ensure `id` is a string
+                            const stringId = String(id);
                             const value = `${stringId}.${index}`;
                             return {
                                 id: value,
@@ -344,7 +254,7 @@ export const FileBrowser: React.FC<{
     };
 
     const findNodesByParentId = (parentId: string, nodes: any[]): string[] => {
-        let childNodes: string[] = [];
+        const childNodes: string[] = [];
         for (const node of nodes) {
             if (node.pId === parentId) {
                 childNodes.push(node);
@@ -382,7 +292,7 @@ export const FileBrowser: React.FC<{
         />
     );
 
-    // other functions
+    // other helper functions
     const fetchJsonData = async (path: string) => {
         try {
             const response = await api.apiGetTeddyCloudApiRaw(path);
@@ -393,7 +303,7 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    // information model functions
+    // information modal
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
@@ -407,16 +317,14 @@ export const FileBrowser: React.FC<{
         }
     };
 
-    // json viewer functions
+    // json viewer
     const showJsonViewer = (file: string) => {
-        setFilterFieldAutoFocus(false);
-        setJsonViewerFile(file); // z.B. path + "/" + record.name
+        setJsonViewerFile(file);
         setIsJsonViewerModalOpen(true);
     };
 
-    // taf header functions
+    // taf header
     const showTafHeader = (file: string, recordTafHeader: RecordTafHeader) => {
-        setFilterFieldAutoFocus(false);
         setCurrentFile(file);
         setTafHeaderRecord(recordTafHeader);
         setIsTafHeaderModalOpen(true);
@@ -432,7 +340,6 @@ export const FileBrowser: React.FC<{
         if (file.includes(".tap")) {
             const folder = special === "library" ? "/library" : "/content";
             fetchJsonData(folder + file);
-            setFilterFieldAutoFocus(false);
             setCurrentFile(file);
             setTapEditorKey((prevKey) => prevKey + 1);
             setIsTapEditorModalOpen(true);
@@ -444,14 +351,13 @@ export const FileBrowser: React.FC<{
         setIsTapEditorModalOpen(false);
     };
 
-    // taf meta functions - to do
+    // taf meta placeholder
     const handleEditTafMetaDataClick = (path: string, record: Record) => {
-        // To Do - to be completed
+        // ToDo
     };
 
     // delete functions
     const showDeleteConfirmDialog = (fileName: string, pathWithFile: string, apiCall: string) => {
-        setFilterFieldAutoFocus(false);
         setFileToDelete(fileName);
         setDeletePath(decodeURIComponent(pathWithFile));
         setDeleteApiCall(apiCall);
@@ -472,9 +378,8 @@ export const FileBrowser: React.FC<{
 
     // move file
     const showMoveDialog = (fileName: string) => {
-        setFilterFieldAutoFocus(false);
         setTreeNodeId(rootTreeNode.id);
-        setCurrentFile(fileName || ""); // bei Multi: leerer String
+        setCurrentFile(fileName || "");
         setIsMoveFileModalOpen(true);
     };
 
@@ -486,7 +391,6 @@ export const FileBrowser: React.FC<{
 
     // rename file
     const showRenameDialog = (fileName: string) => {
-        setFilterFieldAutoFocus(false);
         setCurrentFile(fileName);
         setIsRenameFileModalOpen(true);
     };
@@ -495,7 +399,7 @@ export const FileBrowser: React.FC<{
         setIsRenameFileModalOpen(false);
     };
 
-    // select File Modal for encoding
+    // select files for encoding
     const showSelectFileModal = () => {
         setSelectFileFileBrowserKey((prevKey) => prevKey + 1);
         setIsSelectFileModalOpen(true);
@@ -550,7 +454,7 @@ export const FileBrowser: React.FC<{
         setEncodeFileList([]);
     };
 
-    // upload files functionality
+    // upload files
     const showUploadFilesDragAndDropModal = () => {
         setIsOpenUploadDragAndDropModal(true);
     };
@@ -560,7 +464,7 @@ export const FileBrowser: React.FC<{
         setIsOpenUploadDragAndDropModal(false);
     };
 
-    // other functions
+    // hooks for actions
     const { migrateContent2Lib } = useMigrateContent2Lib({
         t,
         api,
@@ -574,27 +478,7 @@ export const FileBrowser: React.FC<{
         setDownloading,
     });
 
-    // filter functions
-    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterText(e.target.value);
-        cursorPositionFilterRef.current = e.target.selectionStart;
-        setFilterFieldAutoFocus(true);
-    };
-
-    const clearFilterField = () => {
-        setFilterText("");
-        cursorPositionFilterRef.current = 0;
-    };
-
-    const handleFilterFieldInputFocus = () => {
-        setFilterFieldAutoFocus(true);
-    };
-
-    const handleFilterFieldInputBlur = () => {
-        setFilterFieldAutoFocus(false);
-    };
-
-    // table functions
+    // table selection / classes
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
     };
@@ -603,9 +487,8 @@ export const FileBrowser: React.FC<{
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
+    // dir navigation
     const handleDirClick = (dirPath: string) => {
-        console.log(dirPath);
-        setLoading(true);
         const newPath =
             dirPath === ".."
                 ? path.split("/").map(decodeURIComponent).slice(0, -1).map(encodeURIComponent).join("/")
@@ -613,56 +496,18 @@ export const FileBrowser: React.FC<{
         if (trackUrl) {
             navigate(`?path=${newPath}`);
         }
-        setFilterFieldAutoFocus(false);
+        handleFilterFieldInputBlur;
         setSelectedRowKeys([]);
         setPath(newPath);
     };
 
-    const getFieldValue = (obj: any, keys: string[]) => {
-        return keys.reduce((acc, currentKey) => {
-            if (acc && acc[currentKey] !== undefined) {
-                return acc[currentKey];
-            }
-            return undefined;
-        }, obj);
-    };
-
-    const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
-        // Get the values of the fields
-        const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
-        const fieldB = Array.isArray(dataIndex) ? getFieldValue(b, dataIndex) : b[dataIndex];
-
-        if (fieldA === undefined && fieldB === undefined) {
-            return 0; // Both values are undefined, consider them equal
-        } else if (fieldA === undefined) {
-            return 1; // Field A is undefined, consider it greater than B
-        } else if (fieldB === undefined) {
-            return -1; // Field B is undefined, consider it greater than A
-        }
-
-        if (typeof fieldA === "string" && typeof fieldB === "string") {
-            return fieldA.localeCompare(fieldB);
-        } else if (typeof fieldA === "number" && typeof fieldB === "number") {
-            return fieldA - fieldB;
-        } else {
-            console.log("Unsupported types for sorting:", a, b);
-            console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
-            return 0;
-        }
-    };
-
-    const dirNameSorter = (a: any, b: any) => {
-        if (a.isDir === b.isDir) {
-            return defaultSorter(a, b, "name");
-        }
-        return a.isDir ? -1 : 1;
-    };
-
+    // sorting helpers
     const withinTafBoundaries = (numberOfFiles: number) => {
         return numberOfFiles > 0 && numberOfFiles <= MAX_FILES;
     };
 
-    var columns: any[] = [
+    // columns
+    let columns: any[] = [
         {
             title: <div style={{ minHeight: 32 }}></div>,
             dataIndex: ["tonieInfo", "picture"],
@@ -836,9 +681,8 @@ export const FileBrowser: React.FC<{
             key: "controls",
             sorter: undefined,
             render: (name: string, record: any) => {
-                let actions = [];
+                const actions: React.ReactNode[] = [];
 
-                // taf file
                 if (record.tafHeader) {
                     actions.push(
                         <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
@@ -873,6 +717,7 @@ export const FileBrowser: React.FC<{
                     actions.push(
                         downloading[record.name] ? (
                             <Spin
+                                key={`action-download-spinner-${record.name}`}
                                 style={{ margin: "0 6px 0 0", padding: 4 }}
                                 size="small"
                                 indicator={<LoadingOutlined style={{ fontSize: 16, color: token.colorText }} spin />}
@@ -894,7 +739,6 @@ export const FileBrowser: React.FC<{
                             </Tooltip>
                         )
                     );
-                    // migration to lib possible
                     if (special !== "library") {
                         actions.push(
                             <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
@@ -942,10 +786,10 @@ export const FileBrowser: React.FC<{
                         </Tooltip>
                     );
                 }
-                // tap file
+
                 if (isTapList && record.name.includes(".tap")) {
                     actions.push(
-                        <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tap.edit")}>
+                        <Tooltip key={`action-edit-tap-${record.name}`} title={t("fileBrowser.tap.edit")}>
                             <EditOutlined
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
@@ -953,14 +797,15 @@ export const FileBrowser: React.FC<{
                         </Tooltip>
                     );
                     actions.push(
-                        <Tooltip key={`action-copy-${record.name}`} title={t("fileBrowser.tap.copy")}>
+                        <Tooltip key={`action-copy-tap-${record.name}`} title={t("fileBrowser.tap.copy")}>
                             <CopyOutlined style={{ margin: "4px 8px 4px 0", padding: 4 }} />
                         </Tooltip>
                     );
                 }
+
                 if (record.tafHeader) {
                     actions.push(
-                        <Tooltip key={`action-edit-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
+                        <Tooltip key={`action-edit-tafmeta-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
                             <EditOutlined
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTafMetaDataClick(path, record)}
@@ -968,9 +813,8 @@ export const FileBrowser: React.FC<{
                         </Tooltip>
                     );
                 }
-                // only in library move and rename
+
                 if (special === "library") {
-                    // include the rename icon on files
                     if (!record.isDir && record.name !== "..") {
                         actions.push(
                             <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
@@ -981,7 +825,6 @@ export const FileBrowser: React.FC<{
                             </Tooltip>
                         );
                     }
-                    // include the move icon on files
                     if (!record.isDir && record.name !== "..") {
                         actions.push(
                             <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
@@ -993,7 +836,7 @@ export const FileBrowser: React.FC<{
                         );
                     }
                 }
-                // include the delete action
+
                 if (record.name !== "..") {
                     actions.push(
                         <Tooltip key={`action-delete-${record.name}`} title={t("fileBrowser.delete")}>
@@ -1027,14 +870,11 @@ export const FileBrowser: React.FC<{
     if (showColumns) {
         columns = columns.filter((column) => {
             if (typeof column.key === "string") {
-                // Check if the column's dataIndex matches any of the specified dataIndex values
                 return showColumns.includes(column.key);
             }
             return false;
         });
     }
-
-    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
     return (
         <>
@@ -1184,7 +1024,7 @@ export const FileBrowser: React.FC<{
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
                         <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
-                        {generateBreadcrumbs(path, handleBreadcrumbClick)}
+                        {generateBreadcrumbs(path)}
                     </div>
                     <div style={{ alignSelf: "flex-end" }}>({files.filter((x) => x.name != "..").length})</div>
                 </div>
@@ -1218,7 +1058,6 @@ export const FileBrowser: React.FC<{
                                                     disabled={selectedRowKeys.length === 0}
                                                 >
                                                     <div className="showBigDevicesOnly showMediumDevicesOnly">
-                                                        {" "}
                                                         {t("fileBrowser.move")}
                                                     </div>
                                                 </Button>
@@ -1239,7 +1078,6 @@ export const FileBrowser: React.FC<{
                                                 disabled={selectedRowKeys.length === 0}
                                             >
                                                 <div className="showBigDevicesOnly showMediumDevicesOnly">
-                                                    {" "}
                                                     {t("fileBrowser.delete")}
                                                 </div>
                                             </Button>
@@ -1268,7 +1106,6 @@ export const FileBrowser: React.FC<{
                                                     disabled={selectedRowKeys.length === 0}
                                                 >
                                                     <div className="showBigDevicesOnly showMediumDevicesOnly">
-                                                        {" "}
                                                         {t("fileBrowser.encodeFiles.encode")}
                                                     </div>
                                                 </Button>
@@ -1284,7 +1121,6 @@ export const FileBrowser: React.FC<{
                                     icon={<FolderAddOutlined />}
                                     size="small"
                                     onClick={() => {
-                                        setFilterFieldAutoFocus(false);
                                         setIsCreateDirectoryModalOpen(true);
                                     }}
                                 >
@@ -1348,7 +1184,7 @@ export const FileBrowser: React.FC<{
                         selectedRowKeys,
                         onChange: onSelectChange,
                         getCheckboxProps: (record: Record) => ({
-                            disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                            disabled: record.name === "..",
                         }),
                         onSelectAll: (selected: boolean, selectedRows: any[]) => {
                             const selectedKeys = selected
@@ -1358,7 +1194,6 @@ export const FileBrowser: React.FC<{
                         },
                     }}
                     components={{
-                        // Override the header to include custom search row
                         header: {
                             wrapper: (props: any) => {
                                 return <thead {...props} />;
@@ -1375,7 +1210,7 @@ export const FileBrowser: React.FC<{
                                                     onChange={handleFilterChange}
                                                     onFocus={handleFilterFieldInputFocus}
                                                     onBlur={handleFilterFieldInputBlur}
-                                                    ref={inputFilterRef} // Assign ref to input element
+                                                    ref={inputFilterRef}
                                                     style={{ width: "100%" }}
                                                     autoFocus={filterFieldAutoFocus}
                                                     suffix={

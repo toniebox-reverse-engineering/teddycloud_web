@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+// SelectFileFileBrowser.tsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Table, Tooltip, Input, Breadcrumb, InputRef, theme, Empty } from "antd";
-import { Key } from "antd/es/table/interface";
-import { SortOrder } from "antd/es/table/interface";
+import { Table, Tooltip, Input, theme } from "antd";
+import { Key, SortOrder } from "antd/es/table/interface";
 import { CloseOutlined, FolderOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
 import { Record } from "../../../types/fileBrowserTypes";
@@ -18,6 +18,7 @@ import { humanFileSize } from "../../../utils/humanFileSize";
 import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -47,83 +48,52 @@ export const SelectFileFileBrowser: React.FC<{
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
     const { token } = useToken();
-    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const { addNotification } = useTeddyCloud();
 
-    const location = useLocation();
     const navigate = useNavigate();
-    const inputRefFilter = useRef<InputRef>(null);
-    const cursorPositionFilterRef = useRef<number | null>(null);
 
-    const [files, setFiles] = useState<any[]>([]);
-    const [path, setPath] = useState("");
-    const [rebuildList, setRebuildList] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
     const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
-    const [filterText, setFilterText] = useState("");
-    const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState(false);
-
-    const [loading, setLoading] = useState<boolean>(true);
-    const parentRef = useRef<HTMLDivElement>(null);
+    const {
+        path,
+        setPath,
+        files,
+        rebuildList,
+        setRebuildList,
+        loading,
+        filterText,
+        filterFieldAutoFocus,
+        handleFilterChange,
+        clearFilterField,
+        handleFilterFieldInputFocus,
+        handleFilterFieldInputBlur,
+        inputFilterRef,
+        generateBreadcrumbs,
+        handleBreadcrumbClick,
+        getFieldValue,
+        defaultSorter,
+        dirNameSorter,
+        noData,
+        parentRef,
+    } = useFileBrowserCore({
+        mode: "select",
+        special,
+        api,
+        overlay,
+        showDirOnly,
+        filetypeFilter,
+        trackUrl,
+    });
 
     useEffect(() => {
         setSelectedRowKeys([]);
-    }, []);
+    }, [rebuildList]);
 
-    useEffect(() => {
-        if (overlay) {
-            const queryParams = new URLSearchParams(location.search);
-            queryParams.set("path", "");
-            setPath("");
-            const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
-            window.history.replaceState(null, "", newUrl);
-            setRebuildList((prev) => !prev);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [overlay]);
-
-    useEffect(() => {
-        setLoading(true);
-        api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${encodeURIComponent(path)}&special=${special}` +
-                (overlay ? `&overlay=${overlay}` : "")
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                var list: never[] = data.files;
-
-                if (showDirOnly) list = list.filter((file: any) => file.isDir);
-                if (filetypeFilter.length > 0)
-                    list = list.filter(
-                        (file: any) =>
-                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
-                    );
-                setFiles(list);
-            })
-            .catch((error) =>
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("fileBrowser.messages.errorFetchingDirContent"),
-                    t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
-                    t("fileBrowser.title")
-                )
-            )
-            .finally(() => {
-                setLoading(false);
-            });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [path, special, showDirOnly, rebuildList]);
-
-    useEffect(() => {
-        if (cursorPositionFilterRef.current !== null && inputRefFilter.current) {
-            inputRefFilter.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
-        }
-    }, [filterText]);
-
-    // information model functions
+    // information modal
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
@@ -137,67 +107,7 @@ export const SelectFileFileBrowser: React.FC<{
         }
     };
 
-    // breadcrumb functions
-    const handleBreadcrumbClick = (dirPath: string) => {
-        if (trackUrl) {
-            navigate(`?path=${dirPath}`);
-        }
-        if (path === dirPath) {
-            setRebuildList((prev) => !prev);
-        }
-        setFilterFieldAutoFocus(false);
-        setPath(dirPath);
-    };
-
-    const generateBreadcrumbs = (path: string, handleBreadcrumbClick: { (dirPath: string): void }) => {
-        const pathArray = path.split("/").filter((segment) => segment);
-
-        const breadcrumbItems = [
-            {
-                title: (
-                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick("")}>
-                        {t("fileBrowser.root")}
-                    </span>
-                ),
-                key: "/",
-            },
-        ];
-
-        pathArray.forEach((segment, index) => {
-            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
-            breadcrumbItems.push({
-                title: (
-                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
-                        {segment}
-                    </span>
-                ),
-                key: segmentPath,
-            });
-        });
-
-        return <Breadcrumb items={breadcrumbItems} />;
-    };
-
-    // filter functions
-    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterText(e.target.value);
-        cursorPositionFilterRef.current = e.target.selectionStart;
-        setFilterFieldAutoFocus(true);
-    };
-
-    const clearFilterField = () => {
-        setFilterText("");
-        cursorPositionFilterRef.current = 0;
-    };
-
-    const handleFilterFieldInputFocus = () => {
-        setFilterFieldAutoFocus(true);
-    };
-    const handleFilterFieldInputBlur = () => {
-        setFilterFieldAutoFocus(false);
-    };
-
-    // table functions
+    // table helpers
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
     };
@@ -242,57 +152,17 @@ export const SelectFileFileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
-        setLoading(true);
         const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
         if (trackUrl) {
             navigate(`?path=${newPath}`);
         }
-        setFilterFieldAutoFocus(false);
+        handleFilterFieldInputBlur;
         setSelectedRowKeys([]);
         setPath(newPath);
     };
 
-    const getFieldValue = (obj: any, keys: string[]) => {
-        return keys.reduce((acc, currentKey) => {
-            if (acc && acc[currentKey] !== undefined) {
-                return acc[currentKey];
-            }
-            return undefined;
-        }, obj);
-    };
-
-    const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
-        // Get the values of the fields
-        const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
-        const fieldB = Array.isArray(dataIndex) ? getFieldValue(b, dataIndex) : b[dataIndex];
-
-        if (fieldA === undefined && fieldB === undefined) {
-            return 0; // Both values are undefined, consider them equal
-        } else if (fieldA === undefined) {
-            return 1; // Field A is undefined, consider it greater than B
-        } else if (fieldB === undefined) {
-            return -1; // Field B is undefined, consider it greater than A
-        }
-
-        if (typeof fieldA === "string" && typeof fieldB === "string") {
-            return fieldA.localeCompare(fieldB);
-        } else if (typeof fieldA === "number" && typeof fieldB === "number") {
-            return fieldA - fieldB;
-        } else {
-            console.log("Unsupported types for sorting:", a, b);
-            console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
-            return 0;
-        }
-    };
-
-    const dirNameSorter = (a: any, b: any) => {
-        if (a.isDir === b.isDir) {
-            return defaultSorter(a, b, "name");
-        }
-        return a.isDir ? -1 : 1;
-    };
-
-    var columns: any[] = [
+    // columns
+    let columns: any[] = [
         {
             title: "",
             dataIndex: ["tonieInfo", "picture"],
@@ -426,9 +296,8 @@ export const SelectFileFileBrowser: React.FC<{
             key: "controls",
             sorter: undefined,
             render: (name: string, record: any) => {
-                let actions = [];
+                const actions: React.ReactNode[] = [];
 
-                // taf file
                 if (record.tafHeader) {
                     actions.push(
                         <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
@@ -501,13 +370,11 @@ export const SelectFileFileBrowser: React.FC<{
     if (showColumns) {
         columns = columns.filter((column) => {
             if (typeof column.key === "string") {
-                // Check if the column's dataIndex matches any of the specified dataIndex values
                 return showColumns.includes(column.key);
             }
             return false;
         });
     }
-    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
     return (
         <>
@@ -524,7 +391,7 @@ export const SelectFileFileBrowser: React.FC<{
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", flexDirection: "row", marginBottom: 8 }}>
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
-                    {generateBreadcrumbs(path, handleBreadcrumbClick)}
+                    {generateBreadcrumbs(path)}
                 </div>
             </div>
             <div className="test" style={{ position: "relative" }} ref={parentRef}>
@@ -559,7 +426,7 @@ export const SelectFileFileBrowser: React.FC<{
                                   selectedRowKeys,
                                   onChange: onSelectChange,
                                   getCheckboxProps: (record: Record) => ({
-                                      disabled: record.name === "..", // Disable checkbox for rows with name '..'
+                                      disabled: record.name === "..",
                                   }),
                                   onSelectAll: (selected: boolean, selectedRows: any[]) => {
                                       const selectedKeys = selected
@@ -570,7 +437,6 @@ export const SelectFileFileBrowser: React.FC<{
                               }
                     }
                     components={{
-                        // Override the header to include custom search row
                         header: {
                             wrapper: (props: any) => {
                                 return <thead {...props} />;
@@ -587,7 +453,7 @@ export const SelectFileFileBrowser: React.FC<{
                                                     onChange={handleFilterChange}
                                                     onFocus={handleFilterFieldInputFocus}
                                                     onBlur={handleFilterFieldInputBlur}
-                                                    ref={inputRefFilter} // Assign ref to input element
+                                                    ref={inputFilterRef}
                                                     style={{ width: "100%" }}
                                                     autoFocus={filterFieldAutoFocus}
                                                     suffix={

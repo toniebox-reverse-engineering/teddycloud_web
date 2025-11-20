@@ -9,16 +9,16 @@ import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import { TonieCard } from "../toniecard/TonieCard";
-import { useToniesFilter } from "../../../hooks/useToniesFilter";
+import { useToniesFilter } from "./hooks/useToniesFilter";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
 import { scrollToTop } from "../../../utils/browserUtils";
 import { hideSelectedTonies, setLiveFlag, setNoCloud } from "./utils/ToniesListActions";
 import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "./utils/ToniesListExport";
-import { ToniesFilterPanel } from "./ToniesFilterPanel";
-import ToniesPagination from "./ToniesPagination";
-import { showHideTonieConfirm } from "./ToniesHideConfirm";
+import { ToniesFilterPanel } from "./filterpanel/ToniesFilterPanel";
+import ToniesPagination from "./pagination/ToniesPagination";
+import { showHideTonieConfirm } from "./modals/ToniesHideConfirmModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";

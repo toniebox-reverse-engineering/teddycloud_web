@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Card, Checkbox, Tooltip, Typography, theme } from "antd";
+import { Card, Checkbox, Tooltip, Typography, theme } from "antd";
 import {
     CloudSyncOutlined,
     DownloadOutlined,
