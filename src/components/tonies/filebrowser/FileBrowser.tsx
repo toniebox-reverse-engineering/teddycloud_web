@@ -161,7 +161,6 @@ export const FileBrowser: React.FC<{
     } = useFileBrowserCore({
         mode: "fileBrowser",
         special,
-        api,
         overlay,
         showDirOnly,
         filetypeFilter,

@@ -8,9 +8,6 @@ import { CloseOutlined, FolderOutlined, PlayCircleOutlined } from "@ant-design/i
 
 import { Record } from "../../../types/fileBrowserTypes";
 
-import { TeddyCloudApi } from "../../../api";
-import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-
 import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
 import TonieInformationModal from "../common/TonieInformationModal";
 import { useAudioContext } from "../../audio/AudioContext";
@@ -19,8 +16,6 @@ import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExte
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
-
-const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
@@ -81,7 +76,6 @@ export const SelectFileFileBrowser: React.FC<{
     } = useFileBrowserCore({
         mode: "select",
         special,
-        api,
         overlay,
         showDirOnly,
         filetypeFilter,

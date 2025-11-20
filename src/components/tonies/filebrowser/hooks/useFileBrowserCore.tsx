@@ -3,16 +3,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { Breadcrumb, Empty, InputRef } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Record } from "../../../../types/fileBrowserTypes";
 
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 type Mode = "fileBrowser" | "select";
 
 interface UseFileBrowserCoreOptions {
     mode: Mode;
     special: string;
-    api: any;
     overlay?: string;
     showDirOnly?: boolean;
     filetypeFilter?: string[];
@@ -22,14 +27,14 @@ interface UseFileBrowserCoreOptions {
 interface UseFileBrowserCoreResult {
     path: string;
     setPath: React.Dispatch<React.SetStateAction<string>>;
-    files: any[];
+    files: Record[];
     rebuildList: boolean;
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
     loading: boolean;
 
     filterText: string;
     filterFieldAutoFocus: boolean;
-    setFilterFieldAutoFocus: React.Dispatch<React.SetStateAction<boolean>>; // <<< NEU
+    setFilterFieldAutoFocus: React.Dispatch<React.SetStateAction<boolean>>;
     handleFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     clearFilterField: () => void;
     handleFilterFieldInputFocus: () => void;
@@ -44,14 +49,13 @@ interface UseFileBrowserCoreResult {
     defaultSorter: (a: any, b: any, dataIndex: string | string[]) => number;
     dirNameSorter: (a: any, b: any) => number;
 
-    noData: React.ReactNode;
+    noData: React.ReactNode | null;
     parentRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const useFileBrowserCore = ({
     mode,
     special,
-    api,
     overlay = "",
     showDirOnly = false,
     filetypeFilter = [],
@@ -63,7 +67,7 @@ export const useFileBrowserCore = ({
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [files, setFiles] = useState<any[]>([]);
+    const [files, setFiles] = useState<Record[]>([]);
 
     const queryParams = new URLSearchParams(location.search);
     const initialPathFromUrl = queryParams.get("path") || "";
@@ -78,7 +82,7 @@ export const useFileBrowserCore = ({
 
     const inputFilterRef = useRef<InputRef>(null);
     const cursorPositionFilterRef = useRef<number | null>(null);
-    const parentRef = useRef<HTMLDivElement>(null);
+    const parentRef = useRef<HTMLDivElement | null>(null);
 
     // overlay → reset path + URL + force reload
     useEffect(() => {
@@ -104,20 +108,18 @@ export const useFileBrowserCore = ({
         )
             .then((response: Response) => response.json())
             .then((data: any) => {
-                let list: any[] = data.files;
+                const list: Record[] = (data.files || []) as Record[];
 
-                if (showDirOnly) {
-                    list = list.filter((file: any) => file.isDir);
-                }
+                const filteredList = list.filter((entry) => {
+                    if (showDirOnly && !entry.isDir) return false;
+                    if (filetypeFilter.length > 0 && !entry.isDir) {
+                        const ext = entry.name.split(".").pop()?.toLowerCase() || "";
+                        return filetypeFilter.includes(ext);
+                    }
+                    return true;
+                });
 
-                if (filetypeFilter.length > 0) {
-                    list = list.filter(
-                        (file: any) =>
-                            file.isDir || filetypeFilter.some((filetypeFilter) => file.name.endsWith(filetypeFilter))
-                    );
-                }
-
-                setFiles(list);
+                setFiles(filteredList);
             })
             .catch((error: any) =>
                 addNotification(
@@ -288,7 +290,7 @@ export const useFileBrowserCore = ({
         return url;
     };
 
-    const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    const noData = files.length === 0 && !loading ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : null;
 
     return {
         path,
