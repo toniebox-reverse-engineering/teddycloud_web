@@ -389,7 +389,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     );
                 }
 
-                if (!record.isDir && special !== "library" && migrateContent2Lib) {
+                if (record.tafHeader && !record.isDir && special !== "library" && migrateContent2Lib) {
                     actions.push(
                         <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
                             <CloudServerOutlined

@@ -27,7 +27,7 @@ const JsonViewerModal: React.FC<JsonViewerModalProps> = ({ open, onClose, specia
             setLoading(true);
             setJsonData(null);
             try {
-                const folder = special === "library" ? "/library" : "/content";
+                const folder = special === "library" ? "/library/" : "/content/";
                 const response = await api.apiGetTeddyCloudApiRaw(folder + file);
                 const data = await response.json();
                 setJsonData(data);
