@@ -223,7 +223,6 @@ export const ToniesAudioPlayer: React.FC<{
             </div>
 
             <div style={{ position: "relative", width: "100%" }}>
-                {/* Left Scroll Button */}
                 <div
                     onMouseDown={startScrollLeft}
                     onTouchStart={startScrollLeft}
@@ -249,7 +248,6 @@ export const ToniesAudioPlayer: React.FC<{
                     <LeftOutlined style={{ fontSize: 24 }} />
                 </div>
 
-                {/* Carousel */}
                 <div
                     className="tonies-carousel"
                     ref={containerRef}
@@ -340,7 +338,6 @@ export const ToniesAudioPlayer: React.FC<{
                     })}
                 </div>
 
-                {/* Right Scroll Button */}
                 <div
                     onMouseDown={startScrollRight}
                     onTouchStart={startScrollRight}
