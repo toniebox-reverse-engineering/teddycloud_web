@@ -2,8 +2,8 @@ import { Button, Select, Tooltip } from "antd";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useDebouncedCallback } from "../../../../hooks/useDebouncedCallback";
-import { useTonieArticleSearch } from "../../../../hooks/useTonieArticleSearch";
+import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
+import { useTonieArticleSearch } from "../hooks/useTonieArticleSearch";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";

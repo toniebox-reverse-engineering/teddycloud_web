@@ -1,5 +1,5 @@
-import { t } from "i18next";
-import { List, Modal, Button, Typography } from "antd";
+import { useTranslation } from "react-i18next";
+import { List, Modal, Button } from "antd";
 import {
     NodeExpandOutlined,
     DeleteOutlined,
@@ -12,14 +12,14 @@ import {
     CopyOutlined,
 } from "@ant-design/icons";
 
-const { Paragraph } = Typography;
-
 interface HelpModalProps {
     isHelpModalOpen: boolean;
     onClose: () => void;
 }
 
 const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
+    const { t } = useTranslation();
+
     const actionItemsMulti = [
         {
             key: 1,

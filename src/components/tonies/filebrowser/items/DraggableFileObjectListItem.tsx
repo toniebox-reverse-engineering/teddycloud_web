@@ -5,7 +5,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { FileObject } from "../../../types/fileBrowserTypes";
+import { FileObject } from "../../../../types/fileBrowserTypes";
 
 interface DraggableFileObjectListItemProps {
     originNode: React.ReactElement<any, string | React.JSXElementConstructor<any>>;

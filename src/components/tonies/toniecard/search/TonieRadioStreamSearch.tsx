@@ -5,8 +5,8 @@ import { Select, Typography } from "antd";
 
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { useRadioStreamSearch } from "../../../../hooks/useRadioStreamSearch";
-import { useDebouncedCallback } from "../../../../hooks/useDebouncedCallback";
+import { useRadioStreamSearch } from "../hooks/useRadioStreamSearch";
+import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
 
 export const RadioStreamSearch: React.FC<{
     placeholder: string;

@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 
-import { TonieInfo } from "../types/tonieTypes";
-import { TeddyCloudApi } from "../api";
-import { defaultAPIConfig } from "../config/defaultApiConfig";
+import { TonieInfo } from "../../../../types/tonieTypes";
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
