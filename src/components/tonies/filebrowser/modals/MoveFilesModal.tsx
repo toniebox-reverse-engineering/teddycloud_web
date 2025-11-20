@@ -7,14 +7,16 @@ import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
 import { useTranslation } from "react-i18next";
+import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const { useToken } = theme;
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface MoveFilesModalProps {
     open: boolean;
     onClose: () => void;
 
-    api: TeddyCloudApi;
     special: string;
     overlay?: string;
 
@@ -40,17 +42,11 @@ interface MoveFilesModalProps {
 
     // reload list
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
-
-    // Notifications
-    addNotification: (...args: any[]) => void;
-    addLoadingNotification: (...args: any[]) => void;
-    closeLoadingNotification: (...args: any[]) => void;
 }
 
 const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
     open,
     onClose,
-    api,
     special,
     overlay,
     path,
@@ -67,12 +63,11 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
     setFilterFieldAutoFocus,
     setIsCreateDirectoryModalOpen,
     setRebuildList,
-    addNotification,
-    addLoadingNotification,
-    closeLoadingNotification,
 }) => {
     const { token } = useToken();
     const { t } = useTranslation();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
     const moveRenameFile = async (source: string, target: string, moving: boolean, flagMultiple?: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
         const key = moving ? "move-file" : "rename-file";

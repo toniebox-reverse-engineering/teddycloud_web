@@ -7,12 +7,15 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { invalidCharactersAsString, isInputValid } from "../../../../utils/fieldInputValidator";
+import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface RenameFileModalProps {
     open: boolean;
     onClose: () => void;
 
-    api: TeddyCloudApi;
     special: string;
     overlay?: string;
 
@@ -20,26 +23,19 @@ interface RenameFileModalProps {
     currentFile: string | null;
 
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
-
-    addNotification: (...args: any[]) => void;
-    addLoadingNotification: (...args: any[]) => void;
-    closeLoadingNotification: (...args: any[]) => void;
 }
 
 const RenameFileModal: React.FC<RenameFileModalProps> = ({
     open,
     onClose,
-    api,
     special,
     overlay,
     path,
     currentFile,
     setRebuildList,
-    addNotification,
-    addLoadingNotification,
-    closeLoadingNotification,
 }) => {
     const { t } = useTranslation();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
 
     const inputRef = useRef<InputRef>(null);
 

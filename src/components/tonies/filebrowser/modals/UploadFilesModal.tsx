@@ -22,7 +22,6 @@ interface UploadFilesModalProps {
     uploadFileList: UploadFile<any>[];
     setUploadFileList: React.Dispatch<React.SetStateAction<UploadFile<any>[]>>;
 
-    rebuildList: boolean;
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -33,7 +32,7 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
     special,
     uploadFileList,
     setUploadFileList,
-    rebuildList,
+
     setRebuildList,
 }) => {
     const { t } = useTranslation();
@@ -126,7 +125,7 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
 
         closeLoadingNotification(key);
 
-        setRebuildList(!rebuildList);
+        setRebuildList((prev) => !prev);
 
         if (failure) {
             addNotification(

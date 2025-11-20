@@ -6,9 +6,12 @@ import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
 import { useTranslation } from "react-i18next";
+import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface DeleteFilesModalProps {
-    api: TeddyCloudApi;
     special: string;
     overlay?: string;
 
@@ -21,10 +24,6 @@ interface DeleteFilesModalProps {
     createDirectoryPath: string;
     setCreateDirectoryPath: React.Dispatch<React.SetStateAction<string>>;
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
-
-    addNotification: (...args: any[]) => void;
-    addLoadingNotification: (...args: any[]) => void;
-    closeLoadingNotification: (...args: any[]) => void;
 
     findNodeIdByFullPath: (fullPath: string, nodes: any[]) => string | null;
 
@@ -46,7 +45,6 @@ interface DeleteFilesModalProps {
 }
 
 const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
-    api,
     special,
     overlay,
     files,
@@ -56,9 +54,6 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
     createDirectoryPath,
     setCreateDirectoryPath,
     setRebuildList,
-    addNotification,
-    addLoadingNotification,
-    closeLoadingNotification,
     findNodeIdByFullPath,
     selectedRowKeys,
     setSelectedRowKeys,
@@ -71,7 +66,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
     onCloseMultiple,
 }) => {
     const { t } = useTranslation();
-
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
     const deleteFile = async (filePath: string, apiCall: string, flagMultiple?: boolean) => {
         const key = "deletingFiles";
         addLoadingNotification(

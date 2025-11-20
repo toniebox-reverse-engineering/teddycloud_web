@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { DndContext, DragEndEvent, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 
-import { DraggableFileObjectListItem } from "../DraggableFileObjectListItem";
+import { DraggableFileObjectListItem } from "../items/DraggableFileObjectListItem";
 import { FileObject } from "../../../../types/fileBrowserTypes";
 import { invalidCharactersAsString, isInputValid } from "../../../../utils/fieldInputValidator";
 import { TeddyCloudApi } from "../../../../api";
@@ -39,7 +39,6 @@ interface EncodeFilesModalProps {
     setFilterFieldAutoFocus: (v: boolean) => void;
     setIsCreateDirectoryModalOpen: (v: boolean) => void;
 
-    rebuildList: boolean;
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
     setSelectedRowKeys: React.Dispatch<React.SetStateAction<React.Key[]>>;
 }
@@ -60,7 +59,6 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
     setCreateDirectoryPath,
     setFilterFieldAutoFocus,
     setIsCreateDirectoryModalOpen,
-    rebuildList,
     setRebuildList,
     setSelectedRowKeys,
 }) => {
@@ -154,7 +152,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                 );
                 setTreeNodeId("1");
                 setSelectedRowKeys([]);
-                setRebuildList(!rebuildList);
+                setRebuildList((prev) => !prev);
                 onClose();
             } else {
                 closeLoadingNotification(key);

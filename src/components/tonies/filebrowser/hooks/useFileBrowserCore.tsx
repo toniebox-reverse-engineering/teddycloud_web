@@ -23,7 +23,6 @@ interface UseFileBrowserCoreResult {
     path: string;
     setPath: React.Dispatch<React.SetStateAction<string>>;
     files: any[];
-    setFiles: React.Dispatch<React.SetStateAction<any[]>>;
     rebuildList: boolean;
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
     loading: boolean;
@@ -38,9 +37,10 @@ interface UseFileBrowserCoreResult {
     inputFilterRef: React.RefObject<InputRef | null>;
 
     generateBreadcrumbs: (currentPath: string) => React.ReactNode;
-    handleBreadcrumbClick: (dirPath: string) => void;
 
-    getFieldValue: (obj: any, keys: string[]) => any;
+    buildDirPath: (dirPath: string) => string;
+    buildContentUrl: (fileName: string, options?: { ogg?: boolean }) => string;
+
     defaultSorter: (a: any, b: any, dataIndex: string | string[]) => number;
     dirNameSorter: (a: any, b: any) => number;
 
@@ -241,13 +241,59 @@ export const useFileBrowserCore = ({
         return a.isDir ? -1 : 1;
     };
 
+    const buildDirPath = (dirPath: string): string => {
+        if (dirPath === "..") {
+            if (!path) return "";
+            if (mode === "fileBrowser") {
+                return path.split("/").map(decodeURIComponent).slice(0, -1).map(encodeURIComponent).join("/");
+            } else {
+                return path.split("/").slice(0, -1).join("/");
+            }
+        }
+
+        if (mode === "fileBrowser") {
+            const decodedParts = path ? path.split("/").map(decodeURIComponent) : [];
+            return [...decodedParts, dirPath].map(encodeURIComponent).join("/");
+        } else {
+            return path ? `${path}/${dirPath}` : dirPath;
+        }
+    };
+
+    const buildContentUrl = (fileName: string, options?: { ogg?: boolean }): string => {
+        const { ogg = false } = options || {};
+
+        let encodedPath: string;
+        if (mode === "fileBrowser") {
+            encodedPath = path || "";
+        } else {
+            encodedPath = path
+                ? path
+                      .split("/")
+                      .map((segment) => encodeURIComponent(segment))
+                      .join("/")
+                : "";
+        }
+
+        const encodedName = encodeURIComponent(fileName);
+
+        let url = `/content/${encodedPath ? encodedPath + "/" : "/"}${encodedName}`;
+
+        const params = new URLSearchParams();
+        if (ogg) params.set("ogg", "true");
+        params.set("special", special);
+        if (overlay) params.set("overlay", overlay);
+
+        url += `?${params.toString()}`;
+
+        return url;
+    };
+
     const noData = loading ? "" : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
 
     return {
         path,
         setPath,
         files,
-        setFiles,
         rebuildList,
         setRebuildList,
         loading,
@@ -262,9 +308,10 @@ export const useFileBrowserCore = ({
         inputFilterRef,
 
         generateBreadcrumbs,
-        handleBreadcrumbClick,
 
-        getFieldValue,
+        buildDirPath,
+        buildContentUrl,
+
         defaultSorter,
         dirNameSorter,
 

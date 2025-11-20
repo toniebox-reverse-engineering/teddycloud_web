@@ -1,7 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Table, Tooltip, Button, Input, theme, TreeSelectProps, TreeSelect, Empty, Tag, Flex, Spin } from "antd";
 import {
     CloseOutlined,
     CloudServerOutlined,
@@ -20,43 +16,46 @@ import {
     TruckOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { Key, SortOrder } from "antd/es/table/interface";
+import { Button, Flex, Input, Spin, Table, Tag, theme, Tooltip, TreeSelect, TreeSelectProps } from "antd";
 import { DefaultOptionType } from "antd/es/select";
+import { Key, SortOrder } from "antd/es/table/interface";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import { useTeddyCloud } from "../../../TeddyCloudContext";
-import { useAudioContext } from "../../audio/AudioContext";
 import { humanFileSize } from "../../../utils/humanFileSize";
+import { useAudioContext } from "../../audio/AudioContext";
 import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
 import TonieInformationModal from "../common/TonieInformationModal";
 
 import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
 
-import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
 import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
-import HelpModal from "./modals/FileBrowserHelpModal";
 import { generateUUID } from "../../../utils/helpers";
+import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
+import HelpModal from "./modals/FileBrowserHelpModal";
 
-import CreateDirectoryModal from "./modals/CreateDirectoryModal";
-import EncodeFilesModal from "./modals/EncodeFilesModal";
-import UploadFilesModal from "./modals/UploadFilesModal";
-import DeleteFilesModal from "./modals/DeleteFilesModal";
-import JsonViewerModal from "./modals/JsonViewerModal";
-import TafHeaderModal from "./modals/TafHeaderModal";
-import RenameFileModal from "./modals/RenameFilesModal";
-import MoveFilesModal from "./modals/MoveFilesModal";
-import SelectFilesForEncodingModal from "./modals/SelectFilesForEncodingModal";
-import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
-import { useFileDownload } from "./hooks/useFileDownload";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
+import { useFileDownload } from "./hooks/useFileDownload";
+import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
+import CreateDirectoryModal from "./modals/CreateDirectoryModal";
+import DeleteFilesModal from "./modals/DeleteFilesModal";
+import EncodeFilesModal from "./modals/EncodeFilesModal";
+import JsonViewerModal from "./modals/JsonViewerModal";
+import MoveFilesModal from "./modals/MoveFilesModal";
+import RenameFileModal from "./modals/RenameFilesModal";
+import SelectFilesForEncodingModal from "./modals/SelectFilesForEncodingModal";
+import TafHeaderModal from "./modals/TafHeaderModal";
+import UploadFilesModal from "./modals/UploadFilesModal";
+import { MAX_FILES } from "../../../constants";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
-
-const MAX_FILES = 99;
 
 const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
@@ -142,8 +141,6 @@ export const FileBrowser: React.FC<{
         path,
         setPath,
         files,
-        setFiles,
-        rebuildList,
         setRebuildList,
         loading,
         filterText,
@@ -155,8 +152,8 @@ export const FileBrowser: React.FC<{
         handleFilterFieldInputBlur,
         inputFilterRef,
         generateBreadcrumbs,
-        handleBreadcrumbClick,
-        getFieldValue,
+        buildDirPath,
+        buildContentUrl,
         defaultSorter,
         dirNameSorter,
         noData,
@@ -307,12 +304,7 @@ export const FileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
-            setCurrentAudioUrl(
-                encodeURI("/content" + path + "/" + record.name) +
-                    "?ogg=true&special=" +
-                    special +
-                    (overlay ? `&overlay=${overlay}` : "")
-            );
+            setCurrentAudioUrl(buildContentUrl(record.name, { ogg: true }));
             setIsInformationModalOpen(true);
         }
     };
@@ -429,6 +421,13 @@ export const FileBrowser: React.FC<{
         setTreeNodeId(rootTreeNode.id);
         const newEncodedFiles: FileObject[] = [];
 
+        const decodedPath =
+            path
+                ?.split("/")
+                .filter(Boolean)
+                .map((segment) => decodeURIComponent(segment))
+                .join("/") ?? "";
+
         for (const rowName of selectedRowKeys) {
             const file = files.find(
                 (file) =>
@@ -440,10 +439,11 @@ export const FileBrowser: React.FC<{
                 newEncodedFiles.push({
                     uid: generateUUID(),
                     name: file.name,
-                    path: path,
+                    path: decodedPath,
                 });
             }
         }
+
         setEncodeFileList(newEncodedFiles);
         setIsEncodeFilesModalOpen(true);
     };
@@ -489,14 +489,11 @@ export const FileBrowser: React.FC<{
 
     // dir navigation
     const handleDirClick = (dirPath: string) => {
-        const newPath =
-            dirPath === ".."
-                ? path.split("/").map(decodeURIComponent).slice(0, -1).map(encodeURIComponent).join("/")
-                : [...path.split("/").map(decodeURIComponent), dirPath].map(encodeURIComponent).join("/");
+        const newPath = buildDirPath(dirPath);
         if (trackUrl) {
             navigate(`?path=${newPath}`);
         }
-        handleFilterFieldInputBlur;
+        handleFilterFieldInputBlur();
         setSelectedRowKeys([]);
         setPath(newPath);
     };
@@ -879,7 +876,6 @@ export const FileBrowser: React.FC<{
     return (
         <>
             <DeleteFilesModal
-                api={api}
                 special={special}
                 overlay={overlay}
                 files={files as Record[]}
@@ -889,9 +885,6 @@ export const FileBrowser: React.FC<{
                 createDirectoryPath={createDirectoryPath}
                 setCreateDirectoryPath={setCreateDirectoryPath}
                 setRebuildList={setRebuildList}
-                addNotification={addNotification}
-                addLoadingNotification={addLoadingNotification}
-                closeLoadingNotification={closeLoadingNotification}
                 findNodeIdByFullPath={findNodeIdByFullPath}
                 selectedRowKeys={selectedRowKeys}
                 setSelectedRowKeys={setSelectedRowKeys}
@@ -903,102 +896,117 @@ export const FileBrowser: React.FC<{
                 multipleOpen={isConfirmMultipleDeleteModalOpen}
                 onCloseMultiple={closeMultipleDeleteModal}
             />
-            <JsonViewerModal
-                open={isJsonViewerModalOpen}
-                onClose={() => setIsJsonViewerModalOpen(false)}
-                special={special}
-                file={jsonViewerFile}
-            />
-            <TafHeaderModal
-                open={isTafHeaderModalOpen}
-                onClose={closeTafHeader}
-                fileName={currentFile}
-                recordTafHeader={tafHeaderRecord}
-            />
-            <CreateDirectoryModal
-                open={isCreateDirectoryModalOpen}
-                onClose={() => setIsCreateDirectoryModalOpen(false)}
-                createDirectoryPath={createDirectoryPath}
-                setCreateDirectoryPath={setCreateDirectoryPath}
-                path={path}
-                treeData={treeData as any}
-                setTreeData={setTreeData as any}
-                rootTreeNode={rootTreeNode as any}
-                isNodeExpanded={isNodeExpanded}
-                findNodeIdByFullPath={findNodeIdByFullPath}
-                findNodesByParentId={findNodesByParentId}
-                isMoveFileModalOpen={isMoveFileModalOpen}
-                isEncodeFilesModalOpen={isEncodeFilesModalOpen}
-                setTreeNodeId={setTreeNodeId}
-                setRebuildList={setRebuildList}
-            />
-            <UploadFilesModal
-                open={isOpenUploadDragAndDropModal}
-                onClose={closeUploadDragAndDropModal}
-                path={path}
-                special={special}
-                uploadFileList={uploadFileList as any}
-                setUploadFileList={setUploadFileList as any}
-                rebuildList={rebuildList}
-                setRebuildList={setRebuildList}
-            />
-            <MoveFilesModal
-                open={isMoveFileModalOpen}
-                onClose={closeMoveFileModal}
-                api={api}
-                special={special}
-                overlay={overlay}
-                path={path}
-                files={files as Record[]}
-                currentFile={currentFile || null}
-                selectedRowKeys={selectedRowKeys}
-                setSelectedRowKeys={setSelectedRowKeys}
-                treeNodeId={treeNodeId}
-                setTreeNodeId={setTreeNodeId}
-                rootTreeNodeId={rootTreeNode.id}
-                getPathFromNodeId={getPathFromNodeId}
-                folderTreeElement={folderTreeElement}
-                setCreateDirectoryPath={setCreateDirectoryPath}
-                setFilterFieldAutoFocus={setFilterFieldAutoFocus}
-                setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
-                setRebuildList={setRebuildList}
-                addNotification={addNotification}
-                addLoadingNotification={addLoadingNotification}
-                closeLoadingNotification={closeLoadingNotification}
-            />
-            <RenameFileModal
-                open={isRenameFileModalOpen}
-                onClose={closeRenameFileModal}
-                api={api}
-                special={special}
-                overlay={overlay}
-                path={path}
-                currentFile={currentFile || null}
-                setRebuildList={setRebuildList}
-                addNotification={addNotification}
-                addLoadingNotification={addLoadingNotification}
-                closeLoadingNotification={closeLoadingNotification}
-            />
-            <EncodeFilesModal
-                open={isEncodeFilesModalOpen}
-                onClose={closeEncodeFilesModal}
-                modalKey={encodeFilesModalKey}
-                special={special}
-                encodeFileList={encodeFileList}
-                setEncodeFileList={setEncodeFileList}
-                treeNodeId={treeNodeId}
-                setTreeNodeId={setTreeNodeId}
-                getPathFromNodeId={getPathFromNodeId}
-                folderTreeElement={folderTreeElement}
-                selectFileModal={selectFileModal}
-                showSelectFileModal={showSelectFileModal}
-                setCreateDirectoryPath={setCreateDirectoryPath}
-                setFilterFieldAutoFocus={setFilterFieldAutoFocus}
-                setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
-                rebuildList={rebuildList}
-                setRebuildList={setRebuildList}
-                setSelectedRowKeys={setSelectedRowKeys}
-            />
+            {isJsonViewerModalOpen && (
+                <JsonViewerModal
+                    open={isJsonViewerModalOpen}
+                    onClose={() => setIsJsonViewerModalOpen(false)}
+                    special={special}
+                    file={jsonViewerFile}
+                />
+            )}
+            {isTapEditorModalOpen && (
+                <TafHeaderModal
+                    open={isTafHeaderModalOpen}
+                    onClose={closeTafHeader}
+                    fileName={currentFile}
+                    recordTafHeader={tafHeaderRecord}
+                />
+            )}
+            {isCreateDirectoryModalOpen && (
+                <CreateDirectoryModal
+                    open={isCreateDirectoryModalOpen}
+                    onClose={() => setIsCreateDirectoryModalOpen(false)}
+                    createDirectoryPath={createDirectoryPath}
+                    setCreateDirectoryPath={setCreateDirectoryPath}
+                    path={path}
+                    treeData={treeData as any}
+                    setTreeData={setTreeData as any}
+                    rootTreeNode={rootTreeNode as any}
+                    isNodeExpanded={isNodeExpanded}
+                    findNodeIdByFullPath={findNodeIdByFullPath}
+                    findNodesByParentId={findNodesByParentId}
+                    isMoveFileModalOpen={isMoveFileModalOpen}
+                    isEncodeFilesModalOpen={isEncodeFilesModalOpen}
+                    setTreeNodeId={setTreeNodeId}
+                    setRebuildList={setRebuildList}
+                />
+            )}
+            {isOpenUploadDragAndDropModal && (
+                <UploadFilesModal
+                    open={isOpenUploadDragAndDropModal}
+                    onClose={closeUploadDragAndDropModal}
+                    path={path}
+                    special={special}
+                    uploadFileList={uploadFileList as any}
+                    setUploadFileList={setUploadFileList as any}
+                    setRebuildList={setRebuildList}
+                />
+            )}
+            {isMoveFileModalOpen && (
+                <MoveFilesModal
+                    open={isMoveFileModalOpen}
+                    onClose={closeMoveFileModal}
+                    special={special}
+                    overlay={overlay}
+                    path={path}
+                    files={files as Record[]}
+                    currentFile={currentFile || null}
+                    selectedRowKeys={selectedRowKeys}
+                    setSelectedRowKeys={setSelectedRowKeys}
+                    treeNodeId={treeNodeId}
+                    setTreeNodeId={setTreeNodeId}
+                    rootTreeNodeId={rootTreeNode.id}
+                    getPathFromNodeId={getPathFromNodeId}
+                    folderTreeElement={folderTreeElement}
+                    setCreateDirectoryPath={setCreateDirectoryPath}
+                    setFilterFieldAutoFocus={setFilterFieldAutoFocus}
+                    setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
+                    setRebuildList={setRebuildList}
+                />
+            )}
+            {isRenameFileModalOpen && (
+                <RenameFileModal
+                    open={isRenameFileModalOpen}
+                    onClose={closeRenameFileModal}
+                    special={special}
+                    overlay={overlay}
+                    path={path}
+                    currentFile={currentFile || null}
+                    setRebuildList={setRebuildList}
+                />
+            )}
+            {isEncodeFilesModalOpen && (
+                <EncodeFilesModal
+                    open={isEncodeFilesModalOpen}
+                    onClose={closeEncodeFilesModal}
+                    modalKey={encodeFilesModalKey}
+                    special={special}
+                    encodeFileList={encodeFileList}
+                    setEncodeFileList={setEncodeFileList}
+                    treeNodeId={treeNodeId}
+                    setTreeNodeId={setTreeNodeId}
+                    getPathFromNodeId={getPathFromNodeId}
+                    folderTreeElement={folderTreeElement}
+                    selectFileModal={selectFileModal}
+                    showSelectFileModal={showSelectFileModal}
+                    setCreateDirectoryPath={setCreateDirectoryPath}
+                    setFilterFieldAutoFocus={setFilterFieldAutoFocus}
+                    setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
+                    setRebuildList={setRebuildList}
+                    setSelectedRowKeys={setSelectedRowKeys}
+                />
+            )}
+            {isTapEditorModalOpen && (
+                <TonieAudioPlaylistEditor
+                    open={isTapEditorModalOpen}
+                    key={tapEditorKey}
+                    initialValuesJson={jsonData ? JSON.stringify(jsonData, null, 2) : undefined}
+                    onCreate={onTAPCreate}
+                    onCancel={() => {
+                        setIsTapEditorModalOpen(false);
+                    }}
+                />
+            )}
             {isHelpModalOpen && (
                 <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
             )}
@@ -1241,15 +1249,6 @@ export const FileBrowser: React.FC<{
                     locale={{ emptyText: noData }}
                 />
             </div>
-            <TonieAudioPlaylistEditor
-                open={isTapEditorModalOpen}
-                key={tapEditorKey}
-                initialValuesJson={jsonData ? JSON.stringify(jsonData, null, 2) : undefined}
-                onCreate={onTAPCreate}
-                onCancel={() => {
-                    setIsTapEditorModalOpen(false);
-                }}
-            />
         </>
     );
 };

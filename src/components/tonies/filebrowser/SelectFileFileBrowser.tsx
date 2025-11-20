@@ -54,7 +54,7 @@ export const SelectFileFileBrowser: React.FC<{
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-    const [isInformationModalOpen, setInformationModalOpen] = useState<boolean>(false);
+    const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
     const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
@@ -63,7 +63,6 @@ export const SelectFileFileBrowser: React.FC<{
         setPath,
         files,
         rebuildList,
-        setRebuildList,
         loading,
         filterText,
         filterFieldAutoFocus,
@@ -73,8 +72,8 @@ export const SelectFileFileBrowser: React.FC<{
         handleFilterFieldInputBlur,
         inputFilterRef,
         generateBreadcrumbs,
-        handleBreadcrumbClick,
-        getFieldValue,
+        buildDirPath,
+        buildContentUrl,
         defaultSorter,
         dirNameSorter,
         noData,
@@ -97,13 +96,8 @@ export const SelectFileFileBrowser: React.FC<{
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);
-            setCurrentAudioUrl(
-                encodeURI("/content" + decodeURI(path) + "/" + record.name) +
-                    "?ogg=true&special=" +
-                    special +
-                    (overlay ? `&overlay=${overlay}` : "")
-            );
-            setInformationModalOpen(true);
+            setCurrentAudioUrl(buildContentUrl(record.name, { ogg: true }));
+            setIsInformationModalOpen(true);
         }
     };
 
@@ -152,11 +146,11 @@ export const SelectFileFileBrowser: React.FC<{
     };
 
     const handleDirClick = (dirPath: string) => {
-        const newPath = dirPath === ".." ? path.split("/").slice(0, -1).join("/") : `${path}/${dirPath}`;
+        const newPath = buildDirPath(dirPath);
         if (trackUrl) {
             navigate(`?path=${newPath}`);
         }
-        handleFilterFieldInputBlur;
+        handleFilterFieldInputBlur();
         setSelectedRowKeys([]);
         setPath(newPath);
     };
@@ -378,15 +372,13 @@ export const SelectFileFileBrowser: React.FC<{
 
     return (
         <>
-            {currentRecord ? (
+            {currentRecord && isInformationModalOpen && (
                 <TonieInformationModal
                     open={isInformationModalOpen}
                     tonieCardOrTAFRecord={{ ...currentRecord, audioUrl: currentAudioUrl }}
-                    onClose={() => setInformationModalOpen(false)}
+                    onClose={() => setIsInformationModalOpen(false)}
                     overlay={overlay}
                 />
-            ) : (
-                ""
             )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", flexDirection: "row", marginBottom: 8 }}>
