@@ -103,7 +103,7 @@ export class WasmTafEncoder {
     private ctx: number = 0;
     private initialized: boolean = false;
 
-    constructor(audioId: number, bitrate: number = 96) {
+    constructor(audioId: number, bitrate: number) {
         this.audioId = audioId;
         this.bitrate = bitrate;
     }
@@ -272,12 +272,13 @@ export class WasmTafEncoder {
     static async encodeMultipleFiles(
         files: MyUploadFile[],
         audioId: number,
+        bitrate: number,
         onProgress?: (current: number, total: number, currentFile: string) => void
     ): Promise<Blob> {
         // Ensure WASM is loaded
         await loadWasmEncoder();
 
-        const encoder = new WasmTafEncoder(audioId);
+        const encoder = new WasmTafEncoder(audioId, bitrate);
         await encoder.initialize();
 
         let finalized = false;
@@ -337,13 +338,13 @@ export class WasmTafEncoder {
      * @param audioId Audio ID for the TAF file
      * @returns TAF file as Blob
      */
-    static async encodeSingleFile(file: File, audioId: number): Promise<Blob> {
+    static async encodeSingleFile(file: File, audioId: number, bitrate: number): Promise<Blob> {
         const myFile: MyUploadFile = {
             uid: '1',
             name: file.name,
             file: file,
         };
 
-        return WasmTafEncoder.encodeMultipleFiles([myFile], audioId);
+        return WasmTafEncoder.encodeMultipleFiles([myFile], audioId, bitrate);
     }
 }

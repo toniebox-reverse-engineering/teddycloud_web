@@ -39,6 +39,7 @@ export const EncoderPage = () => {
     const [useFrontendEncoding, setUseFrontendEncoding] = useState(false);
     const [useFrontendEncodingSetting, setUseFrontendEncodingSetting] = useState(false);
     const [wasmLoaded, setWasmLoaded] = useState(false);
+    const [bitrate, setBitrate] = useState(96);
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
     const [processing, setProcessing] = useState(false);
@@ -98,6 +99,23 @@ export const EncoderPage = () => {
             }
         };
         fetchUseFrontendSetting();
+
+        const fetchBitrateSetting = async () => {
+            try {
+                const response = await api.apiGetTeddyCloudSettingRaw("encode.bitrate");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const bitrateSetting = parseInt(data.toString(), 10);
+                if (!isNaN(bitrateSetting)) {
+                    setBitrate(bitrateSetting);
+                }
+            } catch (error) {
+                console.error("Error fetching encode.bitrate: ", error);
+            }
+        };
+        fetchBitrateSetting();
 
         const preLoadTreeData = async () => {
             const newPath = pathFromNodeId(rootTreeNode.id);
@@ -279,6 +297,7 @@ export const EncoderPage = () => {
             const tafBlob = await WasmTafEncoder.encodeMultipleFiles(
                 fileList,
                 audioId,
+                bitrate,
                 (current, total, currentFile) => {
                     addLoadingNotification(
                         key,
