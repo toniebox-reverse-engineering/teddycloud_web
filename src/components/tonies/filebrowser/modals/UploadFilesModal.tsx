@@ -57,8 +57,7 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
             }
         },
         onDrop(e: any) {
-            // optional: Logging hier behalten oder entfernen
-            // console.log("Dropped files", e.dataTransfer.files);
+            console.log("Dropped files", e.dataTransfer.files);
         },
         onRemove: (file: any) => {
             setUploadFileList((prevFileList) => prevFileList.filter((f) => f.uid !== file.uid));
@@ -83,7 +82,7 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
             );
 
             const formData = new FormData();
-            // antd UploadFile hat originFileObj
+            // antd UploadFile has originFileObj
             formData.append(file.name as string, file.originFileObj as Blob);
 
             try {
