@@ -275,7 +275,7 @@ export const EncoderPage = () => {
             const currentUnixTime = Math.floor(Date.now() / 1000);
             const audioId = currentUnixTime - 0x50000000;
             // Encode in browser
-            addLoadingNotification(key, t("tonies.encoder.processing"), t("tonies.encoder.browserEncodingInProgress"));
+            addLoadingNotification(key, t("tonies.encoder.processing"), "Encoding audio files in browser...");
             const tafBlob = await WasmTafEncoder.encodeMultipleFiles(
                 fileList,
                 audioId,

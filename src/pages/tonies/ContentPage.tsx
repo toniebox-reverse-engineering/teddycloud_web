@@ -4,7 +4,7 @@ import { Select } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/tonies/common/FileBrowser";
+import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
 import { useTonieboxContent } from "../../hooks/useTonieboxContentOverlay";
 
 const { Option } = Select;

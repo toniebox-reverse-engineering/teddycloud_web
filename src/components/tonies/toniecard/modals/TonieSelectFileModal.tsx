@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Modal, theme } from "antd";
 
-import { SelectFileFileBrowser } from "../../common/SelectFileFileBrowser";
+import { SelectFileFileBrowser } from "../../filebrowser/SelectFileFileBrowser";
 
 const { useToken } = theme;
 

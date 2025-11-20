@@ -12,7 +12,7 @@ import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
-import TonieInformationModal from "./TonieInformationModal";
+import TonieInformationModal from "../common/TonieInformationModal";
 import { useAudioContext } from "../../audio/AudioContext";
 import { humanFileSize } from "../../../utils/humanFileSize";
 import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
