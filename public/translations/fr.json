@@ -287,7 +287,8 @@
         "date": "Date",
         "delete": "Supprimer",
         "deleteMultiple": "{{selectedRowCount}} lignes sélectionnées à supprimer",
-        "downloadFile": "Télécharger TAF en *.ogg",
+        "downloadFileAsOgg": "Télécharger TAF en *.ogg",
+        "downloadFile": "Télécharger le fichier",
         "encodeFiles": {
             "addFiles": "Ajouter des fichiers",
             "cancel": "Annuler",

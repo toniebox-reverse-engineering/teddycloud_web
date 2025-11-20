@@ -112,9 +112,10 @@ export const useFileBrowserCore = ({
 
                 const filteredList = list.filter((entry) => {
                     if (showDirOnly && !entry.isDir) return false;
+
                     if (filetypeFilter.length > 0 && !entry.isDir) {
-                        const ext = entry.name.split(".").pop()?.toLowerCase() || "";
-                        return filetypeFilter.includes(ext);
+                        const lowerName = entry.name.toLowerCase();
+                        return filetypeFilter.some((suffix) => lowerName.endsWith(suffix.toLowerCase()));
                     }
                     return true;
                 });

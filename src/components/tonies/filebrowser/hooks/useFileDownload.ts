@@ -1,3 +1,5 @@
+import { Record as tafRecord } from "../../../../types/fileBrowserTypes";
+
 interface UseFileDownloadParams {
     setDownloading: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }
@@ -19,21 +21,28 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
     };
 
     const handleFileDownload = async (
-        record: any,
+        record: tafRecord,
         baseApiUrl: string,
         path: string,
         special: string,
         overlay?: string
     ) => {
         const fileUrl =
-            encodeURI(baseApiUrl + "/content" + decodeURIComponent(path) + "/" + record.name) +
-            "?ogg=true&special=" +
+            encodeURI(baseApiUrl + "/content/" + decodeURIComponent(path) + "/" + record.name) +
+            "?" +
+            (record.name.endsWith(".taf") ? "ogg=true&" : "") +
+            "special=" +
             special +
             (overlay ? `&overlay=${overlay}` : "");
 
-        const fileName =
-            (record.tonieInfo?.series ? record.tonieInfo.series : "") +
-            (record.tonieInfo?.episode ? " - " + record.tonieInfo.episode : "");
+        let fileName =
+            record.tonieInfo?.series || record.tonieInfo?.episode
+                ? `${record.tonieInfo.series || ""}${record.tonieInfo.episode ? " - " + record.tonieInfo.episode : ""}`
+                : record.name;
+
+        if (!record.tonieInfo?.series && !record.tonieInfo?.episode && fileName.endsWith(".taf")) {
+            fileName = fileName.replace(/\.taf$/i, ".ogg");
+        }
 
         setDownloading((prev) => ({ ...prev, [record.name]: true }));
 

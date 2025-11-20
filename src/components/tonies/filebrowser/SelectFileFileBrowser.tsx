@@ -2,24 +2,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Table, Tooltip, Input, theme } from "antd";
-import { Key, SortOrder } from "antd/es/table/interface";
-import { CloseOutlined, FolderOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { Table, Input, theme } from "antd";
+import { Key } from "antd/es/table/interface";
+import { CloseOutlined } from "@ant-design/icons";
 
 import { Record } from "../../../types/fileBrowserTypes";
 
 import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
 import TonieInformationModal from "../common/TonieInformationModal";
 import { useAudioContext } from "../../audio/AudioContext";
-import { humanFileSize } from "../../../utils/humanFileSize";
-import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
+import { createColumns } from "./helper/FileBrowserColumns";
 
 const { useToken } = theme;
-
-const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 export const SelectFileFileBrowser: React.FC<{
     special: string;
@@ -150,219 +147,21 @@ export const SelectFileFileBrowser: React.FC<{
     };
 
     // columns
-    let columns: any[] = [
-        {
-            title: "",
-            dataIndex: ["tonieInfo", "picture"],
-            key: "picture",
-            sorter: undefined,
-            width: 10,
-            render: (picture: string, record: any) =>
-                record && record.tonieInfo?.picture ? (
-                    <img
-                        key={`picture-${record.name}`}
-                        src={record.tonieInfo.picture}
-                        alt={t("tonies.content.toniePicture")}
-                        onClick={() => showInformationModal(record)}
-                        style={{
-                            width: 100,
-                            cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
-                        }}
-                    />
-                ) : (
-                    <></>
-                ),
-            showOnDirOnly: false,
-        },
-        {
-            title: t("fileBrowser.name"),
-            dataIndex: "name",
-            key: "name",
-            sorter: dirNameSorter,
-            defaultSortOrder: "ascend" as SortOrder,
-            render: (picture: string, record: any) =>
-                record && (
-                    <div key={`name-${record.name}`}>
-                        <div className="showSmallDevicesOnly">
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <div style={{ display: "flex" }}>
-                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                        {record.isDir ? <>{record.name}</> : record.name}
-                                    </div>
-                                </div>
-                                <div>{record.tonieInfo?.model}</div>
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                        (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="showMediumDevicesOnly">
-                            <div style={{ display: "flex" }}>
-                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? <>{record.name}</> : record.name}
-                                </div>
-                            </div>
-                        </div>
-                        <div className="showBigDevicesOnly">
-                            <div style={{ display: "flex" }}>
-                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? <>{record.name}</> : record.name}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ),
-            filteredValue: [filterText],
-            onFilter: (value: string, record: Record) => {
-                const text = value.toLowerCase();
-                return (
-                    record.name === ".." ||
-                    record.name.toLowerCase().includes(text) ||
-                    (!record.isDir &&
-                        "tafHeader" in record &&
-                        record.tafHeader.size &&
-                        humanFileSize(record.tafHeader.size).toString().includes(text)) ||
-                    ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.model.toLowerCase().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.episode.toLowerCase().includes(text))
-                );
-            },
-            showOnDirOnly: true,
-        },
-        {
-            title: t("fileBrowser.model"),
-            dataIndex: ["tonieInfo", "model"],
-            key: "model",
-            showOnDirOnly: false,
-            responsive: ["xl"],
-            render: (model: string, record: any) => <div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>,
-        },
-        {
-            title: (
-                <>
-                    <div className="showMediumDevicesOnly">
-                        {t("fileBrowser.model")}/{t("fileBrowser.series")}/{t("fileBrowser.episode")}
-                    </div>
-                    <div className="showBigDevicesOnly">{t("fileBrowser.series")}</div>
-                </>
-            ),
-            dataIndex: ["tonieInfo", "series"],
-            key: "series",
-            render: (series: string, record: any) => (
-                <div key={`series-${record.name}`}>
-                    <div className="showMediumDevicesOnly">
-                        <div>{record.tonieInfo?.model}</div>
-                        <div style={{ wordBreak: "break-word" }}>
-                            {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
-                        </div>
-                    </div>
-                    <div className="showBigDevicesOnly">{record.tonieInfo?.series ? record.tonieInfo?.series : ""}</div>
-                </div>
-            ),
-            showOnDirOnly: false,
-            responsive: ["md"],
-        },
-        {
-            title: t("fileBrowser.episode"),
-            dataIndex: ["tonieInfo", "episode"],
-            key: "episode",
-            showOnDirOnly: false,
-            responsive: ["xl"],
-            render: (episode: string, record: any) => (
-                <div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>
-            ),
-        },
-        {
-            title: <div className="showMediumDevicesOnly showBigDevicesOnly">{t("fileBrowser.actions")}</div>,
-            dataIndex: "controls",
-            key: "controls",
-            sorter: undefined,
-            render: (name: string, record: any) => {
-                const actions: React.ReactNode[] = [];
 
-                if (record.tafHeader) {
-                    actions.push(
-                        <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
-                            <PlayCircleOutlined
-                                style={{ margin: "0 8px 0 0" }}
-                                onClick={() =>
-                                    playAudio(
-                                        encodeURI(
-                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                                "/content" +
-                                                path +
-                                                "/" +
-                                                record.name
-                                        ) +
-                                            "?ogg=true&special=" +
-                                            special +
-                                            (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo,
-                                        {
-                                            ...record,
-                                            audioUrl:
-                                                encodeURI("/content" + path + "/" + record.name) +
-                                                "?ogg=true&special=" +
-                                                special +
-                                                (overlay ? `&overlay=${overlay}` : ""),
-                                        }
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    );
-                } else if (supportedAudioExtensionsForEncoding.some((ending) => record.name.endsWith(ending))) {
-                    actions.push(
-                        <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
-                            <PlayCircleOutlined
-                                style={{ margin: "0 8px 0 0" }}
-                                onClick={() =>
-                                    playAudio(
-                                        encodeURI(
-                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                                "/content" +
-                                                path +
-                                                "/" +
-                                                record.name
-                                        ) +
-                                            "?special=" +
-                                            special +
-                                            (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    );
-                }
-                return actions;
-            },
-            showOnDirOnly: false,
-        },
-    ];
-
-    columns.forEach((column) => {
-        if (!column.hasOwnProperty("sorter")) {
-            (column as any).sorter = (a: any, b: any) => defaultSorter(a, b, column.dataIndex);
-        }
+    const columns = createColumns({
+        mode: "select",
+        path,
+        special,
+        overlay,
+        filterText,
+        showDirOnly,
+        showColumns,
+        defaultSorter,
+        dirNameSorter,
+        handleDirClick,
+        showInformationModal,
+        playAudio,
     });
-
-    if (showDirOnly) columns = columns.filter((column) => column.showOnDirOnly);
-
-    if (showColumns) {
-        columns = columns.filter((column) => {
-            if (typeof column.key === "string") {
-                return showColumns.includes(column.key);
-            }
-            return false;
-        });
-    }
 
     return (
         <>

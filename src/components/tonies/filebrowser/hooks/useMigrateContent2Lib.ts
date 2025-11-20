@@ -1,23 +1,19 @@
 import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { useTranslation } from "react-i18next";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface UseMigrateContent2LibParams {
-    t: (key: string, vars?: any) => string;
-    api: TeddyCloudApi;
-    addNotification: (...args: any[]) => void;
-    addLoadingNotification: (...args: any[]) => void;
-    closeLoadingNotification: (...args: any[]) => void;
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function useMigrateContent2Lib({
-    t,
-    api,
-    addNotification,
-    addLoadingNotification,
-    closeLoadingNotification,
-    setRebuildList,
-}: UseMigrateContent2LibParams) {
+export function useMigrateContent2Lib({ setRebuildList }: UseMigrateContent2LibParams) {
+    const { t } = useTranslation();
+    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
     const migrateContent2Lib = async (ruid: string, libroot: boolean, overlay?: string) => {
         const key = "migrating-" + ruid;
         const body = `ruid=${ruid}&libroot=${libroot}`;

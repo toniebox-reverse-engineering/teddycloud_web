@@ -1,24 +1,15 @@
 import {
     CloseOutlined,
-    CloudServerOutlined,
     CloudSyncOutlined,
-    CopyOutlined,
     DeleteOutlined,
-    DownloadOutlined,
-    EditOutlined,
     FolderAddOutlined,
-    FolderOutlined,
-    FormOutlined,
-    LoadingOutlined,
     NodeExpandOutlined,
-    PlayCircleOutlined,
     QuestionCircleOutlined,
-    TruckOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Flex, Input, Spin, Table, Tag, theme, Tooltip, TreeSelect, TreeSelectProps } from "antd";
+import { Button, Flex, Input, Table, theme, Tooltip, TreeSelect, TreeSelectProps } from "antd";
 import { DefaultOptionType } from "antd/es/select";
-import { Key, SortOrder } from "antd/es/table/interface";
+import { Key } from "antd/es/table/interface";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +18,6 @@ import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import { useTeddyCloud } from "../../../TeddyCloudContext";
-import { humanFileSize } from "../../../utils/humanFileSize";
 import { useAudioContext } from "../../audio/AudioContext";
 import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
 import TonieInformationModal from "../common/TonieInformationModal";
@@ -52,6 +42,7 @@ import SelectFilesForEncodingModal from "./modals/SelectFilesForEncodingModal";
 import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
 import { MAX_FILES } from "../../../constants";
+import { createColumns } from "./helper/FileBrowserColumns";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -465,11 +456,6 @@ export const FileBrowser: React.FC<{
 
     // hooks for actions
     const { migrateContent2Lib } = useMigrateContent2Lib({
-        t,
-        api,
-        addNotification,
-        addLoadingNotification,
-        closeLoadingNotification,
         setRebuildList,
     });
 
@@ -503,374 +489,31 @@ export const FileBrowser: React.FC<{
     };
 
     // columns
-    let columns: any[] = [
-        {
-            title: <div style={{ minHeight: 32 }}></div>,
-            dataIndex: ["tonieInfo", "picture"],
-            key: "picture",
-            sorter: undefined,
-            width: 10,
-            render: (picture: string, record: any) => (
-                <>
-                    {record && record.tonieInfo?.picture ? (
-                        <>
-                            <img
-                                key={`picture-${record.name}`}
-                                src={record.tonieInfo.picture}
-                                alt={t("tonies.content.toniePicture")}
-                                onClick={() => showInformationModal(record)}
-                                style={{
-                                    width: 100,
-                                    cursor: !record.isDir && record?.tonieInfo?.tracks ? "help" : "default",
-                                }}
-                            />
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                    {record.hide ? (
-                        <div style={{ textAlign: "center" }}>
-                            <Tag bordered={false} color="warning">
-                                {t("fileBrowser.hidden")}
-                            </Tag>
-                        </div>
-                    ) : (
-                        ""
-                    )}
-                </>
-            ),
-            showOnDirOnly: false,
-        },
-        {
-            title: t("fileBrowser.name"),
-            dataIndex: "name",
-            key: "name",
-            sorter: dirNameSorter,
-            defaultSortOrder: "ascend" as SortOrder,
-            render: (picture: string, record: any) =>
-                record && (
-                    <div key={`name-${record.name}`}>
-                        <div className="showSmallDevicesOnly">
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <div style={{ display: "flex" }}>
-                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                        {record.isDir ? <>{record.name}</> : record.name}
-                                    </div>
-                                </div>
-                                {!record.isDir && record.size ? " (" + humanFileSize(record.size) + ")" : ""}
-                            </div>
-                            <div>{record.tonieInfo?.model}</div>
-                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                    (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
-                            </div>
-                            <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
-                        </div>
-                        <div className="showMediumDevicesOnly">
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <div style={{ display: "flex" }}>
-                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                        {record.isDir ? <>{record.name}</> : record.name}
-                                    </div>
-                                </div>
-                                {!record.isDir && record.size ? " (" + humanFileSize(record.size) + ")" : ""}
-                            </div>
-                            <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
-                        </div>
-                        <div className="showBigDevicesOnly">
-                            <div style={{ display: "flex" }}>
-                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? <>{record.name}</> : record.name}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ),
-            filteredValue: [filterText],
-            onFilter: (value: string, record: Record) => {
-                const text = value.toLowerCase();
-                return (
-                    record.name === ".." ||
-                    record.name.toLowerCase().includes(text) ||
-                    (!record.isDir &&
-                        "tafHeader" in record &&
-                        record.tafHeader.size &&
-                        humanFileSize(record.tafHeader.size).toString().includes(text)) ||
-                    ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.model.toLowerCase().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.episode.toLowerCase().includes(text))
-                );
-            },
-            showOnDirOnly: true,
-        },
-        {
-            title: t("fileBrowser.size"),
-            dataIndex: "size",
-            key: "size",
-            render: (size: number, record: any) => (
-                <div key={`size-${record.name}`}>{record.isDir ? "<DIR>" : humanFileSize(size)}</div>
-            ),
-            showOnDirOnly: false,
-            responsive: ["xl"],
-        },
-        {
-            title: t("fileBrowser.model"),
-            dataIndex: ["tonieInfo", "model"],
-            key: "model",
-            showOnDirOnly: false,
-            responsive: ["xl"],
-            render: (model: string, record: any) => <div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>,
-        },
-        {
-            title: (
-                <>
-                    <div className="showMediumDevicesOnly">
-                        {t("fileBrowser.model")}/{t("fileBrowser.series")}/{t("fileBrowser.episode")}
-                    </div>
-                    <div className="showBigDevicesOnly">{t("fileBrowser.series")}</div>
-                </>
-            ),
-            dataIndex: ["tonieInfo", "series"],
-            key: "series",
-            render: (series: string, record: any) => (
-                <div key={`series-${record.name}`}>
-                    <div className="showMediumDevicesOnly">
-                        <div>{record.tonieInfo?.model}</div>
-                        <div style={{ wordBreak: "break-word" }}>
-                            {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
-                        </div>
-                    </div>
-                    <div className="showBigDevicesOnly">{record.tonieInfo?.series ? record.tonieInfo?.series : ""}</div>
-                </div>
-            ),
-            showOnDirOnly: false,
-            responsive: ["md"],
-        },
-        {
-            title: t("fileBrowser.episode"),
-            dataIndex: ["tonieInfo", "episode"],
-            key: "episode",
-            showOnDirOnly: false,
-            responsive: ["xl"],
-            render: (episode: string, record: any) => (
-                <div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>
-            ),
-        },
-        {
-            title: t("fileBrowser.date"),
-            dataIndex: "date",
-            key: "date",
-            render: (timestamp: number, record: any) => (
-                <div key={`date-${record.name}`}>{new Date(timestamp * 1000).toLocaleString()}</div>
-            ),
-            showOnDirOnly: true,
-            responsive: ["xl"],
-        },
-        {
-            title: <div className="showMediumDevicesOnly showBigDevicesOnly">{t("fileBrowser.actions")}</div>,
-            dataIndex: "controls",
-            key: "controls",
-            sorter: undefined,
-            render: (name: string, record: any) => {
-                const actions: React.ReactNode[] = [];
 
-                if (record.tafHeader) {
-                    actions.push(
-                        <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
-                            <PlayCircleOutlined
-                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                onClick={() =>
-                                    playAudio(
-                                        encodeURI(
-                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                                "/content" +
-                                                decodeURIComponent(path) +
-                                                "/" +
-                                                record.name
-                                        ) +
-                                            "?ogg=true&special=" +
-                                            special +
-                                            (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo,
-                                        {
-                                            ...record,
-                                            audioUrl:
-                                                encodeURI("/content" + decodeURIComponent(path) + "/" + record.name) +
-                                                "?ogg=true&special=" +
-                                                special +
-                                                (overlay ? `&overlay=${overlay}` : ""),
-                                        }
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    );
-                    actions.push(
-                        downloading[record.name] ? (
-                            <Spin
-                                key={`action-download-spinner-${record.name}`}
-                                style={{ margin: "0 6px 0 0", padding: 4 }}
-                                size="small"
-                                indicator={<LoadingOutlined style={{ fontSize: 16, color: token.colorText }} spin />}
-                            />
-                        ) : (
-                            <Tooltip key={`action-download-${record.name}`} title={t("fileBrowser.downloadFile")}>
-                                <DownloadOutlined
-                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                    onClick={() =>
-                                        handleFileDownload(
-                                            record,
-                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL,
-                                            path,
-                                            special,
-                                            overlay
-                                        )
-                                    }
-                                />
-                            </Tooltip>
-                        )
-                    );
-                    if (special !== "library") {
-                        actions.push(
-                            <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
-                                <CloudServerOutlined
-                                    onClick={() =>
-                                        migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)
-                                    }
-                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                />
-                            </Tooltip>
-                        );
-                        actions.push(
-                            <Tooltip
-                                key={`action-migrate-root-${record.name}`}
-                                title={t("fileBrowser.migrateContentToLibRoot")}
-                            >
-                                <TruckOutlined
-                                    onClick={() =>
-                                        migrateContent2Lib(path.replace("/", "") + record.name, true, overlay)
-                                    }
-                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                />
-                            </Tooltip>
-                        );
-                    }
-                } else if (supportedAudioExtensionsForEncoding.some((ending) => record.name.endsWith(ending))) {
-                    actions.push(
-                        <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
-                            <PlayCircleOutlined
-                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                onClick={() =>
-                                    playAudio(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            "/content" +
-                                            path +
-                                            "/" +
-                                            record.name +
-                                            "?special=" +
-                                            special +
-                                            (overlay ? `&overlay=${overlay}` : ""),
-                                        record.tonieInfo
-                                    )
-                                }
-                            />
-                        </Tooltip>
-                    );
-                }
-
-                if (isTapList && record.name.includes(".tap")) {
-                    actions.push(
-                        <Tooltip key={`action-edit-tap-${record.name}`} title={t("fileBrowser.tap.edit")}>
-                            <EditOutlined
-                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                onClick={() => handleEditTapClick(path + "/" + record.name)}
-                            />
-                        </Tooltip>
-                    );
-                    actions.push(
-                        <Tooltip key={`action-copy-tap-${record.name}`} title={t("fileBrowser.tap.copy")}>
-                            <CopyOutlined style={{ margin: "4px 8px 4px 0", padding: 4 }} />
-                        </Tooltip>
-                    );
-                }
-
-                if (record.tafHeader) {
-                    actions.push(
-                        <Tooltip key={`action-edit-tafmeta-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
-                            <EditOutlined
-                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                onClick={() => handleEditTafMetaDataClick(path, record)}
-                            />
-                        </Tooltip>
-                    );
-                }
-
-                if (special === "library") {
-                    if (!record.isDir && record.name !== "..") {
-                        actions.push(
-                            <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
-                                <FormOutlined
-                                    onClick={() => showRenameDialog(record.name)}
-                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                />
-                            </Tooltip>
-                        );
-                    }
-                    if (!record.isDir && record.name !== "..") {
-                        actions.push(
-                            <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
-                                <NodeExpandOutlined
-                                    onClick={() => showMoveDialog(record.name)}
-                                    style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                                />
-                            </Tooltip>
-                        );
-                    }
-                }
-
-                if (record.name !== "..") {
-                    actions.push(
-                        <Tooltip key={`action-delete-${record.name}`} title={t("fileBrowser.delete")}>
-                            <DeleteOutlined
-                                onClick={() =>
-                                    showDeleteConfirmDialog(
-                                        record.name,
-                                        path + "/" + record.name,
-                                        "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
-                                    )
-                                }
-                                style={{ margin: "4px 8px 4px 0", padding: 4 }}
-                            />
-                        </Tooltip>
-                    );
-                }
-                return actions;
-            },
-            showOnDirOnly: false,
-        },
-    ];
-
-    columns.forEach((column) => {
-        if (!column.hasOwnProperty("sorter")) {
-            (column as any).sorter = (a: any, b: any) => defaultSorter(a, b, column.dataIndex);
-        }
+    const columns = createColumns({
+        mode: "full",
+        path,
+        special,
+        overlay,
+        filterText,
+        showDirOnly,
+        showColumns,
+        isTapList,
+        downloading,
+        defaultSorter,
+        dirNameSorter,
+        withinTafBoundaries,
+        handleDirClick,
+        showInformationModal,
+        playAudio,
+        handleFileDownload,
+        migrateContent2Lib,
+        handleEditTapClick,
+        handleEditTafMetaDataClick,
+        showRenameDialog,
+        showMoveDialog,
+        showDeleteConfirmDialog,
     });
-
-    if (showDirOnly) columns = columns.filter((column) => column.showOnDirOnly);
-
-    if (showColumns) {
-        columns = columns.filter((column) => {
-            if (typeof column.key === "string") {
-                return showColumns.includes(column.key);
-            }
-            return false;
-        });
-    }
 
     return (
         <>
@@ -903,7 +546,7 @@ export const FileBrowser: React.FC<{
                     file={jsonViewerFile}
                 />
             )}
-            {isTapEditorModalOpen && (
+            {isTafHeaderModalOpen && (
                 <TafHeaderModal
                     open={isTafHeaderModalOpen}
                     onClose={closeTafHeader}
