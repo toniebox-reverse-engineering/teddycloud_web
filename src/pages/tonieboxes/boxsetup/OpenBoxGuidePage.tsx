@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
-import { openBoxGuide } from "../../../components/tonieboxes/boxSetup/OpenBoxGuide";
+import { OpenBoxGuide } from "../../../components/tonieboxes/boxsetup/OpenBoxGuide";
 import { Link } from "react-router-dom";
 
 export const OpenBoxGuidePage = () => {
@@ -22,7 +22,10 @@ export const OpenBoxGuidePage = () => {
                         { title: t("tonieboxes.boxSetup.openBoxGuide.navigationTitle") },
                     ]}
                 />
-                <StyledContent>{openBoxGuide()}</StyledContent>
+                <StyledContent>
+                    <h1>{t("tonieboxes.boxSetup.openBoxGuide.title")}</h1>
+                    <OpenBoxGuide />
+                </StyledContent>
             </StyledLayout>
         </>
     );

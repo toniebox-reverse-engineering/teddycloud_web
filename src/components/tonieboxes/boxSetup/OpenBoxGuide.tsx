@@ -1,4 +1,4 @@
-import { useState, useEffect, JSX } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Image, Timeline, Typography } from "antd";
@@ -13,16 +13,16 @@ import openTBStep5 from "../../../assets/boxSetup/openTB_step5.png";
 
 const { Paragraph } = Typography;
 
-export function openBoxGuide(): JSX.Element {
+export const OpenBoxGuide: React.FC = () => {
     const { t } = useTranslation();
+
     const [showFirstImage, setShowFirstImage] = useState(true);
     const [intervalDuration, setIntervalDuration] = useState(500);
 
     useEffect(() => {
-        let interval: number;
-        interval = window.setInterval(() => {
+        const interval = window.setInterval(() => {
             setShowFirstImage((prev) => !prev);
-            setIntervalDuration((prevDuration) => (prevDuration === 500 ? 2000 : 500));
+            setIntervalDuration((prev) => (prev === 500 ? 2000 : 500));
         }, intervalDuration);
 
         return () => clearInterval(interval);
@@ -33,11 +33,7 @@ export function openBoxGuide(): JSX.Element {
             children: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step1")}</h3>
-                    {showFirstImage ? (
-                        <Image src={openTBStep1_1} style={{ maxWidth: 350 }} alt="" />
-                    ) : (
-                        <Image src={openTBStep1_2} style={{ maxWidth: 350 }} alt="" />
-                    )}
+                    <Image src={showFirstImage ? openTBStep1_1 : openTBStep1_2} style={{ maxWidth: 350 }} alt="" />
                     <Paragraph style={{ marginTop: 16 }}>
                         <ul>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step1Text1")}</li>
@@ -55,8 +51,7 @@ export function openBoxGuide(): JSX.Element {
             children: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step2")}</h3>
-                    <Image style={{ maxWidth: 350 }} src={openTBStep2} alt={""} />
-
+                    <Image src={openTBStep2} style={{ maxWidth: 350 }} alt="" />
                     <Paragraph style={{ marginTop: 16 }}>
                         <ul>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step2Text")}</li>
@@ -70,7 +65,7 @@ export function openBoxGuide(): JSX.Element {
             children: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step3")}</h3>
-                    <Image style={{ maxWidth: 350 }} src={openTBStep3} alt={""} />
+                    <Image src={openTBStep3} style={{ maxWidth: 350 }} alt="" />
                     <Paragraph style={{ marginTop: 16 }}>
                         <ul>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step3Text")}</li>
@@ -84,7 +79,7 @@ export function openBoxGuide(): JSX.Element {
             children: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step4")}</h3>
-                    <Image style={{ maxWidth: 350 }} src={openTBStep4} alt={""} />
+                    <Image src={openTBStep4} style={{ maxWidth: 350 }} alt="" />
                     <Paragraph style={{ marginTop: 16 }}>
                         <ul>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step4Text")}</li>
@@ -98,7 +93,7 @@ export function openBoxGuide(): JSX.Element {
             children: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step5")}</h3>
-                    <Image style={{ maxWidth: 350 }} src={openTBStep5} alt={""} />
+                    <Image src={openTBStep5} style={{ maxWidth: 350 }} alt="" />
                     <Paragraph style={{ marginTop: 16 }}>
                         <ul>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step5Text1")}</li>
@@ -110,11 +105,7 @@ export function openBoxGuide(): JSX.Element {
             style: { paddingBottom: 8 },
         },
         {
-            children: (
-                <>
-                    <Paragraph>{t("tonieboxes.boxSetup.openBoxGuide.finally")}</Paragraph>
-                </>
-            ),
+            children: <Paragraph>{t("tonieboxes.boxSetup.openBoxGuide.finally")}</Paragraph>,
             dot: <SmileOutlined />,
             style: { paddingBottom: 8 },
         },
@@ -122,7 +113,6 @@ export function openBoxGuide(): JSX.Element {
 
     return (
         <>
-            <h1>{t("tonieboxes.boxSetup.openBoxGuide.title")}</h1>
             <Paragraph style={{ fontSize: "small" }}>
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart1")}{" "}
                 <Link to={t("tonieboxes.boxSetup.openBoxGuide.link1")} target="_blank">
@@ -136,12 +126,14 @@ export function openBoxGuide(): JSX.Element {
                 <Link to="https://www.ifixit.com/User/828031/Tobias+Isakeit">Tobias Isakeit</Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart4")}{" "}
                 <Link to="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
-                    {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")}.
+                    {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")}
                 </Link>
             </Paragraph>
+
             <Image.PreviewGroup>
-                <Timeline mode={"left"} items={items} />
+                <Timeline mode="left" items={items} />
             </Image.PreviewGroup>
+
             <Paragraph>
                 {t("tonieboxes.boxSetup.openBoxGuide.alternativeGuidelineVideo")}{" "}
                 <Link to="https://www.youtube.com/watch?v=Cv9ID4-P6_A" target="_blank">
@@ -150,4 +142,4 @@ export function openBoxGuide(): JSX.Element {
             </Paragraph>
         </>
     );
-}
+};
