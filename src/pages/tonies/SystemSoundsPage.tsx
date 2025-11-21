@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Select } from "antd";
-
 import { TonieCardProps } from "../../types/tonieTypes";
 
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -14,20 +12,16 @@ import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { useTonieboxContent } from "../../hooks/useTonieboxContentOverlay";
+
+import { TonieboxOverlaySelect } from "../../components/tonies/common/TonieboxOverlaySelect";
+import { useTonieboxContentOverlay } from "../../hooks/useTonieboxContentOverlay";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
-
-const { Option } = Select;
 
 export const SystemSoundsPage = () => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
-
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const linkOverlay = searchParams.get("overlay");
-    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTonieboxContent(linkOverlay);
+    const { overlay, tonieBoxContentDirs, changeOverlay } = useTonieboxContentOverlay();
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [loading, setLoading] = useState(true);
@@ -97,24 +91,12 @@ export const SystemSoundsPage = () => {
                         }}
                     >
                         <h1>{t("tonies.system-sounds.title")}</h1>
-                        {tonieBoxContentDirs.length > 1 ? (
-                            <Select
-                                id="contentDirectorySelect"
-                                defaultValue=""
-                                onChange={handleContentOverlayChange}
-                                style={{ maxWidth: "300px" }}
-                                value={overlay}
-                                title={t("tonies.content.showToniesOfBoxes")}
-                            >
-                                {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
-                                    <Option key={boxId} value={boxId}>
-                                        {boxNames.join(", ")}
-                                    </Option>
-                                ))}
-                            </Select>
-                        ) : (
-                            ""
-                        )}
+                        <TonieboxOverlaySelect
+                            tonieBoxContentDirs={tonieBoxContentDirs}
+                            overlay={overlay}
+                            onChange={changeOverlay}
+                            selectProps={{ size: "small", style: { maxWidth: 300 } }}
+                        />
                     </div>
                     {loading ? (
                         <LoadingSpinner />

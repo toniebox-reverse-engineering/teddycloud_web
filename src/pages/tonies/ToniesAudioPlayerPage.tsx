@@ -12,7 +12,7 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { useTonieboxContent } from "../../hooks/useTonieboxContentOverlay";
+import { useTonieboxContent } from "../../hooks/useTonieboxContent";
 import { ToniesAudioPlayer } from "../../components/tonies/ToniesAudioPlayer";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useAudioContext } from "../../components/audio/AudioContext";

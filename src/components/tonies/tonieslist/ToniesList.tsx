@@ -63,7 +63,6 @@ export const ToniesList: React.FC<{
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [paginationEnabled, setPaginationEnabled] = useState(true);
     const [showAll, setShowAll] = useState(false);
-    const [doLocalStore, setLocalStore] = useState(true);
     const [listKey, setListKey] = useState(0);
     const [showSourceInfo, setShowSourceInfo] = useState<boolean>(false);
     const [selectedTonies, setSelectedTonies] = useState<string[]>([]);
@@ -239,24 +238,18 @@ export const ToniesList: React.FC<{
             paginationEnabled,
             showAll,
         });
-        if (doLocalStore) {
-            localStorage.setItem(STORAGE_KEY, stateToStore);
-        }
-    }, [doLocalStore, pageSize, paginationEnabled, showAll]);
+        localStorage.setItem(STORAGE_KEY, stateToStore);
+    }, [pageSize, paginationEnabled, showAll]);
+
+    useEffect(() => {
+        handlePageSizeChange(1, pageSize);
+    }, [pageSize]);
 
     useEffect(() => {
         if (!selectionMode) {
             setSelectedTonies([]);
         }
     }, [selectionMode]);
-
-    // ------------------------
-    // Handlers – local persistence
-    // ------------------------
-
-    const storeLocalStorage = () => {
-        setLocalStore((prev) => !prev);
-    };
 
     // ------------------------
     // Handlers – update / hide single card
@@ -286,7 +279,6 @@ export const ToniesList: React.FC<{
         setListKey((prevKey) => prevKey + 1);
         setShowAll(true);
         setPaginationEnabled(false);
-        storeLocalStorage();
     };
 
     const handleShowPagination = () => {
@@ -299,7 +291,6 @@ export const ToniesList: React.FC<{
         setPageSize(size as number);
         setListKey((prevKey) => prevKey + 1);
         setCurrentPage(current);
-        storeLocalStorage();
         setTimeout(() => scrollToTop((!collapsed && toniesListRef.current) || undefined), 0);
     };
 

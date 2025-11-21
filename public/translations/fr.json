@@ -1748,7 +1748,8 @@
             "browserSideEncoding": "Encodage côté navigateur",
             "serverSideEncoding": "Encodage côté serveur",
             "loadingWasmEncoder": "Chargement de l'encodeur WASM...",
-            "browserEncodingInProgress": "Encodage des fichiers audio dans le navigateur..."
+            "browserEncodingInProgress": "Encodage des fichiers audio dans le navigateur...",
+            "encoding": "Encodage"
         },
         "errorFetchingSystemSounds": "Erreur lors de la récupération des sons du système",
         "errorFetchingTonies": "Erreur lors de la récupération des Tonies",

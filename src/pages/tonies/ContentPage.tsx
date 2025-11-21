@@ -1,20 +1,15 @@
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router-dom";
-import { Select } from "antd";
+import { Link } from "react-router-dom";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
-import { useTonieboxContent } from "../../hooks/useTonieboxContentOverlay";
-
-const { Option } = Select;
+import { TonieboxOverlaySelect } from "../../components/tonies/common/TonieboxOverlaySelect";
+import { useTonieboxContentOverlay } from "../../hooks/useTonieboxContentOverlay";
 
 export const ContentPage = () => {
     const { t } = useTranslation();
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const linkOverlay = searchParams.get("overlay");
-    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTonieboxContent(linkOverlay);
+    const { overlay, tonieBoxContentDirs, changeOverlay } = useTonieboxContentOverlay();
 
     return (
         <>
@@ -43,25 +38,12 @@ export const ContentPage = () => {
                         }}
                     >
                         <h1>{t("tonies.content.title")}</h1>
-                        {tonieBoxContentDirs.length > 1 ? (
-                            <Select
-                                size="small"
-                                id="contentDirectorySelect"
-                                defaultValue=""
-                                onChange={handleContentOverlayChange}
-                                style={{ maxWidth: "300px" }}
-                                value={overlay}
-                                title={t("tonies.content.showToniesOfBoxes")}
-                            >
-                                {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
-                                    <Option key={boxId} value={boxId}>
-                                        {boxNames.join(", ")}
-                                    </Option>
-                                ))}
-                            </Select>
-                        ) : (
-                            ""
-                        )}
+                        <TonieboxOverlaySelect
+                            tonieBoxContentDirs={tonieBoxContentDirs}
+                            overlay={overlay}
+                            onChange={changeOverlay}
+                            selectProps={{ size: "small", style: { maxWidth: 300 } }}
+                        />
                     </div>
                     <FileBrowser special="" overlay={overlay} />
                 </StyledContent>
