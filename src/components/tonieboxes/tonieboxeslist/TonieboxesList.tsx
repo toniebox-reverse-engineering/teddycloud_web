@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Empty, List } from "antd";
 
-import { TonieboxCardProps } from "../../types/tonieboxTypes";
+import { TonieboxCardProps } from "../../../types/tonieboxTypes";
 
-import { TonieboxCard } from "./tonieboxcard/TonieboxCard";
-import LoadingSpinner from "../common/LoadingSpinner";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { TeddyCloudApi } from "../../api";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-
-const api = new TeddyCloudApi(defaultAPIConfig());
+import { TonieboxCard } from "../tonieboxcard/TonieboxCard";
+import LoadingSpinner from "../../common/LoadingSpinner";
+import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { useCheckCC3200CFW } from "./hooks/useCheckCC3200CFW";
 
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
@@ -19,7 +16,8 @@ export const TonieboxesList: React.FC<{
 }> = ({ tonieboxCards, readOnly = false }) => {
     const { t } = useTranslation();
     const { addNotification, boxModelImages } = useTeddyCloud();
-    const [checkCC3200CFW, setCheckCC3200CFW] = useState<boolean>(false);
+
+    const checkCC3200CFW = useCheckCC3200CFW();
 
     useEffect(() => {
         if (!boxModelImages.loading && boxModelImages.boxModelImages.length === 0) {
@@ -30,22 +28,13 @@ export const TonieboxesList: React.FC<{
                 t("tonieboxes.navigationTitle")
             );
         }
-    }, [boxModelImages.loading, boxModelImages.boxModelImages.length]);
-
-    useEffect(() => {
-        const fetchCheckCC3200CFW = async () => {
-            const response = await api.apiGetTeddyCloudSettingRaw("frontend.check_cc3200_cfw");
-            const checkCC3200CFW = (await response.text()) === "true";
-            setCheckCC3200CFW(checkCC3200CFW);
-        };
-        fetchCheckCC3200CFW();
-    }, []);
+    }, [boxModelImages.loading, boxModelImages.boxModelImages.length, addNotification, t]);
 
     if (boxModelImages.loading) {
         return <LoadingSpinner />;
     }
 
-    const noDataTonieboxes = () => (
+    const noDataTonieboxes = (
         <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={
@@ -56,6 +45,10 @@ export const TonieboxesList: React.FC<{
             }
         />
     );
+
+    if (!tonieboxCards.length) {
+        return noDataTonieboxes;
+    }
 
     return (
         <List
@@ -79,7 +72,7 @@ export const TonieboxesList: React.FC<{
                     />
                 </List.Item>
             )}
-            locale={{ emptyText: noDataTonieboxes() }}
+            locale={{ emptyText: noDataTonieboxes }}
         />
     );
 };

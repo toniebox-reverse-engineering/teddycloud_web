@@ -15,7 +15,7 @@ import { ToniesList } from "../../components/tonies/tonieslist/ToniesList";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
+import { TonieboxesList } from "../../components/tonieboxes/tonieboxeslist/TonieboxesList";
 import { TonieboxCardProps } from "../../types/tonieboxTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());

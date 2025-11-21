@@ -7,7 +7,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../api";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
-import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
+import { TonieboxesList } from "../../components/tonieboxes/tonieboxeslist/TonieboxesList";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
