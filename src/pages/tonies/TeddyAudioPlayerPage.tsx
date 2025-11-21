@@ -13,16 +13,16 @@ import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { useTonieboxContent } from "../../hooks/useTonieboxContent";
-import { ToniesAudioPlayer } from "../../components/tonies/ToniesAudioPlayer";
+import { TeddyAudioPlayer } from "../../components/tonies/TeddyAudioPlayer";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useAudioContext } from "../../components/audio/AudioContext";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-type ToniesAudioPlayerPageProps = {
+type TeddyAudioPlayerPageProps = {
     standalone?: boolean;
 };
 
-export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ standalone = false }) => {
+export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ standalone = false }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);
@@ -82,7 +82,7 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
                     NotificationTypeEnum.Error,
                     t("tonies.errorFetchingTonies"),
                     t("tonies.errorFetchingTonies") + ": " + error,
-                    t("tonies.toniesaudioplayer.navigationTitle")
+                    t("tonies.teddyaudioplayer.navigationTitle")
                 );
                 console.log("error: fetching tonies failed: " + error);
             } finally {
@@ -120,7 +120,7 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
         }
     }, [location, playableTonieCards, tonieRuid, startPosition]);
 
-    const toniesAudioPlayerContent = (
+    const teddyAudioPlayerContent = (
         <StyledContent
             ref={contentRef}
             style={{
@@ -129,11 +129,11 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             }}
         >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h1>{t("tonies.toniesaudioplayer.title")}</h1>
+                <h1>{t("tonies.teddyaudioplayer.title")}</h1>
                 <div style={{ display: "flex", gap: 8 }}>
                     {currentTonie && !standalone && (
                         <ImportOutlined
-                            title={t("tonies.toniesaudioplayer.continueInFooterAudioPlayer")}
+                            title={t("tonies.teddyaudioplayer.continueInFooterAudioPlayer")}
                             onClick={() => {
                                 const newTonie = {
                                     ...currentTonie,
@@ -156,7 +156,7 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
                     )}
                     {!standalone && (
                         <Button
-                            title={t("tonies.toniesaudioplayer.openStandalone")}
+                            title={t("tonies.teddyaudioplayer.openStandalone")}
                             type="text"
                             icon={<ExportOutlined />}
                             onClick={openStandalone}
@@ -168,7 +168,7 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             {loading ? (
                 <LoadingSpinner />
             ) : (
-                <ToniesAudioPlayer
+                <TeddyAudioPlayer
                     key={playerKey}
                     tonieCards={playableTonieCards}
                     overlay={overlay}
@@ -196,10 +196,10 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
             <BreadcrumbWrapper
                 items={[
                     { title: <Link to="/">{t("home.navigationTitle")}</Link> },
-                    { title: t("tonies.toniesaudioplayer.standaloneTitle") },
+                    { title: t("tonies.teddyaudioplayer.standaloneTitle") },
                 ]}
             />
-            {toniesAudioPlayerContent}
+            {teddyAudioPlayerContent}
         </>
     ) : (
         <>
@@ -211,10 +211,10 @@ export const ToniesAudioPlayerPage: React.FC<ToniesAudioPlayerPageProps> = ({ st
                     items={[
                         { title: <Link to="/">{t("home.navigationTitle")}</Link> },
                         { title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> },
-                        { title: t("tonies.toniesaudioplayer.navigationTitle") },
+                        { title: t("tonies.teddyaudioplayer.navigationTitle") },
                     ]}
                 />
-                {toniesAudioPlayerContent}
+                {teddyAudioPlayerContent}
             </StyledLayout>
         </>
     );

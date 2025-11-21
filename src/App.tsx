@@ -42,7 +42,7 @@ import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
-import { ToniesAudioPlayerPage } from "./pages/tonies/ToniesAudioPlayerPage";
+import { TeddyAudioPlayerPage } from "./pages/tonies/TeddyAudioPlayerPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
 import { detectColorScheme } from "./utils/browserUtils";
@@ -136,9 +136,9 @@ function App() {
                                         <Route path="/tonies" element={<ToniesPage />} />
                                         <Route
                                             path="/tonies/audioplayer"
-                                            element={<ToniesAudioPlayerPage standalone={false} />}
+                                            element={<TeddyAudioPlayerPage standalone={false} />}
                                         />
-                                        <Route path="/audioplayer" element={<ToniesAudioPlayerPage standalone />} />
+                                        <Route path="/audioplayer" element={<TeddyAudioPlayerPage standalone />} />
                                         <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
                                         <Route path="/tonies/content" element={<ContentPage />} />
                                         <Route path="/tonies/library" element={<LibraryPage />} />

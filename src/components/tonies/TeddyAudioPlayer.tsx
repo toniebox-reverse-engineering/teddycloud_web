@@ -156,7 +156,7 @@ function useHoldToScroll(
 // Component
 // ------------------------
 
-export const ToniesAudioPlayer: React.FC<{
+export const TeddyAudioPlayer: React.FC<{
     tonieCards: TonieCardProps[];
     overlay: string;
     preselectedTonieCard?: TonieCardProps;
@@ -263,7 +263,7 @@ export const ToniesAudioPlayer: React.FC<{
                 >
                     {tonieCards.map((tonie) => {
                         const series =
-                            tonie.sourceInfo?.series || tonie.tonieInfo.series || t("tonies.toniesaudioplayer.unknown");
+                            tonie.sourceInfo?.series || tonie.tonieInfo.series || t("tonies.teddyaudioplayer.unknown");
                         const episode = tonie.sourceInfo?.episode || tonie.tonieInfo.episode || "";
                         const picture = tonie.sourceInfo?.picture || tonie.tonieInfo.picture || "/img_unknown.png";
 

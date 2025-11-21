@@ -2123,7 +2123,7 @@
             "showPagination": "Show pagination",
             "title": "Tonies"
         },
-        "toniesaudioplayer": {
+        "teddyaudioplayer": {
             "continueInFooterAudioPlayer": "Continue in footer audio player",
             "enterFullscreen": "Enter Fullscreen",
             "exitFullscreen": "Exit Fullscreen",
