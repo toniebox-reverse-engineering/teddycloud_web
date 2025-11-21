@@ -1970,6 +1970,7 @@
             "titleEdit": "Editar TAP"
         },
         "teddystudio": {
+            "addedHint": "«{{title}}» ha sido añadido.",
             "clear": "Limpiar hoja",
             "clearSettings": "Borrar",
             "custom": "Personalizado",

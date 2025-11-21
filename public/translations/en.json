@@ -1970,6 +1970,7 @@
             "titleEdit": "Edit TAP"
         },
         "teddystudio": {
+            "addedHint": "\"{{title}}\" has been added.",
             "clear": "Clear sheet",
             "clearSettings": "Clear",
             "custom": "Custom",

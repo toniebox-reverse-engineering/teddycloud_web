@@ -182,6 +182,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                     />
                     <ToniesJsonSearch
                         placeholder={t("tonies.editModal.placeholderSearchForAModel")}
+                        clearInputAfterSelection={false}
                         onChange={onSearchModelChange}
                         key={keyTonieArticleSearch}
                     />

@@ -19,16 +19,27 @@ export interface ToniesJsonSearchResult {
 
 interface ToniesJsonSearchProps {
     placeholder: string;
+    showAddCustomTonieButton?: boolean;
+    clearInputAfterSelection?: boolean;
+
     onChange: (newValue: string) => void;
 
     onSelectResult?: (result: ToniesJsonSearchResult) => void;
 }
 
-export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({ placeholder, onChange, onSelectResult }) => {
+export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
+    placeholder,
+    showAddCustomTonieButton = true,
+    clearInputAfterSelection = true,
+    onChange,
+    onSelectResult,
+}) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
 
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
+
+    const [selectInstanceKey, setSelectInstanceKey] = useState(0);
 
     const { value, options, search, select, setValue } = useToniesJsonSearch((error) => {
         addNotification(
@@ -50,17 +61,26 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({ placeholder,
             }
         }
         onChange(newValue);
+
+        if (clearInputAfterSelection) {
+            setValue("");
+
+            setSelectInstanceKey((k) => k + 1);
+        }
     };
 
     const handleAddNewCustomButtonClick = () => {
         setShowAddCustomTonieModal(true);
     };
 
+    const displayValue = clearInputAfterSelection ? undefined : value;
+
     return (
         <>
             <Select
+                key={clearInputAfterSelection ? selectInstanceKey : undefined}
                 showSearch
-                value={value}
+                value={displayValue}
                 placeholder={placeholder}
                 defaultActiveFirstOption={false}
                 suffixIcon={null}
@@ -79,17 +99,22 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({ placeholder,
                 }))}
                 style={{ marginTop: "8px" }}
             />
-            <ToniesCustomJsonEditor
-                open={showAddCustomTonieModal}
-                props={{ placeholder, onChange }}
-                setValue={setValue}
-                onClose={() => setShowAddCustomTonieModal(false)}
-            />
-            <Tooltip title={t("tonies.addNewCustomTonieHint")}>
-                <Button onClick={handleAddNewCustomButtonClick} style={{ marginTop: 8 }}>
-                    {t("tonies.addNewCustomTonie")}
-                </Button>
-            </Tooltip>
+
+            {showAddCustomTonieButton && (
+                <>
+                    <ToniesCustomJsonEditor
+                        open={showAddCustomTonieModal}
+                        props={{ placeholder, onChange }}
+                        setValue={setValue}
+                        onClose={() => setShowAddCustomTonieModal(false)}
+                    />
+                    <Tooltip title={t("tonies.addNewCustomTonieHint")}>
+                        <Button onClick={handleAddNewCustomButtonClick} style={{ marginTop: 8 }}>
+                            {t("tonies.addNewCustomTonie")}
+                        </Button>
+                    </Tooltip>
+                </>
+            )}
         </>
     );
 };

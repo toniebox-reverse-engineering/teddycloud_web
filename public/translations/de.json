@@ -1970,6 +1970,7 @@
             "titleEdit": "TAP bearbeiten"
         },
         "teddystudio": {
+            "addedHint": "\"{{title}}\" wurde hinzugefügt.",
             "clear": "Blatt leeren",
             "clearSettings": "Zurücksetzen",
             "custom": "Benutzerdefiniert",
