@@ -6,7 +6,7 @@ import { SelectFileFileBrowser } from "../../filebrowser/SelectFileFileBrowser";
 
 const { useToken } = theme;
 
-interface TonieSelectFileModalProps {
+interface SelectFileModalProps {
     open: boolean;
     tempSelectedSource: string;
     onTempSelectedSourceChange: (value: string) => void;
@@ -17,7 +17,7 @@ interface TonieSelectFileModalProps {
     onFileSelectChange: (files: any[], path: string, special: string) => void;
 }
 
-export const TonieSelectFileModal: React.FC<TonieSelectFileModalProps> = ({
+export const SelectFileModal: React.FC<SelectFileModalProps> = ({
     open,
     tempSelectedSource,
     onTempSelectedSourceChange,

@@ -14,7 +14,7 @@ import { useAudioContext } from "../../audio/AudioContext";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
-import { createColumns } from "./helper/FileBrowserColumns";
+import { createColumns } from "./helper/Columns";
 
 const { useToken } = theme;
 

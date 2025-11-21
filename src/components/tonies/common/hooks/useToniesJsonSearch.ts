@@ -6,14 +6,14 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export interface TonieArticleOption {
+export interface ToniesJsonEntry {
     value: string;
     text: string;
     picture?: string;
 }
 
-export function useTonieArticleSearch(onError?: (error: unknown) => void) {
-    const [options, setOptions] = useState<TonieArticleOption[]>([]);
+export function useToniesJsonSearch(onError?: (error: unknown) => void) {
+    const [options, setOptions] = useState<ToniesJsonEntry[]>([]);
     const [value, setValue] = useState<string | undefined>();
 
     const search = useCallback(
@@ -38,7 +38,7 @@ export function useTonieArticleSearch(onError?: (error: unknown) => void) {
                 const response = await api.apiGetTeddyCloudApiRaw(path);
                 const data: TonieInfo[] = await response.json();
 
-                const result: TonieArticleOption[] = data.map((item) => ({
+                const result: ToniesJsonEntry[] = data.map((item) => ({
                     value: item.model,
                     text: `[${item.model}] ${item.series} - ${item.episode}`,
                     picture: item.picture,
@@ -51,7 +51,7 @@ export function useTonieArticleSearch(onError?: (error: unknown) => void) {
                 } else {
                     // optional: Logging
                     // eslint-disable-next-line no-console
-                    console.error("Error in useTonieArticleSearch:", error);
+                    console.error("Error in useToniesJsonSearch:", error);
                 }
             }
         },

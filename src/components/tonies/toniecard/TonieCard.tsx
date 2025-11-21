@@ -21,8 +21,8 @@ import TonieInformationModal from "../common/TonieInformationModal";
 import { LanguageFlagIcon } from "../../../utils/languageUtil";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
-import { TonieEditModal } from "./modals/TonieEditModal";
-import { TonieSelectFileModal } from "./modals/TonieSelectFileModal";
+import { EditModal } from "./modals/EditModal";
+import { SelectFileModal } from "./modals/SelectFileModal";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -663,7 +663,7 @@ export const TonieCard: React.FC<{
                 key={keyInfoModal}
             />
 
-            <TonieSelectFileModal
+            <SelectFileModal
                 open={isSelectFileModalOpen}
                 tempSelectedSource={tempSelectedSource}
                 onTempSelectedSourceChange={setTempSelectedSource}
@@ -673,7 +673,7 @@ export const TonieCard: React.FC<{
                 onFileSelectChange={handleFileSelectChange}
             />
 
-            <TonieEditModal
+            <EditModal
                 open={isEditModalOpen}
                 title={editModalTitle}
                 onCancel={() => setIsEditModalOpen(false)}

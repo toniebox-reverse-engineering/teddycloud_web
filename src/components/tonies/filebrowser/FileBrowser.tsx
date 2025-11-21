@@ -42,7 +42,7 @@ import SelectFilesForEncodingModal from "./modals/SelectFilesForEncodingModal";
 import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
 import { MAX_FILES } from "../../../constants";
-import { createColumns } from "./helper/FileBrowserColumns";
+import { createColumns } from "./helper/Columns";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

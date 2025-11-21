@@ -3,21 +3,34 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
-import { useTonieArticleSearch } from "../hooks/useTonieArticleSearch";
+import { useToniesJsonSearch } from "../hooks/useToniesJsonSearch";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
 
-export const TonieArticleSearch: React.FC<{
+export interface ToniesJsonSearchResult {
+    value: string;
+    text: string;
+    picture?: string;
+    episodes?: string;
+    model?: string;
+    language?: string;
+}
+
+interface ToniesJsonSearchProps {
     placeholder: string;
     onChange: (newValue: string) => void;
-}> = ({ placeholder, onChange }) => {
+
+    onSelectResult?: (result: ToniesJsonSearchResult) => void;
+}
+
+export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({ placeholder, onChange, onSelectResult }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
 
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
 
-    const { value, options, search, select, setValue } = useTonieArticleSearch((error) => {
+    const { value, options, search, select, setValue } = useToniesJsonSearch((error) => {
         addNotification(
             NotificationTypeEnum.Error,
             t("tonieArticleSearch.failedToFetchSearchResults"),
@@ -30,6 +43,12 @@ export const TonieArticleSearch: React.FC<{
 
     const handleChange = (newValue: string) => {
         select(newValue);
+        if (onSelectResult) {
+            const match = (options as ToniesJsonSearchResult[]).find((o) => o.value === newValue);
+            if (match) {
+                onSelectResult(match);
+            }
+        }
         onChange(newValue);
     };
 
@@ -49,7 +68,7 @@ export const TonieArticleSearch: React.FC<{
                 onSearch={debouncedSearch}
                 onChange={handleChange}
                 notFoundContent={null}
-                options={options.map((d) => ({
+                options={(options as ToniesJsonSearchResult[]).map((d) => ({
                     value: d.value,
                     label: (
                         <div style={{ display: "flex", alignItems: "center" }}>

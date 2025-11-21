@@ -3,14 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Button, Divider, Form, Input, Modal, Typography, theme } from "antd";
 import { CloseOutlined, FolderOpenOutlined, RollbackOutlined, SaveFilled } from "@ant-design/icons";
 
-import { TonieArticleSearch } from "../search/TonieArticleSearch";
-import { RadioStreamSearch } from "../search/TonieRadioStreamSearch";
+import { ToniesJsonSearch } from "../../common/search/ToniesJsonSearch";
+import { RadioStreamSearch } from "../search/RadioStreamSearch";
 
 const { useToken } = theme;
 
 type ValidateStatus = "" | "success" | "warning" | "error" | "validating" | undefined;
 
-interface TonieEditModalProps {
+interface EditModalProps {
     open: boolean;
     title: React.ReactNode;
     onCancel: () => void;
@@ -46,7 +46,7 @@ interface TonieEditModalProps {
     onOpenFileSelectModal: () => void;
 }
 
-export const TonieEditModal: React.FC<TonieEditModalProps> = ({
+export const EditModal: React.FC<EditModalProps> = ({
     open,
     title,
     onCancel,
@@ -180,7 +180,7 @@ export const TonieEditModal: React.FC<TonieEditModalProps> = ({
                             <Divider key="divider-model-2" type="vertical" style={{ height: 16 }} />,
                         ]}
                     />
-                    <TonieArticleSearch
+                    <ToniesJsonSearch
                         placeholder={t("tonies.editModal.placeholderSearchForAModel")}
                         onChange={onSearchModelChange}
                         key={keyTonieArticleSearch}
