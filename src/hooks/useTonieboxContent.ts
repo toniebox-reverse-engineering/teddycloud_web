@@ -10,13 +10,11 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
     const [tonieBoxContentDirs, setTonieboxContentDirs] = useState<TonieBoxContentDir[]>([]);
 
     const [overlay, setOverlay] = useState<string>(() => {
-        // 1. Explizit übergebener Overlay-Wert hat Vorrang
         if (linkOverlay !== undefined && linkOverlay !== null) {
             localStorage.setItem("contentOverlay", linkOverlay);
             return linkOverlay;
         }
 
-        // 2. Sonst aus LocalStorage lesen
         const savedOverlay = localStorage.getItem("contentOverlay");
         return savedOverlay ?? "";
     });
@@ -56,7 +54,6 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
                 groupedContentDirs.push(["", ["TeddyCloud Default Content Dir"], ""]);
             }
 
-            // Falls noch kein Overlay gesetzt, nimm das erste und speichere es
             if (!overlay) {
                 const firstBoxId: string = groupedContentDirs.length > 0 ? groupedContentDirs[0][2] : "";
                 setOverlay(firstBoxId);
@@ -68,7 +65,7 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
 
         fetchContentDirs();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // bewusst nur einmal
+    }, []);
 
     const handleContentOverlayChange = (nextOverlay: string) => {
         setOverlay(nextOverlay);

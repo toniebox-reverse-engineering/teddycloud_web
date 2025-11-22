@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useOverlayFromLocation } from "./useOverlayFromLocation";
+import { useOverlayFromLocation } from "./useTonieboxContentOverlayFromLocation";
 import { useTonieboxContent } from "./useTonieboxContent";
 
 export function useTonieboxContentOverlay() {
