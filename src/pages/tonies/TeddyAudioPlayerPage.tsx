@@ -54,16 +54,22 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ stan
     };
 
     const sortTonies = (a: TonieCardProps, b: TonieCardProps) => {
-        if (a.tonieInfo.series < b.tonieInfo.series) return -1;
-        if (a.tonieInfo.series > b.tonieInfo.series) return 1;
+        const seriesA = a.sourceInfo?.series || a.tonieInfo.series || "Unknown";
+        const seriesB = b.sourceInfo?.series || b.tonieInfo.series || "Unknown";
 
-        if (a.tonieInfo.episode < b.tonieInfo.episode) return -1;
-        if (a.tonieInfo.episode > b.tonieInfo.episode) return 1;
+        if (seriesA < seriesB) return -1;
+        if (seriesA > seriesB) return 1;
+
+        const episodeA = a.sourceInfo?.episode || a.tonieInfo.episode || "";
+        const episodeB = b.sourceInfo?.episode || b.tonieInfo.episode || "";
+
+        if (episodeA < episodeB) return -1;
+        if (episodeA > episodeB) return 1;
 
         return 0;
     };
 
-    const { tonies, loading, setTonies } = useTonies({
+    const { tonies, loading } = useTonies({
         overlay: overlay ?? "",
         merged: false,
         sort: sortTonies,
