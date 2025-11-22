@@ -1,110 +1,80 @@
-import { useEffect, useState } from "react";
-import {
-    Table,
-    Select,
-    Space,
-    theme,
-    Button,
-    DatePicker,
-    Input,
-    Collapse,
-    CollapseProps,
-    Typography,
-    Tooltip,
-} from "antd";
-import { NotificationRecord, NotificationType } from "../../types/teddyCloudNotificationTypes";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import React, { useMemo, useState } from "react";
+import { Table, Select, theme, Button, DatePicker, Input, Collapse, CollapseProps, Typography, Tooltip } from "antd";
 import { ExclamationCircleFilled, CheckCircleFilled, CloseCircleFilled, InfoCircleFilled } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { TableRowSelection } from "antd/es/table/interface";
+import type { TableRowSelection, ColumnsType } from "antd/es/table/interface";
+import { NotificationRecord, NotificationType } from "../../../types/teddyCloudNotificationTypes";
+import { useNotificationsList } from "./hooks/useNotificationsList";
 
 const { Option } = Select;
 const { Paragraph } = Typography;
 const { useToken } = theme;
 
-const NotificationsList = () => {
+type NotificationRow = NotificationRecord & { _rowId: string };
+
+const NotificationsList: React.FC = () => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { notifications, confirmNotification, clearAllNotifications, removeNotifications } = useTeddyCloud();
-    const [filteredNotifications, setFilteredNotifications] = useState<NotificationRecord[]>(notifications);
-    const [isMobile, setIsMobile] = useState(false);
-    const [isTablet, setIsTablet] = useState(false);
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+    const {
+        filteredNotifications,
+        uniqueContexts,
+        selectedRowKeys,
+        setSelectedRowKeys,
+        dateRange,
+        setDateRange,
+        setTitleFilter,
+        setDescriptionFilter,
+        setTypeFilter,
+        setContextFilter,
+        setStatusFilter,
+        confirmSelectedNotifications,
+        removeSelectedNotifications,
+        clearAllNotifications,
+        confirmSingleNotification,
+        isMobile,
+        isTablet,
+    } = useNotificationsList();
+
+    const [collapsed, setCollapsed] = useState(true);
     const [pageSize, setPageSize] = useState(20);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [collapsed, setCollapsed] = useState(true);
-    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
-    const [titleFilter, setTitleFilter] = useState<string>("");
-    const [descriptionFilter, setDescriptionFilter] = useState<string>("");
-    const [typeFilter, setTypeFilter] = useState<string[]>([]);
-    const [contextFilter, setContextFilter] = useState<string[]>([]);
-    const [statusFilter, setStatusFilter] = useState<string[]>([]);
-
-    useEffect(() => {
-        const filteredData = notifications.filter((notification) => {
-            const matchesDate =
-                (!dateRange[0] || notification.date >= dateRange[0]) &&
-                (!dateRange[1] || notification.date <= dateRange[1]);
-            const matchesTitle = notification.title?.toLowerCase().includes(titleFilter.toLowerCase());
-            const matchesDescription = notification.description
-                ?.toLowerCase()
-                .includes(descriptionFilter.toLowerCase());
-            const matchesType = typeFilter.length === 0 || typeFilter.includes(notification.type);
-            const matchesContext = contextFilter.length === 0 || contextFilter.includes(notification.context);
-            const matchesStatus =
-                statusFilter.length === 0 ||
-                statusFilter.includes(notification.flagConfirmed ? "Confirmed" : "Unconfirmed");
-            return matchesDate && matchesTitle && matchesDescription && matchesType && matchesContext && matchesStatus;
-        });
-        setFilteredNotifications(filteredData);
-    }, [notifications, dateRange, titleFilter, descriptionFilter, typeFilter, contextFilter, statusFilter]);
-
-    useEffect(() => {
-        // Add event listener to handle screen size change
-        const handleResize = () => {
-            setIsTablet(window.innerWidth < 1024);
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        handleResize(); // Check screen size on component mount
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.removeEventListener("resize", handleResize); // Clean up the event listener
-        };
-    }, []);
-
-    const notificationIconMap = {
+    const notificationIconMap: Record<NotificationType, React.ReactNode> = {
         success: <CheckCircleFilled style={{ color: token.colorSuccess }} />,
         error: <CloseCircleFilled style={{ color: token.colorError }} />,
         info: <InfoCircleFilled style={{ color: token.colorInfo }} />,
         warning: <ExclamationCircleFilled style={{ color: token.colorWarning }} />,
     };
 
-    const uniqueContexts = Array.from(new Set(notifications.map((notification) => notification.context))).filter(
-        Boolean
+    const tableData: NotificationRow[] = useMemo(
+        () =>
+            filteredNotifications.map((n, index) => ({
+                ...n,
+                _rowId: `${n.uuid}-${index}`,
+            })),
+        [filteredNotifications]
     );
 
-    const columns: any = [
+    const columns: ColumnsType<NotificationRow> = [
         {
             title: t("settings.notifications.colType"),
             dataIndex: "type",
             key: "type",
             render: (text: NotificationType) => (
                 <div style={{ display: "flex", gap: 8 }}>
-                    {isMobile ? "" : notificationIconMap[text]}
+                    {isMobile ? null : notificationIconMap[text]}
                     {text.charAt(0)?.toUpperCase() + text.slice(1)}
                 </div>
             ),
-            sorter: (a: NotificationRecord, b: NotificationRecord) => a.type.localeCompare(b.type),
+            sorter: (a, b) => a.type.localeCompare(b.type),
             ellipsis: true,
         },
         {
             title: t("settings.notifications.colTitle"),
             dataIndex: "title",
             key: "title",
-            sorter: (a: NotificationRecord, b: NotificationRecord) => {
+            sorter: (a, b) => {
                 const titleA = a.title || "";
                 const titleB = b.title || "";
                 return titleA.localeCompare(titleB);
@@ -114,7 +84,7 @@ const NotificationsList = () => {
             title: t("settings.notifications.colDetails"),
             dataIndex: "description",
             key: "description",
-            sorter: (a: NotificationRecord, b: NotificationRecord) => {
+            sorter: (a, b) => {
                 const descriptionA = a.description || "";
                 const descriptionB = b.description || "";
                 return descriptionA.localeCompare(descriptionB);
@@ -125,7 +95,7 @@ const NotificationsList = () => {
             title: t("settings.notifications.colContext"),
             dataIndex: "context",
             key: "context",
-            sorter: (a: NotificationRecord, b: NotificationRecord) => {
+            sorter: (a, b) => {
                 const contextA = a.context || "";
                 const contextB = b.context || "";
                 return contextA.localeCompare(contextB);
@@ -141,18 +111,19 @@ const NotificationsList = () => {
             title: t("settings.notifications.colDate"),
             dataIndex: "date",
             key: "date",
-            render: (date: Date) => {
-                if (!(date instanceof Date)) return "";
+            render: (date: Date | string) => {
+                const d = date instanceof Date ? date : new Date(date);
+                if (Number.isNaN(d.getTime())) return "";
 
                 return isMobile
-                    ? date
+                    ? d
                           .toLocaleString("en-US", {
                               year: "numeric",
                               month: "2-digit",
                               day: "2-digit",
                           })
                           .replace(",", "")
-                    : date
+                    : d
                           .toLocaleString("en-US", {
                               year: "numeric",
                               month: "2-digit",
@@ -163,9 +134,9 @@ const NotificationsList = () => {
                           })
                           .replace(",", "");
             },
-            sorter: (a: NotificationRecord, b: NotificationRecord) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
+            sorter: (a, b) => {
+                const dateA = a.date instanceof Date ? a.date : new Date(a.date);
+                const dateB = b.date instanceof Date ? b.date : new Date(b.date);
                 return dateA.getTime() - dateB.getTime();
             },
             ellipsis: true,
@@ -174,14 +145,13 @@ const NotificationsList = () => {
             title: t("settings.notifications.colStatus"),
             dataIndex: "flagConfirmed",
             key: "flagConfirmed",
-            render: (confirmed: boolean, record: NotificationRecord) => (
+            render: (confirmed: boolean, record: NotificationRow) => (
                 <div
                     style={{ cursor: "pointer" }}
                     onClick={(e) => {
                         e.stopPropagation();
-
                         if (!record.flagConfirmed) {
-                            confirmNotification(record.uuid);
+                            confirmSingleNotification(record.uuid);
                         }
                     }}
                 >
@@ -194,19 +164,16 @@ const NotificationsList = () => {
                     )}
                 </div>
             ),
-            sorter: (a: NotificationRecord, b: NotificationRecord) => Number(a.flagConfirmed) - Number(b.flagConfirmed),
+            sorter: (a, b) => Number(a.flagConfirmed) - Number(b.flagConfirmed),
             responsive: ["sm"],
         },
     ];
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
-    const rowSelection: TableRowSelection = {
+    const rowSelection: TableRowSelection<NotificationRow> = {
         selectedRowKeys,
-        onChange: onSelectChange,
+        onChange: (newSelectedRowKeys) => {
+            setSelectedRowKeys(newSelectedRowKeys);
+        },
     };
 
     const filterPanelContent = (
@@ -250,8 +217,13 @@ const NotificationsList = () => {
             </Select>
             <DatePicker.RangePicker
                 onChange={(dates) => {
-                    setDateRange(dates && dates[0] && dates[1] ? [dates[0].toDate(), dates[1].toDate()] : [null, null]);
+                    if (dates && dates[0] && dates[1]) {
+                        setDateRange([dates[0].toDate(), dates[1].toDate()]);
+                    } else {
+                        setDateRange([null, null]);
+                    }
                 }}
+                value={dateRange[0] && dateRange[1] ? [dateRange[0] as any, dateRange[1] as any] : undefined}
                 placeholder={[t("settings.notifications.startDate"), t("settings.notifications.endDate")]}
             />
             <Input
@@ -272,19 +244,6 @@ const NotificationsList = () => {
             children: filterPanelContent,
         },
     ];
-
-    const confirmSelectedNotifications = () => {
-        selectedRowKeys.forEach((key) => {
-            const uuid = String(key);
-            confirmNotification(uuid);
-            setSelectedRowKeys([]);
-        });
-    };
-
-    const removeSelectedNotifications = () => {
-        const uuidsToRemove = selectedRowKeys.map((key) => String(key));
-        removeNotifications(uuidsToRemove);
-    };
 
     return (
         <>
@@ -312,30 +271,23 @@ const NotificationsList = () => {
                         </Button>
                         <Button onClick={confirmSelectedNotifications}>
                             {t("settings.notifications.confirmSelectedNotifications")}
-                        </Button>{" "}
+                        </Button>
                     </Paragraph>
                 ) : (
-                    <Paragraph></Paragraph>
+                    <Paragraph />
                 )}
                 <Paragraph>
                     <Button onClick={clearAllNotifications}>{t("settings.notifications.removeAll")}</Button>
                 </Paragraph>
             </Paragraph>
 
-            <Table
+            <Table<NotificationRow>
                 tableLayout="auto"
-                size={"small"}
+                size="small"
                 rowSelection={rowSelection}
-                dataSource={filteredNotifications.map((notification) => ({
-                    uuid: notification.uuid,
-                    type: notification.type,
-                    title: notification.title,
-                    description: notification.description,
-                    context: notification.context,
-                    date: notification.date,
-                    flagConfirmed: notification.flagConfirmed,
-                }))}
+                dataSource={tableData}
                 columns={columns}
+                rowKey="_rowId"
                 pagination={{
                     current: currentPage,
                     pageSize,
@@ -343,12 +295,11 @@ const NotificationsList = () => {
                     pageSizeOptions: [10, 20, 30, 50],
                     onChange: (page, size) => {
                         setCurrentPage(page);
-                        setPageSize(size);
+                        setPageSize(size || 20);
                     },
                     locale: { items_per_page: t("settings.notifications.pageSelector") },
                 }}
                 sticky={{ offsetHeader: 0 }}
-                rowKey="uuid"
                 expandable={
                     isTablet
                         ? {
@@ -359,7 +310,7 @@ const NotificationsList = () => {
                                           <div>
                                               <br />
                                               <strong>{t("settings.notifications.colContext")}:</strong>{" "}
-                                              {record.context}{" "}
+                                              {record.context}
                                           </div>
                                       ) : null}
                                       <br />
@@ -377,7 +328,7 @@ const NotificationsList = () => {
                                       ) : null}
                                   </div>
                               ),
-                              rowExpandable: (record) => record.description !== undefined, // Ensure rows with no description can't be expanded
+                              rowExpandable: (record) => record.description !== undefined,
                           }
                         : undefined
                 }
