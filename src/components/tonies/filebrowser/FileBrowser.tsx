@@ -25,7 +25,7 @@ import TonieInformationModal from "../common/TonieInformationModal";
 import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
 
 import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
-import { generateUUID } from "../../../utils/helpers";
+import { generateUUID } from "../../common/Helpers";
 import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
 import HelpModal from "./modals/FileBrowserHelpModal";
 

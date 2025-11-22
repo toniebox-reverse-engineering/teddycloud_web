@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useNewBoxesAllowed } from "../../../../hooks/useNewBoxesAllowed";
 
 import { forumUrl, telegramGroupUrl } from "../../../../constants";
-import { handleTCCADerDownload } from "../../../../utils/helpers";
+import { handleTCCADerDownload } from "../../../common/Helpers";
 import { useReachableNewbieGuideUrls } from "./hooks/useReachableNewbieGuideUrls";
 
 const { Paragraph } = Typography;

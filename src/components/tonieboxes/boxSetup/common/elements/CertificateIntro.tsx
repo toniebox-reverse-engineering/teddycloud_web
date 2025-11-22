@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { Button, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { handleTCCADerDownload } from "../../../../../utils/helpers";
+import { handleTCCADerDownload } from "../../../../common/Helpers";
 
 const { Paragraph } = Typography;
 

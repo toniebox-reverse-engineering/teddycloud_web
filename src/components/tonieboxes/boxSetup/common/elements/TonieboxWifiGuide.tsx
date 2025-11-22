@@ -1,6 +1,6 @@
 import { Typography, Collapse } from "antd";
 import { useTranslation } from "react-i18next";
-import { parseFormattedText } from "../../../../../utils/helpers";
+import { parseFormattedText } from "../../../../common/Helpers";
 
 const { Paragraph, Text } = Typography;
 
