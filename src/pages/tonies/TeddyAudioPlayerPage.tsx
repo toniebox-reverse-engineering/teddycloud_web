@@ -13,7 +13,7 @@ import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { useTonieboxContent } from "../../hooks/useTonieboxContent";
-import { TeddyAudioPlayer } from "../../components/tonies/TeddyAudioPlayer";
+import { TeddyAudioPlayer } from "../../components/tonies/teddyaudioplayer/TeddyAudioPlayer";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useAudioContext } from "../../components/audio/AudioContext";
 import { useTonies } from "../../hooks/useTonies";

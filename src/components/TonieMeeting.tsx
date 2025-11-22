@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { theme } from "antd";
 
-import { defaultAPIConfig } from "../config/defaultApiConfig";
-import { TeddyCloudApi } from "../api";
-
 import QuestionMarkSVG from "./common/QuestionMarkIcon";
+import { useTonies } from "../hooks/useTonies";
 
-const api = new TeddyCloudApi(defaultAPIConfig());
 const { useToken } = theme;
 
 interface Image {
@@ -44,69 +41,64 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
     const centerWidth = (document.getElementById("central-text")?.clientWidth || 0) / (parentWidth < 450 ? 3 : 2);
     const centerHeight = (document.getElementById("central-text")?.clientHeight || 0) / (parentHeight < 500 ? 3 : 2);
 
+    const { tonies } = useTonies({
+        merged: true,
+        shuffle: true,
+        filter: "tag",
+    });
+
+    const tonieData = useMemo(() => {
+        return tonies
+            .filter(
+                (item) =>
+                    !item.tonieInfo.picture.endsWith("/img_unknown.png") &&
+                    item.tonieInfo.picture !== null &&
+                    item.tonieInfo.picture !== undefined &&
+                    item.tonieInfo.picture !== "" &&
+                    !item.nocloud
+            )
+            .slice(0, maxNoOfGuests);
+    }, [tonies]);
+
     useEffect(() => {
-        const fetchTonies = async () => {
-            // Perform API call to fetch Tonie data
-            const tonieData = (await api.apiGetTagIndexMergedAllOverlays(false))
-                .sort((a, b) => {
-                    if (Math.random() > 0.5) {
-                        return Math.floor(-100 * Math.random());
-                    } else {
-                        return Math.floor(100 * Math.random());
-                    }
-                })
-                .filter(
-                    (item) =>
-                        !item.tonieInfo.picture.endsWith("/img_unknown.png") &&
-                        item.tonieInfo.picture !== null &&
-                        item.tonieInfo.picture !== undefined &&
-                        item.tonieInfo.picture !== "" &&
-                        !item.nocloud
-                )
-                .slice(0, maxNoOfGuests);
+        const allImages = tonieData.flatMap((item) => item.tonieInfo.picture);
 
-            const allImages = tonieData.flatMap((item) => item.tonieInfo.picture);
+        const shuffledImages = allImages.map((src, index) => {
+            if (title && description) {
+                let top, left;
+                do {
+                    top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
+                    left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
+                } while (
+                    0 < centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
+                    0 < centerHorizontal - (centerWidth / parentWidth) * 100 - (toniesSize / parentWidth) * 100 &&
+                    top > centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
+                    top < centerVertical + (centerHeight / parentHeight) * 100 &&
+                    left > centerHorizontal - (centerWidth / parentWidth) * 100 - (toniesSize / parentWidth) * 100 &&
+                    left < centerHorizontal + (centerWidth / parentWidth) * 100
+                );
+                return {
+                    src: src,
+                    id: index,
+                    top: `${top}%`,
+                    left: `${left}%`,
+                };
+            } else {
+                const top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
+                const left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
 
-            const shuffledImages = allImages.map((src, index) => {
-                if (title && description) {
-                    let top, left;
-                    do {
-                        top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
-                        left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
-                    } while (
-                        0 < centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
-                        0 < centerHorizontal - (centerWidth / parentWidth) * 100 - (toniesSize / parentWidth) * 100 &&
-                        top >
-                            centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
-                        top < centerVertical + (centerHeight / parentHeight) * 100 &&
-                        left >
-                            centerHorizontal - (centerWidth / parentWidth) * 100 - (toniesSize / parentWidth) * 100 &&
-                        left < centerHorizontal + (centerWidth / parentWidth) * 100
-                    );
-                    return {
-                        src: src,
-                        id: index,
-                        top: `${top}%`,
-                        left: `${left}%`,
-                    };
-                } else {
-                    const top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
-                    const left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
+                return {
+                    src: src,
+                    id: index,
+                    top: `${top}%`,
+                    left: `${left}%`,
+                };
+            }
+        });
 
-                    return {
-                        src: src,
-                        id: index,
-                        top: `${top}%`,
-                        left: `${left}%`,
-                    };
-                }
-            });
-
-            setRandomizedImages(shuffledImages);
-        };
-
-        fetchTonies();
+        setRandomizedImages(shuffledImages);
     }, [
+        tonieData,
         centerHeight,
         centerWidth,
         description,

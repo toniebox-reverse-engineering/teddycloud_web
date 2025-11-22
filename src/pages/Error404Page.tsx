@@ -19,7 +19,7 @@ export const Error404Page = () => {
                         showQuestionMark={true}
                         title={t("404.title")}
                         description={t("404.description")}
-                    ></TonieMeetingElement>
+                    />
                 </Paragraph>
             </StyledContent>
         </div>
