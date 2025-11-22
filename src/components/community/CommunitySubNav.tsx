@@ -14,6 +14,7 @@ import {
     MinusOutlined,
     PlusOutlined,
     AppstoreOutlined,
+    QuestionOutlined,
 } from "@ant-design/icons";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 
@@ -153,8 +154,24 @@ export const CommunitySubNav = () => {
                     {t("community.supportRequestGuide.navigationTitle")}
                 </Link>
             ),
-            icon: React.createElement(QuestionCircleOutlined),
+            icon: React.createElement(QuestionOutlined),
             title: t("community.supportRequestGuide.navigationTitle"),
+        },
+        {
+            key: "faq",
+            label: (
+                <Link
+                    to="/community/faq"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("community.faq.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(QuestionCircleOutlined),
+            title: t("community.faq.navigationTitle"),
         },
         {
             key: "contribution",

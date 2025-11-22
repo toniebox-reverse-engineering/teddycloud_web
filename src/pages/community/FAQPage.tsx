@@ -25,16 +25,15 @@ export const FAQPage = () => {
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.faq.title`)}</h1>
-                    <Paragraph>{t(`community.faq.intro`)}</Paragraph>
-                    <Paragraph>
-                        {faqs.map((faq, i) => (
-                            <div key={i} style={{ marginBottom: "20px" }}>
-                                <h3>{faq.question}</h3>
-                                <p>{faq.answer}</p>
-                            </div>
-                        ))}
-                    </Paragraph>
+                    <h1>{t("community.faq.title")}</h1>
+                    <Paragraph>{t("community.faq.intro")}</Paragraph>
+
+                    {faqs.map((faq, i) => (
+                        <section key={i} style={{ marginBottom: 20 }}>
+                            <h3>{faq.question}</h3>
+                            <p>{faq.answer}</p>
+                        </section>
+                    ))}
                 </StyledContent>
             </StyledLayout>
         </>

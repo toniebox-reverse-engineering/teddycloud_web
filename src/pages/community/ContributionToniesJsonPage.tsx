@@ -12,7 +12,6 @@ import { Link } from "react-router-dom";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Paragraph } = Typography;
-const { Panel } = Collapse;
 
 interface TonieJsonEntry {
     model: string;
