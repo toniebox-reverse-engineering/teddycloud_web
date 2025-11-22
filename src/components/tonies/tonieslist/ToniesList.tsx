@@ -357,30 +357,24 @@ export const ToniesList: React.FC<{
         {
             key: "unset-no-cloud",
             label: t("tonies.selectMode.unsetNoCloud"),
-            onClick: () => setNoCloud(localTonies, selectedTonies, t, overlay, addNotification, false, handleUpdate),
+            onClick: () => setNoCloud(localTonies, selectedTonies, overlay, false, handleUpdate),
         },
         {
             key: "set-live",
             label: t("tonies.selectMode.setLive"),
-            onClick: () => setLiveFlag(localTonies, selectedTonies, t, overlay, addNotification, true, handleUpdate),
+            onClick: () => setLiveFlag(localTonies, selectedTonies, overlay, true, handleUpdate),
         },
         {
             key: "unset-live",
             label: t("tonies.selectMode.unsetLive"),
-            onClick: () => setLiveFlag(localTonies, selectedTonies, t, overlay, addNotification, false, handleUpdate),
+            onClick: () => setLiveFlag(localTonies, selectedTonies, overlay, false, handleUpdate),
         },
         {
             key: "hide",
             label: t("tonies.selectMode.hideSelectedTags"),
             onClick: () =>
-                hideSelectedTonies(
-                    localTonies,
-                    selectedTonies,
-                    t,
-                    overlay,
-                    addNotification,
-                    handleHideTonieCard,
-                    (label) => showHideTonieConfirm(t, label)
+                hideSelectedTonies(localTonies, selectedTonies, overlay, handleHideTonieCard, (label) =>
+                    showHideTonieConfirm(t, label)
                 ),
         },
     ];
@@ -546,9 +540,7 @@ export const ToniesList: React.FC<{
                             size="small"
                             style={{ width: "unset" }}
                             menu={{ items: actionMenu }}
-                            onClick={() =>
-                                setNoCloud(localTonies, selectedTonies, t, overlay, addNotification, true, handleUpdate)
-                            }
+                            onClick={() => setNoCloud(localTonies, selectedTonies, overlay, true, handleUpdate)}
                             disabled={selectedTonies.length === 0}
                         >
                             {t("tonies.selectMode.setNoCloud")}

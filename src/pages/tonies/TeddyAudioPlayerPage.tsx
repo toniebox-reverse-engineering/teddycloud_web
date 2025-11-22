@@ -16,6 +16,7 @@ import { useTonieboxContent } from "../../hooks/useTonieboxContent";
 import { TeddyAudioPlayer } from "../../components/tonies/TeddyAudioPlayer";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { useAudioContext } from "../../components/audio/AudioContext";
+import { useTonies } from "../../hooks/useTonies";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 type TeddyAudioPlayerPageProps = {
@@ -31,14 +32,10 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ stan
     const linkOverlay = searchParams.get("overlay");
 
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
     const { playAudio } = useAudioContext();
     const { overlay } = useTonieboxContent(linkOverlay);
 
     const contentRef = useRef<HTMLDivElement>(null);
-
-    const [tonies, setTonies] = useState<TonieCardProps[]>([]);
-    const [loading, setLoading] = useState(true);
 
     const [currentPlayPosition, setCurrentPlayPosition] = useState<number | undefined>(0);
     const [currentTonie, setCurrentTonie] = useState<TonieCardProps>();
@@ -55,49 +52,26 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ stan
         }
         navigate("/");
     };
-    useEffect(() => {
-        const fetchTonies = async () => {
-            setLoading(true);
-            try {
-                const tonieData = (await api.apiGetTagIndex(overlay ? overlay : "", true)).filter((item) => !item.hide);
-                setTonies(
-                    tonieData.sort((a, b) => {
-                        const seriesA = a.sourceInfo?.series || a.tonieInfo.series || "Unknown";
-                        const seriesB = b.sourceInfo?.series || b.tonieInfo.series || "Unknown";
 
-                        if (seriesA < seriesB) return -1;
-                        if (seriesA > seriesB) return 1;
+    const sortTonies = (a: TonieCardProps, b: TonieCardProps) => {
+        if (a.tonieInfo.series < b.tonieInfo.series) return -1;
+        if (a.tonieInfo.series > b.tonieInfo.series) return 1;
 
-                        const episodeA = a.sourceInfo?.episode || a.tonieInfo.episode || "";
-                        const episodeB = b.sourceInfo?.episode || b.tonieInfo.episode || "";
+        if (a.tonieInfo.episode < b.tonieInfo.episode) return -1;
+        if (a.tonieInfo.episode > b.tonieInfo.episode) return 1;
 
-                        if (episodeA < episodeB) return -1;
-                        if (episodeA > episodeB) return 1;
+        return 0;
+    };
 
-                        return 0;
-                    })
-                );
-            } catch (error) {
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("tonies.errorFetchingTonies"),
-                    t("tonies.errorFetchingTonies") + ": " + error,
-                    t("tonies.teddyaudioplayer.navigationTitle")
-                );
-                console.log("error: fetching tonies failed: " + error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchTonies();
-    }, [overlay]);
+    const { tonies, loading, setTonies } = useTonies({
+        overlay: overlay ?? "",
+        merged: false,
+        sort: sortTonies,
+        filter: "tag",
+    });
 
     const playableTonieCards = useMemo(() => {
-        return tonies
-            .filter((tonie) => tonie.type === "tag")
-            .filter((tonie) => tonie.hide === false)
-            .filter((tonie) => tonie.valid || tonie.source.startsWith("http"));
+        return tonies.filter((tonie) => tonie.valid || tonie.source.startsWith("http"));
     }, [tonies]);
 
     useEffect(() => {

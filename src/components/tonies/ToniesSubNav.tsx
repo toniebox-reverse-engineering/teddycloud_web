@@ -82,11 +82,11 @@ export const ToniesSubNav = () => {
                         setSubNavOpen(false);
                     }}
                 >
-                    {t("tonies.toniesaudioplayer.navigationTitle")}
+                    {t("tonies.teddyaudioplayer.navigationTitle")}
                 </Link>
             ),
             icon: React.createElement(PlayCircleOutlined),
-            title: t("tonies.toniesaudioplayer.navigationTitle"),
+            title: t("tonies.teddyaudioplayer.navigationTitle"),
         },
         {
             key: "encoder",

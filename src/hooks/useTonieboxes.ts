@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { TeddyCloudApi } from "../../../../api";
-import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { TonieboxCardProps } from "../../../../types/tonieboxTypes";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { TeddyCloudApi } from "../api";
+import { defaultAPIConfig } from "../config/defaultApiConfig";
+import { TonieboxCardProps } from "../types/tonieboxTypes";
+import { useTeddyCloud } from "../TeddyCloudContext";
+import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -14,6 +14,7 @@ export const useTonieboxes = () => {
     const { addNotification } = useTeddyCloud();
 
     const [tonieboxes, setTonieboxes] = useState<TonieboxCardProps[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetch = async () => {
@@ -27,11 +28,12 @@ export const useTonieboxes = () => {
                     t("tonieboxes.errorFetchingTonieboxes") + ": " + error,
                     t("tonieboxes.navigationTitle")
                 );
+            } finally {
+                setLoading(false);
             }
         };
-
         fetch();
     }, []);
 
-    return tonieboxes;
+    return { tonieboxes, loading };
 };

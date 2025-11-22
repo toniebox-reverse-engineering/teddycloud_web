@@ -1,0 +1,172 @@
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { Alert, Button, Tabs, TabsProps, Typography } from "antd";
+import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../../constants";
+import LoadingSpinner from "../../common/LoadingSpinner";
+import { TonieboxesList } from "../../tonieboxes/tonieboxeslist/TonieboxesList";
+import { ToniesList } from "../../tonies/tonieslist/ToniesList";
+import { useHomeData } from "./data/useHomeData";
+
+const { Paragraph } = Typography;
+
+export const Home = () => {
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+
+    const {
+        tonies,
+        tonieboxes,
+        displayIncidentAlert,
+        newBoxesAllowed,
+        accessApiEnabled,
+        defaultLanguage,
+        loading,
+        activeTab,
+        setActiveTab,
+    } = useHomeData();
+
+    const boxesApiAccessDisabled: [string, boolean][] = accessApiEnabled.filter((item) => !item[1]);
+
+    const newBoxesAllowedWarning = newBoxesAllowed ? (
+        <>
+            <Alert
+                message={t("tonieboxes.newBoxesAllowed")}
+                description={t("tonieboxes.newBoxesAllowedText")}
+                type="warning"
+                showIcon
+                style={{ margin: "16px 0" }}
+            />
+            {boxesApiAccessDisabled.length > 0 && (
+                <Alert
+                    message={t("tonieboxes.boxWithoutAPIAccess")}
+                    description={
+                        <>
+                            {t("tonieboxes.boxWithoutAPIAccessText")}
+                            <ul>
+                                {boxesApiAccessDisabled.map((item) => (
+                                    <li key={item[0]}>{item[0]}</li>
+                                ))}
+                            </ul>
+                            {t("tonieboxes.boxWithoutAPIAccessGoToTonieboxes")}
+                            <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link>
+                        </>
+                    }
+                    type="info"
+                    showIcon
+                    style={{ margin: "16px 0" }}
+                />
+            )}
+        </>
+    ) : null;
+
+    const toniesTab = (
+        <>
+            {loading ? (
+                <LoadingSpinner />
+            ) : (
+                <ToniesList
+                    tonieCards={tonies.filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series).slice(0, 6)}
+                    overlay=""
+                    showFilter={false}
+                    showPagination={false}
+                    readOnly={true}
+                    defaultLanguage={defaultLanguage}
+                />
+            )}
+            <Paragraph>
+                <Button onClick={() => navigate("/tonies")}>
+                    {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})
+                </Button>
+            </Paragraph>
+        </>
+    );
+
+    const tonieboxesTab = (
+        <>
+            {loading ? <LoadingSpinner /> : <TonieboxesList tonieboxCards={tonieboxes.slice(0, 4)} readOnly={true} />}
+            <Paragraph>
+                <Button onClick={() => navigate("/tonieboxes")}>
+                    {t("home.toAllYourTonieboxes")} ({tonieboxes.length})
+                </Button>
+            </Paragraph>
+        </>
+    );
+
+    const toniesAndTonieboxes: TabsProps["items"] = [
+        {
+            key: "tonies",
+            label: <h2 style={{ marginBottom: 0 }}>{t("home.yourTonies")}</h2>,
+            children: toniesTab,
+        },
+        {
+            key: "tonieboxes",
+            label: <h2 style={{ marginBottom: 0 }}>{t("home.yourTonieboxes")}</h2>,
+            children: tonieboxesTab,
+        },
+    ];
+
+    return (
+        <>
+            <Paragraph>
+                <h1>{t("home.title")}</h1>
+                {displayIncidentAlert ? (
+                    <Alert
+                        message={t("security.alert")}
+                        description={t("security.incident_detected")}
+                        type="error"
+                        showIcon
+                        style={{ margin: "16px 0" }}
+                    />
+                ) : null}
+                {t("home.intro")}
+                {newBoxesAllowedWarning}
+            </Paragraph>
+
+            <Paragraph>
+                {t("home.forumIntroPart1")}
+                <Link to={forumUrl} target="_blank">
+                    {forumUrl}
+                </Link>
+                {t("home.forumIntroPart2")}
+            </Paragraph>
+
+            <Paragraph>
+                <Tabs
+                    onChange={(newKey) => setActiveTab(newKey)}
+                    activeKey={activeTab}
+                    items={toniesAndTonieboxes}
+                    indicator={{ size: (origin) => origin - 20, align: "center" }}
+                />
+            </Paragraph>
+
+            <Paragraph>
+                <h2>{t("home.helpfulLinks")}</h2>
+                <ul>
+                    <li>
+                        <Link to="/community/faq">FAQ</Link>
+                    </li>
+                    <li>
+                        <Link to={gitHubUrl} target="_blank">
+                            GitHub
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={telegramGroupUrl} target="_blank">
+                            Telegram Chat
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={forumUrl} target="_blank">
+                            Discourse Forum
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={wikiUrl} target="_blank">
+                            TeddyCloud Wiki
+                        </Link>
+                    </li>
+                </ul>
+            </Paragraph>
+        </>
+    );
+};

@@ -7,14 +7,14 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { TonieboxesList } from "../../components/tonieboxes/tonieboxeslist/TonieboxesList";
 
-import { useNewBoxesAllowed } from "../../components/tonieboxes/common/hooks/useNewBoxesAllowed";
-import { useTonieboxes } from "../../components/tonieboxes/common/hooks/useTonieboxes";
+import { useNewBoxesAllowed } from "../../hooks/useNewBoxesAllowed";
+import { useTonieboxes } from "../../hooks/useTonieboxes";
 
 export const TonieboxesPage = () => {
     const { t } = useTranslation();
 
     const newBoxesAllowed = useNewBoxesAllowed();
-    const tonieboxes = useTonieboxes();
+    const { tonieboxes } = useTonieboxes();
 
     return (
         <>
