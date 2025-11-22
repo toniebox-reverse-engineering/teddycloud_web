@@ -481,6 +481,7 @@
         "sponsorText": "Like TeddyCloud?"
     },
     "home": {
+        "build": "Build",
         "error": "Error - The GUI is not in the expected state.",
         "errorConfirm": "Close",
         "errorWebVersionMismatch": "The backend has a different version than the frontend. In a Docker installation, please ensure that no volume has been created under data/www.",

@@ -481,6 +481,7 @@
         "sponsorText": "Gefällt dir TeddyCloud?"
     },
     "home": {
+        "build": "Build",
         "error": "Fehler - Das Frontend ist nicht auf dem erwarteten Stand.",
         "errorConfirm": "Schließen",
         "errorWebVersionMismatch": "Backend hat eine andere Version als das Frontend. Bei einer Dockerinstallation bitte sicherstellen, dass kein Volume unter data/www angelegt wurde.",
