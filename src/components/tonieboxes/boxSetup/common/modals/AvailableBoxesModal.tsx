@@ -1,4 +1,3 @@
-// src/components/tonieboxes/boxsetup/modals/AvailableBoxesModal.tsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";

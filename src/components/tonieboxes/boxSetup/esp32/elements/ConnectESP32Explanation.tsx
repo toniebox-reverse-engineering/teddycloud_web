@@ -1,4 +1,3 @@
-// src/components/tonieboxes/boxsetup/elements/ConnectESP32Explanation.tsx
 import { JSX } from "react";
 import { Alert, Image, Typography } from "antd";
 import { useTranslation } from "react-i18next";

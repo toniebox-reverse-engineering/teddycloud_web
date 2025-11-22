@@ -72,7 +72,6 @@ export const FileBrowser: React.FC<{
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
     const { token } = useToken();
-    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
 
     const navigate = useNavigate();
 
