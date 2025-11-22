@@ -3,8 +3,8 @@ import { Typography } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import TranslationComparison from "../../components/community/translation/TranslationComparison";
-import TranslationTable from "../../components/community/translation/TranslationTable";
+import TranslationDiff from "../../components/community/translation/TranslationDiff";
+import TranslationMatrix from "../../components/community/translation/TranslationMatrix";
 import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
@@ -28,8 +28,8 @@ export const TranslationsPage = () => {
                 <StyledContent>
                     <h1>{t("community.translations.title")}</h1>
                     <Paragraph>{t("community.translations.hint")}</Paragraph>
-                    <TranslationComparison />
-                    <TranslationTable />
+                    <TranslationDiff />
+                    <TranslationMatrix />
                 </StyledContent>
             </StyledLayout>
         </>
