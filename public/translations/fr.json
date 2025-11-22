@@ -1655,7 +1655,7 @@
             "boxSpecific": " (superposé pour la Toniebox)",
             "Label": "Certificats",
             "uploadPath": "Chemin de téléchargement (certDir):",
-            "uploadTonieboxCertificates": "Télécharger les certificats pour la Toniebox \"{{name}}\""
+            "uploadTonieboxCertificates": "Télécharger les certificats pour la Toniebox{{name}}"
         }
     },
     "tonies": {

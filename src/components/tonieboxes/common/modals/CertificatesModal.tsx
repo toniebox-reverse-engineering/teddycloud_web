@@ -9,8 +9,8 @@ const { Paragraph } = Typography;
 
 interface CertificatesModalProps {
     open: boolean;
-    tonieboxName: string;
-    overlayId: string;
+    tonieboxName?: string;
+    overlayId?: string;
     options?: OptionsList;
     onOk: () => void;
     onCancel: () => void;
@@ -31,19 +31,23 @@ export const CertificatesModal: React.FC<CertificatesModalProps> = ({
     return (
         <Modal
             title={t("tonieboxes.uploadTonieboxCertificatesModal.uploadTonieboxCertificates", {
-                name: tonieboxName,
+                name: tonieboxName ? ' "' + tonieboxName + '"' : "",
             })}
             open={open}
             onOk={onOk}
             onCancel={onCancel}
         >
             <Paragraph>
-                {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")} <i>{certDirOption?.value}</i>{" "}
-                <small>
-                    {certDirOption?.overlayed
-                        ? t("tonieboxes.uploadTonieboxCertificatesModal.boxSpecific")
-                        : t("tonieboxes.uploadTonieboxCertificatesModal.AttentionGeneralPath")}
-                </small>
+                {certDirOption && (
+                    <>
+                        {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")} <i>{certDirOption.value}</i>
+                        <small>
+                            {certDirOption.overlayed
+                                ? t("tonieboxes.uploadTonieboxCertificatesModal.boxSpecific")
+                                : t("tonieboxes.uploadTonieboxCertificatesModal.AttentionGeneralPath")}
+                        </small>
+                    </>
+                )}
             </Paragraph>
             <CertificateDragNDrop overlay={overlayId} />
         </Modal>

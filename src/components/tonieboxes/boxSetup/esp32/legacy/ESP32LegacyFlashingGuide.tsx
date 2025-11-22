@@ -1,0 +1,151 @@
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Divider, Steps, Typography } from "antd";
+import { EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+
+import { BoxVersionsEnum } from "../../../../../types/tonieboxTypes";
+
+import { Step0Preparations } from "./steps/Step0Preparations";
+import { Step1Certificates } from "./steps/Step1Certificates";
+import { Step2Dns } from "./steps/Step2Dns";
+import AvailableBoxesModal from "../../common/modals/AvailableBoxesModal";
+
+const { Paragraph } = Typography;
+const { Step } = Steps;
+
+export const ESP32LegacyFlashingGuide: React.FC = () => {
+    const { t } = useTranslation();
+
+    const [currentStep, setCurrentStep] = useState(0);
+    const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
+
+    const steps = [
+        { title: t("tonieboxes.boxFlashingCommon.preparations") },
+        { title: t("tonieboxes.boxFlashingCommon.certificates") },
+        { title: t("tonieboxes.boxFlashingCommon.dns") },
+    ];
+
+    const prev = () => setCurrentStep((s) => Math.max(0, s - 1));
+    const next = () => setCurrentStep((s) => Math.min(steps.length - 1, s + 1));
+    const onStepChange = (value: number) => setCurrentStep(value);
+
+    const showAvailableBoxesModal = () => setIsOpenAvailableBoxesModal(true);
+    const handleAvailableBoxesModalClose = () => setIsOpenAvailableBoxesModal(false);
+
+    const availableBoxesModal = (
+        <AvailableBoxesModal
+            boxVersion={BoxVersionsEnum.esp32}
+            isOpen={isOpenAvailableBoxesModal}
+            onClose={handleAvailableBoxesModalClose}
+        />
+    );
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, [currentStep]);
+
+    const renderStepContent = () => {
+        switch (currentStep) {
+            case 0:
+                return <Step0Preparations />;
+            case 1:
+                return <Step1Certificates />;
+            case 2:
+                return <Step2Dns />;
+            default:
+                return null;
+        }
+    };
+
+    const previousButton = (
+        <Button icon={<LeftOutlined />} onClick={prev}>
+            {t("tonieboxes.esp32BoxFlashing.legacy.previous")}
+        </Button>
+    );
+
+    return (
+        <>
+            <h1>ESP32 {t("tonieboxes.esp32BoxFlashing.legacy.title")}</h1>
+            <Divider>{t("tonieboxes.esp32BoxFlashing.legacy.title")}</Divider>
+
+            <Paragraph style={{ marginTop: 16 }}>
+                <Steps current={currentStep} onChange={onStepChange}>
+                    {steps.map((step, index) => (
+                        <Step
+                            key={index}
+                            title={step.title}
+                            status={index === currentStep ? "process" : index < currentStep ? "finish" : "wait"}
+                        />
+                    ))}
+                </Steps>
+
+                <div style={{ marginTop: 24 }}>{renderStepContent()}</div>
+
+                <div style={{ marginTop: 24, marginBottom: 24 }}>
+                    {currentStep === 0 && (
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                flexWrap: "wrap",
+                                gap: 8,
+                            }}
+                        >
+                            <div />
+                            <div />
+                            <div style={{ display: "flex", gap: 8 }}>
+                                <Button icon={<RightOutlined />} iconPosition="end" onClick={next}>
+                                    {t("tonieboxes.esp32BoxFlashing.legacy.next")}
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {currentStep === 1 && (
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                flexWrap: "wrap",
+                                gap: 8,
+                            }}
+                        >
+                            {previousButton}
+                            <div>
+                                <Button icon={<EyeOutlined />} type="primary" onClick={showAvailableBoxesModal}>
+                                    {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
+                                </Button>
+                            </div>
+                            <div>
+                                <Button icon={<RightOutlined />} onClick={next}>
+                                    {t("tonieboxes.esp32BoxFlashing.legacy.proceedWithDNS")}
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
+                    {currentStep === 2 && (
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                flexWrap: "wrap",
+                                gap: 8,
+                            }}
+                        >
+                            {previousButton}
+                            <div>
+                                <Button icon={<EyeOutlined />} type="primary" onClick={showAvailableBoxesModal}>
+                                    {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
+                                </Button>
+                            </div>
+                            <div />
+                        </div>
+                    )}
+                </div>
+            </Paragraph>
+
+            {availableBoxesModal}
+        </>
+    );
+};

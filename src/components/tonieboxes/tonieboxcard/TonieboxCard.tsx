@@ -25,7 +25,7 @@ import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes
 import defaultBoxImage from "../../../assets/unknown_box.png";
 
 import { EditModal } from "./modals/EditModal";
-import { CertificatesModal } from "./modals/CertificatesModal";
+import { CertificatesModal } from "../common/modals/CertificatesModal";
 import { SettingsModal } from "./modals/SettingsModal";
 import { DeleteModal } from "./modals/DeleteModal";
 import { useTriggerWriteConfig } from "./hooks/useTriggerWriteConfig";

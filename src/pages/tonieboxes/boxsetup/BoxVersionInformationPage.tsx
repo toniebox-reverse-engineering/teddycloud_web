@@ -9,19 +9,121 @@ import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNa
 const { Paragraph, Title } = Typography;
 const { useToken } = theme;
 
-export const BoxVersionInformationPage = () => {
+interface Version {
+    name: string;
+    pros: string[];
+    cons: string[];
+}
+
+interface VersionCardsProps {
+    versions: Version[];
+}
+
+const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
     const { t } = useTranslation();
     const { token } = useToken();
 
-    interface Version {
-        name: string;
-        pros: string[];
-        cons: string[];
-    }
+    return (
+        <Row gutter={16} justify="start">
+            {versions.map((version, index) => (
+                <Col key={index} xs={24} md={12} xl={8}>
+                    <Card title={version.name} size="small" variant="outlined" style={{ marginBottom: 8 }}>
+                        <Title level={5} style={{ marginTop: 0 }}>
+                            {t("tonieboxes.boxSetup.boxVersion.pros")}
+                        </Title>
+                        {version.pros.length > 0 ? (
+                            <List
+                                dataSource={version.pros}
+                                renderItem={(item) => (
+                                    <List.Item
+                                        style={{
+                                            flexWrap: "nowrap",
+                                            alignItems: "flex-start",
+                                        }}
+                                    >
+                                        <CheckOutlined
+                                            style={{
+                                                color: "green",
+                                                marginRight: 8,
+                                                marginTop: 4,
+                                            }}
+                                        />
+                                        <Paragraph
+                                            style={{
+                                                marginBottom: 0,
+                                                textAlign: "right",
+                                            }}
+                                        >
+                                            {item}
+                                        </Paragraph>
+                                    </List.Item>
+                                )}
+                            />
+                        ) : (
+                            <List.Item>
+                                <Paragraph
+                                    style={{
+                                        marginBottom: 0,
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    {t("tonieboxes.boxSetup.boxVersion.emptyPros")}
+                                </Paragraph>
+                            </List.Item>
+                        )}
 
-    interface VersionCardsProps {
-        versions: Version[];
-    }
+                        <Title level={5} style={{ marginTop: 0 }}>
+                            {t("tonieboxes.boxSetup.boxVersion.cons")}
+                        </Title>
+                        {version.cons.length > 0 ? (
+                            <List
+                                dataSource={version.cons}
+                                renderItem={(item) => (
+                                    <List.Item
+                                        style={{
+                                            flexWrap: "nowrap",
+                                            alignItems: "flex-start",
+                                        }}
+                                    >
+                                        <CloseOutlined
+                                            style={{
+                                                color: token.colorError,
+                                                marginRight: 8,
+                                                marginTop: 4,
+                                            }}
+                                        />
+                                        <Paragraph
+                                            style={{
+                                                marginBottom: 0,
+                                                textAlign: "right",
+                                            }}
+                                        >
+                                            {item}
+                                        </Paragraph>
+                                    </List.Item>
+                                )}
+                            />
+                        ) : (
+                            <List.Item>
+                                <Paragraph
+                                    style={{
+                                        marginBottom: 0,
+                                        textAlign: "center",
+                                    }}
+                                >
+                                    {t("tonieboxes.boxSetup.boxVersion.emptyCons")}
+                                </Paragraph>
+                            </List.Item>
+                        )}
+                    </Card>
+                </Col>
+            ))}
+        </Row>
+    );
+};
+
+export const BoxVersionInformationPage: React.FC = () => {
+    const { t } = useTranslation();
 
     const versionsData: Version[] = [
         {
@@ -55,59 +157,6 @@ export const BoxVersionInformationPage = () => {
         },
     ];
 
-    const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => (
-        <Row gutter={16} justify="start">
-            {versions.map((version, index) => (
-                <Col key={index} xs={24} md={12} xl={8}>
-                    <Card title={version.name} size="small" variant="outlined" style={{ marginBottom: 8 }}>
-                        <Title level={5} style={{ marginTop: 0 }}>
-                            {t("tonieboxes.boxSetup.boxVersion.pros")}
-                        </Title>
-                        {version.pros.length > 0 ? (
-                            <List
-                                dataSource={version.pros}
-                                renderItem={(item) => (
-                                    <List.Item style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
-                                        <CheckOutlined style={{ color: "green", marginRight: 8, marginTop: 4 }} />
-                                        <Paragraph style={{ marginBottom: 0, textAlign: "right" }}>{item}</Paragraph>
-                                    </List.Item>
-                                )}
-                            />
-                        ) : (
-                            <List.Item>
-                                <Paragraph style={{ marginBottom: 0, textAlign: "center" }}>
-                                    {t("tonieboxes.boxSetup.boxVersion.emptyPros")}
-                                </Paragraph>
-                            </List.Item>
-                        )}
-                        <Title level={5} style={{ marginTop: 0 }}>
-                            {t("tonieboxes.boxSetup.boxVersion.cons")}
-                        </Title>
-                        {version.cons.length > 0 ? (
-                            <List
-                                dataSource={version.cons}
-                                renderItem={(item) => (
-                                    <List.Item style={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
-                                        <CloseOutlined
-                                            style={{ color: token.colorError, marginRight: 8, marginTop: 4 }}
-                                        />
-                                        <Paragraph style={{ marginBottom: 0, textAlign: "right" }}>{item}</Paragraph>
-                                    </List.Item>
-                                )}
-                            />
-                        ) : (
-                            <List.Item>
-                                <Paragraph style={{ marginBottom: 0, textAlign: "center" }}>
-                                    {t("tonieboxes.boxSetup.boxVersion.emptyCons")}
-                                </Paragraph>
-                            </List.Item>
-                        )}
-                    </Card>
-                </Col>
-            ))}
-        </Row>
-    );
-
     return (
         <>
             <StyledSider>
@@ -118,7 +167,9 @@ export const BoxVersionInformationPage = () => {
                     items={[
                         { title: <Link to="/">{t("home.navigationTitle")}</Link> },
                         { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
-                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
+                        {
+                            title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link>,
+                        },
                         { title: t("tonieboxes.boxSetup.boxVersion.navigationTitle") },
                     ]}
                 />

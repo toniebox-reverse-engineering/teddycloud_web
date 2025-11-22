@@ -29,13 +29,12 @@ import { SettingsPage } from "./pages/settings/SettingsPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
 import { TonieboxesPage } from "./pages/tonieboxes/TonieboxesPage";
 import { BoxSetupPage } from "./pages/tonieboxes/boxsetup/BoxSetupPage";
-import { BoxVersionInformationPage } from "./pages/tonieboxes/boxsetup/BoxVersionInformation";
+import { BoxVersionInformationPage } from "./pages/tonieboxes/boxsetup/BoxVersionInformationPage";
 import { IdentifyBoxVersionPage } from "./pages/tonieboxes/boxsetup/IdentifyBoxVersionPage";
 import { OpenBoxGuidePage } from "./pages/tonieboxes/boxsetup/OpenBoxGuidePage";
-import { CC3200BoxFlashingPage } from "./pages/tonieboxes/boxsetup/cc3200/CC3200BoxFlashingPage";
-import { CC3235BoxFlashingPage } from "./pages/tonieboxes/boxsetup/cc3235/CC3235BoxFlashingPage";
+import { CC3200BoxFlashingGuidePage } from "./pages/tonieboxes/boxsetup/cc3200/CC3200BoxFlashingGuidePage";
 import { ESP32BoxFlashingPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32BoxFlashingPage";
-import { ESP32LegacyPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyPage";
+import { ESP32LegacyFlashingGuidePage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyFlashingGuidePage";
 import { ContentPage } from "./pages/tonies/ContentPage";
 import { EncoderPage } from "./pages/tonies/EncoderPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
@@ -49,6 +48,7 @@ import { detectColorScheme } from "./utils/browserUtils";
 import MatrixRain from "./styles/matrix/matrixRain";
 import "./styles/matrix/matrix.css";
 import { GUISettingsPage } from "./pages/settings/GUISettingsPage";
+import { CC3235BoxFlashingGuidePage } from "./pages/tonieboxes/boxsetup/cc3235/CC3235BoxFlashingGuidePage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -164,14 +164,17 @@ function App() {
                                             path="/tonieboxes/boxsetup/esp32/flashing"
                                             element={<ESP32BoxFlashingPage />}
                                         />
-                                        <Route path="/tonieboxes/boxsetup/esp32/legacy" element={<ESP32LegacyPage />} />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/esp32/legacy"
+                                            element={<ESP32LegacyFlashingGuidePage />}
+                                        />
                                         <Route
                                             path="/tonieboxes/boxsetup/cc3200/flashing"
-                                            element={<CC3200BoxFlashingPage />}
+                                            element={<CC3200BoxFlashingGuidePage />}
                                         />
                                         <Route
                                             path="/tonieboxes/boxsetup/cc3235/flashing"
-                                            element={<CC3235BoxFlashingPage />}
+                                            element={<CC3235BoxFlashingGuidePage />}
                                         />
                                         <Route path="/tonieboxes/plugin/:pluginId" element={<PluginPage />} />
                                         <Route path="/settings" element={<SettingsPage />} />

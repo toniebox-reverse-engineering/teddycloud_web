@@ -1655,7 +1655,7 @@
             "boxSpecific": " (Toniebox spezifisch hinterlegt)",
             "Label": "Zertifikate",
             "uploadPath": "Upload Pfad (certDir):",
-            "uploadTonieboxCertificates": "Zertifikate für Toniebox \"{{name}}\" hochladen"
+            "uploadTonieboxCertificates": "Zertifikate für Toniebox{{name}} hochladen"
         }
     },
     "tonies": {

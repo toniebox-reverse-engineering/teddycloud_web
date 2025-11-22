@@ -1655,7 +1655,7 @@
             "boxSpecific": " (overlayed for toniebox)",
             "Label": "Certificates",
             "uploadPath": "Upload path (certDir):",
-            "uploadTonieboxCertificates": "Upload certificates for Toniebox \"{{name}}\""
+            "uploadTonieboxCertificates": "Upload certificates for Toniebox{{name}}"
         }
     },
     "tonies": {
