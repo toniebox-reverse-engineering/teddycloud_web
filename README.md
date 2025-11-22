@@ -71,9 +71,8 @@ There are no complete guidelines defined currently, only some fragments which yo
 
 ### Keep changelog up to date
 
-Please keep the changelog up to date. Please add your changes (and link to the related github issue if available) in the changelog here: ChangelogPage.tsx. If you are the first one after a release of a new version, please add a new version block in the inline changelog array.
-
-As this current changelog implementation is "special", feel free to introduce a better solution for it.
+All changes must be added to the central CHANGELOG.md file.
+Whenever you implement a change, add a new entry under the correct version. If the next version does not yet exist in the changelog, create a new version block and append your changes there. Reference related GitHub issues or pull requests whenever possible.
 
 ### Design framework
 
