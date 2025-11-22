@@ -8,7 +8,6 @@ import { FeatureItems, renderFeatureList } from "./render/renderFeatureList";
 export const Features = () => {
     const { t } = useTranslation();
     const { version, versionShort, commitGitShaShort } = useFeatures();
-    // src/pages/home/features/featureTypes.ts
 
     const features = t("home.features.features", {
         returnObjects: true,

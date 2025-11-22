@@ -8,7 +8,6 @@ import { useTonies } from "../../../../hooks/useTonies";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const useHomeData = () => {
-    // reuse hooks
     const { tonieboxes, loading: loadingTonieboxes } = useTonieboxes();
     const { value: newBoxesAllowed } = useNewBoxesAllowed();
 
@@ -21,23 +20,19 @@ export const useHomeData = () => {
         shuffle: true,
     });
 
-    // local state
     const [displayIncidentAlert, setDisplayIncidentAlert] = useState(false);
     const [accessApiEnabled, setAccessApiEnabled] = useState<[string, boolean][]>([]);
 
     const [activeTab, setActiveTab] = useState(localStorage.getItem("homeActiveTab") ?? "tonies");
 
-    // store active tab
     useEffect(() => {
         localStorage.setItem("homeActiveTab", activeTab);
     }, [activeTab]);
 
-    // fetch incident flag
     useEffect(() => {
         api.apiGetSecurityMITAlert().then(setDisplayIncidentAlert);
     }, []);
 
-    // compute repeated logic: API access disabled
     useEffect(() => {
         if (!newBoxesAllowed || tonieboxes.length === 0) return;
 
