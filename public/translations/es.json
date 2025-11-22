@@ -481,7 +481,7 @@
         "sponsorText": "¿Te gusta TeddyCloud?"
     },
     "home": {
-        "Build": "Compilación",
+        "build": "Compilación",
         "error": "Error - La interfaz gráfica no está en el estado esperado.",
         "errorConfirm": "Cerrar",
         "errorWebVersionMismatch": "El backend tiene una versión diferente a la del frontend. En una instalación Docker, asegúrate de que no se haya creado un volumen en data/www.",
