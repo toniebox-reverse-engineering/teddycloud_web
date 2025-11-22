@@ -75,15 +75,10 @@ export const ToniesList: React.FC<{
     const [urlFilterPending, setUrlFilterPending] = useState(false);
 
     const toniesListRef = useRef<HTMLDivElement | null>(null);
-    const [localTonies, setLocalTonies] = useState<TonieCardProps[]>(tonieCards);
 
     // ------------------------
     // Effects – basic wiring
     // ------------------------
-
-    useEffect(() => {
-        setLocalTonies(tonieCards);
-    }, [tonieCards]);
 
     useEffect(() => {
         const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<string, ToniesFilterSettings>;
@@ -94,12 +89,12 @@ export const ToniesList: React.FC<{
     // Derived data / memoized values
     // ------------------------
 
-    const ruidHash = useMemo(() => localTonies.map((tonie) => tonie.ruid).join(","), [localTonies]);
+    const ruidHash = useMemo(() => tonieCards.map((tonie) => tonie.ruid).join(","), [tonieCards]);
 
     const uniquenessMaps = useMemo(() => {
         function buildMap(getKey: (t: TonieCardProps) => string) {
             const counts: Record<string, number> = {};
-            localTonies.forEach((t) => {
+            tonieCards.forEach((t) => {
                 const key = getKey(t);
                 counts[key] = (counts[key] || 0) + 1;
             });
@@ -115,7 +110,7 @@ export const ToniesList: React.FC<{
             series: buildMap(getSeries),
             model: buildMap(getModel),
         };
-    }, [localTonies]);
+    }, [tonieCards]);
 
     const {
         filteredTonies,
@@ -125,8 +120,9 @@ export const ToniesList: React.FC<{
         saveFilterSettings,
         loadFilterSettings,
         deleteFilter,
+        setFilteredTonies,
     } = useToniesFilter({
-        tonieCards: localTonies,
+        tonieCards,
         lastTonieboxRUIDs,
         uniquenessMaps,
     });
@@ -141,7 +137,7 @@ export const ToniesList: React.FC<{
     // Helpers
     // ------------------------
 
-    const getBaseList = () => filteredTonies ?? localTonies;
+    const getBaseList = () => filteredTonies ?? tonieCards;
 
     // ------------------------
     // Effects – filters / URL / remote data
@@ -225,7 +221,7 @@ export const ToniesList: React.FC<{
     useEffect(() => {
         const baseRuidSet = new Set(getBaseList().map((t) => t.ruid));
         setSelectedTonies((prev) => prev.filter((ruid) => baseRuidSet.has(ruid)));
-    }, [filteredTonies, localTonies]);
+    }, [filteredTonies, tonieCards]);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -256,7 +252,7 @@ export const ToniesList: React.FC<{
     // ------------------------
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
-        setLocalTonies((prev) =>
+        setFilteredTonies((prev) =>
             prev.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
         );
         onToniesCardUpdate?.(updatedTonieCard);
@@ -334,22 +330,22 @@ export const ToniesList: React.FC<{
         {
             key: "json",
             label: t("tonies.selectMode.exportToJson"),
-            onClick: () => exportToJSON(localTonies, selectedTonies, t),
+            onClick: () => exportToJSON(tonieCards, selectedTonies, t),
         },
         {
             key: "html",
             label: t("tonies.selectMode.exportToHtml"),
-            onClick: () => exportToHTML(localTonies, selectedTonies, false, t),
+            onClick: () => exportToHTML(tonieCards, selectedTonies, false, t),
         },
         {
             key: "html-inline",
             label: t("tonies.selectMode.exportToHtmlInline"),
-            onClick: () => exportToHTML(localTonies, selectedTonies, true, t),
+            onClick: () => exportToHTML(tonieCards, selectedTonies, true, t),
         },
         {
             key: "complete-info-json",
             label: t("tonies.selectMode.exportCompleteInfoToJson"),
-            onClick: () => exportCompleteInfoToJSON(localTonies, selectedTonies),
+            onClick: () => exportCompleteInfoToJSON(tonieCards, selectedTonies),
         },
     ];
 
@@ -357,24 +353,30 @@ export const ToniesList: React.FC<{
         {
             key: "unset-no-cloud",
             label: t("tonies.selectMode.unsetNoCloud"),
-            onClick: () => setNoCloud(localTonies, selectedTonies, overlay, false, handleUpdate),
+            onClick: () => setNoCloud(tonieCards, selectedTonies, t, overlay, addNotification, false, handleUpdate),
         },
         {
             key: "set-live",
             label: t("tonies.selectMode.setLive"),
-            onClick: () => setLiveFlag(localTonies, selectedTonies, overlay, true, handleUpdate),
+            onClick: () => setLiveFlag(tonieCards, selectedTonies, t, overlay, addNotification, true, handleUpdate),
         },
         {
             key: "unset-live",
             label: t("tonies.selectMode.unsetLive"),
-            onClick: () => setLiveFlag(localTonies, selectedTonies, overlay, false, handleUpdate),
+            onClick: () => setLiveFlag(tonieCards, selectedTonies, t, overlay, addNotification, false, handleUpdate),
         },
         {
             key: "hide",
             label: t("tonies.selectMode.hideSelectedTags"),
             onClick: () =>
-                hideSelectedTonies(localTonies, selectedTonies, overlay, handleHideTonieCard, (label) =>
-                    showHideTonieConfirm(t, label)
+                hideSelectedTonies(
+                    tonieCards,
+                    selectedTonies,
+                    t,
+                    overlay,
+                    addNotification,
+                    handleHideTonieCard,
+                    (label) => showHideTonieConfirm(t, label)
                 ),
         },
     ];
@@ -540,7 +542,9 @@ export const ToniesList: React.FC<{
                             size="small"
                             style={{ width: "unset" }}
                             menu={{ items: actionMenu }}
-                            onClick={() => setNoCloud(localTonies, selectedTonies, overlay, true, handleUpdate)}
+                            onClick={() =>
+                                setNoCloud(tonieCards, selectedTonies, t, overlay, addNotification, true, handleUpdate)
+                            }
                             disabled={selectedTonies.length === 0}
                         >
                             {t("tonies.selectMode.setNoCloud")}
@@ -549,7 +553,7 @@ export const ToniesList: React.FC<{
                             size="small"
                             style={{ width: "unset" }}
                             menu={{ items: exportMenu }}
-                            onClick={() => exportToCSV(localTonies, selectedTonies, t)}
+                            onClick={() => exportToCSV(tonieCards, selectedTonies, t)}
                             disabled={selectedTonies.length === 0}
                         >
                             <Tooltip title={t("tonies.selectMode.exportCsvTooltip")}>
@@ -568,7 +572,7 @@ export const ToniesList: React.FC<{
             description={
                 <div>
                     <p>{t("tonies.noData")}</p>
-                    {localTonies.length === 0 && <p>{t("tonies.noDataText")}</p>}
+                    {tonieCards.length === 0 && <p>{t("tonies.noDataText")}</p>}
                 </div>
             }
         />

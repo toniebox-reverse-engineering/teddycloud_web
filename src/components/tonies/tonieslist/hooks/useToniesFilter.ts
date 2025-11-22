@@ -728,5 +728,6 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         saveFilterSettings,
         loadFilterSettings,
         deleteFilter,
+        setFilteredTonies,
     };
 }

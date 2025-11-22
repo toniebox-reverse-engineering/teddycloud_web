@@ -2,24 +2,22 @@ import { TonieCardProps } from "../../../../types/tonieTypes";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { TeddyCloudApi } from "../../../../api/apis/TeddyCloudApi";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useTranslation } from "react-i18next";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
-
-const { t } = useTranslation();
-const { addNotification } = useTeddyCloud();
 
 export type ConfirmFn = (tonieLabel: string) => Promise<boolean>;
 
 export const setNoCloud = async (
     tonieCards: TonieCardProps[],
     selectedTonies: string[],
+    t: any,
     overlay: any,
+    addNotification: (type: NotificationTypeEnum, title: string, description: string, context: string) => void,
     value: boolean,
     handleUpdateCard: (card: TonieCardProps) => void
 ) => {
     const selected = tonieCards.filter((c) => selectedTonies.includes(c.ruid));
+
     for (const card of selected) {
         const model = `${card.tonieInfo.series}` + (card.tonieInfo.episode ? ` - ${card.tonieInfo.episode}` : "");
 
@@ -53,7 +51,9 @@ export const setNoCloud = async (
 export const setLiveFlag = async (
     tonieCards: TonieCardProps[],
     selectedTonies: string[],
+    t: any,
     overlay: any,
+    addNotification: (type: NotificationTypeEnum, title: string, description: string, context: string) => void,
     value: boolean,
     handleUpdateCard: (card: TonieCardProps) => void
 ) => {
@@ -92,7 +92,9 @@ export const setLiveFlag = async (
 export async function hideSelectedTonies(
     tonieCards: TonieCardProps[],
     selectedTonies: string[],
+    t: any,
     overlay: string | undefined,
+    addNotification: (type: NotificationTypeEnum, title: string, description: string, context: string) => void,
     onHide: (ruid: string) => void,
     confirmFn: ConfirmFn
 ) {
