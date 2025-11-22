@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Divider, Form, Input, Modal, Space, Switch, Tooltip, TreeSelect, Upload, theme } from "antd";
+import { Button, Divider, Input, Space, Switch, Tooltip, TreeSelect, Upload, theme } from "antd";
 import { useTranslation } from "react-i18next";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
@@ -7,6 +7,7 @@ import { DndContext } from "@dnd-kit/core";
 import { MAX_FILES } from "../../../constants";
 import { MyUploadFile } from "../../../utils/encoder";
 import { DraggableUploadListItem } from "../common/DraggableUploadListItem";
+import CreateDirectoryModal from "../filebrowser/modals/CreateDirectoryModal";
 import { useEncoder } from "./hooks/useEncoder";
 
 const { useToken } = theme;
@@ -16,7 +17,6 @@ export const Encoder: React.FC = () => {
     const { token } = useToken();
 
     const {
-        // state
         fileList,
         uploading,
         processing,
@@ -27,68 +27,38 @@ export const Encoder: React.FC = () => {
         treeNodeId,
         treeData,
         isCreateDirectoryModalOpen,
-        inputValueCreateDirectory,
-        hasNewDirectoryInvalidChars,
-        inputRef,
+        createDirectoryPath,
 
-        // actions
+        // Actions
         setTreeNodeId,
         setUseFrontendEncoding,
         sortFileListAlphabetically,
         clearFileList,
         openCreateDirectoryModal,
         closeCreateDirectoryModal,
-        handleCreateDirectoryInputChange,
+        setCreateDirectoryPath,
         handleFileNameInputChange,
-        createDirectory,
         handleUpload,
         handleWasmUpload,
 
-        // dnd / upload
+        // DnD / Upload
         sensor,
         onDragEnd,
         uploadProps,
         onRemoveUpload,
         onLoadTreeData,
-        pathFromNodeId,
 
-        // helpers
+        // CreateDirectoryModal
+        rootTreeNode,
+        isNodeExpanded,
+        findNodeIdByFullPath,
+        findNodesByParentId,
+        setRebuildList,
+        setTreeData,
+
+        // Helper
         invalidCharactersAsString,
     } = useEncoder();
-
-    const createDirectoryModal = (
-        <Modal
-            title={t("fileBrowser.createDirectory.modalTitle")}
-            open={isCreateDirectoryModalOpen}
-            onCancel={closeCreateDirectoryModal}
-            onOk={createDirectory}
-            okText={t("fileBrowser.createDirectory.create")}
-            cancelText={t("fileBrowser.createDirectory.cancel")}
-            okButtonProps={{ disabled: hasNewDirectoryInvalidChars }}
-        >
-            <p>
-                {t("fileBrowser.createDirectory.inDirectory")} <b>{pathFromNodeId(treeNodeId)}/</b>
-            </p>
-            <Form.Item
-                validateStatus={hasNewDirectoryInvalidChars ? "error" : ""}
-                help={
-                    hasNewDirectoryInvalidChars
-                        ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
-                        : ""
-                }
-                required
-            >
-                <Input
-                    ref={inputRef}
-                    autoFocus
-                    placeholder={t("fileBrowser.createDirectory.placeholder")}
-                    value={inputValueCreateDirectory}
-                    status={hasNewDirectoryInvalidChars ? "error" : ""}
-                    onChange={handleCreateDirectoryInputChange}
-                />
-            </Form.Item>
-        </Modal>
-    );
 
     return (
         <>
@@ -173,7 +143,7 @@ export const Encoder: React.FC = () => {
                                     <TreeSelect
                                         treeLine
                                         treeDataSimpleMode
-                                        disabled={uploading}
+                                        disabled={uploading || processing}
                                         style={{ maxWidth: 250 }}
                                         value={treeNodeId}
                                         styles={{
@@ -186,11 +156,11 @@ export const Encoder: React.FC = () => {
                                         }}
                                         onChange={setTreeNodeId}
                                         loadData={onLoadTreeData}
-                                        treeData={treeData}
+                                        treeData={treeData as any}
                                     />
                                     <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                                         <Button
-                                            disabled={uploading}
+                                            disabled={uploading || processing}
                                             icon={<FolderAddOutlined />}
                                             onClick={openCreateDirectoryModal}
                                             style={{ borderRadius: 0 }}
@@ -207,18 +177,16 @@ export const Encoder: React.FC = () => {
                                                 : ""
                                         }
                                         onChange={handleFileNameInputChange}
-                                        disabled={uploading}
+                                        disabled={uploading || processing}
                                     />
                                 </Space.Compact>
-
-                                {hasInvalidChars && (
+                                {hasInvalidChars ? (
                                     <div style={{ textAlign: "end", color: token.colorErrorText }}>
                                         {t("inputValidator.invalidCharactersDetected", {
                                             invalidChar: invalidCharactersAsString,
                                         })}
                                     </div>
-                                )}
-
+                                ) : null}
                                 <div
                                     style={{
                                         display: "flex",
@@ -235,18 +203,19 @@ export const Encoder: React.FC = () => {
                                         defaultChecked={useFrontendEncodingSetting}
                                         checked={useFrontendEncoding}
                                         onChange={setUseFrontendEncoding}
+                                        disabled={uploading || processing}
                                     />
                                     <Button
                                         type="primary"
                                         onClick={useFrontendEncoding ? handleWasmUpload : handleUpload}
                                         disabled={fileList.length === 0 || tafFilename === "" || hasInvalidChars}
-                                        loading={uploading}
+                                        loading={uploading || processing}
                                     >
                                         {uploading
                                             ? processing
                                                 ? t("tonies.encoder.processing")
                                                 : t("tonies.encoder.uploading")
-                                            : t("tonies.encoder.upload")}
+                                            : t("tonies.encoder.encode")}
                                     </Button>
                                 </div>
                             </Space>
@@ -255,7 +224,23 @@ export const Encoder: React.FC = () => {
                 ) : null}
             </Space>
 
-            {createDirectoryModal}
+            <CreateDirectoryModal
+                open={isCreateDirectoryModalOpen}
+                onClose={closeCreateDirectoryModal}
+                createDirectoryPath={createDirectoryPath}
+                setCreateDirectoryPath={setCreateDirectoryPath}
+                path={createDirectoryPath}
+                treeData={treeData}
+                setTreeData={setTreeData}
+                rootTreeNode={rootTreeNode}
+                isNodeExpanded={isNodeExpanded}
+                findNodeIdByFullPath={findNodeIdByFullPath}
+                findNodesByParentId={findNodesByParentId}
+                isMoveFileModalOpen={false}
+                isEncodeFilesModalOpen={true}
+                setTreeNodeId={setTreeNodeId}
+                setRebuildList={setRebuildList}
+            />
         </>
     );
 };

@@ -1,7 +1,8 @@
+// src/hooks/useEncoder.ts
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Upload, type InputRef, type TreeSelectProps, type UploadProps } from "antd";
-import { DefaultOptionType } from "antd/es/select";
+import type { DefaultOptionType } from "antd/es/select";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { PointerSensor, useSensor } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
@@ -18,7 +19,21 @@ import { loadWasmEncoder, isWasmEncoderAvailable, WasmTafEncoder } from "../../.
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/" };
+export type EncoderTreeNode = {
+    id: string;
+    pId: string;
+    value: string;
+    title: string;
+    fullPath: string;
+};
+
+const rootTreeNode: EncoderTreeNode = {
+    id: "1",
+    pId: "-1",
+    value: "1",
+    title: "/",
+    fullPath: "/", // wichtig für CreateDirectoryModal (fullPath mit /-Suffix)
+};
 
 export const useEncoder = () => {
     const { t } = useTranslation();
@@ -29,45 +44,44 @@ export const useEncoder = () => {
     const [useFrontendEncodingSetting, setUseFrontendEncodingSetting] = useState(false);
     const [wasmLoaded, setWasmLoaded] = useState(false);
     const [bitrate, setBitrate] = useState(96);
+
     const [fileList, setFileList] = useState<MyUploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
     const [processing, setProcessing] = useState(false);
     const [tafFilename, setTafFilename] = useState("");
+
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
-    const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
+    const [treeData, setTreeData] = useState<EncoderTreeNode[]>([rootTreeNode]);
+
+    // für CreateDirectoryModal
     const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState(false);
-    const [inputValueCreateDirectory, setInputValueCreateDirectory] = useState("");
+    const [createDirectoryPath, setCreateDirectoryPath] = useState<string>("");
+    const [rebuildList, setRebuildList] = useState<boolean>(false);
+
     const [hasInvalidChars, setHasInvalidChars] = useState(false);
-    const [hasNewDirectoryInvalidChars, setHasNewDirectoryInvalidChars] = useState(false);
 
     const inputRef = useRef<InputRef>(null);
 
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
     // Initial Settings + Tree preload
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
 
     useEffect(() => {
         const fetchDebugPCM = async () => {
-            let logPCMURLObject = false;
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("debug.web.pcm_encode_console_url");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
-                logPCMURLObject = data.toString() === "true";
+                setDebugPCMObjects(data.toString() === "true");
             } catch (error) {
                 console.error("Error fetching debug.web.pcm_encode_console_url: ", error);
             }
-            setDebugPCMObjects(logPCMURLObject);
         };
 
         const fetchUseFrontendSetting = async () => {
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("encode.use_frontend");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 const useFrontend = data.toString() === "true";
                 setUseFrontendEncodingSetting(useFrontend);
@@ -91,34 +105,35 @@ export const useEncoder = () => {
         const fetchBitrateSetting = async () => {
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("encode.bitrate");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 const bitrateSetting = parseInt(data.toString(), 10);
-                if (!isNaN(bitrateSetting)) {
-                    setBitrate(bitrateSetting);
-                }
+                if (!isNaN(bitrateSetting)) setBitrate(bitrateSetting);
             } catch (error) {
                 console.error("Error fetching encode.bitrate: ", error);
             }
         };
 
         const preLoadTreeData = async () => {
-            const newPath = pathFromNodeId(rootTreeNode.id);
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
+            const path = pathFromNodeId(rootTreeNode.id);
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(path)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     let list: any[] = data.files;
                     list = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
                         .sort((a, b) => (a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1))
-                        .map((entry, idx) => ({
-                            id: rootTreeNode.id + "." + idx,
-                            pId: rootTreeNode.id,
-                            value: rootTreeNode.id + "." + idx,
-                            title: entry.name,
-                        }));
+                        .map((entry, idx) => {
+                            const parentPath = path || "";
+                            const fullPath = (parentPath === "" ? "" : parentPath) + "/" + entry.name + "/"; // z.B. /dir1/dir2/
+                            return {
+                                id: rootTreeNode.id + "." + idx,
+                                pId: rootTreeNode.id,
+                                value: rootTreeNode.id + "." + idx,
+                                title: entry.name,
+                                fullPath,
+                            } as EncoderTreeNode;
+                        });
                     setTreeData((prev) => prev.concat(list));
                 })
                 .catch((error) => console.error("Error preloading tree data:", error));
@@ -131,7 +146,7 @@ export const useEncoder = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Autofocus im Create-Directory-Modal
+    // Autofocus fürs eigene kleine Input-Feld, falls du es nutzen willst
     useEffect(() => {
         if (isCreateDirectoryModalOpen) {
             setTimeout(() => {
@@ -140,33 +155,53 @@ export const useEncoder = () => {
         }
     }, [isCreateDirectoryModalOpen]);
 
-    // -------------------------------------------------------------------
-    // Tree / Pfade
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
+    // Tree / Pfade + Helper-Funktionen fürs Modal
+    // -------------------------------------------------
 
     const pathFromNodeId = (nodeId: string): string => {
-        const node = treeData.filter((entry) => entry.value === nodeId)[0];
+        const node = treeData.find((n) => n.value === nodeId);
         if (!node) return "";
-        if (node.pId === "-1") return "";
-        return pathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
+        if (node.fullPath === "/") return "";
+        return node.fullPath.replace(/\/$/, ""); // "/foo/bar/" -> "/foo/bar"
+    };
+
+    const isNodeExpanded = (nodeId: string) => {
+        // Encoder nutzt keine expand/collapse-Logik → einfach immer true
+        return true;
+    };
+
+    const findNodeIdByFullPath = (fullPath: string, nodes: EncoderTreeNode[]): string | null => {
+        const node = nodes.find((n) => n.fullPath === fullPath);
+        return node ? node.id : null;
+    };
+
+    const findNodesByParentId = (parentId: string, nodes: EncoderTreeNode[]): string[] => {
+        return nodes.filter((n) => n.pId === parentId).map((n) => n.id);
     };
 
     const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
         new Promise((resolve) => {
-            const newPath = pathFromNodeId(id);
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
+            const path = pathFromNodeId(id);
+            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(path)}&special=library`)
                 .then((response) => response.json())
                 .then((data) => {
                     let list: any[] = data.files;
                     list = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
                         .sort((a, b) => (a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1))
-                        .map((entry, idx) => ({
-                            id: id + "." + idx,
-                            pId: id,
-                            value: id + "." + idx,
-                            title: entry.name,
-                        }));
+                        .map((entry, idx) => {
+                            const parentPath = path || "";
+                            const fullPath = (parentPath === "" ? "" : parentPath) + "/" + entry.name + "/"; // z.B. /dir1/dir2/
+                            return {
+                                id: id + "." + idx,
+                                pId: id,
+                                value: id + "." + idx,
+                                title: entry.name,
+                                fullPath,
+                            } as EncoderTreeNode;
+                        });
+
                     setTreeData((prev) => prev.concat(list));
                     resolve(true);
                 })
@@ -176,9 +211,9 @@ export const useEncoder = () => {
                 });
         });
 
-    // -------------------------------------------------------------------
-    // Drag & Drop / Upload-Liste
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
+    // DnD / Upload-Liste
+    // -------------------------------------------------
 
     const sensor = useSensor(PointerSensor, {
         activationConstraint: { distance: 10 },
@@ -256,75 +291,23 @@ export const useEncoder = () => {
         setFileList([]);
     };
 
-    // -------------------------------------------------------------------
-    // Create Directory Modal
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
+    // CreateDirectoryModal-Handling (nur Open/Close + Path)
+    // -------------------------------------------------
 
     const openCreateDirectoryModal = () => {
+        const currentPath = pathFromNodeId(treeNodeId); // ohne / am Ende
+        setCreateDirectoryPath(currentPath);
         setCreateDirectoryModalOpen(true);
     };
 
     const closeCreateDirectoryModal = () => {
         setCreateDirectoryModalOpen(false);
-        setInputValueCreateDirectory("");
-        setHasNewDirectoryInvalidChars(false);
     };
 
-    const handleCreateDirectoryInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setHasNewDirectoryInvalidChars(!isInputValid(value));
-        setInputValueCreateDirectory(value);
-    };
-
-    const createDirectory = () => {
-        const path = pathFromNodeId(treeNodeId);
-        const newNodeId = `${treeNodeId}.${treeData.length}`;
-        const newDir = {
-            id: newNodeId,
-            pId: treeNodeId,
-            value: newNodeId,
-            title: inputValueCreateDirectory,
-        };
-
-        api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, path + "/" + inputValueCreateDirectory)
-            .then((response) => response.text())
-            .then((text) => {
-                if (text !== "OK") {
-                    throw new Error(text);
-                }
-
-                setTreeData((prev) =>
-                    [...prev, newDir].sort((a, b) =>
-                        a.title === b.title ? 0 : a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
-                    )
-                );
-                setTreeNodeId(newNodeId);
-                addNotification(
-                    NotificationTypeEnum.Success,
-                    t("fileBrowser.createDirectory.directoryCreated"),
-                    t("fileBrowser.createDirectory.directoryCreatedDetails", {
-                        directory: path + "/" + inputValueCreateDirectory,
-                    }),
-                    t("fileBrowser.title")
-                );
-                setCreateDirectoryModalOpen(false);
-                setInputValueCreateDirectory("");
-            })
-            .catch((error) => {
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("fileBrowser.createDirectory.directoryCreateFailed"),
-                    t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
-                        directory: path + "/" + inputValueCreateDirectory,
-                    }) + error,
-                    t("fileBrowser.title")
-                );
-            });
-    };
-
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
     // Filename input
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
 
     const handleFileNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -332,9 +315,9 @@ export const useEncoder = () => {
         setTafFilename(value);
     };
 
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
     // Server-side Upload
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
 
     const handleUpload = async () => {
         setUploading(true);
@@ -416,9 +399,9 @@ export const useEncoder = () => {
         }
     };
 
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
     // Browser-side (WASM) Upload
-    // -------------------------------------------------------------------
+    // -------------------------------------------------
 
     const handleWasmUpload = async () => {
         setUploading(true);
@@ -449,6 +432,9 @@ export const useEncoder = () => {
                     );
                 }
             );
+
+            setProcessing(false);
+            setUploading(true);
 
             addLoadingNotification(
                 key,
@@ -500,7 +486,7 @@ export const useEncoder = () => {
     };
 
     return {
-        // state
+        // State
         fileList,
         uploading,
         processing,
@@ -511,20 +497,18 @@ export const useEncoder = () => {
         treeNodeId,
         treeData,
         isCreateDirectoryModalOpen,
-        inputValueCreateDirectory,
-        hasNewDirectoryInvalidChars,
+        createDirectoryPath,
         inputRef,
 
-        // actions
+        // Actions
         setTreeNodeId,
         setUseFrontendEncoding,
         sortFileListAlphabetically,
         clearFileList,
         openCreateDirectoryModal,
         closeCreateDirectoryModal,
-        handleCreateDirectoryInputChange,
+        setCreateDirectoryPath,
         handleFileNameInputChange,
-        createDirectory,
         handleUpload,
         handleWasmUpload,
 
@@ -534,9 +518,17 @@ export const useEncoder = () => {
         uploadProps,
         onRemoveUpload,
         onLoadTreeData,
-        pathFromNodeId,
 
-        // helpers
+        // CreateDirectoryModal
+        rootTreeNode,
+        isNodeExpanded,
+        findNodeIdByFullPath,
+        findNodesByParentId,
+        setRebuildList,
+        setTreeData,
+
+        // Helper
+        pathFromNodeId,
         invalidCharactersAsString,
     };
 };

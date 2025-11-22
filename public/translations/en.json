@@ -1720,6 +1720,7 @@
             "title": "Edit model"
         },
         "encoder": {
+            "encode": "Encode",
             "clearList": "Clear list",
             "errorFileProcessing": "Failed to process the audio file: ",
             "filename": "Filename",
