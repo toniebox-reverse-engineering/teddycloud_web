@@ -287,8 +287,8 @@
         "date": "Datum",
         "delete": "Löschen",
         "deleteMultiple": "{{selectedRowCount}} markierte Zeilen löschen",
-        "downloadFileAsOgg": "Download TAF als *.ogg",
         "downloadFile": "Download file",
+        "downloadFileAsOgg": "Download TAF als *.ogg",
         "encodeFiles": {
             "addFiles": "Dateien hinzufügen",
             "cancel": "Abbrechen",
@@ -1720,10 +1720,14 @@
             "title": "Modell bearbeiten"
         },
         "encoder": {
-            "encode": "Konvertieren",
+            "browserEncodingInProgress": "Audio-Dateien werden im Browser encodiert...",
+            "browserSideEncoding": "Encoding im Browser",
             "clearList": "Liste leeren",
+            "encode": "Konvertieren",
+            "encoding": "Kodierung",
             "errorFileProcessing": "Fehler bei der Verarbeitung der Audiodatei: ",
             "filename": "Dateiname",
+            "loadingWasmEncoder": "WASM-Encoder wird geladen...",
             "maxFiles": "Du kannst nur maximal {{maxFiles}} Dateien hinzufügen.",
             "navigationTitle": "Audio Encoder",
             "processing": "Verarbeitung läuft...",
@@ -1731,6 +1735,7 @@
             "processingError": "Fehler bei der Verarbeitung!",
             "removeFile": "Datei entfernen",
             "saveAs": "Datei speichern unter",
+            "serverSideEncoding": "Encoding auf dem Server",
             "sortAlphabetically": "Dateien alphabetisch sortieren",
             "targetDirectory": "Zielpfad auswählen",
             "title": "Audio Encoder",
@@ -1746,12 +1751,7 @@
             "uploadingDetails": "Datei \"{{file}}\" wird hochgeladen...",
             "uploadSuccessful": "Dateikodierung erfolgreich!",
             "uploadSuccessfulDetails": "Dateien wurden als \"{{file}}\" kodiert und erfolgreich zur Bibliothek hinzugefügt!",
-            "uploadText": "Klicke oder ziehe bis zu {{maxFiles}} Audiodateien, die du in eine TAF-Datei konvertieren möchtest, zum Hochladen in diesen Bereich",
-            "browserSideEncoding": "Encoding im Browser",
-            "serverSideEncoding": "Encoding auf dem Server",
-            "loadingWasmEncoder": "WASM-Encoder wird geladen...",
-            "browserEncodingInProgress": "Audio-Dateien werden im Browser encodiert...",
-            "encoding": "Kodierung"
+            "uploadText": "Klicke oder ziehe bis zu {{maxFiles}} Audiodateien, die du in eine TAF-Datei konvertieren möchtest, zum Hochladen in diesen Bereich"
         },
         "errorFetchingSystemSounds": "Fehler beim Abrufen der System Sounds",
         "errorFetchingTonies": "Fehler beim Abrufen der Tonies",
@@ -1971,6 +1971,21 @@
             "titleCreate": "Neue TAP erstellen",
             "titleEdit": "TAP bearbeiten"
         },
+        "teddyaudioplayer": {
+            "continueInFooterAudioPlayer": "Im Fußbereich Audio Player fortsetzen",
+            "enterFullscreen": "Vollbild starten",
+            "exitFullscreen": "Vollbild beenden",
+            "expand": "Audio Player vergrößern",
+            "navigationTitle": "Audio Player",
+            "noTracks": "Keine Tracks verfügbar",
+            "openInTonieAudioPlayer": "Im Audio Player öffnen",
+            "openStandalone": "Player im Standalone-Modus öffnen",
+            "selectTonieToPlay": "Wähle einen Tonie/ein Tag zum Abspielen aus",
+            "shrink": "Audio Player minimieren",
+            "standaloneTitle": "Audio Player",
+            "title": "Audio Player",
+            "unknown": "Unbekannt"
+        },
         "teddystudio": {
             "addedHint": "\"{{title}}\" wurde hinzugefügt.",
             "clear": "Blatt leeren",
@@ -2059,9 +2074,15 @@
                     "syntaxExamples": {
                         "and": "Filtert Tonies, deren Serie 'Pixi' ist UND der Tonie gültig ist.",
                         "combined": "Filtert Tonies, die live sind, Cloud-Zugriff haben, deutsche Sprache besitzen und einzigartig in der Serie sind.",
+                        "endswith": "Filtert Tonies, bei denen das Feld mit dem angegebenen Wert endet.",
+                        "inList": "Filtert Tonies, bei denen das Feld einem der angegebenen Werte entspricht.",
+                        "isEmpty": "Filtert Tonies, bei denen das Feld leer ist.",
+                        "isNotEmpty": "Filtert Tonies, bei denen das Feld nicht leer ist.",
                         "negation": "Filtert Tonies, die Cloud-Zugriff haben.",
+                        "notInList": "Filtert Tonies, bei denen das Feld keinem der angegebenen Werte entspricht.",
                         "or": "Filtert Tonies mit entweder deutscher oder französischer Sprache.",
                         "series": "Filtert Tonies, deren Serie 'Pixi' ist.",
+                        "startswith": "Filtert Tonies, bei denen das Feld mit dem angegebenen Wert beginnt.",
                         "title": "Syntax-Beispiele",
                         "trackCount": "Nach Anzahl der Tracks filtern",
                         "trackExact": "Tracks nach exaktem Namen filtern",
@@ -2070,13 +2091,7 @@
                         "trackSecondsCountNotEqualsTrackCount": "Filter für Tonies, bei denen die Länge des Track-Startpositions-Arrays nicht der Anzahl der Tracks entspricht",
                         "tracksRegex": "Tracks mit einem Regex-Muster filtern",
                         "tracksTitle": "Beispiele für Track-Felder:",
-                        "unique": "Filtert Tonies, die die einzigen in ihrer Serie sind.",
-                        "isEmpty": "Filtert Tonies, bei denen das Feld leer ist.",
-                        "isNotEmpty": "Filtert Tonies, bei denen das Feld nicht leer ist.",
-                        "startswith": "Filtert Tonies, bei denen das Feld mit dem angegebenen Wert beginnt.",
-                        "endswith": "Filtert Tonies, bei denen das Feld mit dem angegebenen Wert endet.",
-                        "inList": "Filtert Tonies, bei denen das Feld einem der angegebenen Werte entspricht.",
-                        "notInList": "Filtert Tonies, bei denen das Feld keinem der angegebenen Werte entspricht."
+                        "unique": "Filtert Tonies, die die einzigen in ihrer Serie sind."
                     },
                     "table": {
                         "description": "Beschreibung",
@@ -2124,21 +2139,6 @@
             "showAll": "Zeige alle",
             "showPagination": "Paginierung einblenden",
             "title": "Tonies"
-        },
-        "teddyaudioplayer": {
-            "continueInFooterAudioPlayer": "Im Fußbereich Audio Player fortsetzen",
-            "enterFullscreen": "Vollbild starten",
-            "exitFullscreen": "Vollbild beenden",
-            "expand": "Audio Player vergrößern",
-            "navigationTitle": "Audio Player",
-            "noTracks": "Keine Tracks verfügbar",
-            "openInTonieAudioPlayer": "Im Audio Player öffnen",
-            "openStandalone": "Player im Standalone-Modus öffnen",
-            "selectTonieToPlay": "Wähle einen Tonie/ein Tag zum Abspielen aus",
-            "shrink": "Audio Player minimieren",
-            "standaloneTitle": "Audio Player",
-            "title": "Audio Player",
-            "unknown": "Unbekannt"
         },
         "toniesExportList": "Tonies-Exportliste",
         "toniesExportListCreateDate": "Erstellt am",

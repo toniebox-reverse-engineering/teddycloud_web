@@ -287,8 +287,8 @@
         "date": "Date",
         "delete": "Delete",
         "deleteMultiple": "Delete {{selectedRowCount}} selected rows",
-        "downloadFileAsOgg": "Download TAF as *.ogg",
         "downloadFile": "Download File",
+        "downloadFileAsOgg": "Download TAF as *.ogg",
         "encodeFiles": {
             "addFiles": "Add files",
             "cancel": "Cancel",
@@ -1720,10 +1720,14 @@
             "title": "Edit model"
         },
         "encoder": {
-            "encode": "Encode",
+            "browserEncodingInProgress": "Encoding audio files in browser...",
+            "browserSideEncoding": "Browser-side encoding",
             "clearList": "Clear list",
+            "encode": "Encode",
+            "encoding": "Encoding",
             "errorFileProcessing": "Failed to process the audio file: ",
             "filename": "Filename",
+            "loadingWasmEncoder": "Loading WASM encoder...",
             "maxFiles": "You can only add up to {{maxFiles}} files.",
             "navigationTitle": "Audio Encoder",
             "processing": "Processing...",
@@ -1731,6 +1735,7 @@
             "processingError": "Error while processing!",
             "removeFile": "Remove file",
             "saveAs": "Save file as",
+            "serverSideEncoding": "Server-side encoding",
             "sortAlphabetically": "Sort files alphabetically",
             "targetDirectory": "Choose target directory",
             "title": "Audio Encoder",
@@ -1746,12 +1751,7 @@
             "uploadingDetails": "Uploading file \"{{file}}\"...",
             "uploadSuccessful": "File encoding successful!",
             "uploadSuccessfulDetails": "Files were encoded as \"{{file}}\" and added to the library successful!",
-            "uploadText": "Click or drag up to {{maxFiles}} audio files you want to convert to a taf file to upload them in this area",
-            "browserSideEncoding": "Browser-side encoding",
-            "serverSideEncoding": "Server-side encoding",
-            "loadingWasmEncoder": "Loading WASM encoder...",
-            "browserEncodingInProgress": "Encoding audio files in browser...",
-            "encoding": "Encoding"
+            "uploadText": "Click or drag up to {{maxFiles}} audio files you want to convert to a taf file to upload them in this area"
         },
         "errorFetchingSystemSounds": "Error fetching system sounds",
         "errorFetchingTonies": "Error fetching Tonies",
@@ -1971,6 +1971,21 @@
             "titleCreate": "Create new TAP",
             "titleEdit": "Edit TAP"
         },
+        "teddyaudioplayer": {
+            "continueInFooterAudioPlayer": "Continue in footer audio player",
+            "enterFullscreen": "Enter Fullscreen",
+            "exitFullscreen": "Exit Fullscreen",
+            "expand": "Expand audio player",
+            "navigationTitle": "Audio Player",
+            "noTracks": "No tracks available",
+            "openInTonieAudioPlayer": "Open in Audio Player",
+            "openStandalone": "Open player in standalone mode",
+            "selectTonieToPlay": "Select a Tonie/tag to play",
+            "shrink": "Minimize audio player",
+            "standaloneTitle": "Audio Player",
+            "title": "Audio Player",
+            "unknown": "Unknown"
+        },
         "teddystudio": {
             "addedHint": "\"{{title}}\" has been added.",
             "clear": "Clear sheet",
@@ -2059,9 +2074,15 @@
                     "syntaxExamples": {
                         "and": "Filters Tonies where series is 'Pixi' AND the Tonie is valid.",
                         "combined": "Filters Tonies that are live, have cloud access, German language and unique in series.",
+                        "endswith": "Filters Tonies where the field ends with the given value.",
+                        "inList": "Filters Tonies where the field matches any of the given values.",
+                        "isEmpty": "Filters Tonies where the field is empty.",
+                        "isNotEmpty": "Filters Tonies where the field is not empty.",
                         "negation": "Filters Tonies that have cloud access.",
+                        "notInList": "Filters Tonies where the field matches none of the given values.",
                         "or": "Filters Tonies with either German or French language.",
                         "series": "Filters Tonies where the series is 'Pixi'.",
+                        "startswith": "Filters Tonies where the field starts with the given value.",
                         "title": "Syntax Examples",
                         "trackCount": "Filter by number of tracks",
                         "trackExact": "Filter tracks by exact name",
@@ -2070,13 +2091,7 @@
                         "trackSecondsCountNotEqualsTrackCount": "Filter for tonies where length of track start position array does not equal number of tracks",
                         "tracksRegex": "Filter tracks using a regex pattern",
                         "tracksTitle": "Track-related examples:",
-                        "unique": "Filters Tonies that are the only one in their series.",
-                        "isEmpty": "Filters Tonies where the field is empty.",
-                        "isNotEmpty": "Filters Tonies where the field is not empty.",
-                        "startswith": "Filters Tonies where the field starts with the given value.",
-                        "endswith": "Filters Tonies where the field ends with the given value.",
-                        "inList": "Filters Tonies where the field matches any of the given values.",
-                        "notInList": "Filters Tonies where the field matches none of the given values."
+                        "unique": "Filters Tonies that are the only one in their series."
                     },
                     "table": {
                         "description": "Description",
@@ -2124,21 +2139,6 @@
             "showAll": "Show all",
             "showPagination": "Show pagination",
             "title": "Tonies"
-        },
-        "teddyaudioplayer": {
-            "continueInFooterAudioPlayer": "Continue in footer audio player",
-            "enterFullscreen": "Enter Fullscreen",
-            "exitFullscreen": "Exit Fullscreen",
-            "expand": "Expand audio player",
-            "navigationTitle": "Audio Player",
-            "noTracks": "No tracks available",
-            "openInTonieAudioPlayer": "Open in Audio Player",
-            "openStandalone": "Open player in standalone mode",
-            "selectTonieToPlay": "Select a Tonie/tag to play",
-            "shrink": "Minimize audio player",
-            "standaloneTitle": "Audio Player",
-            "title": "Audio Player",
-            "unknown": "Unknown"
         },
         "toniesExportList": "Tonies export list",
         "toniesExportListCreateDate": "Generated on",
