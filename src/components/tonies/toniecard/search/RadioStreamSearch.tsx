@@ -3,7 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Select, Typography } from "antd";
 
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useRadioStreamSearch } from "../hooks/useRadioStreamSearch";
 import { useDebouncedCallback } from "../../common/hooks/useDebouncedCallback";

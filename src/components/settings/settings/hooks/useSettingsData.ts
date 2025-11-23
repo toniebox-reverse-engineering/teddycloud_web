@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi, OptionsList } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import SettingsDataHandler from "../../../../data/SettingsDataHandler";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());

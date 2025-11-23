@@ -13,7 +13,7 @@ import {
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { StyledSubMenu } from "../common/StyledComponents";
 import { TonieboxIcon } from "../common/icons/TonieboxIcon";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";

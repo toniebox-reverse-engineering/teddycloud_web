@@ -10,7 +10,7 @@ import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import { TonieCard } from "../toniecard/TonieCard";
 import { useToniesFilter } from "./hooks/useToniesFilter";
-import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
 import { scrollToTop } from "../../../utils/browser/browserUtils";

@@ -16,7 +16,7 @@ import {
     AppstoreOutlined,
     QuestionOutlined,
 } from "@ant-design/icons";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 
 import { forumUrl } from "../../constants";
 

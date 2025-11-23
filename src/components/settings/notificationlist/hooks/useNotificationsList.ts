@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationRecord } from "../../../../types/teddyCloudNotificationTypes";
 
 type NotificationStatusFilter = "Confirmed" | "Unconfirmed";

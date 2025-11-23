@@ -7,7 +7,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { MAX_FILES } from "../../../../constants";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { MyUploadFile, upload as encoderUpload } from "../../../../utils/audio/audioEncoder";
 import {

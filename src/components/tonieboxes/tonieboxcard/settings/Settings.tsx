@@ -9,7 +9,7 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 import LoadingSpinner from "../../../common/elements/LoadingSpinner";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { SettingsOptionItem } from "../../../common/form/SettingsOptionItem";
 import SettingsButton from "../../../common/buttons/SettingsButtons";
 import SettingsDataHandler from "../../../../data/SettingsDataHandler";

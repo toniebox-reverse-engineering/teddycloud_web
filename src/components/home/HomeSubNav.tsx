@@ -5,7 +5,7 @@ import { MenuProps } from "antd";
 import { ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
 import i18n from "../../i18n";
 
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { StyledSubMenu } from "../common/StyledComponents";
 import { gitHubSponsoringUrl } from "../../constants";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";

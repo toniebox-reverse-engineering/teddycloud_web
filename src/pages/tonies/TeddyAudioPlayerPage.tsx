@@ -5,19 +5,14 @@ import { Button } from "antd";
 import { ExportOutlined, ImportOutlined } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { useTonieboxContent } from "../../hooks/useTonieboxContent";
 import { TeddyAudioPlayer } from "../../components/tonies/teddyaudioplayer/TeddyAudioPlayer";
 import LoadingSpinner from "../../components/common/elements/LoadingSpinner";
-import { useAudioContext } from "../../components/audio/AudioContext";
 import { useTonies } from "../../hooks/useTonies";
-const api = new TeddyCloudApi(defaultAPIConfig());
+import { useAudioContext } from "../../contexts/AudioContext";
 
 type TeddyAudioPlayerPageProps = {
     standalone?: boolean;

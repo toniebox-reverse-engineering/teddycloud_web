@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal } from "antd";
 
-import logoImg from "../../assets/logo.png";
+import logoImg from "../assets/logo.png";
 
-import { supportsOggOpus } from "../../utils/browser/browserUtils";
-import { TonieCardProps } from "../../types/tonieTypes";
-import { Record } from "../../types/fileBrowserTypes";
+import { Record } from "../types/fileBrowserTypes";
+import { TonieCardProps } from "../types/tonieTypes";
+import { supportsOggOpus } from "../utils/browser/browserUtils";
 
 type TonieCardTAFRecord = TonieCardProps | Record;
 

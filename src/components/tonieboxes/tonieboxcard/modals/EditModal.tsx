@@ -3,7 +3,7 @@ import { Modal, Divider, Input, Typography, Button, Select, theme } from "antd";
 import { useTranslation } from "react-i18next";
 import { RollbackOutlined, SaveFilled } from "@ant-design/icons";
 
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 
 const { Paragraph, Text } = Typography;
 const { useToken } = theme;

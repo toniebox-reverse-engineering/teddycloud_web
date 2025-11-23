@@ -19,7 +19,7 @@ import { OptionsList, TeddyCloudApi } from "../../../api";
 import { TonieCardProps } from "../../../types/tonieTypes";
 import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../../types/tonieboxTypes";
 
-import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 import defaultBoxImage from "../../../assets/unknown_box.png";

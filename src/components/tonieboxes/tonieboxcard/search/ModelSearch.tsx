@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Select } from "antd";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 
 export const ModelSearch: React.FC<{
     placeholder: string;

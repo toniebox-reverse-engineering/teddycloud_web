@@ -6,7 +6,7 @@ import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
 import { useTranslation } from "react-i18next";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());

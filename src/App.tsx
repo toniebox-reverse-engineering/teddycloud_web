@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 
-import { TeddyCloudProvider } from "./TeddyCloudContext";
-import { AudioProvider } from "./components/audio/AudioContext";
+import { TeddyCloudProvider } from "./contexts/TeddyCloudContext";
+import { AudioProvider } from "./contexts/AudioContext";
 import { StyledFooter } from "./components/common/footer/StyledFooter";
 import { StyledHeader } from "./components/common/header/StyledHeader";
 import { Error404Page } from "./pages/Error404Page";

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Alert, Typography, theme } from "antd";
 import { useTranslation } from "react-i18next";
-import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 const { Paragraph } = Typography;

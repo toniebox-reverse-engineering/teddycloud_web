@@ -18,11 +18,11 @@ import {
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import { useAudioContext } from "../../audio/AudioContext";
 import TonieInformationModal from "../../tonies/common/TonieInformationModal";
 import { isIOS } from "../../../utils/browser/browserUtils";
 import { useNavigate } from "react-router";
 import { getLongestStringByPixelWidth } from "../../../utils/strings/getLongestStringByPixelWidth";
+import { useAudioContext } from "../../../contexts/AudioContext";
 
 const { useToken } = theme;
 const useThemeToken = () => useToken().token;

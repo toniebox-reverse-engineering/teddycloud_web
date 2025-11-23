@@ -12,7 +12,7 @@ import { ServerStatus } from "./ServerStatus";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import NotificationButton from "../buttons/NotificationButton";
-import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { HomeSubNav } from "../../home/HomeSubNav";
 import { CommunitySubNav } from "../../community/CommunitySubNav";
 import { SettingsSubNav } from "../../settings/SettingsSubNav";

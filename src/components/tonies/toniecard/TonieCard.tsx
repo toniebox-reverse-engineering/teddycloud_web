@@ -16,13 +16,13 @@ import { TonieCardProps } from "../../../types/tonieTypes";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../api";
 
-import { useAudioContext } from "../../audio/AudioContext";
 import TonieInformationModal from "../common/TonieInformationModal";
 import { LanguageFlagIcon } from "../../common/icons/LanguageFlagIcon";
-import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { EditModal } from "./modals/EditModal";
 import { SelectFileModal } from "./modals/SelectFileModal";
+import { useAudioContext } from "../../../contexts/AudioContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

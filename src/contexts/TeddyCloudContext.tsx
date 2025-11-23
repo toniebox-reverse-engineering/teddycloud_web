@@ -14,13 +14,13 @@ import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import * as AntIcons from "@ant-design/icons";
 
-import { NotificationRecord, NotificationType, NotificationTypeEnum } from "./types/teddyCloudNotificationTypes";
-import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
-import { TeddyCloudApi } from "./api";
-import { defaultAPIConfig } from "./config/defaultApiConfig";
-import { useBoxModelImages } from "./hooks/useBoxModels";
-import { TonieboxImage } from "./types/tonieboxTypes";
-import { generateUUID } from "./utils/ids/generateUUID";
+import { NotificationRecord, NotificationType, NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
+import { PluginMeta, TeddyCloudSection } from "../types/pluginsMetaTypes";
+import { TeddyCloudApi } from "../api";
+import { defaultAPIConfig } from "../config/defaultApiConfig";
+import { useBoxModelImages } from "../hooks/useBoxModels";
+import { TonieboxImage } from "../types/tonieboxTypes";
+import { generateUUID } from "../utils/ids/generateUUID";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -403,5 +403,9 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
 // =====================================
 
 export function useTeddyCloud() {
-    return useContext(TeddyCloudContext);
+    const context = useContext(TeddyCloudContext);
+    if (!context) {
+        throw new Error("TeddyCloudContext must be used within an TeddyCloudProvider");
+    }
+    return context;
 }

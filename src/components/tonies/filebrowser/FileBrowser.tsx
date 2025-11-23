@@ -14,8 +14,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { useAudioContext } from "../../audio/AudioContext";
-
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
@@ -44,6 +42,7 @@ import UploadFilesModal from "./modals/UploadFilesModal";
 import { MAX_FILES } from "../../../constants";
 import { createColumns } from "./helper/Columns";
 import { generateUUID } from "../../../utils/ids/generateUUID";
+import { useAudioContext } from "../../../contexts/AudioContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

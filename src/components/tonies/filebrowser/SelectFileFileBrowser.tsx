@@ -10,11 +10,11 @@ import { Record } from "../../../types/fileBrowserTypes";
 
 import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
 import TonieInformationModal from "../common/TonieInformationModal";
-import { useAudioContext } from "../../audio/AudioContext";
-import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { createColumns } from "./helper/Columns";
+import { useAudioContext } from "../../../contexts/AudioContext";
 
 const { useToken } = theme;
 

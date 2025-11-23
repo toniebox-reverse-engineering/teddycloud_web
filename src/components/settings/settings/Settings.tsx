@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import SettingsDataHandler from "../../../data/SettingsDataHandler";
-import { useTeddyCloud } from "../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
 import SettingsButton from "../../common/buttons/SettingsButtons";
 import { SettingsOptionItem } from "../../common/form/SettingsOptionItem";

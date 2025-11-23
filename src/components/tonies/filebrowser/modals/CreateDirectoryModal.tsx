@@ -9,7 +9,7 @@ import {
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
     isInputValid,
 } from "../../../../utils/validation/fieldInputValidator";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());

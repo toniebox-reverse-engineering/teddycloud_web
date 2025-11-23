@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
 import { useToniesJsonSearch } from "../hooks/useToniesJsonSearch";
-import { useTeddyCloud } from "../../../../TeddyCloudContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
 
