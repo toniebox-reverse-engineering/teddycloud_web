@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { SelectFileFileBrowser } from "../SelectFileFileBrowser";
 import { FileObject } from "../../../../types/fileBrowserTypes";
-import { supportedAudioExtensionsFFMPG } from "../../../../utils/supportedAudioExtensionsFFMPG";
 import { generateUUID } from "../../../common/Helpers";
+import { ffmpegSupportedExtensions } from "../../../../utils/ffmpegSupportedExtensions";
 
 const { useToken } = theme;
 
@@ -40,7 +40,7 @@ const SelectFilesForEncodingModal: React.FC<SelectFilesForEncodingModalProps> = 
                 const file = files.find(
                     (file) =>
                         file.name === selectedFile.name &&
-                        supportedAudioExtensionsFFMPG.some((ext) => file.name.toLowerCase().endsWith(ext))
+                        ffmpegSupportedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
                 );
 
                 if (file) {
@@ -99,7 +99,7 @@ const SelectFilesForEncodingModal: React.FC<SelectFilesForEncodingModalProps> = 
                 special="library"
                 maxSelectedRows={maxSelectable}
                 trackUrl={false}
-                filetypeFilter={supportedAudioExtensionsFFMPG}
+                filetypeFilter={ffmpegSupportedExtensions}
                 onFileSelectChange={handleFileSelectChange}
             />
         </Modal>

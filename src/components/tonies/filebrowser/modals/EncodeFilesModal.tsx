@@ -7,7 +7,10 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-ki
 
 import { DraggableFileObjectListItem } from "../items/DraggableFileObjectListItem";
 import { FileObject } from "../../../../types/fileBrowserTypes";
-import { invalidCharactersAsString, isInputValid } from "../../../../utils/fieldInputValidator";
+import {
+    INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
+    isInputValid,
+} from "../../../../utils/fieldInputValidator";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";

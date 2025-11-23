@@ -1,8 +1,6 @@
-// src/hooks/useEncoder.ts
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Upload, type InputRef, type TreeSelectProps, type UploadProps } from "antd";
-import type { DefaultOptionType } from "antd/es/select";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { PointerSensor, useSensor } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
@@ -11,10 +9,13 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { MAX_FILES } from "../../../../constants";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { MyUploadFile, upload as encoderUpload } from "../../../../utils/encoder";
-import { isInputValid, invalidCharactersAsString } from "../../../../utils/fieldInputValidator";
-import { supportedAudioExtensionsFFMPG } from "../../../../utils/supportedAudioExtensionsFFMPG";
-import { createQueryString } from "../../../../utils/url";
+import { MyUploadFile, upload as encoderUpload } from "../../../../utils/audioEncoder";
+import {
+    isInputValid,
+    INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
+} from "../../../../utils/fieldInputValidator";
+import { ffmpegSupportedExtensions } from "../../../../utils/ffmpegSupportedExtensions";
+import { createQueryString } from "../../../../utils/queryParams";
 import { loadWasmEncoder, isWasmEncoderAvailable, WasmTafEncoder } from "../../../../utils/wasmEncoder";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -32,7 +33,7 @@ const rootTreeNode: EncoderTreeNode = {
     pId: "-1",
     value: "1",
     title: "/",
-    fullPath: "/", // wichtig für CreateDirectoryModal (fullPath mit /-Suffix)
+    fullPath: "/",
 };
 
 export const useEncoder = () => {
@@ -53,7 +54,6 @@ export const useEncoder = () => {
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<EncoderTreeNode[]>([rootTreeNode]);
 
-    // für CreateDirectoryModal
     const [isCreateDirectoryModalOpen, setCreateDirectoryModalOpen] = useState(false);
     const [createDirectoryPath, setCreateDirectoryPath] = useState<string>("");
     const [rebuildList, setRebuildList] = useState<boolean>(false);
@@ -258,9 +258,9 @@ export const useEncoder = () => {
     const uploadProps: UploadProps = {
         listType: "picture",
         multiple: true,
-        accept: supportedAudioExtensionsFFMPG.join(","),
+        accept: ffmpegSupportedExtensions.join(","),
         beforeUpload: (file) => {
-            const isAccepted = supportedAudioExtensionsFFMPG.some((ext) =>
+            const isAccepted = ffmpegSupportedExtensions.some((ext) =>
                 file.name.toLowerCase().endsWith(ext.toLowerCase())
             );
 

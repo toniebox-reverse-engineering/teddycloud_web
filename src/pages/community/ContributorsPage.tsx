@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Space, Typography } from "antd";
 
 import {
-    gitHubRepositoresUrl,
+    gitHubRepositoriesUrl,
     gitHubSponsoringUrl,
     gitHubTCContributorsUrl,
     gitHubTCwebContributorsUrl,
@@ -51,8 +51,8 @@ export const ContributorsPage = () => {
                         </Paragraph>
                         <Paragraph>
                             {t("community.contributors.others")}{" "}
-                            <Link to={gitHubRepositoresUrl} target="_blank">
-                                {gitHubRepositoresUrl}
+                            <Link to={gitHubRepositoriesUrl} target="_blank">
+                                {gitHubRepositoriesUrl}
                             </Link>
                         </Paragraph>
                     </Paragraph>

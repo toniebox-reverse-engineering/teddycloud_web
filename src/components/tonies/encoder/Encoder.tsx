@@ -5,7 +5,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
 import { MAX_FILES } from "../../../constants";
-import { MyUploadFile } from "../../../utils/encoder";
+import { MyUploadFile } from "../../../utils/audioEncoder";
 import { DraggableUploadListItem } from "../common/DraggableUploadListItem";
 import CreateDirectoryModal from "../filebrowser/modals/CreateDirectoryModal";
 import { useEncoder } from "./hooks/useEncoder";

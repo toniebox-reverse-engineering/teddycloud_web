@@ -17,11 +17,9 @@ import {
 
 import { Record } from "../../../../types/fileBrowserTypes";
 import { humanFileSize } from "../../../../utils/humanFileSize";
-import { supportedAudioExtensionsFFMPG } from "../../../../utils/supportedAudioExtensionsFFMPG";
+import { ffmpegSupportedExtensions } from "../../../../utils/ffmpegSupportedExtensions";
 import { TonieCardProps } from "../../../../types/tonieTypes";
 import { useTranslation } from "react-i18next";
-
-const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const { useToken } = theme;
 
@@ -283,7 +281,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         render: (name: string, record: any) => {
             const actions: React.ReactNode[] = [];
 
-            if (!record.isDir && supportedAudioExtensionsForEncoding.some((ending) => record.name.endsWith(ending))) {
+            if (!record.isDir && ffmpegSupportedExtensions.some((ending) => record.name.endsWith(ending))) {
                 actions.push(
                     <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
                         <PlayCircleOutlined

@@ -13,7 +13,7 @@ import {
 
 import CodeSnippet from "../common/CodeSnippet";
 import { SelectFileFileBrowser } from "./filebrowser/SelectFileFileBrowser";
-import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import { ffmpegSupportedExtensions } from "../../utils/ffmpegSupportedExtensions";
 
 export interface FileItem {
     filepath: string;
@@ -36,8 +36,6 @@ export interface TonieAudioPlaylistEditorProps {
 }
 
 const { useToken } = theme;
-
-const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     open,
@@ -371,7 +369,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         maxSelectedRows={99}
                         special="library"
                         trackUrl={false}
-                        filetypeFilter={supportedAudioExtensionsForEncoding}
+                        filetypeFilter={ffmpegSupportedExtensions}
                         key={filebrowserKey}
                         onFileSelectChange={handleFileSelectChange}
                     />

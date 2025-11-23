@@ -6,7 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { humanFileSize } from "../../../utils/humanFileSize";
-import { MyUploadFile } from "../../../utils/encoder";
+import { MyUploadFile } from "../../../utils/audioEncoder";
 
 const { Text } = Typography;
 

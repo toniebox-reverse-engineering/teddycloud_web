@@ -42,7 +42,7 @@ export const EditModal: React.FC<EditModalProps> = ({
     const { boxModelImages } = useTeddyCloud();
 
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
-        boxModelImages.boxModelImages.map((v) => {
+        boxModelImages.map((v) => {
             return { label: v.name, value: v.id };
         })
     );

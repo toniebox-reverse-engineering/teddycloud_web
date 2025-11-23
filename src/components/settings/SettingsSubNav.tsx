@@ -20,7 +20,7 @@ import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import { StyledSubMenu } from "../StyledComponents";
-import { restartServer } from "../../utils/restartServer";
+import { restartServer } from "../../utils/restartTeddyCloud";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";

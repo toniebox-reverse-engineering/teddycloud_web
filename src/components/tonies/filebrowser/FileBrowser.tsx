@@ -14,15 +14,15 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+import { useAudioContext } from "../../audio/AudioContext";
+
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import { useTeddyCloud } from "../../../TeddyCloudContext";
-import { useAudioContext } from "../../audio/AudioContext";
 import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
 import TonieInformationModal from "../common/TonieInformationModal";
 
-import { supportedAudioExtensionsFFMPG } from "../../../utils/supportedAudioExtensionsFFMPG";
+import { ffmpegSupportedExtensions } from "../../../utils/ffmpegSupportedExtensions";
 
 import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
 import { generateUUID } from "../../common/Helpers";
@@ -47,8 +47,6 @@ import { createColumns } from "./helper/Columns";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
-
-const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/", fullPath: "/" };
 
@@ -421,7 +419,7 @@ export const FileBrowser: React.FC<{
             const file = files.find(
                 (file) =>
                     file.name === rowName &&
-                    supportedAudioExtensionsForEncoding.some((ext) => file.name.toLowerCase().endsWith(ext))
+                    ffmpegSupportedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
             );
 
             if (file) {
@@ -735,7 +733,7 @@ export const FileBrowser: React.FC<{
                                             files.filter(
                                                 (item) =>
                                                     selectedRowKeys.includes(item.name) &&
-                                                    supportedAudioExtensionsForEncoding.some((ext) =>
+                                                    ffmpegSupportedExtensions.some((ext) =>
                                                         item.name.toLowerCase().endsWith(ext)
                                                     )
                                             ).length
@@ -745,7 +743,7 @@ export const FileBrowser: React.FC<{
                                                 title={
                                                     t("fileBrowser.encodeFiles.encodeFiles", {
                                                         selectedRowCount: selectedRowKeys.length,
-                                                    }) + supportedAudioExtensionsForEncoding.join(", ")
+                                                    }) + ffmpegSupportedExtensions.join(", ")
                                                 }
                                             >
                                                 <Button

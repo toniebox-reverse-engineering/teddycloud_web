@@ -1,65 +1,167 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useState, useCallback } from "react";
+
+// ============================
+// Browser / Platform Helpers
+// ============================
+
+const isBrowser = typeof window !== "undefined" && typeof document !== "undefined";
+
+const getUserAgent = () => {
+    if (!isBrowser || !navigator.userAgent) return "";
+    return navigator.userAgent;
+};
 
 export const isSafari = () => {
-    const ua = navigator.userAgent.toLowerCase();
-    return ua.includes("safari") && !ua.includes("chrome");
+    if (!isBrowser) return false;
+    const ua = getUserAgent().toLowerCase();
+    return ua.includes("safari") && !ua.includes("chrome") && !ua.includes("android");
 };
 
 export const isWebKit = () => {
-    return "WebkitAppearance" in document.documentElement.style;
+    if (!isBrowser) return false;
+    return "WebkitAppearance" in (document.documentElement?.style ?? {});
 };
 
+let cachedOggOpusSupport: boolean | null = null;
 export const supportsOggOpus = () => {
+    if (!isBrowser) return false;
+    if (cachedOggOpusSupport !== null) {
+        return cachedOggOpusSupport;
+    }
+
     const audio = document.createElement("audio") as HTMLAudioElement;
     const canPlay = audio.canPlayType("audio/ogg; codecs=opus");
-    console.log("Supports OGG/Opus:", canPlay);
-    return canPlay === "probably" || canPlay === "maybe";
+    cachedOggOpusSupport = canPlay === "probably" || canPlay === "maybe";
+    return cachedOggOpusSupport;
 };
 
 export const isIOS = () => {
+    if (!isBrowser) return false;
+    const ua = getUserAgent();
     return (
-        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent))
+        /iPad|iPhone|iPod/.test(ua) || (navigator.maxTouchPoints > 1 && /Mac/.test(ua)) // iPadOS als "Mac"
     );
 };
+
+export const isVolumeControlSupported = (): boolean => {
+    if (!isBrowser) return false;
+
+    const testAudio = document.createElement("audio");
+    try {
+        testAudio.volume = 0.5;
+        return testAudio.volume === 0.5;
+    } catch {
+        return false;
+    }
+};
+
+// ============================
+// Theme / Color Scheme
+// ============================
+
+export type ThemeMode = "dark" | "light" | "matrix" | "auto";
+
+export function detectColorScheme(): ThemeMode {
+    if (!isBrowser) return "light";
+
+    const storedTheme = localStorage.getItem("theme") as ThemeMode | null;
+    const prefersDarkMode = window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
+
+    if (!storedTheme || storedTheme === "auto") {
+        return prefersDarkMode ? "dark" : "light";
+    }
+
+    return storedTheme;
+}
+
+// ============================
+// Fullscreen Hook
+// ============================
 
 export function useFullscreen<T extends HTMLElement>(elementRef: RefObject<T | null>) {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
+        if (!isBrowser) return;
+
         const handler = () => {
-            setIsFullscreen(!!document.fullscreenElement);
+            if (document.fullscreenElement) {
+                setIsFullscreen(true);
+            } else {
+                setIsFullscreen(false);
+            }
         };
 
         document.addEventListener("fullscreenchange", handler);
-        return () => document.removeEventListener("fullscreenchange", handler);
+        document.addEventListener("webkitfullscreenchange", handler as EventListener);
+        document.addEventListener("mozfullscreenchange", handler as EventListener);
+        document.addEventListener("MSFullscreenChange", handler as EventListener);
+
+        return () => {
+            document.removeEventListener("fullscreenchange", handler);
+            document.removeEventListener("webkitfullscreenchange", handler as EventListener);
+            document.removeEventListener("mozfullscreenchange", handler as EventListener);
+            document.removeEventListener("MSFullscreenChange", handler as EventListener);
+        };
     }, []);
 
-    const enterFullscreen = () => {
+    const enterFullscreen = useCallback(() => {
+        if (!isBrowser) return;
+
         const el = elementRef.current;
-        if (!el) return;
+        if (!el) {
+            return;
+        }
 
         if (isIOS()) {
             setIsFullscreen(true);
-        } else if (el.requestFullscreen) {
+            return;
+        }
+
+        const anyEl = el as any;
+
+        const request =
+            el.requestFullscreen ||
+            anyEl.webkitRequestFullscreen ||
+            anyEl.mozRequestFullScreen ||
+            anyEl.msRequestFullscreen;
+
+        if (request) {
             try {
-                el.requestFullscreen();
+                request.call(el);
+                // Status wird über fullscreenchange-Event gesetzt,
+                // wir setzen hier nur optimistisch auf true
                 setIsFullscreen(true);
             } catch (err) {
                 console.warn("Fullscreen request failed, using pseudo fullscreen fallback:", err);
                 setIsFullscreen(true);
             }
         } else {
+            // Fallback: Pseudo-Fullscreen über CSS
             setIsFullscreen(true);
         }
-    };
+    }, [elementRef]);
 
-    const exitFullscreen = () => {
+    const exitFullscreen = useCallback(() => {
+        if (!isBrowser) return;
+
         if (isIOS()) {
+            // Nur internen Status zurücksetzen, Pseudo-Fullscreen verlässt du über CSS
             setIsFullscreen(false);
-        } else if (document.fullscreenElement) {
+            return;
+        }
+
+        const anyDoc = document as any;
+
+        const exit =
+            document.exitFullscreen ||
+            anyDoc.webkitExitFullscreen ||
+            anyDoc.mozCancelFullScreen ||
+            anyDoc.msExitFullscreen;
+
+        if (document.fullscreenElement && exit) {
             try {
-                document.exitFullscreen();
+                exit.call(document);
             } catch (err) {
                 console.warn("Exiting fullscreen failed, using pseudo fullscreen fallback:", err);
                 setIsFullscreen(false);
@@ -67,33 +169,26 @@ export function useFullscreen<T extends HTMLElement>(elementRef: RefObject<T | n
         } else {
             setIsFullscreen(false);
         }
-    };
+    }, []);
 
-    return { isFullscreen, enterFullscreen, exitFullscreen };
+    const toggleFullscreen = useCallback(() => {
+        if (isFullscreen) {
+            exitFullscreen();
+        } else {
+            enterFullscreen();
+        }
+    }, [enterFullscreen, exitFullscreen, isFullscreen]);
+
+    return { isFullscreen, enterFullscreen, exitFullscreen, toggleFullscreen };
 }
 
-export const isVolumeControlSupported = (): boolean => {
-    const testAudio = document.createElement("audio");
-    try {
-        testAudio.volume = 0.5;
-        return testAudio.volume === 0.5;
-    } catch (error) {
-        return false;
-    }
-};
-
-export function detectColorScheme() {
-    const prefersDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const storedTheme = localStorage.getItem("theme");
-
-    if (storedTheme === "auto") {
-        return prefersDarkMode ? "dark" : "light";
-    } else {
-        return storedTheme;
-    }
-}
+// ============================
+// Smooth Scroll to Top
+// ============================
 
 export function scrollToTop(anchor?: HTMLElement | null) {
+    if (!isBrowser) return;
+
     const startY = window.pageYOffset ?? document.documentElement.scrollTop ?? document.body.scrollTop ?? 0;
 
     let targetY = 0;
@@ -109,6 +204,13 @@ export function scrollToTop(anchor?: HTMLElement | null) {
 
     let isCancelled = false;
 
+    const cleanup = () => {
+        window.removeEventListener("wheel", cancel);
+        window.removeEventListener("touchstart", cancel);
+        window.removeEventListener("touchmove", cancel);
+        window.removeEventListener("keydown", cancel);
+    };
+
     const cancel = () => {
         isCancelled = true;
         cleanup();
@@ -121,13 +223,6 @@ export function scrollToTop(anchor?: HTMLElement | null) {
     window.addEventListener("touchmove", cancel, opts);
     window.addEventListener("keydown", cancel, opts);
 
-    function cleanup() {
-        window.removeEventListener("wheel", cancel);
-        window.removeEventListener("touchstart", cancel);
-        window.removeEventListener("touchmove", cancel);
-        window.removeEventListener("keydown", cancel);
-    }
-
     const duration = 400;
     const startTime = performance.now();
 
@@ -139,10 +234,10 @@ export function scrollToTop(anchor?: HTMLElement | null) {
         const elapsed = now - startTime;
         const t = Math.min(1, elapsed / duration);
 
+        // ease-out-cubic
         const eased = 1 - Math.pow(1 - t, 3);
 
         const nextY = startY + (targetY - startY) * eased;
-
         window.scrollTo(0, nextY);
 
         if (t < 1 && !isCancelled) {

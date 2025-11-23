@@ -15,12 +15,12 @@ export const TonieboxesList: React.FC<{
     readOnly?: boolean;
 }> = ({ tonieboxCards, readOnly = false }) => {
     const { t } = useTranslation();
-    const { addNotification, boxModelImages } = useTeddyCloud();
+    const { addNotification, boxModelImages, boxModelImagesLoading } = useTeddyCloud();
 
     const checkCC3200CFW = useCheckCC3200CFW();
 
     useEffect(() => {
-        if (!boxModelImages.loading && boxModelImages.boxModelImages.length === 0) {
+        if (!boxModelImagesLoading && boxModelImages.length === 0) {
             addNotification(
                 NotificationTypeEnum.Error,
                 t("settings.notifications.error"),
@@ -28,9 +28,9 @@ export const TonieboxesList: React.FC<{
                 t("tonieboxes.navigationTitle")
             );
         }
-    }, [boxModelImages.loading, boxModelImages.boxModelImages.length, addNotification, t]);
+    }, [boxModelImagesLoading, boxModelImages.length, addNotification, t]);
 
-    if (boxModelImages.loading) {
+    if (boxModelImagesLoading) {
         return <LoadingSpinner />;
     }
 
@@ -66,7 +66,7 @@ export const TonieboxesList: React.FC<{
                 <List.Item id={toniebox.ID}>
                     <TonieboxCard
                         tonieboxCard={toniebox}
-                        tonieboxImages={boxModelImages.boxModelImages}
+                        tonieboxImages={boxModelImages}
                         readOnly={readOnly}
                         checkCC3200CFW={checkCC3200CFW}
                     />

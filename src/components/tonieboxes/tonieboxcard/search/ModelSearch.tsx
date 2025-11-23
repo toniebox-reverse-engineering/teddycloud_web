@@ -25,7 +25,7 @@ export const ModelSearch: React.FC<{
             filterOption={false}
             onChange={handleChange}
             notFoundContent={null}
-            options={(boxModelImages.boxModelImages || []).map((d: any) => ({
+            options={(boxModelImages || []).map((d: any) => ({
                 value: d.id,
                 label: d.name,
             }))}

@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { invalidCharactersAsString, isInputValid } from "../../../../utils/fieldInputValidator";
+import {
+    INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
+    isInputValid,
+} from "../../../../utils/fieldInputValidator";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 

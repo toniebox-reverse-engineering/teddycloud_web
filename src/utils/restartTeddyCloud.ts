@@ -1,12 +1,13 @@
 import { t } from "i18next";
 
-import { BoxineApi } from "../api";
+import { BoxineApi, TeddyCloudApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
-import { TeddyCloudApi } from "../api";
 import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
 
 const apiTC = new TeddyCloudApi(defaultAPIConfig());
 const api = new BoxineApi(defaultAPIConfig());
+
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const restartServer = async (
     redirectToBase = true,
@@ -20,6 +21,7 @@ export const restartServer = async (
     try {
         const response = await apiTC.apiGetTeddyCloudApiRaw(`/api/triggerRestart`);
         const data = await response.text();
+
         if (data.toString() !== "OK") {
             closeLoadingNotification(key);
             addNotification(
@@ -40,12 +42,18 @@ export const restartServer = async (
         );
         return;
     }
+
     addLoadingNotification(key, t("settings.restartTC"), t("settings.restartInProgress"));
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    // Wait 3 seconds before starting to poll
+    await sleep(3000);
+
     let attempts = 0;
+
     while (attempts < 10) {
         try {
-            const timeRequest = (await api.v1TimeGet()) as String;
+            const timeRequest = (await api.v1TimeGet()) as string;
+
             if (timeRequest.length === 10) {
                 closeLoadingNotification(key);
                 addNotification(
@@ -54,6 +62,7 @@ export const restartServer = async (
                     t("settings.restartComplete"),
                     t("settings.navigationTitle")
                 );
+
                 if (redirectToBase) {
                     window.location.href = `${import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}`;
                 }
@@ -62,9 +71,10 @@ export const restartServer = async (
         } catch (e) {
             // Increment attempts and wait for 3 seconds
             attempts++;
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            await sleep(3000);
         }
     }
+
     closeLoadingNotification(key);
     addNotification(
         NotificationTypeEnum.Error,
