@@ -2,7 +2,7 @@ import { Alert, Button, Tabs, TabsProps, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import CodeSnippet from "../../../../common/CodeSnippet";
+import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { certificateIntro } from "../../common/elements/CertificateIntro";
 import { useState } from "react";
 import { CertificatesModal } from "../../../common/modals/CertificatesModal";

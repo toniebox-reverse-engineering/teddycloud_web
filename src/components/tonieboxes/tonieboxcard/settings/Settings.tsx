@@ -7,11 +7,11 @@ import { Formik } from "formik";
 import { OptionsList, TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
-import LoadingSpinner from "../../../common/LoadingSpinner";
+import LoadingSpinner from "../../../common/elements/LoadingSpinner";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
-import { SettingsOptionItem } from "../../../form/SettingsOptionItem";
-import SettingsButton from "../../../common/SettingsButtons";
+import { SettingsOptionItem } from "../../../common/form/SettingsOptionItem";
+import SettingsButton from "../../../common/buttons/SettingsButtons";
 import SettingsDataHandler from "../../../../data/SettingsDataHandler";
 import { useTriggerWriteConfig } from "../hooks/useTriggerWriteConfig";
 

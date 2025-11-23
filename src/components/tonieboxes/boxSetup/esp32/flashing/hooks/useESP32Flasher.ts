@@ -5,7 +5,7 @@ import { TeddyCloudApi } from "../../../../../../api";
 import { defaultAPIConfig } from "../../../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../../../types/teddyCloudNotificationTypes";
-import { isWebSerialSupported } from "../../../../../../utils/webSerial";
+import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

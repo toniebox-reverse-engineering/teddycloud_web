@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import ConfirmationDialog from "../../../common/ConfirmationDialog";
+import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
 interface PluginDeleteDialogProps {
     open: boolean;

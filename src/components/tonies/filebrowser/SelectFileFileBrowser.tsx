@@ -8,7 +8,7 @@ import { CloseOutlined } from "@ant-design/icons";
 
 import { Record } from "../../../types/fileBrowserTypes";
 
-import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
+import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
 import TonieInformationModal from "../common/TonieInformationModal";
 import { useAudioContext } from "../../audio/AudioContext";
 import { useTeddyCloud } from "../../../TeddyCloudContext";

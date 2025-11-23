@@ -3,7 +3,7 @@ import { Modal, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
 import { OptionsList } from "../../../../api";
-import { CertificateDragNDrop } from "../../../form/CertificatesDragAndDrop";
+import { CertificateDragNDrop } from "../../../common/form/CertificatesDragAndDrop";
 
 const { Paragraph } = Typography;
 

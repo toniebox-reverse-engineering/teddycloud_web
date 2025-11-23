@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-import { languageOptions } from "../../../common/LanguageUtil";
+import { languageOptions } from "../../../common/icons/LanguageFlagIcon";
 import CustomFilterHelpModal from "../modals/ToniesCustomFilterHelpModal";
 import HelpModal from "../modals/ToniesHelpModal";
 import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";

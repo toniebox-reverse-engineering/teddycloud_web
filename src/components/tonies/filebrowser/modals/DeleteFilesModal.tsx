@@ -1,7 +1,7 @@
 import React from "react";
 import { Key } from "antd/es/table/interface";
 
-import ConfirmationDialog from "../../../common/ConfirmationDialog";
+import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";

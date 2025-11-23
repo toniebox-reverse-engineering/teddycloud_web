@@ -1,6 +1,6 @@
 import { Typography, Collapse } from "antd";
 import { useTranslation } from "react-i18next";
-import { parseFormattedText } from "../../../../common/Helpers";
+import { renderFormattedText } from "../../../../../utils/formatting/renderFormattedText";
 
 const { Paragraph, Text } = Typography;
 
@@ -32,7 +32,7 @@ export const TonieboxWifiGuide: React.FC = () => {
                                 {steps.map((step, idx) => (
                                     <Paragraph key={idx} style={{ marginBottom: 12 }}>
                                         <Text strong>{idx + 1}. </Text>
-                                        {parseFormattedText(step)}
+                                        {renderFormattedText(step)}
                                     </Paragraph>
                                 ))}
                             </>

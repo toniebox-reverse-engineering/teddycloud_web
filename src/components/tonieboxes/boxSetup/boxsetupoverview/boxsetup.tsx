@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import { useNewBoxesAllowed } from "../../../../hooks/useNewBoxesAllowed";
 
 import { forumUrl, telegramGroupUrl } from "../../../../constants";
-import { handleTCCADerDownload } from "../../../common/Helpers";
 import { useReachableNewbieGuideUrls } from "./hooks/useReachableNewbieGuideUrls";
+import { handleTCCADerDownload } from "../../../../utils/downloads/handleTCCADerDownload";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;

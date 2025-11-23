@@ -8,7 +8,7 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import {
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
     isInputValid,
-} from "../../../../utils/fieldInputValidator";
+} from "../../../../utils/validation/fieldInputValidator";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 

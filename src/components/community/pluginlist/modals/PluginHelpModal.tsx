@@ -1,7 +1,7 @@
 import { Modal, List, Typography, Button } from "antd";
 import { useTranslation } from "react-i18next";
-import CodeSnippet from "../../../common/CodeSnippet";
-import PluginTemplateDownloadButton from "../../../common/PluginTemplateDownload";
+import CodeSnippet from "../../../common/elements/CodeSnippet";
+import PluginTemplateDownloadButton from "../../../common/buttons/PluginTemplateDownloadButton";
 
 const { Paragraph } = Typography;
 

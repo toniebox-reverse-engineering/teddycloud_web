@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import ConfirmationDialog from "../../../common/ConfirmationDialog";
+import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
 export function showHideTonieConfirm(t: any, tonieLabel: string): Promise<boolean> {
     return new Promise((resolve) => {

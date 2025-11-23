@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import cc3200cfwUpdate from "../../../../../assets/boxSetup/cc3200_installCfwFlashUpload.png";
-import CodeSnippet from "../../../../common/CodeSnippet";
+import CodeSnippet from "../../../../common/elements/CodeSnippet";
 
 const { Paragraph } = Typography;
 

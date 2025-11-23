@@ -2,7 +2,7 @@ import { JSX } from "react";
 import { Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import CodeSnippet from "../../../../common/CodeSnippet";
+import CodeSnippet from "../../../../common/elements/CodeSnippet";
 
 const { Paragraph } = Typography;
 

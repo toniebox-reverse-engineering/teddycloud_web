@@ -9,7 +9,7 @@ import { TonieCardProps } from "../../../types/tonieTypes";
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
-import ConfirmationDialog from "../../common/ConfirmationDialog";
+import ConfirmationDialog from "../../common/modals/ConfirmationModal";
 import { useAudioContext } from "../../audio/AudioContext";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";

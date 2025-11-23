@@ -5,7 +5,7 @@ import { Empty, List } from "antd";
 import { TonieboxCardProps } from "../../../types/tonieboxTypes";
 
 import { TonieboxCard } from "../tonieboxcard/TonieboxCard";
-import LoadingSpinner from "../../common/LoadingSpinner";
+import LoadingSpinner from "../../common/elements/LoadingSpinner";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useCheckCC3200CFW } from "./hooks/useCheckCC3200CFW";

@@ -20,7 +20,7 @@ import { useTeddyCloud } from "../../TeddyCloudContext";
 
 import { forumUrl } from "../../constants";
 
-import { StyledSubMenu } from "../StyledComponents";
+import { StyledSubMenu } from "../common/StyledComponents";
 import i18n from "../../i18n";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 

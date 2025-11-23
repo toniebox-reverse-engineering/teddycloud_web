@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import { UseESP32FlasherResult } from "./hooks/useESP32Flasher";
 import AvailableBoxesModal from "../../common/modals/AvailableBoxesModal";
 import { BoxVersionsEnum } from "../../../../../types/tonieboxTypes";
-import ConfirmationDialog from "../../../../common/ConfirmationDialog";
+import ConfirmationDialog from "../../../../common/modals/ConfirmationModal";
 import { Step0ReadImport } from "./steps/Step0ReadImport";
 import { Step1PatchFlash } from "./steps/Step1PatchFlash";
 import { Step2FlashESP32 } from "./steps/Step2FlashESP32";

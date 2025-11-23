@@ -4,7 +4,7 @@ import { Typography } from "antd";
 
 import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
 const { Paragraph } = Typography;

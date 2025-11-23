@@ -18,7 +18,7 @@ import { TeddyCloudApi } from "../../../api";
 
 import { useAudioContext } from "../../audio/AudioContext";
 import TonieInformationModal from "../common/TonieInformationModal";
-import { LanguageFlagIcon } from "../../common/LanguageUtil";
+import { LanguageFlagIcon } from "../../common/icons/LanguageFlagIcon";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { EditModal } from "./modals/EditModal";

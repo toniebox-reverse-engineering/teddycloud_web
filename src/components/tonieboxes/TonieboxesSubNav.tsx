@@ -14,8 +14,8 @@ import {
 import i18n from "../../i18n";
 
 import { useTeddyCloud } from "../../TeddyCloudContext";
-import { StyledSubMenu } from "../StyledComponents";
-import { TonieboxIcon } from "../common/TonieboxIcon";
+import { StyledSubMenu } from "../common/StyledComponents";
+import { TonieboxIcon } from "../common/icons/TonieboxIcon";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const TonieboxesSubNav = () => {

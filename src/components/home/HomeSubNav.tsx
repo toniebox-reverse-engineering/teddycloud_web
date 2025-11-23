@@ -6,7 +6,7 @@ import { ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@a
 import i18n from "../../i18n";
 
 import { useTeddyCloud } from "../../TeddyCloudContext";
-import { StyledSubMenu } from "../StyledComponents";
+import { StyledSubMenu } from "../common/StyledComponents";
 import { gitHubSponsoringUrl } from "../../constants";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 

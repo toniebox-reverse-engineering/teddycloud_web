@@ -16,8 +16,8 @@ import {
 } from "@ant-design/icons";
 
 import { Record } from "../../../../types/fileBrowserTypes";
-import { humanFileSize } from "../../../../utils/humanFileSize";
-import { ffmpegSupportedExtensions } from "../../../../utils/ffmpegSupportedExtensions";
+import { humanFileSize } from "../../../../utils/files/humanFileSize";
+import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
 import { TonieCardProps } from "../../../../types/tonieTypes";
 import { useTranslation } from "react-i18next";
 

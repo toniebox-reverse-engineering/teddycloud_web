@@ -2,8 +2,12 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Alert, Typography } from "antd";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
-import { CertificateDragNDrop } from "../../../components/form/CertificatesDragAndDrop";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../../components/common/StyledComponents";
+import { CertificateDragNDrop } from "../../../components/common/form/CertificatesDragAndDrop";
 import { SettingsSubNav } from "../../../components/settings/SettingsSubNav";
 
 export const CertificatesPage = () => {

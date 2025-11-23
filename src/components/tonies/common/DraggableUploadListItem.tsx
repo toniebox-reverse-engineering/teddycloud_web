@@ -5,8 +5,8 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { humanFileSize } from "../../../utils/humanFileSize";
-import { MyUploadFile } from "../../../utils/audioEncoder";
+import { humanFileSize } from "../../../utils/files/humanFileSize";
+import { MyUploadFile } from "../../../utils/audio/audioEncoder";
 
 const { Text } = Typography;
 

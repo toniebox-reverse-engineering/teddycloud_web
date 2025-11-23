@@ -16,11 +16,11 @@ import * as AntIcons from "@ant-design/icons";
 
 import { NotificationRecord, NotificationType, NotificationTypeEnum } from "./types/teddyCloudNotificationTypes";
 import { PluginMeta, TeddyCloudSection } from "./types/pluginsMetaTypes";
-import { generateUUID } from "./components/common/Helpers";
 import { TeddyCloudApi } from "./api";
 import { defaultAPIConfig } from "./config/defaultApiConfig";
 import { useBoxModelImages } from "./hooks/useBoxModels";
 import { TonieboxImage } from "./types/tonieboxTypes";
+import { generateUUID } from "./utils/ids/generateUUID";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

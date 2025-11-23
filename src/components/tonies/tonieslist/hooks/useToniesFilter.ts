@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { languageOptions } from "../../../common/LanguageUtil";
+import { languageOptions } from "../../../common/icons/LanguageFlagIcon";
 import type { TonieCardProps } from "../../../../types/tonieTypes";
 import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";
 

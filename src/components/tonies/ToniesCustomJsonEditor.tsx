@@ -9,7 +9,7 @@ import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import CodeSnippet from "../common/CodeSnippet";
+import CodeSnippet from "../common/elements/CodeSnippet";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());

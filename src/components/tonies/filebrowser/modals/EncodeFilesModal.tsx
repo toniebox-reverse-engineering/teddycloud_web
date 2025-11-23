@@ -10,7 +10,7 @@ import { FileObject } from "../../../../types/fileBrowserTypes";
 import {
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
     isInputValid,
-} from "../../../../utils/fieldInputValidator";
+} from "../../../../utils/validation/fieldInputValidator";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";

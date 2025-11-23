@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import ConfirmationDialog from "../../../common/ConfirmationDialog";
+import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
 interface DeleteModalProps {
     open: boolean;

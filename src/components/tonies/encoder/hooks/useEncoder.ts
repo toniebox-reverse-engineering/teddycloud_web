@@ -9,14 +9,14 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { MAX_FILES } from "../../../../constants";
 import { useTeddyCloud } from "../../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { MyUploadFile, upload as encoderUpload } from "../../../../utils/audioEncoder";
+import { MyUploadFile, upload as encoderUpload } from "../../../../utils/audio/audioEncoder";
 import {
     isInputValid,
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
-} from "../../../../utils/fieldInputValidator";
-import { ffmpegSupportedExtensions } from "../../../../utils/ffmpegSupportedExtensions";
-import { createQueryString } from "../../../../utils/queryParams";
-import { loadWasmEncoder, isWasmEncoderAvailable, WasmTafEncoder } from "../../../../utils/wasmEncoder";
+} from "../../../../utils/validation/fieldInputValidator";
+import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
+import { createQueryString } from "../../../../utils/browser/queryParams";
+import { loadWasmEncoder, isWasmEncoderAvailable, WasmTafEncoder } from "../../../../utils/audio/wasmEncoder";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

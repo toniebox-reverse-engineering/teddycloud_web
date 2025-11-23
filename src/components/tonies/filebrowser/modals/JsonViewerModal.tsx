@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button } from "antd";
 import { useTranslation } from "react-i18next";
 
-import CodeSnippet from "../../../common/CodeSnippet";
+import CodeSnippet from "../../../common/elements/CodeSnippet";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 

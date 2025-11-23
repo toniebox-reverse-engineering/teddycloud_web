@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Button, theme } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
-import { LanguageFlagIcon } from "../../../common/LanguageUtil";
+import { LanguageFlagIcon } from "../../../common/icons/LanguageFlagIcon";
 import type { SettingsState } from "../hooks/useSettings";
 import "./../styles/print.css";
 

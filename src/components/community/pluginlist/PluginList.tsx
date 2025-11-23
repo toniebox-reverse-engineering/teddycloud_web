@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Alert, Badge, Button, List, Tag, Typography } from "antd";
 import { AppstoreAddOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { usePluginList } from "./hooks/usePluginList";
-import PluginTemplateDownloadButton from "../../common/PluginTemplateDownload";
+import PluginTemplateDownloadButton from "../../common/buttons/PluginTemplateDownloadButton";
 import { PluginCard } from "../plugincard/PluginCard";
 import { PluginDeleteDialog } from "./modals/PluginDeleteModal";
 import { PluginHelpModal } from "./modals/PluginHelpModal";

@@ -16,7 +16,7 @@ import {
 import i18n from "../../i18n";
 
 import { useTeddyCloud } from "../../TeddyCloudContext";
-import { StyledSubMenu } from "../StyledComponents";
+import { StyledSubMenu } from "../common/StyledComponents";
 import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 

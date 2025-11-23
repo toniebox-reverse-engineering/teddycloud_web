@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Tabs, TabsProps, Typography } from "antd";
 import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../../constants";
-import LoadingSpinner from "../../common/LoadingSpinner";
+import LoadingSpinner from "../../common/elements/LoadingSpinner";
 import { TonieboxesList } from "../../tonieboxes/tonieboxeslist/TonieboxesList";
 import { ToniesList } from "../../tonies/tonieslist/ToniesList";
 import { useHomeData } from "./data/useHomeData";

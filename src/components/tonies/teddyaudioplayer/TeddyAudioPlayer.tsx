@@ -1,11 +1,10 @@
-// src/components/audio/TeddyAudioPlayer.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { Card, theme } from "antd";
 import { LeftOutlined, PlayCircleOutlined, RightOutlined } from "@ant-design/icons";
 import { t } from "i18next";
 
 import { TonieCardProps } from "../../../types/tonieTypes";
-import StandAloneAudioPlayer from "../../audio/StandAloneAudioPlayer";
+import StandAloneAudioPlayer from "./elements/AudioPlayer";
 import { useHoldToScroll } from "./hooks/useHoldToScroll";
 import { useHorizontalDragScroll } from "./hooks/useHorizontalDragScroll";
 import { usePageLoaded } from "./hooks/usePageLoaded";

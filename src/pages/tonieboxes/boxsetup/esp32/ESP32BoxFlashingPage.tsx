@@ -4,7 +4,11 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { QuestionCircleOutlined, SyncOutlined } from "@ant-design/icons";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../../components/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../../../components/common/StyledComponents";
 import { TonieboxesSubNav } from "../../../../components/tonieboxes/TonieboxesSubNav";
 import { useESP32Flasher } from "../../../../components/tonieboxes/boxsetup/esp32/flashing/hooks/useESP32Flasher";
 import { Flashing } from "../../../../components/tonieboxes/boxsetup/esp32/flashing/Flashing";

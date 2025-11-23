@@ -2,7 +2,7 @@ import React from "react";
 import { Alert, Collapse, theme, Typography } from "antd";
 
 import { ESP32Flasher } from "../hooks/useESP32Flasher";
-import DotAnimation from "../../../../../common/DotAnimation";
+import DotAnimation from "../../../../../common/elements/DotAnimation";
 import { connectESP32Explanation } from "../../elements/ConnectESP32Explanation";
 import { useTranslation } from "react-i18next";
 

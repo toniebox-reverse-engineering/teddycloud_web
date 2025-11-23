@@ -19,8 +19,8 @@ import i18n from "../../i18n";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import { StyledSubMenu } from "../StyledComponents";
-import { restartServer } from "../../utils/restartTeddyCloud";
+import { StyledSubMenu } from "../common/StyledComponents";
+import { restartServer } from "../../utils/system/restartTeddyCloud";
 import { useTeddyCloud } from "../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";

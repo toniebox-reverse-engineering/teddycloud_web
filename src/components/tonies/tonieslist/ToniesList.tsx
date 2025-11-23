@@ -13,7 +13,7 @@ import { useToniesFilter } from "./hooks/useToniesFilter";
 import { useTeddyCloud } from "../../../TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
-import { scrollToTop } from "../../../utils/browserUtils";
+import { scrollToTop } from "../../../utils/browser/browserUtils";
 import { hideSelectedTonies, setLiveFlag, setNoCloud } from "./utils/ToniesListActions";
 import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "./utils/ToniesListExport";
 import { ToniesFilterPanel } from "./filterpanel/ToniesFilterPanel";

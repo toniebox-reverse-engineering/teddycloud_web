@@ -11,7 +11,7 @@ import cc3235CH341Sop82 from "../../../../../assets/boxSetup/02_CH341A_sop8_2.jp
 import cc3235CH341Sop83 from "../../../../../assets/boxSetup/02_CH341A_sop8_3.jpg";
 import cc3235CH341Sop8remove from "../../../../../assets/boxSetup/02_CH341A_sop8_remove.jpg";
 
-import CodeSnippet from "../../../../common/CodeSnippet";
+import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { installCC3200Tool } from "../../cc3200/elements/InstallCC3200Tool";
 import { TonieboxWifiGuide } from "../../common/elements/TonieboxWifiGuide";
 

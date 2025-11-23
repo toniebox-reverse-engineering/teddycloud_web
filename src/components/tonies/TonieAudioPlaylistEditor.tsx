@@ -11,9 +11,9 @@ import {
     PlusOutlined,
 } from "@ant-design/icons";
 
-import CodeSnippet from "../common/CodeSnippet";
+import CodeSnippet from "../common/elements/CodeSnippet";
 import { SelectFileFileBrowser } from "./filebrowser/SelectFileFileBrowser";
-import { ffmpegSupportedExtensions } from "../../utils/ffmpegSupportedExtensions";
+import { ffmpegSupportedExtensions } from "../../utils/files/ffmpegSupportedExtensions";
 
 export interface FileItem {
     filepath: string;

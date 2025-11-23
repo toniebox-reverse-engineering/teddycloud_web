@@ -22,11 +22,11 @@ import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
 import TonieInformationModal from "../common/TonieInformationModal";
 
-import { ffmpegSupportedExtensions } from "../../../utils/ffmpegSupportedExtensions";
+import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
 
 import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
-import { generateUUID } from "../../common/Helpers";
-import { LoadingSpinnerAsOverlay } from "../../common/LoadingSpinner";
+
+import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
 import HelpModal from "./modals/FileBrowserHelpModal";
 
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
@@ -43,6 +43,7 @@ import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
 import { MAX_FILES } from "../../../constants";
 import { createColumns } from "./helper/Columns";
+import { generateUUID } from "../../../utils/ids/generateUUID";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

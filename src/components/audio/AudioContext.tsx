@@ -4,7 +4,7 @@ import { Modal } from "antd";
 
 import logoImg from "../../assets/logo.png";
 
-import { supportsOggOpus } from "../../utils/browserUtils";
+import { supportsOggOpus } from "../../utils/browser/browserUtils";
 import { TonieCardProps } from "../../types/tonieTypes";
 import { Record } from "../../types/fileBrowserTypes";
 

@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import { Card, Col, List, Row, theme, Typography } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../../components/common/StyledComponents";
 import { TonieboxesSubNav } from "../../../components/tonieboxes/TonieboxesSubNav";
 
 const { Paragraph, Title } = Typography;

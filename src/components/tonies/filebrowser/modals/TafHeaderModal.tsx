@@ -3,7 +3,7 @@ import { Modal, Button, Alert } from "antd";
 import { useTranslation } from "react-i18next";
 import yaml from "js-yaml";
 
-import CodeSnippet from "../../../common/CodeSnippet";
+import CodeSnippet from "../../../common/elements/CodeSnippet";
 import { RecordTafHeader } from "../../../../types/fileBrowserTypes";
 
 interface TafHeaderModalProps {

@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { SelectFileFileBrowser } from "../SelectFileFileBrowser";
 import { FileObject } from "../../../../types/fileBrowserTypes";
-import { generateUUID } from "../../../common/Helpers";
-import { ffmpegSupportedExtensions } from "../../../../utils/ffmpegSupportedExtensions";
+import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
+import { generateUUID } from "../../../../utils/ids/generateUUID";
 
 const { useToken } = theme;
 

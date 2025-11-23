@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import tbEsp32UartClamp from "../../../../../assets/boxSetup/tb-esp32-uart-clamp.png";
 import tbEsp32UartAnalogClamp from "../../../../../assets/boxSetup/esp32_pcb_clamp.png";
 import tbEsp32Uart from "../../../../../assets/boxSetup/tb-esp32-uart.png";
-import CodeSnippet from "../../../../common/CodeSnippet";
+import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { uart3v3Hint } from "../../common/elements/Uart3v3Hint";
 
 const { Paragraph } = Typography;

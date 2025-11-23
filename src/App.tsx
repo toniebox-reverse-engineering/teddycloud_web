@@ -6,8 +6,8 @@ import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-desi
 
 import { TeddyCloudProvider } from "./TeddyCloudContext";
 import { AudioProvider } from "./components/audio/AudioContext";
-import { StyledFooter } from "./components/footer/StyledFooter";
-import { StyledHeader } from "./components/header/StyledHeader";
+import { StyledFooter } from "./components/common/footer/StyledFooter";
+import { StyledHeader } from "./components/common/header/StyledHeader";
 import { Error404Page } from "./pages/Error404Page";
 import { ChangelogPage } from "./pages/community/ChangelogPage";
 import { CommunityPage } from "./pages/community/CommunityPage";
@@ -44,7 +44,7 @@ import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage"
 import { TeddyAudioPlayerPage } from "./pages/tonies/TeddyAudioPlayerPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
-import { detectColorScheme } from "./utils/browserUtils";
+import { detectColorScheme } from "./utils/browser/browserUtils";
 import MatrixRain from "./styles/matrix/matrixRain";
 import "./styles/matrix/matrix.css";
 import { GUISettingsPage } from "./pages/settings/GUISettingsPage";
