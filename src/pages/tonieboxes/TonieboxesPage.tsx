@@ -33,7 +33,7 @@ export const TonieboxesPage = () => {
                 <StyledContent>
                     <h1>{t("tonieboxes.title")}</h1>
 
-                    {newBoxesAllowed && (
+                    {newBoxesAllowed.value && (
                         <Alert
                             message={t("tonieboxes.newBoxesAllowed")}
                             description={t("tonieboxes.newBoxesAllowedText")}

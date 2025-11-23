@@ -128,7 +128,7 @@ export const BoxSetupContent: React.FC = () => {
         <>
             <h1>{t("tonieboxes.boxSetup.title")}</h1>
 
-            {!newBoxesAllowed && (
+            {!newBoxesAllowed.value && (
                 <Alert
                     type="warning"
                     showIcon
