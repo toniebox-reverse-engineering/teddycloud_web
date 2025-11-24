@@ -213,8 +213,7 @@ export const Encoder: React.FC = () => {
                 setCreateDirectoryPath={setCreateDirectoryPath}
                 path={createDirectoryPath}
                 directoryTree={directoryTree}
-                isMoveFileModalOpen={false}
-                isEncodeFilesModalOpen={true}
+                selectNewNode={true}
                 setRebuildList={setRebuildList}
             />
         </>

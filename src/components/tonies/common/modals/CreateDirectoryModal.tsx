@@ -25,8 +25,7 @@ interface CreateDirectoryModalProps {
 
     directoryTree: DirectoryTreeApi;
 
-    isMoveFileModalOpen: boolean;
-    isEncodeFilesModalOpen: boolean;
+    selectNewNode: boolean;
 
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -38,8 +37,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({
     setCreateDirectoryPath,
     path,
     directoryTree,
-    isMoveFileModalOpen,
-    isEncodeFilesModalOpen,
+    selectNewNode,
     setRebuildList,
 }) => {
     const { t } = useTranslation();
@@ -96,7 +94,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({
                     directoryTree.addDirectory({
                         parentPath: createDirectoryPath,
                         directoryName: inputValueCreateDirectory,
-                        selectNewNode: isMoveFileModalOpen || isEncodeFilesModalOpen,
+                        selectNewNode: selectNewNode,
                     });
 
                     addNotification(

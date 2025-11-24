@@ -2,13 +2,14 @@ import React from "react";
 import { Modal, Button, Alert, Tooltip, theme } from "antd";
 import { FolderAddOutlined } from "@ant-design/icons";
 import { Key } from "antd/es/table/interface";
+import { useTranslation } from "react-i18next";
 
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
-import { useTranslation } from "react-i18next";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 
 const { useToken } = theme;
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -20,7 +21,7 @@ interface MoveFilesModalProps {
     special: string;
     overlay?: string;
 
-    path: string; // encoded path from FileBrowser-State
+    path: string;
     files: Record[];
 
     // Single vs. Multi
@@ -28,11 +29,8 @@ interface MoveFilesModalProps {
     selectedRowKeys: Key[];
     setSelectedRowKeys: React.Dispatch<React.SetStateAction<Key[]>>;
 
-    // Tree
-    treeNodeId: string;
-    setTreeNodeId: (id: string) => void;
-    rootTreeNodeId: string;
-    getPathFromNodeId: (id: string) => string;
+    // Directory tree
+    directoryTree: DirectoryTreeApi;
     folderTreeElement: React.ReactNode;
 
     // Create Directory Button in modal
@@ -54,10 +52,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
     currentFile,
     selectedRowKeys,
     setSelectedRowKeys,
-    treeNodeId,
-    setTreeNodeId,
-    rootTreeNodeId,
-    getPathFromNodeId,
+    directoryTree,
     folderTreeElement,
     setCreateDirectoryPath,
     setFilterFieldAutoFocus,
@@ -71,6 +66,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
     const moveRenameFile = async (source: string, target: string, moving: boolean, flagMultiple?: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
         const key = moving ? "move-file" : "rename-file";
+
         addLoadingNotification(
             key,
             moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
@@ -124,13 +120,14 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
 
     const handleSingleMove = async () => {
         if (!currentFile) return;
+
         const source = decodeURIComponent(path) + "/" + currentFile;
-        const targetDir = getPathFromNodeId(treeNodeId);
+        const targetDir = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
         const target = targetDir + "/" + currentFile;
 
         await moveRenameFile(source, target, true);
         setRebuildList((prev) => !prev);
-        setTreeNodeId(rootTreeNodeId);
+        directoryTree.setTreeNodeId(directoryTree.rootTreeNode.id);
         onClose();
     };
 
@@ -148,10 +145,10 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
         const key = "move-file";
         addLoadingNotification(key, t("fileBrowser.messages.moving"), t("fileBrowser.messages.moving"));
 
-        const targetDir = getPathFromNodeId(treeNodeId);
+        const targetDir = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
 
         for (const rowName of selectedRowKeys) {
-            const file = (files as Record[]).find((f) => f.name === rowName);
+            const file = files.find((f) => f.name === rowName);
             if (file && !file.isDir) {
                 const source = decodeURIComponent(path) + "/" + file.name;
                 const target = targetDir + "/" + file.name;
@@ -162,12 +159,13 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
         closeLoadingNotification(key);
         setRebuildList((prev) => !prev);
         setSelectedRowKeys([]);
-        setTreeNodeId(rootTreeNodeId);
+        directoryTree.setTreeNodeId(directoryTree.rootTreeNode.id);
         onClose();
     };
 
+    const currentTargetDir = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
     const isMoveButtonDisabled =
-        !treeNodeId || getPathFromNodeId(treeNodeId) === path || (!currentFile && selectedRowKeys.length === 0);
+        !directoryTree.treeNodeId || currentTargetDir === path || (!currentFile && selectedRowKeys.length === 0);
 
     const handleOk = () => {
         if (currentFile) {
@@ -212,7 +210,8 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                         <Button
                             icon={<FolderAddOutlined />}
                             onClick={() => {
-                                setCreateDirectoryPath(getPathFromNodeId(treeNodeId));
+                                const basePath = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
+                                setCreateDirectoryPath(basePath);
                                 setFilterFieldAutoFocus(false);
                                 setIsCreateDirectoryModalOpen(true);
                             }}

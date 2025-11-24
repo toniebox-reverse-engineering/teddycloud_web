@@ -15,6 +15,7 @@ import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -29,10 +30,7 @@ interface EncodeFilesModalProps {
     encodeFileList: FileObject[];
     setEncodeFileList: React.Dispatch<React.SetStateAction<FileObject[]>>;
 
-    treeNodeId: string;
-    setTreeNodeId: (id: string) => void;
-    getPathFromNodeId: (id: string) => string;
-
+    directoryTree: DirectoryTreeApi;
     folderTreeElement: React.ReactNode;
 
     selectFileModal: React.ReactNode;
@@ -53,9 +51,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
     special,
     encodeFileList,
     setEncodeFileList,
-    treeNodeId,
-    setTreeNodeId,
-    getPathFromNodeId,
+    directoryTree,
     folderTreeElement,
     selectFileModal,
     showSelectFileModal,
@@ -138,7 +134,10 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
             t("fileBrowser.encodeFiles.encodingInProgress")
         );
 
-        const target = getPathFromNodeId(treeNodeId) + "/" + newTafFilename + ".taf";
+        const currentNodeId = directoryTree.treeNodeId;
+        const basePath = directoryTree.getPathFromNodeId(currentNodeId);
+        const target = basePath + "/" + newTafFilename + ".taf";
+
         const body =
             encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
             `&target=${encodeURIComponent(target)}`;
@@ -153,7 +152,8 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                     t("fileBrowser.encodeFiles.encodingSuccessfulDetails", { file: target }),
                     t("fileBrowser.title")
                 );
-                setTreeNodeId("1");
+                // Tree auf Root zurücksetzen (wie vorher setTreeNodeId("1"))
+                directoryTree.setTreeNodeId(directoryTree.rootTreeNode.id);
                 setSelectedRowKeys([]);
                 setRebuildList((prev) => !prev);
                 onClose();
@@ -258,7 +258,10 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                             disabled={processing}
                                             icon={<FolderAddOutlined />}
                                             onClick={() => {
-                                                setCreateDirectoryPath(getPathFromNodeId(treeNodeId));
+                                                const basePath = directoryTree.getPathFromNodeId(
+                                                    directoryTree.treeNodeId
+                                                );
+                                                setCreateDirectoryPath(basePath);
                                                 setFilterFieldAutoFocus(false);
                                                 setIsCreateDirectoryModalOpen(true);
                                             }}

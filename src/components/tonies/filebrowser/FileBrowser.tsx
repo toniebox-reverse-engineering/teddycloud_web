@@ -414,12 +414,7 @@ export const FileBrowser: React.FC<{
                 overlay={overlay}
                 files={files as Record[]}
                 path={path}
-                treeData={treeData}
-                setTreeData={setTreeData as any}
-                createDirectoryPath={createDirectoryPath}
-                setCreateDirectoryPath={setCreateDirectoryPath}
                 setRebuildList={setRebuildList}
-                findNodeIdByFullPath={findNodeIdByFullPath}
                 selectedRowKeys={selectedRowKeys}
                 setSelectedRowKeys={setSelectedRowKeys}
                 singleOpen={isConfirmDeleteModalOpen}
@@ -454,8 +449,7 @@ export const FileBrowser: React.FC<{
                     setCreateDirectoryPath={setCreateDirectoryPath}
                     path={path}
                     directoryTree={directoryTree}
-                    isMoveFileModalOpen={isMoveFileModalOpen}
-                    isEncodeFilesModalOpen={isEncodeFilesModalOpen}
+                    selectNewNode={isMoveFileModalOpen || isEncodeFilesModalOpen}
                     setRebuildList={setRebuildList}
                 />
             )}
@@ -481,10 +475,7 @@ export const FileBrowser: React.FC<{
                     currentFile={currentFile || null}
                     selectedRowKeys={selectedRowKeys}
                     setSelectedRowKeys={setSelectedRowKeys}
-                    treeNodeId={treeNodeId}
-                    setTreeNodeId={setTreeNodeId}
-                    rootTreeNodeId={rootTreeNode.id}
-                    getPathFromNodeId={getPathFromNodeId}
+                    directoryTree={directoryTree}
                     folderTreeElement={folderTreeElement}
                     setCreateDirectoryPath={setCreateDirectoryPath}
                     setFilterFieldAutoFocus={setFilterFieldAutoFocus}
@@ -511,9 +502,7 @@ export const FileBrowser: React.FC<{
                     special={special}
                     encodeFileList={encodeFileList}
                     setEncodeFileList={setEncodeFileList}
-                    treeNodeId={treeNodeId}
-                    setTreeNodeId={setTreeNodeId}
-                    getPathFromNodeId={getPathFromNodeId}
+                    directoryTree={directoryTree}
                     folderTreeElement={folderTreeElement}
                     selectFileModal={selectFileModal}
                     showSelectFileModal={showSelectFileModal}

@@ -1,11 +1,11 @@
 import React from "react";
 import { Key } from "antd/es/table/interface";
+import { useTranslation } from "react-i18next";
 
 import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
-import { useTranslation } from "react-i18next";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
@@ -16,16 +16,8 @@ interface DeleteFilesModalProps {
     overlay?: string;
 
     files: Record[];
-    path: string; // encoded path from FileBrowser-State
-
-    treeData: any[];
-    setTreeData: React.Dispatch<React.SetStateAction<any[]>>;
-
-    createDirectoryPath: string;
-    setCreateDirectoryPath: React.Dispatch<React.SetStateAction<string>>;
+    path: string;
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
-
-    findNodeIdByFullPath: (fullPath: string, nodes: any[]) => string | null;
 
     // multi selection
     selectedRowKeys: Key[];
@@ -49,12 +41,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
     overlay,
     files,
     path,
-    treeData,
-    setTreeData,
-    createDirectoryPath,
-    setCreateDirectoryPath,
     setRebuildList,
-    findNodeIdByFullPath,
     selectedRowKeys,
     setSelectedRowKeys,
     singleOpen,
@@ -67,8 +54,10 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
 }) => {
     const { t } = useTranslation();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
     const deleteFile = async (filePath: string, apiCall: string, flagMultiple?: boolean) => {
         const key = "deletingFiles";
+
         addLoadingNotification(
             key,
             t("fileBrowser.messages.deleting"),
@@ -95,15 +84,6 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
                     }),
                     t("fileBrowser.title")
                 );
-
-                const idToRemove = findNodeIdByFullPath(filePath + "/", treeData);
-                if (idToRemove) {
-                    setTreeData((prevData) => prevData.filter((node) => node.id !== idToRemove));
-                }
-
-                if (createDirectoryPath === filePath + "/") {
-                    setCreateDirectoryPath(path);
-                }
             } else {
                 addNotification(
                     NotificationTypeEnum.Error,
@@ -154,7 +134,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
         addLoadingNotification(key, t("fileBrowser.messages.deleting"), t("fileBrowser.messages.deleting"));
 
         for (const rowName of selectedRowKeys) {
-            const file = (files as Record[]).find((f) => f.name === rowName);
+            const file = files.find((f) => f.name === rowName);
             if (file) {
                 const filePath = decodeURIComponent(path) + "/" + file.name;
                 const apiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
