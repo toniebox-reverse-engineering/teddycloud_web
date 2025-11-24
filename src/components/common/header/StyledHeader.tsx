@@ -175,7 +175,7 @@ export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.Re
     return (
         <StyledHeaderComponent id="teddycloud-header">
             <Link to="/" style={{ color: "white", display: "flex", alignItems: "center", marginRight: 16 }}>
-                <StyledLogo src={logoImg} />
+                <StyledLogo className="teddycloud-logo" src={logoImg} />
                 <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud</HiddenMobile>
             </Link>
 
