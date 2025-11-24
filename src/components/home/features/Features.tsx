@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { gitHubTCCommitTreeBaseUrl } from "../../../constants";
+import { gitHubTCCommitTreeBaseUrl } from "../../../constants/urls";
 import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 import { FeatureItems, renderFeatureList } from "./render/renderFeatureList";
 

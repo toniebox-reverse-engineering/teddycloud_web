@@ -6,7 +6,7 @@ import { Footer } from "antd/es/layout/layout";
 import { HeartFilled } from "@ant-design/icons";
 import styled from "styled-components";
 
-import { gitHubSponsoringUrl, gitHubTCReleasesUrl } from "../../../constants";
+import { gitHubSponsoringUrl, gitHubTCReleasesUrl } from "../../../constants/urls";
 
 import AudioPlayerFooter from "./AudioPlayerFooter";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";

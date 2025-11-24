@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { useNewBoxesAllowed } from "../../../../hooks/useNewBoxesAllowed";
 
-import { forumUrl, telegramGroupUrl } from "../../../../constants";
+import { forumUrl, telegramGroupUrl } from "../../../../constants/urls";
 import { useReachableNewbieGuideUrls } from "./hooks/useReachableNewbieGuideUrls";
 import { handleTCCADerDownload } from "../../../../utils/downloads/handleTCCADerDownload";
 

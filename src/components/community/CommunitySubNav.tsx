@@ -18,7 +18,7 @@ import {
 } from "@ant-design/icons";
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 
-import { forumUrl } from "../../constants";
+import { forumUrl } from "../../constants/urls";
 
 import { StyledSubMenu } from "../common/StyledComponents";
 import i18n from "../../i18n";

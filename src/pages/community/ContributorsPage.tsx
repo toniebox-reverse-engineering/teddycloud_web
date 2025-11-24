@@ -7,7 +7,7 @@ import {
     gitHubSponsoringUrl,
     gitHubTCContributorsUrl,
     gitHubTCwebContributorsUrl,
-} from "../../constants";
+} from "../../constants/urls";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";

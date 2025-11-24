@@ -6,7 +6,7 @@ import { PointerSensor, useSensor } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { MAX_FILES } from "../../../../constants";
+import { MAX_FILES } from "../../../../constants/numbers";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { MyUploadFile, upload as encoderUpload } from "../../../../utils/audio/audioEncoder";

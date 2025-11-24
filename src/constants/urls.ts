@@ -1,7 +1,3 @@
-// various constants
-export const MAX_FILES = 99;
-
-// used urls
 export const telegramGroupUrl = "https://t.me/toniebox_reverse_engineering";
 export const forumUrl = "https://forum.revvox.de/";
 export const gitHubUrl = "https://github.com/toniebox-reverse-engineering";

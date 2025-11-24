@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
-import { MAX_FILES } from "../../../constants";
+import { MAX_FILES } from "../../../constants/numbers";
 import { MyUploadFile } from "../../../utils/audio/audioEncoder";
 import { DraggableUploadListItem } from "../common/DraggableUploadListItem";
 import CreateDirectoryModal from "../filebrowser/modals/CreateDirectoryModal";

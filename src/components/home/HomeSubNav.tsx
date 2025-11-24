@@ -7,7 +7,7 @@ import i18n from "../../i18n";
 
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { StyledSubMenu } from "../common/StyledComponents";
-import { gitHubSponsoringUrl } from "../../constants";
+import { gitHubSponsoringUrl } from "../../constants/urls";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const HomeSubNav = () => {

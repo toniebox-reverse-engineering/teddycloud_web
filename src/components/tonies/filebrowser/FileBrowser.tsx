@@ -39,7 +39,7 @@ import RenameFileModal from "./modals/RenameFilesModal";
 import SelectFilesForEncodingModal from "./modals/SelectFilesForEncodingModal";
 import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
-import { MAX_FILES } from "../../../constants";
+import { MAX_FILES } from "../../../constants/numbers";
 import { createColumns } from "./helper/Columns";
 import { generateUUID } from "../../../utils/ids/generateUUID";
 import { useAudioContext } from "../../../contexts/AudioContext";
