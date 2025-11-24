@@ -7,7 +7,7 @@ import { ToniesList } from "../../components/tonies/tonieslist/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/common/elements/LoadingSpinner";
 
-import { TonieboxOverlaySelect } from "../../components/tonies/common/TonieboxOverlaySelect";
+import { TonieboxOverlaySelect } from "../../components/tonies/common/elements/TonieboxOverlaySelect";
 import { useTonieboxContentOverlay } from "../../hooks/useTonieboxContentOverlay";
 import { useTonies } from "../../hooks/useTonies";
 

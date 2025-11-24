@@ -3,42 +3,31 @@ import { Modal, Form, Input, Typography } from "antd";
 import type { InputRef } from "antd";
 import { useTranslation } from "react-i18next";
 
-import { TeddyCloudApi } from "../../../api";
-import { defaultAPIConfig } from "../../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import {
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
     isInputValid,
-} from "../../../utils/validation/fieldInputValidator";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
-import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+} from "../../../../utils/validation/fieldInputValidator";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { DirectoryTreeApi } from "../hooks/useDirectoryTree";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
-
-type TreeNode = {
-    id: string;
-    pId: string;
-    value: string;
-    title: string;
-    fullPath: string;
-};
 
 interface CreateDirectoryModalProps {
     open: boolean;
     onClose: () => void;
+
     createDirectoryPath: string;
     setCreateDirectoryPath: (path: string) => void;
     path: string;
 
-    treeData: TreeNode[];
-    setTreeData: React.Dispatch<React.SetStateAction<TreeNode[]>>;
-    rootTreeNode: TreeNode;
-    isNodeExpanded: (nodeId: string) => boolean;
-    findNodeIdByFullPath: (fullPath: string, nodes: TreeNode[]) => string | null;
-    findNodesByParentId: (parentId: string, nodes: TreeNode[]) => string[];
+    directoryTree: DirectoryTreeApi;
 
     isMoveFileModalOpen: boolean;
     isEncodeFilesModalOpen: boolean;
-    setTreeNodeId: (id: string) => void;
+
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -48,15 +37,9 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({
     createDirectoryPath,
     setCreateDirectoryPath,
     path,
-    treeData,
-    setTreeData,
-    rootTreeNode,
-    isNodeExpanded,
-    findNodeIdByFullPath,
-    findNodesByParentId,
+    directoryTree,
     isMoveFileModalOpen,
     isEncodeFilesModalOpen,
-    setTreeNodeId,
     setRebuildList,
 }) => {
     const { t } = useTranslation();
@@ -100,51 +83,27 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({
             return;
         }
 
+        const dirFullPath = `${decodeURIComponent(createDirectoryPath)}/${inputValueCreateDirectory}`;
+
         try {
-            api.apiPostTeddyCloudRaw(
-                `/api/dirCreate?special=library`,
-                decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory
-            )
+            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, dirFullPath)
                 .then((response) => response.text())
                 .then((text) => {
                     if (text !== "OK") {
                         throw new Error(text);
                     }
 
-                    const parentNodeId = findNodeIdByFullPath(createDirectoryPath + "/", treeData) || rootTreeNode.id;
-                    const newNodeId = `${parentNodeId}.${treeData.length}`;
-                    const nodeExpanded = isNodeExpanded(parentNodeId);
-                    const childNodes = findNodesByParentId(parentNodeId, treeData);
-
-                    if (nodeExpanded || childNodes.length > 0) {
-                        const newDir: TreeNode = {
-                            id: newNodeId,
-                            pId: parentNodeId,
-                            value: newNodeId,
-                            title: inputValueCreateDirectory,
-                            fullPath: createDirectoryPath + "/" + inputValueCreateDirectory + "/",
-                        };
-
-                        setTreeData(
-                            [...treeData, newDir].sort((a, b) =>
-                                a.title.toLowerCase() > b.title.toLowerCase()
-                                    ? 1
-                                    : a.title.toLowerCase() < b.title.toLowerCase()
-                                    ? -1
-                                    : 0
-                            )
-                        );
-
-                        if (isMoveFileModalOpen || isEncodeFilesModalOpen) {
-                            setTreeNodeId(newNodeId);
-                        }
-                    }
+                    directoryTree.addDirectory({
+                        parentPath: createDirectoryPath,
+                        directoryName: inputValueCreateDirectory,
+                        selectNewNode: isMoveFileModalOpen || isEncodeFilesModalOpen,
+                    });
 
                     addNotification(
                         NotificationTypeEnum.Success,
                         t("fileBrowser.createDirectory.directoryCreated"),
                         t("fileBrowser.createDirectory.directoryCreatedDetails", {
-                            directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
+                            directory: dirFullPath,
                         }),
                         t("fileBrowser.title")
                     );
@@ -158,7 +117,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({
                         NotificationTypeEnum.Error,
                         t("fileBrowser.createDirectory.directoryCreateFailed"),
                         t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
-                            directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
+                            directory: dirFullPath,
                         }) + error,
                         t("fileBrowser.title")
                     );
@@ -168,7 +127,7 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({
                 NotificationTypeEnum.Error,
                 t("fileBrowser.createDirectory.directoryCreateFailed"),
                 t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
-                    directory: decodeURIComponent(createDirectoryPath) + "/" + inputValueCreateDirectory,
+                    directory: dirFullPath,
                 }) + error,
                 t("fileBrowser.title")
             );
@@ -190,14 +149,20 @@ const CreateDirectoryModal: React.FC<CreateDirectoryModalProps> = ({
             <Typography style={{ marginBottom: 8 }}>
                 {t("fileBrowser.createDirectory.parentPath") +
                     " " +
-                    createDirectoryPath.split("/").map(decodeURIComponent).join("/") +
+                    createDirectoryPath
+                        .split("/")
+                        .filter((x) => x.length > 0)
+                        .map(decodeURIComponent)
+                        .join("/") +
                     "/"}
             </Typography>
             <Form.Item
                 validateStatus={hasNewDirectoryInvalidChars ? "error" : ""}
                 help={
                     hasNewDirectoryInvalidChars
-                        ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
+                        ? t("inputValidator.invalidCharactersDetected", {
+                              invalidChar: invalidCharactersAsString,
+                          })
                         : ""
                 }
                 required

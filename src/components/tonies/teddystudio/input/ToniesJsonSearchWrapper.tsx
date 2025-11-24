@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Tag } from "antd";
 
-import { ToniesJsonSearch, ToniesJsonSearchResult } from "../../common/search/ToniesJsonSearch";
+import { ToniesJsonSearch, ToniesJsonSearchResult } from "../../common/searchs/ToniesJsonSearch";
 import { CheckCircleOutlined } from "@ant-design/icons";
 
 export interface ToniesJsonSearchWrapperProps {

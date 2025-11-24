@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
-import { TonieboxOverlaySelect } from "../../components/tonies/common/TonieboxOverlaySelect";
+import { TonieboxOverlaySelect } from "../../components/tonies/common/elements/TonieboxOverlaySelect";
 import { useTonieboxContentOverlay } from "../../hooks/useTonieboxContentOverlay";
 
 export const ContentPage = () => {

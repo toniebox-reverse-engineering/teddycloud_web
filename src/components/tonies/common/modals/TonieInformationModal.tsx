@@ -3,17 +3,17 @@ import { useTranslation } from "react-i18next";
 import { Modal, Typography, Button, Tooltip, Spin, theme, List } from "antd";
 import { DownloadOutlined, LoadingOutlined, PlayCircleOutlined } from "@ant-design/icons";
 
-import { Record } from "../../../types/fileBrowserTypes";
-import { TonieCardProps } from "../../../types/tonieTypes";
+import { Record } from "../../../../types/fileBrowserTypes";
+import { TonieCardProps } from "../../../../types/tonieTypes";
 
-import { TeddyCloudApi } from "../../../api";
-import { defaultAPIConfig } from "../../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
-import ConfirmationDialog from "../../common/modals/ConfirmationModal";
+import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
-import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
-import { useAudioContext } from "../../../contexts/AudioContext";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { useAudioContext } from "../../../../contexts/AudioContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

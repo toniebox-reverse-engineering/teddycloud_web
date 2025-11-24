@@ -20,7 +20,6 @@ interface SelectFileModalProps {
 export const SelectFileModal: React.FC<SelectFileModalProps> = ({
     open,
     tempSelectedSource,
-    onTempSelectedSourceChange,
     onCancel,
     onConfirm,
     keySelectFileFileBrowser,

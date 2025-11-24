@@ -9,7 +9,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Record } from "../../../types/fileBrowserTypes";
 
 import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
-import TonieInformationModal from "../common/TonieInformationModal";
+import TonieInformationModal from "../common/modals/TonieInformationModal";
 import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";

@@ -16,7 +16,7 @@ import { TonieCardProps } from "../../../types/tonieTypes";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../api";
 
-import TonieInformationModal from "../common/TonieInformationModal";
+import TonieInformationModal from "../common/modals/TonieInformationModal";
 import { LanguageFlagIcon } from "../../common/icons/LanguageFlagIcon";
 import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";

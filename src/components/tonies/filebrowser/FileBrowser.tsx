@@ -7,8 +7,7 @@ import {
     QuestionCircleOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Flex, Input, Table, theme, Tooltip, TreeSelect, TreeSelectProps } from "antd";
-import { DefaultOptionType } from "antd/es/select";
+import { Button, Flex, Input, Table, theme, Tooltip } from "antd";
 import { Key } from "antd/es/table/interface";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +17,7 @@ import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
-import TonieInformationModal from "../common/TonieInformationModal";
+import TonieInformationModal from "../common/modals/TonieInformationModal";
 
 import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
 
@@ -30,7 +29,7 @@ import HelpModal from "./modals/FileBrowserHelpModal";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
-import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
+import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
 import DeleteFilesModal from "./modals/DeleteFilesModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
 import JsonViewerModal from "./modals/JsonViewerModal";
@@ -43,12 +42,12 @@ import { MAX_FILES } from "../../../constants/numbers";
 import { createColumns } from "./helper/Columns";
 import { generateUUID } from "../../../utils/ids/generateUUID";
 import { useAudioContext } from "../../../contexts/AudioContext";
+import { useDirectoryTree } from "../common/hooks/useDirectoryTree";
+import { DirectoryTreeSelect } from "../common/elements/DirectoryTreeSelect";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
-
-const rootTreeNode = { id: "1", pId: "-1", value: "1", title: "/", fullPath: "/" };
 
 export const FileBrowser: React.FC<{
     special: string;
@@ -75,10 +74,6 @@ export const FileBrowser: React.FC<{
 
     const [currentFile, setCurrentFile] = useState<string>("");
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
-    const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
-    const [treeData, setTreeData] = useState<Omit<DefaultOptionType, "label">[]>([rootTreeNode]);
-    const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
     const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
     const [currentRecord, setCurrentRecord] = useState<Record>();
@@ -125,6 +120,11 @@ export const FileBrowser: React.FC<{
 
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
 
+    const directoryTree = useDirectoryTree();
+
+    const { treeData, treeNodeId, setTreeNodeId, rootTreeNode, getPathFromNodeId, findNodeIdByFullPath, setTreeData } =
+        directoryTree;
+
     const {
         path,
         setPath,
@@ -156,35 +156,6 @@ export const FileBrowser: React.FC<{
     });
 
     useEffect(() => {
-        const preLoadTreeData = async () => {
-            const newPath = getPathFromNodeId(rootTreeNode.id);
-
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
-                .then((response) => response.json())
-                .then((data) => {
-                    let list: any[] = data.files;
-                    list = list
-                        .filter((entry) => entry.isDir && entry.name !== "..")
-                        .sort((a, b) => {
-                            return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-                        })
-                        .map((entry) => {
-                            return {
-                                id: rootTreeNode.id + "." + list.indexOf(entry),
-                                pId: rootTreeNode.id,
-                                value: rootTreeNode.id + "." + list.indexOf(entry),
-                                title: entry.name,
-                                fullPath: `${newPath}/${entry.name}/`,
-                            };
-                        });
-                    setTreeData(treeData.concat(list));
-                });
-        };
-        preLoadTreeData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
         setCreateDirectoryPath(getPathFromNodeId(treeNodeId));
     }, [treeNodeId]);
 
@@ -192,87 +163,11 @@ export const FileBrowser: React.FC<{
         setCreateDirectoryPath(path);
     }, [path]);
 
-    // directory tree helpers
-    const onLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
-        new Promise((resolve, reject) => {
-            const newPath = getPathFromNodeId(id);
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
-                .then((response) => response.json())
-                .then((data) => {
-                    let list: any[] = data.files;
-                    list = list
-                        .filter((entry) => entry.isDir && entry.name !== "..")
-                        .sort((a, b) => {
-                            return a.name === b.name ? 0 : a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-                        })
-                        .map((entry, index) => {
-                            const stringId = String(id);
-                            const value = `${stringId}.${index}`;
-                            return {
-                                id: value,
-                                pId: stringId,
-                                value,
-                                title: entry.name,
-                                fullPath: `${newPath}/${entry.name}/`,
-                            };
-                        });
-                    setTreeData((prev) => prev.concat(list));
-                    resolve(true);
-                })
-                .catch(reject);
-        });
-
-    const getPathFromNodeId = (nodeId: string): string => {
-        const node = treeData.filter((entry) => entry.value === nodeId)[0];
-        if (node.pId === "-1") return "";
-        return getPathFromNodeId(treeData.filter((entry) => entry.id === node.pId)[0].id) + "/" + node.title;
-    };
-
-    const findNodeIdByFullPath = (fullPath: string, nodes: any[]): string | null => {
-        for (const node of nodes) {
-            if (node.fullPath === fullPath) {
-                return node.id;
-            }
-        }
-        return null;
-    };
-
-    const findNodesByParentId = (parentId: string, nodes: any[]): string[] => {
-        const childNodes: string[] = [];
-        for (const node of nodes) {
-            if (node.pId === parentId) {
-                childNodes.push(node);
-            }
-        }
-        return childNodes;
-    };
-
-    const isNodeExpanded = (nodeId: string) => {
-        return expandedKeys.includes(nodeId);
-    };
-
     const folderTreeElement = (
-        <TreeSelect
-            className="move-file"
-            treeLine
-            treeDataSimpleMode
-            value={treeNodeId}
-            styles={{
-                popup: {
-                    root: {
-                        maxHeight: 400,
-                        overflow: "auto",
-                    },
-                },
-            }}
-            onChange={setTreeNodeId}
-            loadData={onLoadTreeData}
-            treeData={treeData}
-            treeNodeLabelProp="fullPath"
-            placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
-            treeExpandedKeys={expandedKeys}
-            onTreeExpand={(keys) => setExpandedKeys(keys.map(String))}
+        <DirectoryTreeSelect
+            directoryTree={directoryTree}
             disabled={processing || uploading}
+            placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
         />
     );
 
@@ -558,15 +453,9 @@ export const FileBrowser: React.FC<{
                     createDirectoryPath={createDirectoryPath}
                     setCreateDirectoryPath={setCreateDirectoryPath}
                     path={path}
-                    treeData={treeData as any}
-                    setTreeData={setTreeData as any}
-                    rootTreeNode={rootTreeNode as any}
-                    isNodeExpanded={isNodeExpanded}
-                    findNodeIdByFullPath={findNodeIdByFullPath}
-                    findNodesByParentId={findNodesByParentId}
+                    directoryTree={directoryTree}
                     isMoveFileModalOpen={isMoveFileModalOpen}
                     isEncodeFilesModalOpen={isEncodeFilesModalOpen}
-                    setTreeNodeId={setTreeNodeId}
                     setRebuildList={setRebuildList}
                 />
             )}

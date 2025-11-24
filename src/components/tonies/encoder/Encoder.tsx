@@ -1,14 +1,15 @@
 import React from "react";
-import { Button, Divider, Input, Space, Switch, Tooltip, TreeSelect, Upload, theme } from "antd";
+import { Button, Divider, Input, Space, Switch, Tooltip, Upload, theme } from "antd";
 import { useTranslation } from "react-i18next";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
 import { MAX_FILES } from "../../../constants/numbers";
 import { MyUploadFile } from "../../../utils/audio/audioEncoder";
-import { DraggableUploadListItem } from "../common/DraggableUploadListItem";
-import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
+import { DraggableUploadListItem } from "../common/elements/DraggableUploadListItem";
+import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
 import { useEncoder } from "./hooks/useEncoder";
+import { DirectoryTreeSelect } from "../common/elements/DirectoryTreeSelect";
 
 const { useToken } = theme;
 
@@ -24,13 +25,10 @@ export const Encoder: React.FC = () => {
         hasInvalidChars,
         useFrontendEncoding,
         useFrontendEncodingSetting,
-        treeNodeId,
-        treeData,
         isCreateDirectoryModalOpen,
         createDirectoryPath,
 
         // Actions
-        setTreeNodeId,
         setUseFrontendEncoding,
         sortFileListAlphabetically,
         clearFileList,
@@ -46,15 +44,12 @@ export const Encoder: React.FC = () => {
         onDragEnd,
         uploadProps,
         onRemoveUpload,
-        onLoadTreeData,
 
-        // CreateDirectoryModal
-        rootTreeNode,
-        isNodeExpanded,
-        findNodeIdByFullPath,
-        findNodesByParentId,
+        // Directory tree
+        directoryTree,
+
+        // CreateDirectory / Encoder
         setRebuildList,
-        setTreeData,
 
         // Helper
         invalidCharactersAsString,
@@ -140,23 +135,10 @@ export const Encoder: React.FC = () => {
                                         disabled
                                         value={t("tonies.encoder.saveAs")}
                                     />
-                                    <TreeSelect
-                                        treeLine
-                                        treeDataSimpleMode
-                                        disabled={uploading || processing}
-                                        style={{ maxWidth: 250 }}
-                                        value={treeNodeId}
-                                        styles={{
-                                            popup: {
-                                                root: {
-                                                    maxHeight: 400,
-                                                    overflow: "auto",
-                                                },
-                                            },
-                                        }}
-                                        onChange={setTreeNodeId}
-                                        loadData={onLoadTreeData}
-                                        treeData={treeData as any}
+                                    <DirectoryTreeSelect
+                                        directoryTree={directoryTree}
+                                        disabled={processing || uploading}
+                                        placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
                                     />
                                     <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                                         <Button
@@ -230,15 +212,9 @@ export const Encoder: React.FC = () => {
                 createDirectoryPath={createDirectoryPath}
                 setCreateDirectoryPath={setCreateDirectoryPath}
                 path={createDirectoryPath}
-                treeData={treeData}
-                setTreeData={setTreeData}
-                rootTreeNode={rootTreeNode}
-                isNodeExpanded={isNodeExpanded}
-                findNodeIdByFullPath={findNodeIdByFullPath}
-                findNodesByParentId={findNodesByParentId}
+                directoryTree={directoryTree}
                 isMoveFileModalOpen={false}
                 isEncodeFilesModalOpen={true}
-                setTreeNodeId={setTreeNodeId}
                 setRebuildList={setRebuildList}
             />
         </>
