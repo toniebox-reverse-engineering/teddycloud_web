@@ -191,7 +191,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             setTimeout(() => {
                 antdNotification.open({
                     type,
-                    message: title,
+                    title,
                     description,
                     showProgress: true,
                     pauseOnHover: true,
@@ -202,11 +202,11 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         []
     );
 
-    const addLoadingNotification = useCallback((key: string, message: string, description: string) => {
+    const addLoadingNotification = useCallback((key: string, title: string, description: string) => {
         setTimeout(() => {
             antdNotification.open({
                 key,
-                message,
+                title,
                 description,
                 icon: <LoadingOutlined />,
                 duration: 0,

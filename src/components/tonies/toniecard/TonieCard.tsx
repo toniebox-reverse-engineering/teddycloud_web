@@ -562,6 +562,9 @@ export const TonieCard: React.FC<{
                     background: selected ? token.colorBgTextHover : token.colorBgContainerDisabled,
                     borderTop: toniePlayedOn && toniePlayedOn.length > 0 ? "3px #1677ff inset" : "reset",
                     paddingTop: toniePlayedOn && toniePlayedOn.length > 0 ? "unset" : 2,
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
                 }}
                 title={
                     <div style={{ display: "flex", justifyContent: "space-between" }}>

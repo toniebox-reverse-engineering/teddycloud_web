@@ -497,7 +497,7 @@ export const TonieboxCard: React.FC<{
     const isSaveDisabled = boxName === tonieboxName && activeModel === selectedModel;
 
     return (
-        <>
+        <div style={{ height: "100%" }}>
             <Card
                 key={tonieboxCard.ID}
                 hoverable={false}
@@ -668,6 +668,6 @@ export const TonieboxCard: React.FC<{
                 onConfirm={handleConfirmDelete}
                 onCancel={handleCancelDelete}
             />
-        </>
+        </div>
     );
 };

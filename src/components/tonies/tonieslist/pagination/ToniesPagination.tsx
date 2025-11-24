@@ -30,6 +30,7 @@ const ToniesPagination: React.FC<ToniesPaginationProps> = ({
                 pageSizeOptions={["24", "48", "96", "192"]}
                 locale={{ items_per_page: t("tonies.tonies.pageSelector") }}
                 style={{ marginBottom: 8 }}
+                showLessItems
             />
             <Button onClick={additionalButtonOnClick} style={{ marginLeft: 16 }}>
                 {t("tonies.tonies.showAll")}

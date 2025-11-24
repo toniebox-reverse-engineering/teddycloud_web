@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Empty, List } from "antd";
+import { Empty, Flex, Grid } from "antd";
 
 import { TonieboxCardProps } from "../../../types/tonieboxTypes";
 
@@ -16,6 +16,9 @@ export const TonieboxesList: React.FC<{
 }> = ({ tonieboxCards, readOnly = false }) => {
     const { t } = useTranslation();
     const { addNotification, boxModelImages, boxModelImagesLoading } = useTeddyCloud();
+    const screens = Grid.useBreakpoint();
+
+    const columns = screens.xxl ? 4 : screens.xl ? 3 : screens.lg ? 3 : screens.md ? 2 : screens.sm ? 2 : 1;
 
     const checkCC3200CFW = useCheckCC3200CFW();
 
@@ -51,28 +54,27 @@ export const TonieboxesList: React.FC<{
     }
 
     return (
-        <List
-            grid={{
-                gutter: 16,
-                xs: 1,
-                sm: 2,
-                md: 2,
-                lg: 3,
-                xl: 3,
-                xxl: 4,
-            }}
-            dataSource={tonieboxCards}
-            renderItem={(toniebox) => (
-                <List.Item id={toniebox.ID}>
-                    <TonieboxCard
-                        tonieboxCard={toniebox}
-                        tonieboxImages={boxModelImages}
-                        readOnly={readOnly}
-                        checkCC3200CFW={checkCC3200CFW}
-                    />
-                </List.Item>
+        <Flex wrap gap={16}>
+            {tonieboxCards.length === 0 ? (
+                <div style={{ width: "100%", textAlign: "center" }}>{noDataTonieboxes}</div>
+            ) : (
+                tonieboxCards.map((toniebox) => (
+                    <div
+                        key={toniebox.ID}
+                        style={{
+                            flex: `0 0 calc(${100 / columns}% - 16px)`,
+                            maxWidth: `calc(${100 / columns}% - 16px)`,
+                        }}
+                    >
+                        <TonieboxCard
+                            tonieboxCard={toniebox}
+                            tonieboxImages={boxModelImages}
+                            readOnly={readOnly}
+                            checkCC3200CFW={checkCC3200CFW}
+                        />
+                    </div>
+                ))
             )}
-            locale={{ emptyText: noDataTonieboxes }}
-        />
+        </Flex>
     );
 };

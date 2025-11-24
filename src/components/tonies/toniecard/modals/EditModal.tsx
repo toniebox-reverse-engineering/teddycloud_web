@@ -106,9 +106,7 @@ export const EditModal: React.FC<EditModalProps> = ({
             }
             width={700}
         >
-            <Divider orientation="left" orientationMargin="0">
-                {t("tonies.editModal.source")}
-            </Divider>
+            <Divider orientation="horizontal">{t("tonies.editModal.source")}</Divider>
             <div>
                 <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
                     <Input
@@ -150,9 +148,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                 </Form.Item>
             </div>
 
-            <Divider orientation="left" orientationMargin="0">
-                {t("tonies.editModal.model")}
-            </Divider>
+            <Divider orientation="horizontal">{t("tonies.editModal.model")}</Divider>
             <div>
                 <Form.Item validateStatus={inputValidationModel.validateStatus} help={inputValidationModel.help}>
                     <Input

@@ -100,9 +100,7 @@ export const TeddyStudio: React.FC = () => {
                     </div>
                 </Paragraph>
             ) : (
-                <Paragraph style={{ marginBottom: 16, color: token.colorTextDisabled }}>
-                    {t("tonies.teddystudio.empty")}
-                </Paragraph>
+                <Paragraph style={{ marginBottom: 16 }}>{t("tonies.teddystudio.empty")}</Paragraph>
             )}
 
             <LabelGrid

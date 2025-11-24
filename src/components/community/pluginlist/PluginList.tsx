@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Alert, Badge, Button, List, Tag, Typography } from "antd";
+import { Alert, Badge, Button, Col, Empty, Row, Tag, Typography } from "antd";
 import { AppstoreAddOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { usePluginList } from "./hooks/usePluginList";
 import PluginTemplateDownloadButton from "../../common/buttons/PluginTemplateDownloadButton";
@@ -88,28 +88,29 @@ export const PluginList = () => {
                         );
                     })}
                 </div>
-                <List
-                    grid={{
-                        gutter: 16,
-                        xs: 1,
-                        sm: 2,
-                        md: 2,
-                        lg: 3,
-                        xl: 3,
-                        xxl: 4,
-                    }}
-                    dataSource={filteredPlugins}
-                    renderItem={(plugin) => (
-                        <PluginCard
-                            key={plugin.pluginId}
-                            plugin={plugin}
-                            onOpen={(pluginId) => navigate(`/community/plugin/${pluginId}`)}
-                            onOpenHomepage={(url) => window.open(url, "_blank")}
-                            onDelete={requestDelete}
-                        />
-                    )}
-                    locale={{ emptyText: t("community.plugins.empty") }}
-                />
+                {filteredPlugins.length === 0 ? (
+                    <Empty description={t("community.plugins.empty")} />
+                ) : (
+                    <Row gutter={8}>
+                        {filteredPlugins.map((plugin) => (
+                            <Col key={plugin.pluginId} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
+                                <div
+                                    style={{
+                                        height: "100%",
+                                        display: "flex",
+                                    }}
+                                >
+                                    <PluginCard
+                                        plugin={plugin}
+                                        onOpen={(pluginId) => navigate(`/community/plugin/${pluginId}`)}
+                                        onOpenHomepage={(url) => window.open(url, "_blank")}
+                                        onDelete={requestDelete}
+                                    />
+                                </div>
+                            </Col>
+                        ))}
+                    </Row>
+                )}
 
                 <PluginHelpModal open={isVisibleHelpModal} onClose={closeHelp} />
                 <PluginUploadModal

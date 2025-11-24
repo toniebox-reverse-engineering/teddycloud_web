@@ -289,10 +289,10 @@ One reason is the upcoming authentication for accessing the API and the possibil
 
 #### Linking to other sites
 
-If you need to link to another source, element, or URL, please check if it is already defined in `constants.tsx`.
+If you need to link to another source, element, or URL, please check if it is already defined in `src/constants/urls.ts`.
 
 -   If it is, use the existing variable instead of hardcoding the URL.
--   If it isn’t, consider adding it as a variable in `constants.tsx`.
+-   If it isn’t, consider adding it as a variable in `src/constants/urls.ts`.
 
 You may need the same URL more than once; defining it in one place ensures that updates are centralized.
 

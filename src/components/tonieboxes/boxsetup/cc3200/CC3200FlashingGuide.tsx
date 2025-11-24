@@ -14,7 +14,6 @@ import { Step4ApplyingPatches } from "./steps/Step4ApplyingPatches";
 import AvailableBoxesModal from "../common/modals/AvailableBoxesModal";
 
 const { Paragraph } = Typography;
-const { Step } = Steps;
 
 export const CC3200BoxFlashingGuide: React.FC = () => {
     const { t } = useTranslation();
@@ -120,15 +119,15 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
             <Divider>{t("tonieboxes.cc3200BoxFlashing.title")}</Divider>
 
             <Paragraph>
-                <Steps current={currentStep} onChange={onStepChange}>
-                    {steps.map((step, index) => (
-                        <Step
-                            key={index}
-                            title={step.title}
-                            status={index === currentStep ? "process" : index < currentStep ? "finish" : "wait"}
-                        />
-                    ))}
-                </Steps>
+                <Steps
+                    current={currentStep}
+                    onChange={onStepChange}
+                    items={steps.map((step, index) => ({
+                        key: index,
+                        title: step.title,
+                        status: index === currentStep ? "process" : index < currentStep ? "finish" : "wait",
+                    }))}
+                />
 
                 <div style={{ marginTop: 24 }}>{renderStepContent()}</div>
 

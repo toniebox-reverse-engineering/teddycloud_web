@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Typography, List, Collapse } from "antd";
+import { Typography, Collapse, Flex, Divider } from "antd";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -103,25 +103,38 @@ export const ContributionToniesJsonPage = () => {
                                 key: index,
                                 label: language,
                                 children: (
-                                    <List>
+                                    <Flex vertical gap={0}>
                                         {Array.isArray(groupedTonieJsonEntries[language]) &&
-                                            groupedTonieJsonEntries[language].map((tonieJsonEntry, subSubIndex) => (
-                                                <List.Item key={subSubIndex} id={tonieJsonEntry.model}>
-                                                    <div>
+                                            groupedTonieJsonEntries[language].map((tonieJsonEntry, index) => (
+                                                <>
+                                                    <Flex
+                                                        key={index}
+                                                        id={tonieJsonEntry.model}
+                                                        gap={8}
+                                                        align="flex-end"
+                                                        style={{
+                                                            padding: "8px 0",
+                                                            borderBottom: "1px solid rgba(0,0,0,0.1)",
+                                                        }}
+                                                    >
                                                         <img
                                                             src={tonieJsonEntry.pic}
                                                             alt=""
                                                             style={{
                                                                 width: "100px",
                                                                 height: "auto",
+                                                                flexShrink: 0,
                                                             }}
                                                         />
-                                                        {tonieJsonEntry.model} - {tonieJsonEntry.series} -{" "}
-                                                        {tonieJsonEntry.episodes}
-                                                    </div>
-                                                </List.Item>
+                                                        <div>
+                                                            {tonieJsonEntry.model} – {tonieJsonEntry.series} –{" "}
+                                                            {tonieJsonEntry.episodes}
+                                                        </div>
+                                                    </Flex>
+                                                    <Divider style={{ margin: 0 }} />
+                                                </>
                                             ))}
-                                    </List>
+                                    </Flex>
                                 ),
                             }))}
                         />

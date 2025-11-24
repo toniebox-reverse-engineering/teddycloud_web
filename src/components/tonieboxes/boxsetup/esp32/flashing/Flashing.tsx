@@ -6,7 +6,6 @@ import {
     EyeOutlined,
     FileAddOutlined,
     LeftOutlined,
-    QuestionCircleOutlined,
     RightOutlined,
     RollbackOutlined,
     UploadOutlined,
@@ -24,7 +23,6 @@ import { Step2FlashESP32 } from "./steps/Step2FlashESP32";
 import { Step3AfterFlash } from "./steps/Step3AfterFlash";
 
 const { Paragraph } = Typography;
-const { Step } = Steps;
 
 interface ContentProps {
     flasher: UseESP32FlasherResult;
@@ -290,26 +288,24 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
                 handleOk={handleConfirmFlash}
                 handleCancel={handleCancelFlash}
             />
-            <Steps current={currentStep}>
-                {steps.map((step, index) => (
-                    <Step
-                        key={index}
-                        title={step.title}
-                        status={
-                            index === currentStep && index === steps.length - 1
-                                ? "finish"
-                                : index === currentStep
-                                ? state.error
-                                    ? "error"
-                                    : "process"
-                                : index < currentStep
-                                ? "finish"
-                                : "wait"
-                        }
-                        className={index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : ""}
-                    />
-                ))}
-            </Steps>
+            <Steps
+                current={currentStep}
+                items={steps.map((step, index) => ({
+                    key: index,
+                    title: step.title,
+                    status:
+                        index === currentStep && index === steps.length - 1
+                            ? "finish"
+                            : index === currentStep
+                            ? state.error
+                                ? "error"
+                                : "process"
+                            : index < currentStep
+                            ? "finish"
+                            : "wait",
+                    className: index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : "",
+                }))}
+            />
             <div style={{ marginTop: 24 }}>{renderStepContent()}</div>
             <div style={{ marginTop: 24, marginBottom: 24 }}>
                 {currentStep === 0 && (

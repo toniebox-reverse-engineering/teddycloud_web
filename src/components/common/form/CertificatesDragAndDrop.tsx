@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Upload, UploadFile } from "antd";
-import type { UploadRequestOption as RcCustomRequestOptions } from "rc-upload/lib/interface";
+import type { UploadProps } from "antd";
+
 import { InboxOutlined } from "@ant-design/icons";
 
 import { ApiUploadCertPostRequest, TeddyCloudApi } from "../../../api";
@@ -13,6 +14,8 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 interface CertificateDragNDropProps {
     overlay?: string;
 }
+
+type CustomRequestOptions = Parameters<NonNullable<UploadProps["customRequest"]>>[0];
 
 export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ overlay }) => {
     const { t } = useTranslation();
@@ -87,7 +90,7 @@ export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ over
             }
             return true;
         },
-        customRequest: async (options: RcCustomRequestOptions) => {
+        customRequest: async (options: CustomRequestOptions) => {
             const { onSuccess, onError, file } = options;
             try {
                 await handleUpload(file as UploadFile<unknown>);

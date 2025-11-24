@@ -125,6 +125,7 @@ const MacIdentifyForm: React.FC<MacIdentifyFormProps> = ({
     tokenColorTextDisabled,
 }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
 
     return (
         <Form>
@@ -134,7 +135,7 @@ const MacIdentifyForm: React.FC<MacIdentifyFormProps> = ({
                     <Col
                         style={{
                             flex: "0 0 250px",
-                            color: warningTextMac ? "#CC3010" : "unset",
+                            color: warningTextMac ? token.colorErrorText : "unset",
                         }}
                     >
                         <label>{t("tonieboxes.boxSetup.identifyVersion.mac")}</label>
@@ -157,7 +158,7 @@ const MacIdentifyForm: React.FC<MacIdentifyFormProps> = ({
                         />
                     </Col>
                 </Row>
-                {warningTextMac && <p style={{ color: "#CC3010" }}>{warningTextMac}</p>}
+                {warningTextMac && <p style={{ color: token.colorErrorText }}>{warningTextMac}</p>}
             </Form.Item>
             <Button icon={<CodeOutlined />} disabled={disabled} type="primary" onClick={onIdentify}>
                 {t("tonieboxes.boxSetup.identifyVersion.identify")}

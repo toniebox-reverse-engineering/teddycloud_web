@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, List } from "antd";
+import { Modal, Divider, Flex } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
@@ -34,32 +34,27 @@ const TracklistModal: React.FC<TracklistModalProps> = ({ open, tonieCard, onClos
     return (
         <Modal title={title} open={open} onCancel={onClose} footer={null} getContainer={getContainer}>
             {tracks.length ? (
-                <List
-                    size="small"
-                    dataSource={tracks}
-                    renderItem={(track: string, index: number) => (
-                        <List.Item style={{ textAlign: "left" }}>
-                            <div style={{ display: "flex", gap: 16 }}>
-                                {trackSecondsMatchSourceTracks(tonieCard, tracks.length) ? (
-                                    <>
-                                        <PlayCircleOutlined
-                                            key="playpause"
-                                            onClick={() => {
-                                                onClose();
-                                                onSelectTrack(getTrackStartTime(tonieCard, index));
-                                            }}
-                                        />{" "}
-                                    </>
-                                ) : (
-                                    ""
-                                )}{" "}
+                <Flex vertical gap={4}>
+                    {tracks.map((track: string, index: number) => (
+                        <div key={index}>
+                            <div style={{ display: "flex", gap: 16, textAlign: "left" }}>
+                                {trackSecondsMatchSourceTracks(tonieCard, tracks.length) && (
+                                    <PlayCircleOutlined
+                                        onClick={() => {
+                                            onClose();
+                                            onSelectTrack(getTrackStartTime(tonieCard, index));
+                                        }}
+                                    />
+                                )}
+
                                 <div>
                                     {index + 1}. {track}
                                 </div>
                             </div>
-                        </List.Item>
-                    )}
-                />
+                            {index < tracks.length - 1 && <Divider style={{ margin: "8px 0" }} />}
+                        </div>
+                    ))}
+                </Flex>
             ) : (
                 <p>{t("tonies.teddyaudioplayer.noTracks")}</p>
             )}

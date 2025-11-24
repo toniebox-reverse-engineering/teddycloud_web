@@ -1,4 +1,4 @@
-import { Button, Dropdown, Empty, List, Tooltip } from "antd";
+import { Button, Dropdown, Empty, Flex, Grid, Tooltip } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -45,6 +45,7 @@ export const ToniesList: React.FC<{
     const { t } = useTranslation();
     const location = useLocation();
     const { addNotification } = useTeddyCloud();
+    const screens = Grid.useBreakpoint();
 
     // ------------------------
     // Local state
@@ -75,6 +76,8 @@ export const ToniesList: React.FC<{
     const [urlFilterPending, setUrlFilterPending] = useState(false);
 
     const toniesListRef = useRef<HTMLDivElement | null>(null);
+
+    const columns = screens.xxl ? 6 : screens.xl ? 4 : screens.lg ? 3 : screens.md ? 2 : screens.sm ? 2 : 1;
 
     // ------------------------
     // Effects – basic wiring
@@ -468,7 +471,7 @@ export const ToniesList: React.FC<{
     // ------------------------
 
     const listActions = (
-        <>
+        <div style={{ marginBottom: 8 }}>
             <ToniesFilterPanel
                 state={{
                     ...filterState,
@@ -563,7 +566,7 @@ export const ToniesList: React.FC<{
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 
     const noDataTonies = (
@@ -578,6 +581,8 @@ export const ToniesList: React.FC<{
         />
     );
 
+    const currentPageData = getCurrentPageData();
+
     // ------------------------
     // Render
     // ------------------------
@@ -588,41 +593,44 @@ export const ToniesList: React.FC<{
 
     return (
         <div className="tonies-list-container">
-            {!readOnly ? listActions : ""}
-            <List
-                ref={toniesListRef}
-                header={showPagination ? listPagination : ""}
-                footer={showPagination ? listPagination : ""}
-                grid={{
-                    gutter: 16,
-                    xs: 1,
-                    sm: 2,
-                    md: 2,
-                    lg: 3,
-                    xl: 4,
-                    xxl: 6,
-                }}
-                dataSource={getCurrentPageData()}
-                key={listKey}
-                renderItem={(tonie) => (
-                    <List.Item id={tonie.ruid}>
-                        <TonieCard
-                            tonieCard={tonie}
-                            lastRUIDs={lastTonieboxRUIDs}
-                            overlay={overlay}
-                            readOnly={readOnly}
-                            defaultLanguage={defaultLanguage}
-                            showSourceInfo={showSourceInfo}
-                            onHide={handleHideTonieCard}
-                            onUpdate={handleUpdate}
-                            selectionMode={selectionMode}
-                            selected={selectedTonies.includes(tonie.ruid)}
-                            onToggleSelect={toggleSelectTonie}
-                        />
-                    </List.Item>
+            {!readOnly ? listActions : null}
+
+            <Flex ref={toniesListRef} vertical gap={16} key={listKey}>
+                {showPagination && listPagination}
+
+                {currentPageData.length === 0 ? (
+                    <div style={{ textAlign: "center", width: "100%" }}>{noDataTonies}</div>
+                ) : (
+                    <Flex wrap gap={16}>
+                        {currentPageData.map((tonie) => (
+                            <div
+                                key={tonie.ruid}
+                                id={tonie.ruid}
+                                style={{
+                                    flex: `0 0 calc(${100 / columns}% - 16px)`,
+                                    maxWidth: `calc(${100 / columns}% - 16px)`,
+                                }}
+                            >
+                                <TonieCard
+                                    tonieCard={tonie}
+                                    lastRUIDs={lastTonieboxRUIDs}
+                                    overlay={overlay}
+                                    readOnly={readOnly}
+                                    defaultLanguage={defaultLanguage}
+                                    showSourceInfo={showSourceInfo}
+                                    onHide={handleHideTonieCard}
+                                    onUpdate={handleUpdate}
+                                    selectionMode={selectionMode}
+                                    selected={selectedTonies.includes(tonie.ruid)}
+                                    onToggleSelect={toggleSelectTonie}
+                                />
+                            </div>
+                        ))}
+                    </Flex>
                 )}
-                locale={{ emptyText: noDataTonies }}
-            />
+
+                {showPagination && listPagination}
+            </Flex>
         </div>
     );
 };

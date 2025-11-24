@@ -1,7 +1,8 @@
-import { Alert, Collapse, Col, Form, Input, Row, Typography } from "antd";
+import { Alert, Collapse, Col, Form, Input, Row, Typography, theme } from "antd";
 import { useTranslation } from "react-i18next";
 
 const { Paragraph } = Typography;
+const { useToken } = theme;
 
 interface CC3200Step3PatchesProps {
     hostname: string;
@@ -15,6 +16,7 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
     onHostnameChange,
 }) => {
     const { t } = useTranslation();
+    const { token } = useToken();
 
     return (
         <>
@@ -69,7 +71,7 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
                         <Col
                             style={{
                                 flex: "0 0 200px",
-                                color: warningTextHostname ? "#CC3010" : "unset",
+                                color: warningTextHostname ? token.colorErrorText : "unset",
                             }}
                         >
                             <label>{t("tonieboxes.cc3200BoxFlashing.hostname")}</label>
@@ -78,7 +80,7 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
                             <Input type="text" value={hostname} onChange={(e) => onHostnameChange(e.target.value)} />
                         </Col>
                     </Row>
-                    {warningTextHostname && <p style={{ color: "#CC3010" }}>{warningTextHostname}</p>}
+                    {warningTextHostname && <p style={{ color: token.colorErrorText }}>{warningTextHostname}</p>}
                 </Form.Item>
             </Form>
         </>

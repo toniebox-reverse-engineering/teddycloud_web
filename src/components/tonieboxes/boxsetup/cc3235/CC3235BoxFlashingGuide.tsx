@@ -11,7 +11,6 @@ import { Step2Dns } from "./steps/Step2Dns";
 import AvailableBoxesModal from "../common/modals/AvailableBoxesModal";
 
 const { Paragraph } = Typography;
-const { Step } = Steps;
 
 type HwTool = "pico" | "ch341a";
 
@@ -74,15 +73,15 @@ export const CC3235BoxFlashingGuide: React.FC = () => {
             <Divider>{t("tonieboxes.cc3235BoxFlashing.title")}</Divider>
 
             <Paragraph style={{ marginTop: 16 }}>
-                <Steps current={currentStep} onChange={onStepChange}>
-                    {steps.map((step, index) => (
-                        <Step
-                            key={index}
-                            title={step.title}
-                            status={index === currentStep ? "process" : index < currentStep ? "finish" : "wait"}
-                        />
-                    ))}
-                </Steps>
+                <Steps
+                    current={currentStep}
+                    onChange={onStepChange}
+                    items={steps.map((step, index) => ({
+                        key: index,
+                        title: step.title,
+                        status: index === currentStep ? "process" : index < currentStep ? "finish" : "wait",
+                    }))}
+                />
 
                 <div style={{ marginTop: 24 }}>{renderStepContent()}</div>
 

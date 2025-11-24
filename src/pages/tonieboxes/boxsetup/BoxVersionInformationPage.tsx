@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Card, Col, List, Row, theme, Typography } from "antd";
+import { Card, Col, Row, Flex, theme, Typography, Divider } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import BreadcrumbWrapper, {
@@ -32,92 +32,98 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
             {versions.map((version, index) => (
                 <Col key={index} xs={24} md={12} xl={8}>
                     <Card title={version.name} size="small" variant="outlined" style={{ marginBottom: 8 }}>
+                        {/* Pros */}
                         <Title level={5} style={{ marginTop: 0 }}>
                             {t("tonieboxes.boxSetup.boxVersion.pros")}
                         </Title>
+
                         {version.pros.length > 0 ? (
-                            <List
-                                dataSource={version.pros}
-                                renderItem={(item) => (
-                                    <List.Item
-                                        style={{
-                                            flexWrap: "nowrap",
-                                            alignItems: "flex-start",
-                                        }}
-                                    >
-                                        <CheckOutlined
+                            <Flex vertical gap={4}>
+                                {version.pros.map((item, i) => (
+                                    <>
+                                        <Flex
+                                            key={i}
+                                            align="flex-start"
+                                            gap={8}
                                             style={{
-                                                color: "green",
-                                                marginRight: 8,
-                                                marginTop: 4,
-                                            }}
-                                        />
-                                        <Paragraph
-                                            style={{
-                                                marginBottom: 0,
-                                                textAlign: "right",
+                                                flexWrap: "nowrap",
                                             }}
                                         >
-                                            {item}
-                                        </Paragraph>
-                                    </List.Item>
-                                )}
-                            />
+                                            <CheckOutlined
+                                                style={{
+                                                    color: "green",
+                                                    marginTop: 4,
+                                                }}
+                                            />
+                                            <Paragraph
+                                                style={{
+                                                    marginBottom: 0,
+                                                    textAlign: "right",
+                                                }}
+                                            >
+                                                {item}
+                                            </Paragraph>
+                                        </Flex>
+                                        <Divider style={{ margin: "8px 0" }} />
+                                    </>
+                                ))}
+                            </Flex>
                         ) : (
-                            <List.Item>
-                                <Paragraph
-                                    style={{
-                                        marginBottom: 0,
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {t("tonieboxes.boxSetup.boxVersion.emptyPros")}
-                                </Paragraph>
-                            </List.Item>
+                            <Paragraph
+                                style={{
+                                    marginBottom: 0,
+                                    textAlign: "center",
+                                }}
+                            >
+                                {t("tonieboxes.boxSetup.boxVersion.emptyPros")}
+                            </Paragraph>
                         )}
 
-                        <Title level={5} style={{ marginTop: 0 }}>
+                        {/* Cons */}
+                        <Title level={5} style={{ marginTop: 16 }}>
                             {t("tonieboxes.boxSetup.boxVersion.cons")}
                         </Title>
+
                         {version.cons.length > 0 ? (
-                            <List
-                                dataSource={version.cons}
-                                renderItem={(item) => (
-                                    <List.Item
-                                        style={{
-                                            flexWrap: "nowrap",
-                                            alignItems: "flex-start",
-                                        }}
-                                    >
-                                        <CloseOutlined
+                            <Flex vertical gap={4}>
+                                {version.cons.map((item, i) => (
+                                    <>
+                                        <Flex
+                                            key={i}
+                                            align="flex-start"
+                                            gap={8}
                                             style={{
-                                                color: token.colorError,
-                                                marginRight: 8,
-                                                marginTop: 4,
-                                            }}
-                                        />
-                                        <Paragraph
-                                            style={{
-                                                marginBottom: 0,
-                                                textAlign: "right",
+                                                flexWrap: "nowrap",
                                             }}
                                         >
-                                            {item}
-                                        </Paragraph>
-                                    </List.Item>
-                                )}
-                            />
+                                            <CloseOutlined
+                                                style={{
+                                                    color: token.colorError,
+                                                    marginTop: 4,
+                                                }}
+                                            />
+                                            <Paragraph
+                                                style={{
+                                                    marginBottom: 0,
+                                                    textAlign: "right",
+                                                }}
+                                            >
+                                                {item}
+                                            </Paragraph>
+                                        </Flex>
+                                        <Divider style={{ margin: "8px 0" }} />
+                                    </>
+                                ))}
+                            </Flex>
                         ) : (
-                            <List.Item>
-                                <Paragraph
-                                    style={{
-                                        marginBottom: 0,
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    {t("tonieboxes.boxSetup.boxVersion.emptyCons")}
-                                </Paragraph>
-                            </List.Item>
+                            <Paragraph
+                                style={{
+                                    marginBottom: 0,
+                                    textAlign: "center",
+                                }}
+                            >
+                                {t("tonieboxes.boxSetup.boxVersion.emptyCons")}
+                            </Paragraph>
                         )}
                     </Card>
                 </Col>

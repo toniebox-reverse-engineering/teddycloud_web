@@ -51,8 +51,6 @@ export const PluginCard: React.FC<PluginCardProps> = ({ plugin, onOpen, onOpenHo
             size="small"
             key={plugin.pluginId}
             style={{
-                paddingLeft: 8,
-                paddingRight: 8,
                 width: "100%",
                 margin: 8,
                 borderRadius: 8,

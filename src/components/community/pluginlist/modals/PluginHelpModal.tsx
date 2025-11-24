@@ -1,4 +1,4 @@
-import { Modal, List, Typography, Button } from "antd";
+import { Modal, Typography, Button, Flex } from "antd";
 import { useTranslation } from "react-i18next";
 import CodeSnippet from "../../../common/elements/CodeSnippet";
 import PluginTemplateDownloadButton from "../../../common/buttons/PluginTemplateDownloadButton";
@@ -68,15 +68,13 @@ export const PluginHelpModal: React.FC<PluginHelpModalProps> = ({ open, onClose 
                 />
 
                 <strong>{t("community.plugins.help.fieldsTitle")}</strong>
-                <List
-                    size="small"
-                    dataSource={fields}
-                    renderItem={([field, desc]) => (
-                        <List.Item>
+                <Flex vertical gap={8}>
+                    {fields.map(([field, desc]) => (
+                        <Flex key={field}>
                             <strong>{field}</strong>: {desc}
-                        </List.Item>
-                    )}
-                />
+                        </Flex>
+                    ))}
+                </Flex>
             </Paragraph>
         </Modal>
     );
