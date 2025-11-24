@@ -12,22 +12,22 @@ export const StyledLanguageSwitcher = () => {
 
     const items = [
         {
-            key: "1",
+            key: "en",
             label: t("language.english"),
             onClick: () => changeLanguage("en"),
         },
         {
-            key: "2",
+            key: "de",
             label: t("language.german"),
             onClick: () => changeLanguage("de"),
         },
         {
-            key: "3",
+            key: "fr",
             label: t("language.french"),
             onClick: () => changeLanguage("fr"),
         },
         {
-            key: "4",
+            key: "es",
             label: t("language.spanish"),
             onClick: () => changeLanguage("es"),
         },

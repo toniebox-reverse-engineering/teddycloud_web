@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { gitHubTCCommitTreeBaseUrl } from "../../../constants";
-import { useFeatures } from "./hooks/useFeatures";
+import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 import { FeatureItems, renderFeatureList } from "./render/renderFeatureList";
 
 export const Features = () => {
     const { t } = useTranslation();
-    const { version, versionShort, commitGitShaShort } = useFeatures();
+    const { version, versionShort, commitGitShaShort } = useTeddyCloudVersion();
 
     const features = t("home.features.features", {
         returnObjects: true,

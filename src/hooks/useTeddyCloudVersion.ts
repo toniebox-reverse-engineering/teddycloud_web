@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { TeddyCloudApi } from "../../../../api";
-import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../api";
+import { defaultAPIConfig } from "../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const useFeatures = () => {
+export const useTeddyCloudVersion = () => {
     const [version, setVersion] = useState("");
     const [versionShort, setVersionShort] = useState("");
     const [commitGitShaShort, setCommitGitShaShort] = useState("");

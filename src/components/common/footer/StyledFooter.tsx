@@ -8,11 +8,9 @@ import styled from "styled-components";
 
 import { gitHubSponsoringUrl, gitHubTCReleasesUrl } from "../../../constants";
 
-import { TeddyCloudApi } from "../../../api";
-import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-
 import AudioPlayerFooter from "./AudioPlayerFooter";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
+import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 
 const { useToken } = theme;
 
@@ -34,16 +32,12 @@ const StyledCenterPart = styled.div`
     align-items: center;
 `;
 
-const api = new TeddyCloudApi(defaultAPIConfig());
-
 export const StyledFooter = () => {
     const { t } = useTranslation();
     const { token } = useToken();
     const [footerHeight, setFooterHeight] = useState(0);
 
-    const [version, setVersion] = useState("");
-    const [versionShort, setVersionShort] = useState("");
-    const [gitShaShort, setGitShaShort] = useState("");
+    const { version, versionShort, commitGitShaShort } = useTeddyCloudVersion();
 
     const handleAudioPlayerVisibilityChange = () => {
         const footer = document.querySelector("footer");
@@ -51,21 +45,6 @@ export const StyledFooter = () => {
             setFooterHeight(footer.offsetHeight);
         }
     };
-
-    useEffect(() => {
-        api.apiGetTeddyCloudSettingRaw("internal.version.v_long")
-            .then((response) => response.text())
-            .then((data) => setVersion(data))
-            .catch((error) => console.error("Error fetching data:", error));
-        api.apiGetTeddyCloudSettingRaw("internal.version.v_short")
-            .then((response) => response.text())
-            .then((data) => setVersionShort(data))
-            .catch((error) => console.error("Error fetching data:", error));
-        api.apiGetTeddyCloudSettingRaw("internal.version.git_sha_short")
-            .then((response) => response.text())
-            .then((data) => setGitShaShort(data))
-            .catch((error) => console.error("Error fetching data:", error));
-    }, []);
 
     return (
         <>
@@ -79,7 +58,7 @@ export const StyledFooter = () => {
                         <small style={{ display: "flex", color: token.colorText }}>
                             <Link to={gitHubTCReleasesUrl} target="_blank">
                                 <HiddenDesktop>
-                                    {versionShort} ({gitShaShort})
+                                    {versionShort} ({commitGitShaShort})
                                 </HiddenDesktop>
                                 <HiddenMobile>{version}</HiddenMobile>
                             </Link>
