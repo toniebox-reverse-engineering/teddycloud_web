@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -29,19 +29,12 @@ const StyledHeaderComponent = styled(Header)`
     color: white;
     display: flex;
     align-items: center;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 0 16px;
     background: #141414;
 `;
 
 const StyledRightPart = styled.div`
     margin-left: auto;
-    display: flex;
-    align-items: center;
-`;
-
-const StyledLeftPart = styled.div`
-    margin-right: 12px;
     display: flex;
     align-items: center;
 `;
@@ -57,165 +50,154 @@ const NoHoverButton = styled(Button)`
         background: transparent !important;
     }
 `;
+
 export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.ReactNode; themeMode: string }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const location = useLocation();
+
     const { unconfirmedCount, navOpen, setNavOpen, subNavOpen, setSubNavOpen, currentTCSection, setCurrentTCSection } =
         useTeddyCloud();
-    const location = useLocation();
+
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+    // Responsive Detection
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    // Closing on desktop switch
     useEffect(() => {
         if (!isMobile) {
-            setSubNavOpen(false);
             setNavOpen(false);
+            setSubNavOpen(false);
         }
-    }, [isMobile]);
+    }, [isMobile, setNavOpen, setSubNavOpen]);
 
+    // Theme-color meta tag sync
     useEffect(() => {
-        const themeColorMetaTag = document.querySelector('meta[name="theme-color"]');
-        if (themeColorMetaTag) {
-            themeColorMetaTag.setAttribute("content", token.colorBgBase);
-        } else {
-            const meta = document.createElement("meta");
+        let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
+        if (!meta) {
+            meta = document.createElement("meta");
             meta.name = "theme-color";
-            meta.content = token.colorBgBase;
             document.head.appendChild(meta);
         }
+        meta.content = token.colorBgBase;
     }, [token.colorBgBase]);
 
+    // Scrollbar color sync
     useEffect(() => {
         const root = document.documentElement;
-        if (themeMode == "matrix") {
-            root.style.scrollbarColor = `#00ff00 #000000`;
-            return;
+        if (themeMode === "matrix") {
+            root.style.scrollbarColor = "#00ff00 #000000";
+        } else {
+            root.style.scrollbarColor = `${token.colorTextDescription} ${token.colorBgContainer}`;
         }
-        root.style.scrollbarColor = `${token.colorTextDescription} ${token.colorBgContainer}`;
-    }, [themeMode]);
+    }, [themeMode, token]);
 
-    const NavItem = ({ title, to, isMobile = false }: { title: string; to: string; isMobile?: boolean }) => {
-        const handleLinkClick = () => {
-            setNavOpen(false); // Use the function directly from the parent
-        };
+    // Helper: Navigation Item
+    const NavItem = useCallback(
+        ({ title, to }: { title: string; to: string }) => {
+            const handleClickMain = () => setNavOpen(false);
+            const handleExpand = () => {
+                setCurrentTCSection(title);
+                if (isMobile) setSubNavOpen(true);
+            };
 
-        const handleButtonClick = () => {
-            setCurrentTCSection(title); // Use the function directly from the parent
             if (isMobile) {
-                setSubNavOpen(true); // Use the function directly from the parent
+                return (
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: 16,
+                            width: "100%",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Link to={to} onClick={handleClickMain}>
+                            {title}
+                        </Link>
+                        <NoHoverButton
+                            type="text"
+                            icon={<PlusOutlined style={{ margin: 16 }} />}
+                            onClick={handleExpand}
+                        />
+                    </div>
+                );
             }
-        };
 
-        if (isMobile) {
             return (
-                <div
-                    style={{
-                        display: "flex",
-                        gap: 16,
-                        width: "100%",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                    }}
-                >
-                    <Link to={to} onClick={handleLinkClick}>
-                        {title}
-                    </Link>
-                    <NoHoverButton
-                        type="text"
-                        style={{ width: "100%", justifyContent: "end" }}
-                        icon={<PlusOutlined style={{ margin: 16 }} />}
-                        onClick={handleButtonClick}
-                    />
-                </div>
+                <Link to={to} onClick={handleClickMain}>
+                    {title}
+                </Link>
             );
-        }
+        },
+        [isMobile, setCurrentTCSection, setSubNavOpen, setNavOpen]
+    );
 
-        return (
-            <Link to={to} onClick={handleLinkClick}>
-                {title}
-            </Link>
-        );
-    };
+    // Main Navigation Items
+    const mainNav: MenuProps["items"] = useMemo(
+        () => [
+            { key: "/", label: <NavItem title={t("home.navigationTitle")} to="/" /> },
+            { key: "tonies", label: <NavItem title={t("tonies.navigationTitle")} to="/tonies" /> },
+            { key: "tonieboxes", label: <NavItem title={t("tonieboxes.navigationTitle")} to="/tonieboxes" /> },
+            { key: "settings", label: <NavItem title={t("settings.navigationTitle")} to="/settings" /> },
+            { key: "community", label: <NavItem title={t("community.navigationTitle")} to="/community" /> },
+        ],
+        [NavItem, t]
+    );
 
-    const mainNav: MenuProps["items"] = [
-        {
-            key: "/",
-            label: <NavItem title={t("home.navigationTitle")} to="/" isMobile={isMobile} />,
-        },
-        {
-            key: "tonies",
-            label: <NavItem title={t("tonies.navigationTitle")} to="/tonies" isMobile={isMobile} />,
-        },
-        {
-            key: "tonieboxes",
-            label: <NavItem title={t("tonieboxes.navigationTitle")} to="/tonieboxes" isMobile={isMobile} />,
-        },
-        {
-            key: "settings",
-            label: <NavItem title={t("settings.navigationTitle")} to="/settings" isMobile={isMobile} />,
-        },
-        {
-            key: "community",
-            label: <NavItem title={t("community.navigationTitle")} to="/community" isMobile={isMobile} />,
-        },
-    ];
+    // Get selected navigation key
+    const selectedKey = useMemo(() => {
+        const part = location.pathname.split("/")[1];
+        return !part || part === "home" ? "/" : part;
+    }, [location.pathname]);
 
-    let selectedKey = location.pathname.split("/")[1];
-    if (!selectedKey) selectedKey = "/";
-    if (selectedKey === "home") selectedKey = "/";
-
+    // Render sub nav
     const renderSubNav = () => {
-        if (currentTCSection === t("community.navigationTitle")) {
-            return <CommunitySubNav />;
+        switch (currentTCSection) {
+            case t("community.navigationTitle"):
+                return <CommunitySubNav />;
+            case t("settings.navigationTitle"):
+                return <SettingsSubNav />;
+            case t("tonies.navigationTitle"):
+                return <ToniesSubNav />;
+            case t("tonieboxes.navigationTitle"):
+                return <TonieboxesSubNav />;
+            default:
+                return <HomeSubNav />;
         }
-        if (currentTCSection === t("settings.navigationTitle")) {
-            return <SettingsSubNav />;
-        }
-        if (currentTCSection === t("tonies.navigationTitle")) {
-            return <ToniesSubNav />;
-        }
-        if (currentTCSection === t("tonieboxes.navigationTitle")) {
-            return <TonieboxesSubNav />;
-        }
-        return <HomeSubNav />;
     };
 
     return (
         <StyledHeaderComponent id="teddycloud-header">
-            <Link to="/" style={{ color: "white" }}>
-                <StyledLeftPart>
-                    <StyledLogo className="teddycloud-logo" src={logoImg} />
-                    <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud</HiddenMobile>
-                </StyledLeftPart>
+            <Link to="/" style={{ color: "white", display: "flex", alignItems: "center", marginRight: 16 }}>
+                <StyledLogo src={logoImg} />
+                <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud</HiddenMobile>
             </Link>
+
             <HiddenMobile>
                 <Menu
                     theme="dark"
                     mode="horizontal"
                     items={mainNav}
                     selectedKeys={[selectedKey]}
-                    style={{
-                        width: "calc(100vw - 510px)",
-                    }}
+                    style={{ width: "calc(100vw - 510px)" }}
                 />
             </HiddenMobile>
+
             <StyledRightPart>
                 <ServerStatus />
                 {themeSwitch}
                 <StyledLanguageSwitcher />
                 <NotificationButton notificationCount={unconfirmedCount} />
+
                 <HiddenDesktop style={{ marginLeft: 8 }}>
-                    <Button
-                        className="barsMenu"
-                        type="primary"
-                        onClick={() => setNavOpen(true)}
-                        icon={<MenuOutlined />}
-                    />
+                    <Button type="primary" icon={<MenuOutlined />} onClick={() => setNavOpen(true)} />
+
                     <Drawer placement="right" open={navOpen} onClose={() => setNavOpen(false)} title="TeddyCloud">
                         <StyledMenu
                             mode="vertical"
@@ -223,6 +205,7 @@ export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.Re
                             selectedKeys={[selectedKey]}
                             style={{ background: "transparent", borderRight: "none" }}
                         />
+
                         <Drawer
                             placement="right"
                             open={subNavOpen}

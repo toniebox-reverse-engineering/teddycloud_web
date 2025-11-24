@@ -77,6 +77,15 @@ function App() {
         });
     };
 
+    useEffect(() => {
+        document.body.classList.add("theme-switching");
+        const timeout = window.setTimeout(() => {
+            document.body.classList.remove("theme-switching");
+        }, 0);
+
+        return () => window.clearTimeout(timeout);
+    }, [themeMode]);
+
     // Effect to update local storage when theme mode changes
     useEffect(() => {
         localStorage.setItem("theme", themeMode);
@@ -106,6 +115,9 @@ function App() {
             theme={{
                 algorithm:
                     themeMode === "dark" ? darkAlgorithm : themeMode === "matrix" ? matrixAlgorithm : defaultAlgorithm,
+                token: {
+                    //motion: false,
+                },
                 components: {
                     Slider: {
                         dotSize: 3,
