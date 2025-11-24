@@ -1,4 +1,4 @@
-import { Button, Select, Tooltip } from "antd";
+import { AutoComplete, Button, Tooltip } from "antd";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -39,8 +39,6 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
 
-    const [selectInstanceKey, setSelectInstanceKey] = useState(0);
-
     const { value, options, search, select, setValue } = useToniesJsonSearch((error) => {
         addNotification(
             NotificationTypeEnum.Error,
@@ -50,22 +48,35 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         );
     });
 
+    const [searchText, setSearchText] = useState("");
+
     const debouncedSearch = useDebouncedCallback(search, 300);
 
-    const handleChange = (newValue: string) => {
+    const handleSearch = (text: string) => {
+        setSearchText(text);
+        debouncedSearch(text);
+    };
+
+    const handleSelect = (newValue: string) => {
         select(newValue);
+
         if (onSelectResult) {
             const match = (options as ToniesJsonSearchResult[]).find((o) => o.value === newValue);
             if (match) {
                 onSelectResult(match);
             }
         }
+
         onChange(newValue);
 
         if (clearInputAfterSelection) {
+            setSearchText("");
             setValue("");
-
-            setSelectInstanceKey((k) => k + 1);
+        } else {
+            const match = (options as ToniesJsonSearchResult[]).find((o) => o.value === newValue);
+            if (match) {
+                setSearchText(match.text);
+            }
         }
     };
 
@@ -73,21 +84,10 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         setShowAddCustomTonieModal(true);
     };
 
-    const displayValue = clearInputAfterSelection ? undefined : value;
-
     return (
         <>
-            <Select
-                key={clearInputAfterSelection ? selectInstanceKey : undefined}
-                showSearch
-                value={displayValue}
-                placeholder={placeholder}
-                defaultActiveFirstOption={false}
-                suffixIcon={null}
-                filterOption={false}
-                onSearch={debouncedSearch}
-                onChange={handleChange}
-                notFoundContent={null}
+            <AutoComplete
+                value={searchText}
                 options={(options as ToniesJsonSearchResult[]).map((d) => ({
                     value: d.value,
                     label: (
@@ -97,7 +97,11 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
                         </div>
                     ),
                 }))}
-                style={{ marginTop: "8px" }}
+                onSearch={handleSearch}
+                onSelect={handleSelect}
+                placeholder={placeholder}
+                filterOption={false}
+                style={{ marginTop: 8, width: "100%" }}
             />
 
             {showAddCustomTonieButton && (
@@ -105,7 +109,14 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
                     <ToniesCustomJsonEditor
                         open={showAddCustomTonieModal}
                         props={{ placeholder, onChange }}
-                        setValue={setValue}
+                        setValue={(v) => {
+                            setValue(v);
+                            if (clearInputAfterSelection) {
+                                setSearchText("");
+                            } else {
+                                setSearchText(v);
+                            }
+                        }}
                         onClose={() => setShowAddCustomTonieModal(false)}
                     />
                     <Tooltip title={t("tonies.addNewCustomTonieHint")}>
