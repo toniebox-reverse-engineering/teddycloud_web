@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Popover, Progress, Slider, theme } from "antd";
+import { Button, Popover, Progress, Slider } from "antd";
 import {
     PlayCircleOutlined,
     PauseCircleOutlined,
@@ -24,9 +24,6 @@ import { useNavigate } from "react-router";
 import { getLongestStringByPixelWidth } from "../../../utils/strings/getLongestStringByPixelWidth";
 import { useAudioContext } from "../../../contexts/AudioContext";
 
-const { useToken } = theme;
-const useThemeToken = () => useToken().token;
-
 interface AudioPlayerFooterProps {
     isPlaying?: boolean;
     onPlayPause?: () => void;
@@ -37,12 +34,14 @@ interface AudioPlayerFooterProps {
     onVisibilityChange: () => void;
 }
 
+const api = new TeddyCloudApi(defaultAPIConfig());
+
 const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChange }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+
     const { songImage, songArtist, songTitle, songTracks, tonieCardOrTAFRecord } = useAudioContext();
-    const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
-    const api = new TeddyCloudApi(defaultAPIConfig());
+    const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement | null;
 
     const [audioPlayerDisplay, setAudioPlayerDisplay] = useState<string>("none");
     const [showAudioPlayerMinimal, setShowAudioPlayerMinimal] = useState<boolean>(false);
@@ -51,11 +50,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     const [currentPlayPositionFormat, setCurrentPlayPositionFormat] = useState("0:00");
     const [audioDurationFormat, setAudioDurationFormat] = useState("0:00");
     const [downloadProgress, setDownloadProgress] = useState<number>(0);
-    const [cyclePosition, setCyclePosition] = useState<{
-        left: number;
-        top: number;
-        visible: boolean;
-    }>({ left: 0, top: 0, visible: false });
+    const [cyclePosition, setCyclePosition] = useState<{ left: number; top: number; visible: boolean }>({
+        left: 0,
+        top: 0,
+        visible: false,
+    });
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [volume, setVolume] = useState<number | null>(() => {
         const saved = localStorage.getItem("audioVolume");
@@ -78,31 +77,53 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     useEffect(() => {
         if (globalAudio) {
-            if (volume === null) {
-                globalAudio.volume = 0;
-            } else {
-                globalAudio.volume = volume / 100;
-            }
+            globalAudio.volume = volume === null ? 0 : volume / 100;
         }
         localStorage.setItem("audioVolume", (volume ?? 0).toString());
     }, [volume, globalAudio]);
 
     useEffect(() => {
         const fetchConfirmClose = async () => {
-            const response = await api.apiGetTeddyCloudSettingRaw("frontend.confirm_audioplayer_close");
-            const confirmClose = (await response.text()) === "true";
-            setConfirmClose(confirmClose);
+            try {
+                const response = await api.apiGetTeddyCloudSettingRaw("frontend.confirm_audioplayer_close");
+                const confirmCloseSetting = (await response.text()) === "true";
+                setConfirmClose(confirmCloseSetting);
+            } catch {
+                // in case of error - do nothing.
+            }
         };
-        fetchConfirmClose();
+        if (audioPlayerDisplay !== "none") {
+            fetchConfirmClose();
+        }
     }, [audioPlayerDisplay]);
 
     useEffect(() => {
+        const calculatePlayerWidth = () => {
+            if (tonieCardOrTAFRecord) {
+                const songContainer = document.querySelector(".songContainer") || document.body;
+                const computed = getComputedStyle(songContainer);
+                const font = `${computed.fontSize} ${computed.fontFamily}`;
+
+                const tracks =
+                    ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                        ? tonieCardOrTAFRecord.sourceInfo?.tracks
+                        : tonieCardOrTAFRecord.tonieInfo?.tracks) ?? [];
+
+                const longestString = getLongestStringByPixelWidth([...tracks, songArtist, songTitle], font).pixelWidth;
+
+                setSongContainerWidth(longestString);
+            } else {
+                setSongContainerWidth(300);
+            }
+        };
+
         calculatePlayerWidth();
         setDisplaySongTitle(songTitle);
         setDisplaySongArtist(songArtist);
         setCurrentTrackTitle("");
-    }, [songTracks, songTitle, songArtist]);
+    }, [songTracks, songTitle, songArtist, tonieCardOrTAFRecord]);
 
+    // Initiale Track-Nummer
     useEffect(() => {
         if (globalAudio?.querySelector("source")) {
             setCurrentTrackNo(0);
@@ -118,46 +139,36 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [audioPlayerDisplay, globalAudio?.querySelector("source"), onVisibilityChange]);
 
     useEffect(() => {
-        const globalAudio = document.getElementById("globalAudioPlayer") as HTMLAudioElement;
-        globalAudio.addEventListener("loadedmetadata", () => {
-            const minutes = Math.floor(globalAudio.duration / 60);
-            const seconds = Math.floor(globalAudio.duration % 60);
+        const audio = document.getElementById("globalAudioPlayer") as HTMLAudioElement | null;
+        if (!audio) return;
+
+        const handleLoadedMetadata = () => {
+            const minutes = Math.floor(audio.duration / 60);
+            const seconds = Math.floor(audio.duration % 60);
             setAudioDurationFormat(`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
-        });
-        globalAudio.addEventListener("progress", () => {
-            if (globalAudio.buffered.length > 0) {
-                const bufferedEnd = globalAudio.buffered.end(globalAudio.buffered.length - 1);
-                const duration = globalAudio.duration;
+        };
+
+        const handleProgress = () => {
+            if (audio.buffered.length > 0) {
+                const bufferedEnd = audio.buffered.end(audio.buffered.length - 1);
+                const duration = audio.duration;
                 if (duration > 0) {
                     setDownloadProgress((bufferedEnd / duration) * 100);
                 }
             }
-        });
+        };
+
+        audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+        audio.addEventListener("progress", handleProgress);
+
+        return () => {
+            audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+            audio.removeEventListener("progress", handleProgress);
+        };
     }, []);
 
-    const calculatePlayerWidth = () => {
-        if (tonieCardOrTAFRecord) {
-            const songContainer = document.querySelector(".songContainer") || document.body;
-            const longestString = getLongestStringByPixelWidth(
-                [
-                    ...(("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
-                        ? tonieCardOrTAFRecord?.sourceInfo?.tracks
-                        : tonieCardOrTAFRecord?.tonieInfo?.tracks) ?? []),
-                    songArtist,
-                    songTitle,
-                ],
-                getComputedStyle(songContainer).fontSize + " " + getComputedStyle(songContainer).fontFamily
-            ).pixelWidth;
-            setSongContainerWidth(longestString);
-        } else {
-            setSongContainerWidth(300);
-        }
-    };
-
     const handleVolumeSliderChange = (value: number | [number, number]) => {
-        if (Array.isArray(value)) {
-            return;
-        }
+        if (Array.isArray(value)) return;
         setVolume(value);
     };
 
@@ -170,31 +181,21 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setVolume(lastVolume);
     };
 
-    const handleAudioPlay = () => {
-        setIsPlaying(true);
-    };
+    const handleAudioPlay = () => setIsPlaying(true);
+    const handleAudioPause = () => setIsPlaying(false);
+    const handleAudioEnded = () => setIsPlaying(false);
 
-    const handleAudioPause = () => {
-        setIsPlaying(false);
-    };
-
-    const handleAudioEnded = () => {
-        setIsPlaying(false);
-    };
-
-    const handlePlayButton = () => {
-        globalAudio.play();
-    };
-    const handlePauseButton = () => {
-        globalAudio.pause();
-    };
+    const handlePlayButton = () => globalAudio?.play();
+    const handlePauseButton = () => globalAudio?.pause();
 
     const handleClosePlayer = () => {
         closeClosePlayerPopOver();
-        while (globalAudio.firstChild) {
-            globalAudio.removeChild(globalAudio.firstChild);
+        if (globalAudio) {
+            while (globalAudio.firstChild) {
+                globalAudio.removeChild(globalAudio.firstChild);
+            }
+            globalAudio.load();
         }
-        globalAudio.load();
         setAudioPlayerDisplay("none");
         onVisibilityChange();
     };
@@ -203,7 +204,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         const audioElement = event.target as HTMLAudioElement;
         const minutes = Math.floor(audioElement.currentTime / 60);
         const seconds = Math.floor(audioElement.currentTime % 60);
-        setCurrentPlayPosition((audioElement.currentTime / globalAudio.duration) * 100);
+        setCurrentPlayPosition((audioElement.currentTime / (globalAudio?.duration || 1)) * 100);
         setCurrentPlayPositionFormat(`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`);
 
         const trackSeconds =
@@ -239,6 +240,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     };
 
     const handleMouseOrTouchMove = (event: React.MouseEvent | React.TouchEvent) => {
+        if (!globalAudio) return;
+
         if ("touches" in event) {
             const touch = event.touches[0];
             const progressBarRect = event.currentTarget.getBoundingClientRect();
@@ -246,7 +249,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             const offsetY = progressBarRect.height / 2;
             setCyclePosition({ left: offsetX, top: offsetY, visible: true });
             globalAudio.currentTime = (offsetX / progressBarRect.width) * globalAudio.duration;
-            // prevent default Click!
             setIsTouching(true);
         } else {
             const progressBarRect = event.currentTarget.getBoundingClientRect();
@@ -265,6 +267,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     };
 
     const handleClick = (event: React.MouseEvent | React.TouchEvent) => {
+        if (!globalAudio) return;
+
         if (isTouching) {
             setIsTouching(false);
             handleMouseLeave();
@@ -273,33 +277,26 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             globalAudio.currentTime = (cyclePosition.left / progressBarRect.width) * globalAudio.duration;
         }
     };
-    const handleMouseDown = (event: React.MouseEvent) => {
-        setIsMouseDown(true);
-    };
-    const handleMouseUp = (event: React.MouseEvent) => {
-        setIsMouseDown(false);
-    };
+
+    const handleMouseDown = () => setIsMouseDown(true);
+    const handleMouseUp = () => setIsMouseDown(false);
 
     const togglePlayerMinimal = () => {
-        setShowAudioPlayerMinimal(!showAudioPlayerMinimal);
+        setShowAudioPlayerMinimal((prev) => !prev);
         onVisibilityChange();
     };
 
-    const closeClosePlayerPopOver = () => {
-        setClosePlayerPopoverOpen(false);
-    };
-
+    const closeClosePlayerPopOver = () => setClosePlayerPopoverOpen(false);
     const openClosePlayerPopOver = () => {
         confirmClose ? setClosePlayerPopoverOpen(true) : handleClosePlayer();
     };
 
     const handlePrevTrackButton = () => {
+        if (!globalAudio || songTracks.length === 0) return;
         let i = 0;
         while (globalAudio.currentTime > songTracks[i]) {
             i++;
-            if (i > songTracks.length) {
-                break;
-            }
+            if (i > songTracks.length) break;
         }
         if (i > 1 && i <= songTracks.length) {
             globalAudio.currentTime = songTracks[i - 2];
@@ -309,78 +306,63 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     };
 
     const handleNextTrackButton = () => {
+        if (!globalAudio || songTracks.length === 0) return;
         let i = 0;
         while (globalAudio.currentTime > songTracks[i]) {
             i++;
-            if (i > songTracks.length) {
-                break;
-            }
+            if (i > songTracks.length) break;
         }
         if (i < songTracks.length) {
             globalAudio.currentTime = songTracks[i];
         }
     };
 
-    // mediasession for lockscreen without re-rendering
     useEffect(() => {
+        if (!globalAudio || !("mediaSession" in navigator)) return;
+
         const handlePlayPause = (play: boolean) => {
+            if (!globalAudio) return;
             if (play) {
-                globalAudio?.play();
+                globalAudio.play();
                 setIsPlaying(true);
             } else {
-                globalAudio?.pause();
+                globalAudio.pause();
                 setIsPlaying(false);
             }
         };
 
-        if (navigator.mediaSession) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: currentTrackTitle || songTitle || "",
-                album: songTitle || "",
-                artist: songArtist || "",
-                artwork: [{ src: songImage || "", sizes: "96x96,128x128,192x192,256x256,384x384,512x512" }],
-            });
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: currentTrackTitle || songTitle || "",
+            album: songTitle || "",
+            artist: songArtist || "",
+            artwork: [{ src: songImage || "", sizes: "96x96,128x128,192x192,256x256,384x384,512x512" }],
+        });
 
-            navigator.mediaSession.setActionHandler("play", () => {
-                handlePlayPause(true);
-            });
-
-            navigator.mediaSession.setActionHandler("pause", () => {
-                handlePlayPause(false);
-            });
-
-            navigator.mediaSession.setActionHandler("previoustrack", handlePrevTrackButton);
-
-            if (songTracks.length > 0) {
-                navigator.mediaSession.setActionHandler("nexttrack", handleNextTrackButton);
-            }
+        navigator.mediaSession.setActionHandler("play", () => handlePlayPause(true));
+        navigator.mediaSession.setActionHandler("pause", () => handlePlayPause(false));
+        navigator.mediaSession.setActionHandler("previoustrack", handlePrevTrackButton);
+        if (songTracks.length > 0) {
+            navigator.mediaSession.setActionHandler("nexttrack", handleNextTrackButton);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentTrackTitle, songTitle, songArtist, songImage, songTracks, globalAudio]);
 
     useEffect(() => {
+        if (!("mediaSession" in navigator) || !globalAudio) return;
+
         const updatePositionState = () => {
-            if (
-                navigator.mediaSession &&
-                globalAudio &&
-                !isNaN(globalAudio.duration) &&
-                globalAudio.duration >= globalAudio.currentTime
-            ) {
-                try {
-                    navigator.mediaSession.setPositionState({
-                        duration: globalAudio.duration,
-                        position: globalAudio.currentTime,
-                        playbackRate: globalAudio.playbackRate,
-                    });
-                } catch (e) {
-                    console.error("Failed to update position state", e);
-                }
+            if (!globalAudio || isNaN(globalAudio.duration) || globalAudio.duration < globalAudio.currentTime) return;
+            try {
+                navigator.mediaSession.setPositionState({
+                    duration: globalAudio.duration,
+                    position: globalAudio.currentTime,
+                    playbackRate: globalAudio.playbackRate,
+                });
+            } catch (e) {
+                console.error("Failed to update position state", e);
             }
         };
 
-        if (globalAudio) {
-            globalAudio.ontimeupdate = updatePositionState;
-        }
+        globalAudio.ontimeupdate = updatePositionState;
 
         return () => {
             if (globalAudio) {
@@ -389,9 +371,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         };
     }, [globalAudio]);
 
-    // rearrange player for mobile / tablet
     const isMobile = window.innerWidth <= 768;
     const isTablet = window.innerWidth <= 1024;
+
     const innerContainerStyle: React.CSSProperties = isMobile
         ? {
               ...styles.innerContainer,
@@ -401,12 +383,14 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
               gap: 8,
           }
         : styles.innerContainer;
+
     const control2Style: React.CSSProperties = isMobile
         ? {
               ...styles.controls2,
               width: "100%",
           }
         : styles.controls2;
+
     const progressBarStyle: React.CSSProperties = isMobile
         ? {
               ...styles.progressBar,
@@ -414,6 +398,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
               marginRight: 0,
           }
         : styles.progressBar;
+
     const songContainerStyle: React.CSSProperties = !isTablet
         ? {
               ...styles.songContainer,
@@ -425,6 +410,20 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     useEffect(() => {
         onVisibilityChange();
     }, [onVisibilityChange, isMobile]);
+
+    const timeStringToSeconds = (time: string): number => {
+        const parts = time.split(":").map(Number);
+
+        if (parts.length === 2) {
+            const [minutes, seconds] = parts;
+            return minutes * 60 + seconds;
+        }
+        if (parts.length === 3) {
+            const [hours, minutes, seconds] = parts;
+            return hours * 3600 + minutes * 60 + seconds;
+        }
+        throw new Error("Invalid time format");
+    };
 
     const minMaximizerClose = (
         <div style={{ display: "flex", gap: 8 }}>
@@ -500,26 +499,12 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         </>
     );
 
-    function timeStringToSeconds(time: string): number {
-        const parts = time.split(":").map(Number);
-
-        if (parts.length === 2) {
-            const [minutes, seconds] = parts;
-            return minutes * 60 + seconds;
-        } else if (parts.length === 3) {
-            const [hours, minutes, seconds] = parts;
-            return hours * 3600 + minutes * 60 + seconds;
-        }
-
-        throw new Error("Invalid time format");
-    }
-
-    const minimalPlayer = showAudioPlayerMinimal ? (
-        <>
+    const minimalPlayer =
+        showAudioPlayerMinimal && globalAudio ? (
             <span
                 className="audioplayer-inner"
                 id="minimalAudioPlayer"
-                style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "flex" : "none", padding: 0 }}
+                style={{ ...innerContainerStyle, display: "flex", padding: 0 }}
             >
                 <div style={styles.trackInfo}>
                     {isPlaying ? (
@@ -533,8 +518,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                             alt="Song"
                             style={{ ...styles.songImage, cursor: tonieCardOrTAFRecord ? "help" : "unset" }}
                             onClick={() => {
-                                if (tonieCardOrTAFRecord !== undefined) {
-                                    setKeyInfoModal(keyInfoModal + 1);
+                                if (tonieCardOrTAFRecord) {
+                                    setKeyInfoModal((prev) => prev + 1);
                                     setInformationModalOpen(true);
                                 }
                             }}
@@ -574,143 +559,136 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                     )}
                 </div>
             </span>
-        </>
-    ) : (
-        ""
-    );
+        ) : null;
 
-    const normalPlayer = !showAudioPlayerMinimal ? (
-        <>
-            <span
-                className="audioplayer-inner"
-                id="normalAudioPlayer"
-                style={{
-                    margin: 0,
-                    marginLeft: 16,
-                    textAlign: "right",
-                    display: showAudioPlayerMinimal ? "none" : "flex",
-                    position: "absolute",
-                }}
-            >
-                {minMaximizerClose}
-            </span>
-            <span
-                className="audioplayer-inner"
-                style={{ ...innerContainerStyle, display: showAudioPlayerMinimal ? "none" : "flex" }}
-            >
-                <div id="audioPlayer" style={{ ...styles.controls, flexDirection: "column", gap: 8 }}>
-                    {currentTrackTitle ? (
-                        <div style={{ fontSize: "x-small", marginTop: currentTrackTitle ? -20 : 0 }}>
-                            {currentTrackNo}
-                            {tonieCardOrTAFRecord &&
-                                ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
-                                    ? tonieCardOrTAFRecord.sourceInfo
-                                    : tonieCardOrTAFRecord.tonieInfo
-                                )?.tracks.length && (
-                                    <>
-                                        {" "}
-                                        /{" "}
-                                        {
-                                            ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
-                                                ? tonieCardOrTAFRecord.sourceInfo
-                                                : tonieCardOrTAFRecord.tonieInfo
-                                            ).tracks.length
-                                        }
-                                    </>
-                                )}
-                        </div>
-                    ) : (
-                        ""
-                    )}
-                    <div style={{ display: "flex", gap: 8 }}>
-                        <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
-                        {isPlaying ? (
-                            <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
-                        ) : (
-                            <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
-                        )}
-                        <StepForwardOutlined
-                            style={{
-                                ...styles.controlButton,
-                                cursor: songTracks.length === 0 ? "default" : "pointer",
-                                opacity: songTracks.length === 0 ? 0.25 : 1.0,
-                            }}
-                            disabled={songTracks.length === 0}
-                            onClick={handleNextTrackButton}
-                        />
-                    </div>
-                </div>
-                <div
-                    style={{ ...styles.trackInfo, cursor: tonieCardOrTAFRecord ? "help" : "unset" }}
-                    onClick={() => {
-                        if (tonieCardOrTAFRecord !== undefined) {
-                            setKeyInfoModal(keyInfoModal + 1);
-                            setInformationModalOpen(true);
-                        }
+    const normalPlayer =
+        !showAudioPlayerMinimal && globalAudio ? (
+            <>
+                <span
+                    className="audioplayer-inner"
+                    id="normalAudioPlayer"
+                    style={{
+                        margin: 0,
+                        marginLeft: 16,
+                        textAlign: "right",
+                        display: "flex",
+                        position: "absolute",
                     }}
                 >
-                    {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
-                    <div className="songContainer" style={songContainerStyle}>
-                        {currentTrackTitle ? <div>{currentTrackTitle}</div> : ""}
-                        <div>{displaySongArtist}</div>
-                        <div>{displaySongTitle}</div>
-                    </div>
-                </div>
-                {!audioDurationFormat.startsWith("Infinity") ? (
-                    <div style={styles.playPositionContainer}>
-                        <div>
-                            <div style={{ textAlign: "center" }}>
-                                {currentPlayPositionFormat} / {audioDurationFormat}
+                    {minMaximizerClose}
+                </span>
+                <span className="audioplayer-inner" style={{ ...innerContainerStyle, display: "flex" }}>
+                    <div id="audioPlayer" style={{ ...styles.controls, flexDirection: "column", gap: 8 }}>
+                        {currentTrackTitle ? (
+                            <div style={{ fontSize: "x-small", marginTop: -20 }}>
+                                {currentTrackNo}
+                                {tonieCardOrTAFRecord &&
+                                    ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                                        ? tonieCardOrTAFRecord.sourceInfo
+                                        : tonieCardOrTAFRecord.tonieInfo
+                                    )?.tracks.length && (
+                                        <>
+                                            {" "}
+                                            /{" "}
+                                            {
+                                                ("sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
+                                                    ? tonieCardOrTAFRecord.sourceInfo
+                                                    : tonieCardOrTAFRecord.tonieInfo
+                                                ).tracks.length
+                                            }
+                                        </>
+                                    )}
                             </div>
-                        </div>
-                        <div
-                            style={progressBarStyle}
-                            onMouseDown={handleMouseDown}
-                            onMouseMove={handleMouseOrTouchMove}
-                            onMouseUp={handleMouseUp}
-                            onMouseLeave={handleMouseLeave}
-                            onTouchStart={handleMouseOrTouchMove}
-                            onTouchMove={handleMouseOrTouchMove}
-                            onClick={handleClick}
-                        >
-                            {progressBar}
-                        </div>
-                    </div>
-                ) : (
-                    ""
-                )}
-                {!isIOS() ? (
-                    <div style={control2Style}>
-                        <div style={{ ...styles.controls, position: "relative" }}>
-                            <MutedOutlined
+                        ) : null}
+                        <div style={{ display: "flex", gap: 8 }}>
+                            <StepBackwardOutlined style={styles.controlButton} onClick={handlePrevTrackButton} />
+                            {isPlaying ? (
+                                <PauseCircleOutlined style={styles.controlButton} onClick={handlePauseButton} />
+                            ) : (
+                                <PlayCircleOutlined style={styles.controlButton} onClick={handlePlayButton} />
+                            )}
+                            <StepForwardOutlined
                                 style={{
                                     ...styles.controlButton,
-                                    ...styles.volumeIcon,
-                                    display: (volume || 0) === 0 ? "block" : "none",
+                                    cursor: songTracks.length === 0 ? "default" : "pointer",
+                                    opacity: songTracks.length === 0 ? 0.25 : 1,
                                 }}
-                                onClick={handleUnMuteClick}
+                                disabled={songTracks.length === 0}
+                                onClick={handleNextTrackButton}
                             />
-                            <SoundOutlined
-                                style={{
-                                    ...styles.controlButton,
-                                    ...styles.volumeIcon,
-                                    display: (volume || 0) > 0 ? "block" : "none",
-                                }}
-                                onClick={handleMuteClick}
-                            />
-                            <div style={styles.volumeSlider}>
-                                <Slider min={0} max={100} value={volume || 0} onChange={handleVolumeSliderChange} />
-                            </div>
                         </div>
                     </div>
-                ) : (
-                    ""
-                )}
-            </span>
-        </>
-    ) : (
-        ""
-    );
+                    <div
+                        style={{ ...styles.trackInfo, cursor: tonieCardOrTAFRecord ? "help" : "unset" }}
+                        onClick={() => {
+                            if (tonieCardOrTAFRecord) {
+                                setKeyInfoModal((prev) => prev + 1);
+                                setInformationModalOpen(true);
+                            }
+                        }}
+                    >
+                        {songImage && <img src={songImage} alt="Song" style={styles.songImage} />}
+                        <div className="songContainer" style={songContainerStyle}>
+                            {currentTrackTitle ? <div>{currentTrackTitle}</div> : null}
+                            <div>{displaySongArtist}</div>
+                            <div>{displaySongTitle}</div>
+                        </div>
+                    </div>
+                    {!audioDurationFormat.startsWith("Infinity") ? (
+                        <div style={styles.playPositionContainer}>
+                            <div>
+                                <div style={{ textAlign: "center" }}>
+                                    {currentPlayPositionFormat} / {audioDurationFormat}
+                                </div>
+                            </div>
+                            <div
+                                style={progressBarStyle}
+                                onMouseDown={handleMouseDown}
+                                onMouseMove={handleMouseOrTouchMove}
+                                onMouseUp={handleMouseUp}
+                                onMouseLeave={handleMouseLeave}
+                                onTouchStart={handleMouseOrTouchMove}
+                                onTouchMove={handleMouseOrTouchMove}
+                                onClick={handleClick}
+                            >
+                                {progressBar}
+                            </div>
+                        </div>
+                    ) : null}
+                    {!isIOS() ? (
+                        <div style={control2Style}>
+                            <div style={{ ...styles.controls, position: "relative" as const }}>
+                                <MutedOutlined
+                                    style={{
+                                        ...styles.controlButton,
+                                        ...styles.volumeIcon,
+                                        display: (volume || 0) === 0 ? "block" : "none",
+                                    }}
+                                    onClick={handleUnMuteClick}
+                                />
+                                <SoundOutlined
+                                    style={{
+                                        ...styles.controlButton,
+                                        ...styles.volumeIcon,
+                                        display: (volume || 0) > 0 ? "block" : "none",
+                                    }}
+                                    onClick={handleMuteClick}
+                                />
+                                <div
+                                    style={{
+                                        ...styles.volumeSlider,
+                                    }}
+                                >
+                                    <Slider min={0} max={100} value={volume || 0} onChange={handleVolumeSliderChange} />
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
+                </span>
+            </>
+        ) : null;
+
+    const hasSource = !!globalAudio?.querySelector("source");
 
     return (
         <>
@@ -719,10 +697,10 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 style={{
                     ...styles.container,
                     display: audioPlayerDisplay,
-                    visibility: !globalAudio?.querySelector("source") ? "hidden" : "visible",
-                    height: !globalAudio?.querySelector("source") ? "0" : "auto",
-                    margin: !globalAudio?.querySelector("source") ? "-24px" : "0",
-                    marginBottom: !globalAudio?.querySelector("source") ? "0" : "8px",
+                    visibility: hasSource ? "visible" : "hidden",
+                    height: hasSource ? "auto" : "0",
+                    margin: hasSource ? "0" : "-24px",
+                    marginBottom: hasSource ? "8px" : "0",
                     overflow: "hidden",
                 }}
             >
@@ -734,8 +712,6 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         onClose={() => setInformationModalOpen(false)}
                         tonieCardOrTAFRecord={{
                             ...tonieCardOrTAFRecord,
-                            // this is kind of a dirty trick. In the audioplayer we need always (if possible)
-                            // the actual source, so we set the tonieInfo to the source also.
                             tonieInfo:
                                 "sourceInfo" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.sourceInfo
                                     ? tonieCardOrTAFRecord.sourceInfo
@@ -744,13 +720,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                         readOnly={true}
                         key={keyInfoModal}
                     />
-                ) : (
-                    ""
-                )}
+                ) : null}
             </div>
             <audio
                 id="globalAudioPlayer"
-                controls={true}
+                controls
                 onPlay={handleAudioPlay}
                 onPause={handleAudioPause}
                 onEnded={handleAudioEnded}
@@ -765,7 +739,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
 const styles = {
     container: {
-        flexDirection: "column" as "column",
+        flexDirection: "column" as const,
         alignItems: "flex-end",
         objectPosition: "top",
         padding: 10,
@@ -804,21 +778,11 @@ const styles = {
         minWidth: 200,
         maxWidth: 200,
     },
-    songTitle: {
-        display: "block",
-    },
-    songArtist: {
-        display: "block",
-    },
     progressBar: {
         display: "block",
-        position: "relative" as "relative",
+        position: "relative" as const,
         width: 150,
         marginRight: 10,
-    },
-    playPosition: {
-        fontSize: 14,
-        width: "100%",
     },
     playPositionContainer: {
         marginLeft: 10,
@@ -832,11 +796,10 @@ const styles = {
     },
     volumeSlider: {
         width: 100,
-        position: "releative" as "relative",
+        position: "relative" as const,
         marginRight: 16,
         top: "calc(100% + 10px)",
         zIndex: 1000,
-        backgroundColor: `${() => useThemeToken().colorBgContainer}`,
         padding: 0,
     },
     volumeIcon: {
@@ -844,6 +807,6 @@ const styles = {
         cursor: "pointer",
         marginBottom: 0,
     },
-};
+} as const;
 
 export default AudioPlayerFooter;
