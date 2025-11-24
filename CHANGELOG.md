@@ -44,6 +44,7 @@
 -   gui: Added GUI Settings & Locally Stored Values page with export and import functionality.
 -   gui: Updated PWA manifest with additional icons and metadata (favicon, Apple Touch, SVG). Improved support for installation as a standalone Progressive Web App.
 -   gui: Added browser side audio encoding
+-   gui: Check chip type and flash size in ESP32 Flashing, abort process if values not meet the expectations. [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/253](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/253)
 -   gui maintenance: Massive refactoring of nearly everything
 -   gui maintenance: Removed deprecations
 -   gui maintenance: Updated all used packages to latest versions

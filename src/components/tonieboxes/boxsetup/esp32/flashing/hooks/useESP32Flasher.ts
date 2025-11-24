@@ -6,6 +6,7 @@ import { defaultAPIConfig } from "../../../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../../../types/teddyCloudNotificationTypes";
 import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial";
+import { ESP32_CHIPNAME, ESP32_FLASHSIZE } from "../../../../../../constants/esp32";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -555,10 +556,28 @@ export const useESP32Flasher = (): UseESP32FlasherResult => {
                 flashSize: "" + flash_size,
             }));
 
-            if (flash_size < 0 || flash_size > 16384) {
+            if (flash_size != ESP32_FLASHSIZE) {
                 setState((prev) => ({
                     ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
+                        actual_size: "" + flash_size,
+                        expected_size: ESP32_FLASHSIZE,
+                    }),
+                    connected: false,
+                    actionInProgress: false,
+                    error: true,
+                }));
+                await disconnectESPLoader(esploader, port);
+                return;
+            }
+
+            if (type != ESP32_CHIPNAME) {
+                setState((prev) => ({
+                    ...prev,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                        actual_type: "" + type,
+                        expected_type: ESP32_CHIPNAME,
+                    }),
                     connected: false,
                     actionInProgress: false,
                     error: true,
@@ -823,10 +842,28 @@ export const useESP32Flasher = (): UseESP32FlasherResult => {
                 flashSize: "" + flash_size,
             }));
 
-            if (flash_size < 0 || flash_size > 16384) {
+            if (flash_size != ESP32_FLASHSIZE) {
                 setState((prev) => ({
                     ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
+                        actual_size: "" + flash_size,
+                        expected_size: ESP32_FLASHSIZE,
+                    }),
+                    connected: false,
+                    actionInProgress: false,
+                    error: true,
+                }));
+                await disconnectESPLoader(esploader, port);
+                return;
+            }
+
+            if (type != ESP32_CHIPNAME) {
+                setState((prev) => ({
+                    ...prev,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                        actual_type: "" + type,
+                        expected_type: ESP32_CHIPNAME,
+                    }),
                     connected: false,
                     actionInProgress: false,
                     error: true,
@@ -972,10 +1009,28 @@ export const useESP32Flasher = (): UseESP32FlasherResult => {
                 flashSize: "" + flash_size,
             }));
 
-            if (flash_size < 0 || flash_size > 16384) {
+            if (flash_size != ESP32_FLASHSIZE) {
                 setState((prev) => ({
                     ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError"),
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
+                        actual_size: "" + flash_size,
+                        expected_size: ESP32_FLASHSIZE,
+                    }),
+                    connected: false,
+                    actionInProgress: false,
+                    error: true,
+                }));
+                await disconnectESPLoader(esploader, port);
+                return;
+            }
+
+            if (type != ESP32_CHIPNAME) {
+                setState((prev) => ({
+                    ...prev,
+                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                        actual_type: "" + type,
+                        expected_type: ESP32_CHIPNAME,
+                    }),
                     connected: false,
                     actionInProgress: false,
                     error: true,
