@@ -7,7 +7,7 @@ import { DndContext } from "@dnd-kit/core";
 import { MAX_FILES } from "../../../constants/numbers";
 import { MyUploadFile } from "../../../utils/audio/audioEncoder";
 import { DraggableUploadListItem } from "../common/DraggableUploadListItem";
-import CreateDirectoryModal from "../filebrowser/modals/CreateDirectoryModal";
+import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
 import { useEncoder } from "./hooks/useEncoder";
 
 const { useToken } = theme;

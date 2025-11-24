@@ -3,14 +3,14 @@ import { Modal, Form, Input, Typography } from "antd";
 import type { InputRef } from "antd";
 import { useTranslation } from "react-i18next";
 
-import { TeddyCloudApi } from "../../../../api";
-import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import {
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
     isInputValid,
-} from "../../../../utils/validation/fieldInputValidator";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
-import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+} from "../../../utils/validation/fieldInputValidator";
+import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

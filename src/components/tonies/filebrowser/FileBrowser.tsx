@@ -30,7 +30,7 @@ import HelpModal from "./modals/FileBrowserHelpModal";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
-import CreateDirectoryModal from "./modals/CreateDirectoryModal";
+import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
 import DeleteFilesModal from "./modals/DeleteFilesModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
 import JsonViewerModal from "./modals/JsonViewerModal";
