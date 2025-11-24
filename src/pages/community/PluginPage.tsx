@@ -8,8 +8,8 @@ import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 import { PluginContainer } from "../../components/community/plugin/PluginContainter";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const PluginPage = () => {
     const { pluginId } = useParams<{ pluginId: string }>();
