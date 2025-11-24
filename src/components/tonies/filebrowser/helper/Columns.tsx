@@ -116,7 +116,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     )}
                     {mode === "full" && record.hide ? (
                         <div style={{ textAlign: "center" }}>
-                            <Tag bordered={false} color="warning">
+                            <Tag style={{ border: 0 }} color="warning">
                                 {t("fileBrowser.hidden")}
                             </Tag>
                         </div>

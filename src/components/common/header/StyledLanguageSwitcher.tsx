@@ -17,22 +17,24 @@ export const StyledLanguageSwitcher = () => {
     const currentLabel = LANGS.find((l) => l.key === currentLanguage)?.label ?? currentLanguage;
 
     return (
-        <Space style={{ marginRight: -8 }}>
-            <Dropdown
-                trigger={["click"]}
-                menu={{
-                    items: LANGS.map((l) => ({
-                        ...l,
-                        onClick: () => i18n.changeLanguage(l.key),
-                    })),
-                }}
-            >
-                <Link to="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
-                    <Tag color="transparent" style={{ fontSize: "unset" }}>
-                        <GlobalOutlined /> {currentLabel}
-                    </Tag>
-                </Link>
-            </Dropdown>
-        </Space>
+        <div style={{ marginRight: 8 }}>
+            <Space style={{ marginRight: -8 }}>
+                <Dropdown
+                    trigger={["click"]}
+                    menu={{
+                        items: LANGS.map((l) => ({
+                            ...l,
+                            onClick: () => i18n.changeLanguage(l.key),
+                        })),
+                    }}
+                >
+                    <Link to="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
+                        <Tag style={{ fontSize: "unset", backgroundColor: "transparent", border: 0, color: "white" }}>
+                            <GlobalOutlined /> {currentLabel}
+                        </Tag>
+                    </Link>
+                </Dropdown>
+            </Space>
+        </div>
     );
 };

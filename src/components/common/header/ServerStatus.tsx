@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { Space, Tag, Tooltip } from "antd";
+import { Space, Tag, Tooltip, theme } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined, LockOutlined } from "@ant-design/icons";
 
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
@@ -13,10 +13,13 @@ const boxineApi = new BoxineApi(defaultAPIConfig());
 const boxineForcedApi = new BoxineForcedApi(defaultAPIConfig());
 const teddyCloudApi = new TeddyCloudApi(defaultAPIConfig());
 
+const { useToken } = theme;
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const ServerStatus = () => {
     const { t } = useTranslation();
+    const { token } = useToken();
     const { fetchCloudStatus, setToniesCloudAvailable } = useTeddyCloud();
 
     const [boxineStatus, setBoxineStatus] = useState(false);
@@ -89,6 +92,16 @@ export const ServerStatus = () => {
         setToniesCloudAvailable(boxineStatus);
     }, [boxineStatus, setToniesCloudAvailable]);
 
+    const boxineBgColor = boxineEnabledStatus ? (boxineStatus ? "#87d068" : "#f50") : "#faad14";
+
+    const teddyBgColor = teddyStatus ? "#87d068" : "#f50";
+
+    const commonTagStyle: React.CSSProperties = {
+        cursor: "help",
+        border: 0,
+        color: token.colorTextLightSolid,
+    };
+
     return (
         <Space>
             <Tooltip
@@ -112,9 +125,11 @@ export const ServerStatus = () => {
                             <LockOutlined />
                         )
                     }
-                    color={boxineEnabledStatus ? (boxineStatus ? "#87d068" : "#f50") : "#faad14"}
-                    bordered={false}
-                    style={{ cursor: "help", color: "#001529" }}
+                    style={{
+                        ...commonTagStyle,
+                        color: "#001529",
+                        backgroundColor: boxineBgColor,
+                    }}
                 >
                     <HiddenDesktop>B</HiddenDesktop>
                     <HiddenMobile>Boxine</HiddenMobile>
@@ -124,9 +139,12 @@ export const ServerStatus = () => {
             <Tooltip title={teddyStatus ? t("server.teddycloudStatusOnline") : t("server.teddycloudStatusOffline")}>
                 <Tag
                     icon={teddyStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
-                    color={teddyStatus ? "#87d068" : "#f50"}
-                    bordered={false}
-                    style={{ cursor: "help", color: "#001529" }}
+                    style={{
+                        ...commonTagStyle,
+                        backgroundColor: teddyBgColor,
+                        color: "#001529",
+                        marginRight: 8,
+                    }}
                 >
                     <HiddenDesktop>TC</HiddenDesktop>
                     <HiddenMobile>TeddyCloud</HiddenMobile>

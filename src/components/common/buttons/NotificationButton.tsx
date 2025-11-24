@@ -13,6 +13,7 @@ const NotificationButton: React.FC<{ notificationCount: number }> = ({ notificat
                 icon={<BellOutlined />}
                 size="small"
                 onClick={() => navigate("/settings/notifications")}
+                style={{ backgroundColor: "white", color: "black" }}
             />
         </Badge>
     );
