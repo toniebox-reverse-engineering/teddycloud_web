@@ -1,13 +1,12 @@
-import { isValidElement, JSX, ReactElement, ReactNode, useEffect } from "react";
+import { JSX, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import Sider from "antd/es/layout/Sider";
-import Item from "antd/es/list/Item";
 import styled from "styled-components";
+import { extractText } from "../../utils/strings/extractText";
 
 const { useToken } = theme;
-const useThemeToken = () => useToken().token;
 
 type BreadcrumbItem = {
     title: JSX.Element | string;
@@ -24,6 +23,7 @@ export const StyledSubMenu = styled(Menu)`
 
 export const StyledSider = styled(Sider)`
     min-width: 230px !important;
+
     @media (max-width: 767px) {
         display: none;
     }
@@ -41,7 +41,7 @@ export const StyledContent = styled(Layout.Content)`
     padding: 24px;
     margin: 0;
     min-height: 280px;
-    background: ${() => useThemeToken().colorBgContainer};
+    background: ${() => useToken().token.colorBgContainer};
 `;
 
 export const HiddenDesktop = styled.span`
@@ -56,39 +56,24 @@ export const HiddenMobile = styled.span`
     }
 `;
 
-export const StyledBreadcrumbItem = styled(Item)`
-    padding: 10px;
-`;
-
-const getBreadcrumbText = (node: ReactNode): string => {
-    if (typeof node === "string") return node;
-
-    if (Array.isArray(node)) {
-        return node.map(getBreadcrumbText).join("");
-    }
-
-    if (isValidElement(node)) {
-        const el = node as ReactElement<{ children?: ReactNode }>;
-        return getBreadcrumbText(el.props.children);
-    }
-
-    return "";
-};
-
 const BreadcrumbWrapper: React.FC<BreadcrumbWrapperProps> = ({ items }) => {
     const { t } = useTranslation();
 
-    useEffect(() => {
-        if (items.length === 1) {
-            document.title = "TeddyCloud";
-        } else {
-            const breadcrumbTitles = items
-                .slice(1)
-                .map((item) => t(getBreadcrumbText(item.title)))
-                .join(" - ");
-            document.title = "TeddyCloud - " + breadcrumbTitles;
-        }
+    const pageTitle = useMemo(() => {
+        if (items.length <= 1) return "TeddyCloud";
+
+        const translated = items
+            .slice(1)
+            .map((i) => t(extractText(i.title)))
+            .join(" - ");
+
+        return `TeddyCloud - ${translated}`;
     }, [items, t]);
+
+    useEffect(() => {
+        document.title = pageTitle;
+    }, [pageTitle]);
+
     return <StyledBreadcrumb items={items} />;
 };
 
