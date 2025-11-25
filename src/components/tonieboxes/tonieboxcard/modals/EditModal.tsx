@@ -87,7 +87,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 cursor: boxName === originalBoxName ? "default" : "pointer",
                             }}
                         />,
-                        <Divider key="divider-source" type="vertical" style={{ height: 16 }} />,
+                        <Divider key="divider-source" orientation="vertical" />,
                     ]}
                 />
             </Paragraph>

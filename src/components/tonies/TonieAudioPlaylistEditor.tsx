@@ -320,7 +320,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                                         />,
                                                         <Divider
                                                             key="divider-source"
-                                                            type="vertical"
+                                                            orientation="vertical"
                                                             style={{ height: 16 }}
                                                         />,
                                                     ]}

@@ -120,7 +120,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleClearSource}
                             />,
-                            <Divider key="divider-source-1" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-source-1" orientation="vertical" />,
                             <RollbackOutlined
                                 key="rollback-source"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -131,7 +131,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 }}
                                 className={isSourceUnchanged ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-source-2" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-source-2" orientation="vertical" />,
                         ]}
                         suffix={
                             <FolderOpenOutlined
@@ -162,7 +162,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleClearModel}
                             />,
-                            <Divider key="divider-model-1" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-model-1" orientation="vertical" />,
                             <RollbackOutlined
                                 key="rollback-model"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -173,7 +173,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 }}
                                 className={isModelUnchanged ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-model-2" type="vertical" style={{ height: 16 }} />,
+                            <Divider key="divider-model-2" orientation="vertical" />,
                         ]}
                     />
                     <ToniesJsonSearch
