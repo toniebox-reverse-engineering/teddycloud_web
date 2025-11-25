@@ -55,6 +55,7 @@ import MatrixRain from "./styles/matrix/matrixRain";
 import "./styles/matrix/matrix.css";
 
 import { detectColorScheme } from "./utils/browser/browserUtils";
+import { AttributionPage } from "./pages/community/AttributionPage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -234,6 +235,7 @@ function App() {
                                             element={<TranslationsPage />}
                                         />
                                         <Route path="/community/contributors" element={<ContributorsPage />} />
+                                        <Route path="/community/attribution" element={<AttributionPage />} />
                                         <Route path="/community/changelog" element={<ChangelogPage />} />
 
                                         <Route path="/*" element={<Error404Page />} />

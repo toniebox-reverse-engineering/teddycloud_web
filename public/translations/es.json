@@ -11,6 +11,10 @@
         "unknownSource": "Desconocido"
     },
     "community": {
+        "attribution": {
+            "navigationTitle": "Atribuciones",
+            "title": "Atribuciones"
+        },
         "changelog": {
             "allCommits": "Todos los commits incluidos se pueden encontrar aquí (repositorio de teddy cloud)",
             "changes": "Cambios",

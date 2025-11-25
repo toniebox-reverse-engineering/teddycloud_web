@@ -424,7 +424,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 # Attribution
 
-The **Open Toniebox Guide** (`src\components\tonieboxes\boxSetup\OpenBoxGuide.tsx`) is based on the following two excellent guides from iFixIt.com:
+The **Open Toniebox Guide** (`[teddycloud]/tonieboxes/boxsetup/openboxguide` / `src\pages\tonieboxes\boxsetup\OpenBoxGuidePage.tsx`) is based on the following two excellent guides from iFixIt.com:
 
 -   [iFixIt[1]] [Toniebox Opening Procedure](https://www.ifixit.com/Guide/Toniebox+Opening+Procedure/124139)
 -   [iFixIt[2]] [Toniebox Teardown](https://www.ifixit.com/Teardown/Toniebox+Teardown/106148)
@@ -435,12 +435,12 @@ Special thanks to Tobias for providing such clear and detailed instructions!
 
 The icons used are from here:
 
--   logo.png: https://www.flaticon.com/free-icon/dog_2829818
+-   logo.png: [https://www.flaticon.com/free-icon/dog_2829818](https://www.flaticon.com/free-icon/dog_2829818)
 
 Thanks for the original authors for these great icons.
 
 The country flags are derived from here:
 
--   https://gitlab.com/catamphetamine/country-flag-icons v1.5.18.
+-   [https://gitlab.com/catamphetamine/country-flag-icons](https://gitlab.com/catamphetamine/country-flag-icons) v1.5.18.
 
 Thanks to Nikolay Kuchumov for creating this flag collection!

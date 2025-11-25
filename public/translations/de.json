@@ -11,6 +11,10 @@
         "unknownSource": "Unbekannt"
     },
     "community": {
+        "attribution": {
+            "navigationTitle": "Lizenzhinweise",
+            "title": "Lizenzhinweise"
+        },
         "changelog": {
             "allCommits": "Alle enthaltenen Commits findest du hier (TeddyCloud-Repo)",
             "changes": "Änderungen",

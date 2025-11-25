@@ -15,6 +15,7 @@ import {
     PlusOutlined,
     AppstoreOutlined,
     QuestionOutlined,
+    CrownOutlined,
 } from "@ant-design/icons";
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 
@@ -239,6 +240,22 @@ export const CommunitySubNav = () => {
             ),
             icon: React.createElement(FireOutlined),
             title: t("community.contributors.navigationTitle"),
+        },
+        {
+            key: "attributions",
+            label: (
+                <Link
+                    to="/community/attribution"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("community.attribution.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(CrownOutlined),
+            title: t("community.attribution.navigationTitle"),
         },
         {
             key: "changelog",
