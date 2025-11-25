@@ -32,7 +32,7 @@ export const AttributionPage = () => {
             }
         }
 
-        return lines.slice(start, end).join("\n");
+        return lines.slice(start + 1, end).join("\n");
     }, [markdown]);
 
     return (
@@ -52,7 +52,6 @@ export const AttributionPage = () => {
 
                 <StyledContent>
                     <h1>{t("community.attribution.title")}</h1>
-
                     {loading ? (
                         <Skeleton active paragraph={{ rows: 8 }} />
                     ) : (
