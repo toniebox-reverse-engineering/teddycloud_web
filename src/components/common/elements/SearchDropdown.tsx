@@ -43,6 +43,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
     const [displayOptions, setDisplayOptions] = useState<SearchDropdownOption[]>(options);
 
     const listRef = useRef<HTMLDivElement | null>(null);
+    const triggerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (options.length > 0) {
@@ -145,8 +146,9 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
     };
 
     const effectiveShowNoResults = showNoResults && internalShowNoResults;
-
     const shouldOpenDropdown = isOpen && (displayOptions.length > 0 || effectiveShowNoResults);
+
+    const popupWidth = triggerRef.current?.offsetWidth;
 
     return (
         <Dropdown
@@ -157,6 +159,9 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
                 <div
                     ref={listRef}
                     style={{
+                        width: popupWidth && popupWidth - 8,
+                        minWidth: popupWidth && popupWidth - 8,
+                        maxWidth: popupWidth && popupWidth - 8,
                         maxHeight: 300,
                         overflowY: "auto",
                         padding: 4,
@@ -200,7 +205,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
                 </div>
             )}
         >
-            <div style={{ width: "100%", ...style }}>
+            <div ref={triggerRef} style={{ width: "100%", ...style }}>
                 <Input
                     value={value}
                     placeholder={placeholder}

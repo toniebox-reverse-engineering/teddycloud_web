@@ -881,6 +881,7 @@
     "radioStreamSearch": {
         "failedToFetchSearchResults": "Failed to fetch radio stations search results",
         "failedToFetchSearchResultsDetails": "Failed to fetch radio stations search results: ",
+        "noResults": "No entries found for search.",
         "searchLabel": "[Optionally] Search for a radio stream"
     },
     "security": {
@@ -991,11 +992,6 @@
         "tryToRestartTC": "Try to restart TeddyCloud",
         "warning": "Attention! Settings level",
         "warningHint": "If you are missing settings, increase the 'Settings level'."
-    },
-    "toniesJsonSearch": {
-        "failedToFetchSearchResults": "Error fetching models",
-        "failedToFetchSearchResultsDetails": "Failed to fetch models search results: ",
-        "noResults": "No entries found in tonies(.custom).json for search."
     },
     "tonieboxes": {
         "accessApiDisabled": "Access to TeddyCloud APIs disabled.",
@@ -2145,6 +2141,11 @@
         "toniesExportList": "Tonies export list",
         "toniesExportListCreateDate": "Generated on",
         "unsetTonie": "Tonie/Tag"
+    },
+    "toniesJsonSearch": {
+        "failedToFetchSearchResults": "Error fetching models",
+        "failedToFetchSearchResultsDetails": "Failed to fetch models search results: ",
+        "noResults": "No entries found in tonies(.custom).json for search."
     },
     "utils": {
         "copied": "Copied!",

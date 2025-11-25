@@ -881,6 +881,7 @@
     "radioStreamSearch": {
         "failedToFetchSearchResults": "Abrufen der Radiosender-Suchergebnisse fehlgeschlagen",
         "failedToFetchSearchResultsDetails": "Abrufen der Radiosender-Suchergebnisse fehlgeschlagen: ",
+        "noResults": "Keine Einträge für die Suche gefunden.",
         "searchLabel": "[optional] Radio stream suchen"
     },
     "security": {
@@ -991,11 +992,6 @@
         "tryToRestartTC": "Versuche, TeddyCloud neu zu starten",
         "warning": "Achtung! Settings level",
         "warningHint": "Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
-    },
-    "toniesJsonSearch": {
-        "failedToFetchSearchResults": "Fehler beim Abrufen der Modelle",
-        "failedToFetchSearchResultsDetails": "Fehler beim Abrufen der Suchergebnisse: ",
-        "noResults": "Keine Einträge in tonies(.custom).json für die Suche gefunden."
     },
     "tonieboxes": {
         "accessApiDisabled": "Zugriff auf TeddyCloud APIs deaktiviert.",
@@ -2145,6 +2141,11 @@
         "toniesExportList": "Tonies-Exportliste",
         "toniesExportListCreateDate": "Erstellt am",
         "unsetTonie": "Tonie/Tag"
+    },
+    "toniesJsonSearch": {
+        "failedToFetchSearchResults": "Fehler beim Abrufen der Modelle",
+        "failedToFetchSearchResultsDetails": "Fehler beim Abrufen der Suchergebnisse: ",
+        "noResults": "Keine Einträge in tonies(.custom).json für die Suche gefunden."
     },
     "utils": {
         "copied": "Kopiert!",

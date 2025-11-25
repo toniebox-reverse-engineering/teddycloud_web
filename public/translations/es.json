@@ -881,6 +881,7 @@
     "radioStreamSearch": {
         "failedToFetchSearchResults": "No se pudieron obtener los resultados de búsqueda de emisoras de radio",
         "failedToFetchSearchResultsDetails": "No se pudieron obtener los resultados de búsqueda de emisoras de radio: ",
+        "noResults": "No se encontraron entradas para la búsqueda.",
         "searchLabel": "[Opcional] Buscar una transmisión de radio"
     },
     "security": {
@@ -991,11 +992,6 @@
         "tryToRestartTC": "Intentando reiniciar TeddyCloud",
         "warning": "¡Atención! Nivel de configuración",
         "warningHint": "Actualmente, los campos de texto deben guardarse explícitamente hasta que se implemente una mejor solución. Para hacerlo, haz clic en el símbolo de guardar al final del campo. Si faltan configuraciones, aumenta el 'Nivel de configuración'."
-    },
-    "toniesJsonSearch": {
-        "failedToFetchSearchResults": "Error al obtener los modelos",
-        "failedToFetchSearchResultsDetails": "No se pudieron obtener los resultados de búsqueda de modelos: ",
-        "noResults": "No se encontraron entradas en tonies(.custom).json para la búsqueda."
     },
     "tonieboxes": {
         "accessApiDisabled": "Acceso a las API de TeddyCloud deshabilitado.",
@@ -2145,6 +2141,11 @@
         "toniesExportList": "Lista de exportación de Tonies",
         "toniesExportListCreateDate": "Generado el",
         "unsetTonie": "Tonie/Tag"
+    },
+    "toniesJsonSearch": {
+        "failedToFetchSearchResults": "Error al obtener los modelos",
+        "failedToFetchSearchResultsDetails": "No se pudieron obtener los resultados de búsqueda de modelos: ",
+        "noResults": "No se encontraron entradas en tonies(.custom).json para la búsqueda."
     },
     "utils": {
         "copied": "¡Copiado!",
