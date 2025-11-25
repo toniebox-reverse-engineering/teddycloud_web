@@ -56,7 +56,7 @@ export const Settings: React.FC = () => {
             <h1>{t("settings.title")}</h1>
 
             <Alert
-                message={t("settings.information")}
+                title={t("settings.information")}
                 description={
                     <div>
                         {t("settings.hint")} <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.
@@ -66,7 +66,7 @@ export const Settings: React.FC = () => {
                 showIcon
             />
             <Alert
-                message={t("settings.warning")}
+                title={t("settings.warning")}
                 description={<div>{t("settings.warningHint")}</div>}
                 type="info"
                 showIcon

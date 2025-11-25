@@ -69,7 +69,7 @@ export function connectESP32Explanation(): JSX.Element {
             <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text2")}</Paragraph>
             <Alert
                 type="warning"
-                message={t("tonieboxes.connectESP32Modal.beware")}
+                title={t("tonieboxes.connectESP32Modal.beware")}
                 description={t("tonieboxes.connectESP32Modal.warningText")}
             />
 

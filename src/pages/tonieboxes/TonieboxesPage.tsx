@@ -35,7 +35,7 @@ export const TonieboxesPage = () => {
 
                     {newBoxesAllowed.value && (
                         <Alert
-                            message={t("tonieboxes.newBoxesAllowed")}
+                            title={t("tonieboxes.newBoxesAllowed")}
                             description={t("tonieboxes.newBoxesAllowedText")}
                             type="warning"
                             showIcon

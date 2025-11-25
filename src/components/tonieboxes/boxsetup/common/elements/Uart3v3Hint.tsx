@@ -15,7 +15,7 @@ export function uart3v3Hint(): JSX.Element {
         <Alert
             type="warning"
             showIcon
-            message={t("tonieboxes.boxSetup.UARTHint.title")}
+            title={t("tonieboxes.boxSetup.UARTHint.title")}
             description={
                 <>
                     <Paragraph>{t("tonieboxes.boxSetup.UARTHint.noUSBCVersion")}</Paragraph>

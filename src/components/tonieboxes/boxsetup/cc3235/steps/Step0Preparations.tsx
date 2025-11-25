@@ -140,9 +140,9 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
 
             <Alert
                 type="warning"
-                closeIcon
+                closable={{ closeIcon: true, "aria-label": "close" }}
                 showIcon
-                message={t("tonieboxes.hintLatestFirmwareTitle")}
+                title={t("tonieboxes.hintLatestFirmwareTitle")}
                 description={
                     <>
                         <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>

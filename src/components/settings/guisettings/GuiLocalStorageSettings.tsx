@@ -44,7 +44,7 @@ export const GuiLocalStorageSettings = () => {
             </div>
 
             {settingKeys.length === 0 ? (
-                <Alert type="info" message={t("settings.guiSettings.noLocalSettings")} />
+                <Alert type="info" title={t("settings.guiSettings.noLocalSettings")} />
             ) : (
                 <Collapse accordion>
                     {settingKeys.map((key) => {

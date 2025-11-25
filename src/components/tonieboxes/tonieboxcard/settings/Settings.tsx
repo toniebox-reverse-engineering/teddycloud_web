@@ -142,7 +142,7 @@ export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({ 
     return (
         <>
             <Alert
-                message={t("settings.warning")}
+                title={t("settings.warning")}
                 description={<div>{t("settings.warningHint")}</div>}
                 type="info"
                 showIcon

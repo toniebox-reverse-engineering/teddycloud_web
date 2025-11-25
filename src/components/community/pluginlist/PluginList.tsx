@@ -48,7 +48,7 @@ export const PluginList = () => {
             <Alert
                 type="warning"
                 showIcon
-                message="WIP - To be extended soon... meanwhile you can upload plugins manually into teddycloud/data/www/plugins using any SFTP-Client"
+                title="WIP - To be extended soon... meanwhile you can upload plugins manually into teddycloud/data/www/plugins using any SFTP-Client"
                 style={{ margin: 32 }}
             />
 

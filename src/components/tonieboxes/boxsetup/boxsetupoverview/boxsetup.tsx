@@ -132,7 +132,7 @@ export const BoxSetupContent: React.FC = () => {
                 <Alert
                     type="warning"
                     showIcon
-                    message={t("tonieboxes.noNewBoxesAllowed")}
+                    title={t("tonieboxes.noNewBoxesAllowed")}
                     description={t("tonieboxes.noNewBoxesAllowedText")}
                     style={{ marginBottom: 16 }}
                 />
@@ -140,9 +140,9 @@ export const BoxSetupContent: React.FC = () => {
 
             <Alert
                 type="warning"
-                closeIcon
+                closable={{ closeIcon: true, "aria-label": "close" }}
                 showIcon
-                message={t("tonieboxes.hintLatestFirmwareTitle")}
+                title={t("tonieboxes.hintLatestFirmwareTitle")}
                 description={t("tonieboxes.hintLatestFirmware")}
             />
 

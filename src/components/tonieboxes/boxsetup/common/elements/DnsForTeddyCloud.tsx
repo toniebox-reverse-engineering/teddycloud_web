@@ -16,7 +16,7 @@ export function dnsForTeddyCloud(): JSX.Element {
             <Alert
                 type="warning"
                 showIcon
-                message={t("tonieboxes.boxFlashingCommon.dnsBeware")}
+                title={t("tonieboxes.boxFlashingCommon.dnsBeware")}
                 description={t("tonieboxes.boxFlashingCommon.dnsBewareText")}
                 style={{ marginBottom: 16 }}
             />

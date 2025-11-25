@@ -1,12 +1,13 @@
-// features/tonies/card/RadioStreamSearch.tsx
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Select, Typography } from "antd";
+import { AutoComplete, Typography } from "antd";
 
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useRadioStreamSearch } from "../hooks/useRadioStreamSearch";
 import { useDebouncedCallback } from "../../common/hooks/useDebouncedCallback";
+
+const Paragraph = Typography;
 
 export const RadioStreamSearch: React.FC<{
     placeholder: string;
@@ -25,12 +26,24 @@ export const RadioStreamSearch: React.FC<{
             );
         });
 
+    const [searchText, setSearchText] = useState(value ?? "");
+
     const debouncedSearch = useDebouncedCallback(search, 300);
 
-    const handleChange = (newValue: string) => {
+    const handleInputChange = (text: string) => {
+        setSearchText(text);
+        debouncedSearch(text);
+    };
+
+    const handleSelect = (newValue: string) => {
         setValue(newValue);
         select(newValue);
         onChange(newValue);
+
+        const match = options.find((o) => o.value === newValue);
+        if (match) {
+            setSearchText(match.text);
+        }
     };
 
     if (!isRadioBrowserApiAvailable || !radioBrowserAPIBaseJsonUrl) {
@@ -39,24 +52,21 @@ export const RadioStreamSearch: React.FC<{
 
     return (
         <>
-            <Typography.Text style={{ fontSize: "small", display: "inline-block", marginTop: "8px" }}>
+            <Paragraph style={{ fontSize: "small", display: "inline-block", marginTop: "8px" }}>
                 {t("radioStreamSearch.searchLabel")}
-            </Typography.Text>
-            <Select
-                showSearch
-                style={{ margin: "8px 0" }}
-                value={value}
+            </Paragraph>
+
+            <AutoComplete
+                value={searchText}
+                style={{ margin: "8px 0", width: "100%" }}
                 placeholder={placeholder}
-                defaultActiveFirstOption={false}
-                suffixIcon={null}
-                filterOption={false}
-                onSearch={debouncedSearch}
-                onChange={handleChange}
-                notFoundContent={null}
                 options={options.map((d) => ({
                     value: d.value,
                     label: d.text,
                 }))}
+                onChange={handleInputChange}
+                onSelect={handleSelect}
+                filterOption={false}
             />
         </>
     );

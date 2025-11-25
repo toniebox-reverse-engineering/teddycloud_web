@@ -30,7 +30,7 @@ export const Home = () => {
     const newBoxesAllowedWarning = newBoxesAllowed ? (
         <>
             <Alert
-                message={t("tonieboxes.newBoxesAllowed")}
+                title={t("tonieboxes.newBoxesAllowed")}
                 description={t("tonieboxes.newBoxesAllowedText")}
                 type="warning"
                 showIcon
@@ -38,7 +38,7 @@ export const Home = () => {
             />
             {boxesApiAccessDisabled.length > 0 && (
                 <Alert
-                    message={t("tonieboxes.boxWithoutAPIAccess")}
+                    title={t("tonieboxes.boxWithoutAPIAccess")}
                     description={
                         <>
                             {t("tonieboxes.boxWithoutAPIAccessText")}
@@ -73,7 +73,7 @@ export const Home = () => {
                     defaultLanguage={defaultLanguage}
                 />
             )}
-            <Paragraph>
+            <Paragraph style={{ marginTop: 16 }}>
                 <Button onClick={() => navigate("/tonies")}>
                     {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})
                 </Button>
@@ -111,7 +111,7 @@ export const Home = () => {
                 <h1>{t("home.title")}</h1>
                 {displayIncidentAlert ? (
                     <Alert
-                        message={t("security.alert")}
+                        title={t("security.alert")}
                         description={t("security.incident_detected")}
                         type="error"
                         showIcon

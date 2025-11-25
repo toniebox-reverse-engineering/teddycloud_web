@@ -143,7 +143,7 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
             okButtonProps={{ disabled: isRenameButtonDisabled }}
         >
             <Alert
-                message={t("fileBrowser.attention")}
+                title={t("fileBrowser.attention")}
                 description={t("fileBrowser.renameFile.attention")}
                 type="warning"
                 showIcon

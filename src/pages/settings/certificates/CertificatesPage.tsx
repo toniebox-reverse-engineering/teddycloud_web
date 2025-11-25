@@ -31,7 +31,7 @@ export const CertificatesPage = () => {
                     <h1>{t(`settings.certificates.title`)}</h1>
                     <Paragraph>
                         <Alert
-                            message={t("settings.certificates.information")}
+                            title={t("settings.certificates.information")}
                             description=<div>
                                 {t("settings.certificates.hint")}{" "}
                                 <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.

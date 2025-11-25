@@ -15,9 +15,9 @@ export const Step0Preparations: React.FC = () => {
             <h3>{t("tonieboxes.boxFlashingCommon.preparations")}</h3>
             <Alert
                 type="warning"
-                closeIcon
+                closable={{ closeIcon: true, "aria-label": "close" }}
                 showIcon
-                message={t("tonieboxes.hintLatestFirmwareTitle")}
+                title={t("tonieboxes.hintLatestFirmwareTitle")}
                 description={
                     <>
                         <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>

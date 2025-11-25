@@ -76,7 +76,7 @@ export const ESP32BoxFlashingPage: React.FC = () => {
                     {!httpsActive ? (
                         <>
                             <Alert
-                                message={t("tonieboxes.esp32BoxFlashing.attention")}
+                                title={t("tonieboxes.esp32BoxFlashing.attention")}
                                 description={
                                     <>
                                         <Paragraph>{t("tonieboxes.esp32BoxFlashing.hint")}</Paragraph>

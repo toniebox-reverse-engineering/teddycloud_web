@@ -36,7 +36,7 @@ export const TonieAudioPlaylistsPage = () => {
                     <h1>{t("tonies.tap.title")}</h1>
 
                     <Alert
-                        message={t("settings.information")}
+                        title={t("settings.information")}
                         description=<div>
                             Development still in progress - Please be patient or support implementation of this feature!
                         </div>

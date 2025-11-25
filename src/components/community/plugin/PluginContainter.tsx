@@ -109,7 +109,7 @@ export const PluginContainer: React.FC<PluginContainerProps> = ({ pluginId }) =>
                 <Alert
                     type="error"
                     showIcon
-                    message={t("community.plugins.error.title")}
+                    title={t("community.plugins.error.title")}
                     description={
                         <>
                             <Paragraph>{t("community.plugins.error.pluginNotFound")}</Paragraph>

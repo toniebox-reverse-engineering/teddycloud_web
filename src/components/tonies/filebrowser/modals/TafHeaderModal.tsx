@@ -58,7 +58,7 @@ const TafHeaderModal: React.FC<TafHeaderModalProps> = ({ open, onClose, fileName
                     <Alert
                         showIcon
                         type="warning"
-                        message={<div style={{ fontSize: "small" }}>{t("tonies.tafHeaderToniesJsonHint")}</div>}
+                        title={<div style={{ fontSize: "small" }}>{t("tonies.tafHeaderToniesJsonHint")}</div>}
                     />
                 </>
             ) : (

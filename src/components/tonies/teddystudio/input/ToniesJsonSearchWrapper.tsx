@@ -67,7 +67,7 @@ export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = (
             />
             {showHint && lastAddedTitle && (
                 <div style={{ marginTop: 4 }}>
-                    <Tag icon={<CheckCircleOutlined />} color="success">
+                    <Tag icon={<CheckCircleOutlined />} color="success" style={{ textWrap: "wrap" }}>
                         {t("tonies.teddystudio.addedHint", { title: lastAddedTitle })}
                     </Tag>
                 </div>

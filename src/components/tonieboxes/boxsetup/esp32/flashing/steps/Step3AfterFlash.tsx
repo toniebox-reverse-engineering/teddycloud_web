@@ -63,7 +63,7 @@ export const Step3AfterFlash: React.FC<Step3Props> = ({
                         type="info"
                         style={{ marginTop: 16 }}
                         showIcon={true}
-                        message={t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificates")}
+                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificates")}
                         description={
                             <div>
                                 <Typography>

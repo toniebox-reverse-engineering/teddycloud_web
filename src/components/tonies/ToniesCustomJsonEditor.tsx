@@ -193,7 +193,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 <Alert
                     type="info"
                     showIcon={true}
-                    message="Work in progress - be aware!"
+                    title="Work in progress - be aware!"
                     description="Currently, only the generated json fragment is displayed when saving the new model. This is not automatically inserted into the tonies.custom.json. You have to copy this into the file yourself."
                     style={{ marginBottom: 8 }}
                 />

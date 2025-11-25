@@ -47,9 +47,9 @@ export const Step0ReadImport: React.FC<Step0Props> = ({ state, fileInputRef, onF
                     <Paragraph>
                         <Alert
                             type="warning"
-                            closeIcon
+                            closable={{ closeIcon: true, "aria-label": "close" }}
                             showIcon
-                            message={t("tonieboxes.hintLatestFirmwareTitle")}
+                            title={t("tonieboxes.hintLatestFirmwareTitle")}
                             description={
                                 <>
                                     <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
@@ -61,9 +61,9 @@ export const Step0ReadImport: React.FC<Step0Props> = ({ state, fileInputRef, onF
                     <Paragraph>
                         <Alert
                             type="info"
-                            closeIcon
+                            closable={{ closeIcon: true, "aria-label": "close" }}
                             showIcon
-                            message={t("tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblems")}
+                            title={t("tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblems")}
                             description={t("tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblemsText")}
                         />
                     </Paragraph>

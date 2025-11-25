@@ -44,7 +44,7 @@ export const Step1Certificates: React.FC<CC3235Step1CertificatesProps> = ({ hwTo
             <Alert
                 type="warning"
                 showIcon
-                message={t("tonieboxes.cc3235BoxFlashing.flashCAReplacementTitle")}
+                title={t("tonieboxes.cc3235BoxFlashing.flashCAReplacementTitle")}
                 description={
                     <>
                         {t("tonieboxes.cc3235BoxFlashing.flashCAReplacementDescription1")}{" "}

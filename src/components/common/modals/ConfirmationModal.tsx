@@ -75,7 +75,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
                     type="warning"
                     showIcon
                     style={{ marginBottom: 20 }}
-                    message={contentHintTitle || t("confirmDialog.contentHintTitle")}
+                    title={contentHintTitle || t("confirmDialog.contentHintTitle")}
                     description={contentHint}
                 />
             )}

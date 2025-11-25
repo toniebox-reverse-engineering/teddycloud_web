@@ -186,7 +186,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
             okButtonProps={{ disabled: isMoveButtonDisabled }}
         >
             <Alert
-                message={t("fileBrowser.attention")}
+                title={t("fileBrowser.attention")}
                 description={t("fileBrowser.moveFile.attention")}
                 type="warning"
                 showIcon
