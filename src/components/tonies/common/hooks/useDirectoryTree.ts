@@ -155,7 +155,7 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
     const addDirectory = ({
         parentPath,
         directoryName,
-        selectNewNode,
+        selectNewNode = false,
     }: {
         parentPath: string;
         directoryName: string;
@@ -164,32 +164,30 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
         const parentFullPath = parentPath.endsWith("/") ? parentPath : `${parentPath}/`;
 
         const parentNodeId = findNodeIdByFullPath(parentFullPath) || rootTreeNode.id;
+
         const newNodeId = `${parentNodeId}.${treeData.length}`;
-        const nodeExpanded = isNodeExpanded(parentNodeId);
-        const childNodes = findNodesByParentId(parentNodeId);
 
-        if (nodeExpanded || childNodes.length > 0) {
-            const newDir: DirectoryTreeNode = {
-                id: newNodeId,
-                pId: parentNodeId,
-                value: newNodeId,
-                title: directoryName,
-                fullPath: `${parentPath}/${directoryName}/`,
-            };
+        const newDir: DirectoryTreeNode = {
+            id: newNodeId,
+            pId: parentNodeId,
+            value: newNodeId,
+            title: directoryName,
+            fullPath: `${parentFullPath}${directoryName}/`,
+        };
 
-            setTreeData((prev) =>
-                [...prev, newDir].sort((a, b) =>
-                    a.title.toLowerCase() > b.title.toLowerCase()
-                        ? 1
-                        : a.title.toLowerCase() < b.title.toLowerCase()
-                        ? -1
-                        : 0
-                )
-            );
+        setTreeData((prev) =>
+            [...prev, newDir].sort((a, b) =>
+                a.title.toLowerCase() > b.title.toLowerCase()
+                    ? 1
+                    : a.title.toLowerCase() < b.title.toLowerCase()
+                    ? -1
+                    : 0
+            )
+        );
 
-            if (selectNewNode) {
-                setTreeNodeId(newNodeId);
-            }
+        if (selectNewNode) {
+            setTreeNodeId(newNodeId);
+            setExpandedKeys((prev) => (prev.includes(parentNodeId) ? prev : [...prev, parentNodeId]));
         }
     };
 
