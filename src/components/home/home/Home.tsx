@@ -84,7 +84,7 @@ export const Home = () => {
     const tonieboxesTab = (
         <>
             {loading ? <LoadingSpinner /> : <TonieboxesList tonieboxCards={tonieboxes.slice(0, 4)} readOnly={true} />}
-            <Paragraph>
+            <Paragraph style={{ marginTop: 16 }}>
                 <Button onClick={() => navigate("/tonieboxes")}>
                     {t("home.toAllYourTonieboxes")} ({tonieboxes.length})
                 </Button>
