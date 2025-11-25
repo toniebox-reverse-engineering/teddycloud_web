@@ -16,6 +16,7 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
+import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -31,7 +32,6 @@ interface EncodeFilesModalProps {
     setEncodeFileList: React.Dispatch<React.SetStateAction<FileObject[]>>;
 
     directoryTree: DirectoryTreeApi;
-    folderTreeElement: React.ReactNode;
 
     selectFileModal: React.ReactNode;
     showSelectFileModal: () => void;
@@ -52,7 +52,6 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
     encodeFileList,
     setEncodeFileList,
     directoryTree,
-    folderTreeElement,
     selectFileModal,
     showSelectFileModal,
     setCreateDirectoryPath,
@@ -215,11 +214,11 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                     ))}
                 </SortableContext>
             </DndContext>
-            <Space direction="vertical" style={{ display: "flex" }}>
+            <Space orientation="vertical" style={{ display: "flex" }}>
                 {encodeFileList.length > 0 ? (
                     <>
                         <Space
-                            direction="horizontal"
+                            orientation="horizontal"
                             style={{
                                 width: "100%",
                                 display: "flex",
@@ -234,6 +233,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                         <div style={{ width: "100%" }} className="encoder">
                             <Space orientation="vertical" style={{ width: "100%" }}>
                                 <Space.Compact
+                                    className="encoder-save-compact"
                                     orientation="horizontal"
                                     style={{
                                         width: "100%",
@@ -244,6 +244,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                 >
                                     <Input
                                         type="text"
+                                        className="encoder-save-label"
                                         style={{
                                             maxWidth: 180,
                                             borderTopRightRadius: 0,
@@ -252,9 +253,16 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                         disabled
                                         value={t("tonies.encoder.saveAs")}
                                     />
-                                    {folderTreeElement}
+
+                                    <DirectoryTreeSelect
+                                        className="encoder-save-dir"
+                                        directoryTree={directoryTree}
+                                        disabled={processing}
+                                        placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
+                                    />
                                     <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                                         <Button
+                                            className="encoder-save-btn"
                                             disabled={processing}
                                             icon={<FolderAddOutlined />}
                                             onClick={() => {
@@ -269,6 +277,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                         />
                                     </Tooltip>
                                     <Input
+                                        className="encoder-save-name"
                                         ref={inputEncodeTafFileNameRef}
                                         suffix=".taf"
                                         required

@@ -173,3 +173,46 @@ code {
     height: 100vh;
     z-index: 9999;
 }
+
+.encoder-save-compact {
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .encoder-save-compact {
+        flex-wrap: wrap;
+    }
+
+    .encoder-save-label {
+        flex: 0 0 100%;
+        max-width: 100% !important;
+
+        border-top-left-radius: 8px !important;
+        border-top-right-radius: 8px !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+
+    .encoder-save-dir {
+        flex: 1 1 calc(100% - 48px);
+        min-width: 0;
+
+        border-radius: 0 !important;
+    }
+
+    .encoder-save-btn {
+        flex: 0 0 48px;
+
+        border-radius: 0 !important;
+    }
+
+    .encoder-save-name {
+        flex: 0 0 100%;
+        max-width: 100% !important;
+
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-left-radius: 8px !important;
+        border-bottom-right-radius: 8px !important;
+    }
+}

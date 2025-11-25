@@ -10,6 +10,7 @@ import { Record } from "../../../../types/fileBrowserTypes";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
+import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
 
 const { useToken } = theme;
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -31,7 +32,6 @@ interface MoveFilesModalProps {
 
     // Directory tree
     directoryTree: DirectoryTreeApi;
-    folderTreeElement: React.ReactNode;
 
     // Create Directory Button in modal
     setCreateDirectoryPath: (path: string) => void;
@@ -53,7 +53,6 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
     selectedRowKeys,
     setSelectedRowKeys,
     directoryTree,
-    folderTreeElement,
     setCreateDirectoryPath,
     setFilterFieldAutoFocus,
     setIsCreateDirectoryModalOpen,
@@ -205,7 +204,11 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                 <div>{t("fileBrowser.moveFile.moveTo")}</div>
 
                 <div style={{ display: "flex" }}>
-                    {folderTreeElement}
+                    <DirectoryTreeSelect
+                        directoryTree={directoryTree}
+                        placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
+                        style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
+                    />
                     <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                         <Button
                             icon={<FolderAddOutlined />}

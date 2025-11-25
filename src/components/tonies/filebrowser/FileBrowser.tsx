@@ -122,8 +122,7 @@ export const FileBrowser: React.FC<{
 
     const directoryTree = useDirectoryTree();
 
-    const { treeData, treeNodeId, setTreeNodeId, rootTreeNode, getPathFromNodeId, findNodeIdByFullPath, setTreeData } =
-        directoryTree;
+    const { treeNodeId, setTreeNodeId, rootTreeNode, getPathFromNodeId } = directoryTree;
 
     const {
         path,
@@ -162,14 +161,6 @@ export const FileBrowser: React.FC<{
     useEffect(() => {
         setCreateDirectoryPath(path);
     }, [path]);
-
-    const folderTreeElement = (
-        <DirectoryTreeSelect
-            directoryTree={directoryTree}
-            disabled={processing || uploading}
-            placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
-        />
-    );
 
     // other helper functions
     const fetchJsonData = async (path: string) => {
@@ -476,7 +467,6 @@ export const FileBrowser: React.FC<{
                     selectedRowKeys={selectedRowKeys}
                     setSelectedRowKeys={setSelectedRowKeys}
                     directoryTree={directoryTree}
-                    folderTreeElement={folderTreeElement}
                     setCreateDirectoryPath={setCreateDirectoryPath}
                     setFilterFieldAutoFocus={setFilterFieldAutoFocus}
                     setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
@@ -503,7 +493,6 @@ export const FileBrowser: React.FC<{
                     encodeFileList={encodeFileList}
                     setEncodeFileList={setEncodeFileList}
                     directoryTree={directoryTree}
-                    folderTreeElement={folderTreeElement}
                     selectFileModal={selectFileModal}
                     showSelectFileModal={showSelectFileModal}
                     setCreateDirectoryPath={setCreateDirectoryPath}

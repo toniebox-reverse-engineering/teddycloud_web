@@ -117,6 +117,7 @@ export const Encoder: React.FC = () => {
                         <div style={{ width: "100%" }} className="encoder">
                             <Space orientation="vertical" style={{ width: "100%" }}>
                                 <Space.Compact
+                                    className="encoder-save-compact"
                                     orientation="horizontal"
                                     style={{
                                         width: "100%",
@@ -127,6 +128,7 @@ export const Encoder: React.FC = () => {
                                 >
                                     <Input
                                         type="text"
+                                        className="encoder-save-label"
                                         style={{
                                             maxWidth: 180,
                                             borderTopRightRadius: 0,
@@ -135,20 +137,26 @@ export const Encoder: React.FC = () => {
                                         disabled
                                         value={t("tonies.encoder.saveAs")}
                                     />
+
                                     <DirectoryTreeSelect
+                                        className="encoder-save-dir"
                                         directoryTree={directoryTree}
                                         disabled={processing || uploading}
                                         placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
                                     />
+
                                     <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
                                         <Button
+                                            className="encoder-save-btn"
                                             disabled={uploading || processing}
                                             icon={<FolderAddOutlined />}
                                             onClick={openCreateDirectoryModal}
                                             style={{ borderRadius: 0 }}
                                         />
                                     </Tooltip>
+
                                     <Input
+                                        className="encoder-save-name"
                                         suffix=".taf"
                                         required
                                         value={tafFilename}
