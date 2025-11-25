@@ -10,6 +10,9 @@ export interface ToniesJsonEntry {
     value: string;
     text: string;
     picture?: string;
+    episodes?: string;
+    model?: string;
+    language?: string;
 }
 
 export function useToniesJsonSearch(onError?: (error: unknown) => void) {
@@ -38,18 +41,28 @@ export function useToniesJsonSearch(onError?: (error: unknown) => void) {
                 const response = await api.apiGetTeddyCloudApiRaw(path);
                 const data: TonieInfo[] = await response.json();
 
-                const result: ToniesJsonEntry[] = data.map((item) => ({
-                    value: item.model,
-                    text: `[${item.model}] ${item.series} - ${item.episode}`,
-                    picture: item.picture,
-                }));
+                const result: ToniesJsonEntry[] = data.map((item) => {
+                    const model = item.model ?? "";
+                    const episodes = item.episode ?? "";
+                    const language = item.language ?? "";
+
+                    return {
+                        value: model,
+                        text: model
+                            ? `[${model}] ${item.series ?? ""} - ${episodes}`
+                            : `${item.series ?? ""} - ${episodes}`,
+                        picture: (item as any).picture,
+                        episodes,
+                        model,
+                        language,
+                    };
+                });
 
                 setOptions(result);
             } catch (error) {
                 if (onError) {
                     onError(error);
                 } else {
-                    // optional: Logging
                     // eslint-disable-next-line no-console
                     console.error("Error in useToniesJsonSearch:", error);
                 }
