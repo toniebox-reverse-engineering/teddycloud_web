@@ -18,10 +18,9 @@ const { Paragraph } = Typography;
 
 export const TeddyStudio: React.FC = () => {
     const { t } = useTranslation();
-    const { token } = theme.useToken();
     const { addNotification } = useTeddyCloud();
 
-    const { searchTerm, autocompleteList, handleSearch } = useData();
+    const { handleSearch } = useData();
 
     const {
         customItems,

@@ -232,9 +232,9 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                         </Space>
                         <Divider />
                         <div style={{ width: "100%" }} className="encoder">
-                            <Space direction="vertical" style={{ width: "100%" }}>
+                            <Space orientation="vertical" style={{ width: "100%" }}>
                                 <Space.Compact
-                                    direction="horizontal"
+                                    orientation="horizontal"
                                     style={{
                                         width: "100%",
                                         display: "flex",

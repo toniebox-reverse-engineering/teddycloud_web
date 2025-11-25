@@ -83,7 +83,7 @@ export const Settings: React.FC = () => {
                         test: "test",
                     }}
                     onSubmit={() => {
-                        // nichts zu submitten, weil alles per onChange gespeichert wird
+                        // nothign to do here, saving will happen centralized
                     }}
                 >
                     <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">

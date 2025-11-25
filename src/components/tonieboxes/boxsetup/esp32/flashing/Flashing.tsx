@@ -83,7 +83,7 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
         <Alert
             type="warning"
             showIcon
-            message={t("tonieboxes.esp32BoxFlashing.esp32flasher.backupFlash")}
+            title={t("tonieboxes.esp32BoxFlashing.esp32flasher.backupFlash")}
             description={
                 <>
                     <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.importanceBackup")}</Paragraph>
@@ -257,7 +257,7 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
             <>
                 <Paragraph>
                     <Alert
-                        message={t("tonieboxes.esp32BoxFlashing.attention")}
+                        title={t("tonieboxes.esp32BoxFlashing.attention")}
                         description={t("tonieboxes.esp32BoxFlashing.browserNotSupported")}
                         type="warning"
                         showIcon
@@ -340,7 +340,7 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
                         </div>
                         <Button
                             icon={<RightOutlined />}
-                            iconPosition="end"
+                            iconPlacement="end"
                             disabled={(!state.proceed && !state.filename) || disableButtons}
                             onClick={next}
                         >
@@ -367,7 +367,7 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
                         </div>
                         <Button
                             icon={<RightOutlined />}
-                            iconPosition="end"
+                            iconPlacement="end"
                             disabled={disableButtons || !state.showFlash}
                             onClick={next}
                         >

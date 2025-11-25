@@ -32,7 +32,6 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
             {versions.map((version, index) => (
                 <Col key={index} xs={24} md={12} xl={8}>
                     <Card title={version.name} size="small" variant="outlined" style={{ marginBottom: 8 }}>
-                        {/* Pros */}
                         <Title level={5} style={{ marginTop: 0 }}>
                             {t("tonieboxes.boxSetup.boxVersion.pros")}
                         </Title>
@@ -79,7 +78,6 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
                             </Paragraph>
                         )}
 
-                        {/* Cons */}
                         <Title level={5} style={{ marginTop: 16 }}>
                             {t("tonieboxes.boxSetup.boxVersion.cons")}
                         </Title>

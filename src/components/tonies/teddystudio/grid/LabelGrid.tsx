@@ -1,4 +1,3 @@
-// TeddyStudio/grid/TeddyLabelGrid.tsx
 import React, { useEffect } from "react";
 import { Button, theme } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";

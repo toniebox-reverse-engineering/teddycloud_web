@@ -93,7 +93,7 @@ export const ESP32LegacyFlashingGuide: React.FC = () => {
                             <div />
                             <div />
                             <div style={{ display: "flex", gap: 8 }}>
-                                <Button icon={<RightOutlined />} iconPosition="end" onClick={next}>
+                                <Button icon={<RightOutlined />} iconPlacement="end" onClick={next}>
                                     {t("tonieboxes.esp32BoxFlashing.legacy.next")}
                                 </Button>
                             </div>

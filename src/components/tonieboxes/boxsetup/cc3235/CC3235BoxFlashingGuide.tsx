@@ -20,7 +20,6 @@ export const CC3235BoxFlashingGuide: React.FC = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
-    // Gemeinsame Auswahl für HW-Tool (wird in Step 0 und 1 synchron verwendet)
     const [hwTool, setHwTool] = useState<HwTool>("pico");
 
     const steps = [

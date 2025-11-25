@@ -15,6 +15,8 @@ import CustomFilterHelpModal from "../modals/ToniesCustomFilterHelpModal";
 import HelpModal from "../modals/ToniesHelpModal";
 import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";
 
+// @Todo: rework, get rid of deprecations!
+
 const { useToken } = theme;
 const { Option } = Select;
 

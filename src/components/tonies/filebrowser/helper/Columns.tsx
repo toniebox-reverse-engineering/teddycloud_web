@@ -75,8 +75,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         downloading,
         defaultSorter,
         dirNameSorter,
-        withinTafBoundaries,
-        handleDirClick,
         showInformationModal,
         playAudio,
         handleFileDownload,

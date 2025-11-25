@@ -107,7 +107,6 @@ const TeddyCloudContext = createContext<TeddyCloudContextType>({
 
 interface TeddyCloudProviderProps {
     children: ReactNode;
-    // linkOverlay ist derzeit ungenutzt – ggf. entfernen oder später sinnvoll einsetzen
     linkOverlay?: string | null;
 }
 

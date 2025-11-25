@@ -8,6 +8,8 @@ import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
 
+// @Todo: rework, get rid of deprecations!
+
 export interface ToniesJsonSearchResult {
     value: string;
     text: string;

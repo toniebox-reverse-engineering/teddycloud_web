@@ -372,7 +372,6 @@ export const TonieCard: React.FC<{
             throw error;
         }
 
-        // Flags nachziehen
         if (!tonieCard.nocloud) {
             await handleNoCloudClick();
         }

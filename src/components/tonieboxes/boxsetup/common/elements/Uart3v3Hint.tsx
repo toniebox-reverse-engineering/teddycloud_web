@@ -22,7 +22,7 @@ export function uart3v3Hint(): JSX.Element {
                     <Paragraph>{t("tonieboxes.boxSetup.UARTHint.description")}</Paragraph>
                     <ol style={{ paddingLeft: 20 }}>
                         <li>
-                            <Space direction="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
+                            <Space orientation="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
                                 <Text strong>{t("tonieboxes.boxSetup.UARTHint.voltageCompatibility")}</Text>
                                 <Paragraph>
                                     <Paragraph>{t("tonieboxes.boxSetup.UARTHint.voltageCompatibilityText1")}</Paragraph>
@@ -56,7 +56,7 @@ export function uart3v3Hint(): JSX.Element {
                             </Space>
                         </li>
                         <li>
-                            <Space direction="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
+                            <Space orientation="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
                                 <Text strong>{t("tonieboxes.boxSetup.UARTHint.uartDriver")}</Text>
                                 <Paragraph>{t("tonieboxes.boxSetup.UARTHint.updateDriver")}</Paragraph>
                             </Space>

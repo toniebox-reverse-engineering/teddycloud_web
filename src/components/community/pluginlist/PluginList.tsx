@@ -44,7 +44,6 @@ export const PluginList = () => {
     return (
         <>
             <h1>{t("community.plugins.title")}</h1>
-            {/* WIP Hinweis – wie bisher */}
             <Alert
                 type="warning"
                 showIcon
