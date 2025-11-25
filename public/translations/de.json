@@ -992,9 +992,10 @@
         "warning": "Achtung! Settings level",
         "warningHint": "Falls du Einstellungen vermisst, erhöhe das 'Settings level'."
     },
-    "tonieArticleSearch": {
+    "toniesJsonSearch": {
         "failedToFetchSearchResults": "Fehler beim Abrufen der Modelle",
-        "failedToFetchSearchResultsDetails": "Fehler beim Abrufen der Suchergebnisse: "
+        "failedToFetchSearchResultsDetails": "Fehler beim Abrufen der Suchergebnisse: ",
+        "noResults": "Keine Einträge in tonies(.custom).json für die Suche gefunden."
     },
     "tonieboxes": {
         "accessApiDisabled": "Zugriff auf TeddyCloud APIs deaktiviert.",

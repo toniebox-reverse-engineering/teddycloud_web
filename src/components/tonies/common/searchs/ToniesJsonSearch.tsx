@@ -1,4 +1,4 @@
-import { AutoComplete, Button, Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,8 +7,7 @@ import { useToniesJsonSearch } from "../hooks/useToniesJsonSearch";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
-
-// @Todo: rework, get rid of deprecations!
+import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 
 export interface ToniesJsonSearchResult {
     value: string;
@@ -44,8 +43,8 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
     const { value, options, search, select, setValue } = useToniesJsonSearch((error) => {
         addNotification(
             NotificationTypeEnum.Error,
-            t("tonieArticleSearch.failedToFetchSearchResults"),
-            t("tonieArticleSearch.failedToFetchSearchResultsDetails") + String(error),
+            t("toniesJsonSearch.failedToFetchSearchResults"),
+            t("toniesJsonSearch.failedToFetchSearchResultsDetails") + String(error),
             t("tonies.navigationTitle")
         );
     });
@@ -59,14 +58,37 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         debouncedSearch(text);
     };
 
+    const results = options as ToniesJsonSearchResult[];
+
+    const dropdownOptions: SearchDropdownOption[] = results.map((d) => ({
+        value: d.value,
+        label: (
+            <div style={{ display: "flex", alignItems: "center" }}>
+                {d.picture && (
+                    <img
+                        src={d.picture}
+                        alt={d.text}
+                        style={{
+                            width: 64,
+                            height: 64,
+                            objectFit: "cover",
+                            borderRadius: 4,
+                            marginRight: 8,
+                        }}
+                    />
+                )}
+                <span>{d.text}</span>
+            </div>
+        ),
+    }));
+
     const handleSelect = (newValue: string) => {
         select(newValue);
 
-        if (onSelectResult) {
-            const match = (options as ToniesJsonSearchResult[]).find((o) => o.value === newValue);
-            if (match) {
-                onSelectResult(match);
-            }
+        const match = results.find((o) => o.value === newValue);
+
+        if (onSelectResult && match) {
+            onSelectResult(match);
         }
 
         onChange(newValue);
@@ -74,11 +96,8 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         if (clearInputAfterSelection) {
             setSearchText("");
             setValue("");
-        } else {
-            const match = (options as ToniesJsonSearchResult[]).find((o) => o.value === newValue);
-            if (match) {
-                setSearchText(match.text);
-            }
+        } else if (match) {
+            setSearchText(match.text);
         }
     };
 
@@ -88,22 +107,15 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 
     return (
         <>
-            <AutoComplete
+            <SearchDropdown
                 value={searchText}
-                options={(options as ToniesJsonSearchResult[]).map((d) => ({
-                    value: d.value,
-                    label: (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            {d.picture && <img src={d.picture} alt={d.text} style={{ display: "none" }} />}
-                            {d.text}
-                        </div>
-                    ),
-                }))}
-                onSearch={handleSearch}
-                onSelect={handleSelect}
                 placeholder={placeholder}
-                filterOption={false}
-                style={{ marginTop: 8, width: "100%" }}
+                options={dropdownOptions}
+                onInputChange={handleSearch}
+                onSelect={handleSelect}
+                noResultsContent={t("toniesJsonSearch.noResults")}
+                allowClear
+                style={{ marginTop: 8 }}
             />
 
             {showAddCustomTonieButton && (

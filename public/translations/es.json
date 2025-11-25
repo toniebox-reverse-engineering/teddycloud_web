@@ -992,9 +992,10 @@
         "warning": "¡Atención! Nivel de configuración",
         "warningHint": "Actualmente, los campos de texto deben guardarse explícitamente hasta que se implemente una mejor solución. Para hacerlo, haz clic en el símbolo de guardar al final del campo. Si faltan configuraciones, aumenta el 'Nivel de configuración'."
     },
-    "tonieArticleSearch": {
+    "toniesJsonSearch": {
         "failedToFetchSearchResults": "Error al obtener los modelos",
-        "failedToFetchSearchResultsDetails": "No se pudieron obtener los resultados de búsqueda de modelos: "
+        "failedToFetchSearchResultsDetails": "No se pudieron obtener los resultados de búsqueda de modelos: ",
+        "noResults": "No se encontraron entradas en tonies(.custom).json para la búsqueda."
     },
     "tonieboxes": {
         "accessApiDisabled": "Acceso a las API de TeddyCloud deshabilitado.",

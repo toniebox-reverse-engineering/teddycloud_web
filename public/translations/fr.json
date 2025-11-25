@@ -992,9 +992,10 @@
         "warning": "Attention ! Niveau des paramètres",
         "warningHint": "Si des paramètres vous manquent, augmentez le 'Niveau des paramètres'."
     },
-    "tonieArticleSearch": {
+    "toniesJsonSearch": {
         "failedToFetchSearchResults": "Erreur lors de la récupération des modèles",
-        "failedToFetchSearchResultsDetails": "Échec de la récupération des résultats de recherche de modèles : "
+        "failedToFetchSearchResultsDetails": "Échec de la récupération des résultats de recherche de modèles : ",
+        "noResults": "Aucune entrée trouvée dans tonies(.custom).json pour la recherche."
     },
     "tonieboxes": {
         "accessApiDisabled": "Accès aux API de TeddyCloud désactivé.",

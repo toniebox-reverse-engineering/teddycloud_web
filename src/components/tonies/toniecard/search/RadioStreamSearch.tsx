@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AutoComplete, Typography } from "antd";
+import { Typography } from "antd";
 
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useRadioStreamSearch } from "../hooks/useRadioStreamSearch";
 import { useDebouncedCallback } from "../../common/hooks/useDebouncedCallback";
+import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 
-// @Todo: rework, get rid of deprecations!
-
-const Paragraph = Typography;
+const { Paragraph } = Typography;
 
 export const RadioStreamSearch: React.FC<{
     placeholder: string;
@@ -52,23 +51,26 @@ export const RadioStreamSearch: React.FC<{
         return null;
     }
 
+    const dropdownOptions: SearchDropdownOption[] = options.map((d) => ({
+        value: d.value,
+        label: d.text,
+    }));
+
     return (
         <>
-            <Paragraph style={{ fontSize: "small", display: "inline-block", marginTop: "8px" }}>
+            <Paragraph style={{ fontSize: "small", display: "inline-block", marginTop: 8 }}>
                 {t("radioStreamSearch.searchLabel")}
             </Paragraph>
 
-            <AutoComplete
+            <SearchDropdown
                 value={searchText}
-                style={{ margin: "8px 0", width: "100%" }}
                 placeholder={placeholder}
-                options={options.map((d) => ({
-                    value: d.value,
-                    label: d.text,
-                }))}
-                onChange={handleInputChange}
+                options={dropdownOptions}
+                onInputChange={handleInputChange}
                 onSelect={handleSelect}
-                filterOption={false}
+                noResultsContent={t("radioStreamSearch.noResults")}
+                allowClear
+                style={{ margin: "8px 0", width: "100%" }}
             />
         </>
     );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AutoComplete, Button, Card, Collapse, Dropdown, Input, Select, Switch, Tooltip, theme } from "antd";
+import { Button, Card, Collapse, Dropdown, Input, Select, Switch, Tooltip, theme } from "antd";
 import {
     DeleteOutlined,
     FilterOutlined,
@@ -14,8 +14,7 @@ import { languageOptions } from "../../../common/icons/LanguageFlagIcon";
 import CustomFilterHelpModal from "../modals/ToniesCustomFilterHelpModal";
 import HelpModal from "../modals/ToniesHelpModal";
 import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";
-
-// @Todo: rework, get rid of deprecations!
+import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 
 const { useToken } = theme;
 const { Option } = Select;
@@ -52,7 +51,7 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
 
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
     const [isCustomFilterHelpOpen, setIsCustomFilterHelpOpen] = useState(false);
-    const [customFilterOptions, setCustomFilterOptions] = useState<{ value: string }[]>([]);
+    const [customFilterOptions, setCustomFilterOptions] = useState<SearchDropdownOption[]>([]);
     const [filterMenuOpen, setFilterMenuOpen] = useState(false);
 
     // ------------------------
@@ -109,14 +108,14 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
     // Handlers – custom filter
     // ------------------------
 
-    const handleCustomFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
+    const handleCustomFilterInputChange = (value: string) => {
         setCustomFilter(value);
         validateCustomFilter(value);
-    };
 
-    const handleCustomFilterSearch = (value: string) => {
-        const options = getCustomFilterCompletions(value).map((v) => ({ value: v }));
+        const options = getCustomFilterCompletions(value).map<SearchDropdownOption>((v) => ({
+            value: v,
+            label: v,
+        }));
         setCustomFilterOptions(options);
     };
 
@@ -136,7 +135,12 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         const updatedFilter = newValue + " ";
         setCustomFilter(updatedFilter);
         validateCustomFilter(updatedFilter);
-        handleCustomFilterSearch(updatedFilter);
+
+        const options = getCustomFilterCompletions(updatedFilter).map<SearchDropdownOption>((v) => ({
+            value: v,
+            label: v,
+        }));
+        setCustomFilterOptions(options);
     };
 
     // ------------------------
@@ -350,28 +354,26 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                             <WarningOutlined style={{ color: token.colorErrorText }} />
                         </Tooltip>
                     )}
-                    <AutoComplete
-                        style={{ width: "100%" }}
-                        options={customFilterOptions}
-                        value={customFilter}
-                        onSelect={handleCustomFilterSelect}
-                        onSearch={handleCustomFilterSearch}
-                        filterOption={false}
-                    >
-                        <Input
+
+                    <div style={{ flex: 1 }}>
+                        <SearchDropdown
+                            value={customFilter}
                             placeholder={t("tonies.tonies.filterBar.customFilter.placeholder")}
-                            onChange={handleCustomFilterChange}
-                            suffix={
-                                <Button
-                                    icon={<QuestionCircleOutlined />}
-                                    type="text"
-                                    size="small"
-                                    onClick={() => setIsCustomFilterHelpOpen(true)}
-                                    style={{ padding: 0 }}
-                                />
-                            }
+                            options={customFilterOptions}
+                            onInputChange={handleCustomFilterInputChange}
+                            onSelect={handleCustomFilterSelect}
+                            showNoResults={false}
+                            allowClear
                         />
-                    </AutoComplete>
+                    </div>
+
+                    <Button
+                        icon={<QuestionCircleOutlined />}
+                        type="text"
+                        size="small"
+                        onClick={() => setIsCustomFilterHelpOpen(true)}
+                        style={{ padding: 0 }}
+                    />
                 </div>
             </Card>
 

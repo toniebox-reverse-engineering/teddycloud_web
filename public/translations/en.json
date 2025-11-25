@@ -992,9 +992,10 @@
         "warning": "Attention! Settings level",
         "warningHint": "If you are missing settings, increase the 'Settings level'."
     },
-    "tonieArticleSearch": {
+    "toniesJsonSearch": {
         "failedToFetchSearchResults": "Error fetching models",
-        "failedToFetchSearchResultsDetails": "Failed to fetch models search results: "
+        "failedToFetchSearchResultsDetails": "Failed to fetch models search results: ",
+        "noResults": "No entries found in tonies(.custom).json for search."
     },
     "tonieboxes": {
         "accessApiDisabled": "Access to TeddyCloud APIs disabled.",
@@ -2148,6 +2149,7 @@
     "utils": {
         "copied": "Copied!",
         "copyToClipboard": "Copy to clipboard",
-        "failedToCopied": "Failed to copy!"
+        "failedToCopied": "Failed to copy!",
+        "noResults": "No results"
     }
 }
