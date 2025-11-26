@@ -7,9 +7,10 @@ import { DndContext } from "@dnd-kit/core";
 import { MAX_FILES } from "../../../constants/numbers";
 import { MyUploadFile } from "../../../utils/audio/audioEncoder";
 import { DraggableUploadListItem } from "../common/elements/DraggableUploadListItem";
-import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
 import { useEncoder } from "./hooks/useEncoder";
+import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
 import { DirectoryTreeSelect } from "../common/elements/DirectoryTreeSelect";
+import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
 
 const { useToken } = theme;
 
@@ -25,16 +26,11 @@ export const Encoder: React.FC = () => {
         hasInvalidChars,
         useFrontendEncoding,
         useFrontendEncodingSetting,
-        isCreateDirectoryModalOpen,
-        createDirectoryPath,
 
         // Actions
         setUseFrontendEncoding,
         sortFileListAlphabetically,
         clearFileList,
-        openCreateDirectoryModal,
-        closeCreateDirectoryModal,
-        setCreateDirectoryPath,
         handleFileNameInputChange,
         handleUpload,
         handleWasmUpload,
@@ -55,9 +51,26 @@ export const Encoder: React.FC = () => {
         invalidCharactersAsString,
     } = useEncoder();
 
+    const {
+        open: isCreateDirectoryModalOpen,
+        createDirectoryPath,
+        createDirectoryInputKey,
+        hasNewDirectoryInvalidChars,
+        isCreateDirectoryButtonDisabled,
+        inputCreateDirectoryRef,
+        openCreateDirectoryModal,
+        closeCreateDirectoryModal,
+        handleCreateDirectoryInputChange,
+        createDirectory,
+    } = useDirectoryCreate({
+        directoryTree,
+        selectNewNode: true,
+        setRebuildList,
+    });
+
     return (
         <>
-            <Space direction="vertical" style={{ display: "flex" }}>
+            <Space orientation="vertical" style={{ display: "flex" }}>
                 <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
                     <SortableContext
                         items={fileList.map((i) => i.uid)}
@@ -150,7 +163,12 @@ export const Encoder: React.FC = () => {
                                             className="encoder-save-btn"
                                             disabled={uploading || processing}
                                             icon={<FolderAddOutlined />}
-                                            onClick={openCreateDirectoryModal}
+                                            onClick={() => {
+                                                const basePath = directoryTree.getPathFromNodeId(
+                                                    directoryTree.treeNodeId
+                                                );
+                                                openCreateDirectoryModal(basePath);
+                                            }}
                                             style={{ borderRadius: 0 }}
                                         />
                                     </Tooltip>
@@ -214,16 +232,19 @@ export const Encoder: React.FC = () => {
                 ) : null}
             </Space>
 
-            <CreateDirectoryModal
-                open={isCreateDirectoryModalOpen}
-                onClose={closeCreateDirectoryModal}
-                createDirectoryPath={createDirectoryPath}
-                setCreateDirectoryPath={setCreateDirectoryPath}
-                path={createDirectoryPath}
-                directoryTree={directoryTree}
-                selectNewNode={true}
-                setRebuildList={setRebuildList}
-            />
+            {isCreateDirectoryModalOpen && (
+                <CreateDirectoryModal
+                    open={isCreateDirectoryModalOpen}
+                    createDirectoryPath={createDirectoryPath}
+                    createDirectoryInputKey={createDirectoryInputKey}
+                    hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
+                    isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
+                    inputRef={inputCreateDirectoryRef}
+                    onInputChange={handleCreateDirectoryInputChange}
+                    onClose={closeCreateDirectoryModal}
+                    onCreate={createDirectory}
+                />
+            )}
         </>
     );
 };

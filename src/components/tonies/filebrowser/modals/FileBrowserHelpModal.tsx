@@ -14,13 +14,13 @@ import {
 } from "@ant-design/icons";
 
 interface HelpModalProps {
-    isHelpModalOpen: boolean;
+    open: boolean;
     onClose: () => void;
 }
 
 const { Title, Text } = Typography;
 
-const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
+const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
     const { t } = useTranslation();
 
     const actionItemsMulti = [
@@ -162,7 +162,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
             className="help-viewer"
             width={800}
             title={t("fileBrowser.help.title")}
-            open={isHelpModalOpen}
+            open={open}
             onOk={onClose}
             onCancel={onClose}
             footer={[

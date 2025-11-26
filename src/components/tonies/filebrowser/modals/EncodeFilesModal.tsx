@@ -15,8 +15,14 @@ import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
+import { useDirectoryCreate } from "../../common/hooks/useCreateDirectory";
+import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
+import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
+import { SelectFilesModal } from "./SelectFilesModal";
+import { useSelectFiles } from "../hooks/useSelectFiles";
+import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
+import { MAX_FILES } from "../../../../constants/numbers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -25,7 +31,6 @@ const { useToken } = theme;
 interface EncodeFilesModalProps {
     open: boolean;
     onClose: () => void;
-    modalKey: number;
     special: string;
 
     encodeFileList: FileObject[];
@@ -33,12 +38,7 @@ interface EncodeFilesModalProps {
 
     directoryTree: DirectoryTreeApi;
 
-    selectFileModal: React.ReactNode;
-    showSelectFileModal: () => void;
-
-    setCreateDirectoryPath: (path: string) => void;
     setFilterFieldAutoFocus: (v: boolean) => void;
-    setIsCreateDirectoryModalOpen: (v: boolean) => void;
 
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
     setSelectedRowKeys: React.Dispatch<React.SetStateAction<React.Key[]>>;
@@ -47,16 +47,11 @@ interface EncodeFilesModalProps {
 const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
     open,
     onClose,
-    modalKey,
     special,
     encodeFileList,
     setEncodeFileList,
     directoryTree,
-    selectFileModal,
-    showSelectFileModal,
-    setCreateDirectoryPath,
     setFilterFieldAutoFocus,
-    setIsCreateDirectoryModalOpen,
     setRebuildList,
     setSelectedRowKeys,
 }) => {
@@ -73,6 +68,39 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
 
     const sensor = useSensor(PointerSensor, {
         activationConstraint: { distance: 10 },
+    });
+
+    const handleFilesSelectedForEncoding = (newFiles: FileObject[]) => {
+        setEncodeFileList((prevList) => [...prevList, ...newFiles]);
+    };
+
+    const {
+        open: isCreateDirectoryModalOpen,
+        createDirectoryPath,
+        createDirectoryInputKey,
+        hasNewDirectoryInvalidChars,
+        isCreateDirectoryButtonDisabled,
+        inputCreateDirectoryRef,
+        openCreateDirectoryModal,
+        closeCreateDirectoryModal,
+        handleCreateDirectoryInputChange,
+        createDirectory,
+    } = useDirectoryCreate({
+        directoryTree,
+        selectNewNode: true,
+        setRebuildList,
+    });
+
+    const {
+        isOpen: isSelectFileModalOpen,
+        selectedNewFiles,
+        openModal: showSelectFileModal,
+        handleCancel,
+        handleOk,
+        handleFileSelectChange,
+    } = useSelectFiles({
+        onConfirm: handleFilesSelectedForEncoding,
+        selectableFileTypes: ffmpegSupportedExtensions,
     });
 
     useEffect(() => {
@@ -151,7 +179,6 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                     t("fileBrowser.encodeFiles.encodingSuccessfulDetails", { file: target }),
                     t("fileBrowser.title")
                 );
-                // Tree auf Root zurücksetzen (wie vorher setTreeNodeId("1"))
                 directoryTree.setTreeNodeId(directoryTree.rootTreeNode.id);
                 setSelectedRowKeys([]);
                 setRebuildList((prev) => !prev);
@@ -180,7 +207,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
     return (
         <Modal
             title={t("fileBrowser.encodeFiles.modalTitle")}
-            key={"encodeModal-" + modalKey}
+            key={"encodeModal"}
             open={open}
             onCancel={onClose}
             onOk={encodeFiles}
@@ -192,7 +219,6 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                 disabled: processing || hasError || isUnchangedOrEmpty || encodeFileList.length === 0,
             }}
         >
-            {selectFileModal}
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
                 <SortableContext
                     items={encodeFileList.map((i) => i.uid)}
@@ -269,9 +295,8 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                                 const basePath = directoryTree.getPathFromNodeId(
                                                     directoryTree.treeNodeId
                                                 );
-                                                setCreateDirectoryPath(basePath);
+                                                openCreateDirectoryModal(basePath);
                                                 setFilterFieldAutoFocus(false);
-                                                setIsCreateDirectoryModalOpen(true);
                                             }}
                                             style={{ borderRadius: 0 }}
                                         />
@@ -298,6 +323,29 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                     </>
                 ) : null}
             </Space>
+            {isCreateDirectoryModalOpen && (
+                <CreateDirectoryModal
+                    open={isCreateDirectoryModalOpen}
+                    createDirectoryPath={createDirectoryPath}
+                    createDirectoryInputKey={createDirectoryInputKey}
+                    hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
+                    isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
+                    inputRef={inputCreateDirectoryRef}
+                    onInputChange={handleCreateDirectoryInputChange}
+                    onClose={closeCreateDirectoryModal}
+                    onCreate={createDirectory}
+                />
+            )}
+            {isSelectFileModalOpen && (
+                <SelectFilesModal
+                    open={isSelectFileModalOpen}
+                    maxSelectable={MAX_FILES}
+                    selectedNewFiles={selectedNewFiles}
+                    onCancel={handleCancel}
+                    onOk={handleOk}
+                    onFileSelectChange={handleFileSelectChange}
+                />
+            )}
         </Modal>
     );
 };

@@ -11,6 +11,8 @@ import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
+import { useDirectoryCreate } from "../../common/hooks/useCreateDirectory";
+import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
 
 const { useToken } = theme;
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -32,11 +34,7 @@ interface MoveFilesModalProps {
 
     // Directory tree
     directoryTree: DirectoryTreeApi;
-
-    // Create Directory Button in modal
-    setCreateDirectoryPath: (path: string) => void;
     setFilterFieldAutoFocus: (v: boolean) => void;
-    setIsCreateDirectoryModalOpen: (v: boolean) => void;
 
     // reload list
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,14 +51,30 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
     selectedRowKeys,
     setSelectedRowKeys,
     directoryTree,
-    setCreateDirectoryPath,
     setFilterFieldAutoFocus,
-    setIsCreateDirectoryModalOpen,
     setRebuildList,
 }) => {
     const { token } = useToken();
     const { t } = useTranslation();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+
+    const {
+        open: isCreateDirectoryModalOpen,
+        createDirectoryPath,
+        createDirectoryInputKey,
+        hasNewDirectoryInvalidChars,
+        isCreateDirectoryButtonDisabled,
+        inputCreateDirectoryRef,
+        openCreateDirectoryModal,
+        closeCreateDirectoryModal,
+        handleCreateDirectoryInputChange,
+        createDirectory,
+    } = useDirectoryCreate({
+        path,
+        directoryTree,
+        selectNewNode: true,
+        setRebuildList,
+    });
 
     const moveRenameFile = async (source: string, target: string, moving: boolean, flagMultiple?: boolean) => {
         const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
@@ -214,15 +228,27 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                             icon={<FolderAddOutlined />}
                             onClick={() => {
                                 const basePath = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
-                                setCreateDirectoryPath(basePath);
+                                openCreateDirectoryModal(basePath);
                                 setFilterFieldAutoFocus(false);
-                                setIsCreateDirectoryModalOpen(true);
                             }}
                             style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
                         />
                     </Tooltip>
                 </div>
             </div>
+            {isCreateDirectoryModalOpen && (
+                <CreateDirectoryModal
+                    open={isCreateDirectoryModalOpen}
+                    createDirectoryPath={createDirectoryPath}
+                    createDirectoryInputKey={createDirectoryInputKey}
+                    hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
+                    isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
+                    inputRef={inputCreateDirectoryRef}
+                    onInputChange={handleCreateDirectoryInputChange}
+                    onClose={closeCreateDirectoryModal}
+                    onCreate={createDirectory}
+                />
+            )}
         </Modal>
     );
 };

@@ -1,4 +1,3 @@
-// SelectFileFileBrowser.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -147,7 +146,6 @@ export const SelectFileFileBrowser: React.FC<{
     };
 
     // columns
-
     const columns = createColumns({
         mode: "select",
         path,

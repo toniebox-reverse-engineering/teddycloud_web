@@ -22,7 +22,7 @@ interface RenameFileModalProps {
     special: string;
     overlay?: string;
 
-    path: string; // encoded path
+    path: string;
     currentFile: string | null;
 
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;

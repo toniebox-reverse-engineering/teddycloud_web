@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Flex, Input, Table, theme, Tooltip } from "antd";
 import { Key } from "antd/es/table/interface";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -29,21 +29,20 @@ import HelpModal from "./modals/FileBrowserHelpModal";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
-import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
 import DeleteFilesModal from "./modals/DeleteFilesModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
 import JsonViewerModal from "./modals/JsonViewerModal";
 import MoveFilesModal from "./modals/MoveFilesModal";
 import RenameFileModal from "./modals/RenameFilesModal";
-import SelectFilesForEncodingModal from "./modals/SelectFilesForEncodingModal";
 import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
+import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
 import { MAX_FILES } from "../../../constants/numbers";
 import { createColumns } from "./helper/Columns";
 import { generateUUID } from "../../../utils/ids/generateUUID";
 import { useAudioContext } from "../../../contexts/AudioContext";
 import { useDirectoryTree } from "../common/hooks/useDirectoryTree";
-import { DirectoryTreeSelect } from "../common/elements/DirectoryTreeSelect";
+import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -92,9 +91,6 @@ export const FileBrowser: React.FC<{
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
     const [tafHeaderRecord, setTafHeaderRecord] = useState<RecordTafHeader | null>(null);
 
-    const [isCreateDirectoryModalOpen, setIsCreateDirectoryModalOpen] = useState<boolean>(false);
-    const [createDirectoryPath, setCreateDirectoryPath] = useState<string>("");
-
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [isConfirmMultipleDeleteModalOpen, setIsConfirmMultipleDeleteModalOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
@@ -106,15 +102,9 @@ export const FileBrowser: React.FC<{
 
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
     const [uploadFileList, setUploadFileList] = useState<any[]>([]);
-    const [uploading, setUploading] = useState<boolean>(false);
 
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
-    const [encodeFilesModalKey, setEncodeFilesModalKey] = useState<number>(0);
     const [encodeFileList, setEncodeFileList] = useState<FileObject[]>([]);
-    const [processing, setProcessing] = useState<boolean>(false);
-
-    const [isSelectFileModalOpen, setIsSelectFileModalOpen] = useState<boolean>(false);
-    const [selectFileFileBrowserKey, setSelectFileFileBrowserKey] = useState<number>(0);
 
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
@@ -122,7 +112,7 @@ export const FileBrowser: React.FC<{
 
     const directoryTree = useDirectoryTree();
 
-    const { treeNodeId, setTreeNodeId, rootTreeNode, getPathFromNodeId } = directoryTree;
+    const { setTreeNodeId, rootTreeNode } = directoryTree;
 
     const {
         path,
@@ -154,13 +144,23 @@ export const FileBrowser: React.FC<{
         trackUrl,
     });
 
-    useEffect(() => {
-        setCreateDirectoryPath(getPathFromNodeId(treeNodeId));
-    }, [treeNodeId]);
-
-    useEffect(() => {
-        setCreateDirectoryPath(path);
-    }, [path]);
+    const {
+        open: isCreateDirectoryModalOpen,
+        createDirectoryPath,
+        createDirectoryInputKey,
+        hasNewDirectoryInvalidChars,
+        isCreateDirectoryButtonDisabled,
+        inputCreateDirectoryRef,
+        openCreateDirectoryModal,
+        closeCreateDirectoryModal,
+        handleCreateDirectoryInputChange,
+        createDirectory,
+    } = useDirectoryCreate({
+        path,
+        directoryTree,
+        selectNewNode: true,
+        setRebuildList,
+    });
 
     // other helper functions
     const fetchJsonData = async (path: string) => {
@@ -250,7 +250,6 @@ export const FileBrowser: React.FC<{
 
     const closeMoveFileModal = () => {
         setIsMoveFileModalOpen(false);
-        setCreateDirectoryPath(path);
         setTreeNodeId(rootTreeNode.id);
     };
 
@@ -264,33 +263,8 @@ export const FileBrowser: React.FC<{
         setIsRenameFileModalOpen(false);
     };
 
-    // select files for encoding
-    const showSelectFileModal = () => {
-        setSelectFileFileBrowserKey((prevKey) => prevKey + 1);
-        setIsSelectFileModalOpen(true);
-    };
-
-    const handleCancelSelectFile = () => {
-        setIsSelectFileModalOpen(false);
-    };
-
-    const handleFilesSelectedForEncoding = (newFiles: FileObject[]) => {
-        setEncodeFileList((prevList) => [...prevList, ...newFiles]);
-    };
-
-    const selectFileModal = (
-        <SelectFilesForEncodingModal
-            open={isSelectFileModalOpen}
-            onClose={handleCancelSelectFile}
-            onConfirm={handleFilesSelectedForEncoding}
-            maxSelectable={MAX_FILES - encodeFileList.length - 1}
-            browserKey={selectFileFileBrowserKey}
-        />
-    );
-
     // encode files
     const showFileEncodeModal = () => {
-        setEncodeFilesModalKey((prevKey) => prevKey + 1);
         setTreeNodeId(rootTreeNode.id);
         const newEncodedFiles: FileObject[] = [];
 
@@ -323,7 +297,6 @@ export const FileBrowser: React.FC<{
 
     const closeEncodeFilesModal = () => {
         setIsEncodeFilesModalOpen(false);
-        setCreateDirectoryPath(path);
         setEncodeFileList([]);
     };
 
@@ -435,13 +408,14 @@ export const FileBrowser: React.FC<{
             {isCreateDirectoryModalOpen && (
                 <CreateDirectoryModal
                     open={isCreateDirectoryModalOpen}
-                    onClose={() => setIsCreateDirectoryModalOpen(false)}
                     createDirectoryPath={createDirectoryPath}
-                    setCreateDirectoryPath={setCreateDirectoryPath}
-                    path={path}
-                    directoryTree={directoryTree}
-                    selectNewNode={isMoveFileModalOpen || isEncodeFilesModalOpen}
-                    setRebuildList={setRebuildList}
+                    createDirectoryInputKey={createDirectoryInputKey}
+                    hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
+                    isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
+                    inputRef={inputCreateDirectoryRef}
+                    onInputChange={handleCreateDirectoryInputChange}
+                    onClose={closeCreateDirectoryModal}
+                    onCreate={createDirectory}
                 />
             )}
             {isOpenUploadDragAndDropModal && (
@@ -467,9 +441,7 @@ export const FileBrowser: React.FC<{
                     selectedRowKeys={selectedRowKeys}
                     setSelectedRowKeys={setSelectedRowKeys}
                     directoryTree={directoryTree}
-                    setCreateDirectoryPath={setCreateDirectoryPath}
                     setFilterFieldAutoFocus={setFilterFieldAutoFocus}
-                    setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
                     setRebuildList={setRebuildList}
                 />
             )}
@@ -488,16 +460,11 @@ export const FileBrowser: React.FC<{
                 <EncodeFilesModal
                     open={isEncodeFilesModalOpen}
                     onClose={closeEncodeFilesModal}
-                    modalKey={encodeFilesModalKey}
                     special={special}
                     encodeFileList={encodeFileList}
                     setEncodeFileList={setEncodeFileList}
                     directoryTree={directoryTree}
-                    selectFileModal={selectFileModal}
-                    showSelectFileModal={showSelectFileModal}
-                    setCreateDirectoryPath={setCreateDirectoryPath}
                     setFilterFieldAutoFocus={setFilterFieldAutoFocus}
-                    setIsCreateDirectoryModalOpen={setIsCreateDirectoryModalOpen}
                     setRebuildList={setRebuildList}
                     setSelectedRowKeys={setSelectedRowKeys}
                 />
@@ -513,9 +480,7 @@ export const FileBrowser: React.FC<{
                     }}
                 />
             )}
-            {isHelpModalOpen && (
-                <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
-            )}
+            {isHelpModalOpen && <HelpModal open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />}
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
@@ -634,9 +599,7 @@ export const FileBrowser: React.FC<{
                                 <Button
                                     icon={<FolderAddOutlined />}
                                     size="small"
-                                    onClick={() => {
-                                        setIsCreateDirectoryModalOpen(true);
-                                    }}
+                                    onClick={() => openCreateDirectoryModal(path)}
                                 >
                                     <div className="showBigDevicesOnly showMediumDevicesOnly">
                                         {t("fileBrowser.createDirectory.createDirectory")}

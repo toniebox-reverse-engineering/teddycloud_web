@@ -17,7 +17,6 @@ interface DeleteFilesModalProps {
 
     files: Record[];
     path: string;
-    setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
 
     // multi selection
     selectedRowKeys: Key[];
@@ -34,6 +33,8 @@ interface DeleteFilesModalProps {
     // multiple delete
     multipleOpen: boolean;
     onCloseMultiple: () => void;
+
+    setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
@@ -41,7 +42,6 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
     overlay,
     files,
     path,
-    setRebuildList,
     selectedRowKeys,
     setSelectedRowKeys,
     singleOpen,
@@ -51,6 +51,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
     onCloseSingle,
     multipleOpen,
     onCloseMultiple,
+    setRebuildList,
 }) => {
     const { t } = useTranslation();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
