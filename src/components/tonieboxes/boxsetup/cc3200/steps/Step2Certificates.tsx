@@ -2,9 +2,9 @@ import { Button, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
-import { certificateIntro } from "../../common/elements/CertificateIntro";
 import { useState } from "react";
 import { CertificatesModal } from "../../../common/modals/CertificatesModal";
+import { CertificateIntro } from "../../common/elements/CertificateIntro";
 
 const { Paragraph } = Typography;
 
@@ -17,7 +17,8 @@ export const Step2Certificates: React.FC = () => {
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
 
-            <Paragraph>{certificateIntro(true)}</Paragraph>
+            <CertificateIntro asC2Der={true} />
+
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.certificates.alreadyAvailable")}</Paragraph>
             <Paragraph>
                 <CodeSnippet language="shell" code={`/currentDir/ExtractedFromBox/cert/.`} />

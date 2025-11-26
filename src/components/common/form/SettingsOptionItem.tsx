@@ -9,7 +9,7 @@ interface SettingsOptionItem {
     overlayId?: string;
 }
 
-export const SettingsOptionItem = (props: SettingsOptionItem) => {
+export const SettingsOptionItem: React.FC<SettingsOptionItem> = (props) => {
     const { iD } = props;
     const option = SettingsDataHandler.getInstance().getSetting(props.iD);
 

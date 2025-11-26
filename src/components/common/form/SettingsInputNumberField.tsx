@@ -13,7 +13,7 @@ type InputNumberFieldProps = {
     overlayId?: string;
 };
 
-export const SettingsInputNumberField = (props: InputNumberFieldProps) => {
+export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props) => {
     const { t } = useTranslation();
     const { name, label, description, overlayed: initialOverlayed } = props;
     const [field, meta] = useField<number | undefined>(name!);

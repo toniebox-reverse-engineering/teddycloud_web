@@ -1,34 +1,31 @@
-/* Currently unused, but may be used in the future */
-
-import React from "react";
-import { Select } from "antd";
+import React, { useMemo } from "react";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { SearchDropdown } from "../../../common/elements/SearchDropdown";
 
 export const ModelSearch: React.FC<{
     placeholder: string;
     onChange: (newValue: string) => void;
-    value: any;
-}> = (props) => {
+    value: string;
+}> = ({ placeholder, onChange, value }) => {
     const { boxModelImages } = useTeddyCloud();
 
-    const handleChange = (newValue: string) => {
-        props.onChange(newValue);
-    };
-
-    return (
-        <Select
-            showSearch
-            value={props.value}
-            placeholder={props.value ? "" : props.placeholder}
-            defaultActiveFirstOption={false}
-            suffixIcon={null}
-            filterOption={false}
-            onChange={handleChange}
-            notFoundContent={null}
-            options={(boxModelImages || []).map((d: any) => ({
+    const options = useMemo(
+        () =>
+            (boxModelImages || []).map((d: any) => ({
                 value: d.id,
                 label: d.name,
-            }))}
+            })),
+        [boxModelImages]
+    );
+
+    return (
+        <SearchDropdown
+            value={value}
+            placeholder={placeholder}
+            options={options}
+            onInputChange={onChange}
+            onSelect={onChange}
+            showNoResults={false}
         />
     );
 };

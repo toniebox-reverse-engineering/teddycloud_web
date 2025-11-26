@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 const { Paragraph, Text } = Typography;
 
 interface CustomFilterHelpModalProps {
-    visible: boolean;
+    open: boolean;
     onClose: () => void;
 }
 
-const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, onClose }) => {
+const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ open, onClose }) => {
     const { t } = useTranslation();
 
     const fields = [
@@ -39,7 +39,7 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ visible, 
 
     return (
         <Modal
-            open={visible}
+            open={open}
             onCancel={onClose}
             footer={null}
             title={t("tonies.tonies.filterBar.customFilterHelp.title")}

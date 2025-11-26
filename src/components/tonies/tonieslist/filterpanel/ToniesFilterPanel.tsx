@@ -455,10 +455,7 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                 <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
             )}
             {isCustomFilterHelpOpen && (
-                <CustomFilterHelpModal
-                    visible={isCustomFilterHelpOpen}
-                    onClose={() => setIsCustomFilterHelpOpen(false)}
-                />
+                <CustomFilterHelpModal open={isCustomFilterHelpOpen} onClose={() => setIsCustomFilterHelpOpen(false)} />
             )}
 
             <Collapse

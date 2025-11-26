@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import tbEsp32FlashESPtoolScreen from "../../../../../../assets/boxSetup/esp32_write_patched_image_with_esptools.png";
 import CodeSnippet from "../../../../../common/elements/CodeSnippet";
-import { certificateIntro } from "../../../common/elements/CertificateIntro";
+import { CertificateIntro } from "../../../common/elements/CertificateIntro";
 
 const { Paragraph } = Typography;
 
@@ -13,7 +13,7 @@ export const Step1Certificates: React.FC = () => {
     return (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
-            {certificateIntro(false)}
+            <CertificateIntro asC2Der={false} />
             <Paragraph>
                 <CodeSnippet
                     language="shell"

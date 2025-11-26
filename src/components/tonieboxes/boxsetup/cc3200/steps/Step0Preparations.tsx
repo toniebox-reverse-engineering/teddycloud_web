@@ -6,7 +6,7 @@ import cc3200debugPort from "../../../../../assets/boxSetup/cc3200_debugPort.jpg
 import cc3200tagConnector from "../../../../../assets/boxSetup/cc3200_tagConnector.png";
 import cc3200WiresAsTagConnect from "../../../../../assets/boxSetup/cc3200_wiresAsTagConnector.png";
 import { TonieboxWifiGuide } from "../../common/elements/TonieboxWifiGuide";
-import { uart3v3Hint } from "../../common/elements/Uart3v3Hint";
+import { Uart3v3Hint } from "../../common/elements/Uart3v3Hint";
 import { installCC3200Tool } from "../elements/InstallCC3200Tool";
 
 const { Paragraph } = Typography;
@@ -75,7 +75,7 @@ export const Step0Preparations: React.FC = () => {
                         alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
                     />
                 </Paragraph>
-                <Paragraph>{uart3v3Hint()}</Paragraph>
+                <Uart3v3Hint />
                 <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableIntro")}</Paragraph>
                 <TonieboxUARTTable />
                 <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableExplanation")}</Paragraph>

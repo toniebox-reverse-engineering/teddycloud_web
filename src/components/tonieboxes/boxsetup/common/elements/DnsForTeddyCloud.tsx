@@ -1,4 +1,3 @@
-import { JSX } from "react";
 import { Alert, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -6,7 +5,7 @@ import CodeSnippet from "../../../../common/elements/CodeSnippet";
 
 const { Paragraph } = Typography;
 
-export function dnsForTeddyCloud(): JSX.Element {
+export const DnsForTeddyCloud: React.FC = () => {
     const { t } = useTranslation();
 
     return (
@@ -96,4 +95,4 @@ uci commit dhcp
             <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.loggingMonitoringInstructions")}</Paragraph>
         </>
     );
-}
+};

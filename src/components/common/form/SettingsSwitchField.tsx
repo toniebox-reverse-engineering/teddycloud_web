@@ -13,7 +13,7 @@ type SwitchFieldProps = {
     overlayId?: string;
 };
 
-export const SettingsSwitchField = (props: SwitchFieldProps) => {
+export const SettingsSwitchField: React.FC<SwitchFieldProps> = (props) => {
     const { t } = useTranslation();
     const { name, label, description, overlayed: initialOverlayed } = props;
     const [field, meta] = useField(name!);

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
-import { certificateIntro } from "../../common/elements/CertificateIntro";
+import { CertificateIntro } from "../../common/elements/CertificateIntro";
 import { useState } from "react";
 import { CertificatesModal } from "../../../common/modals/CertificatesModal";
 
@@ -171,7 +171,7 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
     return (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.certificates")}</h3>
-            {certificateIntro(false)}
+            <CertificateIntro asC2Der={false} />
             <h4>CC3235</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.dumpCertificatesCC3235")}</Paragraph>
             <Tabs

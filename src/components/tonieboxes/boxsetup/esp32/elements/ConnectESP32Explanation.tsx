@@ -6,7 +6,7 @@ import tbEsp32UartClamp from "../../../../../assets/boxSetup/tb-esp32-uart-clamp
 import tbEsp32UartAnalogClamp from "../../../../../assets/boxSetup/esp32_pcb_clamp.png";
 import tbEsp32Uart from "../../../../../assets/boxSetup/tb-esp32-uart.png";
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
-import { uart3v3Hint } from "../../common/elements/Uart3v3Hint";
+import { Uart3v3Hint } from "../../common/elements/Uart3v3Hint";
 
 const { Paragraph } = Typography;
 
@@ -15,7 +15,7 @@ export function connectESP32Explanation(): JSX.Element {
 
     return (
         <>
-            <Paragraph>{uart3v3Hint()}</Paragraph>
+            <Uart3v3Hint />
             <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1")}</Paragraph>
             <Paragraph
                 style={{

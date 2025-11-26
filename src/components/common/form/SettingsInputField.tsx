@@ -13,7 +13,7 @@ type InputFieldProps = {
     overlayId?: string;
 };
 
-export const SettingsInputField = (props: InputFieldProps) => {
+export const SettingsInputField: React.FC<InputFieldProps> = (props) => {
     const { t } = useTranslation();
     const { name, label, description, overlayed: initialOverlayed } = props;
     const [field, meta] = useField(name!);
