@@ -70,7 +70,9 @@ export const EditModal: React.FC<EditModalProps> = ({
             footer={footer}
             onCancel={onCancel}
         >
-            <Divider orientation="horizontal">{t("tonieboxes.editModelModal.name")}</Divider>
+            <Divider orientation="horizontal" titlePlacement="left">
+                {t("tonieboxes.editModelModal.name")}
+            </Divider>
             <Paragraph>
                 <Input
                     name="boxName"
@@ -91,7 +93,9 @@ export const EditModal: React.FC<EditModalProps> = ({
                     ]}
                 />
             </Paragraph>
-            <Divider orientation="horizontal">{t("tonieboxes.editModelModal.model")}</Divider>
+            <Divider orientation="horizontal" titlePlacement="left">
+                {t("tonieboxes.editModelModal.model")}
+            </Divider>
             <Paragraph>
                 <Select
                     options={boxModelOptions}
