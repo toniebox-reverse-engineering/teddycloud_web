@@ -592,7 +592,7 @@ export const ToniesList: React.FC<{
     }
 
     return (
-        <div className="tonies-list-container">
+        <div className="tonies-list-container" style={{ marginTop: 8 }}>
             {!readOnly ? listActions : null}
 
             <Flex ref={toniesListRef} vertical gap={16} key={listKey}>

@@ -343,6 +343,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                     selectedNewFiles={selectedNewFiles}
                     onCancel={handleCancel}
                     onOk={handleOk}
+                    selectableFileTypes={ffmpegSupportedExtensions}
                     onFileSelectChange={handleFileSelectChange}
                 />
             )}

@@ -11,7 +11,8 @@ import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/S
 
 export interface ToniesJsonSearchResult {
     value: string;
-    text: string;
+    selectionText: string;
+    contentText: string;
     picture?: string;
     episodes?: string;
     model?: string;
@@ -67,7 +68,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
                 {d.picture && (
                     <img
                         src={d.picture}
-                        alt={d.text}
+                        alt={d.selectionText}
                         style={{
                             width: 64,
                             height: 64,
@@ -77,7 +78,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
                         }}
                     />
                 )}
-                <span>{d.text}</span>
+                <span>{d.selectionText}</span>
             </div>
         ),
     }));
@@ -97,7 +98,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
             setSearchText("");
             setValue("");
         } else if (match) {
-            setSearchText(match.text);
+            setSearchText(match.selectionText);
         }
     };
 

@@ -21,13 +21,14 @@ export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = (
 
     const [lastAddedTitle, setLastAddedTitle] = useState<string | null>(null);
     const [showHint, setShowHint] = useState(false);
+    const [isFading, setIsFading] = useState(false);
 
     const hideTimerRef = useRef<number | null>(null);
 
     const handleSelectResult = (result: ToniesJsonSearchResult) => {
         const dataset = {
             custom: false,
-            text: result.text,
+            text: result.contentText,
             pic: result.picture,
             episodes: result.episodes ?? "",
             model: result.model ?? "",
@@ -36,16 +37,18 @@ export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = (
 
         onSelectDataset(dataset);
 
-        setLastAddedTitle(result.text);
+        setLastAddedTitle(result.selectionText);
         setShowHint(true);
+        setIsFading(false);
 
         if (hideTimerRef.current !== null) {
             window.clearTimeout(hideTimerRef.current);
         }
 
         hideTimerRef.current = window.setTimeout(() => {
-            setShowHint(false);
-        }, 2000) as unknown as number;
+            setIsFading(true);
+            window.setTimeout(() => setShowHint(false), 300);
+        }, 2000);
     };
 
     useEffect(() => {
@@ -67,7 +70,15 @@ export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = (
             />
             {showHint && lastAddedTitle && (
                 <div style={{ marginTop: 4 }}>
-                    <Tag icon={<CheckCircleOutlined />} color="success" style={{ textWrap: "wrap" }}>
+                    <Tag
+                        icon={<CheckCircleOutlined />}
+                        color="success"
+                        style={{
+                            textWrap: "wrap",
+                            opacity: isFading ? 0 : 1,
+                            transition: "opacity 0.3s ease-in-out",
+                        }}
+                    >
                         {t("tonies.teddystudio.addedHint", { title: lastAddedTitle })}
                     </Tag>
                 </div>

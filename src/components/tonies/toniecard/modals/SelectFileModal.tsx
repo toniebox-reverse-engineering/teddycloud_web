@@ -43,7 +43,6 @@ export const SelectFileModal: React.FC<SelectFileModalProps> = ({
             <Button
                 type="primary"
                 onClick={() => {
-                    // tempSelectedSource liegt komplett in der Hand des Parents
                     onConfirm();
                 }}
                 disabled={!tempSelectedSource}
