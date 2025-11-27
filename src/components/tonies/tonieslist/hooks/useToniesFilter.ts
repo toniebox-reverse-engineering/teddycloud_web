@@ -653,9 +653,12 @@ export function useToniesFilter(params: UseToniesFilterParams) {
     };
 
     const hideTonieCard = (ruid: string) => {
-        const hiddenRuids = [...state.hiddenRuids, ruid];
-        setState((prev) => ({ ...prev, hiddenRuids }));
-        applyFiltersInternal({ hiddenRuids });
+        setState((prev) => {
+            const hiddenRuids = Array.from(new Set([...prev.hiddenRuids, ruid]));
+            const next = { ...prev, hiddenRuids };
+            applyFiltersInternal({ hiddenRuids });
+            return next;
+        });
     };
 
     const saveFilterSettings = (name: string) => {
