@@ -1,4 +1,3 @@
-// src/components/tonieboxes/TonieboxSettingsPage.tsx
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Divider, Form, Radio, theme } from "antd";

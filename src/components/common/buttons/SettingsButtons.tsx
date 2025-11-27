@@ -1,13 +1,14 @@
 import { Button } from "antd";
-import { t } from "i18next";
 import { FunctionComponent, useEffect, useState } from "react";
 import SettingsDataHandler from "../../../data/SettingsDataHandler";
+import { useTranslation } from "react-i18next";
 
 interface SettingsButtonProps {
     onClose?: () => void;
 }
 
 export const SettingsButton: FunctionComponent<SettingsButtonProps> = ({ onClose }) => {
+    const { t } = useTranslation();
     const [reloadCount, setReloadCount] = useState(0);
 
     useEffect(() => {

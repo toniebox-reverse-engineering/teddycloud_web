@@ -1,5 +1,4 @@
-import { t } from "i18next";
-
+import { useTranslation } from "react-i18next";
 import { BoxineApi, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
@@ -15,6 +14,7 @@ export const restartServer = async (
     addLoadingNotification: Function,
     closeLoadingNotification: Function
 ) => {
+    const { t } = useTranslation();
     const key = "restart-tc";
     addLoadingNotification(key, t("settings.restartTC"), t("settings.tryToRestartTC"));
 

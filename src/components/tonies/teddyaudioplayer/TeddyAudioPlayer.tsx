@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card, theme } from "antd";
 import { LeftOutlined, PlayCircleOutlined, RightOutlined } from "@ant-design/icons";
-import { t } from "i18next";
 
 import { TonieCardProps } from "../../../types/tonieTypes";
 import StandAloneAudioPlayer from "./elements/AudioPlayer";
@@ -9,6 +8,7 @@ import { useHoldToScroll } from "./hooks/useHoldToScroll";
 import { useHorizontalDragScroll } from "./hooks/useHorizontalDragScroll";
 import { usePageLoaded } from "./hooks/usePageLoaded";
 import { useWheelHorizontalScroll } from "./hooks/useWheelHorizontalScroll";
+import { useTranslation } from "react-i18next";
 
 const { useToken } = theme;
 
@@ -29,6 +29,7 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
     onToniesChange,
     onPlayPositionChange,
 }) => {
+    const { t } = useTranslation();
     const { token } = useToken();
     const containerRef = useRef<HTMLDivElement | null>(null);
 

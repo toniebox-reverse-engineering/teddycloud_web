@@ -1,6 +1,5 @@
 import React, { JSX, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import i18n from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { Card, theme, Tooltip } from "antd";
 import {
@@ -41,7 +40,7 @@ export const TonieboxCard: React.FC<{
     readOnly?: boolean;
     checkCC3200CFW?: boolean;
 }> = ({ tonieboxCard, tonieboxImages, readOnly = false, checkCC3200CFW = false }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
     const triggerWriteConfig = useTriggerWriteConfig();

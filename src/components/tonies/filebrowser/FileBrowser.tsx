@@ -26,6 +26,13 @@ import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserT
 import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
 import HelpModal from "./modals/FileBrowserHelpModal";
 
+import { MAX_FILES } from "../../../constants/numbers";
+import { useAudioContext } from "../../../contexts/AudioContext";
+import { generateUUID } from "../../../utils/ids/generateUUID";
+import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
+import { useDirectoryTree } from "../common/hooks/useDirectoryTree";
+import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
+import { createColumns } from "./helper/Columns";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
@@ -36,13 +43,6 @@ import MoveFilesModal from "./modals/MoveFilesModal";
 import RenameFileModal from "./modals/RenameFilesModal";
 import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
-import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
-import { MAX_FILES } from "../../../constants/numbers";
-import { createColumns } from "./helper/Columns";
-import { generateUUID } from "../../../utils/ids/generateUUID";
-import { useAudioContext } from "../../../contexts/AudioContext";
-import { useDirectoryTree } from "../common/hooks/useDirectoryTree";
-import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

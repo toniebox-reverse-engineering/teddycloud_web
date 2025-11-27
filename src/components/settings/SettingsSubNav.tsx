@@ -14,7 +14,6 @@ import {
     MinusOutlined,
     PlusOutlined,
 } from "@ant-design/icons";
-import i18n from "../../i18n";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
@@ -28,7 +27,7 @@ import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SettingsSubNav = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const {
         setNavOpen,
         setSubNavOpen,

@@ -1,4 +1,3 @@
-// useFileBrowserCore.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { Breadcrumb, Empty, InputRef } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";

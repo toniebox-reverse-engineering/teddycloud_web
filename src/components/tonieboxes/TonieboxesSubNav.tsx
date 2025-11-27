@@ -11,15 +11,13 @@ import {
     PlusSquareOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
-import i18n from "../../i18n";
-
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { StyledSubMenu } from "../common/StyledComponents";
 import { TonieboxIcon } from "../common/icons/TonieboxIcon";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const TonieboxesSubNav = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -93,7 +91,6 @@ export const TonieboxesSubNav = () => {
             label: (
                 <Link
                     to="/tonieboxes"
-                    style={{ marginLeft: 8 }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

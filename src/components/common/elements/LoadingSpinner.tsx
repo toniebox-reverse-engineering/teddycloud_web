@@ -23,7 +23,7 @@ export const LoadingSpinnerAsOverlay: React.FC<LoadingSpinnerAsOverlayProps> = (
                 zIndex: 2000,
             }}
         >
-            <Spin style={{ position: "absolute", top: 250 }} size="default" />
+            <Spin style={{ position: "absolute", top: "min(50%, 250px)" }} size="default" />
         </div>
     );
 };

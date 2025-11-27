@@ -1,4 +1,4 @@
-import React, { JSX } from "react";
+import { JSX } from "react";
 import type { TFunction } from "i18next";
 
 export interface FeatureGroup {

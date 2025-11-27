@@ -22,11 +22,10 @@ import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { forumUrl } from "../../constants/urls";
 
 import { StyledSubMenu } from "../common/StyledComponents";
-import i18n from "../../i18n";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const CommunitySubNav = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
     const currentLanguage = i18n.language;
     const [openKeys, setOpenKeys] = useState<string[]>([]);
