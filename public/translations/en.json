@@ -158,14 +158,45 @@
             "visitHomepage": "Visit Plugins Homepage"
         },
         "supportRequestGuide": {
+            "actions": {
+                "label": "Actions Performed"
+            },
+            "actual": {
+                "label": "Actual Outcome"
+            },
+            "additionalInfo": {
+                "label": "Additional Info (Notes, attach screenshot or recording)"
+            },
             "closing": "Providing this level of detail will help the community resolve your issue more effectively. Thank you!",
+            "createSupportRequest": "Create request",
+            "createSupportRequestFormTitle": "Create support request",
+            "description": {
+                "label": "Problem Description"
+            },
+            "docker": {
+                "label": "Docker Version"
+            },
+            "englishHint": "Please write your support request in English to ensure the whole community can help you.",
             "example": {
                 "description": "Below is an example of a well-structured support request to help you get started:",
                 "details": "Subject: Error Uploading File in TeddyCloud (Docker)<br /><br />Description:<br />I encountered an error while trying to upload a file in TeddyCloud.<br /><br />1. Actions performed:<br />   - I logged in successfully.<br />   - I went to the upload page and selected a file (testfile.pdf).<br />   - I clicked the upload button.<br /><br />2. Expected outcome:<br />   - The file should upload successfully and appear in the file list.<br /><br />3. Actual outcome:<br />   - An error message appeared: 'Upload failed: Connection lost.'<br /><br />4. Environment details:<br />   - OS: Ubuntu 20.04<br />   - Docker version: 24.0.2<br />   - TeddyCloud version: 0.6.3<br /><br />5. Logs:<br />   Attached is the log extract (teddycloud_logs.txt) from the time the error occurred.",
                 "title": "Example Support Request"
             },
+            "expected": {
+                "label": "Expected Outcome"
+            },
+            "formattedRequest": "Formatted request",
+            "generate": "Generate",
+            "hintSendingSupportRequest": "Copy the following content to the Telegram group or a new forum thread. Please do not forget to attach the collected logs and, if available, additional screenshots or screen recordings.",
             "intro": "When requesting support, providing detailed and clear information helps the community diagnose and resolve your issue faster. Follow these steps to ensure your support request includes all necessary details:",
+            "logs": {
+                "label": "Relevant Log Excerpt"
+            },
             "navigationTitle": "Support Request Guide",
+            "os": {
+                "label": "Operating System and Version"
+            },
+            "requiredField": "This field is required.",
             "step1": {
                 "content": "Start with a concise summary of the issue. Mention any specific error messages you received (copy and paste the exact message if possible).",
                 "title": "Step 1: Clearly Describe the Problem"
@@ -204,7 +235,17 @@
                 "content": "Let us know if you've already tried troubleshooting steps, such as restarting the service or checking the logs.",
                 "title": "Step 6: Steps You've Taken to Resolve the Issue"
             },
-            "title": "How to Create a Good Support Request"
+            "stepsTaken": {
+                "label": "Steps Already Taken to Resolve the Issue"
+            },
+            "subject": {
+                "label": "Subject",
+                "placeholder": "e.g. 'Error Uploading File in TeddyCloud (Docker)'"
+            },
+            "title": "How to Create a Good Support Request",
+            "version": {
+                "label": "TeddyCloud Version"
+            }
         },
         "title": "Community",
         "translations": {

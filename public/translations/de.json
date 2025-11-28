@@ -158,14 +158,45 @@
             "visitHomepage": "Plugin-Homepage besuchen"
         },
         "supportRequestGuide": {
+            "actions": {
+                "label": "Durchgeführte Schritte"
+            },
+            "actual": {
+                "label": "Tatsächliches Ergebnis"
+            },
+            "additionalInfo": {
+                "label": "Zusätzliche Informationen (Screenshots, Notizen)"
+            },
             "closing": "Diese Detailgenauigkeit wird der Community helfen, dein Problem effektiver zu lösen. Vielen Dank!",
+            "createSupportRequest": "Anfrage erstellen",
+            "createSupportRequestFormTitle": "Support-Anfrage erstellen",
+            "description": {
+                "label": "Problembeschreibung"
+            },
+            "docker": {
+                "label": "Docker-Version"
+            },
+            "englishHint": "Bitte schreibe deine Support-Anfrage auf Englisch, damit dir die gesamte Community helfen kann.",
             "example": {
                 "description": "Nachfolgend ein Beispiel für eine gut strukturierte Support-Anfrage, die dir beim Start helfen soll:",
                 "details": "Subject: Error Uploading File in TeddyCloud (Docker)<br /><br />Description:<br />I encountered an error while trying to upload a file in TeddyCloud.<br /><br />1. Actions performed:<br />   - I logged in successfully.<br />   - I went to the upload page and selected a file (testfile.pdf).<br />   - I clicked the upload button.<br /><br />2. Expected outcome:<br />   - The file should upload successfully and appear in the file list.<br /><br />3. Actual outcome:<br />   - An error message appeared: 'Upload failed: Connection lost.'<br /><br />4. Environment details:<br />   - OS: Ubuntu 20.04<br />   - Docker version: 24.0.2<br />   - TeddyCloud version: 0.6.3<br /><br />5. Logs:<br />   Attached is the log extract (teddycloud_logs.txt) from the time the error occurred.",
                 "title": "Beispiel für eine Support-Anfrage"
             },
-            "intro": "Wenn du Unterstützung anforderst, hilft es der Community, dein Problem schneller zu diagnostizieren und zu lösen, wenn du detaillierte und klare Informationen bereitstellst. Folge diesen Schritten, um sicherzustellen, dass deine Support-Anfrage alle notwendigen Details enthält. Bitte formuliere deine Anfrage auf Englisch, damit möglichst viele Mitglieder der Community dir helfen können.",
+            "expected": {
+                "label": "Erwartetes Ergebnis"
+            },
+            "formattedRequest": "Formatierte Anfrage",
+            "generate": "Generieren",
+            "hintSendingSupportRequest": "Kopiere den folgenden Inhalt in die Telegram-Gruppe oder in einen neuen Foren-Thread. Bitte vergiss nicht, die gesammelten Logs und – falls vorhanden - zusätzliche Screenshots oder Bildschirmaufnahmen anzuhängen.",
+            "intro": "Wenn du Unterstützung anforderst, hilft es der Community, dein Problem schneller zu diagnostizieren und zu lösen, wenn du detaillierte und klare Informationen bereitstellst. Folge diesen Schritten, um sicherzustellen, dass deine Support-Anfrage alle notwendigen Details enthält.",
+            "logs": {
+                "label": "Relevante Log-Auszüge"
+            },
             "navigationTitle": "Support-Anfrage-Leitfaden",
+            "os": {
+                "label": "Betriebssystem und Version"
+            },
+            "requiredField": "Dieses Feld ist erforderlich.",
             "step1": {
                 "content": "Beginne mit einer präzisen Zusammenfassung des Problems. Nenne alle spezifischen Fehlermeldungen, die du erhalten hast (kopiere und füge die genaue Nachricht ein, wenn möglich).",
                 "title": "Schritt 1: Beschreibe das Problem klar"
@@ -204,7 +235,17 @@
                 "content": "Lass uns wissen, ob du bereits Fehlerbehebungsschritte versucht hast, wie das Neustarten des Dienstes oder das Überprüfen der Logs.",
                 "title": "Schritt 6: Schritte, die du unternommen hast, um das Problem zu lösen"
             },
-            "title": "Wie man eine gute Support-Anfrage stellt"
+            "stepsTaken": {
+                "label": "Bereits unternommene Schritte"
+            },
+            "subject": {
+                "label": "Betreff",
+                "placeholder": "z. B. 'Fehler beim Hochladen einer Datei in TeddyCloud (Docker)'"
+            },
+            "title": "Wie man eine gute Support-Anfrage stellt",
+            "version": {
+                "label": "TeddyCloud-Version"
+            }
         },
         "title": "Community",
         "translations": {

@@ -158,14 +158,45 @@
             "visitHomepage": "Visiter la page du plugin"
         },
         "supportRequestGuide": {
+            "actions": {
+                "label": "Actions effectuées"
+            },
+            "actual": {
+                "label": "Résultat réel"
+            },
+            "additionalInfo": {
+                "label": "Informations supplémentaires (captures, notes)"
+            },
             "closing": "Fournir ce niveau de détail aidera la communauté à résoudre ton problème de manière plus efficace. Merci !",
+            "createSupportRequest": "Créer une demande",
+            "createSupportRequestFormTitle": "Créer une demande de support",
+            "description": {
+                "label": "Description du problème"
+            },
+            "docker": {
+                "label": "Version de Docker"
+            },
+            "englishHint": "Merci de rédiger ta demande de support en anglais afin que toute la communauté puisse t'aider.",
             "example": {
                 "description": "Voici un exemple de demande de support bien structurée pour t'aider à démarrer :",
                 "details": "Subject: Error Uploading File in TeddyCloud (Docker)<br /><br />Description:<br />I encountered an error while trying to upload a file in TeddyCloud.<br /><br />1. Actions performed:<br />   - I logged in successfully.<br />   - I went to the upload page and selected a file (testfile.pdf).<br />   - I clicked the upload button.<br /><br />2. Expected outcome:<br />   - The file should upload successfully and appear in the file list.<br /><br />3. Actual outcome:<br />   - An error message appeared: 'Upload failed: Connection lost.'<br /><br />4. Environment details:<br />   - OS: Ubuntu 20.04<br />   - Docker version: 24.0.2<br />   - TeddyCloud version: 0.6.3<br /><br />5. Logs:<br />   Attached is the log extract (teddycloud_logs.txt) from the time the error occurred.",
                 "title": "Exemple de Demande de Support"
             },
-            "intro": "Lorsque tu demandes du support, fournir des informations détaillées et claires aide la communauté à diagnostiquer et résoudre ton problème plus rapidement. Suis ces étapes pour t'assurer que ta demande de support contient tous les détails nécessaires. Merci de formuler ta demande en anglais afin que le plus grand nombre possible de membres de la communauté puissent t'aider.",
+            "expected": {
+                "label": "Résultat attendu"
+            },
+            "formattedRequest": "Demande formatée",
+            "generate": "Générer",
+            "hintSendingSupportRequest": "Copie le contenu suivant dans le groupe Telegram ou dans un nouveau fil de discussion du forum. N'oublie pas de joindre les journaux collectés et, si possible, des captures d'écran ou enregistrementes vidéo.",
+            "intro": "Lorsque tu demandes du support, fournir des informations détaillées et claires aide la communauté à diagnostiquer et résoudre ton problème plus rapidement. Suis ces étapes pour t'assurer que ta demande de support contient tous les détails nécessaires.",
+            "logs": {
+                "label": "Extraits de logs pertinents"
+            },
             "navigationTitle": "Guide de Demande de Support",
+            "os": {
+                "label": "Système d'exploitation et version"
+            },
+            "requiredField": "Ce champ est obligatoire.",
             "step1": {
                 "content": "Commence par un résumé concis du problème. Mentionne tous les messages d'erreur spécifiques que tu as reçus (copie et colle le message exact si possible).",
                 "title": "Étape 1 : Décrire Clairment le Problème"
@@ -204,7 +235,17 @@
                 "content": "Fais-nous savoir si tu as déjà essayé des étapes de dépannage, telles que redémarrer le service ou vérifier les journaux.",
                 "title": "Étape 6 : Les Étapes que Tu As Entreprises pour Résoudre le Problème"
             },
-            "title": "Comment Créer une Bonne Demande de Support"
+            "stepsTaken": {
+                "label": "Étapes déjà effectuées"
+            },
+            "subject": {
+                "label": "Sujet",
+                "placeholder": "p. ex. 'Erreur lors du téléversement d'un fichier dans TeddyCloud (Docker)'"
+            },
+            "title": "Comment Créer une Bonne Demande de Support",
+            "version": {
+                "label": "Version de TeddyCloud"
+            }
         },
         "title": "Communauté",
         "translations": {
@@ -565,8 +606,8 @@
                 "13TeddyStudio": {
                     "items": {
                         "01Description": "Créez et imprimez vos propres étiquettes pour vos tags personnalisés.",
-                        "02Options": "Personnalisez le format, la taille, les espacements et de nombreuses autres options d’étiquetage.",
-                        "03Paperpresets": "Utilisez les presets de papier d’étiquettes existants ou partagez-en de nouveaux sur le forum ou sur Telegram."
+                        "02Options": "Personnalisez le format, la taille, les espacements et de nombreuses autres options d'étiquetage.",
+                        "03Paperpresets": "Utilisez les presets de papier d'étiquettes existants ou partagez-en de nouveaux sur le forum ou sur Telegram."
                     },
                     "title": "TeddyStudio"
                 },

@@ -158,14 +158,45 @@
             "visitHomepage": "Visitar la página del plugin"
         },
         "supportRequestGuide": {
+            "actions": {
+                "label": "Acciones realizadas"
+            },
+            "actual": {
+                "label": "Resultado real"
+            },
+            "additionalInfo": {
+                "label": "Información adicional (capturas, notas)"
+            },
             "closing": "Proporcionar este nivel de detalle ayudará a la comunidad a resolver tu problema de manera más efectiva. ¡Gracias!",
+            "createSupportRequest": "Crear solicitud",
+            "createSupportRequestFormTitle": "Crear solicitud de soporte",
+            "description": {
+                "label": "Descripción del problema"
+            },
+            "docker": {
+                "label": "Versión de Docker"
+            },
+            "englishHint": "Por favor escribe tu solicitud de soporte en inglés para que toda la comunidad pueda ayudarte.",
             "example": {
                 "description": "A continuación, se muestra un ejemplo de una solicitud de soporte bien estructurada para ayudarte a comenzar:",
                 "details": "Subject: Error Uploading File in TeddyCloud (Docker)<br /><br />Description:<br />I encountered an error while trying to upload a file in TeddyCloud.<br /><br />1. Actions performed:<br />   - I logged in successfully.<br />   - I went to the upload page and selected a file (testfile.pdf).<br />   - I clicked the upload button.<br /><br />2. Expected outcome:<br />   - The file should upload successfully and appear in the file list.<br /><br />3. Actual outcome:<br />   - An error message appeared: 'Upload failed: Connection lost.'<br /><br />4. Environment details:<br />   - OS: Ubuntu 20.04<br />   - Docker version: 24.0.2<br />   - TeddyCloud version: 0.6.3<br /><br />5. Logs:<br />   Attached is the log extract (teddycloud_logs.txt) from the time the error occurred.",
                 "title": "Ejemplo de Solicitud de Soporte"
             },
-            "intro": "Cuando solicitas soporte, proporcionar información detallada y clara ayuda a la comunidad a diagnosticar y resolver tu problema más rápidamente. Sigue estos pasos para asegurarte de que tu solicitud de soporte incluya todos los detalles necesarios. Por favor, formula tu solicitud en inglés para que la mayor cantidad de miembros de la comunidad puedan ayudarte.",
+            "expected": {
+                "label": "Resultado esperado"
+            },
+            "formattedRequest": "Solicitud formateada",
+            "generate": "Generar",
+            "hintSendingSupportRequest": "Copia el siguiente contenido en el grupo de Telegram o en un nuevo hilo del foro. Por favor, no olvides adjuntar los registros recopilados y, si los tienes, capturas adicionales o grabaciónes de pantalla.",
+            "intro": "Cuando solicitas soporte, proporcionar información detallada y clara ayuda a la comunidad a diagnosticar y resolver tu problema más rápidamente. Sigue estos pasos para asegurarte de que tu solicitud de soporte incluya todos los detalles necesarios.",
+            "logs": {
+                "label": "Registro relevante"
+            },
             "navigationTitle": "Guía de Solicitudes de Soporte",
+            "os": {
+                "label": "Sistema operativo y versión"
+            },
+            "requiredField": "Este campo es obligatorio.",
             "step1": {
                 "content": "Comienza con un resumen conciso del problema. Menciona cualquier mensaje de error específico que hayas recibido (copia y pega el mensaje exacto si es posible).",
                 "title": "Paso 1: Describe Claramente el Problema"
@@ -204,7 +235,17 @@
                 "content": "Avísanos si ya has intentado pasos de solución de problemas, como reiniciar el servicio o revisar los registros.",
                 "title": "Paso 6: Pasos que Has Tomado para Resolver el Problema"
             },
-            "title": "Cómo Crear una Buena Solicitud de Soporte"
+            "stepsTaken": {
+                "label": "Pasos tomados para resolver el problema"
+            },
+            "subject": {
+                "label": "Asunto",
+                "placeholder": "p. ej. 'Error al subir un archivo en TeddyCloud (Docker)'"
+            },
+            "title": "Cómo Crear una Buena Solicitud de Soporte",
+            "version": {
+                "label": "Versión de TeddyCloud"
+            }
         },
         "title": "Comunidad",
         "translations": {
