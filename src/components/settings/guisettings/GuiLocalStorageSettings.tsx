@@ -26,6 +26,20 @@ export const GuiLocalStorageSettings = () => {
         return false;
     };
 
+    const items = settingKeys.map((key) => {
+        const value = localSettings[key];
+
+        return {
+            key,
+            label: <Text strong>{key}</Text>,
+            children: (
+                <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                    {typeof value === "object" ? JSON.stringify(value, null, 2) : String(value)}
+                </pre>
+            ),
+        };
+    });
+
     return (
         <>
             <Title level={2}>{t("settings.guiSettings.title")}</Title>
@@ -46,19 +60,7 @@ export const GuiLocalStorageSettings = () => {
             {settingKeys.length === 0 ? (
                 <Alert type="info" title={t("settings.guiSettings.noLocalSettings")} />
             ) : (
-                <Collapse accordion>
-                    {settingKeys.map((key) => {
-                        const value = localSettings[key];
-
-                        return (
-                            <Panel header={<Text strong>{key}</Text>} key={key}>
-                                <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                                    {typeof value === "object" ? JSON.stringify(value, null, 2) : String(value)}
-                                </pre>
-                            </Panel>
-                        );
-                    })}
-                </Collapse>
+                <Collapse accordion items={items} />
             )}
         </>
     );

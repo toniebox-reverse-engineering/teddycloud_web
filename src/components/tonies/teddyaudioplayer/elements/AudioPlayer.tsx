@@ -73,7 +73,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ tonieCard, playPosition, onPl
     };
 
     useEffect(() => {
-        console.log(tonieCard?.ruid);
         const audio = audioRef.current;
         if (!audio || !validateSource(url) || !tonieCard) return;
 

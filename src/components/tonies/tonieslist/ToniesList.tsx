@@ -1,4 +1,4 @@
-import { Button, Dropdown, Empty, Flex, Grid, Tooltip } from "antd";
+import { Button, Dropdown, Empty, Flex, Grid, Space, Tooltip } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -19,6 +19,7 @@ import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } fro
 import { ToniesFilterPanel } from "./filterpanel/ToniesFilterPanel";
 import ToniesPagination from "./pagination/ToniesPagination";
 import { showHideTonieConfirm } from "./modals/ToniesHideConfirmModal";
+import { EllipsisOutlined } from "@ant-design/icons";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -533,36 +534,68 @@ export const ToniesList: React.FC<{
                             flexWrap: "wrap",
                         }}
                     >
-                        <Dropdown.Button
-                            size="small"
-                            style={{ width: "unset" }}
-                            menu={{ items: selectionMenu }}
-                            onClick={() => setSelectedTonies(getBaseList().map((c) => c.ruid))}
-                        >
-                            {t("tonies.selectMode.selectAll")}
-                        </Dropdown.Button>
-                        <Dropdown.Button
-                            size="small"
-                            style={{ width: "unset" }}
-                            menu={{ items: actionMenu }}
-                            onClick={() =>
-                                setNoCloud(tonieCards, selectedTonies, t, overlay, addNotification, true, handleUpdate)
-                            }
-                            disabled={selectedTonies.length === 0}
-                        >
-                            {t("tonies.selectMode.setNoCloud")}
-                        </Dropdown.Button>
-                        <Dropdown.Button
-                            size="small"
-                            style={{ width: "unset" }}
-                            menu={{ items: exportMenu }}
-                            onClick={() => exportToCSV(tonieCards, selectedTonies, t)}
-                            disabled={selectedTonies.length === 0}
-                        >
-                            <Tooltip title={t("tonies.selectMode.exportCsvTooltip")}>
+                        <Space.Compact>
+                            <Button
+                                size="small"
+                                style={{ width: "unset" }}
+                                onClick={() => setSelectedTonies(getBaseList().map((c) => c.ruid))}
+                            >
+                                {t("tonies.selectMode.selectAll")}
+                            </Button>
+                            <Dropdown menu={{ items: selectionMenu }} placement="bottomRight">
+                                <Button size="small" style={{ width: "unset" }}>
+                                    <EllipsisOutlined />
+                                </Button>
+                            </Dropdown>
+                        </Space.Compact>
+                        <Space.Compact>
+                            <Button
+                                size="small"
+                                style={{ width: "unset" }}
+                                onClick={() =>
+                                    setNoCloud(
+                                        tonieCards,
+                                        selectedTonies,
+                                        t,
+                                        overlay,
+                                        addNotification,
+                                        true,
+                                        handleUpdate
+                                    )
+                                }
+                                disabled={selectedTonies.length === 0}
+                            >
+                                {t("tonies.selectMode.setNoCloud")}
+                            </Button>{" "}
+                            <Dropdown
+                                menu={{ items: actionMenu }}
+                                disabled={selectedTonies.length === 0}
+                                placement="bottomRight"
+                            >
+                                <Button size="small" style={{ width: "unset" }} disabled={selectedTonies.length === 0}>
+                                    <EllipsisOutlined />
+                                </Button>
+                            </Dropdown>
+                        </Space.Compact>
+                        <Space.Compact>
+                            <Button
+                                size="small"
+                                style={{ width: "unset" }}
+                                onClick={() => exportToCSV(tonieCards, selectedTonies, t)}
+                                disabled={selectedTonies.length === 0}
+                            >
                                 {t("tonies.selectMode.exportCsv")}
-                            </Tooltip>
-                        </Dropdown.Button>
+                            </Button>
+                            <Dropdown
+                                menu={{ items: exportMenu }}
+                                disabled={selectedTonies.length === 0}
+                                placement="bottomRight"
+                            >
+                                <Button size="small" style={{ width: "unset" }} disabled={selectedTonies.length === 0}>
+                                    <EllipsisOutlined />
+                                </Button>
+                            </Dropdown>
+                        </Space.Compact>
                     </div>
                 )}
             </div>
