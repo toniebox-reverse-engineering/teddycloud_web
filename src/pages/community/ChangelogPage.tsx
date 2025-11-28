@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
@@ -16,6 +16,13 @@ export const ChangelogPage = () => {
 
     const [markdown] = useState<string>(changelogRaw);
     const loading = false;
+
+    const changelogMarkdown = useMemo(() => {
+        if (!markdown) return "";
+
+        const lines = markdown.split("\n");
+        return lines.slice(1, lines.length).join("\n");
+    }, [markdown]);
 
     return (
         <>
@@ -45,7 +52,7 @@ export const ChangelogPage = () => {
                                     ),
                                 }}
                             >
-                                {markdown}
+                                {changelogMarkdown}
                             </ReactMarkdown>
                         </Paragraph>
                     )}
