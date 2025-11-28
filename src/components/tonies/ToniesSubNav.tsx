@@ -15,8 +15,8 @@ import {
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { StyledSubMenu } from "../StyledComponents";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { StyledSubMenu } from "../common/StyledComponents";
 import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
@@ -82,11 +82,11 @@ export const ToniesSubNav = () => {
                         setSubNavOpen(false);
                     }}
                 >
-                    {t("tonies.toniesaudioplayer.navigationTitle")}
+                    {t("tonies.teddyaudioplayer.navigationTitle")}
                 </Link>
             ),
             icon: React.createElement(PlayCircleOutlined),
-            title: t("tonies.toniesaudioplayer.navigationTitle"),
+            title: t("tonies.teddyaudioplayer.navigationTitle"),
         },
         {
             key: "encoder",

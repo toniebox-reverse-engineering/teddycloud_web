@@ -1,74 +1,36 @@
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Select } from "antd";
-
 import { TonieCardProps } from "../../types/tonieTypes";
 
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
-
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
-import { ToniesList } from "../../components/tonies/ToniesList";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import { ToniesList } from "../../components/tonies/tonieslist/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import LoadingSpinner from "../../components/utils/LoadingSpinner";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
-import { useTonieboxContent } from "../../components/utils/OverlayContentDirectories";
+import LoadingSpinner from "../../components/common/elements/LoadingSpinner";
 
-const api = new TeddyCloudApi(defaultAPIConfig());
-
-const { Option } = Select;
+import { TonieboxOverlaySelect } from "../../components/tonies/common/elements/TonieboxOverlaySelect";
+import { useTonieboxContentOverlay } from "../../hooks/useTonieboxContentOverlay";
+import { useTonies } from "../../hooks/useTonies";
 
 export const SystemSoundsPage = () => {
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
+    const { overlay, tonieBoxContentDirs, changeOverlay } = useTonieboxContentOverlay();
 
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const linkOverlay = searchParams.get("overlay");
-    const { tonieBoxContentDirs, overlay, handleContentOverlayChange } = useTonieboxContent(linkOverlay);
+    const sortTonies = (a: TonieCardProps, b: TonieCardProps) => {
+        if (a.tonieInfo.series < b.tonieInfo.series) return -1;
+        if (a.tonieInfo.series > b.tonieInfo.series) return 1;
 
-    const [tonies, setTonies] = useState<TonieCardProps[]>([]);
-    const [loading, setLoading] = useState(true);
+        if (a.tonieInfo.episode < b.tonieInfo.episode) return -1;
+        if (a.tonieInfo.episode > b.tonieInfo.episode) return 1;
 
-    useEffect(() => {
-        const fetchTonies = async () => {
-            setLoading(true);
-            try {
-                // Perform API call to fetch Tonie data
-                const tonieData = await api.apiGetTagIndex(overlay ? overlay : "");
-                setTonies(
-                    tonieData.sort((a, b) => {
-                        if (a.tonieInfo.series < b.tonieInfo.series) {
-                            return -1;
-                        }
-                        if (a.tonieInfo.series > b.tonieInfo.series) {
-                            return 1;
-                        }
-                        if (a.tonieInfo.episode < b.tonieInfo.episode) {
-                            return -1;
-                        }
-                        if (a.tonieInfo.episode > b.tonieInfo.episode) {
-                            return 1;
-                        }
-                        return 0;
-                    })
-                );
-            } catch (error) {
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("tonies.errorFetchingSystemSounds"),
-                    t("tonies.errorFetchingSystemSounds") + ": " + error,
-                    t("tonies.navigationTitle")
-                );
-            } finally {
-                setLoading(false);
-            }
-        };
+        return 0;
+    };
 
-        fetchTonies();
-    }, [overlay]);
+    const { tonies, loading } = useTonies({
+        overlay: overlay ?? "",
+        merged: false,
+        sort: sortTonies,
+        filter: "system",
+    });
 
     return (
         <>
@@ -97,24 +59,12 @@ export const SystemSoundsPage = () => {
                         }}
                     >
                         <h1>{t("tonies.system-sounds.title")}</h1>
-                        {tonieBoxContentDirs.length > 1 ? (
-                            <Select
-                                id="contentDirectorySelect"
-                                defaultValue=""
-                                onChange={handleContentOverlayChange}
-                                style={{ maxWidth: "300px" }}
-                                value={overlay}
-                                title={t("tonies.content.showToniesOfBoxes")}
-                            >
-                                {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
-                                    <Option key={boxId} value={boxId}>
-                                        {boxNames.join(", ")}
-                                    </Option>
-                                ))}
-                            </Select>
-                        ) : (
-                            ""
-                        )}
+                        <TonieboxOverlaySelect
+                            tonieBoxContentDirs={tonieBoxContentDirs}
+                            overlay={overlay}
+                            onChange={changeOverlay}
+                            selectProps={{ size: "small", style: { maxWidth: 300 } }}
+                        />
                     </div>
                     {loading ? (
                         <LoadingSpinner />
@@ -122,7 +72,7 @@ export const SystemSoundsPage = () => {
                         <ToniesList
                             showFilter={false}
                             showPagination={true}
-                            tonieCards={tonies.filter((tonie) => tonie.type === "system")}
+                            tonieCards={tonies}
                             overlay={overlay}
                             readOnly={false}
                             noLastRuid={true}

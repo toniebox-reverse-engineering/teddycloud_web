@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/utils/FileBrowser";
+import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
 import { Link } from "react-router-dom";
 
 export const LibraryPage = () => {

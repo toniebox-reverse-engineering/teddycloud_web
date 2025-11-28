@@ -2,9 +2,9 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Typography } from "antd";
 
-import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants";
+import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants/urls";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 
 const { Paragraph } = Typography;

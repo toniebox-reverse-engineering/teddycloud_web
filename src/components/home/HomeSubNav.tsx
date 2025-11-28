@@ -3,15 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
 import { ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
-import i18n from "../../i18n";
 
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { StyledSubMenu } from "../StyledComponents";
-import { gitHubSponsoringUrl } from "../../constants";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { StyledSubMenu } from "../common/StyledComponents";
+import { gitHubSponsoringUrl } from "../../constants/urls";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const HomeSubNav = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const currentLanguage = i18n.language;
 

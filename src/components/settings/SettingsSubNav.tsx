@@ -14,21 +14,20 @@ import {
     MinusOutlined,
     PlusOutlined,
 } from "@ant-design/icons";
-import i18n from "../../i18n";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import { StyledSubMenu } from "../StyledComponents";
-import { restartServer } from "../../utils/restartServer";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { StyledSubMenu } from "../common/StyledComponents";
+import { restartServer } from "../../utils/system/restartTeddyCloud";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SettingsSubNav = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const {
         setNavOpen,
         setSubNavOpen,
@@ -72,7 +71,7 @@ export const SettingsSubNav = () => {
     };
 
     const handleRestartServer = async () => {
-        await restartServer(true, addNotification, addLoadingNotification, closeLoadingNotification);
+        await restartServer(t, true, addNotification, addLoadingNotification, closeLoadingNotification);
     };
 
     const handleReloadToniesJson = async () => {

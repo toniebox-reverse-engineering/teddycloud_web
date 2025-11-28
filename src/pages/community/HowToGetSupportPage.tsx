@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import CodeSnippet from "../../components/utils/CodeSnippet";
-import { Divider, theme, Typography } from "antd";
+import CodeSnippet from "../../components/common/elements/CodeSnippet";
+import { Alert, Divider, theme, Typography } from "antd";
 import { Link } from "react-router-dom";
+import { SupportRequestGenerator } from "../../components/community/supportrequest/SupportRequestGenerator";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -29,6 +30,12 @@ export const HowToGetSupportPage = () => {
                 <StyledContent>
                     <h1>{t("community.supportRequestGuide.title")}</h1>
                     <Paragraph>{t("community.supportRequestGuide.intro")}</Paragraph>
+                    <Paragraph>
+                        <Alert type="info" description={t("community.supportRequestGuide.englishHint")} />
+                    </Paragraph>
+                    <Paragraph>
+                        <SupportRequestGenerator />
+                    </Paragraph>
                     <Divider />
                     <h2>{t("community.supportRequestGuide.step1.title")}</h2>
                     <Paragraph>{t("community.supportRequestGuide.step1.content")}</Paragraph>
@@ -92,6 +99,9 @@ export const HowToGetSupportPage = () => {
                         />
                     </blockquote>
                     <Divider />
+                    <Paragraph>
+                        <SupportRequestGenerator />
+                    </Paragraph>
                     <Paragraph>{t("community.supportRequestGuide.closing")}</Paragraph>
                 </StyledContent>
             </StyledLayout>

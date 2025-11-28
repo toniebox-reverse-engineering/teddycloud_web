@@ -1,3 +1,5 @@
+// to be refactored
+
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, Form, Input, Button, Col, Row, Tooltip, Alert } from "antd";
@@ -7,8 +9,8 @@ import { TonieCardProps } from "../../types/tonieTypes";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import CodeSnippet from "../utils/CodeSnippet";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import CodeSnippet from "../common/elements/CodeSnippet";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -191,7 +193,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 <Alert
                     type="info"
                     showIcon={true}
-                    message="Work in progress - be aware!"
+                    title="Work in progress - be aware!"
                     description="Currently, only the generated json fragment is displayed when saving the new model. This is not automatically inserted into the tonies.custom.json. You have to copy this into the file yourself."
                     style={{ marginBottom: 8 }}
                 />

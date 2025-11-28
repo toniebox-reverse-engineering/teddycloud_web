@@ -6,6 +6,13 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+body.theme-switching *,
+body.theme-switching *::before,
+body.theme-switching *::after {
+    transition: none !important;
+    animation: none !important;
+}
+
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
@@ -153,30 +160,10 @@ code {
     display: none;
 }
 
-/* workaround to set same card height within a row,
- * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
- * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */
-.ant-list .ant-row > div,
-.ant-list .ant-row > div,
-.ant-list .ant-row .ant-col:first-child {
-    display: flex;
-}
-
-.ant-list .ant-row .ant-list-item {
-    flex: 1 1 auto;
-}
-
-.ant-list .ant-row .ant-list-item .ant-card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
 .ant-card-cover {
     height: 100%;
     align-content: center;
 }
-/* end of workaround */
 
 .pseudo-fullscreen {
     position: fixed;
@@ -185,4 +172,47 @@ code {
     width: 100vw;
     height: 100vh;
     z-index: 9999;
+}
+
+.encoder-save-compact {
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .encoder-save-compact {
+        flex-wrap: wrap;
+    }
+
+    .encoder-save-label {
+        flex: 0 0 100%;
+        max-width: 100% !important;
+
+        border-top-left-radius: 8px !important;
+        border-top-right-radius: 8px !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+
+    .encoder-save-dir {
+        flex: 1 1 calc(100% - 48px);
+        min-width: 0;
+
+        border-radius: 0 !important;
+    }
+
+    .encoder-save-btn {
+        flex: 0 0 48px;
+
+        border-radius: 0 !important;
+    }
+
+    .encoder-save-name {
+        flex: 0 0 100%;
+        max-width: 100% !important;
+
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-left-radius: 8px !important;
+        border-bottom-right-radius: 8px !important;
+    }
 }

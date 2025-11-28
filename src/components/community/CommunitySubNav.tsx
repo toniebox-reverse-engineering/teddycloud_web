@@ -14,17 +14,18 @@ import {
     MinusOutlined,
     PlusOutlined,
     AppstoreOutlined,
+    QuestionOutlined,
+    CrownOutlined,
 } from "@ant-design/icons";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 
-import { forumUrl } from "../../constants";
+import { forumUrl } from "../../constants/urls";
 
-import { StyledSubMenu } from "../StyledComponents";
-import i18n from "../../i18n";
+import { StyledSubMenu } from "../common/StyledComponents";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const CommunitySubNav = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
     const currentLanguage = i18n.language;
     const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -153,8 +154,24 @@ export const CommunitySubNav = () => {
                     {t("community.supportRequestGuide.navigationTitle")}
                 </Link>
             ),
-            icon: React.createElement(QuestionCircleOutlined),
+            icon: React.createElement(QuestionOutlined),
             title: t("community.supportRequestGuide.navigationTitle"),
+        },
+        {
+            key: "faq",
+            label: (
+                <Link
+                    to="/community/faq"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("community.faq.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(QuestionCircleOutlined),
+            title: t("community.faq.navigationTitle"),
         },
         {
             key: "contribution",
@@ -222,6 +239,22 @@ export const CommunitySubNav = () => {
             ),
             icon: React.createElement(FireOutlined),
             title: t("community.contributors.navigationTitle"),
+        },
+        {
+            key: "attributions",
+            label: (
+                <Link
+                    to="/community/attribution"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("community.attribution.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(CrownOutlined),
+            title: t("community.attribution.navigationTitle"),
         },
         {
             key: "changelog",

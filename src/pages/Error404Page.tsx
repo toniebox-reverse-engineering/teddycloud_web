@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
 
-import { StyledContent } from "../components/StyledComponents";
-import { TonieMeetingElement } from "../components/TonieMeeting";
+import { StyledContent } from "../components/common/StyledComponents";
+import { TonieMeetingElement } from "../components/common/elements/TonieMeeting";
 
 const { Paragraph } = Typography;
 
@@ -19,7 +19,7 @@ export const Error404Page = () => {
                         showQuestionMark={true}
                         title={t("404.title")}
                         description={t("404.description")}
-                    ></TonieMeetingElement>
+                    />
                 </Paragraph>
             </StyledContent>
         </div>

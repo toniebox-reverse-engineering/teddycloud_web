@@ -35,8 +35,17 @@
 .matrix-theme .ant-btn-variant-outlined:disabled,
 .matrix-theme .ant-btn-variant-solid:disabled,
 .matrix-theme .ant-input-group-addon .anticon.disabled,
-.matrix-theme .ant-pagination-item-link:disabled {
+.matrix-theme .ant-pagination-item-link:disabled,
+.matrix-theme .ant-breadcrumb a {
     color: var(--matrix-green-dimmest) !important;
+}
+
+.matrix-theme .ant-breadcrumb a:hover {
+    color: var(--matrix-green) !important;
+}
+
+.matrix-theme .ant-breadcrumb a {
+    height: 16px !important;
 }
 
 .matrix-theme .ant-card-meta-description,

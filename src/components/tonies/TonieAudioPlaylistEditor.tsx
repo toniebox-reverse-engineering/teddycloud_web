@@ -1,3 +1,5 @@
+// to be refactored
+
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip, Divider } from "antd";
@@ -9,9 +11,9 @@ import {
     PlusOutlined,
 } from "@ant-design/icons";
 
-import CodeSnippet from "../utils/CodeSnippet";
-import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
-import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import CodeSnippet from "../common/elements/CodeSnippet";
+import { SelectFileFileBrowser } from "./filebrowser/SelectFileFileBrowser";
+import { ffmpegSupportedExtensions } from "../../utils/files/ffmpegSupportedExtensions";
 
 export interface FileItem {
     filepath: string;
@@ -34,8 +36,6 @@ export interface TonieAudioPlaylistEditorProps {
 }
 
 const { useToken } = theme;
-
-const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     open,
@@ -213,7 +213,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                 <Alert
                     type="info"
                     showIcon={true}
-                    message="Work in progress - be aware!"
+                    title="Work in progress - be aware!"
                     description="Currently, only the generated json is displayed when saving the new tap. This is not automatically saved to your library. You have to create a *.tap file manually and copy this into the file yourself."
                     style={{ marginBottom: 8 }}
                 />
@@ -320,7 +320,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                                         />,
                                                         <Divider
                                                             key="divider-source"
-                                                            type="vertical"
+                                                            orientation="vertical"
                                                             style={{ height: 16 }}
                                                         />,
                                                     ]}
@@ -369,7 +369,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         maxSelectedRows={99}
                         special="library"
                         trackUrl={false}
-                        filetypeFilter={supportedAudioExtensionsForEncoding}
+                        filetypeFilter={ffmpegSupportedExtensions}
                         key={filebrowserKey}
                         onFileSelectChange={handleFileSelectChange}
                     />

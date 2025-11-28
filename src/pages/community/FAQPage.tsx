@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { Typography } from "antd";
+import { Divider, Typography } from "antd";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { Link } from "react-router-dom";
 
@@ -25,16 +25,16 @@ export const FAQPage = () => {
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`community.faq.title`)}</h1>
-                    <Paragraph>{t(`community.faq.intro`)}</Paragraph>
-                    <Paragraph>
-                        {faqs.map((faq, i) => (
-                            <div key={i} style={{ marginBottom: "20px" }}>
-                                <h3>{faq.question}</h3>
-                                <p>{faq.answer}</p>
-                            </div>
-                        ))}
-                    </Paragraph>
+                    <h1>{t("community.faq.title")}</h1>
+                    <Paragraph>{t("community.faq.intro")}</Paragraph>
+
+                    {faqs.map((faq, i) => (
+                        <section key={i} style={{ marginBottom: 20 }}>
+                            <h3>{faq.question}</h3>
+                            <p>{faq.answer}</p>
+                            <Divider style={{ margin: "8px 0" }} />
+                        </section>
+                    ))}
                 </StyledContent>
             </StyledLayout>
         </>
