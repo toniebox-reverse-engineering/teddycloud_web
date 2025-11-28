@@ -46,6 +46,7 @@
 -   gui: Added browser side audio encoding
 -   gui: Check chip type and flash size in ESP32 Flashing, abort process if values not meet the expectations. [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/253](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/253)
 -   gui: Added Attribution page
+-   gui: Added Support request form
 -   gui maintenance: Massive refactoring of nearly everything
 -   gui maintenance: Updated antD to version 6
 -   gui maintenance: Removed deprecations
