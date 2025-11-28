@@ -583,6 +583,7 @@ export const TonieboxCard: React.FC<{
                 }
             >
                 <Meta
+                    styles={{ description: { overflowY: "clip", textWrap: "nowrap", textOverflow: "ellipsis" } }}
                     description={[
                         readOnly ? (
                             tonieboxStatus ? (
