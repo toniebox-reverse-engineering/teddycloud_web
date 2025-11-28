@@ -404,7 +404,7 @@ export const TonieCard: React.FC<{
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
         if (files && files.length === 1) {
-            const prefix = special === "library" ? "lib:/" : "content:/";
+            const prefix = special === "library" ? "lib://" : "content://";
             const filePath = prefix + path + "/" + files[0].name;
             setTempSelectedSource(filePath);
         } else {
