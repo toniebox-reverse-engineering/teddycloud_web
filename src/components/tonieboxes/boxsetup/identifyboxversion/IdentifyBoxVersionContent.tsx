@@ -83,11 +83,9 @@ export const IdentifyBoxVersionContent: React.FC = () => {
                 {!vendor ? (
                     <>
                         {t("tonieboxes.boxSetup.identifyVersion.generalInstruction1")}{" "}
-                        <Tooltip title={t("tonieboxes.boxSetup.openBoxGuide.linkTooltip")}>
-                            <Link to="/tonieboxes/boxsetup/openboxguide">
-                                {t("tonieboxes.boxSetup.identifyVersion.generalInstructionLinkText")}
-                            </Link>
-                        </Tooltip>{" "}
+                        <Link to="/tonieboxes/boxsetup/openboxguide">
+                            {t("tonieboxes.boxSetup.identifyVersion.generalInstructionLinkText")}
+                        </Link>{" "}
                         {t("tonieboxes.boxSetup.identifyVersion.generalInstruction2")}
                     </>
                 ) : null}

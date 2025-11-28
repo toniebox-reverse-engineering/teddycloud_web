@@ -144,7 +144,7 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                             <div />
                             <div />
                             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                                <Button icon={<RightOutlined />} iconPosition="end" onClick={next}>
+                                <Button icon={<RightOutlined />} iconPlacement="end" onClick={next}>
                                     {t("tonieboxes.cc3200BoxFlashing.proceedWithCustomBootloader")}
                                 </Button>
                             </div>
@@ -203,7 +203,7 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                                 <AltUrlCustomPatchButton hostname={hostname} disabled={isHostnameInvalid} />
                             </div>
                             <div>
-                                <Button icon={<RightOutlined />} iconPosition="end" onClick={next}>
+                                <Button icon={<RightOutlined />} iconPlacement="end" onClick={next}>
                                     {t("tonieboxes.cc3200BoxFlashing.next")}
                                 </Button>
                             </div>

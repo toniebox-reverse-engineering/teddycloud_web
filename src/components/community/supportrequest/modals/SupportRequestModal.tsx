@@ -19,25 +19,22 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
     const { version } = useTeddyCloudVersion();
     const [form] = Form.useForm<SupportRequestFormValues>();
 
-    const teddyCloudVersionDisplay = useMemo(() => {
-        if (!version) return "";
-        return version;
-    }, [version]);
+    const teddyCloudVersionDisplay = useMemo(() => version ?? "", [version]);
 
     useEffect(() => {
+        if (!open) return;
         form.setFieldsValue({
             teddycloudVersion: teddyCloudVersionDisplay,
         });
-    }, [form, teddyCloudVersionDisplay]);
+    }, [form, teddyCloudVersionDisplay, open]);
 
-    const handleOk = async () => {
-        try {
-            const values = await form.validateFields();
-            onSubmit(values);
-            form.resetFields();
-        } catch {
-            // AntD will show validation errors
-        }
+    const handleOk = () => {
+        form.submit();
+    };
+
+    const handleFinish = (values: SupportRequestFormValues) => {
+        onSubmit(values);
+        form.resetFields();
     };
 
     const formItemRequiredRule = [{ required: true, message: t("community.supportRequestGuide.requiredField") }];
@@ -60,7 +57,7 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                 <Alert type="info" description={t("community.supportRequestGuide.englishHint")} />
             </Paragraph>
 
-            <Form<SupportRequestFormValues> form={form} layout="vertical">
+            <Form<SupportRequestFormValues> form={form} layout="vertical" onFinish={handleFinish}>
                 <Form.Item
                     name="subject"
                     label={t("community.supportRequestGuide.subject.label")}
@@ -110,14 +107,14 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                 </Form.Item>
 
                 <Form.Item name="teddycloudVersion" label={t("community.supportRequestGuide.version.label")}>
-                    <Input value={teddyCloudVersionDisplay} />
+                    <Input />
                 </Form.Item>
 
                 <Form.Item name="stepsTaken" label={t("community.supportRequestGuide.stepsTaken.label")}>
                     <TextArea rows={3} placeholder={t("community.supportRequestGuide.step6.content")} />
                 </Form.Item>
 
-                <Form.Item name="logs" label={t("community.supportRequestGuide.logs.label")}>
+                <Form.Item label={t("community.supportRequestGuide.logs.label")}>
                     <Paragraph>{t("community.supportRequestGuide.step4.intro")}</Paragraph>
                     <ul>
                         <li>

@@ -39,7 +39,7 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
                         {version.pros.length > 0 ? (
                             <Flex vertical gap={4}>
                                 {version.pros.map((item, i) => (
-                                    <>
+                                    <div key={i}>
                                         <Flex
                                             key={i}
                                             align="flex-start"
@@ -64,7 +64,7 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
                                             </Paragraph>
                                         </Flex>
                                         <Divider style={{ margin: "8px 0" }} />
-                                    </>
+                                    </div>
                                 ))}
                             </Flex>
                         ) : (
@@ -85,7 +85,7 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
                         {version.cons.length > 0 ? (
                             <Flex vertical gap={4}>
                                 {version.cons.map((item, i) => (
-                                    <>
+                                    <div key={i}>
                                         <Flex
                                             key={i}
                                             align="flex-start"
@@ -110,7 +110,7 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
                                             </Paragraph>
                                         </Flex>
                                         <Divider style={{ margin: "8px 0" }} />
-                                    </>
+                                    </div>
                                 ))}
                             </Flex>
                         ) : (

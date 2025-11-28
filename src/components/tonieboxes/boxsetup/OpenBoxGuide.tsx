@@ -30,7 +30,7 @@ export const OpenBoxGuide: React.FC = () => {
 
     const items = [
         {
-            children: (
+            content: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step1")}</h3>
                     <Image src={showFirstImage ? openTBStep1_1 : openTBStep1_2} style={{ maxWidth: 350 }} alt="" />
@@ -48,7 +48,7 @@ export const OpenBoxGuide: React.FC = () => {
             style: { paddingBottom: 8 },
         },
         {
-            children: (
+            content: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step2")}</h3>
                     <Image src={openTBStep2} style={{ maxWidth: 350 }} alt="" />
@@ -62,7 +62,7 @@ export const OpenBoxGuide: React.FC = () => {
             style: { paddingBottom: 8 },
         },
         {
-            children: (
+            content: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step3")}</h3>
                     <Image src={openTBStep3} style={{ maxWidth: 350 }} alt="" />
@@ -76,7 +76,7 @@ export const OpenBoxGuide: React.FC = () => {
             style: { paddingBottom: 8 },
         },
         {
-            children: (
+            content: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step4")}</h3>
                     <Image src={openTBStep4} style={{ maxWidth: 350 }} alt="" />
@@ -90,7 +90,7 @@ export const OpenBoxGuide: React.FC = () => {
             style: { paddingBottom: 8 },
         },
         {
-            children: (
+            content: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step5")}</h3>
                     <Image src={openTBStep5} style={{ maxWidth: 350 }} alt="" />
@@ -105,8 +105,8 @@ export const OpenBoxGuide: React.FC = () => {
             style: { paddingBottom: 8 },
         },
         {
-            children: <Paragraph>{t("tonieboxes.boxSetup.openBoxGuide.finally")}</Paragraph>,
-            dot: <SmileOutlined />,
+            content: <Paragraph>{t("tonieboxes.boxSetup.openBoxGuide.finally")}</Paragraph>,
+            icon: <SmileOutlined />,
             style: { paddingBottom: 8 },
         },
     ];
@@ -131,7 +131,7 @@ export const OpenBoxGuide: React.FC = () => {
             </Paragraph>
 
             <Image.PreviewGroup>
-                <Timeline mode="left" items={items} />
+                <Timeline mode="start" items={items} />
             </Image.PreviewGroup>
 
             <Paragraph>

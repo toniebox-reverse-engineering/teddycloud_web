@@ -2195,6 +2195,7 @@
     "utils": {
         "copied": "Copié !",
         "copyToClipboard": "Copier dans le presse-papiers",
-        "failedToCopied": "Échec de la copie !"
+        "failedToCopied": "Échec de la copie !",
+        "noResults": "Aucun résultat"
     }
 }

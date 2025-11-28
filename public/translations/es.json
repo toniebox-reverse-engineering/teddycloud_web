@@ -2195,6 +2195,7 @@
     "utils": {
         "copied": "¡Copiado!",
         "copyToClipboard": "Copiar al portapapeles",
-        "failedToCopied": "¡Error al copiar!"
+        "failedToCopied": "¡Error al copiar!",
+        "noResults": "Sin resultados"
     }
 }
