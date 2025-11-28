@@ -1,4 +1,4 @@
-import { Checkbox, InputNumber } from "antd";
+import { Checkbox, InputNumber, Space } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import { useField } from "formik";
 import { useState } from "react";
@@ -35,7 +35,7 @@ export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props)
 
     let value = fieldValue as number;
 
-    const suffix = [
+    const overlayedCheckbox = [
         overlayed === undefined ? null : (
             <Checkbox
                 checked={overlayed}
@@ -44,6 +44,7 @@ export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props)
                     setOverlayed(SettingsDataHandler.getInstance().getSetting(name)?.overlayed);
                 }}
                 key="overlayCheckBox"
+                style={{ marginLeft: 16, alignItems: "center" }}
             >
                 {t("settings.overlayed")}
             </Checkbox>
@@ -57,16 +58,18 @@ export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props)
             label={label}
             tooltip={description}
         >
-            <InputNumber
-                {...field}
-                value={value}
-                onChange={(value) => {
-                    SettingsDataHandler.getInstance().changeSetting(name, value ?? 0, overlayed);
-                    setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
-                }}
-                {...(overlayed !== undefined ? { suffix } : null)}
-                disabled={!overlayed && overlayed !== undefined}
-            />
+            <Space.Compact>
+                <InputNumber
+                    {...field}
+                    value={value}
+                    onChange={(value) => {
+                        SettingsDataHandler.getInstance().changeSetting(name, value ?? 0, overlayed);
+                        setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
+                    }}
+                    disabled={!overlayed && overlayed !== undefined}
+                />
+                {overlayedCheckbox}
+            </Space.Compact>
         </FormItem>
     );
 };

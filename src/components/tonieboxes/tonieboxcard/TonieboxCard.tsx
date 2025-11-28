@@ -13,7 +13,7 @@ import {
 } from "@ant-design/icons";
 
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-import { OptionsList, TeddyCloudApi } from "../../../api";
+import { OptionsItem, OptionsList, TeddyCloudApi } from "../../../api";
 
 import { TonieCardProps } from "../../../types/tonieTypes";
 import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../../types/tonieboxTypes";
@@ -233,12 +233,52 @@ export const TonieboxCard: React.FC<{
     const handleUploadCertificatesClick = () => {
         const fetchOptions = async () => {
             const optionsRequest = (await api.apiGetIndexGet(tonieboxCard.ID)) as OptionsList;
-            if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
-                setOptions(optionsRequest);
+
+            if (!optionsRequest?.options || optionsRequest.options.length === 0) {
+                return;
             }
+
+            const certIndex = optionsRequest.options.findIndex((option) => option.iD === "core.certdir");
+
+            let updatedOptions = optionsRequest.options;
+            // in case of set basic or default level, core.certdir is not fetched, so we need to fetch the value directly
+            // overlayed is not possible to fetch in that way, so we decide on compare default and overlayed value if its overlayed
+            if (certIndex === -1) {
+                try {
+                    let response = await api.apiGetTeddyCloudSettingRaw("core.certdir");
+                    let defaultCoreCertDir = "";
+                    if (response) {
+                        defaultCoreCertDir = await response.text();
+                    }
+
+                    response = await api.apiGetTeddyCloudSettingRaw("core.certdir", tonieboxCard.ID);
+                    if (response) {
+                        const coreCertDir = await response.text();
+
+                        const newItem: OptionsItem = {
+                            iD: "core.certdir",
+                            shortname: "core.certdir",
+                            label: "Cert dir",
+                            description: "Directory to upload genuine client certificates",
+                            type: "string",
+                            value: coreCertDir,
+                            overlayed: coreCertDir !== defaultCoreCertDir,
+                        };
+
+                        updatedOptions = [...updatedOptions, newItem];
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch core.certdir", e);
+                }
+            }
+
+            setOptions({
+                ...optionsRequest,
+                options: updatedOptions,
+            });
         };
 
-        fetchOptions();
+        void fetchOptions();
         setIsUploadCertificatesModalOpen(true);
     };
     const handleUploadCertificatesOk = async () => {
