@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { BoxineApi, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
@@ -9,12 +9,12 @@ const api = new BoxineApi(defaultAPIConfig());
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const restartServer = async (
-    redirectToBase = true,
+    t: TFunction,
+    redirectToBase: boolean,
     addNotification: Function,
     addLoadingNotification: Function,
     closeLoadingNotification: Function
 ) => {
-    const { t } = useTranslation();
     const key = "restart-tc";
     addLoadingNotification(key, t("settings.restartTC"), t("settings.tryToRestartTC"));
 
@@ -27,7 +27,7 @@ export const restartServer = async (
             addNotification(
                 NotificationTypeEnum.Error,
                 t("settings.restartFailed"),
-                t("settings.restartFailed") + ": " + data.toString(),
+                `${t("settings.restartFailed")}: ${data.toString()}`,
                 t("settings.navigationTitle")
             );
             return;
@@ -37,7 +37,7 @@ export const restartServer = async (
         addNotification(
             NotificationTypeEnum.Error,
             t("settings.restartFailed"),
-            t("settings.restartFailed") + ": " + error,
+            `${t("settings.restartFailed")}: ${error}`,
             t("settings.navigationTitle")
         );
         return;
@@ -68,8 +68,7 @@ export const restartServer = async (
                 }
                 return;
             }
-        } catch (e) {
-            // Increment attempts and wait for 3 seconds
+        } catch {
             attempts++;
             await sleep(3000);
         }

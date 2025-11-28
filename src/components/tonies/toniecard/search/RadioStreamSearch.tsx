@@ -70,7 +70,7 @@ export const RadioStreamSearch: React.FC<{
                 onSelect={handleSelect}
                 noResultsContent={t("radioStreamSearch.noResults")}
                 allowClear
-                style={{ margin: "8px 0", width: "100%" }}
+                style={{ width: "100%" }}
             />
         </>
     );

@@ -71,7 +71,7 @@ export const SettingsSubNav = () => {
     };
 
     const handleRestartServer = async () => {
-        await restartServer(true, addNotification, addLoadingNotification, closeLoadingNotification);
+        await restartServer(t, true, addNotification, addLoadingNotification, closeLoadingNotification);
     };
 
     const handleReloadToniesJson = async () => {
