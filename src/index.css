@@ -21,6 +21,17 @@ code {
     margin: 0 !important;
 }
 
+/* avoid zoom on ios when clicking in input fields */
+.ant-input,
+.ant-input-affix-wrapper input,
+.ant-select-selector,
+.ant-select-selection-search-input {
+    font-size: 16px !important;
+    transform-origin: left center;
+    transform: scale(0.875) !important;
+    width: 114.285% !important;
+}
+
 .ant-select {
     width: -webkit-fill-available !important;
     width: -moz-available !important;
