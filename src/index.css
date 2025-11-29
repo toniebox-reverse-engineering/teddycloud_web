@@ -13,10 +13,6 @@ body.theme-switching *::after {
     animation: none !important;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
-}
-
 .ant-layout .ant-layout-sider-children {
     margin: 0 !important;
 }
@@ -66,15 +62,6 @@ code {
     padding: 20px 24px 0;
 }
 
-/* tonie article search - in searchfield display none, but in dropdown displayed */
-.ant-select-dropdown img {
-    height: 64px !important;
-    width: 64px !important;
-    object-fit: cover !important;
-    display: block !important;
-    margin: 8px;
-}
-
 .ant-table-cell {
     padding: 8px !important;
 }
@@ -112,11 +99,6 @@ code {
     border-top-color: #e6f4ff;
     animation: spin 1s linear infinite;
     transform-origin: center;
-}
-
-.move-file .ant-select-selector {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
 }
 
 /* workaround missing good responsiveness of antd tables... */
