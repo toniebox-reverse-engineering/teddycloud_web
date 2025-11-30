@@ -33,6 +33,7 @@ export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = (
             episodes: result.episodes ?? "",
             model: result.model ?? "",
             language: result.language ?? "",
+            trackTitles: result.trackTitles ?? [],
         };
 
         onSelectDataset(dataset);

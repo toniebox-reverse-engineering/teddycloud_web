@@ -3,6 +3,8 @@ import { useMemo, useState } from "react";
 export interface CustomItem {
     image?: string;
     text?: string;
+    trackTitles?: string[];
+    episodes?: string;
 }
 
 export interface CustomItemsHook {
@@ -14,7 +16,18 @@ export interface CustomItemsHook {
     updateCustomText: (index: number, text: string) => void;
     removeCustomItem: (index: number) => void;
     removeByMergedIndex: (indexToRemove: number) => void;
+    editByMergedIndex: (indexToEdid: number, titles: string[], text: string, episodes: string) => void;
     clearAll: () => void;
+}
+
+export interface MergedItem {
+    custom: boolean;
+    text?: string;
+    pic?: string;
+    episodes: string;
+    model: string;
+    language: string;
+    trackTitles: string[];
 }
 
 export const useCustomItems = (): CustomItemsHook => {
@@ -28,9 +41,10 @@ export const useCustomItems = (): CustomItemsHook => {
                 custom: true,
                 text: item.text,
                 pic: item.image,
-                episodes: "",
+                episodes: item.episodes,
                 model: "",
                 language: "",
+                trackTitles: item.trackTitles || [],
             })),
         ],
         [results, customItems]
@@ -69,6 +83,37 @@ export const useCustomItems = (): CustomItemsHook => {
         }
     };
 
+    const editByMergedIndex = (indexToEdit: number, titles: string[], episodes: string, text: string) => {
+        if (indexToEdit < results.length) {
+            setResults((prev) =>
+                prev.map((item, index) =>
+                    index === indexToEdit
+                        ? {
+                              ...item,
+                              trackTitles: titles,
+                              episodes: episodes,
+                              text: text,
+                          }
+                        : item
+                )
+            );
+        } else {
+            const customIndex = indexToEdit - results.length;
+            setCustomItems((prev) =>
+                prev.map((item, index) =>
+                    index === customIndex
+                        ? {
+                              ...item,
+                              trackTitles: titles,
+                              episodes: episodes,
+                              text: text,
+                          }
+                        : item
+                )
+            );
+        }
+    };
+
     return {
         results,
         customItems,
@@ -78,6 +123,7 @@ export const useCustomItems = (): CustomItemsHook => {
         updateCustomText,
         removeCustomItem,
         removeByMergedIndex,
+        editByMergedIndex,
         clearAll,
     };
 };

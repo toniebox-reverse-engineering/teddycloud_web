@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, theme } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 import { LanguageFlagIcon } from "../../../common/icons/LanguageFlagIcon";
 import type { SettingsState } from "../hooks/useSettings";
@@ -11,9 +11,16 @@ export interface LabelGridProps {
     settings: SettingsState;
     textColor: string;
     onRemoveItem: (index: number) => void;
+    onEditItem: (index: number) => void;
 }
 
-export const LabelGrid: React.FC<LabelGridProps> = ({ mergedResults, settings, textColor, onRemoveItem }) => {
+export const LabelGrid: React.FC<LabelGridProps> = ({
+    mergedResults,
+    settings,
+    textColor,
+    onRemoveItem,
+    onEditItem,
+}) => {
     const { token } = theme.useToken();
 
     const {
@@ -28,6 +35,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({ mergedResults, settings, t
         labelBackgroundColor,
         showLanguageFlag,
         showModelNo,
+        printTrackListInsteadTitle,
         showLabelBorder,
         paperSize,
         customPaperWidth,
@@ -79,50 +87,85 @@ export const LabelGrid: React.FC<LabelGridProps> = ({ mergedResults, settings, t
                             ["--label-bg-image" as any]: `url("${dataset.pic}")`,
                         }}
                     />
-                    <div
-                        className="labelElement"
-                        style={{
-                            display: printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
-                            justifyContent: "space-between",
-                            fontSize: textFontSize,
-                            padding: "4px 8px 8px 8px",
-                            flexDirection: "column",
-                            color: `${textColor}`,
-                        }}
-                    >
-                        <div style={{ height: 12 }}>
-                            {showLanguageFlag && dataset.language ? (
-                                <LanguageFlagIcon
-                                    name={dataset.language.toUpperCase().split("-")[1]}
-                                    height={textFontSize}
-                                />
-                            ) : (
-                                "   "
-                            )}
-                        </div>
-                        <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                            <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
-                            <div
-                                style={{
-                                    whiteSpace: "pre-wrap",
-                                    wordBreak: "break-word",
-                                }}
-                            >
-                                {dataset.text}
+                    {printTrackListInsteadTitle ? (
+                        <div
+                            className="labelElement"
+                            style={{
+                                display: printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
+                                fontSize: textFontSize,
+                                padding: "4px 8px 8px 8px",
+                                flexDirection: "column",
+                                color: `${textColor}`,
+                                overflow: "hidden",
+                            }}
+                        >
+                            <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
+                                <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
+                                <div
+                                    style={{
+                                        whiteSpace: "pre-wrap",
+                                        wordBreak: "break-word",
+                                    }}
+                                >
+                                    {dataset.trackTitles}
+                                </div>
+                                <div>{dataset.episodes}</div>
                             </div>
-                            <div>{dataset.episodes}</div>
                         </div>
-                        <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
-                            {showModelNo ? dataset.model : "   "}
+                    ) : (
+                        <div
+                            className="labelElement"
+                            style={{
+                                display: printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
+                                justifyContent: "space-between",
+                                fontSize: textFontSize,
+                                padding: "4px 8px 8px 8px",
+                                flexDirection: "column",
+                                color: `${textColor}`,
+                                overflow: "hidden",
+                            }}
+                        >
+                            <div style={{ height: 12 }}>
+                                {showLanguageFlag && dataset.language ? (
+                                    <LanguageFlagIcon
+                                        name={dataset.language.toUpperCase().split("-")[1]}
+                                        height={textFontSize}
+                                    />
+                                ) : (
+                                    "   "
+                                )}
+                            </div>
+                            <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
+                                <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
+                                <div
+                                    style={{
+                                        whiteSpace: "pre-wrap",
+                                        wordBreak: "break-word",
+                                    }}
+                                >
+                                    {dataset.text}
+                                </div>
+                                <div>{dataset.episodes}</div>
+                            </div>
+                            <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
+                                {showModelNo ? dataset.model : "   "}
+                            </div>
                         </div>
+                    )}
+                    <div className="control" style={{ display: "flex", gap: 16, margin: "8px 8px 0 8px" }}>
+                        <Button
+                            className="editButton"
+                            size="small"
+                            icon={<EditOutlined />}
+                            onClick={() => onEditItem(index)}
+                        />
+                        <Button
+                            className="deleteButton"
+                            size="small"
+                            icon={<DeleteOutlined />}
+                            onClick={() => onRemoveItem(index)}
+                        />
                     </div>
-                    <Button
-                        className="deleteButton"
-                        size="small"
-                        icon={<DeleteOutlined />}
-                        onClick={() => onRemoveItem(index)}
-                        style={{ margin: "8px 8px 0 8px" }}
-                    />
                 </div>
             ))}
         </div>

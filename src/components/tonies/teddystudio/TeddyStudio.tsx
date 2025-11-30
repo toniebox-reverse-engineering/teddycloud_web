@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Divider, Typography, theme } from "antd";
 import { ClearOutlined, PrinterOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,7 @@ import { SettingsPanel } from "./settingspanel/SettingsPanel";
 import { LabelGrid } from "./grid/LabelGrid";
 import { ToniesJsonSearchWrapper } from "./input/ToniesJsonSearchWrapper";
 import { CustomImages } from "./input/CustomImages";
+import { EditLabelTextsModal } from "./modals/EditLabelTextsModal";
 
 const { Paragraph } = Typography;
 
@@ -21,6 +22,7 @@ export const TeddyStudio: React.FC = () => {
     const { addNotification } = useTeddyCloud();
 
     const { handleSearch } = useData();
+    const [editIndex, setEditIndex] = useState<number | null>(null);
 
     const {
         customItems,
@@ -30,6 +32,7 @@ export const TeddyStudio: React.FC = () => {
         updateCustomText,
         removeCustomItem,
         removeByMergedIndex,
+        editByMergedIndex,
         clearAll,
     } = useCustomItems();
 
@@ -57,6 +60,22 @@ export const TeddyStudio: React.FC = () => {
     const handleRemoveResult = (indexToRemove: number) => {
         removeByMergedIndex(indexToRemove);
     };
+
+    const handleEditResult = (indexToEdit: number) => {
+        setEditIndex(indexToEdit);
+    };
+
+    const handleCloseModal = () => {
+        setEditIndex(null);
+    };
+
+    const handleSaveLabelText = (values: { text: string; episodes: string; trackTitles: string[] }) => {
+        if (editIndex === null) return;
+        editByMergedIndex(editIndex, values.trackTitles, values.episodes, values.text);
+        setEditIndex(null);
+    };
+
+    const currentItem = editIndex !== null ? mergedResults[editIndex] : null;
 
     return (
         <>
@@ -107,6 +126,14 @@ export const TeddyStudio: React.FC = () => {
                 settings={settings}
                 textColor={textColor}
                 onRemoveItem={handleRemoveResult}
+                onEditItem={handleEditResult}
+            />
+
+            <EditLabelTextsModal
+                open={editIndex !== null}
+                item={currentItem}
+                onCancel={handleCloseModal}
+                onSave={handleSaveLabelText}
             />
         </>
     );

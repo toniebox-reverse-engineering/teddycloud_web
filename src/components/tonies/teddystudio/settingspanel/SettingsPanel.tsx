@@ -41,6 +41,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         textFontSize,
         showLanguageFlag,
         showModelNo,
+        printTrackListInsteadTitle,
         showLabelBorder,
         paperSize,
         customPaperWidth,
@@ -150,6 +151,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
 
     return (
         <Collapse
+            className="settingsPanel"
             bordered={false}
             items={[
                 {
@@ -172,6 +174,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 <h3 style={{ margin: 0 }}>{t("tonies.teddystudio.settings")}</h3>
 
                                 <Select
+                                    className="selectPredefinedPaperOptions"
                                     placeholder={t("tonies.teddystudio.selectPredefinedPaperOptions")}
                                     value={selectedPaper}
                                     onChange={onPaperSelect}
@@ -437,7 +440,15 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                             {t("tonies.teddystudio.showModelNo")}
                                         </Checkbox>
                                     )}
-
+                                    {printMode !== "OnlyImage" && (
+                                        <Checkbox
+                                            style={{ display: "flex", alignItems: "center" }}
+                                            checked={printTrackListInsteadTitle}
+                                            onChange={(e) => actions.setPrintTrackListInsteadTitle(e.target.checked)}
+                                        >
+                                            {t("tonies.teddystudio.printTrackListInsteadTitle")}
+                                        </Checkbox>
+                                    )}
                                     <Checkbox
                                         style={{ display: "flex", alignItems: "center" }}
                                         checked={showLabelBorder}

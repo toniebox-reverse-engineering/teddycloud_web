@@ -90,6 +90,11 @@
         gap: 0;
     }
 
+    .settingsPanel,
+    .settingsPanel * {
+        display: none;
+    }
+
     .labelElement {
         border-color: lightgray;
         margin: 0;
@@ -104,7 +109,7 @@
         border: none;
     }
 
-    .deleteButton {
+    .control {
         display: none;
     }
 }

@@ -14,6 +14,7 @@ export interface ToniesJsonEntry {
     episodes?: string;
     model?: string;
     language?: string;
+    trackTitles?: string[];
 }
 
 export function useToniesJsonSearch(onError?: (error: unknown) => void) {
@@ -46,6 +47,7 @@ export function useToniesJsonSearch(onError?: (error: unknown) => void) {
                     const model = item.model ?? "";
                     const episodes = item.episode ?? "";
                     const language = item.language ?? "";
+                    const trackTitles = item.tracks ?? [];
 
                     return {
                         value: model,
@@ -59,6 +61,7 @@ export function useToniesJsonSearch(onError?: (error: unknown) => void) {
                         episodes,
                         model,
                         language,
+                        trackTitles,
                     };
                 });
 
