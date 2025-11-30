@@ -813,8 +813,8 @@ export const useESP32Flasher = (useRevvoxFlasher = false): UseESP32FlasherResult
                 setState((prev) => ({
                     ...prev,
                     state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
-                        actual_size: "" + flash_size,
-                        expected_size: ESP32_FLASHSIZE,
+                        actualsize: "" + flash_size,
+                        expectedsize: ESP32_FLASHSIZE,
                     }),
                     connected: false,
                     actionInProgress: false,
@@ -828,8 +828,8 @@ export const useESP32Flasher = (useRevvoxFlasher = false): UseESP32FlasherResult
                 setState((prev) => ({
                     ...prev,
                     state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                        actual_type: "" + type,
-                        expected_type: ESP32_CHIPNAME,
+                        actualtype: "" + type,
+                        expectedtype: ESP32_CHIPNAME,
                     }),
                     connected: false,
                     actionInProgress: false,
@@ -1197,8 +1197,8 @@ export const useESP32Flasher = (useRevvoxFlasher = false): UseESP32FlasherResult
                 setState((prev) => ({
                     ...prev,
                     state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
-                        actual_size: "" + flash_size,
-                        expected_size: ESP32_FLASHSIZE,
+                        actualsize: "" + flash_size,
+                        expectedsize: ESP32_FLASHSIZE,
                     }),
                     connected: false,
                     actionInProgress: false,
@@ -1212,8 +1212,8 @@ export const useESP32Flasher = (useRevvoxFlasher = false): UseESP32FlasherResult
                 setState((prev) => ({
                     ...prev,
                     state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                        actual_type: "" + type,
-                        expected_type: ESP32_CHIPNAME,
+                        actualtype: "" + type,
+                        expectedtype: ESP32_CHIPNAME,
                     }),
                     connected: false,
                     actionInProgress: false,
@@ -1447,8 +1447,8 @@ export const useESP32Flasher = (useRevvoxFlasher = false): UseESP32FlasherResult
                 setState((prev) => ({
                     ...prev,
                     state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
-                        actual_size: "" + flash_size,
-                        expected_size: ESP32_FLASHSIZE,
+                        actualsize: "" + flash_size,
+                        expectedsize: ESP32_FLASHSIZE,
                     }),
                     connected: false,
                     actionInProgress: false,
@@ -1462,8 +1462,8 @@ export const useESP32Flasher = (useRevvoxFlasher = false): UseESP32FlasherResult
                 setState((prev) => ({
                     ...prev,
                     state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                        actual_type: "" + type,
-                        expected_type: ESP32_CHIPNAME,
+                        actualtype: "" + type,
+                        expectedtype: ESP32_CHIPNAME,
                     }),
                     connected: false,
                     actionInProgress: false,
