@@ -5,7 +5,7 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-export const useCheckCC3200CFW = (): boolean => {
+export const useGetSettingCheckCC3200CFW = (): boolean => {
     const [checkCC3200CFW, setCheckCC3200CFW] = useState(false);
 
     useEffect(() => {

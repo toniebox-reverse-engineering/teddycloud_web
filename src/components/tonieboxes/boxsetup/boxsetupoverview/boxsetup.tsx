@@ -38,7 +38,7 @@ export const BoxSetupContent: React.FC = () => {
                     </ul>
                 </>
             ),
-            dot: <CheckCircleOutlined />,
+            icon: <CheckCircleOutlined />,
             color: token.colorSuccess,
             style: { paddingBottom: 8 },
         },
@@ -66,7 +66,7 @@ export const BoxSetupContent: React.FC = () => {
                     </ul>
                 </>
             ),
-            dot: <SearchOutlined />,
+            icon: <SearchOutlined />,
             style: { paddingBottom: 8 },
         },
         {
@@ -109,7 +109,7 @@ export const BoxSetupContent: React.FC = () => {
                     )}
                 </>
             ),
-            dot: <DeliveredProcedureOutlined />,
+            icon: <DeliveredProcedureOutlined />,
             style: { paddingBottom: 8 },
         },
         {
@@ -119,7 +119,7 @@ export const BoxSetupContent: React.FC = () => {
                     <Paragraph>{t("tonieboxes.boxSetup.useItText")}</Paragraph>
                 </>
             ),
-            dot: <SmileOutlined />,
+            icon: <SmileOutlined />,
             style: { paddingBottom: 8 },
         },
     ];

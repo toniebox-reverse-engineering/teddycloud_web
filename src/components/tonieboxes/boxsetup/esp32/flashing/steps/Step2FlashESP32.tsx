@@ -8,10 +8,11 @@ const { useToken } = theme;
 
 interface Step2Props {
     state: ESP32Flasher;
+    useRevvoxFlasher: boolean;
     contentProgress: React.ReactNode;
 }
 
-export const Step2FlashESP32: React.FC<Step2Props> = ({ state, contentProgress }) => {
+export const Step2FlashESP32: React.FC<Step2Props> = ({ state, useRevvoxFlasher, contentProgress }) => {
     const { t } = useTranslation();
     const { token } = useToken();
 
@@ -26,7 +27,14 @@ export const Step2FlashESP32: React.FC<Step2Props> = ({ state, contentProgress }
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32")}</h3>
             {!state.actionInProgress && (
                 <Paragraph>
-                    <Alert type="info" description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")} />
+                    <Alert
+                        type="info"
+                        description={
+                            useRevvoxFlasher
+                                ? t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32RevvoxFlasher")
+                                : t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")
+                        }
+                    />
                 </Paragraph>
             )}
             {stepStatusText}
