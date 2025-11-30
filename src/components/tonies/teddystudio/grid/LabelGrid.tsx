@@ -100,16 +100,14 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                             }}
                         >
                             <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                                <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
                                 <div
                                     style={{
                                         whiteSpace: "pre-wrap",
                                         wordBreak: "break-word",
                                     }}
                                 >
-                                    {dataset.trackTitles}
+                                    {dataset.trackTitles.join("\n")}
                                 </div>
-                                <div>{dataset.episodes}</div>
                             </div>
                         </div>
                     ) : (
