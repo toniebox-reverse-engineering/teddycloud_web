@@ -21,11 +21,18 @@ body.theme-switching *::after {
 .ant-input,
 .ant-input-affix-wrapper input,
 .ant-select-selector,
-.ant-select-selection-search-input {
+.ant-select-selection-search-input,
+.ant-upload-wrapper {
     font-size: 16px !important;
     transform-origin: left center;
     transform: scale(0.875) !important;
     width: 114.285% !important;
+}
+
+textarea.ant-input {
+    font-size: unset !important;
+    transform: none !important;
+    width: 100% !important;
 }
 
 .ant-select {

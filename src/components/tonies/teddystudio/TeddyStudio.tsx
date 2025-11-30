@@ -13,7 +13,7 @@ import { SettingsPanel } from "./settingspanel/SettingsPanel";
 import { LabelGrid } from "./grid/LabelGrid";
 import { ToniesJsonSearchWrapper } from "./input/ToniesJsonSearchWrapper";
 import { CustomImages } from "./input/CustomImages";
-import { EditLabelTextsModal } from "./modals/EditLabelTextsModal";
+import { EditLabelModal } from "./modals/EditLabelModal";
 
 const { Paragraph } = Typography;
 
@@ -24,17 +24,8 @@ export const TeddyStudio: React.FC = () => {
     const { handleSearch } = useData();
     const [editIndex, setEditIndex] = useState<number | null>(null);
 
-    const {
-        customItems,
-        mergedResults,
-        addResult,
-        addCustomImage,
-        updateCustomText,
-        removeCustomItem,
-        removeByMergedIndex,
-        editByMergedIndex,
-        clearAll,
-    } = useCustomItems();
+    const { customItems, mergedResults, addResult, addCustomImage, removeByMergedIndex, editByMergedIndex, clearAll } =
+        useCustomItems();
 
     const { state: settings, textColor, paperOptions, actions } = useSettings();
 
@@ -69,9 +60,14 @@ export const TeddyStudio: React.FC = () => {
         setEditIndex(null);
     };
 
-    const handleSaveLabelText = (values: { text: string; episodes: string; trackTitles: string[] }) => {
+    const handleSaveLabelText = (values: {
+        text: string;
+        episodes: string;
+        trackTitles: string[];
+        picture: string;
+    }) => {
         if (editIndex === null) return;
-        editByMergedIndex(editIndex, values.trackTitles, values.episodes, values.text);
+        editByMergedIndex(editIndex, values.trackTitles, values.episodes, values.text, values.picture);
         setEditIndex(null);
     };
 
@@ -84,12 +80,7 @@ export const TeddyStudio: React.FC = () => {
 
             <ToniesJsonSearchWrapper onSelectDataset={addResult} />
 
-            <CustomImages
-                customItems={customItems}
-                onTextChange={updateCustomText}
-                onRemoveItem={removeCustomItem}
-                onAddImage={addCustomImage}
-            />
+            <CustomImages customItems={customItems} onAddImage={addCustomImage} />
 
             <SettingsPanel
                 settings={settings}
@@ -101,8 +92,18 @@ export const TeddyStudio: React.FC = () => {
             />
 
             <Divider>{t("tonies.teddystudio.printSheet")}</Divider>
+
             {mergedResults.length > 0 ? (
-                <Paragraph style={{ marginBottom: 16 }}>
+                <Paragraph
+                    style={{
+                        marginBottom: 16,
+                        display: "flex",
+                        gap: 8,
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <div>{t("tonies.teddystudio.adaptLabelsHint")}</div>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
                         <Button
                             icon={<ClearOutlined />}
@@ -129,7 +130,7 @@ export const TeddyStudio: React.FC = () => {
                 onEditItem={handleEditResult}
             />
 
-            <EditLabelTextsModal
+            <EditLabelModal
                 open={editIndex !== null}
                 item={currentItem}
                 onCancel={handleCloseModal}

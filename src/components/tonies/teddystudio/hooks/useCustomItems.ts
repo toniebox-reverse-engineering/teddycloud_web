@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 export interface CustomItem {
-    image?: string;
+    pic?: string;
     text?: string;
     trackTitles?: string[];
     episodes?: string;
@@ -13,10 +13,8 @@ export interface CustomItemsHook {
     mergedResults: any[];
     addResult: (dataset: any) => void;
     addCustomImage: (file: File) => boolean;
-    updateCustomText: (index: number, text: string) => void;
-    removeCustomItem: (index: number) => void;
     removeByMergedIndex: (indexToRemove: number) => void;
-    editByMergedIndex: (indexToEdid: number, titles: string[], text: string, episodes: string) => void;
+    editByMergedIndex: (indexToEdid: number, titles: string[], text: string, episodes: string, picture: string) => void;
     clearAll: () => void;
 }
 
@@ -40,7 +38,7 @@ export const useCustomItems = (): CustomItemsHook => {
             ...customItems.map((item) => ({
                 custom: true,
                 text: item.text,
-                pic: item.image,
+                pic: item.pic,
                 episodes: item.episodes,
                 model: "",
                 language: "",
@@ -56,17 +54,8 @@ export const useCustomItems = (): CustomItemsHook => {
 
     const addCustomImage = (file: File) => {
         const url = URL.createObjectURL(file);
-        setCustomItems((prev) => [...prev, { image: url, text: "" }]);
-        // antd Upload: false = kein echter Upload
+        setCustomItems((prev) => [...prev, { pic: url, text: "" }]);
         return false;
-    };
-
-    const updateCustomText = (index: number, text: string) => {
-        setCustomItems((prev) => prev.map((item, i) => (i === index ? { ...item, text } : item)));
-    };
-
-    const removeCustomItem = (index: number) => {
-        setCustomItems((prev) => prev.filter((_, i) => i !== index));
     };
 
     const clearAll = () => {
@@ -83,7 +72,13 @@ export const useCustomItems = (): CustomItemsHook => {
         }
     };
 
-    const editByMergedIndex = (indexToEdit: number, titles: string[], episodes: string, text: string) => {
+    const editByMergedIndex = (
+        indexToEdit: number,
+        titles: string[],
+        episodes: string,
+        text: string,
+        picture: string
+    ) => {
         if (indexToEdit < results.length) {
             setResults((prev) =>
                 prev.map((item, index) =>
@@ -93,6 +88,7 @@ export const useCustomItems = (): CustomItemsHook => {
                               trackTitles: titles,
                               episodes: episodes,
                               text: text,
+                              pic: picture,
                           }
                         : item
                 )
@@ -107,6 +103,7 @@ export const useCustomItems = (): CustomItemsHook => {
                               trackTitles: titles,
                               episodes: episodes,
                               text: text,
+                              pic: picture,
                           }
                         : item
                 )
@@ -120,8 +117,6 @@ export const useCustomItems = (): CustomItemsHook => {
         mergedResults,
         addResult,
         addCustomImage,
-        updateCustomText,
-        removeCustomItem,
         removeByMergedIndex,
         editByMergedIndex,
         clearAll,
