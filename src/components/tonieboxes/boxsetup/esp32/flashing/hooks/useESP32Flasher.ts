@@ -211,7 +211,6 @@ export const useESP32Flasher = (useRevvoxFlasher = false): UseESP32FlasherResult
         }));
 
         const reliableConnection = await flasher.testReliability((progress) => {
-            console.log(progress);
             setState((prev) => ({
                 ...prev,
                 progress: progress,
