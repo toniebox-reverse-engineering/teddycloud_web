@@ -17,6 +17,7 @@ export interface ToniesJsonSearchResult {
     episodes?: string;
     model?: string;
     language?: string;
+    trackTitles?: string[];
 }
 
 interface ToniesJsonSearchProps {

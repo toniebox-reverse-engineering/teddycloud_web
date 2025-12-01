@@ -24,6 +24,7 @@ export interface SettingsState {
     textFontSize: string;
     showLanguageFlag: boolean;
     showModelNo: boolean;
+    printTrackListInsteadTitle: boolean;
     showLabelBorder: boolean;
 
     selectedPaper?: string;
@@ -108,6 +109,7 @@ const INITIAL_STATE: SettingsState = {
     textFontSize: "14px",
     showLanguageFlag: false,
     showModelNo: false,
+    printTrackListInsteadTitle: false,
     showLabelBorder: true,
 
     selectedPaper: undefined,
@@ -188,6 +190,7 @@ export interface SettingsActions {
     setTextFontSize: (v: string) => void;
     setShowLanguageFlag: (v: boolean) => void;
     setShowModelNo: (v: boolean) => void;
+    setPrintTrackListInsteadTitle: (v: boolean) => void;
     setShowLabelBorder: (v: boolean) => void;
     setSelectedPaper: (v: string | undefined) => void;
     save: () => void;
@@ -226,6 +229,7 @@ export const useSettings = (): SettingsHook => {
             labelShape: state.labelShape,
             showLanguageFlag: state.showLanguageFlag,
             showModelNo: state.showModelNo,
+            printTrackListInsteadTitle: state.printTrackListInsteadTitle,
             labelSpacingX: state.labelSpacingX,
             labelSpacingY: state.labelSpacingY,
             labelBackgroundColor: state.labelBackgroundColor,
@@ -275,6 +279,7 @@ export const useSettings = (): SettingsHook => {
         setTextFontSize: (v) => dispatch({ type: "SET", payload: { textFontSize: v } }),
         setShowLanguageFlag: (v) => dispatch({ type: "SET", payload: { showLanguageFlag: v } }),
         setShowModelNo: (v) => dispatch({ type: "SET", payload: { showModelNo: v } }),
+        setPrintTrackListInsteadTitle: (v) => dispatch({ type: "SET", payload: { printTrackListInsteadTitle: v } }),
         setShowLabelBorder: (v) => dispatch({ type: "SET", payload: { showLabelBorder: v } }),
         setSelectedPaper: (v) => dispatch({ type: "SET", payload: { selectedPaper: v } }),
         save,

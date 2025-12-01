@@ -140,6 +140,9 @@ export const Step1PatchFlash: React.FC<Step1Props> = ({ state, setState, backupH
                             </Col>
                             <Col style={{ flex: "1 1 auto" }}>
                                 <Input
+                                    autoComplete="off"
+                                    name="wifi-ssid"
+                                    id="wifi-ssid"
                                     type="text"
                                     defaultValue={state.wifi_ssid}
                                     onChange={(e) => {
@@ -172,6 +175,9 @@ export const Step1PatchFlash: React.FC<Step1Props> = ({ state, setState, backupH
                             </Col>
                             <Col style={{ flex: "1 1 auto" }}>
                                 <Input.Password
+                                    autoComplete="new-password"
+                                    name="wifi-pass"
+                                    id="wifi-pass"
                                     defaultValue={state.wifi_pass}
                                     onChange={(e) => {
                                         const value = e.target.value;

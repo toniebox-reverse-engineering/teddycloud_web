@@ -47,6 +47,7 @@
 -   gui: Check chip type and flash size in ESP32 Flashing, abort process if values not meet the expectations. [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/253](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/253)
 -   gui: Added Attribution page
 -   gui: Added Support request form
+-   gui: Added new ESP32 Flasher (can be activated in settings by enabling new setting: frontend.use_revvox_flasher) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/260](https://github.com/toniebox-reverse-engineering/teddycloud/issues/260)
 -   gui maintenance: Massive refactoring of nearly everything
 -   gui maintenance: Updated antD to version 6
 -   gui maintenance: Removed deprecations

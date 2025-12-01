@@ -9,11 +9,13 @@ import {
     RightOutlined,
     RollbackOutlined,
     UploadOutlined,
+    QuestionCircleOutlined,
+    SyncOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { UseESP32FlasherResult } from "./hooks/useESP32Flasher";
+import { useESP32Flasher } from "./hooks/useESP32Flasher";
 import AvailableBoxesModal from "../../common/modals/AvailableBoxesModal";
 import { BoxVersionsEnum } from "../../../../../types/tonieboxTypes";
 import ConfirmationDialog from "../../../../common/modals/ConfirmationModal";
@@ -23,20 +25,25 @@ import { Step2FlashESP32 } from "./steps/Step2FlashESP32";
 import { Step3AfterFlash } from "./steps/Step3AfterFlash";
 
 const { Paragraph } = Typography;
+const { Option } = Select;
 
-interface ContentProps {
-    flasher: UseESP32FlasherResult;
+interface FlashingProps {
+    useRevvoxFlasher: boolean;
 }
 
-export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
+export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+
+    const flasher = useESP32Flasher(useRevvoxFlasher);
 
     const {
         state,
         setState,
         currentStep,
         isSupported,
+        httpsActive,
+        httpsUrl,
         baudRate,
         baudRates,
         handleBaudrateChange,
@@ -58,6 +65,7 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
         extractAndStoreCertsFromFlash,
         next,
         prev,
+        openHttpsUrl,
     } = flasher;
 
     const steps = [
@@ -101,7 +109,11 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
 
     const contentProgress = state.showProgress ? (
         <div>
-            <Progress percent={state.progress || 0} format={(percent) => `${(percent ?? 0).toFixed(2)}%`} />
+            <Progress
+                key={String(state.progress === 0)}
+                percent={state.progress || 0}
+                format={(percent) => `${(percent ?? 0).toFixed(2)}%`}
+            />
         </div>
     ) : null;
 
@@ -236,7 +248,13 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
                     />
                 );
             case 2:
-                return <Step2FlashESP32 state={state} contentProgress={contentProgress} />;
+                return (
+                    <Step2FlashESP32
+                        state={state}
+                        useRevvoxFlasher={useRevvoxFlasher}
+                        contentProgress={contentProgress}
+                    />
+                );
             case 3:
                 return (
                     <Step3AfterFlash
@@ -277,152 +295,260 @@ export const Flashing: React.FC<ContentProps> = ({ flasher }) => {
 
     return (
         <>
-            <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
-            <ConfirmationDialog
-                title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
-                open={isConfirmFlashModalOpen}
-                okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
-                cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
-                content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
-                contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
-                handleOk={handleConfirmFlash}
-                handleCancel={handleCancelFlash}
-            />
-            <Steps
-                current={currentStep}
-                items={steps.map((step, index) => ({
-                    key: index,
-                    title: step.title,
-                    status:
-                        index === currentStep && index === steps.length - 1
-                            ? "finish"
-                            : index === currentStep
-                            ? state.error
-                                ? "error"
-                                : "process"
-                            : index < currentStep
-                            ? "finish"
-                            : "wait",
-                    className: index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : "",
-                }))}
-            />
-            <div style={{ marginTop: 24 }}>{renderStepContent()}</div>
-            <div style={{ marginTop: 24, marginBottom: 24 }}>
-                {currentStep === 0 && (
-                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                        <div>
-                            <Paragraph>
-                                <Button
-                                    disabled={disableButtons}
-                                    onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}
-                                >
-                                    {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
-                                </Button>
-                            </Paragraph>
+            <div
+                style={{
+                    display: "flex",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                }}
+            >
+                <h1>{t("tonieboxes.esp32BoxFlashing.title")}</h1>
+                {httpsActive && (
+                    <Paragraph
+                        style={{
+                            fontSize: "small",
+                            display: "flex",
+                            gap: 8,
+                            width: 210,
+                            alignItems: "center",
+                            justifyContent: "flex-end",
+                        }}
+                    >
+                        <div style={{ textAlign: "end", textWrap: "nowrap" }}>
+                            {t("tonieboxes.esp32BoxFlashing.baudRate")}
                         </div>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                            <Tooltip title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip")}>
-                                <Button icon={<RollbackOutlined />} disabled={disableButtons} onClick={doResetBox}>
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine")}
-                                </Button>
-                            </Tooltip>
-                            <Button icon={<FileAddOutlined />} disabled={disableButtons} onClick={loadFileClick}>
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
-                            </Button>
-                            <Button
-                                icon={<DownloadOutlined />}
-                                disabled={disableButtons}
-                                type="primary"
-                                onClick={readFirmware}
-                            >
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.readFlash")}
-                            </Button>
-                        </div>
-                        <Button
-                            icon={<RightOutlined />}
-                            iconPlacement="end"
-                            disabled={(!state.proceed && !state.filename) || disableButtons}
-                            onClick={next}
-                        >
-                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
-                        </Button>
-                    </div>
+                        <Select defaultValue={baudRate} onChange={handleBaudrateChange}>
+                            {baudRates.map((rate) => (
+                                <Option key={rate} value={rate}>
+                                    {rate}
+                                </Option>
+                            ))}
+                        </Select>
+                        <Tooltip title={t("tonieboxes.esp32BoxFlashing.baudRateInfo")} placement="top">
+                            <QuestionCircleOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
+                        </Tooltip>
+                    </Paragraph>
                 )}
-                {currentStep === 1 && (
-                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                        {previousButton}
-                        <div style={{ display: "flex", gap: 8 }}>
-                            <Button
-                                icon={<CodeOutlined />}
-                                disabled={
-                                    disableButtons ||
-                                    state.hostname === "" ||
-                                    (state.flagPreviousHostname && state.previousHostname === "")
-                                }
-                                type="primary"
-                                onClick={patchImage}
-                            >
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.patchImage")}
-                            </Button>
-                        </div>
-                        <Button
-                            icon={<RightOutlined />}
-                            iconPlacement="end"
-                            disabled={disableButtons || !state.showFlash}
-                            onClick={next}
-                        >
-                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
-                        </Button>
-                    </div>
-                )}
-                {currentStep === 2 && (
-                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                        {previousButton}
-                        <div style={{ display: "flex", gap: 8 }}>
-                            <Button
-                                icon={<UploadOutlined />}
-                                disabled={disableButtons}
-                                type="primary"
-                                onClick={state.resetBox ? resetFlash : () => setIsConfirmFlashModalOpen(true)}
-                            >
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
-                            </Button>
-                        </div>
-                        <div />
-                    </div>
-                )}
-                {currentStep === 3 && (
-                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                        {previousButton}
-                        <div>
-                            {state.resetBox ? (
-                                ""
-                            ) : (
-                                <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
-                                    {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
-                                </Button>
-                            )}
-                        </div>
-                        <div />
-                    </div>
-                )}
-                {contentRaw}
             </div>
-            {availableBoxesModal}
-            <ConfirmationDialog
-                title={t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwrite")}
-                okText={t(
-                    "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwriteConfirmButton"
-                )}
-                cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
-                content={t(
-                    "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwriteContent",
-                    { error: extractCertificateErrorMessage }
-                )}
-                open={isOverwriteForceConfirmationModalOpen}
-                handleOk={() => extractAndStoreCertsFromFlash(true)}
-                handleCancel={() => setIsOverwriteForceConfirmationModalOpen(false)}
-            />
+            {!httpsActive ? (
+                <>
+                    <Alert
+                        title={t("tonieboxes.esp32BoxFlashing.attention")}
+                        description={
+                            <>
+                                <Paragraph>{t("tonieboxes.esp32BoxFlashing.hint")}</Paragraph>
+                                <Paragraph>
+                                    <Button icon={<SyncOutlined />} onClick={openHttpsUrl}>
+                                        {t("tonieboxes.esp32BoxFlashing.redirect")}
+                                    </Button>
+                                </Paragraph>
+                            </>
+                        }
+                        type="warning"
+                        showIcon
+                    />
+                    <Paragraph style={{ marginTop: 16 }}>
+                        <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.followLegacyApproach")}</Paragraph>
+                        <Paragraph>
+                            <Button onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}>
+                                {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                            </Button>
+                        </Paragraph>
+                    </Paragraph>
+                </>
+            ) : (
+                <>
+                    <Divider>
+                        {t("tonieboxes.esp32BoxFlashing.title")} {useRevvoxFlasher && "(Revvox Flasher)"}
+                    </Divider>
+                    <ConfirmationDialog
+                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
+                        open={isConfirmFlashModalOpen}
+                        okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
+                        cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
+                        content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
+                        contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
+                        handleOk={handleConfirmFlash}
+                        handleCancel={handleCancelFlash}
+                    />
+                    <Steps
+                        current={currentStep}
+                        items={steps.map((step, index) => ({
+                            key: index,
+                            title: step.title,
+                            status:
+                                index === currentStep && index === steps.length - 1
+                                    ? "finish"
+                                    : index === currentStep
+                                    ? state.error
+                                        ? "error"
+                                        : "process"
+                                    : index < currentStep
+                                    ? "finish"
+                                    : "wait",
+                            className:
+                                index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : "",
+                        }))}
+                    />
+                    <div style={{ marginTop: 24 }}>{renderStepContent()}</div>
+                    <div style={{ marginTop: 24, marginBottom: 24 }}>
+                        {currentStep === 0 && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
+                                <div>
+                                    <Paragraph>
+                                        <Button
+                                            disabled={disableButtons}
+                                            onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}
+                                        >
+                                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                        </Button>
+                                    </Paragraph>
+                                </div>
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                                    <Tooltip title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip")}>
+                                        <Button
+                                            icon={<RollbackOutlined />}
+                                            disabled={disableButtons}
+                                            onClick={doResetBox}
+                                        >
+                                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine")}
+                                        </Button>
+                                    </Tooltip>
+                                    <Button
+                                        icon={<FileAddOutlined />}
+                                        disabled={disableButtons}
+                                        onClick={loadFileClick}
+                                    >
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.loadFile")}
+                                    </Button>
+                                    <Button
+                                        icon={<DownloadOutlined />}
+                                        disabled={disableButtons}
+                                        type="primary"
+                                        onClick={readFirmware}
+                                    >
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.readFlash")}
+                                    </Button>
+                                </div>
+                                <Button
+                                    icon={<RightOutlined />}
+                                    iconPlacement="end"
+                                    disabled={(!state.proceed && !state.filename) || disableButtons}
+                                    onClick={next}
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
+                                </Button>
+                            </div>
+                        )}
+                        {currentStep === 1 && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
+                                {previousButton}
+                                <div style={{ display: "flex", gap: 8 }}>
+                                    <Button
+                                        icon={<CodeOutlined />}
+                                        disabled={
+                                            disableButtons ||
+                                            state.hostname === "" ||
+                                            (state.flagPreviousHostname && state.previousHostname === "")
+                                        }
+                                        type="primary"
+                                        onClick={patchImage}
+                                    >
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.patchImage")}
+                                    </Button>
+                                </div>
+                                <Button
+                                    icon={<RightOutlined />}
+                                    iconPlacement="end"
+                                    disabled={disableButtons || !state.showFlash}
+                                    onClick={next}
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
+                                </Button>
+                            </div>
+                        )}
+                        {currentStep === 2 && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
+                                {previousButton}
+                                <div style={{ display: "flex", gap: 8 }}>
+                                    <Button
+                                        icon={<UploadOutlined />}
+                                        disabled={disableButtons}
+                                        type="primary"
+                                        onClick={state.resetBox ? resetFlash : () => setIsConfirmFlashModalOpen(true)}
+                                    >
+                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
+                                    </Button>
+                                </div>
+                                <div />
+                            </div>
+                        )}
+                        {currentStep === 3 && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
+                                {previousButton}
+                                <div>
+                                    {state.resetBox ? (
+                                        ""
+                                    ) : (
+                                        <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
+                                            {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
+                                        </Button>
+                                    )}
+                                </div>
+                                <div />
+                            </div>
+                        )}
+                        {contentRaw}
+                    </div>
+                    {availableBoxesModal}
+                    <ConfirmationDialog
+                        title={t(
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwrite"
+                        )}
+                        okText={t(
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwriteConfirmButton"
+                        )}
+                        cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
+                        content={t(
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwriteContent",
+                            { error: extractCertificateErrorMessage }
+                        )}
+                        open={isOverwriteForceConfirmationModalOpen}
+                        handleOk={() => extractAndStoreCertsFromFlash(true)}
+                        handleCancel={() => setIsOverwriteForceConfirmationModalOpen(false)}
+                    />
+                </>
+            )}
         </>
     );
 };

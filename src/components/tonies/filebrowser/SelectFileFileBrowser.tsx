@@ -82,7 +82,6 @@ export const SelectFileFileBrowser: React.FC<{
         setSelectedRowKeys([]);
     }, [rebuildList]);
 
-    // information modal
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
             setCurrentRecord(record);

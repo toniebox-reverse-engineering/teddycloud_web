@@ -8,7 +8,7 @@ import { TonieboxCard } from "../tonieboxcard/TonieboxCard";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
 import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
-import { useCheckCC3200CFW } from "./hooks/useCheckCC3200CFW";
+import { useGetSettingCheckCC3200CFW } from "./hooks/useGetSettingCheckCC3200CFW";
 
 export const TonieboxesList: React.FC<{
     tonieboxCards: TonieboxCardProps[];
@@ -20,7 +20,7 @@ export const TonieboxesList: React.FC<{
 
     const columns = screens.xxl ? 4 : screens.xl ? 3 : screens.lg ? 3 : screens.md ? 2 : screens.sm ? 2 : 1;
 
-    const checkCC3200CFW = useCheckCC3200CFW();
+    const checkCC3200CFW = useGetSettingCheckCC3200CFW();
 
     useEffect(() => {
         if (!boxModelImagesLoading && boxModelImages.length === 0) {

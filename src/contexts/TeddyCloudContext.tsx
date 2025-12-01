@@ -55,7 +55,8 @@ interface TeddyCloudContextType {
         message: string,
         description: string,
         context?: string,
-        confirmed?: boolean
+        confirmed?: boolean,
+        persist?: boolean
     ) => void;
     addLoadingNotification: (key: string, message: string, description: string) => void;
     closeLoadingNotification: (key: string) => Promise<void>;
@@ -167,26 +168,34 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
     // =====================================
 
     const addNotification = useCallback(
-        (type: NotificationType, title: string, description: string, context?: string, confirmed?: boolean) => {
-            const newNotification: NotificationRecord = {
-                uuid: generateUUID(),
-                date: new Date(),
-                type,
-                title,
-                description,
-                context: context || "",
-                flagConfirmed: confirmed !== undefined ? confirmed : type === "success" || type === "info",
-            };
+        (
+            type: NotificationType,
+            title: string,
+            description: string,
+            context?: string,
+            confirmed?: boolean,
+            persist?: boolean
+        ) => {
+            if (persist === undefined || persist) {
+                const newNotification: NotificationRecord = {
+                    uuid: generateUUID(),
+                    date: new Date(),
+                    type,
+                    title,
+                    description,
+                    context: context || "",
+                    flagConfirmed: confirmed !== undefined ? confirmed : type === "success" || type === "info",
+                };
 
-            setNotifications((prev) => {
-                const updated = [newNotification, ...prev];
-                if (updated.length > 500) {
-                    updated.splice(500, updated.length - 500);
-                }
-                localStorage.setItem("notifications", JSON.stringify(updated));
-                return updated;
-            });
-
+                setNotifications((prev) => {
+                    const updated = [newNotification, ...prev];
+                    if (updated.length > 500) {
+                        updated.splice(500, updated.length - 500);
+                    }
+                    localStorage.setItem("notifications", JSON.stringify(updated));
+                    return updated;
+                });
+            }
             setTimeout(() => {
                 antdNotification.open({
                     type,

@@ -9,3 +9,5 @@ export const gitHubTCContributorsUrl = "https://github.com/toniebox-reverse-engi
 export const gitHubTCwebContributorsUrl =
     "https://github.com/toniebox-reverse-engineering/teddycloud_web/graphs/contributors";
 export const wikiUrl = "https://tonies-wiki.revvox.de/docs/tools/teddycloud/";
+export const RadioBrowserServerAPIUrlListUrl = "https://all.api.radio-browser.info/json/servers";
+export const RadioBrowserFallBackUrl = "https://de2.api.radio-browser.info/json";
