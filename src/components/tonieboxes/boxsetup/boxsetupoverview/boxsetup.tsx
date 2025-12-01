@@ -21,10 +21,11 @@ export const BoxSetupContent: React.FC = () => {
 
     const timelineItems = [
         {
-            children: (
-                <>
+            content: (
+                <Paragraph>
                     <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.setupTeddyCloud")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.setupTeddyCloudText")}</Paragraph>
+
                     <ul>
                         <li>
                             <Link to="#" onClick={() => handleTCCADerDownload(true)}>
@@ -36,17 +37,18 @@ export const BoxSetupContent: React.FC = () => {
                             </Link>
                         </li>
                     </ul>
-                </>
+                </Paragraph>
             ),
             icon: <CheckCircleOutlined />,
             color: token.colorSuccess,
             style: { paddingBottom: 8 },
         },
         {
-            children: (
+            content: (
                 <>
                     <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.identifyTonieboxVersion")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.identifyTonieboxVersionText")}</Paragraph>
+
                     <ul>
                         <li>
                             <Link to="/tonieboxes/boxsetup/boxversioninfo">
@@ -70,10 +72,11 @@ export const BoxSetupContent: React.FC = () => {
             style: { paddingBottom: 8 },
         },
         {
-            children: (
+            content: (
                 <>
                     <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.flashBox")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.flashBoxText")}</Paragraph>
+
                     <ul>
                         <li>
                             <Link to="/tonieboxes/boxsetup/esp32/flashing">ESP32</Link>
@@ -113,7 +116,7 @@ export const BoxSetupContent: React.FC = () => {
             style: { paddingBottom: 8 },
         },
         {
-            children: (
+            content: (
                 <>
                     <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.useIt")}</h5>
                     <Paragraph>{t("tonieboxes.boxSetup.useItText")}</Paragraph>
