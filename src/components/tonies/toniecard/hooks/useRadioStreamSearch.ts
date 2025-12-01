@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { RadioBrowserFallBackUrl, RadioBrowserServerAPIUrlListUrl } from "../../../../constants/urls";
 
 export interface RadioStreamOption {
     value: string;
@@ -26,7 +27,7 @@ export function useRadioStreamSearch(onError?: (error: unknown) => void) {
     // Serverliste laden
     const fetchRadioBrowserBaseUrls = useCallback(async (): Promise<string[]> => {
         try {
-            const response = await fetch("http://all.api.radio-browser.info/json/servers");
+            const response = await fetch(RadioBrowserServerAPIUrlListUrl);
             if (!response.ok) throw new Error("Failed to fetch server list");
             const data: RadioBrowserServer[] = await response.json();
             return data.map((server) => `https://${server.name}`);
@@ -50,7 +51,7 @@ export function useRadioStreamSearch(onError?: (error: unknown) => void) {
             if (!url) {
                 // eslint-disable-next-line no-console
                 console.log("Fetching random radio browser URL failed, using hardcoded fallback.");
-                setRadioBrowserAPIBaseJsonUrl("https://de2.api.radio-browser.info/json");
+                setRadioBrowserAPIBaseJsonUrl(RadioBrowserFallBackUrl);
             } else {
                 // eslint-disable-next-line no-console
                 console.log("Using random Radio Browser API URL:", url);

@@ -29,12 +29,25 @@ export const TeddyStudio: React.FC = () => {
 
     const { state: settings, textColor, paperOptions, actions } = useSettings();
 
+    const canGoPrev = editIndex !== null && editIndex > 0;
+    const canGoNext = editIndex !== null && editIndex < mergedResults.length - 1;
+
+    const handlePrevLabel = () => {
+        if (editIndex === null || editIndex <= 0) return;
+        setEditIndex(editIndex - 1);
+    };
+
+    const handleNextLabel = () => {
+        if (editIndex === null || editIndex >= mergedResults.length - 1) return;
+        setEditIndex(editIndex + 1);
+    };
+
     const handleSuggestionClick = (dataset: any) => {
         addResult(dataset);
         handleSearch("");
     };
 
-    const handleSave = () => {
+    const handleSaveSettings = () => {
         actions.save();
         addNotification(
             NotificationTypeEnum.Success,
@@ -44,7 +57,7 @@ export const TeddyStudio: React.FC = () => {
         );
     };
 
-    const handleClear = () => {
+    const handleClearSettings = () => {
         actions.clear();
     };
 
@@ -60,7 +73,7 @@ export const TeddyStudio: React.FC = () => {
         setEditIndex(null);
     };
 
-    const handleSaveLabelText = (values: {
+    const handleSaveLabelElements = (values: {
         text: string;
         episodes: string;
         trackTitles: string[];
@@ -68,7 +81,15 @@ export const TeddyStudio: React.FC = () => {
     }) => {
         if (editIndex === null) return;
         editByMergedIndex(editIndex, values.trackTitles, values.episodes, values.text, values.picture);
-        setEditIndex(null);
+
+        addNotification(
+            NotificationTypeEnum.Success,
+            t("tonies.teddystudio.labelSavedSuccesful"),
+            t("tonies.teddystudio.labelSavedSuccesfulDetails", { title: values.text }),
+            t("tonies.teddystudio.navigationTitle"),
+            undefined,
+            false
+        );
     };
 
     const currentItem = editIndex !== null ? mergedResults[editIndex] : null;
@@ -87,8 +108,8 @@ export const TeddyStudio: React.FC = () => {
                 paperOptions={paperOptions}
                 actions={actions}
                 onPaperSelect={actions.applyPaperPreset}
-                onSave={handleSave}
-                onClear={handleClear}
+                onSave={handleSaveSettings}
+                onClear={handleClearSettings}
             />
 
             <Divider>{t("tonies.teddystudio.printSheet")}</Divider>
@@ -133,8 +154,16 @@ export const TeddyStudio: React.FC = () => {
             <EditLabelModal
                 open={editIndex !== null}
                 item={currentItem}
+                settings={settings}
+                textColor={textColor}
                 onCancel={handleCloseModal}
-                onSave={handleSaveLabelText}
+                onSave={handleSaveLabelElements}
+                onPrev={handlePrevLabel}
+                onNext={handleNextLabel}
+                canGoPrev={canGoPrev}
+                canGoNext={canGoNext}
+                currentIndex={editIndex ?? undefined}
+                totalItems={mergedResults.length}
             />
         </>
     );
