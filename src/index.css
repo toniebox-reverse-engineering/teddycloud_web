@@ -30,22 +30,16 @@ body.theme-switching *::after {
     margin-left: 4px !important;
 }
 
-/* avoid zoom on ios when clicking in input fields */
-.ant-input,
-.ant-input-affix-wrapper input,
-.ant-select-selector,
-.ant-select-selection-search-input,
-.ant-upload-wrapper {
-    font-size: 16px !important;
-    transform-origin: left center;
-    transform: scale(0.875) !important;
-    width: 114.285% !important;
-}
-
-textarea.ant-input {
-    font-size: unset !important;
-    transform: none !important;
-    width: 100% !important;
+/* only iOS: inputs need 16px to disable automatic zoom */
+@supports (-webkit-touch-callout: none) {
+    .ant-input,
+    .ant-input-affix-wrapper input,
+    .ant-select-selection-search-input,
+    .ant-select-selector,
+    .ant-select-input,
+    .ant-upload-wrapper input[type="file"] {
+        font-size: 16px !important;
+    }
 }
 
 .ant-select {
