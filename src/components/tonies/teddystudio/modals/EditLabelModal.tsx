@@ -5,6 +5,7 @@ import { MergedItem } from "../hooks/useCustomItems";
 import { useTranslation } from "react-i18next";
 import { LabelGrid } from "../grid/LabelGrid";
 import { SettingsState } from "../hooks/useSettings";
+import Checkbox from "antd/es/checkbox/Checkbox";
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -48,6 +49,8 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     const [originalPicture, setOriginalPicture] = useState("");
     const [picture, setPicture] = useState("");
 
+    const [saveOnNavigate, setSaveOnNavigate] = useState<boolean>(true);
+
     useEffect(() => {
         if (!item) {
             setText("");
@@ -67,6 +70,24 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
         setPicture(pic);
     }, [item]);
 
+    const hasChanges = () => {
+        if (!item) return false;
+
+        const normalizedTrackTitles = trackTitlesText
+            .split("\n")
+            .map((l) => l.trim())
+            .filter((l) => l.length > 0);
+
+        const originalTrackTitles = (item.trackTitles ?? []).map((l) => l.trim()).filter((l) => l.length > 0);
+
+        return (
+            text !== (item.text ?? "") ||
+            episodes !== (item.episodes ?? "") ||
+            picture !== originalPicture ||
+            JSON.stringify(normalizedTrackTitles) !== JSON.stringify(originalTrackTitles)
+        );
+    };
+
     const handleOk = () => {
         const trackTitles = trackTitlesText
             .split("\n")
@@ -79,6 +100,20 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
             trackTitles,
             picture,
         });
+    };
+
+    const handleNext = () => {
+        if (saveOnNavigate && hasChanges()) {
+            handleOk();
+        }
+        onNext?.();
+    };
+
+    const handlePrev = () => {
+        if (saveOnNavigate && hasChanges()) {
+            handleOk();
+        }
+        onPrev?.();
     };
 
     const mergedPreviewItem = {
@@ -95,7 +130,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     const handleFileToDataUrl = (file: File) => {
         const reader = new FileReader();
         reader.onload = () => {
-            setPicture(reader.result as string); // neue Preview
+            setPicture(reader.result as string);
         };
         reader.readAsDataURL(file);
     };
@@ -109,23 +144,43 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
             okText={t("tonies.teddystudio.save")}
             cancelText={t("tonies.teddystudio.cancel")}
             onCancel={onCancel}
-            footer={[
-                <Button key="prev" onClick={onPrev} disabled={!canGoPrev}>
-                    <ArrowLeftOutlined />
-                </Button>,
-                <Button key="cancel" onClick={onCancel}>
-                    {t("tonies.teddystudio.cancel")}
-                </Button>,
-                <Button key="cancel" onClick={onCancel}>
-                    {t("tonies.teddystudio.close")}
-                </Button>,
-                <Button key="save" type="primary" onClick={handleOk}>
-                    {t("tonies.teddystudio.save")}
-                </Button>,
-                <Button key="next" onClick={onNext} disabled={!canGoNext}>
-                    <ArrowRightOutlined />
-                </Button>,
-            ]}
+            footer={
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: 8,
+                    }}
+                >
+                    <Checkbox
+                        key="saveOnNavigate"
+                        checked={saveOnNavigate}
+                        onChange={(e) => setSaveOnNavigate(e.target.checked)}
+                        style={{ marginRight: "auto" }}
+                    >
+                        {t("tonies.teddystudio.saveOnNavigate")}
+                    </Checkbox>
+                    <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: 8 }}>
+                        <Button key="prev" onClick={handlePrev} disabled={!canGoPrev}>
+                            <ArrowLeftOutlined />
+                        </Button>
+                        <Button key="cancel" onClick={onCancel}>
+                            {t("tonies.teddystudio.cancel")}
+                        </Button>
+                        <Button key="cancel" onClick={onCancel}>
+                            {t("tonies.teddystudio.close")}
+                        </Button>
+                        <Button key="save" type="primary" onClick={handleOk} disabled={!hasChanges()}>
+                            {t("tonies.teddystudio.save")}
+                        </Button>
+                        <Button key="next" onClick={handleNext} disabled={!canGoNext}>
+                            <ArrowRightOutlined />
+                        </Button>
+                    </div>
+                </div>
+            }
         >
             <Row gutter={[8, 8]}>
                 <Col xs={24} md={24} lg={Number(settings.width.replace("mm", "")) > 60 ? 24 : 16}>
@@ -163,18 +218,30 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                             </div>
                         </Form.Item>
                         <Form.Item label={t("tonies.teddystudio.series")}>
-                            <Input value={text} onChange={(e) => setText(e.target.value)} />
+                            <Input
+                                value={text}
+                                onChange={(e) => {
+                                    setText(e.target.value);
+                                }}
+                            />
                         </Form.Item>
 
                         <Form.Item label={t("tonies.teddystudio.episodes")}>
-                            <Input value={episodes} onChange={(e) => setEpisodes(e.target.value)} />
+                            <Input
+                                value={episodes}
+                                onChange={(e) => {
+                                    setEpisodes(e.target.value);
+                                }}
+                            />
                         </Form.Item>
 
                         <Form.Item label={t("tonies.teddystudio.trackTitles")}>
                             <TextArea
                                 rows={8}
                                 value={trackTitlesText}
-                                onChange={(e) => setTrackTitlesText(e.target.value)}
+                                onChange={(e) => {
+                                    setTrackTitlesText(e.target.value);
+                                }}
                             />
                         </Form.Item>
                     </Form>
