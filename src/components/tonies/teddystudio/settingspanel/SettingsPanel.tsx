@@ -7,7 +7,7 @@ import { LabelShape, PaperSize, PrintMode, SettingsActions, SettingsState } from
 
 const { Paragraph } = Typography;
 
-const stripUnit = (value: string, unit: string) =>
+export const stripUnit = (value: string, unit: string) =>
     value.toLowerCase().endsWith(unit) ? value.slice(0, -unit.length) : value;
 
 export interface SettingsPanelProps {
@@ -100,9 +100,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         const rawValue = stripUnit(e.target.value, "mm");
         if (!isNaN(Number(rawValue)) && Number(rawValue) >= 0) {
             setter(`${rawValue}mm`);
+            (parseFloat(paperLabelImageBleed) || 0) * 2 > Number(rawValue) &&
+                actions.setPaperLabelImageBleed(`${Number(rawValue) / 2}mm`);
         } else {
             setter("");
         }
+
         actions.setSelectedPaper(undefined);
     };
 
@@ -597,7 +600,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                             value={parseFloat(paperLabelImageBleed)}
                                             onChange={handlePaperLabelImageBleedChange}
                                             min={0}
-                                            max={50}
+                                            max={Math.min(
+                                                parseFloat(labelSpacingX) / 2 || 0,
+                                                parseFloat(labelSpacingY) / 2 || 0
+                                            )}
                                             style={{ width: 100 }}
                                             suffix="mm"
                                         />

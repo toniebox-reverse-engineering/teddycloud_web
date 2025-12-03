@@ -1,12 +1,8 @@
-/* TeddyStudio/styles/print.css */
-
 :root {
     --paper-size: auto;
     --paper-margin-top: 10mm;
     --paper-margin-left: 10mm;
 }
-
-/* Allgemeine Label-Stile */
 
 .labelElement {
     position: relative;
@@ -17,10 +13,29 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin: 10px;
     overflow: visible;
     font-size: var(--text-font-size, 14px);
     color: black;
+    z-index: 0;
+}
+
+.labelElementText {
+    position: absolute;
+    top: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    left: 0;
+    right: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    padding: 4px 8px 8px;
+    overflow: hidden;
+    box-sizing: border-box;
+
     z-index: 0;
 }
 
@@ -46,6 +61,7 @@
     inset: 0;
     pointer-events: none;
     border: var(--label-border-width, 1px) solid var(--label-border-color, black);
+    box-sizing: border-box;
     border-radius: var(--labelElement-radius);
     box-sizing: border-box;
     z-index: 1;
@@ -55,8 +71,6 @@
     border-radius: 16px;
     border: 1px dashed var(--traveltonie-border-color, #d9d9d9);
 }
-
-/* Print-Regeln */
 
 @media print {
     @page {
@@ -95,8 +109,13 @@
         display: none;
     }
 
+    .traveltonieCouple {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        padding: 0 !important;
+    }
+
     .labelElement {
-        border-color: lightgray;
         margin: 0;
         background-color: var(--label-background-color, #ffffff) !important;
     }
@@ -111,6 +130,7 @@
 
     .control,
     .control * {
-        display: none;
+        display: none !important;
+        visibility: collapse !important;
     }
 }
