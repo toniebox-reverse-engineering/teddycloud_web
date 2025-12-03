@@ -37,6 +37,7 @@ body.theme-switching *::after {
     .ant-select-selection-search-input,
     .ant-select-selector,
     .ant-select-input,
+    .ant-input-number-input,
     .ant-upload-wrapper input[type="file"] {
         font-size: 16px !important;
     }
