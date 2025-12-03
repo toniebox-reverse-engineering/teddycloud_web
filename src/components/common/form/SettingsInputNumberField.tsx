@@ -55,7 +55,7 @@ export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props)
         <FormItem
             help={hasFeedback ? help : undefined}
             validateStatus={validateStatus}
-            label={label}
+            label={<span style={{ textWrap: "auto", lineHeight: "1.2" }}>{label}</span>}
             tooltip={description}
         >
             <Space.Compact>

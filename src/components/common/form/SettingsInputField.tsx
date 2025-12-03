@@ -53,7 +53,7 @@ export const SettingsInputField: React.FC<InputFieldProps> = (props) => {
         <FormItem
             help={hasFeedback ? help : undefined}
             validateStatus={validateStatus}
-            label={label}
+            label={<span style={{ textWrap: "auto", lineHeight: "1.2" }}>{label}</span>}
             tooltip={description}
         >
             <Input

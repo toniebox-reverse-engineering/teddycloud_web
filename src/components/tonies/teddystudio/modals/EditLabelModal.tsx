@@ -169,7 +169,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                         <Button key="cancel" onClick={onCancel}>
                             {t("tonies.teddystudio.cancel")}
                         </Button>
-                        <Button key="cancel" onClick={onCancel}>
+                        <Button key="close" onClick={onCancel}>
                             {t("tonies.teddystudio.close")}
                         </Button>
                         <Button key="save" type="primary" onClick={handleOk} disabled={!hasChanges()}>
