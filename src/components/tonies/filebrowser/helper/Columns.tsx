@@ -195,7 +195,8 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.model.toLowerCase().includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.episode.toLowerCase().includes(text))
+                    ("tonieInfo" in record && record.tonieInfo?.episode.toLowerCase().includes(text)) ||
+                    (record.date && new Date(record.date * 1000).toLocaleString().includes(text))
                 );
             },
             showOnDirOnly: true,
