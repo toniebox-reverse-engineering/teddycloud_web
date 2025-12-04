@@ -9,6 +9,9 @@
 -   Added Setting frontend.check_cc3200_cfw [https://github.com/toniebox-reverse-engineering/teddycloud/issues/358](https://github.com/toniebox-reverse-engineering/teddycloud/issues/358)
 -   Fixed possible TeddyCloud CA Certificate bug [https://github.com/toniebox-reverse-engineering/teddycloud/issues/230](https://github.com/toniebox-reverse-engineering/teddycloud/issues/230)
 -   Added new API for TAF file upload
+-   Fixed Bug updated Source from Tonies not loaded to box (Adventstonies) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/391](https://github.com/toniebox-reverse-engineering/teddycloud/issues/391)
+-   Fixed Bug: Cloud cache: \*.taf.json and empty Folder in library with cloud_overwrite [https://github.com/toniebox-reverse-engineering/teddycloud/issues/343](https://github.com/toniebox-reverse-engineering/teddycloud/issues/343)
+-   Fixed Bug: Problem with downloading new content to a Creative-Tonie in the Tonie app [https://github.com/toniebox-reverse-engineering/teddycloud/issues/350](https://github.com/toniebox-reverse-engineering/teddycloud/issues/350)
 -   gui: Changed Radio Browser API Url, try to get a working url from all servers list
 -   gui: Added tonieboxes tab to homepage, user can now choose if he want to see his tonies or tonieboxes. Setting is stored locally.
 -   gui: Added more country flags and languages to tonies list (filter + flags on Toniecard) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/217](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/217)
