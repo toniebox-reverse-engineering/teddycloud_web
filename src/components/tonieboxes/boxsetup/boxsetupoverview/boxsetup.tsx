@@ -162,7 +162,7 @@ export const BoxSetupContent: React.FC = () => {
             </Paragraph>
 
             <Paragraph style={{ marginTop: 16 }}>
-                <Timeline items={timelineItems} />
+                <Timeline className="intro" items={timelineItems} />
             </Paragraph>
         </>
     );

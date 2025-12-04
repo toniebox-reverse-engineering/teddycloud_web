@@ -89,6 +89,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                         gap: previewMode ? 4 : `${labelSpacingY} ${labelSpacingX}`,
                         justifyContent: previewMode ? "center" : "unset",
                         flexDirection: "row",
+                        padding: 10,
                     }}
                     className="traveltonieCouple"
                 >
@@ -118,40 +119,50 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                 className="labelElement"
                                 style={{
                                     display: printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
-                                    justifyContent: "space-between",
                                     fontSize: textFontSize,
-                                    padding: "4px 8px 8px 8px",
-                                    flexDirection: "column",
-                                    color: `${textColor}`,
-                                    overflow: "hidden",
+                                    color: textColor,
                                 }}
                             >
-                                <div style={{ height: 12 }}>
-                                    {showLanguageFlag && dataset.language ? (
-                                        <LanguageFlagIcon
-                                            name={dataset.language.toUpperCase().split("-")[1]}
-                                            height={textFontSize}
-                                        />
-                                    ) : (
-                                        "   "
-                                    )}
-                                </div>
-                                <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                                    {dataset.series && <div style={{ fontWeight: "bold" }}>{dataset.series}</div>}
-                                    {dataset.text && (
-                                        <div
-                                            style={{
-                                                whiteSpace: "pre-wrap",
-                                                wordBreak: "break-word",
-                                            }}
-                                        >
-                                            {dataset.text}
-                                        </div>
-                                    )}
-                                    {dataset.episodes && <div>{dataset.episodes}</div>}
-                                </div>
-                                <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
-                                    {showModelNo ? dataset.model : "   "}
+                                <div
+                                    className="labelElementText"
+                                    style={{
+                                        display:
+                                            printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
+                                        justifyContent: "space-between",
+                                        fontSize: textFontSize,
+                                        padding: "4px 8px 8px 8px",
+                                        flexDirection: "column",
+                                        color: `${textColor}`,
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    <div style={{ height: 12 }}>
+                                        {showLanguageFlag && dataset.language ? (
+                                            <LanguageFlagIcon
+                                                name={dataset.language.toUpperCase().split("-")[1]}
+                                                height={textFontSize}
+                                            />
+                                        ) : (
+                                            "   "
+                                        )}
+                                    </div>
+                                    <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
+                                        {dataset.series && <div style={{ fontWeight: "bold" }}>{dataset.series}</div>}
+                                        {dataset.text && (
+                                            <div
+                                                style={{
+                                                    whiteSpace: "pre-wrap",
+                                                    wordBreak: "break-word",
+                                                }}
+                                            >
+                                                {dataset.text}
+                                            </div>
+                                        )}
+                                        {dataset.episodes && <div>{dataset.episodes}</div>}
+                                    </div>
+                                    <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
+                                        {showModelNo ? dataset.model : "   "}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -168,46 +179,54 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                 style={{
                                     display: printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
                                     fontSize: textFontSize,
-                                    padding: "4px 8px 8px 8px",
-                                    flexDirection: "column",
-                                    color: `${textColor}`,
-                                    overflow: "hidden",
+                                    color: textColor,
                                 }}
                             >
-                                <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                                    <div
-                                        style={{
-                                            whiteSpace: "pre-wrap",
-                                            wordBreak: "break-word",
-                                        }}
-                                    >
-                                        {dataset.trackTitles.join("\n")}
+                                <div
+                                    className="labelElementText"
+                                    style={{
+                                        display:
+                                            printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
+                                        fontSize: textFontSize,
+                                        padding: "4px 8px 8px 8px",
+                                        flexDirection: "column",
+                                        color: `${textColor}`,
+                                        overflow: "hidden",
+                                    }}
+                                >
+                                    <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
+                                        <div
+                                            style={{
+                                                whiteSpace: "pre-wrap",
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            {dataset.trackTitles.join("\n")}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     )}
                     {(onRemoveItem || onEditItem) && (
-                        <>
-                            <div className="control" style={{ display: "flex", gap: 16, margin: "8px 8px 0 8px" }}>
-                                {onEditItem && (
-                                    <Button
-                                        className="editButton"
-                                        size="small"
-                                        icon={<EditOutlined />}
-                                        onClick={() => onEditItem(index)}
-                                    />
-                                )}
-                                {onRemoveItem && (
-                                    <Button
-                                        className="deleteButton"
-                                        size="small"
-                                        icon={<DeleteOutlined />}
-                                        onClick={() => onRemoveItem(index)}
-                                    />
-                                )}
-                            </div>
-                        </>
+                        <div className="control" style={{ display: "flex", gap: 8, margin: "8px 8px 0 8px" }}>
+                            {onEditItem && (
+                                <Button
+                                    className="editButton"
+                                    size="small"
+                                    icon={<EditOutlined />}
+                                    onClick={() => onEditItem(index)}
+                                />
+                            )}
+                            {onRemoveItem && (
+                                <Button
+                                    className="deleteButton"
+                                    size="small"
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => onRemoveItem(index)}
+                                />
+                            )}
+                        </div>
                     )}
                 </div>
             ))}

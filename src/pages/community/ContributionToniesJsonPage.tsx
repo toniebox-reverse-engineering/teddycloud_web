@@ -33,11 +33,9 @@ export const ContributionToniesJsonPage = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                // Fetch the JSON data
                 const response = await api.apiGetTeddyCloudApiRaw(`/api/toniesJson`);
                 const jsonData = await response.json();
 
-                // Filter the JSON data to include only entries with non-empty audio_id arrays
                 const filteredData = jsonData.filter(
                     (item: any) =>
                         item.audio_id &&
@@ -46,18 +44,16 @@ export const ContributionToniesJsonPage = () => {
                         !item.model.includes("20000")
                 );
 
-                // Transform the filtered JSON data into the desired array format
                 const dataArray: TonieJsonEntry[] = filteredData.map((item: any) => ({
                     model: item.model,
                     series: item.series,
                     episodes: item.episodes,
                     pic: item.pic,
-                    audio_id: item.audio_id || [], // Ensure audio_id is an array, set to empty array if not provided
-                    category: item.category, // Include category
-                    language: item.language, // Include language
+                    audio_id: item.audio_id || [],
+                    category: item.category,
+                    language: item.language,
                 }));
 
-                // Group tonieJsonEntries by language and category
                 const groupedData: { [key: string]: TonieJsonEntry[] } = {};
                 dataArray.forEach((entry) => {
                     if (!groupedData[entry.language]) {
