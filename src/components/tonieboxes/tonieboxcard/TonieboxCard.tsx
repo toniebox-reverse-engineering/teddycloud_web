@@ -28,6 +28,7 @@ import { CertificatesModal } from "../common/modals/CertificatesModal";
 import { SettingsModal } from "./modals/SettingsModal";
 import { DeleteModal } from "./modals/DeleteModal";
 import { useTriggerWriteConfig } from "./hooks/useTriggerWriteConfig";
+import { canHover } from "../../../utils/browser/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -571,7 +572,10 @@ export const TonieboxCard: React.FC<{
                         ? [
                               <>
                                   {!tonieboxAccessApi ? (
-                                      <Tooltip title={t("tonieboxes.accessApiDisabled")}>
+                                      <Tooltip
+                                          open={!canHover ? false : undefined}
+                                          title={t("tonieboxes.accessApiDisabled")}
+                                      >
                                           <LockOutlined
                                               className="access-disabled"
                                               style={{ color: token.colorError, cursor: "pointer" }}
@@ -658,7 +662,11 @@ export const TonieboxCard: React.FC<{
                                 : "MAC") + " "}
                         </span>,
                         cfwInstalled ? (
-                            <Tooltip key="box-mac-cfw-link" title={t("tonieboxes.linkToBoxCFW")}>
+                            <Tooltip
+                                open={!canHover ? false : undefined}
+                                key="box-mac-cfw-link"
+                                title={t("tonieboxes.linkToBoxCFW")}
+                            >
                                 <Link to={"http://" + lastIp} target="_blank">
                                     {getTonieboxIdFormatted()} <LinkOutlined />
                                 </Link>

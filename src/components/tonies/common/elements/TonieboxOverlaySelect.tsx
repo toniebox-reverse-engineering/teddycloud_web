@@ -2,6 +2,7 @@ import React from "react";
 import { Select, Tooltip } from "antd";
 import type { SelectProps } from "antd";
 import { useTranslation } from "react-i18next";
+import { canHover } from "../../../../utils/browser/browserUtils";
 
 const { Option } = Select;
 
@@ -31,7 +32,7 @@ export const TonieboxOverlaySelect: React.FC<TonieboxOverlaySelectProps> = ({
     }
 
     const select = (
-        <Tooltip title={t("tonies.content.showToniesOfBoxes")}>
+        <Tooltip open={!canHover ? false : undefined} title={t("tonies.content.showToniesOfBoxes")}>
             <Select id={selectId} value={overlay ?? ""} defaultValue="" onChange={onChange} {...selectProps}>
                 {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
                     <Option key={boxId} value={boxId}>

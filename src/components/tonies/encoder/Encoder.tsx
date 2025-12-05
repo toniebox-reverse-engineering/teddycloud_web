@@ -11,6 +11,7 @@ import { useEncoder } from "./hooks/useEncoder";
 import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
 import { DirectoryTreeSelect } from "../common/elements/DirectoryTreeSelect";
 import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
+import { canHover } from "../../../utils/browser/browserUtils";
 
 const { useToken } = theme;
 
@@ -158,7 +159,10 @@ export const Encoder: React.FC = () => {
                                         placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
                                     />
 
-                                    <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
+                                    <Tooltip
+                                        open={!canHover ? false : undefined}
+                                        title={t("fileBrowser.createDirectory.createDirectory")}
+                                    >
                                         <Button
                                             className="encoder-save-btn"
                                             disabled={uploading || processing}

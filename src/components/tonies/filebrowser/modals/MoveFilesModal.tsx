@@ -13,6 +13,7 @@ import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
 import { useDirectoryCreate } from "../../common/hooks/useCreateDirectory";
 import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
+import { canHover } from "../../../../utils/browser/browserUtils";
 
 const { useToken } = theme;
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -223,7 +224,10 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                         placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
                         style={{ borderTopRightRadius: 0, borderBottomRightRadius: 0 }}
                     />
-                    <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
+                    <Tooltip
+                        open={!canHover ? false : undefined}
+                        title={t("fileBrowser.createDirectory.createDirectory")}
+                    >
                         <Button
                             icon={<FolderAddOutlined />}
                             onClick={() => {

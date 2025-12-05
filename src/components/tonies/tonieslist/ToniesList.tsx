@@ -13,7 +13,7 @@ import { useToniesFilter } from "./hooks/useToniesFilter";
 import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
-import { scrollToTop } from "../../../utils/browser/browserUtils";
+import { canHover, scrollToTop } from "../../../utils/browser/browserUtils";
 import { hideSelectedTonies, setLiveFlag, setNoCloud } from "./utils/ToniesListActions";
 import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "./utils/ToniesListExport";
 import { ToniesFilterPanel } from "./filterpanel/ToniesFilterPanel";
@@ -512,6 +512,7 @@ export const ToniesList: React.FC<{
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
                         <Tooltip
+                            open={!canHover ? false : undefined}
                             title={
                                 selectionMode
                                     ? t("tonies.selectMode.cancelButtonTooltip")

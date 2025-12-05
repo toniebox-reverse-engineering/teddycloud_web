@@ -4,6 +4,7 @@ import { ClearOutlined, CloseOutlined, SaveOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import { LabelShape, PaperSize, PrintMode, SettingsActions, SettingsState } from "../hooks/useSettings";
+import { canHover } from "../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 
@@ -365,17 +366,26 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             buttonStyle="solid"
                         >
                             <Radio.Button value="ImageAndText">
-                                <Tooltip title={t("tonies.teddystudio.printModeImageAndTextTooltip")}>
+                                <Tooltip
+                                    open={!canHover ? false : undefined}
+                                    title={t("tonies.teddystudio.printModeImageAndTextTooltip")}
+                                >
                                     {t("tonies.teddystudio.printModeImageAndText")}
                                 </Tooltip>
                             </Radio.Button>
                             <Radio.Button value="OnlyImage">
-                                <Tooltip title={t("tonies.teddystudio.printModeOnlyImageTooltip")}>
+                                <Tooltip
+                                    open={!canHover ? false : undefined}
+                                    title={t("tonies.teddystudio.printModeOnlyImageTooltip")}
+                                >
                                     {t("tonies.teddystudio.printModeOnlyImage")}
                                 </Tooltip>
                             </Radio.Button>
                             <Radio.Button value="OnlyText">
-                                <Tooltip title={t("tonies.teddystudio.printModeOnlyTextTooltip")}>
+                                <Tooltip
+                                    open={!canHover ? false : undefined}
+                                    title={t("tonies.teddystudio.printModeOnlyTextTooltip")}
+                                >
                                     {t("tonies.teddystudio.printModeOnlyText")}
                                 </Tooltip>
                             </Radio.Button>

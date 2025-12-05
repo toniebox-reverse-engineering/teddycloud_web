@@ -43,6 +43,7 @@ import MoveFilesModal from "./modals/MoveFilesModal";
 import RenameFileModal from "./modals/RenameFilesModal";
 import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
+import { canHover } from "../../../utils/browser/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -525,6 +526,7 @@ export const FileBrowser: React.FC<{
                                         files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
                                             .length > 0 ? (
                                             <Tooltip
+                                                open={!canHover ? false : undefined}
                                                 key="moveMultiple"
                                                 title={t("fileBrowser.moveMultiple", {
                                                     selectedRowCount: selectedRowKeys.length,
@@ -545,6 +547,7 @@ export const FileBrowser: React.FC<{
                                             ""
                                         )}
                                         <Tooltip
+                                            open={!canHover ? false : undefined}
                                             key="deleteMultiple"
                                             title={t("fileBrowser.deleteMultiple", {
                                                 selectedRowCount: selectedRowKeys.length,
@@ -571,6 +574,7 @@ export const FileBrowser: React.FC<{
                                             ).length
                                         ) && special === "library" ? (
                                             <Tooltip
+                                                open={!canHover ? false : undefined}
                                                 key="encodeFiles"
                                                 title={
                                                     t("fileBrowser.encodeFiles.encodeFiles", {

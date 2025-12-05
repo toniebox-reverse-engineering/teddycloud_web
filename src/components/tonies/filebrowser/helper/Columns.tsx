@@ -20,6 +20,7 @@ import { humanFileSize } from "../../../../utils/files/humanFileSize";
 import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
 import { TonieCardProps } from "../../../../types/tonieTypes";
 import { useTranslation } from "react-i18next";
+import { canHover } from "../../../../utils/browser/browserUtils";
 
 const { useToken } = theme;
 
@@ -282,7 +283,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
 
             if (!record.isDir && ffmpegSupportedExtensions.some((ending) => record.name.endsWith(ending))) {
                 actions.push(
-                    <Tooltip key={`action-play-${record.name}`} title={t("fileBrowser.playFile")}>
+                    <Tooltip
+                        open={!canHover ? false : undefined}
+                        key={`action-play-${record.name}`}
+                        title={t("fileBrowser.playFile")}
+                    >
                         <PlayCircleOutlined
                             style={{ margin: "4px 8px 4px 0", padding: 4 }}
                             onClick={() =>
@@ -316,7 +321,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             if (mode === "full") {
                 if (isTapList && record.name.includes(".tap") && handleEditTapClick) {
                     actions.push(
-                        <Tooltip key={`action-edit-tap-${record.name}`} title={t("fileBrowser.tap.edit")}>
+                        <Tooltip
+                            open={!canHover ? false : undefined}
+                            key={`action-edit-tap-${record.name}`}
+                            title={t("fileBrowser.tap.edit")}
+                        >
                             <EditOutlined
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
@@ -324,7 +333,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                         </Tooltip>
                     );
                     actions.push(
-                        <Tooltip key={`action-copy-tap-${record.name}`} title={t("fileBrowser.tap.copy")}>
+                        <Tooltip
+                            open={!canHover ? false : undefined}
+                            key={`action-copy-tap-${record.name}`}
+                            title={t("fileBrowser.tap.copy")}
+                        >
                             <CopyOutlined style={{ margin: "4px 8px 4px 0", padding: 4 }} />
                         </Tooltip>
                     );
@@ -332,7 +345,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
 
                 if (record.tafHeader && handleEditTafMetaDataClick) {
                     actions.push(
-                        <Tooltip key={`action-edit-tafmeta-${record.name}`} title={t("fileBrowser.tafMeta.edit")}>
+                        <Tooltip
+                            open={!canHover ? false : undefined}
+                            key={`action-edit-tafmeta-${record.name}`}
+                            title={t("fileBrowser.tafMeta.edit")}
+                        >
                             <EditOutlined
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTafMetaDataClick(path, record)}
@@ -362,6 +379,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             />
                         ) : (
                             <Tooltip
+                                open={!canHover ? false : undefined}
                                 key={`action-download-${record.name}`}
                                 title={
                                     record.name.endsWith(".taf")
@@ -388,7 +406,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
 
                 if (record.tafHeader && !record.isDir && special !== "library" && migrateContent2Lib) {
                     actions.push(
-                        <Tooltip key={`action-migrate-${record.name}`} title={t("fileBrowser.migrateContentToLib")}>
+                        <Tooltip
+                            open={!canHover ? false : undefined}
+                            key={`action-migrate-${record.name}`}
+                            title={t("fileBrowser.migrateContentToLib")}
+                        >
                             <CloudServerOutlined
                                 onClick={() => migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)}
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
@@ -397,6 +419,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     );
                     actions.push(
                         <Tooltip
+                            open={!canHover ? false : undefined}
                             key={`action-migrate-root-${record.name}`}
                             title={t("fileBrowser.migrateContentToLibRoot")}
                         >
@@ -411,7 +434,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 if (special === "library" && record.name !== "..") {
                     if (!record.isDir && showRenameDialog) {
                         actions.push(
-                            <Tooltip key={`action-rename-${record.name}`} title={t("fileBrowser.rename")}>
+                            <Tooltip
+                                open={!canHover ? false : undefined}
+                                key={`action-rename-${record.name}`}
+                                title={t("fileBrowser.rename")}
+                            >
                                 <FormOutlined
                                     onClick={() => showRenameDialog(record.name)}
                                     style={{
@@ -424,7 +451,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     }
                     if (!record.isDir && showMoveDialog) {
                         actions.push(
-                            <Tooltip key={`action-move-${record.name}`} title={t("fileBrowser.move")}>
+                            <Tooltip
+                                open={!canHover ? false : undefined}
+                                key={`action-move-${record.name}`}
+                                title={t("fileBrowser.move")}
+                            >
                                 <NodeExpandOutlined
                                     onClick={() => showMoveDialog(record.name)}
                                     style={{
@@ -439,7 +470,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
 
                 if (record.name !== ".." && showDeleteConfirmDialog) {
                     actions.push(
-                        <Tooltip key={`action-delete-${record.name}`} title={t("fileBrowser.delete")}>
+                        <Tooltip
+                            open={!canHover ? false : undefined}
+                            key={`action-delete-${record.name}`}
+                            title={t("fileBrowser.delete")}
+                        >
                             <DeleteOutlined
                                 onClick={() =>
                                     showDeleteConfirmDialog(

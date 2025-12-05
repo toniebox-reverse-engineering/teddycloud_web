@@ -23,6 +23,7 @@ import { SelectFilesModal } from "./SelectFilesModal";
 import { useSelectFiles } from "../hooks/useSelectFiles";
 import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
 import { MAX_FILES } from "../../../../constants/numbers";
+import { canHover } from "../../../../utils/browser/browserUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -286,7 +287,10 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                         disabled={processing}
                                         placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
                                     />
-                                    <Tooltip title={t("fileBrowser.createDirectory.createDirectory")}>
+                                    <Tooltip
+                                        open={!canHover ? false : undefined}
+                                        title={t("fileBrowser.createDirectory.createDirectory")}
+                                    >
                                         <Button
                                             className="encoder-save-btn"
                                             disabled={processing}
