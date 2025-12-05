@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import type { TableRowSelection, ColumnsType } from "antd/es/table/interface";
 import { NotificationRecord, NotificationType } from "../../../types/teddyCloudNotificationTypes";
 import { useNotificationsList } from "./hooks/useNotificationsList";
+import { canHover } from "../../../utils/browser/browserUtils";
 
 const { Option } = Select;
 const { Paragraph } = Typography;
@@ -158,7 +159,10 @@ const NotificationsList: React.FC = () => {
                     {record.flagConfirmed ? (
                         t("settings.notifications.confirmed")
                     ) : (
-                        <Tooltip title={t("settings.notifications.clickToConfirm")}>
+                        <Tooltip
+                            open={!canHover ? false : undefined}
+                            title={t("settings.notifications.clickToConfirm")}
+                        >
                             {t("settings.notifications.unconfirmed")}
                         </Tooltip>
                     )}
@@ -320,7 +324,10 @@ const NotificationsList: React.FC = () => {
                                               {record.flagConfirmed ? (
                                                   t("settings.notifications.confirmed")
                                               ) : (
-                                                  <Tooltip title={t("settings.notifications.clickToConfirm")}>
+                                                  <Tooltip
+                                                      open={!canHover ? false : undefined}
+                                                      title={t("settings.notifications.clickToConfirm")}
+                                                  >
                                                       {t("settings.notifications.unconfirmed")}
                                                   </Tooltip>
                                               )}

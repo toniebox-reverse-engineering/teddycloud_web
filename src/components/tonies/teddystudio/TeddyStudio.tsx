@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Divider, Typography, theme } from "antd";
+import { Button, Collapse, Divider, Typography, theme } from "antd";
 import { ClearOutlined, PrinterOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
@@ -94,6 +94,21 @@ export const TeddyStudio: React.FC = () => {
 
     const currentItem = editIndex !== null ? mergedResults[editIndex] : null;
 
+    const labelSettingsSummary = `${
+        settings.labelShape === "round"
+            ? `${t("tonies.teddystudio.round")} ${settings.diameter}`
+            : `${settings.width} x ${settings.height}`
+    }`;
+
+    const printModeSummary = t(
+        `tonies.teddystudio.printMode${settings.printMode.charAt(0).toUpperCase() + settings.printMode.slice(1)}`
+    );
+
+    const paperSizeSummary =
+        settings.paperSize === "Custom"
+            ? `${settings.paperSize} (${settings.customPaperWidth} x ${settings.customPaperHeight})`
+            : settings.paperSize;
+
     return (
         <>
             <h1>{t("tonies.teddystudio.title")}</h1>
@@ -103,13 +118,27 @@ export const TeddyStudio: React.FC = () => {
 
             <CustomImages customItems={customItems} onAddImage={addCustomImage} />
 
-            <SettingsPanel
-                settings={settings}
-                paperOptions={paperOptions}
-                actions={actions}
-                onPaperSelect={actions.applyPaperPreset}
-                onSave={handleSaveSettings}
-                onClear={handleClearSettings}
+            <Collapse
+                className="settingsPanel"
+                bordered={false}
+                items={[
+                    {
+                        key: "1",
+                        label: `${t("tonies.teddystudio.settings")}: ${labelSettingsSummary} | ${t(
+                            "tonies.teddystudio.printMode"
+                        )}: ${printModeSummary} | ${t("tonies.teddystudio.paperSize")}: ${paperSizeSummary}`,
+                        children: [
+                            <SettingsPanel
+                                settings={settings}
+                                paperOptions={paperOptions}
+                                actions={actions}
+                                onPaperSelect={actions.applyPaperPreset}
+                                onSave={handleSaveSettings}
+                                onClear={handleClearSettings}
+                            />,
+                        ],
+                    },
+                ]}
             />
 
             <Divider>{t("tonies.teddystudio.printSheet")}</Divider>
@@ -154,8 +183,6 @@ export const TeddyStudio: React.FC = () => {
             <EditLabelModal
                 open={editIndex !== null}
                 item={currentItem}
-                settings={settings}
-                textColor={textColor}
                 onCancel={handleCloseModal}
                 onSave={handleSaveLabelElements}
                 onPrev={handlePrevLabel}

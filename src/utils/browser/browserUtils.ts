@@ -55,6 +55,8 @@ export const isVolumeControlSupported = (): boolean => {
     }
 };
 
+export const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
 // ============================
 // Theme / Color Scheme
 // ============================

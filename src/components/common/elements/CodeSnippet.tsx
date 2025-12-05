@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Button, theme, Tooltip } from "antd";
 import { CheckOutlined, CopyOutlined } from "@ant-design/icons";
+import { canHover } from "../../../utils/browser/browserUtils";
 
 const { useToken } = theme;
 
@@ -128,7 +129,7 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
             )}
 
             {!copyStatus && (
-                <Tooltip title={t("utils.copyToClipboard")}>
+                <Tooltip open={!canHover ? false : undefined} title={t("utils.copyToClipboard")}>
                     <Button
                         type="text"
                         size="small"

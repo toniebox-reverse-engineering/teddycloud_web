@@ -8,6 +8,7 @@ import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
+import { canHover } from "../../../../utils/browser/browserUtils";
 
 export interface ToniesJsonSearchResult {
     value: string;
@@ -135,7 +136,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
                         }}
                         onClose={() => setShowAddCustomTonieModal(false)}
                     />
-                    <Tooltip title={t("tonies.addNewCustomTonieHint")}>
+                    <Tooltip open={!canHover ? false : undefined} title={t("tonies.addNewCustomTonieHint")}>
                         <Button onClick={handleAddNewCustomButtonClick} style={{ marginTop: 8 }}>
                             {t("tonies.addNewCustomTonie")}
                         </Button>

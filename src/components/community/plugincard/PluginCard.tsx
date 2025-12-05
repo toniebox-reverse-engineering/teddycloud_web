@@ -1,6 +1,7 @@
 import { Card, Typography, Badge, Tooltip, theme } from "antd";
 import { DesktopOutlined, HomeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+import { canHover } from "../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -72,18 +73,22 @@ export const PluginCard: React.FC<PluginCardProps> = ({ plugin, onOpen, onOpenHo
                 </div>
             }
             actions={[
-                <Tooltip title={t("community.plugins.open")} key="details">
+                <Tooltip open={!canHover ? false : undefined} title={t("community.plugins.open")} key="details">
                     <DesktopOutlined style={{ cursor: "pointer" }} onClick={() => onOpen(plugin.pluginId)} />
                 </Tooltip>,
                 plugin.pluginHomepage && (
-                    <Tooltip title={t("community.plugins.visitHomepage")} key="homepage">
+                    <Tooltip
+                        open={!canHover ? false : undefined}
+                        title={t("community.plugins.visitHomepage")}
+                        key="homepage"
+                    >
                         <HomeOutlined
                             style={{ cursor: "pointer" }}
                             onClick={() => onOpenHomepage(plugin.pluginHomepage!)}
                         />
                     </Tooltip>
                 ),
-                <Tooltip title={t("community.plugins.delete")} key="delete">
+                <Tooltip open={!canHover ? false : undefined} title={t("community.plugins.delete")} key="delete">
                     <DeleteOutlined
                         style={{ cursor: "pointer", color: token.colorError }}
                         onClick={() => onDelete(plugin.pluginId)}

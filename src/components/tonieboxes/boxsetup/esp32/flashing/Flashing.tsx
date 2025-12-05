@@ -23,6 +23,7 @@ import { Step0ReadImport } from "./steps/Step0ReadImport";
 import { Step1PatchFlash } from "./steps/Step1PatchFlash";
 import { Step2FlashESP32 } from "./steps/Step2FlashESP32";
 import { Step3AfterFlash } from "./steps/Step3AfterFlash";
+import { canHover } from "../../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 const { Option } = Select;
@@ -414,7 +415,10 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                                     </Paragraph>
                                 </div>
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                                    <Tooltip title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip")}>
+                                    <Tooltip
+                                        open={!canHover ? false : undefined}
+                                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip")}
+                                    >
                                         <Button
                                             icon={<RollbackOutlined />}
                                             disabled={disableButtons}

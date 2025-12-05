@@ -14,7 +14,7 @@ export const StyledLanguageSwitcher = () => {
     ];
 
     const currentLanguage = i18n.language;
-    const currentLabel = LANGS.find((l) => l.key === currentLanguage)?.label ?? currentLanguage;
+    const currentLabel = LANGS.find((l) => l.key === currentLanguage.substring(0, 2))?.label ?? currentLanguage;
 
     return (
         <div style={{ marginRight: 8 }}>

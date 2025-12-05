@@ -37,6 +37,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
         labelSpacingX,
         labelSpacingY,
         textFontSize,
+        imagePosition,
         printMode,
         labelBackgroundColor,
         showLanguageFlag,
@@ -78,6 +79,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                 ["--label-border-width" as any]: showLabelBorder ? "1px" : "0",
                 ["--label-border-color" as any]: textColor,
                 ["--traveltonie-border-color" as any]: token.colorBorderSecondary,
+                ["--image-position" as any]: imagePosition,
             }}
         >
             {mergedResults.map((dataset: any, index: number) => (
@@ -104,7 +106,6 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                             style={{
                                 display: printMode === "ImageAndText" || printMode === "OnlyImage" ? "flex" : "none",
                                 ["--label-bg-image" as any]: `url("${dataset.pic}")`,
-                                padding: "4px 8px 8px 8px",
                             }}
                         />
                     </div>
@@ -130,13 +131,12 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                             printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
                                         justifyContent: "space-between",
                                         fontSize: textFontSize,
-                                        padding: "4px 8px 8px 8px",
                                         flexDirection: "column",
                                         color: `${textColor}`,
                                         overflow: "hidden",
                                     }}
                                 >
-                                    <div style={{ height: 12 }}>
+                                    <div style={{ fontSize: "smaller", height: 12, marginTop: 4 }}>
                                         {showLanguageFlag && dataset.language ? (
                                             <LanguageFlagIcon
                                                 name={dataset.language.toUpperCase().split("-")[1]}

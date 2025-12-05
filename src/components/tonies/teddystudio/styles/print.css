@@ -21,20 +21,13 @@
 
 .labelElementText {
     position: absolute;
-    top: calc(-1 * var(--paper-label-image-bleed, 0mm));
-    bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-
-    padding: 4px 8px 8px;
     overflow: hidden;
-    box-sizing: border-box;
+    padding: 0px;
+    border-radius: var(--labelElement-radius);
 
     z-index: 0;
 }
@@ -48,7 +41,7 @@
     bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
     background-image: var(--label-bg-image);
     background-size: cover;
-    background-position: center;
+    background-position: var(--image-position, "center");
     background-repeat: no-repeat;
     background-color: var(--label-background-color, #ffffff);
     border-radius: var(--labelElement-radius);
@@ -77,6 +70,8 @@
         size: var(--paper-size);
         margin-top: var(--paper-margin-top);
         margin-left: var(--paper-margin-left);
+        margin-bottom: 0;
+        margin-right: 0;
     }
 
     * {

@@ -322,15 +322,20 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                                         <Divider
                                                             key="divider-source"
                                                             orientation="vertical"
-                                                            style={{ height: 16 }}
+                                                            style={{ marginLeft: 2 }}
                                                         />,
                                                     ]}
-                                                    suffix={
+                                                    suffix={[
+                                                        <Divider
+                                                            key="divider-source-3"
+                                                            orientation="vertical"
+                                                            style={{ marginLeft: 2 }}
+                                                        />,
                                                         <FolderOpenOutlined
                                                             onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => handleEditFile(index)}
-                                                        />
-                                                    }
+                                                        />,
+                                                    ]}
                                                 />
                                             </Form.Item>
                                             <Form.Item

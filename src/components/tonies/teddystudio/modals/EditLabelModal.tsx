@@ -4,8 +4,11 @@ import { ArrowLeftOutlined, ArrowRightOutlined, InboxOutlined } from "@ant-desig
 import { MergedItem } from "../hooks/useCustomItems";
 import { useTranslation } from "react-i18next";
 import { LabelGrid } from "../grid/LabelGrid";
-import { SettingsState } from "../hooks/useSettings";
+import { SettingsState, useSettings } from "../hooks/useSettings";
 import Checkbox from "antd/es/checkbox/Checkbox";
+import { SettingsModal } from "./SettingsModal";
+import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -13,8 +16,6 @@ const { Dragger } = Upload;
 interface EditLabelModalProps {
     open: boolean;
     item: MergedItem | null;
-    settings: SettingsState;
-    textColor: string;
     onCancel: () => void;
     onSave: (values: { text: string; episodes: string; trackTitles: string[]; picture: string }) => void;
     onPrev?: () => void;
@@ -30,8 +31,6 @@ const { Paragraph } = Typography;
 export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     open,
     item,
-    settings,
-    textColor,
     onCancel,
     onSave,
     onPrev,
@@ -42,6 +41,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     totalItems,
 }) => {
     const { t } = useTranslation();
+    const { addNotification } = useTeddyCloud();
     const [text, setText] = useState("");
     const [episodes, setEpisodes] = useState("");
     const [trackTitlesText, setTrackTitlesText] = useState("");
@@ -50,6 +50,10 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     const [picture, setPicture] = useState("");
 
     const [saveOnNavigate, setSaveOnNavigate] = useState<boolean>(true);
+
+    const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+
+    const { state: settings, textColor, paperOptions, actions } = useSettings();
 
     useEffect(() => {
         if (!item) {
@@ -135,6 +139,20 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
         reader.readAsDataURL(file);
     };
 
+    const handleSaveSettings = () => {
+        actions.save();
+        addNotification(
+            NotificationTypeEnum.Success,
+            t("tonies.teddystudio.settingsSavedSuccessful"),
+            t("tonies.teddystudio.settingsSavedSuccessful"),
+            t("tonies.teddystudio.navigationTitle")
+        );
+    };
+
+    const handleClearSettings = () => {
+        actions.clear();
+    };
+
     return (
         <Modal
             open={open}
@@ -154,6 +172,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                         gap: 8,
                     }}
                 >
+                    <Button onClick={() => setSettingsModalOpen(true)}>{t("tonies.teddystudio.settings")}</Button>
                     <Checkbox
                         key="saveOnNavigate"
                         checked={saveOnNavigate}
@@ -264,6 +283,16 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                     </div>
                 </Col>
             </Row>
+            <SettingsModal
+                open={settingsModalOpen}
+                onClose={() => setSettingsModalOpen(false)}
+                settings={settings}
+                paperOptions={paperOptions}
+                actions={actions}
+                onPaperSelect={actions.applyPaperPreset}
+                onSave={handleSaveSettings}
+                onClear={handleClearSettings}
+            />
         </Modal>
     );
 };
