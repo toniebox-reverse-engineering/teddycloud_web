@@ -33,9 +33,9 @@ export const PluginPage = () => {
             items.push({ title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> });
         } else if (section === "community") {
             items.push({ title: <Link to="/community">{t("community.navigationTitle")}</Link> });
-            if (section2 === "plugin") {
+            if (section2 === "tcplugins") {
                 items.push({
-                    title: <Link to="/community/plugins">{t("community.plugins.navigationTitle")}</Link>,
+                    title: <Link to="/community/tcplugins">{t("community.plugins.navigationTitle")}</Link>,
                 });
             }
         }
