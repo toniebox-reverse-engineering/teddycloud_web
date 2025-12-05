@@ -73,6 +73,22 @@ export const ToniesSubNav = () => {
             title: t("tonies.tonies.navigationTitle"),
         },
         {
+            key: "library",
+            label: (
+                <Link
+                    to="/tonies/library"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.library.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(BookOutlined),
+            title: t("tonies.library.navigationTitle"),
+        },
+        {
             key: "tonies-audio-player",
             label: (
                 <Link
@@ -121,6 +137,38 @@ export const ToniesSubNav = () => {
             title: t("tonies.teddystudio.navigationTitle"),
         },
         {
+            key: "content",
+            label: (
+                <Link
+                    to="/tonies/content"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.content.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(SoundOutlined),
+            title: t("tonies.content.navigationTitle"),
+        },
+        {
+            key: "system-sounds",
+            label: (
+                <Link
+                    to="/tonies/system-sounds"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.system-sounds.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(SettingOutlined),
+            title: t("tonies.system-sounds.navigationTitle"),
+        },
+        {
             key: "custom-json",
             label: (
                 <label
@@ -162,54 +210,6 @@ export const ToniesSubNav = () => {
             ),
             icon: React.createElement(UnorderedListOutlined),
             title: t("tonies.tap.navigationTitle"),
-        },
-        {
-            key: "library",
-            label: (
-                <Link
-                    to="/tonies/library"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("tonies.library.navigationTitle")}
-                </Link>
-            ),
-            icon: React.createElement(BookOutlined),
-            title: t("tonies.library.navigationTitle"),
-        },
-        {
-            key: "content",
-            label: (
-                <Link
-                    to="/tonies/content"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("tonies.content.navigationTitle")}
-                </Link>
-            ),
-            icon: React.createElement(SoundOutlined),
-            title: t("tonies.content.navigationTitle"),
-        },
-        {
-            key: "system-sounds",
-            label: (
-                <Link
-                    to="/tonies/system-sounds"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("tonies.system-sounds.navigationTitle")}
-                </Link>
-            ),
-            icon: React.createElement(SettingOutlined),
-            title: t("tonies.system-sounds.navigationTitle"),
         },
         ...pluginItems,
     ];

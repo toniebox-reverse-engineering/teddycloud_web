@@ -51,6 +51,7 @@
 -   gui: Added Attribution page
 -   gui: Added Support request form
 -   gui: Added new ESP32 Flasher (can be activated in settings by enabling new setting: frontend.use_revvox_flasher) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/260](https://github.com/toniebox-reverse-engineering/teddycloud/issues/260)
+-   gui: Enriched Stats page
 -   gui maintenance: Massive refactoring of nearly everything
 -   gui maintenance: Updated antD to version 6
 -   gui maintenance: Removed deprecations

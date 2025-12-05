@@ -639,13 +639,27 @@
             "navigationTitle": "Sponsoren"
         },
         "stats": {
+            "claimed": "Beansprucht",
+            "claimedTitle": "Beanspruchungsstatus",
             "cloud_blocked": "Cloudanfragen blockiert",
             "cloud_failed": "Fehlgeschlagene Cloudanfragen",
             "cloud_requests": "Cloudanfragen ausgeführt",
+            "cloudDisabled": "Cloud deaktiviert",
+            "cloudEnabled": "Cloud aktiviert",
+            "cloudTitle": "Cloud-Status",
             "connections": "Verbindungen zu diesem Server",
+            "languageTitle": "Sprachen",
+            "live": "Live",
+            "liveTitle": "Live-Status",
             "navigationTitle": "Statistiken",
+            "notLive": "Nicht live",
             "reverse_requests": "Reverse Proxy-Aufrufe von Clients",
-            "title": "Statistiken"
+            "serverStats": "Serverstatistiken",
+            "title": "Statistiken",
+            "toniesStats": "Tonies-Statistiken",
+            "totalTonieBoxes": "Gesamtzahl Tonieboxen",
+            "totalTonies": "Gesamtzahl Tonies",
+            "unclaimed": "Nicht beansprucht"
         },
         "title": "Willkommen auf der TeddyCloud!",
         "toAllYourTonieboxes": "Zu allen Tonieboxen",
