@@ -10,7 +10,7 @@ const { useToken } = theme;
 
 type ValidateStatus = "" | "success" | "warning" | "error" | "validating" | undefined;
 
-interface EditModalProps {
+interface EditTonieModalProps {
     open: boolean;
     title: React.ReactNode;
     onCancel: () => void;
@@ -46,7 +46,7 @@ interface EditModalProps {
     onOpenFileSelectModal: () => void;
 }
 
-export const EditModal: React.FC<EditModalProps> = ({
+export const EditTonieModal: React.FC<EditTonieModalProps> = ({
     open,
     title,
     onCancel,
@@ -122,7 +122,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleClearSource}
                             />,
-                            <Divider key="divider-source-1" orientation="vertical" />,
+                            <Divider key="divider-source-1" orientation="vertical" style={{ marginLeft: 2 }} />,
                             <RollbackOutlined
                                 key="rollback-source"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -133,14 +133,15 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 }}
                                 className={isSourceUnchanged ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-source-2" orientation="vertical" />,
+                            <Divider key="divider-source-2" orientation="vertical" style={{ marginLeft: 2 }} />,
                         ]}
-                        suffix={
+                        suffix={[
+                            <Divider key="divider-source-3" orientation="vertical" style={{ marginLeft: 2 }} />,
                             <FolderOpenOutlined
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={onOpenFileSelectModal}
-                            />
-                        }
+                            />,
+                        ]}
                     />
                     <RadioStreamSearch
                         placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
@@ -166,7 +167,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleClearModel}
                             />,
-                            <Divider key="divider-model-1" orientation="vertical" />,
+                            <Divider key="divider-model-1" orientation="vertical" style={{ marginLeft: 2 }} />,
                             <RollbackOutlined
                                 key="rollback-model"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -177,7 +178,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 }}
                                 className={isModelUnchanged ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-model-2" orientation="vertical" />,
+                            <Divider key="divider-model-2" orientation="vertical" style={{ marginLeft: 2 }} />,
                         ]}
                     />
                     <ToniesJsonSearch

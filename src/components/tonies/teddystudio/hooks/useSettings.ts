@@ -22,6 +22,7 @@ export interface SettingsState {
     paperLabelImageBleed: string;
 
     textFontSize: string;
+    imagePosition: string;
     showLanguageFlag: boolean;
     showModelNo: boolean;
     printTrackListInsteadTitle: boolean;
@@ -107,6 +108,7 @@ const INITIAL_STATE: SettingsState = {
     paperLabelImageBleed: "0mm",
 
     textFontSize: "14px",
+    imagePosition: "center",
     showLanguageFlag: false,
     showModelNo: false,
     printTrackListInsteadTitle: false,
@@ -188,6 +190,7 @@ export interface SettingsActions {
     setPaperMarginLeft: (v: string) => void;
     setPaperLabelImageBleed: (v: string) => void;
     setTextFontSize: (v: string) => void;
+    setImagePosition: (v: string) => void;
     setShowLanguageFlag: (v: boolean) => void;
     setShowModelNo: (v: boolean) => void;
     setPrintTrackListInsteadTitle: (v: boolean) => void;
@@ -226,6 +229,7 @@ export const useSettings = (): SettingsHook => {
             width: state.width,
             height: state.height,
             textFontSize: state.textFontSize,
+            imagePosition: state.imagePosition,
             labelShape: state.labelShape,
             showLanguageFlag: state.showLanguageFlag,
             showModelNo: state.showModelNo,
@@ -277,6 +281,7 @@ export const useSettings = (): SettingsHook => {
         setPaperMarginLeft: (v) => dispatch({ type: "SET", payload: { paperMarginLeft: v } }),
         setPaperLabelImageBleed: (v) => dispatch({ type: "SET", payload: { paperLabelImageBleed: v } }),
         setTextFontSize: (v) => dispatch({ type: "SET", payload: { textFontSize: v } }),
+        setImagePosition: (v) => dispatch({ type: "SET", payload: { imagePosition: v } }),
         setShowLanguageFlag: (v) => dispatch({ type: "SET", payload: { showLanguageFlag: v } }),
         setShowModelNo: (v) => dispatch({ type: "SET", payload: { showModelNo: v } }),
         setPrintTrackListInsteadTitle: (v) => dispatch({ type: "SET", payload: { printTrackListInsteadTitle: v } }),

@@ -8,7 +8,7 @@ import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 const { Paragraph, Text } = Typography;
 const { useToken } = theme;
 
-interface EditModalProps {
+interface EditBoxModalProps {
     open: boolean;
     tonieboxName: string;
     tonieboxVersion: string;
@@ -23,7 +23,7 @@ interface EditModalProps {
     onSave: () => void;
 }
 
-export const EditModal: React.FC<EditModalProps> = ({
+export const EditBoxModal: React.FC<EditBoxModalProps> = ({
     open,
     tonieboxName,
     tonieboxVersion,
@@ -89,7 +89,7 @@ export const EditModal: React.FC<EditModalProps> = ({
                                 cursor: boxName === originalBoxName ? "default" : "pointer",
                             }}
                         />,
-                        <Divider key="divider-source" orientation="vertical" />,
+                        <Divider key="divider-source" orientation="vertical" style={{ marginLeft: 2 }} />,
                     ]}
                 />
             </Paragraph>

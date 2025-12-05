@@ -20,7 +20,7 @@ import TonieInformationModal from "../common/modals/TonieInformationModal";
 import { LanguageFlagIcon } from "../../common/icons/LanguageFlagIcon";
 import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
-import { EditModal } from "./modals/EditModal";
+import { EditTonieModal } from "./modals/EditTonieModal";
 import { SelectFileModal } from "./modals/SelectFileModal";
 import { useAudioContext } from "../../../contexts/AudioContext";
 
@@ -455,7 +455,7 @@ export const TonieCard: React.FC<{
 
     const editModalTitle = (
         <>
-            <h3 style={{ lineHeight: 0 }}>
+            <h3>
                 {t("tonies.editModal.title")}
                 {tonieCard.tonieInfo.model ? " (" + tonieCard.tonieInfo.model + ")" : ""}
             </h3>
@@ -676,7 +676,7 @@ export const TonieCard: React.FC<{
                 onFileSelectChange={handleFileSelectChange}
             />
 
-            <EditModal
+            <EditTonieModal
                 open={isEditModalOpen}
                 title={editModalTitle}
                 onCancel={() => setIsEditModalOpen(false)}
