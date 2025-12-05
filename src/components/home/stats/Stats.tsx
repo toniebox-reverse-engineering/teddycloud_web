@@ -119,73 +119,72 @@ export const Stats = () => {
                 ))}
             </Row>
 
-            <Row>
+            <Row gutter={[16, 16]}>
                 <Divider>{t("home.stats.toniesStats")}</Divider>
-                <Row gutter={[16, 16]} style={{ width: "100%" }}>
-                    <Col
-                        style={{
-                            flex: "1 0 20%",
-                            minWidth: "250px",
-                            display: "flex",
-                            flexDirection: "column",
-                        }}
-                    >
-                        <Card style={{ flex: 1 }}>
-                            <Statistic title={t("home.stats.totalTonieBoxes")} value={tonieboxes.length} />
-                        </Card>
-                        <Card style={{ flex: 1, marginTop: 16 }}>
-                            <Statistic title={t("home.stats.totalTonies")} value={tagStats.total} />
-                        </Card>
-                    </Col>
 
-                    <Col
-                        style={{
-                            flex: "1 0 20%",
-                            minWidth: "250px",
-                            display: "flex",
-                        }}
-                    >
-                        <Card style={{ flex: 1 }}>
-                            <PieChartWithLegend title={t("home.stats.cloudTitle")} data={cloudChartData} />
-                        </Card>
-                    </Col>
+                <Col
+                    style={{
+                        flex: "1 0 20%",
+                        minWidth: "250px",
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <Card style={{ flex: 1 }}>
+                        <Statistic title={t("home.stats.totalTonieBoxes")} value={tonieboxes.length} />
+                    </Card>
+                    <Card style={{ flex: 1, marginTop: 16 }}>
+                        <Statistic title={t("home.stats.totalTonies")} value={tagStats.total} />
+                    </Card>
+                </Col>
 
-                    <Col
-                        style={{
-                            flex: "1 0 20%",
-                            minWidth: "250px",
-                            display: "flex",
-                        }}
-                    >
-                        <Card style={{ flex: 1 }}>
-                            <PieChartWithLegend title={t("home.stats.liveTitle")} data={liveChartData} />
-                        </Card>
-                    </Col>
+                <Col
+                    style={{
+                        flex: "1 0 20%",
+                        minWidth: "250px",
+                        display: "flex",
+                    }}
+                >
+                    <Card style={{ flex: 1 }}>
+                        <PieChartWithLegend title={t("home.stats.cloudTitle")} data={cloudChartData} />
+                    </Card>
+                </Col>
 
-                    <Col
-                        style={{
-                            flex: "1 0 20%",
-                            minWidth: "250px",
-                            display: "flex",
-                        }}
-                    >
-                        <Card style={{ flex: 1 }}>
-                            <PieChartWithLegend title={t("home.stats.claimedTitle")} data={claimedChartData} />
-                        </Card>
-                    </Col>
+                <Col
+                    style={{
+                        flex: "1 0 20%",
+                        minWidth: "250px",
+                        display: "flex",
+                    }}
+                >
+                    <Card style={{ flex: 1 }}>
+                        <PieChartWithLegend title={t("home.stats.liveTitle")} data={liveChartData} />
+                    </Card>
+                </Col>
 
-                    <Col
-                        style={{
-                            flex: "1 0 20%",
-                            minWidth: "250px",
-                            display: "flex",
-                        }}
-                    >
-                        <Card style={{ flex: 1 }}>
-                            <PieChartWithLegend title={t("home.stats.languageTitle")} data={languageChartData} />
-                        </Card>
-                    </Col>
-                </Row>
+                <Col
+                    style={{
+                        flex: "1 0 20%",
+                        minWidth: "250px",
+                        display: "flex",
+                    }}
+                >
+                    <Card style={{ flex: 1 }}>
+                        <PieChartWithLegend title={t("home.stats.claimedTitle")} data={claimedChartData} />
+                    </Card>
+                </Col>
+
+                <Col
+                    style={{
+                        flex: "1 0 20%",
+                        minWidth: "250px",
+                        display: "flex",
+                    }}
+                >
+                    <Card style={{ flex: 1 }}>
+                        <PieChartWithLegend title={t("home.stats.languageTitle")} data={languageChartData} />
+                    </Card>
+                </Col>
             </Row>
         </>
     );
