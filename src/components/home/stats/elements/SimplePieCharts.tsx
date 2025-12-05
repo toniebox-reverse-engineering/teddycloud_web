@@ -22,7 +22,18 @@ export const PieChartWithLegend: React.FC<PieChartWithLegendProps> = ({ data, ti
 
     return (
         <div style={{ width: "100%", textAlign: "center" }}>
-            {title && <div style={{ marginBottom: 12, fontSize: 14, opacity: 0.7 }}>{title}</div>}
+            {title && (
+                <div
+                    style={{
+                        marginBottom: 12,
+                        color: "var(--ant-color-text-description)",
+                        fontSize: "var(--ant-statistic-title-font-size, 14px)",
+                        textAlign: "justify",
+                    }}
+                >
+                    {title}
+                </div>
+            )}
 
             <PieChart
                 data={data}
