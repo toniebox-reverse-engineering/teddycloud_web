@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Typography, List, Collapse } from "antd";
+import { Typography, Collapse, Flex, Divider } from "antd";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import { Link } from "react-router-dom";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Paragraph } = Typography;
-const { Panel } = Collapse;
 
 interface TonieJsonEntry {
     model: string;
@@ -33,11 +33,9 @@ export const ContributionToniesJsonPage = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                // Fetch the JSON data
                 const response = await api.apiGetTeddyCloudApiRaw(`/api/toniesJson`);
                 const jsonData = await response.json();
 
-                // Filter the JSON data to include only entries with non-empty audio_id arrays
                 const filteredData = jsonData.filter(
                     (item: any) =>
                         item.audio_id &&
@@ -46,18 +44,16 @@ export const ContributionToniesJsonPage = () => {
                         !item.model.includes("20000")
                 );
 
-                // Transform the filtered JSON data into the desired array format
                 const dataArray: TonieJsonEntry[] = filteredData.map((item: any) => ({
                     model: item.model,
                     series: item.series,
                     episodes: item.episodes,
                     pic: item.pic,
-                    audio_id: item.audio_id || [], // Ensure audio_id is an array, set to empty array if not provided
-                    category: item.category, // Include category
-                    language: item.language, // Include language
+                    audio_id: item.audio_id || [],
+                    category: item.category,
+                    language: item.language,
                 }));
 
-                // Group tonieJsonEntries by language and category
                 const groupedData: { [key: string]: TonieJsonEntry[] } = {};
                 dataArray.forEach((entry) => {
                     if (!groupedData[entry.language]) {
@@ -81,9 +77,13 @@ export const ContributionToniesJsonPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
-                        { title: t("community.contribution.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
+                        {
+                            title: (
+                                <Link to="/community/contribution">{t("community.contribution.navigationTitle")}</Link>
+                            ),
+                        },
                         {
                             title: t("community.contribution.toniesJson.navigationTitle"),
                         },
@@ -93,31 +93,47 @@ export const ContributionToniesJsonPage = () => {
                     <h1>{t(`community.contribution.toniesJson.title`)}</h1>
                     <Paragraph>{t("community.contribution.toniesJson.text")}</Paragraph>
                     <Paragraph>
-                        <Collapse accordion>
-                            {Object.keys(groupedTonieJsonEntries).map((language, index) => (
-                                <Panel header={language} key={index}>
-                                    <List>
+                        <Collapse
+                            accordion
+                            items={Object.keys(groupedTonieJsonEntries).map((language, index) => ({
+                                key: index,
+                                label: language,
+                                children: (
+                                    <Flex vertical gap={0}>
                                         {Array.isArray(groupedTonieJsonEntries[language]) &&
-                                            groupedTonieJsonEntries[language].map((tonieJsonEntry, subSubIndex) => (
-                                                <List.Item key={subSubIndex} id={tonieJsonEntry.model}>
-                                                    <div>
+                                            groupedTonieJsonEntries[language].map((tonieJsonEntry, index) => (
+                                                <>
+                                                    <Flex
+                                                        key={index}
+                                                        id={tonieJsonEntry.model}
+                                                        gap={8}
+                                                        align="flex-end"
+                                                        style={{
+                                                            padding: "8px 0",
+                                                            borderBottom: "1px solid rgba(0,0,0,0.1)",
+                                                        }}
+                                                    >
                                                         <img
                                                             src={tonieJsonEntry.pic}
                                                             alt=""
                                                             style={{
                                                                 width: "100px",
                                                                 height: "auto",
+                                                                flexShrink: 0,
                                                             }}
-                                                        ></img>
-                                                        {tonieJsonEntry.model} - {tonieJsonEntry.series} -{" "}
-                                                        {tonieJsonEntry.episodes}
-                                                    </div>
-                                                </List.Item>
+                                                        />
+                                                        <div>
+                                                            {tonieJsonEntry.model} – {tonieJsonEntry.series} –{" "}
+                                                            {tonieJsonEntry.episodes}
+                                                        </div>
+                                                    </Flex>
+                                                    <Divider style={{ margin: 0 }} />
+                                                </>
                                             ))}
-                                    </List>
-                                </Panel>
-                            ))}
-                        </Collapse>
+                                    </Flex>
+                                ),
+                            }))}
+                        />
                     </Paragraph>
                 </StyledContent>
             </StyledLayout>

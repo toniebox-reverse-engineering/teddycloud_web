@@ -11,21 +11,39 @@ import {
     PlusSquareOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
-import i18n from "../../i18n";
-
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { StyledSubMenu } from "../StyledComponents";
-import { TonieboxIcon } from "../utils/TonieboxIcon";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { StyledSubMenu } from "../common/StyledComponents";
+import { TonieboxIcon } from "../common/icons/TonieboxIcon";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const TonieboxesSubNav = () => {
-    const { t } = useTranslation();
-    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
+    const { t, i18n } = useTranslation();
+    const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const location = useLocation();
     const [openKeys, setOpenKeys] = useState<string[]>([]);
     const currentLanguage = i18n.language;
     useEffect(() => {
         setCurrentTCSection(t("tonieboxes.navigationTitle"));
     }, [openKeys, currentLanguage]);
+
+    const pluginItems = plugins
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Tonieboxes)
+        .map((plugin) => ({
+            key: `plugin-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/tonieboxes/plugin/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(plugin.icon),
+            title: plugin.pluginName,
+        }));
 
     const updateOpenKeys = (pathname: string) => {
         const newKeys: string[] = [];
@@ -73,7 +91,6 @@ export const TonieboxesSubNav = () => {
             label: (
                 <Link
                     to="/tonieboxes"
-                    style={{ marginLeft: 8 }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -233,6 +250,7 @@ export const TonieboxesSubNav = () => {
                 },
             ],
         },
+        ...pluginItems,
     ];
 
     return (

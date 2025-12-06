@@ -2,8 +2,12 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Alert, Typography } from "antd";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../../components/StyledComponents";
-import { CertificateDragNDrop } from "../../../components/form/CertificatesDragAndDrop";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../../components/common/StyledComponents";
+import { CertificateDragNDrop } from "../../../components/common/form/CertificatesDragAndDrop";
 import { SettingsSubNav } from "../../../components/settings/SettingsSubNav";
 
 export const CertificatesPage = () => {
@@ -18,8 +22,8 @@ export const CertificatesPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("settings.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/settings">{t("settings.navigationTitle")}</Link> },
                         { title: t("settings.certificates.navigationTitle") },
                     ]}
                 />
@@ -27,7 +31,7 @@ export const CertificatesPage = () => {
                     <h1>{t(`settings.certificates.title`)}</h1>
                     <Paragraph>
                         <Alert
-                            message={t("settings.certificates.information")}
+                            title={t("settings.certificates.information")}
                             description=<div>
                                 {t("settings.certificates.hint")}{" "}
                                 <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.

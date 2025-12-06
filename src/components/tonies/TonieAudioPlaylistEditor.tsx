@@ -1,6 +1,8 @@
+// to be refactored
+
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip } from "antd";
+import { Modal, Form, Input, Button, Space, Alert, theme, Tooltip, Divider } from "antd";
 import {
     CloseOutlined,
     FolderOpenOutlined,
@@ -9,9 +11,9 @@ import {
     PlusOutlined,
 } from "@ant-design/icons";
 
-import CodeSnippet from "../utils/CodeSnippet";
-import { SelectFileFileBrowser } from "../utils/SelectFileFileBrowser";
-import { supportedAudioExtensionsFFMPG } from "../../utils/supportedAudioExtensionsFFMPG";
+import CodeSnippet from "../common/elements/CodeSnippet";
+import { SelectFileFileBrowser } from "./filebrowser/SelectFileFileBrowser";
+import { ffmpegSupportedExtensions } from "../../utils/files/ffmpegSupportedExtensions";
 
 export interface FileItem {
     filepath: string;
@@ -34,8 +36,6 @@ export interface TonieAudioPlaylistEditorProps {
 }
 
 const { useToken } = theme;
-
-const supportedAudioExtensionsForEncoding = supportedAudioExtensionsFFMPG;
 
 const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
     open,
@@ -77,9 +77,10 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
         if (files) {
-            const prefix = special === "library" ? "lib:/" : "content:/";
+            const normalizedPath = path === "" || path.endsWith("/") ? path : path + "/";
+            const prefix = special === "library" ? "lib://" : "content://";
             const newFiles = files.map((file) => ({
-                filepath: prefix + path + "/" + file.name,
+                filepath: prefix + normalizedPath + file.name,
                 name: file.name,
             }));
             setSelectedFiles(newFiles);
@@ -213,7 +214,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                 <Alert
                     type="info"
                     showIcon={true}
-                    message="Work in progress - be aware!"
+                    title="Work in progress - be aware!"
                     description="Currently, only the generated json is displayed when saving the new tap. This is not automatically saved to your library. You have to create a *.tap file manually and copy this into the file yourself."
                     style={{ marginBottom: 8 }}
                 />
@@ -309,18 +310,32 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                                             >
                                                 <Input
                                                     width="auto"
-                                                    addonBefore={
+                                                    prefix={[
                                                         <CloseOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
                                                             onClick={() => {
                                                                 const newValues = [...form.getFieldsValue().files];
                                                                 newValues[index].filepath = "";
                                                                 form.setFieldsValue({ files: newValues });
                                                             }}
-                                                        />
-                                                    }
-                                                    addonAfter={
-                                                        <FolderOpenOutlined onClick={() => handleEditFile(index)} />
-                                                    }
+                                                        />,
+                                                        <Divider
+                                                            key="divider-source"
+                                                            orientation="vertical"
+                                                            style={{ marginLeft: 2 }}
+                                                        />,
+                                                    ]}
+                                                    suffix={[
+                                                        <Divider
+                                                            key="divider-source-3"
+                                                            orientation="vertical"
+                                                            style={{ marginLeft: 2 }}
+                                                        />,
+                                                        <FolderOpenOutlined
+                                                            onMouseDown={(e) => e.preventDefault()}
+                                                            onClick={() => handleEditFile(index)}
+                                                        />,
+                                                    ]}
                                                 />
                                             </Form.Item>
                                             <Form.Item
@@ -360,7 +375,7 @@ const TonieAudioPlaylistEditor: React.FC<TonieAudioPlaylistEditorProps> = ({
                         maxSelectedRows={99}
                         special="library"
                         trackUrl={false}
-                        filetypeFilter={supportedAudioExtensionsForEncoding}
+                        filetypeFilter={ffmpegSupportedExtensions}
                         key={filebrowserKey}
                         onFileSelectChange={handleFileSelectChange}
                     />

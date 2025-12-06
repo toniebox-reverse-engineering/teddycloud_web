@@ -29,3 +29,4 @@ localhost.pem
 mkcert.exe
 src/setupProxy.js
 public/img_unknown.png
+public/web/*

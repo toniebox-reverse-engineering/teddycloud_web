@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -36,8 +37,8 @@ export const ContributionPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.contribution.navigationTitle") },
                     ]}
                 />

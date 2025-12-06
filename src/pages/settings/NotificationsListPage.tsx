@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
-import NotificationsList from "../../components/settings/NotificationsList";
+import NotificationsList from "../../components/settings/notificationlist/NotificationsList";
+import { Link } from "react-router-dom";
 
 export const NotificationsListPage = () => {
     const { t } = useTranslation();
@@ -15,12 +16,12 @@ export const NotificationsListPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/settings">{t("settings.navigationTitle")}</Link> },
                         { title: t("settings.notifications.navigationTitle") },
                     ]}
                 />
                 <StyledContent>
-                    <h1>{t(`settings.notifications.title`)}</h1>
                     <NotificationsList />
                 </StyledContent>
             </StyledLayout>

@@ -1,0 +1,131 @@
+:root {
+    --paper-size: auto;
+    --paper-margin-top: 10mm;
+    --paper-margin-left: 10mm;
+}
+
+.labelElement {
+    position: relative;
+    width: var(--labelElement-width);
+    height: var(--labelElement-height);
+    border-radius: var(--labelElement-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: visible;
+    font-size: var(--text-font-size, 14px);
+    color: black;
+    z-index: 0;
+}
+
+.labelElementText {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    padding: 0px;
+    border-radius: var(--labelElement-radius);
+
+    z-index: 0;
+}
+
+.labelElement::before {
+    content: "";
+    position: absolute;
+    top: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    left: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    right: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    background-image: var(--label-bg-image);
+    background-size: cover;
+    background-position: var(--image-position, "center");
+    background-repeat: no-repeat;
+    background-color: var(--label-background-color, #ffffff);
+    border-radius: var(--labelElement-radius);
+    z-index: -1;
+}
+
+.labelElement::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: var(--label-border-width, 1px) solid var(--label-border-color, black);
+    box-sizing: border-box;
+    border-radius: var(--labelElement-radius);
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.traveltonieCouple {
+    border-radius: 16px;
+    border: 1px dashed var(--traveltonie-border-color, #d9d9d9);
+}
+
+@media print {
+    @page {
+        size: var(--paper-size);
+        margin-top: var(--paper-margin-top);
+        margin-left: var(--paper-margin-left);
+        margin-bottom: 0;
+        margin-right: 0;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    html * {
+        background-color: white !important;
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    #resultContainer,
+    #resultContainer * {
+        visibility: visible;
+    }
+
+    #resultContainer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        gap: 0;
+    }
+
+    .settingsPanel,
+    .settingsPanel * {
+        display: none;
+    }
+
+    .traveltonieCouple {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        padding: 0 !important;
+    }
+
+    .labelElement {
+        margin: 0;
+        background-color: var(--label-background-color, #ffffff) !important;
+    }
+
+    .labelElement * {
+        background-color: var(--label-background-color, #ffffff) !important;
+    }
+
+    .traveltonieCouple {
+        border: none;
+    }
+
+    .control,
+    .control * {
+        display: none !important;
+        visibility: collapse !important;
+    }
+}

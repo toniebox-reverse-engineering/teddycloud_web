@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MenuProps } from "antd";
 import {
     SafetyCertificateOutlined,
@@ -10,28 +10,59 @@ import {
     SyncOutlined,
     HistoryOutlined,
     BellOutlined,
+    CodeSandboxOutlined,
+    MinusOutlined,
+    PlusOutlined,
 } from "@ant-design/icons";
-import i18n from "../../i18n";
 
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import { StyledSubMenu } from "../StyledComponents";
-import { restartServer } from "../../utils/restartServer";
-import { useTeddyCloud } from "../../TeddyCloudContext";
+import { StyledSubMenu } from "../common/StyledComponents";
+import { restartServer } from "../../utils/system/restartTeddyCloud";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const SettingsSubNav = () => {
-    const { t } = useTranslation();
-    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
-    const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const { t, i18n } = useTranslation();
+    const {
+        setNavOpen,
+        setSubNavOpen,
+        setCurrentTCSection,
+        plugins,
+        addNotification,
+        addLoadingNotification,
+        closeLoadingNotification,
+    } = useTeddyCloud();
     const currentLanguage = i18n.language;
-    const [selectedKey, setSelectedKey] = useState("");
+    const location = useLocation();
+    const [openKeys, setOpenKeys] = useState<string[]>([]);
+
     useEffect(() => {
         setCurrentTCSection(t("settings.navigationTitle"));
     }, [currentLanguage]);
+
+    const pluginItems = plugins
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Settings)
+        .map((plugin) => ({
+            key: `plugin-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/settings/plugin/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(CodeSandboxOutlined),
+            title: plugin.pluginName,
+        }));
 
     const extractBaseUrl = (fullUrl: URL) => {
         const url = new URL(fullUrl);
@@ -40,8 +71,7 @@ export const SettingsSubNav = () => {
     };
 
     const handleRestartServer = async () => {
-        await restartServer(true, addNotification, addLoadingNotification, closeLoadingNotification);
-        setSelectedKey("");
+        await restartServer(t, true, addNotification, addLoadingNotification, closeLoadingNotification);
     };
 
     const handleReloadToniesJson = async () => {
@@ -51,7 +81,6 @@ export const SettingsSubNav = () => {
         try {
             const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonUpdate");
             const data = await response.text();
-            setSelectedKey("");
 
             closeLoadingNotification(key);
             if (data.toString() !== "Triggered tonies.json update") {
@@ -79,12 +108,51 @@ export const SettingsSubNav = () => {
         }
     };
 
+    const updateOpenKeys = (pathname: string) => {
+        const newKeys: string[] = [];
+
+        if (pathname.includes("/settings/guisettings")) {
+            newKeys.push("general");
+            newKeys.push("guisettings");
+        }
+        setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
+    };
+
+    useEffect(() => {
+        updateOpenKeys(location.pathname);
+    }, [location.pathname]);
+
+    const onOpenChange = (keys: string[]) => {
+        const latestOpenKey = keys.find((key) => !openKeys.includes(key)); // New key being opened
+        const latestCloseKey = openKeys.find((key) => !keys.includes(key)); // Key being closed
+
+        if (latestOpenKey) {
+            setOpenKeys((prevKeys) => [...prevKeys, latestOpenKey]);
+        } else if (latestCloseKey) {
+            setOpenKeys((prevKeys) => prevKeys.filter((key) => key !== latestCloseKey));
+        }
+    };
+
+    const customExpandIcon = ({ isOpen }: { isOpen?: boolean }) => {
+        const isExpanded = isOpen ?? false;
+        return isExpanded ? (
+            <MinusOutlined style={{ margin: "16px 0 16px 16px" }} />
+        ) : (
+            <PlusOutlined style={{ margin: "16px 0 16px 16px" }} />
+        );
+    };
+
     const subnav: MenuProps["items"] = [
         {
             key: "general",
             label: (
                 <Link
                     to="/settings"
+                    style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "currentColor",
+                    }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -95,6 +163,24 @@ export const SettingsSubNav = () => {
             ),
             icon: React.createElement(SettingOutlined),
             title: t("settings.general.navigationTitle"),
+            children: [
+                {
+                    key: "guisettings",
+                    label: (
+                        <Link
+                            to="/settings/guisettings"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
+                            {t("settings.guiSettings.navigationTitle")}
+                        </Link>
+                    ),
+                    icon: React.createElement(SettingOutlined),
+                    title: t("settings.guiSettings.navigationTitle"),
+                },
+            ],
         },
         {
             key: "certificates",
@@ -183,7 +269,18 @@ export const SettingsSubNav = () => {
             icon: React.createElement(HistoryOutlined),
             title: t("settings.legacyGui"),
         },
+        ...pluginItems,
     ];
 
-    return <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />;
+    return (
+        <StyledSubMenu
+            mode="inline"
+            defaultOpenKeys={["sub"]}
+            openKeys={openKeys}
+            selectedKeys={[]}
+            onOpenChange={onOpenChange}
+            items={subnav}
+            expandIcon={({ isOpen }) => customExpandIcon({ isOpen })}
+        />
+    );
 };

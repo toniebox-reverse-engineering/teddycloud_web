@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Typography } from "antd";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import { FileBrowser } from "../../components/utils/FileBrowser";
+import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
+import { Link } from "react-router-dom";
 
 const { Paragraph } = Typography;
 
@@ -26,8 +27,8 @@ export const TonieAudioPlaylistsPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("tonies.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/tonies">{t("tonies.navigationTitle")}</Link> },
                         { title: t("tonies.tap.navigationTitle") },
                     ]}
                 />
@@ -35,7 +36,7 @@ export const TonieAudioPlaylistsPage = () => {
                     <h1>{t("tonies.tap.title")}</h1>
 
                     <Alert
-                        message={t("settings.information")}
+                        title={t("settings.information")}
                         description=<div>
                             Development still in progress - Please be patient or support implementation of this feature!
                         </div>

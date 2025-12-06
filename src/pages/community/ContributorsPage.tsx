@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 import { Space, Typography } from "antd";
 
 import {
-    gitHubRepositoresUrl,
+    gitHubRepositoriesUrl,
     gitHubSponsoringUrl,
     gitHubTCContributorsUrl,
     gitHubTCwebContributorsUrl,
-} from "../../constants";
+} from "../../constants/urls";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
-import { TonieMeetingElement } from "../../components/TonieMeeting";
+import { TonieMeetingElement } from "../../components/common/elements/TonieMeeting";
 
 const { Paragraph } = Typography;
 
@@ -26,8 +26,8 @@ export const ContributorsPage = () => {
             <StyledLayout>
                 <BreadcrumbWrapper
                     items={[
-                        { title: t("home.navigationTitle") },
-                        { title: t("community.navigationTitle") },
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         { title: t("community.contributors.navigationTitle") },
                     ]}
                 />
@@ -51,8 +51,8 @@ export const ContributorsPage = () => {
                         </Paragraph>
                         <Paragraph>
                             {t("community.contributors.others")}{" "}
-                            <Link to={gitHubRepositoresUrl} target="_blank">
-                                {gitHubRepositoresUrl}
+                            <Link to={gitHubRepositoriesUrl} target="_blank">
+                                {gitHubRepositoriesUrl}
                             </Link>
                         </Paragraph>
                     </Paragraph>

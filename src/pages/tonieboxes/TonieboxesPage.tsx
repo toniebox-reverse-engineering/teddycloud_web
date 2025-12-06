@@ -1,88 +1,48 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Alert } from "antd";
-import { TonieboxCardProps } from "../../types/tonieboxTypes";
 
-import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { TeddyCloudApi } from "../../api";
+import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/StyledComponents";
-import { TonieboxesList } from "../../components/tonieboxes/TonieboxesList";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { TonieboxesList } from "../../components/tonieboxes/tonieboxeslist/TonieboxesList";
 
-const api = new TeddyCloudApi(defaultAPIConfig());
+import { useNewBoxesAllowed } from "../../hooks/useNewBoxesAllowed";
+import { useTonieboxes } from "../../hooks/useTonieboxes";
 
 export const TonieboxesPage = () => {
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
 
-    // Define the state with TonieCardProps[] type
-    const [tonieboxes, setTonieboxes] = useState<TonieboxCardProps[]>([]);
-    const [newBoxesAllowed, setNewBoxesAllowed] = useState(false);
-
-    useEffect(() => {
-        const fetchTonieboxes = async () => {
-            try {
-                // Perform API call to fetch Toniebox data
-                const tonieboxData = await api.apiGetTonieboxesIndex();
-                setTonieboxes(tonieboxData);
-            } catch (error) {
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("tonieboxes.errorFetchingTonieboxes"),
-                    t("tonieboxes.errorFetchingTonieboxes") + ": " + error,
-                    t("tonieboxes.navigationTitle")
-                );
-            }
-        };
-
-        fetchTonieboxes();
-
-        const fetchNewBoxesAllowed = async () => {
-            try {
-                const newBoxesAllowed = await api.apiGetNewBoxesAllowed();
-                setNewBoxesAllowed(newBoxesAllowed);
-            } catch (error) {
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("settings.errorFetchingSetting"),
-                    t("settings.errorFetchingSettingDetails", {
-                        setting: "core.allowNewBox",
-                    }) + error,
-                    t("tonieboxes.navigationTitle")
-                );
-            }
-        };
-
-        fetchNewBoxesAllowed();
-    }, []);
-
-    const newBoxesAllowedWarning = newBoxesAllowed ? (
-        <Alert
-            message={t("tonieboxes.newBoxesAllowed")}
-            description={t("tonieboxes.newBoxesAllowedText")}
-            type="warning"
-            showIcon
-            style={{ margin: "16px 0" }}
-        />
-    ) : (
-        ""
-    );
+    const newBoxesAllowed = useNewBoxesAllowed();
+    const { tonieboxes } = useTonieboxes();
 
     return (
         <>
             <StyledSider>
                 <TonieboxesSubNav />
             </StyledSider>
+
             <StyledLayout>
                 <BreadcrumbWrapper
-                    items={[{ title: t("home.navigationTitle") }, { title: t("tonieboxes.navigationTitle") }]}
+                    items={[
+                        { title: <Link to="/">{t("home.navigationTitle")}</Link> },
+                        { title: t("tonieboxes.navigationTitle") },
+                    ]}
                 />
+
                 <StyledContent>
                     <h1>{t("tonieboxes.title")}</h1>
-                    {newBoxesAllowedWarning}
+
+                    {newBoxesAllowed.value && (
+                        <Alert
+                            title={t("tonieboxes.newBoxesAllowed")}
+                            description={t("tonieboxes.newBoxesAllowedText")}
+                            type="warning"
+                            showIcon
+                            style={{ margin: "16px 0" }}
+                        />
+                    )}
+
                     <TonieboxesList tonieboxCards={tonieboxes} />
                 </StyledContent>
             </StyledLayout>

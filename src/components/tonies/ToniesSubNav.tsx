@@ -10,16 +10,19 @@ import {
     CloudUploadOutlined,
     UnorderedListOutlined,
     UserAddOutlined,
+    FormatPainterOutlined,
+    PlayCircleOutlined,
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
-import { useTeddyCloud } from "../../TeddyCloudContext";
-import { StyledSubMenu } from "../StyledComponents";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { StyledSubMenu } from "../common/StyledComponents";
 import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
+import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
 export const ToniesSubNav = () => {
     const { t } = useTranslation();
-    const { setNavOpen, setSubNavOpen, setCurrentTCSection } = useTeddyCloud();
+    const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
     const [selectedKey, setSelectedKey] = useState("");
     const currentLanguage = i18n.language;
@@ -32,6 +35,25 @@ export const ToniesSubNav = () => {
         setShowAddCustomTonieModal(true);
         setSelectedKey("");
     };
+
+    const pluginItems = plugins
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Tonies)
+        .map((plugin) => ({
+            key: `plugin-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/tonies/plugin/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(plugin.icon),
+            title: plugin.pluginName,
+        }));
 
     const subnav: MenuProps["items"] = [
         {
@@ -51,26 +73,36 @@ export const ToniesSubNav = () => {
             title: t("tonies.tonies.navigationTitle"),
         },
         {
-            key: "custom-json",
+            key: "library",
             label: (
-                <label
-                    style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        color: "currentColor",
-                        cursor: "pointer",
+                <Link
+                    to="/tonies/library"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
                     }}
                 >
-                    {t("tonies.addToniesCustomJsonEntry")}
-                </label>
+                    {t("tonies.library.navigationTitle")}
+                </Link>
             ),
-            onClick: () => {
-                handleAddNewCustomButtonClick();
-                setNavOpen(false);
-                setSubNavOpen(false);
-            },
-            icon: React.createElement(UserAddOutlined),
-            title: t("tonies.addToniesCustomJsonEntry"),
+            icon: React.createElement(BookOutlined),
+            title: t("tonies.library.navigationTitle"),
+        },
+        {
+            key: "tonies-audio-player",
+            label: (
+                <Link
+                    to="/tonies/audioplayer"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.teddyaudioplayer.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(PlayCircleOutlined),
+            title: t("tonies.teddyaudioplayer.navigationTitle"),
         },
         {
             key: "encoder",
@@ -89,41 +121,20 @@ export const ToniesSubNav = () => {
             title: t("tonies.encoder.navigationTitle"),
         },
         {
-            key: "tap",
+            key: "teddystudio",
             label: (
                 <Link
-                    to="/tonies/tap"
-                    style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        color: "currentColor",
-                    }}
+                    to="/tonies/teddystudio"
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
                     }}
                 >
-                    {t("tonies.tap.navigationTitle")}
+                    {t("tonies.teddystudio.navigationTitle")}
                 </Link>
             ),
-            icon: React.createElement(UnorderedListOutlined),
-            title: t("tonies.tap.navigationTitle"),
-        },
-        {
-            key: "library",
-            label: (
-                <Link
-                    to="/tonies/library"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("tonies.library.navigationTitle")}
-                </Link>
-            ),
-            icon: React.createElement(BookOutlined),
-            title: t("tonies.library.navigationTitle"),
+            icon: React.createElement(FormatPainterOutlined),
+            title: t("tonies.teddystudio.navigationTitle"),
         },
         {
             key: "content",
@@ -157,6 +168,50 @@ export const ToniesSubNav = () => {
             icon: React.createElement(SettingOutlined),
             title: t("tonies.system-sounds.navigationTitle"),
         },
+        {
+            key: "custom-json",
+            label: (
+                <label
+                    style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "currentColor",
+                        cursor: "pointer",
+                    }}
+                >
+                    {t("tonies.addToniesCustomJsonEntry")}
+                </label>
+            ),
+            onClick: () => {
+                handleAddNewCustomButtonClick();
+                setNavOpen(false);
+                setSubNavOpen(false);
+            },
+            icon: React.createElement(UserAddOutlined),
+            title: t("tonies.addToniesCustomJsonEntry"),
+        },
+        {
+            key: "tap",
+            label: (
+                <Link
+                    to="/tonies/tap"
+                    style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "currentColor",
+                    }}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("tonies.tap.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(UnorderedListOutlined),
+            title: t("tonies.tap.navigationTitle"),
+        },
+        ...pluginItems,
     ];
 
     return (

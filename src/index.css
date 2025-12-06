@@ -6,12 +6,42 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+body.theme-switching *,
+body.theme-switching *::before,
+body.theme-switching *::after {
+    transition: none !important;
+    animation: none !important;
 }
 
 .ant-layout .ant-layout-sider-children {
     margin: 0 !important;
+}
+
+/* fix antd6 timeline display bug - recheck after antd update*/
+.intro .ant-timeline-item {
+    list-style: none !important;
+}
+
+.intro .ant-timeline-item-icon .anticon,
+.intro .ant-timeline-item-icon {
+    width: 24px !important;
+    height: 24px !important;
+    left: -16px !important;
+    font-size: 16px !important;
+    margin-left: 4px !important;
+}
+
+/* only iOS: inputs need 16px to disable automatic zoom */
+@supports (-webkit-touch-callout: none) {
+    .ant-input,
+    .ant-input-affix-wrapper input,
+    .ant-select-selection-search-input,
+    .ant-select-selector,
+    .ant-select-input,
+    .ant-input-number-input,
+    .ant-upload-wrapper input[type="file"] {
+        font-size: 16px !important;
+    }
 }
 
 .ant-select {
@@ -36,10 +66,6 @@ code {
     background: transparent !important;
 }
 
-.warning .ant-modal-content {
-    border-top: 8px solid orange;
-}
-
 .sticky-footer .ant-modal-footer {
     position: sticky;
     bottom: 0;
@@ -50,29 +76,6 @@ code {
 
 .sticky-footer .ant-modal-content {
     padding: 20px 24px 0;
-}
-
-.ant-form-item .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-    display: none;
-}
-
-.ant-form-item .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::after {
-    color: #ff4d4f !important;
-    display: inline-block;
-    margin-inline-end: 4px;
-    font-family: SimSun, sans-serif;
-    line-height: 1;
-    content: "*";
-    visibility: visible !important;
-}
-
-/* tonie article search - in searchfield display none, but in dropdown displayed */
-.ant-select-dropdown img {
-    height: 64px !important;
-    width: 64px !important;
-    object-fit: cover !important;
-    display: block !important;
-    margin: 8px;
 }
 
 .ant-table-cell {
@@ -112,11 +115,6 @@ code {
     border-top-color: #e6f4ff;
     animation: spin 1s linear infinite;
     transform-origin: center;
-}
-
-.move-file .ant-select-selector {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
 }
 
 /* workaround missing good responsiveness of antd tables... */
@@ -167,30 +165,63 @@ code {
     }
 }
 
-/* workaround to set same card height within a row,
- * solution based on proposed solution in https://github.com/ant-design/ant-design/issues/40786
- * --> https://stackblitz.com/edit/react-wf9wmw-2i6mck?file=index.css,demo.tsx */
-.ant-list .ant-row > div,
-.ant-list .ant-row > div,
-.ant-list .ant-row .ant-col:first-child {
-    display: flex;
-}
-
-.ant-list .ant-row .ant-list-item {
-    flex: 1 1 auto;
-}
-
-.ant-list .ant-row .ant-list-item .ant-card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+.ant-pagination-options-size-changer .ant-select-selection-search input {
+    display: none;
 }
 
 .ant-card-cover {
     height: 100%;
     align-content: center;
-    height: 100%;
-    align-content: center;
 }
 
-/* end of workaround */
+.pseudo-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+}
+
+.encoder-save-compact {
+    width: 100%;
+}
+
+@media (max-width: 480px) {
+    .encoder-save-compact {
+        flex-wrap: wrap;
+    }
+
+    .encoder-save-label {
+        flex: 0 0 100%;
+        max-width: 100% !important;
+
+        border-top-left-radius: 8px !important;
+        border-top-right-radius: 8px !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+
+    .encoder-save-dir {
+        flex: 1 1 calc(100% - 48px);
+        min-width: 0;
+
+        border-radius: 0 !important;
+    }
+
+    .encoder-save-btn {
+        flex: 0 0 48px;
+
+        border-radius: 0 !important;
+    }
+
+    .encoder-save-name {
+        flex: 0 0 100%;
+        max-width: 100% !important;
+
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-left-radius: 8px !important;
+        border-bottom-right-radius: 8px !important;
+    }
+}

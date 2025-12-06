@@ -65,25 +65,177 @@ Be sure your teddyCloud instance is also running.
 
 If you just need the http variant, simply call `dotenv -e .env.development.local npm start-http`
 
-## Coding guidelines
+## Project Structure & Architecture (Frontend)
 
-There are no complete guidelines defined currently, only some fragments which you shall read and follow.
+The TeddyCloud frontend follows a **topic-based architecture**.  
+Pages and components are organized by feature domains (e.g. `tonies`, `tonieboxes`,`settings`, `community`).  
+Each feature contains its own components, hooks, and modals.  
+This keeps all relevant code physically close, reduces duplication, and maintains clarity.
 
-### Design framework
+This architecture represents the intended structure of the frontend; however, due to legacy code and ongoing migration efforts, not all parts of the project fully adhere to it yet.
 
-We are using the AntD framework. If you add anything new, try to use AntD components. AntD provides also a wide range of Icons.
+If you encounter areas that are not yet aligned with this architecture or appear messy, please feel free to clean them up as part of ongoing improvements.
 
-More details about can be found here:
+---
+
+### Project Structure
+
+#### Pages
+
+**Location:**  
+`src/pages/<topic>/...`
+
+**Purpose:**
+
+-   Represent application routes.
+-   Provide layout and structure (`StyledLayout`, `StyledSider`, breadcrumbs).
+-   Compose topic-specific components.
+-   Contain minimal logic.
+
+**Guidelines:**
+
+-   Pages should stay thin.
+-   Do not embed business logic in a Page.
+-   Let the page assemble layout + feature components + navigation.
+
+---
+
+#### Components
+
+**Location:**  
+`src/components/<topic>/...`
+
+Feature areas (e.g. tonies, settings) contain sub-folders for specific features:
+
+```text
+src/components/tonies/encoder/...
+src/components/settings/notificationlist/...
+src/components/tonieboxes/tonieboxeslist/...
+```
+
+**Purpose:**
+
+-   Implement UI behavior for a domain-specific feature.
+-   Organize related components, hooks, and modals within the same feature folder.
+-   Keep JSX + view logic here, push non-view logic into hooks.
+
+**When to split into a hook?**
+
+-   When a component grows beyond UI concerns.
+-   When API logic, state machines, or repeated side effects appear.
+
+---
+
+#### Hooks
+
+Hooks follow the same **topic-based** structure.
+
+##### Feature-specific hooks
+
+**Location examples:**
+
+```text
+src/components/tonies/encoder/hooks/useEncoder.ts
+src/components/settings/notificationlist/hooks/useNotificationsList.ts
+```
+
+**Rules:**
+
+-   Hooks that belong to one feature stay inside that feature’s folder.
+-   They encapsulate its behavior: API calls, state transitions, validation, etc.
+-   They are not shared across unrelated domains.
+
+This avoids a global “hooks graveyard”.
+
+##### Shared hooks (rare)
+
+Only **domain-agnostic, multi-topic** hooks belong here:
+
+```text
+src/hooks/useDebounce.ts
+src/hooks/useMediaQuery.ts
+```
+
+If it is not 100% generic → **keep it in the feature folder**.
+
+---
+
+#### Modals
+
+Modals follow the feature they belong to.
+
+Example:
+
+```text
+src/components/tonies/filebrowser/modals/CreateDirectoryModal.tsx
+```
+
+**Guidelines:**
+
+-   State (open/close, selected path, etc.) is controlled in the parent component/hook.
+-   Modal components receive all required data via props.
+-   Modals should not contain business logic (fetch, validation) unless tightly coupled to the feature.
+
+---
+
+#### Utilities
+
+Generic helpers live in:
+
+```text
+src/utils/
+```
+
+**Allowed:**
+
+-   Validators
+-   Formatter functions
+-   Encoding helpers
+-   URL builders
+-   Type utilities
+
+**Not allowed:**
+
+-   React logic
+-   State management
+-   Component-specific utilities
+
+---
+
+### Coding Guidelines
+
+There are no complete guidelines defined currently, only some fragments which you shall read and follow.  
+The following rules complement the project structure described above.
+
+#### Keep changelog up to date
+
+All changes must be added to the central `CHANGELOG.md` file.  
+Whenever you implement a change, add a new entry under the correct version.  
+If the next version does not yet exist in the changelog, create a new version block and append your changes there.  
+Reference related GitHub issues or pull requests whenever possible.
+
+---
+
+#### Design framework
+
+We are using the AntD framework. If you add anything new, try to use AntD components. AntD also provides a wide range of icons.
+
+More details can be found here:
 
 -   [AntD](https://ant.design/)
 -   [AntD Components](https://ant.design/components/overview)
 -   [AntD Icons](https://ant.design/components/icon)
 
-### Usage of Colors
+When building components, prefer AntD components and patterns over custom HTML whenever possible, to keep the UI consistent.
 
-As we support dark and light theme, we ask you to refrain from using explicit color specifications (`#000000`) and to use the colors provided instead:
+---
 
-If not already added, extend the file with
+#### Usage of colors
+
+As we support dark and light themes, do **not** use hard-coded colors like `#000000`.  
+Instead, always use the AntD theme tokens.
+
+If not already added, extend your file like this:
 
 ```typescript
 import { theme } from "antd";
@@ -94,44 +246,77 @@ const { useToken } = theme;
 export const TonieCard: React.FC<{
     overlay: string;
 }> = ({ overlay }) => {
-...
     const { token } = useToken();
-...
+    ...
+}
 ```
 
-and then you can use:
+Then you can use:
 
 ```typescript
 token.*
 // e.g. token.colorTextDisabled
 ```
 
-### Usage of translations
+This ensures that your component respects both light and dark themes.
 
-Please use always `t("...")` instead of hard coded text. Please add the strings in the English, German, French and Spanish translation Json.
+---
 
-### Adding new API request method
+#### Usage of translations
 
-If you need to add a new API request to the TeddyCloud API, please use one of the existing methods in `src/api/apis/TeddyCloudApi.ts`:
+Always use `t("...")` instead of hard-coded text.
+
+-   Add new strings to the English, German, French and Spanish translation JSON files.
+-   Use meaningful, structured keys (e.g. `settings.notifications.title`, `tonies.encoder.uploadHint`).
+-   Avoid inline strings in JSX, especially in pages and reusable components.
+
+---
+
+#### Adding new API request methods
+
+If you need to add a new API request to the TeddyCloud API, please use one of the existing helper methods in `src/api/apis/TeddyCloudApi.ts`:
 
 -   `apiPostTeddyCloudRaw`
 -   `apiPostTeddyCloudFormDataRaw`
 -   `apiGetTeddyCloudApiRaw`
 -   or any other already existing method in `TeddyCloudApi.ts`
 
-If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`. We prefer to have all API requests centralized in this file. One reason is the upcoming authentication for accessing the API.
+If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`.  
+We prefer to have all API requests centralized in this file.  
+One reason is the upcoming authentication for accessing the API and the possibility to reintroduce generated clients later.
 
-### Linking to other sites
+---
 
-If you need to link to another source, element, or URL, please check if it is already defined in `constants.tsx`. If it is, use the existing variable instead of hardcoding the URL. If it isn’t, consider adding it as a variable in `constants.tsx` - you may need this URL more than once. Defining it as a variable ensures you only need to update it in one place if the URL changes in the future.
+#### Linking to other sites
 
-The following URLs have already been defined (partial list):
+If you need to link to another source, element, or URL, please check if it is already defined in `src/constants/urls.ts`.
 
--   tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png"
--   telegramGroupUrl = "https://t.me/toniebox_reverse_engineering"
--   forumUrl = "https://forum.revvox.de/"
--   gitHubUrl = "https://github.com/toniebox-reverse-engineering"
--   wikiUrl = "https://tonies-wiki.revvox.de/docs/tools/teddycloud/"
+-   If it is, use the existing variable instead of hardcoding the URL.
+-   If it isn’t, consider adding it as a variable in `src/constants/urls.ts`.
+
+You may need the same URL more than once; defining it in one place ensures that updates are centralized.
+
+Some URLs already defined (partial list):
+
+-   `tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png"`
+-   `telegramGroupUrl = "https://t.me/toniebox_reverse_engineering"`
+-   `forumUrl = "https://forum.revvox.de/"`
+-   `gitHubUrl = "https://github.com/toniebox-reverse-engineering"`
+-   `wikiUrl = "https://tonies-wiki.revvox.de/docs/tools/teddycloud/"`
+
+---
+
+### Summary
+
+-   **Pages**: routing and layout per topic, minimal logic.
+-   **Components**: topic-specific UI and behavior; move heavy logic into hooks.
+-   **Feature hooks**: live next to the components they serve (`src/components/<topic>/<feature>/hooks/`).
+-   **Shared hooks**: only for generic, cross-feature helpers in `src/hooks/`.
+-   **Modals**: in the topic’s component tree, with parent-controlled state.
+-   **Utils**: pure helpers without React or domain-specific dependencies.
+-   **Changelog, translations, and design tokens**: keep them consistent and up to date.
+
+This combined structure and guideline set should be followed for all new code and refactorings.
 
 ## Tips and Tricks
 
@@ -220,6 +405,17 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://vitejs.dev/guide/static-deploy.html) for more information.
 
+### `npm run preview`
+
+After building the app, you can test the optimized (minified) production build using this command.
+Unlike React’s development mode, which enables features such as hot reloading, detailed error overlays, and repeated API calls for strict mode checks, the preview mode runs the app exactly as it will behave in production.
+
+This means:
+
+-   API calls are executed only once (no double-invocation from React Strict Mode)
+-   Performance reflects the real-world production setup
+-   You can verify that your build works correctly before deployment
+
 ## Learn More
 
 You can learn more in the [Vite documentation](https://vitejs.dev/guide/).
@@ -228,7 +424,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 # Attribution
 
-The **Open Toniebox Guide** (`src\components\tonieboxes\boxSetup\OpenBoxGuide.tsx`) is based on the following two excellent guides from iFixIt.com:
+The **Open Toniebox Guide** (`[teddycloud]/tonieboxes/boxsetup/openboxguide` / `src\pages\tonieboxes\boxsetup\OpenBoxGuidePage.tsx`) is based on the following two excellent guides from iFixIt.com:
 
 -   [iFixIt[1]] [Toniebox Opening Procedure](https://www.ifixit.com/Guide/Toniebox+Opening+Procedure/124139)
 -   [iFixIt[2]] [Toniebox Teardown](https://www.ifixit.com/Teardown/Toniebox+Teardown/106148)
@@ -239,6 +435,12 @@ Special thanks to Tobias for providing such clear and detailed instructions!
 
 The icons used are from here:
 
--   logo.png: https://www.flaticon.com/free-icon/dog_2829818
+-   logo.png: [https://www.flaticon.com/free-icon/dog_2829818](https://www.flaticon.com/free-icon/dog_2829818)
 
 Thanks for the original authors for these great icons.
+
+The country flags are derived from here:
+
+-   [https://gitlab.com/catamphetamine/country-flag-icons](https://gitlab.com/catamphetamine/country-flag-icons) v1.5.18.
+
+Thanks to Nikolay Kuchumov for creating this flag collection!
