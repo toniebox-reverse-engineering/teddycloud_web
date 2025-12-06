@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.6
+
+-   gui: Added search field in audio player
+-   gui: Only show tags once in Audioplayer
+
+### Commits
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.5...tc_v0.6.6](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.5...tc_v0.6.6)
+-   [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.5...tcw_v0.6.6](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.5...tcw_v0.6.6)
+
+### Discussion
+
+-   [https://forum.revvox.de/t/release-notes-0-6-6/2980](https://forum.revvox.de/t/release-notes-0-6-6/2980)
+
+### GitHub Release
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.6](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.6)
+
 ## 0.6.5
 
 -   Stabilization backend
