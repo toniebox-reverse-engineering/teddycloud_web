@@ -1,5 +1,9 @@
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { TeddyCloudApi } from "../../../../../api";
+import { defaultAPIConfig } from "../../../../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const useMacVendorLookup = () => {
     const { t } = useTranslation();
@@ -34,9 +38,10 @@ export const useMacVendorLookup = () => {
     const checkMac = useCallback(async () => {
         setVendor(null);
         setError(null);
-
         try {
-            const response = await fetch(`https://api.macvendors.com/${encodeURIComponent(boxMac)}`);
+            const response = await api.apiGetTeddyCloudApiRaw(
+                `/reverseGeneric/macvendor/${encodeURIComponent(boxMac)}`
+            );
             if (!response.ok) {
                 throw new Error("MAC address not found or invalid");
             }
