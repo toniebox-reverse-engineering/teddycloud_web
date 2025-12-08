@@ -10,7 +10,6 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 export const useHomeData = () => {
     const { tonieboxes, loading: loadingTonieboxes } = useTonieboxes();
     const { value: newBoxesAllowed } = useNewBoxesAllowed();
-
     const {
         tonies,
         defaultLanguage,
@@ -54,6 +53,7 @@ export const useHomeData = () => {
         loading: loadingTonies || loadingTonieboxes,
         accessApiEnabled,
         newBoxesAllowed,
+
         defaultLanguage,
 
         activeTab,

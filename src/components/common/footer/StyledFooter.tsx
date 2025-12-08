@@ -2,10 +2,10 @@ import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { theme, Layout } from "antd";
-import { HeartFilled } from "@ant-design/icons";
+import { ExclamationCircleOutlined, HeartFilled } from "@ant-design/icons";
 import styled from "styled-components";
 
-import { gitHubSponsoringUrl, gitHubTCReleasesUrl } from "../../../constants/urls";
+import { gitHubSponsoringUrl, gitHubTCCommitTreeBaseUrl, gitHubTCReleasesUrl } from "../../../constants/urls";
 
 import AudioPlayerFooter from "./AudioPlayerFooter";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
@@ -14,8 +14,8 @@ import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 const { useToken } = theme;
 const { Footer } = Layout;
 
-const StyledFooterComponent = styled(Footer)<{ sticky: boolean }>`
-    position: ${({ sticky }) => (sticky ? "fixed" : "static")};
+const StyledFooterComponent = styled(Footer)<{ $sticky: boolean }>`
+    position: ${({ $sticky }) => ($sticky ? "fixed" : "static")};
     bottom: 0;
     z-index: 10;
     width: 100%;
@@ -41,7 +41,16 @@ export const StyledFooter = () => {
     const { token } = useToken();
     const { colorText } = token;
 
-    const { version, versionShort, commitGitShaShort } = useTeddyCloudVersion();
+    const {
+        version,
+        versionShort,
+        commitGitShaShort,
+        commitGitSha,
+        latestReleaseVersion,
+        latestDevelopSHA,
+        newVersionAvailable,
+        isDevelopVersion,
+    } = useTeddyCloudVersion();
 
     const [isAudioPlayerVisible, setIsAudioPlayerVisible] = useState(false);
     const [footerHeight, setFooterHeight] = useState(0);
@@ -60,18 +69,49 @@ export const StyledFooter = () => {
     return (
         <>
             {isAudioPlayerVisible && <AdditionalFooterPadding height={footerHeight} />}
-            <StyledFooterComponent id="teddycloud-footer" ref={footerRef} sticky={isAudioPlayerVisible}>
+            <StyledFooterComponent id="teddycloud-footer" ref={footerRef} $sticky={isAudioPlayerVisible}>
                 <StyledCenterPart>
                     <AudioPlayerFooter onVisibilityChange={handleAudioPlayerVisibilityChange} />
                 </StyledCenterPart>
                 <StyledCenterPart>
-                    <small style={{ display: "flex", color: colorText }}>
-                        <Link to={gitHubTCReleasesUrl} target="_blank">
+                    <small style={{ display: "flex", color: colorText, whiteSpace: "nowrap" }}>
+                        <Link
+                            to={
+                                isDevelopVersion
+                                    ? gitHubTCCommitTreeBaseUrl + commitGitSha
+                                    : gitHubTCReleasesUrl + "tag/tc_" + versionShort
+                            }
+                            target="_blank"
+                        >
                             <HiddenDesktop>
                                 {versionShort} ({commitGitShaShort})
                             </HiddenDesktop>
                             <HiddenMobile>{version}</HiddenMobile>
                         </Link>
+                        {newVersionAvailable && (
+                            <span
+                                style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    paddingLeft: 8,
+                                    whiteSpace: "nowrap",
+                                }}
+                            >
+                                <span style={{ paddingRight: 8 }}>-</span>
+                                <Link
+                                    to={
+                                        isDevelopVersion
+                                            ? gitHubTCCommitTreeBaseUrl + latestDevelopSHA
+                                            : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
+                                    }
+                                    target="_blank"
+                                    style={{ display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}
+                                >
+                                    <ExclamationCircleOutlined style={{ color: token.colorWarningText }} />
+                                    <span style={{ paddingLeft: 8 }}>{t("teddycloud.newVersionShort")}</span>
+                                </Link>
+                            </span>
+                        )}
                         <span style={{ paddingLeft: 8 }}>-</span>
                         <HeartFilled style={{ color: "#eb2f96", paddingLeft: 8 }} />
                         <HiddenMobile style={{ paddingLeft: 8 }}>{t("footer.sponsorText")} </HiddenMobile>
