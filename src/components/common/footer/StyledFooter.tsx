@@ -14,8 +14,8 @@ import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 const { useToken } = theme;
 const { Footer } = Layout;
 
-const StyledFooterComponent = styled(Footer)`
-    position: fixed;
+const StyledFooterComponent = styled(Footer)<{ sticky: boolean }>`
+    position: ${({ sticky }) => (sticky ? "fixed" : "static")};
     bottom: 0;
     z-index: 10;
     width: 100%;
@@ -41,21 +41,26 @@ export const StyledFooter = () => {
     const { token } = useToken();
     const { colorText } = token;
 
+    const { version, versionShort, commitGitShaShort } = useTeddyCloudVersion();
+
+    const [isAudioPlayerVisible, setIsAudioPlayerVisible] = useState(false);
     const [footerHeight, setFooterHeight] = useState(0);
     const footerRef = useRef<HTMLDivElement | null>(null);
 
-    const { version, versionShort, commitGitShaShort } = useTeddyCloudVersion();
+    const handleAudioPlayerVisibilityChange = useCallback((visible: boolean) => {
+        setIsAudioPlayerVisible(visible);
 
-    const handleAudioPlayerVisibilityChange = useCallback(() => {
-        if (footerRef.current) {
+        if (visible && footerRef.current) {
             setFooterHeight(footerRef.current.offsetHeight);
+        } else {
+            setFooterHeight(0);
         }
     }, []);
 
     return (
         <>
-            <AdditionalFooterPadding height={footerHeight} />
-            <StyledFooterComponent id="teddycloud-footer" ref={footerRef}>
+            {isAudioPlayerVisible && <AdditionalFooterPadding height={footerHeight} />}
+            <StyledFooterComponent id="teddycloud-footer" ref={footerRef} sticky={isAudioPlayerVisible}>
                 <StyledCenterPart>
                     <AudioPlayerFooter onVisibilityChange={handleAudioPlayerVisibilityChange} />
                 </StyledCenterPart>

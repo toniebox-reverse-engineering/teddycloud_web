@@ -31,7 +31,7 @@ interface AudioPlayerFooterProps {
     onNext?: () => void;
     currentPlayPosition?: string;
     songImage?: string;
-    onVisibilityChange: () => void;
+    onVisibilityChange: (visible: boolean) => void;
 }
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -132,7 +132,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [globalAudio?.querySelector("source")]);
 
     useEffect(() => {
-        onVisibilityChange();
+        onVisibilityChange(audioPlayerDisplay !== "none");
         if (globalAudio?.querySelector("source") && audioPlayerDisplay === "none") {
             setAudioPlayerDisplay("flex");
         }
@@ -197,7 +197,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             globalAudio.load();
         }
         setAudioPlayerDisplay("none");
-        onVisibilityChange();
+        onVisibilityChange(false);
     };
 
     const handleTimeUpdate = (event: React.SyntheticEvent<HTMLAudioElement, Event>) => {
@@ -283,7 +283,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     const togglePlayerMinimal = () => {
         setShowAudioPlayerMinimal((prev) => !prev);
-        onVisibilityChange();
+        onVisibilityChange(true);
     };
 
     const closeClosePlayerPopOver = () => setClosePlayerPopoverOpen(false);
@@ -408,7 +408,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         : styles.songContainer;
 
     useEffect(() => {
-        onVisibilityChange();
+        onVisibilityChange(true);
     }, [onVisibilityChange, isMobile]);
 
     const timeStringToSeconds = (time: string): number => {
