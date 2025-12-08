@@ -6,6 +6,7 @@
 -   gui: Only show tags once in Audioplayer
 -   gui: Use new backend generic request API for macvendor.com requests [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/161](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/161)
 -   gui: footer not fixed anymore, only in case of open audio player (avoid iOS Display bug)
+-   gui: display hint if a new version is available (working in develop and release branch) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/260](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/260)
 
 ### Commits
 

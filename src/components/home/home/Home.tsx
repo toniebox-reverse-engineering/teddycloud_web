@@ -1,17 +1,26 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Tabs, TabsProps, Typography } from "antd";
-import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../../constants/urls";
+import {
+    forumUrl,
+    gitHubTCCommitTreeBaseUrl,
+    gitHubTCReleasesUrl,
+    gitHubUrl,
+    telegramGroupUrl,
+    wikiUrl,
+} from "../../../constants/urls";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
 import { TonieboxesList } from "../../tonieboxes/tonieboxeslist/TonieboxesList";
 import { ToniesList } from "../../tonies/tonieslist/ToniesList";
 import { useHomeData } from "./data/useHomeData";
+import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 
 const { Paragraph } = Typography;
 
 export const Home = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { newVersionAvailable, isDevelopVersion, latestDevelopSHA, latestReleaseVersion } = useTeddyCloudVersion();
 
     const {
         tonies,
@@ -57,6 +66,36 @@ export const Home = () => {
                 />
             )}
         </>
+    ) : null;
+
+    const newVersionHint = newVersionAvailable ? (
+        <Alert
+            title={t("teddycloud.newVersionAvailable")}
+            description={
+                <>
+                    <Paragraph>
+                        {isDevelopVersion
+                            ? t("teddycloud.newVersionDetailsAvailableDevelop")
+                            : t("teddycloud.newVersionDetailsAvailable")}{" "}
+                    </Paragraph>
+
+                    <Link
+                        to={
+                            isDevelopVersion
+                                ? gitHubTCCommitTreeBaseUrl + latestDevelopSHA
+                                : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
+                        }
+                        target="_blank"
+                        style={{ display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}
+                    >
+                        {t("teddycloud.openNewVersionInGithub")}
+                    </Link>
+                </>
+            }
+            type="info"
+            showIcon
+            style={{ margin: "16px 0" }}
+        />
     ) : null;
 
     const toniesTab = (
@@ -121,6 +160,8 @@ export const Home = () => {
                 {t("home.intro")}
                 {newBoxesAllowedWarning}
             </Paragraph>
+
+            {newVersionHint}
 
             <Paragraph>
                 {t("home.forumIntroPart1")}
