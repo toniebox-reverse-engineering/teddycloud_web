@@ -44,11 +44,12 @@
                         const url = new URL(window.location.href);
                         url.searchParams.set("v", current);
                         window.location.replace(url.toString());
+                        console.log("New version detected, reloaded page.");
                     } else {
                         localStorage.setItem("web_gitSha", current);
                     }
                 } catch (e) {
-                    console.error("Fehler im Version-Check:", e);
+                    console.error("Error checking version:", e);
                 }
             })();
         </script>
