@@ -13,8 +13,11 @@ import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTy
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
+type SettingsStore = ReturnType<typeof useSettings>;
+
 interface EditLabelModalProps {
     open: boolean;
+    settingsStore: SettingsStore;
     item: MergedItem | null;
     onCancel: () => void;
     onSave: (values: { text: string; episodes: string; trackTitles: string[]; picture: string }) => void;
@@ -30,6 +33,7 @@ const { Paragraph } = Typography;
 
 export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     open,
+    settingsStore,
     item,
     onCancel,
     onSave,
@@ -53,7 +57,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
 
     const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 
-    const { state: settings, textColor, paperOptions, actions } = useSettings();
+    const { state: settings, textColor, paperOptions, actions } = settingsStore;
 
     useEffect(() => {
         if (!item) {

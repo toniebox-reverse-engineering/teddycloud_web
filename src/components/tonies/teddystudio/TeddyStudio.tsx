@@ -27,7 +27,9 @@ export const TeddyStudio: React.FC = () => {
     const { customItems, mergedResults, addResult, addCustomImage, removeByMergedIndex, editByMergedIndex, clearAll } =
         useCustomItems();
 
-    const { state: settings, textColor, paperOptions, actions } = useSettings();
+    const settingsStore = useSettings();
+
+    const { state: settings, textColor, paperOptions, actions } = settingsStore;
 
     const canGoPrev = editIndex !== null && editIndex > 0;
     const canGoNext = editIndex !== null && editIndex < mergedResults.length - 1;
@@ -191,6 +193,7 @@ export const TeddyStudio: React.FC = () => {
                 canGoNext={canGoNext}
                 currentIndex={editIndex ?? undefined}
                 totalItems={mergedResults.length}
+                settingsStore={settingsStore}
             />
         </>
     );

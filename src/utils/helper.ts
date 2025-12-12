@@ -6,3 +6,9 @@ export function generateColorPalette(count: number, saturation = 70, lightness =
     }
     return colors;
 }
+
+const MM_TO_PX = 96 / 25.4;
+
+export function mmToPx(mm: number): number {
+    return mm * MM_TO_PX;
+}

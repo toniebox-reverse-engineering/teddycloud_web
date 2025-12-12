@@ -47,6 +47,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         imagePosition,
         showLanguageFlag,
         showModelNo,
+        showSeriesOnImageLabel,
+        seriesOnImageLabelRotationDeg,
+        seriesOnImageLabelFontSize,
         printTrackListInsteadTitle,
         showLabelBorder,
         paperSize,
@@ -347,6 +350,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
                         gap: 16,
                         alignItems: "end",
+                        marginBottom: 8,
                     }}
                 >
                     <div
@@ -391,7 +395,28 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             </Radio.Button>
                         </Radio.Group>
                     </div>
-                    {printMode !== "OnlyText" && (
+
+                    <Checkbox
+                        style={{ display: "flex", alignItems: "center" }}
+                        checked={showLabelBorder}
+                        onChange={(e) => {
+                            actions.setShowLabelBorder(e.target.checked);
+                            actions.setSelectedPaper(undefined);
+                        }}
+                    >
+                        {t("tonies.teddystudio.showLabelBorder")}
+                    </Checkbox>
+                </div>
+                {printMode !== "OnlyText" && (
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                            gap: 16,
+                            alignItems: "end",
+                            marginBottom: 8,
+                        }}
+                    >
                         <div
                             style={{
                                 display: "flex",
@@ -420,8 +445,78 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 ]}
                             />
                         </div>
-                    )}
-                    {printMode !== "OnlyImage" && (
+
+                        <Checkbox
+                            style={{ display: "flex", alignItems: "center" }}
+                            checked={showSeriesOnImageLabel}
+                            onChange={(e) => actions.setShowSeriesOnImageLabel(e.target.checked)}
+                        >
+                            {t("tonies.teddystudio.showSeriesOnImageLabel")}
+                        </Checkbox>
+
+                        {showSeriesOnImageLabel && labelShape == "round" && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "baseline",
+                                    gap: 4,
+                                }}
+                            >
+                                <label style={{ marginRight: 8 }}>
+                                    {t("tonies.teddystudio.seriesOnImageLabelRotationDeg")}
+                                </label>
+                                <Input
+                                    size="small"
+                                    type="number"
+                                    value={seriesOnImageLabelRotationDeg}
+                                    onChange={(e) => actions.setSeriesOnImageLabelRotationDeg(Number(e.target.value))}
+                                    min={0}
+                                    max={360}
+                                    step={15}
+                                    style={{ width: 100 }}
+                                    suffix="°"
+                                    placeholder={t("tonies.teddystudio.seriesOnImageLabelRotationDeg")}
+                                />
+                            </div>
+                        )}
+                        {showSeriesOnImageLabel && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "baseline",
+                                    gap: 4,
+                                }}
+                            >
+                                <label style={{ marginRight: 8 }}>
+                                    {t("tonies.teddystudio.seriesOnImageLabelFontSize")}
+                                </label>
+                                <Input
+                                    size="small"
+                                    type="number"
+                                    value={parseFloat(seriesOnImageLabelFontSize)}
+                                    onChange={(e) => actions.setSeriesOnImageLabelFontSize(`${e.target.value}px`)}
+                                    min={1}
+                                    max={90}
+                                    style={{ width: 100 }}
+                                    suffix="px"
+                                    placeholder={t("tonies.teddystudio.seriesOnImageLabelFontSize")}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
+                {printMode !== "OnlyImage" && (
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+                            gap: 16,
+                            alignItems: "end",
+                            marginBottom: 8,
+                        }}
+                    >
                         <div
                             style={{
                                 display: "flex",
@@ -443,28 +538,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 placeholder={t("tonies.teddystudio.textFontSize")}
                             />
                         </div>
-                    )}
 
-                    {printMode !== "OnlyImage" && (
-                        <Checkbox
-                            style={{ display: "flex", alignItems: "center" }}
-                            checked={showLanguageFlag}
-                            onChange={(e) => actions.setShowLanguageFlag(e.target.checked)}
-                        >
-                            {t("tonies.teddystudio.showLanguageFlag")}
-                        </Checkbox>
-                    )}
-
-                    {printMode !== "OnlyImage" && (
-                        <Checkbox
-                            style={{ display: "flex", alignItems: "center" }}
-                            checked={showModelNo}
-                            onChange={(e) => actions.setShowModelNo(e.target.checked)}
-                        >
-                            {t("tonies.teddystudio.showModelNo")}
-                        </Checkbox>
-                    )}
-                    {printMode !== "OnlyImage" && (
                         <Checkbox
                             style={{ display: "flex", alignItems: "center" }}
                             checked={printTrackListInsteadTitle}
@@ -472,18 +546,28 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         >
                             {t("tonies.teddystudio.printTrackListInsteadTitle")}
                         </Checkbox>
-                    )}
-                    <Checkbox
-                        style={{ display: "flex", alignItems: "center" }}
-                        checked={showLabelBorder}
-                        onChange={(e) => {
-                            actions.setShowLabelBorder(e.target.checked);
-                            actions.setSelectedPaper(undefined);
-                        }}
-                    >
-                        {t("tonies.teddystudio.showLabelBorder")}
-                    </Checkbox>
-                </div>
+
+                        {!printTrackListInsteadTitle && (
+                            <Checkbox
+                                style={{ display: "flex", alignItems: "center" }}
+                                checked={showLanguageFlag}
+                                onChange={(e) => actions.setShowLanguageFlag(e.target.checked)}
+                            >
+                                {t("tonies.teddystudio.showLanguageFlag")}
+                            </Checkbox>
+                        )}
+
+                        {!printTrackListInsteadTitle && (
+                            <Checkbox
+                                style={{ display: "flex", alignItems: "center" }}
+                                checked={showModelNo}
+                                onChange={(e) => actions.setShowModelNo(e.target.checked)}
+                            >
+                                {t("tonies.teddystudio.showModelNo")}
+                            </Checkbox>
+                        )}
+                    </div>
+                )}
             </Card>
 
             <Card size="small" title={t("tonies.teddystudio.paperSettings")} style={{ marginBottom: 8 }}>

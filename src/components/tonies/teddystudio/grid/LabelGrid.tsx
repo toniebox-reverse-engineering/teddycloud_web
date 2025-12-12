@@ -6,6 +6,9 @@ import { LanguageFlagIcon } from "../../../common/icons/LanguageFlagIcon";
 import type { SettingsState } from "../hooks/useSettings";
 import "./../styles/print.css";
 import { useTranslation } from "react-i18next";
+import { CircleText } from "../elements/CircleText";
+import { SquareTextLabel } from "../elements/SquareTextLabel";
+import { mmToPx } from "../../../../utils/helper";
 
 const { Paragraph } = Typography;
 
@@ -42,6 +45,9 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
         labelBackgroundColor,
         showLanguageFlag,
         showModelNo,
+        showSeriesOnImageLabel,
+        seriesOnImageLabelRotationDeg,
+        seriesOnImageLabelFontSize,
         printTrackListInsteadTitle,
         showLabelBorder,
         paperSize,
@@ -107,7 +113,26 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                 display: printMode === "ImageAndText" || printMode === "OnlyImage" ? "flex" : "none",
                                 ["--label-bg-image" as any]: `url("${dataset.pic}")`,
                             }}
-                        />
+                        >
+                            {labelShape == "round" && showSeriesOnImageLabel && (
+                                <CircleText
+                                    text={dataset.text}
+                                    size={mmToPx(parseFloat(diameter))}
+                                    fontSize={parseFloat(seriesOnImageLabelFontSize)}
+                                    minFontSize={6}
+                                    color={textColor}
+                                    rotateDeg={seriesOnImageLabelRotationDeg}
+                                />
+                            )}
+                            {labelShape == "square" && showSeriesOnImageLabel && (
+                                <SquareTextLabel
+                                    text={dataset.text}
+                                    color={textColor}
+                                    maxFontSizePx={parseFloat(seriesOnImageLabelFontSize)}
+                                    minFontSizePx={6}
+                                />
+                            )}
+                        </div>
                     </div>
                     {(!printTrackListInsteadTitle || previewMode) && (
                         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -233,3 +258,9 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
         </div>
     );
 };
+function useAutoFitFontSize(arg0: { text: any; maxFontSize: number; minFontSize: number }): {
+    ref: any;
+    fontSize: any;
+} {
+    throw new Error("Function not implemented.");
+}
