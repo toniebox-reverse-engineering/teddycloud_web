@@ -2041,7 +2041,9 @@
             "titleEdit": "Editar TAP"
         },
         "teddyaudioplayer": {
+            "contentPadding": "Relleno de contenido",
             "continueInFooterAudioPlayer": "Continuar en el reproductor de audio del pie de página",
+            "currentLabel": "Etiqueta actual",
             "enterFullscreen": "Entrar en pantalla completa",
             "exitFullscreen": "Salir de pantalla completa",
             "expand": "Ampliar el reproductor de audio",
@@ -2049,6 +2051,7 @@
             "noTracks": "No hay pistas disponibles",
             "openInTonieAudioPlayer": "Abrir en Audio Player",
             "openStandalone": "Abrir el reproductor en modo independiente",
+            "restoreCommonSettings": "Restaurar",
             "selectTonieToPlay": "Selecciona un Tonie/etiqueta para reproducir",
             "shrink": "Minimizar el reproductor de audio",
             "standaloneTitle": "Reproductor de Audio",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Collapse, Divider, Typography, theme } from "antd";
+import { Button, Collapse, Divider, Typography } from "antd";
 import { ClearOutlined, PrinterOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +14,7 @@ import { LabelGrid } from "./grid/LabelGrid";
 import { ToniesJsonSearchWrapper } from "./input/ToniesJsonSearchWrapper";
 import { CustomImages } from "./input/CustomImages";
 import { EditLabelModal } from "./modals/EditLabelModal";
+import { LabelOverridesById, LabelOverrides } from "./types/labelOverrides";
 
 const { Paragraph } = Typography;
 
@@ -29,7 +30,23 @@ export const TeddyStudio: React.FC = () => {
 
     const settingsStore = useSettings();
 
-    const { state: settings, textColor, paperOptions, actions } = settingsStore;
+    const { state: settings, paperOptions, actions } = settingsStore;
+
+    const [labelOverridesById, setLabelOverridesById] = useState<LabelOverridesById>({});
+
+    const setLabelOverride = (id: string, patch: LabelOverrides) => {
+        setLabelOverridesById((prev) => ({
+            ...prev,
+            [id]: { ...(prev[id] ?? {}), ...patch },
+        }));
+    };
+
+    const clearLabelOverride = (id: string) => {
+        setLabelOverridesById((prev) => {
+            const { [id]: _removed, ...rest } = prev;
+            return rest;
+        });
+    };
 
     const canGoPrev = editIndex !== null && editIndex > 0;
     const canGoNext = editIndex !== null && editIndex < mergedResults.length - 1;
@@ -177,9 +194,10 @@ export const TeddyStudio: React.FC = () => {
             <LabelGrid
                 mergedResults={mergedResults}
                 settings={settings}
-                textColor={textColor}
                 onRemoveItem={handleRemoveResult}
                 onEditItem={handleEditResult}
+                labelOverridesById={labelOverridesById}
+                onClearLocalOverrides={(id) => clearLabelOverride(id)}
             />
 
             <EditLabelModal
@@ -194,6 +212,9 @@ export const TeddyStudio: React.FC = () => {
                 currentIndex={editIndex ?? undefined}
                 totalItems={mergedResults.length}
                 settingsStore={settingsStore}
+                labelOverridesById={labelOverridesById}
+                setLabelOverride={setLabelOverride}
+                clearLabelOverride={clearLabelOverride}
             />
         </>
     );

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 
 export interface CustomItem {
+    id: string;
     pic?: string;
     text?: string;
     trackTitles?: string[];
@@ -10,15 +11,16 @@ export interface CustomItem {
 export interface CustomItemsHook {
     results: any[];
     customItems: CustomItem[];
-    mergedResults: any[];
+    mergedResults: MergedItem[];
     addResult: (dataset: any) => void;
     addCustomImage: (file: File) => boolean;
     removeByMergedIndex: (indexToRemove: number) => void;
-    editByMergedIndex: (indexToEdid: number, titles: string[], text: string, episodes: string, picture: string) => void;
+    editByMergedIndex: (indexToEdit: number, titles: string[], episodes: string, text: string, picture: string) => void;
     clearAll: () => void;
 }
 
 export interface MergedItem {
+    id: string;
     custom: boolean;
     text?: string;
     pic?: string;
@@ -32,29 +34,47 @@ export const useCustomItems = (): CustomItemsHook => {
     const [results, setResults] = useState<any[]>([]);
     const [customItems, setCustomItems] = useState<CustomItem[]>([]);
 
-    const mergedResults = useMemo(
-        () => [
-            ...results,
-            ...customItems.map((item) => ({
-                custom: true,
-                text: item.text,
-                pic: item.pic,
-                episodes: item.episodes,
-                model: "",
-                language: "",
-                trackTitles: item.trackTitles || [],
-            })),
-        ],
-        [results, customItems]
-    );
+    const ensureId = <T extends Record<string, any>>(item: T): T & { id: string } => ({
+        ...item,
+        id: item.id ?? crypto.randomUUID(),
+    });
+
+    const mergedResults: MergedItem[] = useMemo(() => {
+        const resultsWithId = results.map((r) => ({
+            ...ensureId(r),
+            custom: false,
+            episodes: r.episodes ?? "",
+            model: r.model ?? "",
+            language: r.language ?? "",
+            trackTitles: Array.isArray(r.trackTitles) ? r.trackTitles : [],
+            pic: r.pic,
+            text: r.text ?? r.series ?? r.title ?? "",
+        })) as MergedItem[];
+
+        const customWithId = customItems.map((c) => ({
+            id: c.id,
+            custom: true,
+            text: c.text ?? "",
+            pic: c.pic ?? "",
+            episodes: c.episodes ?? "",
+            model: "",
+            language: "",
+            trackTitles: c.trackTitles ?? [],
+        })) as MergedItem[];
+
+        return [...resultsWithId, ...customWithId];
+    }, [results, customItems]);
 
     const addResult = (dataset: any) => {
-        setResults((prev) => [...prev, dataset]);
+        setResults((prev) => [...prev, ensureId(dataset)]);
     };
 
     const addCustomImage = (file: File) => {
         const url = URL.createObjectURL(file);
-        setCustomItems((prev) => [...prev, { pic: url, text: "" }]);
+        setCustomItems((prev) => [
+            ...prev,
+            { id: crypto.randomUUID(), pic: url, text: "", episodes: "", trackTitles: [] },
+        ]);
         return false;
     };
 
@@ -86,8 +106,8 @@ export const useCustomItems = (): CustomItemsHook => {
                         ? {
                               ...item,
                               trackTitles: titles,
-                              episodes: episodes,
-                              text: text,
+                              episodes,
+                              text,
                               pic: picture,
                           }
                         : item
@@ -101,8 +121,8 @@ export const useCustomItems = (): CustomItemsHook => {
                         ? {
                               ...item,
                               trackTitles: titles,
-                              episodes: episodes,
-                              text: text,
+                              episodes,
+                              text,
                               pic: picture,
                           }
                         : item

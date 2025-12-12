@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Modal, Input, Form, Upload, Typography, Col, Row, Button } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined, InboxOutlined } from "@ant-design/icons";
 import { MergedItem } from "../hooks/useCustomItems";
 import { useTranslation } from "react-i18next";
 import { LabelGrid } from "../grid/LabelGrid";
-import { SettingsState, useSettings } from "../hooks/useSettings";
 import Checkbox from "antd/es/checkbox/Checkbox";
-import { SettingsModal } from "./SettingsModal";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
-import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { LabelOverridesById, LabelOverrides, buildEffectiveSettings } from "../types/labelOverrides";
+import { LocalOverrideSettings } from "../settingspanel/LocalOverridesSettingsPanel";
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
+const { Paragraph } = Typography;
 
-type SettingsStore = ReturnType<typeof useSettings>;
+type SettingsStore = ReturnType<typeof import("../hooks/useSettings").useSettings>;
 
 interface EditLabelModalProps {
     open: boolean;
-    settingsStore: SettingsStore;
     item: MergedItem | null;
     onCancel: () => void;
     onSave: (values: { text: string; episodes: string; trackTitles: string[]; picture: string }) => void;
@@ -27,13 +25,16 @@ interface EditLabelModalProps {
     canGoNext?: boolean;
     currentIndex?: number;
     totalItems?: number;
-}
 
-const { Paragraph } = Typography;
+    settingsStore: SettingsStore;
+
+    labelOverridesById: LabelOverridesById;
+    setLabelOverride: (id: string, patch: LabelOverrides) => void;
+    clearLabelOverride: (id: string) => void;
+}
 
 export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     open,
-    settingsStore,
     item,
     onCancel,
     onSave,
@@ -43,9 +44,14 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     canGoNext = false,
     currentIndex,
     totalItems,
+
+    settingsStore,
+    labelOverridesById,
+    setLabelOverride,
+    clearLabelOverride,
 }) => {
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
+
     const [text, setText] = useState("");
     const [episodes, setEpisodes] = useState("");
     const [trackTitlesText, setTrackTitlesText] = useState("");
@@ -55,9 +61,14 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
 
     const [saveOnNavigate, setSaveOnNavigate] = useState<boolean>(true);
 
-    const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+    const { state: settings } = settingsStore;
 
-    const { state: settings, textColor, paperOptions, actions } = settingsStore;
+    const itemId = item?.id;
+    const localOverride = (itemId ? labelOverridesById[itemId] : undefined) ?? {};
+    const effectiveSettingsForPreview = useMemo(
+        () => buildEffectiveSettings(settings, itemId ? labelOverridesById[itemId] : undefined),
+        [settings, itemId, labelOverridesById]
+    );
 
     useEffect(() => {
         if (!item) {
@@ -111,21 +122,18 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     };
 
     const handleNext = () => {
-        if (saveOnNavigate && hasChanges()) {
-            handleOk();
-        }
+        if (saveOnNavigate && hasChanges()) handleOk();
         onNext?.();
     };
 
     const handlePrev = () => {
-        if (saveOnNavigate && hasChanges()) {
-            handleOk();
-        }
+        if (saveOnNavigate && hasChanges()) handleOk();
         onPrev?.();
     };
 
     const mergedPreviewItem = {
         ...item,
+        id: item?.id, // wichtig: ID behalten
         text,
         episodes,
         pic: picture,
@@ -137,24 +145,8 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
 
     const handleFileToDataUrl = (file: File) => {
         const reader = new FileReader();
-        reader.onload = () => {
-            setPicture(reader.result as string);
-        };
+        reader.onload = () => setPicture(reader.result as string);
         reader.readAsDataURL(file);
-    };
-
-    const handleSaveSettings = () => {
-        actions.save();
-        addNotification(
-            NotificationTypeEnum.Success,
-            t("tonies.teddystudio.settingsSavedSuccessful"),
-            t("tonies.teddystudio.settingsSavedSuccessful"),
-            t("tonies.teddystudio.navigationTitle")
-        );
-    };
-
-    const handleClearSettings = () => {
-        actions.clear();
     };
 
     return (
@@ -176,7 +168,6 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                         gap: 8,
                     }}
                 >
-                    <Button onClick={() => setSettingsModalOpen(true)}>{t("tonies.teddystudio.settings")}</Button>
                     <Checkbox
                         key="saveOnNavigate"
                         checked={saveOnNavigate}
@@ -185,6 +176,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                     >
                         {t("tonies.teddystudio.saveOnNavigate")}
                     </Checkbox>
+
                     <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: 8 }}>
                         <Button key="prev" onClick={handlePrev} disabled={!canGoPrev}>
                             <ArrowLeftOutlined />
@@ -226,11 +218,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                                             <img
                                                 src={picture}
                                                 alt="preview"
-                                                style={{
-                                                    maxWidth: "100%",
-                                                    maxHeight: 200,
-                                                    borderRadius: 16,
-                                                }}
+                                                style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 16 }}
                                             />
                                         ) : (
                                             <InboxOutlined />
@@ -240,34 +228,33 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                                 </Dragger>
                             </div>
                         </Form.Item>
+
                         <Form.Item label={t("tonies.teddystudio.series")}>
-                            <Input
-                                value={text}
-                                onChange={(e) => {
-                                    setText(e.target.value);
-                                }}
-                            />
+                            <Input value={text} onChange={(e) => setText(e.target.value)} />
                         </Form.Item>
 
                         <Form.Item label={t("tonies.teddystudio.episodes")}>
-                            <Input
-                                value={episodes}
-                                onChange={(e) => {
-                                    setEpisodes(e.target.value);
-                                }}
-                            />
+                            <Input value={episodes} onChange={(e) => setEpisodes(e.target.value)} />
                         </Form.Item>
 
                         <Form.Item label={t("tonies.teddystudio.trackTitles")}>
                             <TextArea
                                 rows={8}
                                 value={trackTitlesText}
-                                onChange={(e) => {
-                                    setTrackTitlesText(e.target.value);
-                                }}
+                                onChange={(e) => setTrackTitlesText(e.target.value)}
                             />
                         </Form.Item>
                     </Form>
+
+                    {itemId && (
+                        <LocalOverrideSettings
+                            itemId={itemId}
+                            localOverride={localOverride}
+                            settings={settings}
+                            setLabelOverride={setLabelOverride}
+                            clearLabelOverride={clearLabelOverride}
+                        />
+                    )}
                 </Col>
 
                 <Col
@@ -278,25 +265,17 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                 >
                     <div className="resultcontainer">
                         <Paragraph style={{ width: "100" }}>{t("tonies.teddystudio.preview")}:</Paragraph>
+
                         <LabelGrid
                             mergedResults={[mergedPreviewItem]}
-                            settings={settings}
-                            textColor={textColor}
+                            settings={effectiveSettingsForPreview}
                             previewMode={true}
+                            labelOverridesById={labelOverridesById}
+                            onClearLocalOverrides={(id) => clearLabelOverride(id)}
                         />
                     </div>
                 </Col>
             </Row>
-            <SettingsModal
-                open={settingsModalOpen}
-                onClose={() => setSettingsModalOpen(false)}
-                settings={settings}
-                paperOptions={paperOptions}
-                actions={actions}
-                onPaperSelect={actions.applyPaperPreset}
-                onSave={handleSaveSettings}
-                onClear={handleClearSettings}
-            />
         </Modal>
     );
 };

@@ -23,6 +23,7 @@ export interface SettingsState {
 
     textFontSize: string;
     imagePosition: string;
+    contentPadding: string;
     showLanguageFlag: boolean;
     showModelNo: boolean;
     showSeriesOnImageLabel: boolean;
@@ -112,6 +113,7 @@ const INITIAL_STATE: SettingsState = {
 
     textFontSize: "14px",
     imagePosition: "center",
+    contentPadding: "1mm",
     showLanguageFlag: false,
     showModelNo: false,
     showSeriesOnImageLabel: false,
@@ -162,25 +164,6 @@ function reducer(state: SettingsState, action: Action): SettingsState {
     }
 }
 
-function getContrastTextColor(bgColor: string): string {
-    let r: number, g: number, b: number;
-    if (bgColor.startsWith("#")) {
-        const hex = bgColor.slice(1);
-        r = parseInt(hex.substring(0, 2), 16);
-        g = parseInt(hex.substring(2, 4), 16);
-        b = parseInt(hex.substring(4, 6), 16);
-    } else if (bgColor.startsWith("rgb")) {
-        const values = bgColor.match(/\d+/g)?.map(Number);
-        if (!values) return "black";
-        [r, g, b] = values;
-    } else {
-        return "black";
-    }
-
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.5 ? "black" : "white";
-}
-
 export interface SettingsActions {
     setDiameter: (v: string) => void;
     setLabelShape: (v: LabelShape) => void;
@@ -198,6 +181,7 @@ export interface SettingsActions {
     setPaperLabelImageBleed: (v: string) => void;
     setTextFontSize: (v: string) => void;
     setImagePosition: (v: string) => void;
+    setContentPadding: (v: string) => void;
     setShowLanguageFlag: (v: boolean) => void;
     setShowModelNo: (v: boolean) => void;
     setShowSeriesOnImageLabel: (v: boolean) => void;
@@ -213,7 +197,6 @@ export interface SettingsActions {
 
 export interface SettingsHook {
     state: SettingsState;
-    textColor: string;
     paperOptions: { label: string; value: string }[];
     actions: SettingsActions;
 }
@@ -240,6 +223,7 @@ export const useSettings = (): SettingsHook => {
             height: state.height,
             textFontSize: state.textFontSize,
             imagePosition: state.imagePosition,
+            contentPadding: state.contentPadding,
             labelShape: state.labelShape,
             showLanguageFlag: state.showLanguageFlag,
             showModelNo: state.showModelNo,
@@ -276,8 +260,6 @@ export const useSettings = (): SettingsHook => {
         value,
     }));
 
-    const textColor = getContrastTextColor(state.labelBackgroundColor);
-
     const actions: SettingsActions = {
         setDiameter: (v) => dispatch({ type: "SET", payload: { diameter: v } }),
         setLabelShape: (v) => dispatch({ type: "SET", payload: { labelShape: v } }),
@@ -295,6 +277,7 @@ export const useSettings = (): SettingsHook => {
         setPaperLabelImageBleed: (v) => dispatch({ type: "SET", payload: { paperLabelImageBleed: v } }),
         setTextFontSize: (v) => dispatch({ type: "SET", payload: { textFontSize: v } }),
         setImagePosition: (v) => dispatch({ type: "SET", payload: { imagePosition: v } }),
+        setContentPadding: (v) => dispatch({ type: "SET", payload: { contentPadding: v } }),
         setShowLanguageFlag: (v) => dispatch({ type: "SET", payload: { showLanguageFlag: v } }),
         setShowModelNo: (v) => dispatch({ type: "SET", payload: { showModelNo: v } }),
         setShowSeriesOnImageLabel: (v) => dispatch({ type: "SET", payload: { showSeriesOnImageLabel: v } }),
@@ -312,5 +295,5 @@ export const useSettings = (): SettingsHook => {
         applyPaperPreset,
     };
 
-    return { state, textColor, paperOptions, actions };
+    return { state, paperOptions, actions };
 };
