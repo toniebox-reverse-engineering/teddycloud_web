@@ -141,6 +141,7 @@ export const LocalOverrideSettings: React.FC<LocalOverrideSettingsProps> = ({
                                         <Input
                                             size="small"
                                             type="number"
+                                            step={15}
                                             min={0}
                                             max={360}
                                             value={
