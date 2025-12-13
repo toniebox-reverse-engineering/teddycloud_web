@@ -2,6 +2,7 @@ import React from "react";
 import { Alert, theme, Typography } from "antd";
 import { ESP32Flasher } from "../hooks/useESP32Flasher";
 import { useTranslation } from "react-i18next";
+import DotAnimation from "../../../../../common/elements/DotAnimation";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -12,13 +13,26 @@ interface Step2Props {
     contentProgress: React.ReactNode;
 }
 
+const renderStateWithAnimation = (text: string) => {
+    if (text.endsWith("...")) {
+        const baseText = text.slice(0, -3);
+        return (
+            <div style={{ display: "flex" }}>
+                {baseText}
+                <DotAnimation />
+            </div>
+        );
+    }
+    return text;
+};
+
 export const Step2FlashESP32: React.FC<Step2Props> = ({ state, useRevvoxFlasher, contentProgress }) => {
     const { t } = useTranslation();
     const { token } = useToken();
 
     const stepStatusText = state.showStatus && (
         <div className="status" style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}>
-            <i>{state.state}</i>
+            <i>{renderStateWithAnimation(state.state)}</i>
         </div>
     );
 
