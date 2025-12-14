@@ -1,3 +1,10 @@
+/*
+ * revvox_flasher.ts
+ * based on flasher.js by g3gg0
+ * https://github.com/g3gg0/esp32_flasher
+ * commit: d203da41a36e63c3f0f2bd7ad93e4843120b344e
+ */
+
 /* Command defines */
 const FLASH_BEGIN = 0x02;
 const FLASH_DATA = 0x03;
@@ -25,9 +32,56 @@ class SlipLayer {
     buffer: number[];
     escaping: boolean;
 
+    logDebug: (...args: unknown[]) => void;
+    logError: (...args: unknown[]) => void;
+
+    /** Enable/disable verbose SLIP logging (formatting work still gated by logPackets) */
+    verbose: boolean;
+    /** Enable/disable packet hexdumps */
+    logPackets: boolean;
+
     constructor() {
         this.buffer = [];
         this.escaping = false;
+        this.verbose = true;
+        this.logPackets = false;
+
+        this.logDebug = () => {};
+        this.logError = () => {};
+    }
+
+    /**
+     * Log SLIP layer data as a small hex/ascii dump.
+     * `type` is 'ENCODE' or 'DECODE'.
+     */
+    logSlipData(data: Uint8Array, type: "ENCODE" | "DECODE", label: string, maxBytes = 128) {
+        if (!this.verbose || !this.logPackets) return;
+
+        const isEncode = type === "ENCODE";
+        const symbol = isEncode ? "▶" : "◀";
+
+        const bytesToShow = Math.min(data.length, maxBytes);
+        const truncated = data.length > maxBytes;
+
+        let hexStr = "";
+        let asciiStr = "";
+        const lines: string[] = [];
+
+        for (let i = 0; i < bytesToShow; i++) {
+            const b = data[i];
+            hexStr += b.toString(16).padStart(2, "0").toUpperCase() + " ";
+            asciiStr += b >= 32 && b <= 126 ? String.fromCharCode(b) : ".";
+            if ((i + 1) % 16 === 0 || i === bytesToShow - 1) {
+                const hexPadding = " ".repeat(Math.max(0, (16 - ((i % 16) + 1)) * 3));
+                lines.push(`    ${hexStr}${hexPadding} | ${asciiStr}`);
+                hexStr = "";
+                asciiStr = "";
+            }
+        }
+
+        const truncMsg = truncated ? ` (showing ${bytesToShow}/${data.length} bytes)` : "";
+        this.logDebug(`${symbol} SLIP ${type} ${label} [${data.length} bytes]${truncMsg}`);
+        for (const line of lines) this.logDebug(line);
     }
 
     encode(packet: Uint8Array): Uint8Array {
@@ -35,6 +89,10 @@ class SlipLayer {
         const SLIP_ESC = 0xdb;
         const SLIP_ESC_END = 0xdc;
         const SLIP_ESC_ESC = 0xdd;
+
+        if (this.logPackets) {
+            this.logSlipData(packet, "ENCODE", "Payload before framing");
+        }
 
         const slipFrame: number[] = [SLIP_END];
 
@@ -68,15 +126,23 @@ class SlipLayer {
                 }
             } else if (this.escaping) {
                 if (byte === SLIP_ESC_END) {
-                    this.buffer.push(0xc0);
+                    this.buffer.push(SLIP_END);
                 } else if (byte === SLIP_ESC_ESC) {
-                    this.buffer.push(0xdb);
+                    this.buffer.push(SLIP_ESC);
                 }
                 this.escaping = false;
             } else if (byte === SLIP_ESC) {
                 this.escaping = true;
             } else {
                 this.buffer.push(byte);
+            }
+        }
+
+        if (this.logPackets) {
+            for (let i = 0; i < outputPackets.length; i++) {
+                const label =
+                    outputPackets.length > 1 ? `Decoded packet ${i + 1}/${outputPackets.length}` : "Decoded packet";
+                this.logSlipData(outputPackets[i], "DECODE", label);
             }
         }
 
@@ -103,6 +169,12 @@ export class RevvoxFlasher {
     logError: (...args: unknown[]) => void;
     reader: ReadableStreamDefaultReader<Uint8Array> | null;
 
+    /** Prevent concurrent command execution (ROM loader is not re-entrant) */
+    private _commandLock: Promise<any>;
+
+    /** Enable/disable verbose serial (RX/TX) hexdumps */
+    verboseSerial: boolean;
+
     disconnected?: () => void;
 
     constructor() {
@@ -123,6 +195,40 @@ export class RevvoxFlasher {
         this.logDebug = () => {};
         this.logError = () => {};
         this.reader = null;
+        /* Command execution lock to prevent concurrent command execution */
+        this._commandLock = Promise.resolve();
+
+        /* Verbose serial logging */
+        this.verboseSerial = false;
+    }
+    /**
+     * Log serial RX/TX data as hex/ascii dump (for debugging).
+     */
+    logSerialData(data: Uint8Array, direction: "TX" | "RX", maxBytes = 256) {
+        if (!this.verboseSerial) return;
+
+        const bytesToShow = Math.min(data.length, maxBytes);
+        const truncated = data.length > maxBytes;
+
+        let hexStr = "";
+        let asciiStr = "";
+        const lines: string[] = [];
+
+        for (let i = 0; i < bytesToShow; i++) {
+            const b = data[i];
+            hexStr += b.toString(16).padStart(2, "0").toUpperCase() + " ";
+            asciiStr += b >= 32 && b <= 126 ? String.fromCharCode(b) : ".";
+            if ((i + 1) % 16 === 0 || i === bytesToShow - 1) {
+                const hexPadding = " ".repeat(Math.max(0, (16 - ((i % 16) + 1)) * 3));
+                lines.push(`  ${hexStr}${hexPadding} | ${asciiStr}`);
+                hexStr = "";
+                asciiStr = "";
+            }
+        }
+
+        const truncMsg = truncated ? ` (showing ${bytesToShow}/${data.length} bytes)` : "";
+        this.logDebug(`[${direction}] [${data.length} bytes]${truncMsg}`);
+        for (const line of lines) this.logDebug(line);
     }
 
     async openPort(baudRate = 921600): Promise<void> {
@@ -159,6 +265,7 @@ export class RevvoxFlasher {
                         break;
                     }
                     if (value) {
+                        this.logSerialData(value, "RX");
                         const packets = this.slipLayer.decode(value);
                         for (const packet of packets) {
                             await this.processPacket(packet);
@@ -214,27 +321,78 @@ export class RevvoxFlasher {
         timeout = 500,
         hasTimeoutCbr: (() => boolean) | null = null
     ): Promise<any> {
+        /* Create command promise first */
+        const commandPromise = this._executeCommandUnlocked(packet, callback, default_callback, timeout, hasTimeoutCbr);
+
+        /* Chain it to the lock, ensuring lock always continues even on error */
+        this._commandLock = this._commandLock.then(
+            () => commandPromise,
+            () => commandPromise /* On previous error, still execute our command */
+        );
+
+        /* Return our command directly to propagate result/error to caller */
+        return commandPromise;
+    }
+
+    /**
+     * Internal command execution
+     */
+    private async _executeCommandUnlocked(
+        packet: { command: number; payload: Uint8Array },
+        callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, responsePacket: any) => void,
+        default_callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, rawData: Uint8Array) => void,
+        timeout = 500,
+        hasTimeoutCbr: (() => boolean) | null = null
+    ): Promise<any> {
         if (!this.port || !this.port.writable) {
             throw new Error("Port is not writable.");
         }
 
         const pkt = this.parsePacket(packet.payload);
+
+        /* Log command execution with parameters */
+        const commandNames: Record<number, string> = {
+            0x02: "FLASH_BEGIN",
+            0x03: "FLASH_DATA",
+            0x04: "FLASH_END",
+            0x05: "MEM_BEGIN",
+            0x06: "MEM_END",
+            0x07: "MEM_DATA",
+            0x08: "SYNC",
+            0x09: "WRITE_REG",
+            0x0a: "READ_REG",
+            0x0b: "SPI_SET_PARAMS",
+            0x0d: "SPI_ATTACH",
+            0x0f: "CHANGE_BAUDRATE",
+            0x10: "FLASH_DEFL_BEGIN",
+            0x11: "FLASH_DEFL_DATA",
+            0x12: "FLASH_DEFL_END",
+            0x14: "GET_SECURITY_INFO",
+            0xd0: "ERASE_FLASH",
+            0xd1: "ERASE_REGION",
+            0xd2: "READ_FLASH",
+            0xd3: "RUN_USER_CODE",
+        };
+        const cmdName = commandNames[packet.command] ?? `0x${packet.command.toString(16)}`;
+        this.logDebug(`[CMD] ${cmdName} (0x${packet.command.toString(16).padStart(2, "0")})`, "params:", pkt);
+
         this.dumpPacket(pkt);
 
-        const responsePromise = new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
+            /* Register response handlers */
             this.responseHandlers.clear();
 
             let settled = false;
             const settleResolve = (value: any) => {
                 if (settled) return;
                 settled = true;
-                clearTimeout(timeoutId);
+                clearTimeout(timeoutHandle);
                 resolve(value);
             };
             const settleReject = (reason?: any) => {
                 if (settled) return;
                 settled = true;
-                clearTimeout(timeoutId);
+                clearTimeout(timeoutHandle);
                 reject(reason);
             };
 
@@ -252,28 +410,41 @@ export class RevvoxFlasher {
                 });
             }
 
-            const timeoutId = setTimeout(() => {
+            /* Set timeout handler */
+            const timeoutHandle = setTimeout(() => {
                 if (settled) return;
 
                 if (hasTimeoutCbr) {
                     if (hasTimeoutCbr()) {
                         settleReject(new Error(`Timeout in command ${packet.command}`));
                     }
-                    // else: condition not met -> don't reject yet
                 } else {
                     settleReject(
                         new Error(`Timeout after ${timeout} ms waiting for response to command ${packet.command}`)
                     );
                 }
             }, timeout);
+
+            /* Send the packet with proper error handling */
+            let writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
+            try {
+                writer = this.port!.writable!.getWriter();
+                const slipFrame = this.slipLayer.encode(packet.payload);
+                this.logSerialData(slipFrame, "TX");
+                await writer.write(slipFrame);
+            } catch (error) {
+                clearTimeout(timeoutHandle);
+                settleReject(error);
+            } finally {
+                if (writer) {
+                    try {
+                        writer.releaseLock();
+                    } catch {
+                        /* ignore */
+                    }
+                }
+            }
         });
-
-        const writer = this.port.writable!.getWriter();
-        const slipFrame = this.slipLayer.encode(packet.payload);
-        await writer.write(slipFrame);
-        writer.releaseLock();
-
-        return responsePromise;
     }
 
     async disconnect(): Promise<void> {
@@ -730,9 +901,13 @@ export class RevvoxFlasher {
                     resp[3] = (data.length >> 24) & 0xff;
 
                     const slipFrame = this.slipLayer.encode(resp);
+                    this.logSerialData(slipFrame, "TX");
                     const writer = this.port!.writable!.getWriter();
-                    await writer.write(slipFrame);
-                    writer.releaseLock();
+                    try {
+                        await writer.write(slipFrame);
+                    } finally {
+                        writer.releaseLock();
+                    }
 
                     packet++;
                 },
@@ -1111,16 +1286,16 @@ export class RevvoxFlasher {
             return;
         }
         if (pkt && pkt.dir === 0) {
-            console.log("Command: ", pkt);
-            console.log(
+            this.logDebug("Command: ", pkt);
+            this.logDebug(
                 `Command raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
                     .join(" ")}`
             );
         }
         if (pkt && pkt.dir === 1) {
-            console.log("Response: ", pkt);
-            console.log(
+            this.logDebug("Response: ", pkt);
+            this.logDebug(
                 `Response raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
                     .join(" ")}`

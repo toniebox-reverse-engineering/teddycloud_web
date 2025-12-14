@@ -9,6 +9,7 @@ import { NotificationTypeEnum } from "../../../../../../types/teddyCloudNotifica
 import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial";
 import { ESP32_CHIPNAME, ESP32_FLASHSIZE } from "../../../../../../constants/esp32";
 import { scrollToTop } from "../../../../../../utils/browser/browserUtils";
+import { useGetSettingLogLevel } from "./useGetSettingLogLevel";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -147,6 +148,8 @@ export const useESP32Flasher = (
     const baudRates = [300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600];
     const romBaudRate = 115200;
 
+    const logLevel = useGetSettingLogLevel();
+
     const handleBaudrateChange = (value: number) => {
         setBaudRate(value);
     };
@@ -167,8 +170,10 @@ export const useESP32Flasher = (
         if (!revvoxFlasherRef.current) {
             const flasher = new RevvoxFlasher();
 
+            flasher.verboseSerial = logLevel >= 5;
+
             flasher.logDebug = (...args: unknown[]) => {
-                console.debug("[RevvoxFlasher]", ...args);
+                logLevel >= 4 && console.debug("[RevvoxFlasher]", ...args);
             };
             flasher.logError = (...args: unknown[]) => {
                 console.error("[RevvoxFlasher]", ...args);
