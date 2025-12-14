@@ -21,6 +21,7 @@ interface UseFileBrowserCoreOptions {
     showDirOnly?: boolean;
     filetypeFilter?: string[];
     trackUrl?: boolean;
+    initialPath?: string;
 }
 
 interface UseFileBrowserCoreResult {
@@ -59,6 +60,7 @@ export const useFileBrowserCore = ({
     showDirOnly = false,
     filetypeFilter = [],
     trackUrl = true,
+    initialPath: initialPathProp = "",
 }: UseFileBrowserCoreOptions): UseFileBrowserCoreResult => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
@@ -68,11 +70,22 @@ export const useFileBrowserCore = ({
 
     const [files, setFiles] = useState<Record[]>([]);
 
+    // URL path is only relevant for mode="fileBrowser"
     const queryParams = new URLSearchParams(location.search);
-    const initialPathFromUrl = queryParams.get("path") || "";
-    const initialPath = mode === "fileBrowser" ? initialPathFromUrl.split("/").map(encodeURIComponent).join("/") : "";
+    const initialPathFromUrl = mode === "fileBrowser" ? queryParams.get("path") || "" : "";
 
-    const [path, setPath] = useState<string>(initialPath);
+    // Resolve initial path without "root first" flash
+    const resolvedInitialPath = (() => {
+        if (mode === "fileBrowser") {
+            const source = trackUrl ? initialPathFromUrl : "";
+            const raw = source || initialPathProp || "";
+            return raw ? raw.split("/").map(encodeURIComponent).join("/") : "";
+        } else {
+            return initialPathProp || "";
+        }
+    })();
+
+    const [path, setPath] = useState<string>(() => resolvedInitialPath);
     const [rebuildList, setRebuildList] = useState<boolean>(false);
 
     const [filterText, setFilterText] = useState<string>("");
@@ -83,15 +96,35 @@ export const useFileBrowserCore = ({
     const cursorPositionFilterRef = useRef<number | null>(null);
     const parentRef = useRef<HTMLDivElement | null>(null);
 
+    // Prevent infinite fallback loops
+    const fallbackInProgressRef = useRef(false);
+
+    // If initialPathProp changes, apply it in select-mode
+    const lastAppliedInitialPathRef = useRef<string>(resolvedInitialPath);
+    useEffect(() => {
+        if (mode !== "select") return;
+
+        const next = initialPathProp || "";
+        if (next === lastAppliedInitialPathRef.current) return;
+
+        lastAppliedInitialPathRef.current = next;
+        setPath(next);
+        setRebuildList((prev) => !prev);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialPathProp, mode]);
+
     // overlay → reset path + URL + force reload
     useEffect(() => {
         if (!overlay) return;
 
-        const queryParams = new URLSearchParams(location.search);
-        queryParams.set("path", "");
+        if (mode === "fileBrowser" && trackUrl) {
+            const qp = new URLSearchParams(location.search);
+            qp.set("path", "");
+            const newUrl = `${window.location.pathname}?${qp.toString()}`;
+            window.history.replaceState(null, "", newUrl);
+        }
+
         setPath("");
-        const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
-        window.history.replaceState(null, "", newUrl);
         setRebuildList((prev) => !prev);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [overlay]);
@@ -105,8 +138,18 @@ export const useFileBrowserCore = ({
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${apiPathParam}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
         )
-            .then((response: Response) => response.json())
+            .then(async (response: Response) => {
+                // IMPORTANT: make non-2xx fail deterministically (so we can fallback)
+                if (!response.ok) {
+                    const err: any = new Error(`HTTP ${response.status}`);
+                    err.status = response.status;
+                    throw err;
+                }
+                return response.json();
+            })
             .then((data: any) => {
+                fallbackInProgressRef.current = false;
+
                 const list: Record[] = (data.files || []) as Record[];
 
                 const filteredList = list.filter((entry) => {
@@ -121,18 +164,42 @@ export const useFileBrowserCore = ({
 
                 setFiles(filteredList);
             })
-            .catch((error: any) =>
-                addNotification(
-                    NotificationTypeEnum.Error,
-                    t("fileBrowser.messages.errorFetchingDirContent"),
-                    t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
-                    t("fileBrowser.title")
-                )
-            )
+            .catch((error: any) => {
+                // If the requested path is invalid/unavailable -> go back to root
+                // Do this only once to avoid loops if root is also failing.
+                const canFallback = path !== "" && !fallbackInProgressRef.current;
+
+                const status = typeof error?.status === "number" ? error.status : undefined;
+                const looksLikeNotFound =
+                    status === 404 ||
+                    status === 400 ||
+                    /not\s*found/i.test(String(error?.message ?? "")) ||
+                    /failed to load dir content/i.test(String(error ?? ""));
+
+                if (canFallback && (looksLikeNotFound || status === undefined)) {
+                    fallbackInProgressRef.current = true;
+
+                    addNotification(
+                        NotificationTypeEnum.Warning,
+                        t("fileBrowser.messages.errorFetchingDirContent"),
+                        t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
+                        t("fileBrowser.title")
+                    );
+
+                    // reset to root
+                    setPath("");
+
+                    if (mode === "fileBrowser" && trackUrl) {
+                        const qp = new URLSearchParams(location.search);
+                        qp.set("path", "");
+                        navigate(`?${qp.toString()}`, { replace: true });
+                    }
+                    return;
+                }
+            })
             .finally(() => {
                 setLoading(false);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [path, special, showDirOnly, rebuildList]);
 
     // restore caret position in filter field
@@ -164,7 +231,7 @@ export const useFileBrowserCore = ({
 
     // breadcrumbs
     const handleBreadcrumbClick = (dirPath: string) => {
-        if (trackUrl) {
+        if (mode === "fileBrowser" && trackUrl) {
             navigate(`?path=${dirPath}`);
         }
         if (path === dirPath) {
@@ -189,14 +256,18 @@ export const useFileBrowserCore = ({
         ];
 
         pathArray.forEach((segment, index) => {
-            const segmentPath = `/${pathArray.slice(0, index + 1).join("/")}`;
+            const segmentPath =
+                mode === "fileBrowser"
+                    ? `/${pathArray.slice(0, index + 1).join("/")}`
+                    : `${pathArray.slice(0, index + 1).join("/")}`;
+
             breadcrumbItems.push({
                 title: (
                     <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
                         {decodeURIComponent(segment)}
                     </span>
                 ),
-                key: segmentPath,
+                key: segmentPath || "/",
             });
         });
 
@@ -217,29 +288,20 @@ export const useFileBrowserCore = ({
         const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
         const fieldB = Array.isArray(dataIndex) ? getFieldValue(b, dataIndex) : b[dataIndex];
 
-        if (fieldA === undefined && fieldB === undefined) {
-            return 0;
-        } else if (fieldA === undefined) {
-            return 1;
-        } else if (fieldB === undefined) {
-            return -1;
-        }
+        if (fieldA === undefined && fieldB === undefined) return 0;
+        if (fieldA === undefined) return 1;
+        if (fieldB === undefined) return -1;
 
-        if (typeof fieldA === "string" && typeof fieldB === "string") {
-            return fieldA.localeCompare(fieldB);
-        } else if (typeof fieldA === "number" && typeof fieldB === "number") {
-            return fieldA - fieldB;
-        } else {
-            console.log("Unsupported types for sorting:", a, b);
-            console.log("Unsupported types for sorting field:", dataIndex, fieldA, fieldB);
-            return 0;
-        }
+        if (typeof fieldA === "string" && typeof fieldB === "string") return fieldA.localeCompare(fieldB);
+        if (typeof fieldA === "number" && typeof fieldB === "number") return fieldA - fieldB;
+
+        // eslint-disable-next-line no-console
+        console.log("Unsupported types for sorting:", a, b, dataIndex, fieldA, fieldB);
+        return 0;
     };
 
     const dirNameSorter = (a: any, b: any) => {
-        if (a.isDir === b.isDir) {
-            return defaultSorter(a, b, "name");
-        }
+        if (a.isDir === b.isDir) return defaultSorter(a, b, "name");
         return a.isDir ? -1 : 1;
     };
 
@@ -248,33 +310,29 @@ export const useFileBrowserCore = ({
             if (!path) return "";
             if (mode === "fileBrowser") {
                 return path.split("/").map(decodeURIComponent).slice(0, -1).map(encodeURIComponent).join("/");
-            } else {
-                return path.split("/").slice(0, -1).join("/");
             }
+            return path.split("/").slice(0, -1).join("/");
         }
 
         if (mode === "fileBrowser") {
             const decodedParts = path ? path.split("/").map(decodeURIComponent) : [];
             return [...decodedParts, dirPath].map(encodeURIComponent).join("/");
-        } else {
-            return path ? `${path}/${dirPath}` : dirPath;
         }
+        return path ? `${path}/${dirPath}` : dirPath;
     };
 
     const buildContentUrl = (fileName: string, options?: { ogg?: boolean }): string => {
         const { ogg = false } = options || {};
 
-        let encodedPath: string;
-        if (mode === "fileBrowser") {
-            encodedPath = path || "";
-        } else {
-            encodedPath = path
+        const encodedPath =
+            mode === "fileBrowser"
+                ? path || ""
+                : path
                 ? path
                       .split("/")
                       .map((segment) => encodeURIComponent(segment))
                       .join("/")
                 : "";
-        }
 
         const encodedName = encodeURIComponent(fileName);
 
@@ -286,7 +344,6 @@ export const useFileBrowserCore = ({
         if (overlay) params.set("overlay", overlay);
 
         url += `?${params.toString()}`;
-
         return url;
     };
 

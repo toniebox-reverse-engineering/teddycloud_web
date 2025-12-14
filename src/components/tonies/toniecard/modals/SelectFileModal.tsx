@@ -9,6 +9,7 @@ const { useToken } = theme;
 interface SelectFileModalProps {
     open: boolean;
     tempSelectedSource: string;
+    selectedSource: string;
     onTempSelectedSourceChange: (value: string) => void;
     onCancel: () => void;
     onConfirm: () => void;
@@ -20,6 +21,7 @@ interface SelectFileModalProps {
 export const SelectFileModal: React.FC<SelectFileModalProps> = ({
     open,
     tempSelectedSource,
+    selectedSource,
     onCancel,
     onConfirm,
     keySelectFileFileBrowser,
@@ -52,6 +54,11 @@ export const SelectFileModal: React.FC<SelectFileModalProps> = ({
         </div>
     );
 
+    const workingSource = tempSelectedSource || selectedSource;
+    const initialPath = workingSource.startsWith("lib://")
+        ? workingSource.replace(/^lib:\/\//, "").replace(/[^/]+$/, "")
+        : "";
+
     return (
         <Modal
             className="sticky-footer"
@@ -63,6 +70,7 @@ export const SelectFileModal: React.FC<SelectFileModalProps> = ({
         >
             <SelectFileFileBrowser
                 key={keySelectFileFileBrowser}
+                initialPath={initialPath}
                 special="library"
                 maxSelectedRows={1}
                 trackUrl={false}

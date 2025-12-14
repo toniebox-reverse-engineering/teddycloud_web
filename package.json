@@ -9,7 +9,7 @@
         "@dnd-kit/sortable": "^10.0.0",
         "@remix-run/router": "^1.23.0",
         "@types/jest": "^30.0.0",
-        "@types/node": "^25.0.1",
+        "@types/node": "^25.0.2",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
         "@types/w3c-web-serial": "^1.0.8",
