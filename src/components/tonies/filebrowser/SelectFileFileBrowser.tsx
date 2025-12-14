@@ -19,6 +19,7 @@ const { useToken } = theme;
 
 export const SelectFileFileBrowser: React.FC<{
     special: string;
+    initialPath?: string;
     filetypeFilter?: string[];
     overlay?: string;
     maxSelectedRows?: number;
@@ -28,6 +29,7 @@ export const SelectFileFileBrowser: React.FC<{
     onFileSelectChange?: (files: any[], path: string, special: string) => void;
 }> = ({
     special,
+    initialPath = "",
     filetypeFilter = [],
     overlay = "",
     maxSelectedRows = 0,
@@ -76,6 +78,7 @@ export const SelectFileFileBrowser: React.FC<{
         showDirOnly,
         filetypeFilter,
         trackUrl,
+        initialPath,
     });
 
     useEffect(() => {

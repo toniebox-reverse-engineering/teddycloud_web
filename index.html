@@ -28,7 +28,7 @@
         <script>
             (async () => {
                 try {
-                    const res = await fetch("/web_version.json?ts=" + Date.now(), {
+                    const res = await fetch("/web/web_version.json?ts=" + Date.now(), {
                         cache: "no-store",
                     });
                     if (!res.ok) {

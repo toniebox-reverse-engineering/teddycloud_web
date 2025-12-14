@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Divider, Steps, Typography } from "antd";
 import { CheckSquareOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
@@ -9,6 +9,7 @@ import { CC3235Step0Preparations } from "./steps/Step0Preparations";
 import { Step1Certificates } from "./steps/Step1Certificates";
 import { Step2Dns } from "./steps/Step2Dns";
 import AvailableBoxesModal from "../common/modals/AvailableBoxesModal";
+import { scrollToTop } from "../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 
@@ -16,6 +17,7 @@ type HwTool = "pico" | "ch341a";
 
 export const CC3235BoxFlashingGuide: React.FC = () => {
     const { t } = useTranslation();
+    const scrollToTopAnchor = useRef<HTMLDivElement | null>(null);
 
     const [currentStep, setCurrentStep] = useState(0);
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
@@ -44,7 +46,7 @@ export const CC3235BoxFlashingGuide: React.FC = () => {
     );
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop(scrollToTopAnchor.current);
     }, [currentStep]);
 
     const renderStepContent = () => {
@@ -68,7 +70,7 @@ export const CC3235BoxFlashingGuide: React.FC = () => {
 
     return (
         <>
-            <h1>{t("tonieboxes.cc3235BoxFlashing.title")}</h1>
+            <h1 ref={scrollToTopAnchor}>{t("tonieboxes.cc3235BoxFlashing.title")}</h1>
             <Divider>{t("tonieboxes.cc3235BoxFlashing.title")}</Divider>
 
             <Paragraph style={{ marginTop: 16 }}>

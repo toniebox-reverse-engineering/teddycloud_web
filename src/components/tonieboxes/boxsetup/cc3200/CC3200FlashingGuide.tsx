@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Divider, Steps, Typography } from "antd";
 import { CheckSquareOutlined, CodeOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
@@ -12,11 +12,13 @@ import { Step2Certificates } from "./steps/Step2Certificates";
 import { Step3Patches } from "./steps/Step3Patches";
 import { Step4ApplyingPatches } from "./steps/Step4ApplyingPatches";
 import AvailableBoxesModal from "../common/modals/AvailableBoxesModal";
+import { scrollToTop } from "../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 
 export const CC3200BoxFlashingGuide: React.FC = () => {
     const { t } = useTranslation();
+    const scrollToTopAnchor = useRef<HTMLDivElement | null>(null);
 
     const [currentStep, setCurrentStep] = useState(0);
     const [hostname, setHostname] = useState<string>("");
@@ -25,7 +27,7 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop(scrollToTopAnchor.current);
     }, [currentStep]);
 
     const steps = [
@@ -115,7 +117,7 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
 
     return (
         <>
-            <h1>{t("tonieboxes.cc3200BoxFlashing.title")}</h1>
+            <h1 ref={scrollToTopAnchor}>{t("tonieboxes.cc3200BoxFlashing.title")}</h1>
             <Divider>{t("tonieboxes.cc3200BoxFlashing.title")}</Divider>
 
             <Paragraph>

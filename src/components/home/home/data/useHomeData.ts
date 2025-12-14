@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useNewBoxesAllowed } from "../../../../hooks/useNewBoxesAllowed";
+import { useNewBoxesAllowed } from "../../../../hooks/getsettings/useGetSettingNewBoxesAllowed";
 import { useTonieboxes } from "../../../../hooks/useTonieboxes";
 import { useTonies } from "../../../../hooks/useTonies";
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Alert, Button, Divider, Progress, Select, Steps, Tooltip, Typography } from "antd";
 import {
     CodeOutlined,
@@ -23,7 +23,7 @@ import { Step0ReadImport } from "./steps/Step0ReadImport";
 import { Step1PatchFlash } from "./steps/Step1PatchFlash";
 import { Step2FlashESP32 } from "./steps/Step2FlashESP32";
 import { Step3AfterFlash } from "./steps/Step3AfterFlash";
-import { canHover } from "../../../../../utils/browser/browserUtils";
+import { canHover, scrollToTop } from "../../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 const { Option } = Select;
@@ -36,7 +36,9 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
-    const flasher = useESP32Flasher(useRevvoxFlasher);
+    const scrollToTopAnchor = useRef<HTMLDivElement | null>(null);
+
+    const flasher = useESP32Flasher(useRevvoxFlasher, scrollToTopAnchor.current);
 
     const {
         state,
@@ -85,7 +87,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
     ];
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop(scrollToTopAnchor.current);
     }, [currentStep]);
 
     const backupHint = (
@@ -305,7 +307,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                     alignItems: "flex-end",
                 }}
             >
-                <h1>{t("tonieboxes.esp32BoxFlashing.title")}</h1>
+                <h1 ref={scrollToTopAnchor}>{t("tonieboxes.esp32BoxFlashing.title")}</h1>
                 {httpsActive && (
                     <Paragraph
                         style={{
