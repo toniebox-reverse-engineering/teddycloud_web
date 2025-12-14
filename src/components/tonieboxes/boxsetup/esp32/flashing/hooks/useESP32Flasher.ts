@@ -9,7 +9,7 @@ import { NotificationTypeEnum } from "../../../../../../types/teddyCloudNotifica
 import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial";
 import { ESP32_CHIPNAME, ESP32_FLASHSIZE } from "../../../../../../constants/esp32";
 import { scrollToTop } from "../../../../../../utils/browser/browserUtils";
-import { useGetSettingLogLevel } from "./useGetSettingLogLevel";
+import { useGetSettingLogLevel } from "../../../../../../hooks/getsettings/useGetSettingLogLevel";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

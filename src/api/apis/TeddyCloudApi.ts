@@ -399,14 +399,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * get core.newBoxesAllowed
-     */
-    async apiGetNewBoxesAllowed(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {
-        const response = await this.apiGetTeddyCloudSettingRaw("core.allowNewBox", undefined, initOverrides);
-        return (await response.text()) === "true" ? true : false;
-    }
-
-    /**
      * get security mit alert
      */
     async apiGetSecurityMITAlert(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<boolean> {

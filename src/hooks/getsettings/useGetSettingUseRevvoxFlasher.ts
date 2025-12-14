@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { TeddyCloudApi } from "../../../../../../api";
-import { defaultAPIConfig } from "../../../../../../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

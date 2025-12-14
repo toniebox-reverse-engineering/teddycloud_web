@@ -3,7 +3,7 @@ import { Alert, Timeline, Typography, theme } from "antd";
 import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-import { useNewBoxesAllowed } from "../../../../hooks/useNewBoxesAllowed";
+import { useNewBoxesAllowed } from "../../../../hooks/getsettings/useGetSettingNewBoxesAllowed";
 
 import { forumUrl, telegramGroupUrl } from "../../../../constants/urls";
 import { useReachableNewbieGuideUrls } from "./hooks/useReachableNewbieGuideUrls";
