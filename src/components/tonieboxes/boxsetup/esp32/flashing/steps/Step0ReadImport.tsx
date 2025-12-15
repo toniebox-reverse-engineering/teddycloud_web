@@ -5,6 +5,7 @@ import { ESP32Flasher } from "../hooks/useESP32Flasher";
 import DotAnimation from "../../../../../common/elements/DotAnimation";
 import { connectESP32Explanation } from "../../elements/ConnectESP32Explanation";
 import { useTranslation } from "react-i18next";
+import { WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -45,6 +46,14 @@ export const Step0ReadImport: React.FC<Step0Props> = ({ state, fileInputRef, onF
             {!state.actionInProgress && (
                 <>
                     <Paragraph>
+                        <Alert
+                            type="error"
+                            showIcon
+                            icon={<WarningFilled />}
+                            title={t("tonieboxes.warningUseAtYourOwnRisk")}
+                            description={t("tonieboxes.warningUseAtYourOwnRiskText")}
+                            style={{ marginBottom: 16 }}
+                        />
                         <Alert
                             type="warning"
                             closable={{ closeIcon: true, "aria-label": "close" }}

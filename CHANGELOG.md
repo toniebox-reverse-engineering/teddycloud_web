@@ -9,7 +9,9 @@
 -   gui: display hint if a new version is available (working in develop and release branch) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/260](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/260)
 -   gui: TeddyStudio: Added possibility to show series on image label, added possibility for custom settings per labelset
 -   gui: Revvox Flasher: Integrated new overworked and even more reliable version of revvox esp32 flasher, added more checks on file upload.
+-   gui: Revvox Flasher: Is the new default flasher, legacy flasher will be removed in next version. You can switch to legacy flasher through settings and disabling frontend.use_revvox_flasher (expert level setting)
 -   gui: Select source preselects the currently set path in the filebrowser according the selected source
+-   gui: Added warning flashing on users own risk.
 
 ### Commits
 
