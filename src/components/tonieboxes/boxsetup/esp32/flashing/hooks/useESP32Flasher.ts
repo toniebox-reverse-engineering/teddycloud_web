@@ -10,6 +10,8 @@ import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial"
 import { ESP32_CHIPNAME, ESP32_FLASHSIZE } from "../../../../../../constants/esp32";
 import { scrollToTop } from "../../../../../../utils/browser/browserUtils";
 import { useGetSettingLogLevel } from "../../../../../../hooks/getsettings/useGetSettingLogLevel";
+import { checkAssetsCertPartition } from "../helper/checkAssetsCertPartition";
+import { TFunction } from "i18next";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -334,6 +336,31 @@ export const useESP32Flasher = (
         }
     };
 
+    function checkFirmwareIntegrity(
+        flashData: Uint8Array<ArrayBuffer> | Uint8Array<ArrayBufferLike>,
+        t: TFunction
+    ): boolean {
+        const onlyFFor00 = flashData.every((b) => b === 0xff || b === 0x00);
+
+        if (onlyFFor00) {
+            throw new Error(t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashData"));
+        } else {
+            console.log("Flash data is not all 0xFF or 0x00.");
+        }
+
+        const result = checkAssetsCertPartition(flashData);
+        if (!result.ok) {
+            throw new Error(
+                t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashDataCertificatesMissing") + result.reason
+            );
+        } else {
+            console.log("Certificates partition check passed.");
+        }
+
+        console.log("Firmware integrity check passed.");
+        return true;
+    }
+
     // --- low-level flashing logic ---
 
     const disconnectESPLoader = async (esploader: ESPLoader | null, port: SerialPort | null) => {
@@ -466,12 +493,12 @@ export const useESP32Flasher = (
                 return;
             }
 
-            const allZero = flashData.every((b) => b === 0x00);
-            const allFF = flashData.every((b) => b === 0xff);
-            if (allZero || allFF) {
+            try {
+                checkFirmwareIntegrity(flashData, t);
+            } catch (err: any) {
                 setState((prev) => ({
                     ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashData"),
+                    state: err.message,
                     connected: false,
                     actionInProgress: false,
                     error: true,
@@ -675,6 +702,15 @@ export const useESP32Flasher = (
                     flashSize: "" + flashSizeKb,
                 }));
 
+                if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
+                    throw new Error(
+                        t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                            actualtype: "" + flasher.current_chip,
+                            expectedtype: ESP32_CHIPNAME,
+                        })
+                    );
+                }
+
                 setState((prev) => ({
                     ...prev,
                     state: t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFlash"),
@@ -693,11 +729,7 @@ export const useESP32Flasher = (
                     }));
                 });
 
-                const allZero = flashData.every((b) => b === 0x00);
-                const allFF = flashData.every((b) => b === 0xff);
-                if (allZero || allFF) {
-                    throw new Error(t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashData"));
-                }
+                checkFirmwareIntegrity(flashData, t);
 
                 setState((prev) => ({
                     ...prev,
@@ -869,12 +901,12 @@ export const useESP32Flasher = (
 
             await disconnectESPLoader(esploader, port);
 
-            const allZero = flashData.every((b) => b === 0x00);
-            const allFF = flashData.every((b) => b === 0xff);
-            if (allZero || allFF) {
+            try {
+                checkFirmwareIntegrity(flashData, t);
+            } catch (err: any) {
                 setState((prev) => ({
                     ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashData"),
+                    state: err.message,
                     connected: false,
                     actionInProgress: false,
                     error: true,
@@ -1077,6 +1109,15 @@ export const useESP32Flasher = (
                         chipMac: mac,
                         chipType: flasher.current_chip,
                     }));
+                }
+
+                if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
+                    throw new Error(
+                        t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                            actualtype: "" + flasher.current_chip,
+                            expectedtype: ESP32_CHIPNAME,
+                        })
+                    );
                 }
 
                 const data = new Uint8Array(state.patchedFlash as ArrayBuffer);
@@ -1336,6 +1377,15 @@ export const useESP32Flasher = (
                         chipMac: mac,
                         chipType: flasher.current_chip,
                     }));
+                }
+
+                if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
+                    throw new Error(
+                        t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                            actualtype: "" + flasher.current_chip,
+                            expectedtype: ESP32_CHIPNAME,
+                        })
+                    );
                 }
 
                 const data = new Uint8Array(state.patchedFlash as ArrayBuffer);

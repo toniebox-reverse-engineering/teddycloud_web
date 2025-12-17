@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { connectESP32Explanation } from "../../elements/ConnectESP32Explanation";
 import { TonieboxWifiGuide } from "../../../common/elements/TonieboxWifiGuide";
+import { WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -13,6 +14,14 @@ export const Step0Preparations: React.FC = () => {
     return (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.preparations")}</h3>
+            <Alert
+                type="error"
+                showIcon
+                icon={<WarningFilled />}
+                title={t("tonieboxes.warningUseAtYourOwnRisk")}
+                description={t("tonieboxes.warningUseAtYourOwnRiskText")}
+                style={{ marginBottom: 16 }}
+            />
             <Alert
                 type="warning"
                 closable={{ closeIcon: true, "aria-label": "close" }}
