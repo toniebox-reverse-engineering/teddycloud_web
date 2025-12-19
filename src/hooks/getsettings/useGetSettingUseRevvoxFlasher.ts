@@ -5,7 +5,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export const useGetSettingUseRevvoxFlasher = () => {
-    const [value, setValue] = useState<boolean | null>(null);
+    const [value, setValue] = useState<boolean | null>(true);
 
     useEffect(() => {
         let isMounted = true;
