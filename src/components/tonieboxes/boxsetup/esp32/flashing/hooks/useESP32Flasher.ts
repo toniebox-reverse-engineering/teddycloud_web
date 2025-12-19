@@ -440,6 +440,8 @@ export const useESP32Flasher = (
             throw new Error(
                 t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashDataCertificatesMissing") + result.reason
             );
+        } else {
+            console.info("[ESP32] integrity: certs found", result);
         }
 
         console.info("[ESP32] integrity: OK");
