@@ -366,7 +366,7 @@
                     "title": "Editar metadatos de TAF"
                 },
                 "editTAPPlaylist": {
-                    "text": "Abre el editor de listas de reproducción de audio de Tonie para administrar archivos TAP. (WIP)",
+                    "text": "Abre el editor de TeddyAudio Playlist de Tonie para administrar archivos TAP.",
                     "title": "Editar lista de reproducción TAP"
                 },
                 "migrateToAudioIdFolder": {
@@ -499,7 +499,13 @@
         },
         "tap": {
             "copy": "(WIP - aún no implementado) Duplicar lista de reproducción de Tonie",
-            "edit": "(WIP - aún no implementado) Editar lista de reproducción de Tonie"
+            "edit": "Editar lista de reproducción de Tonie",
+            "messages": {
+                "savedSuccessfully": "TAP enregistré avec succès !",
+                "savedSuccessfullyDetails": "Le TAP \"{{file}}\" a été enregistré avec succès dans \"{{path}}\".",
+                "savingFailed": "Échec de l’enregistrement du TAP !",
+                "savingFailedDetails": "L’enregistrement du TAP \"{{file}}\" dans \"{{path}}\" a échoué :"
+            }
         },
         "title": "Explorador de archivos",
         "upload": {
@@ -541,7 +547,7 @@
                         "03provideCustomAudio": "proporcionar contenido de audio personalizado",
                         "04simulateLiveContent": "simular contenido en vivo",
                         "05convertAudio": "convertir transmisiones de audio sobre la marcha mediante ffmpeg para radio web y transmisiones",
-                        "06definePlaylists": "definir listas de reproducción de audio de tonie (PoC en el frontend web)",
+                        "06definePlaylists": "definir TeddyAudio Playlist de tonie (PoC en el frontend web)",
                         "07cacheAudio": "almacenar en caché contenido de audio original de tonie",
                         "08filterTags": "filtrar etiquetas personalizadas para evitar la eliminación"
                     },
@@ -560,7 +566,7 @@
                     "title": "Gestiona todos tus Tonies/Etiquetas"
                 },
                 "04manageLibrary": "Gestionar tu biblioteca de contenido",
-                "05managePlaylists": "Gestionar tu biblioteca de listas de reproducción de audio de Tonie (PoC en el frontend web)",
+                "05managePlaylists": "Gestionar tu biblioteca de TeddyAudio Playlist de Tonie (PoC en el frontend web)",
                 "06convertAudioFile": "Convertir cualquier archivo de audio en un archivo de audio de tonie",
                 "07manageTonieboxes": {
                     "items": {
@@ -2028,8 +2034,8 @@
         "tafHeaderOf": "TAF-Header de ",
         "tafHeaderToniesJsonHint": "No debes editar los datos aquí cuando los envíes al tonies-json. ¡Esto incluye el número de pistas, incluso si es diferente del número de pistas en el campo track-desc!",
         "tap": {
-            "navigationTitle": "WIP: Listas de reproducción de audio",
-            "title": "WIP: Listas de reproducción de audio de Tonie"
+            "navigationTitle": "TeddyAudio Playlists",
+            "title": "TeddyAudio Playlists"
         },
         "tapEditor": {
             "addFile": "Agregar archivo",

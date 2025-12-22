@@ -1,23 +1,13 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Typography } from "antd";
+import { Alert } from "antd";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
-import TonieAudioPlaylistEditor from "../../components/tonies/TonieAudioPlaylistEditor";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
 import { Link } from "react-router-dom";
 
-const { Paragraph } = Typography;
-
-export const TonieAudioPlaylistsPage = () => {
+export const TeddyAudioPlaylistsPage = () => {
     const { t } = useTranslation();
-    const [TAPEditorOpen, setTAPEditorOpen] = useState(false);
-
-    const onCreate = (values: any) => {
-        console.log("Received values of form: ", values);
-        setTAPEditorOpen(false);
-    };
 
     return (
         <>
@@ -37,40 +27,17 @@ export const TonieAudioPlaylistsPage = () => {
 
                     <Alert
                         title={t("settings.information")}
-                        description=<div>
-                            Development still in progress - Please be patient or support implementation of this feature!
-                        </div>
+                        description=<div>Development still in progress - Feature is still unstable!</div>
                         type="info"
                         showIcon
                         style={{ marginBottom: 8 }}
                     />
-
                     <FileBrowser
                         special="library"
                         filetypeFilter={[".tap"]}
                         showColumns={["picture", "name", "size", "date", "controls"]}
                         isTapList={true}
                     />
-                    <Paragraph>
-                        <div>
-                            <Button
-                                type="primary"
-                                style={{ marginTop: 8 }}
-                                onClick={() => {
-                                    setTAPEditorOpen(true);
-                                }}
-                            >
-                                {t("tonies.tapEditor.titleCreate")}
-                            </Button>
-                            <TonieAudioPlaylistEditor
-                                open={TAPEditorOpen}
-                                onCreate={onCreate}
-                                onCancel={() => {
-                                    setTAPEditorOpen(false);
-                                }}
-                            />
-                        </div>
-                    </Paragraph>
                 </StyledContent>
             </StyledLayout>
         </>

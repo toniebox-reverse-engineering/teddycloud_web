@@ -366,7 +366,7 @@
                     "title": "TAF-Metadaten bearbeiten"
                 },
                 "editTAPPlaylist": {
-                    "text": "Öffnet den Tonie-Audio-Playlist-Editor, um TAP-Dateien zu verwalten. (WIP)",
+                    "text": "Öffnet den Tonie-Audio-Playlist-Editor, um TAP-Dateien zu verwalten.",
                     "title": "TAP-Playlist bearbeiten"
                 },
                 "migrateToAudioIdFolder": {
@@ -498,8 +498,14 @@
             "edit": "(WIP - not implemented yet) Metadaten editieren"
         },
         "tap": {
-            "copy": "(WIP - not implemented yet) Tonie Audio Playlist duplizieren",
-            "edit": "(WIP - not implemented yet) Tonie Audio Playlist editieren"
+            "copy": "(WIP - not implemented yet) TeddyAudio Playlist duplizieren",
+            "edit": "TeddyAudio Playlist editieren",
+            "messages": {
+                "savedSuccessfully": "TAP erfolgreich gespeichert!",
+                "savedSuccessfullyDetails": "TAP \"{{file}}\" wurde erfolgreich in \"{{path}}\" gespeichert!",
+                "savingFailed": "TAP-Speichern fehlgeschlagen!",
+                "savingFailedDetails": "Speichern der TAP-Datei \"{{file}}\" in \"{{path}}\" ist fehlgeschlagen:"
+            }
         },
         "title": "Dateibrowser",
         "upload": {
@@ -2028,8 +2034,8 @@
         "tafHeaderOf": "TAF-Header von ",
         "tafHeaderToniesJsonHint": "Du darfst die Daten hier nicht bearbeiten, wenn du sie an das tonies-json übermittelst. Dazu gehört auch die Anzahl der Tracks, selbst wenn sie sich von der Anzahl im Feld track-desc unterscheidet!",
         "tap": {
-            "navigationTitle": "WIP: Audio Playlists",
-            "title": "WIP: Tonie Audio Playlists"
+            "navigationTitle": "TeddyAudio Playlists",
+            "title": "TeddyAudio Playlists"
         },
         "tapEditor": {
             "addFile": "Datei hinzufügen",

@@ -13,6 +13,7 @@
 -   gui: Select source preselects the currently set path in the filebrowser according the selected source
 -   gui: Added warning flashing on users own risk.
 -   gui: Added logging output on flashing page.
+-   gui: Finalized TAP Editor functionality, but backend still in an early pre release stage.
 
 ### Commits
 

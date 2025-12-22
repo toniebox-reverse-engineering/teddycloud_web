@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import type { DefaultOptionType } from "antd/es/select";
 
 import { TeddyCloudApi } from "../../../../api";
@@ -41,6 +41,7 @@ export interface DirectoryTreeApi {
 
     // commands
     addDirectory: (params: { parentPath: string; directoryName: string; selectNewNode?: boolean }) => void;
+    selectNodeByFullPath: (fullPath: string) => Promise<void>;
 
     // lazy loading (TreeSelect.loadData)
     onLoadTreeData: (params: { id: string }) => Promise<void>;
@@ -51,145 +52,227 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
     const [treeData, setTreeData] = useState<DirectoryTreeNode[]>([rootTreeNode]);
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
-    const getPathFromNodeId = useCallback(
-        (nodeId: string): string => {
-            const node = treeData.find((entry) => entry.value === nodeId || entry.id === nodeId);
-            if (!node) return "";
-            if (node.pId === "-1") return "";
-
-            const parent = treeData.find((entry) => entry.id === node.pId);
-            if (!parent) return `/${node.title}`;
-
-            const parentPath = getPathFromNodeId(parent.id);
-            return parentPath ? `${parentPath}/${node.title}` : `/${node.title}`;
-        },
-        [treeData]
-    );
-
-    const findNodeIdByFullPath = useCallback(
-        (fullPath: string): string | null => {
-            const normalized = fullPath.endsWith("/") ? fullPath : `${fullPath}/`;
-            const node = treeData.find((n) => n.fullPath === normalized);
-            return node ? node.id : null;
-        },
-        [treeData]
-    );
-
-    const findNodesByParentId = useCallback(
-        (parentId: string): string[] => {
-            return treeData.filter((n) => n.pId === parentId).map((n) => n.id);
-        },
-        [treeData]
-    );
-
-    const isNodeExpanded = useCallback((nodeId: string): boolean => expandedKeys.includes(nodeId), [expandedKeys]);
-
+    // ---- refs to avoid "first open doesn't work" race (setState is async) ----
+    const treeDataRef = useRef<DirectoryTreeNode[]>([rootTreeNode]);
     useEffect(() => {
-        const preLoadTreeData = async () => {
-            const newPath = getPathFromNodeId(rootTreeNode.id); // i. d. R. ""
+        treeDataRef.current = treeData;
+    }, [treeData]);
 
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
-                .then((response) => response.json())
-                .then((data) => {
-                    let list: any[] = data.files;
-                    list = list
-                        .filter((entry) => entry.isDir && entry.name !== "..")
-                        .sort((a, b) =>
-                            a.name.toLowerCase() > b.name.toLowerCase()
-                                ? 1
-                                : a.name.toLowerCase() < b.name.toLowerCase()
-                                ? -1
-                                : 0
-                        )
-                        .map((entry, index) => {
-                            const id = `${rootTreeNode.id}.${index}`;
-                            return {
-                                id,
-                                pId: rootTreeNode.id,
-                                value: id,
-                                title: entry.name,
-                                fullPath: `${newPath}/${entry.name}/`,
-                            } as DirectoryTreeNode;
-                        });
+    const expandedKeysRef = useRef<string[]>([]);
+    useEffect(() => {
+        expandedKeysRef.current = expandedKeys;
+    }, [expandedKeys]);
 
-                    setTreeData((prev) => prev.concat(list));
-                });
-        };
-        preLoadTreeData();
+    // ---- helpers ----
+    const normalizeFullPath = (p: string) => {
+        let v = (p ?? "").toString().trim();
+        if (!v) return "/";
+
+        if (!v.startsWith("/")) v = `/${v}`;
+        if (!v.endsWith("/")) v = `${v}/`;
+        return v;
+    };
+
+    const findNodeIdByFullPath = useCallback((fullPath: string): string | null => {
+        const normalized = normalizeFullPath(fullPath);
+        const node = treeDataRef.current.find((n) => n.fullPath === normalized);
+        return node ? node.id : null;
     }, []);
 
-    const onLoadTreeData = ({ id }: { id: string }) =>
-        new Promise<void>((resolve, reject) => {
-            const newPath = getPathFromNodeId(String(id));
-            api.apiGetTeddyCloudApiRaw(`/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`)
-                .then((response) => response.json())
-                .then((data) => {
+    const getPathFromNodeId = useCallback((nodeId: string): string => {
+        const list = treeDataRef.current;
+
+        const node = list.find((entry) => entry.value === nodeId || entry.id === nodeId);
+        if (!node) return "";
+        if (node.pId === "-1") return "";
+
+        const parent = list.find((entry) => entry.id === node.pId);
+        if (!parent) return `/${node.title}`;
+
+        const parentPath = getPathFromNodeId(parent.id);
+        return parentPath ? `${parentPath}/${node.title}` : `/${node.title}`;
+    }, []);
+
+    const findNodesByParentId = useCallback((parentId: string): string[] => {
+        return treeDataRef.current.filter((n) => n.pId === parentId).map((n) => n.id);
+    }, []);
+
+    const isNodeExpanded = useCallback((nodeId: string): boolean => {
+        return expandedKeysRef.current.includes(nodeId);
+    }, []);
+
+    const mergeTreeData = (prev: DirectoryTreeNode[], incoming: DirectoryTreeNode[]) => {
+        const map = new Map<string, DirectoryTreeNode>();
+        for (const n of prev) map.set(n.fullPath, n);
+        for (const n of incoming) map.set(n.fullPath, n);
+        return Array.from(map.values());
+    };
+
+    // ---- preload root children ----
+    useEffect(() => {
+        let cancelled = false;
+
+        const preLoadTreeData = async () => {
+            try {
+                const newPath = getPathFromNodeId(rootTreeNode.id); // usually ""
+
+                const response = await api.apiGetTeddyCloudApiRaw(
+                    `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`
+                );
+                const data = await response.json();
+
+                let list: any[] = data.files;
+                const mapped = list
+                    .filter((entry) => entry.isDir && entry.name !== "..")
+                    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+                    .map((entry, index) => {
+                        const id = `${rootTreeNode.id}.${index}`;
+                        return {
+                            id,
+                            pId: rootTreeNode.id,
+                            value: id,
+                            title: entry.name,
+                            fullPath: `${newPath}/${entry.name}/`,
+                        } as DirectoryTreeNode;
+                    });
+
+                if (cancelled) return;
+
+                setTreeData((prev) => {
+                    const merged = mergeTreeData(prev, mapped);
+                    treeDataRef.current = merged;
+                    return merged;
+                });
+            } catch {
+                // ignore preload errors
+            }
+        };
+
+        void preLoadTreeData();
+        return () => {
+            cancelled = true;
+        };
+    }, [getPathFromNodeId]);
+
+    // ---- lazy loading ----
+    const onLoadTreeData = useCallback(
+        ({ id }: { id: string }) => {
+            return new Promise<void>(async (resolve, reject) => {
+                try {
+                    const parentId = String(id);
+
+                    // compute path from current ref (works even before state commit)
+                    const newPath = getPathFromNodeId(parentId);
+
+                    const response = await api.apiGetTeddyCloudApiRaw(
+                        `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`
+                    );
+                    const data = await response.json();
+
                     let list: any[] = data.files;
-                    list = list
+                    const mapped = list
                         .filter((entry) => entry.isDir && entry.name !== "..")
-                        .sort((a, b) =>
-                            a.name.toLowerCase() > b.name.toLowerCase()
-                                ? 1
-                                : a.name.toLowerCase() < b.name.toLowerCase()
-                                ? -1
-                                : 0
-                        )
+                        .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
                         .map((entry, index) => {
-                            const stringId = String(id);
-                            const value = `${stringId}.${index}`;
+                            const value = `${parentId}.${index}`;
                             return {
                                 id: value,
-                                pId: stringId,
+                                pId: parentId,
                                 value,
                                 title: entry.name,
                                 fullPath: `${newPath}/${entry.name}/`,
                             } as DirectoryTreeNode;
                         });
 
-                    setTreeData((prev) => prev.concat(list));
+                    setTreeData((prev) => {
+                        const merged = mergeTreeData(prev, mapped);
+                        // CRITICAL: update ref immediately so callers can find nodes right after await
+                        treeDataRef.current = merged;
+                        return merged;
+                    });
+
                     resolve();
-                })
-                .catch(reject);
-        });
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        },
+        [getPathFromNodeId]
+    );
 
-    const addDirectory = ({
-        parentPath,
-        directoryName,
-        selectNewNode = false,
-    }: {
-        parentPath: string;
-        directoryName: string;
-        selectNewNode?: boolean;
-    }) => {
-        const parentFullPath = parentPath.endsWith("/") ? parentPath : `${parentPath}/`;
+    // ---- commands ----
+    const addDirectory = useCallback(
+        ({
+            parentPath,
+            directoryName,
+            selectNewNode = false,
+        }: {
+            parentPath: string;
+            directoryName: string;
+            selectNewNode?: boolean;
+        }) => {
+            const parentFullPath = normalizeFullPath(parentPath);
+            const parentNodeId = findNodeIdByFullPath(parentFullPath) || rootTreeNode.id;
 
-        const parentNodeId = findNodeIdByFullPath(parentFullPath) || rootTreeNode.id;
+            const newNodeId = `${parentNodeId}.${treeDataRef.current.length}`;
 
-        const newNodeId = `${parentNodeId}.${treeData.length}`;
+            const newDir: DirectoryTreeNode = {
+                id: newNodeId,
+                pId: parentNodeId,
+                value: newNodeId,
+                title: directoryName,
+                fullPath: `${parentFullPath}${directoryName}/`,
+            };
 
-        const newDir: DirectoryTreeNode = {
-            id: newNodeId,
-            pId: parentNodeId,
-            value: newNodeId,
-            title: directoryName,
-            fullPath: `${parentFullPath}${directoryName}/`,
-        };
+            setTreeData((prev) => {
+                const merged = mergeTreeData(prev, [newDir]).sort((a, b) =>
+                    String(a.title).toLowerCase().localeCompare(String(b.title).toLowerCase())
+                );
+                treeDataRef.current = merged;
+                return merged;
+            });
 
-        setTreeData((prev) =>
-            [...prev, newDir].sort((a, b) =>
-                a.title.toLowerCase() > b.title.toLowerCase()
-                    ? 1
-                    : a.title.toLowerCase() < b.title.toLowerCase()
-                    ? -1
-                    : 0
-            )
-        );
+            if (selectNewNode) {
+                setTreeNodeId(newNodeId);
+                setExpandedKeys((prev) => (prev.includes(parentNodeId) ? prev : [...prev, parentNodeId]));
+            }
+        },
+        [findNodeIdByFullPath]
+    );
 
-        if (selectNewNode) {
-            setTreeNodeId(newNodeId);
-            setExpandedKeys((prev) => (prev.includes(parentNodeId) ? prev : [...prev, parentNodeId]));
-        }
-    };
+    const selectNodeByFullPath = useCallback(
+        async (fullPath: string) => {
+            const target = normalizeFullPath(fullPath);
+
+            if (target === "/") {
+                setTreeNodeId(rootTreeNode.id);
+                return;
+            }
+
+            const segments = target.split("/").filter(Boolean);
+
+            let currentNodeId = rootTreeNode.id;
+            let currentPath = "";
+
+            for (const seg of segments) {
+                currentPath = normalizeFullPath(currentPath);
+                currentPath = `${currentPath}${seg}/`;
+
+                await onLoadTreeData({ id: currentNodeId });
+
+                const childId = findNodeIdByFullPath(currentPath);
+                if (!childId) {
+                    return;
+                }
+                setExpandedKeys((prev) => (prev.includes(currentNodeId) ? prev : [...prev, currentNodeId]));
+                currentNodeId = childId;
+            }
+
+            setTreeNodeId(currentNodeId);
+            setExpandedKeys((prev) => (prev.includes(currentNodeId) ? prev : [...prev, currentNodeId]));
+        },
+        [findNodeIdByFullPath, onLoadTreeData, rootTreeNode.id, normalizeFullPath]
+    );
 
     return {
         treeData,
@@ -204,6 +287,7 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
         findNodesByParentId,
         isNodeExpanded,
         addDirectory,
+        selectNodeByFullPath,
         onLoadTreeData,
     };
 };

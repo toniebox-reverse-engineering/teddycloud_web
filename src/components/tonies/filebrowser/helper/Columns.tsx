@@ -332,15 +332,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             />
                         </Tooltip>
                     );
-                    actions.push(
-                        <Tooltip
-                            open={!canHover ? false : undefined}
-                            key={`action-copy-tap-${record.name}`}
-                            title={t("fileBrowser.tap.copy")}
-                        >
-                            <CopyOutlined style={{ margin: "4px 8px 4px 0", padding: 4 }} />
-                        </Tooltip>
-                    );
                 }
 
                 if (record.tafHeader && handleEditTafMetaDataClick) {

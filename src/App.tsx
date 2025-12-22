@@ -46,7 +46,7 @@ import { EncoderPage } from "./pages/tonies/EncoderPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
-import { TonieAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
+import { TeddyAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
 import { TeddyAudioPlayerPage } from "./pages/tonies/TeddyAudioPlayerPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 
@@ -173,7 +173,7 @@ function App() {
                                         <Route path="/tonies/content" element={<ContentPage />} />
                                         <Route path="/tonies/library" element={<LibraryPage />} />
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />
-                                        <Route path="/tonies/tap" element={<TonieAudioPlaylistsPage />} />
+                                        <Route path="/tonies/tap" element={<TeddyAudioPlaylistsPage />} />
                                         <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
                                         <Route path="/tonies/plugin/:pluginId" element={<PluginPage />} />
 
