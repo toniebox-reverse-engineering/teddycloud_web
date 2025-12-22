@@ -2053,8 +2053,9 @@
             "nameRequired": "Le nom TAP doit être défini",
             "nameTooltip": "Définit le nom de la playlist",
             "save": "Enregistrer",
-            "titleCreate": "Créer un nouveau TAP",
-            "titleEdit": "Modifier le TAP"
+            "titleCreate": "Créer un nouveau TAP in {{path}}",
+            "titleCreateButton": "Créer un nouveau TAP",
+            "titleEdit": "Modifier le TAP {{name}}"
         },
         "teddyaudioplayer": {
             "continueInFooterAudioPlayer": "Continuer dans le lecteur audio en bas",

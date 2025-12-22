@@ -39,6 +39,7 @@ export interface TAPFormValues {
 export interface TeddyAudioPlaylistEditorProps {
     open: boolean;
 
+    currentPath: string;
     initialValuesPath?: string;
 
     directoryTree: DirectoryTreeApi;
@@ -52,6 +53,7 @@ const ensureLeadingSlash = (p: string) => (p.startsWith("/") ? p : `/${p}`);
 
 const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
     open,
+    currentPath,
     initialValuesPath,
     directoryTree,
     onCreate,
@@ -322,7 +324,13 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
             <Modal
                 open={open}
                 destroyOnHidden
-                title={isEditMode ? t("tonies.tapEditor.titleEdit") : t("tonies.tapEditor.titleCreate")}
+                title={
+                    isEditMode
+                        ? t("tonies.tapEditor.titleEdit", { name: form.getFieldValue("name") + ".tap" })
+                        : t("tonies.tapEditor.titleCreate", {
+                              path: currentPath.startsWith("/") ? currentPath : `/${currentPath}`,
+                          })
+                }
                 okText={isEditMode ? t("tonies.tapEditor.save") : t("tonies.tapEditor.create")}
                 cancelText={t("tonies.tapEditor.cancel")}
                 onCancel={() => {

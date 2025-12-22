@@ -2053,8 +2053,9 @@
             "nameRequired": "Se debe establecer el nombre TAP",
             "nameTooltip": "Establece el nombre de la lista de reproducción",
             "save": "Guardar",
-            "titleCreate": "Crear nuevo TAP",
-            "titleEdit": "Editar TAP"
+            "titleCreate": "Crear nuevo TAP in {{path}}",
+            "titleCreateButton": "Crear nuevo TAP",
+            "titleEdit": "Editar TAP {{name}}"
         },
         "teddyaudioplayer": {
             "continueInFooterAudioPlayer": "Continuar en el reproductor de audio del pie de página",

@@ -449,6 +449,7 @@ export const FileBrowser: React.FC<{
                 <TeddyAudioPlaylistEditor
                     open={isTapEditorModalOpen}
                     directoryTree={directoryTree}
+                    currentPath={currentPath}
                     initialValuesPath={initialValuesPath}
                     onCreate={onTapCreateOrSave}
                     onCancel={closeTapEditor}
@@ -612,7 +613,7 @@ export const FileBrowser: React.FC<{
                 <Paragraph>
                     <div>
                         <Button type="primary" onClick={openCreateTap}>
-                            {t("tonies.tapEditor.titleCreate")}
+                            {t("tonies.tapEditor.titleCreateButton")}
                         </Button>
                     </div>
                 </Paragraph>
@@ -708,7 +709,7 @@ export const FileBrowser: React.FC<{
                 <Paragraph>
                     <div>
                         <Button type="primary" style={{ marginTop: 8 }} onClick={openCreateTap}>
-                            {t("tonies.tapEditor.titleCreate")}
+                            {t("tonies.tapEditor.titleCreateButton")}
                         </Button>
                     </div>
                 </Paragraph>

@@ -108,6 +108,7 @@ export const useTapEditor = ({ currentPath, setRebuildList }: UseTapEditorArgs) 
         isTapEditorModalOpen,
         currentFile,
         initialValuesPath,
+        currentPath,
 
         openCreateTap,
         openEditTap,
