@@ -46,7 +46,7 @@ import { EncoderPage } from "./pages/tonies/EncoderPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
 import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
-import { TeddyAudioPlaylistsPage } from "./pages/tonies/TonieAudioPlaylistsPage";
+import { TeddyAudioPlaylistsPage } from "./pages/tonies/TeddyAudioPlaylistsPage";
 import { TeddyAudioPlayerPage } from "./pages/tonies/TeddyAudioPlayerPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 
