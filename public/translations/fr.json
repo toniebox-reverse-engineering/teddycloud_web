@@ -498,7 +498,6 @@
             "edit": "(WIP - non implémenté) Éditer les métadonnées"
         },
         "tap": {
-            "copy": "(WIP - non implémenté) Dupliquer la playlist audio Tonie",
             "edit": "Modifier la playlist audio Tonie",
             "messages": {
                 "savedSuccessfully": "TAP enregistré avec succès !",

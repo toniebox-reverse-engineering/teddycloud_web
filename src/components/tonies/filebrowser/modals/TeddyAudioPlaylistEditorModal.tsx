@@ -397,7 +397,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                         <Form.Item
                             label={
                                 <div style={{ display: "flex", gap: 8 }}>
-                                    <label>{t("tonies.tapEditor.filePath")} Filepath temp taf storage</label>
+                                    <label>{t("tonies.tapEditor.filePath")}</label>
                                     <Tooltip title={t("tonies.tapEditor.filePathTooltip")}>
                                         <InfoCircleOutlined />
                                     </Tooltip>

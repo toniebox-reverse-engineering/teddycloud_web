@@ -498,7 +498,6 @@
             "edit": "(WIP - not implemented yet) Edit metadata"
         },
         "tap": {
-            "copy": "(WIP - not implemented yet) Duplicate TeddyAudio Playlist",
             "edit": "Edit TeddyAudio Playlist",
             "messages": {
                 "savedSuccessfully": "TAP saved sucessfully!",

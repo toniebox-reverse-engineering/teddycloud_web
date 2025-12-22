@@ -498,7 +498,6 @@
             "edit": "(WIP - aún no implementado) Editar metadatos"
         },
         "tap": {
-            "copy": "(WIP - aún no implementado) Duplicar lista de reproducción de Tonie",
             "edit": "Editar lista de reproducción de Tonie",
             "messages": {
                 "savedSuccessfully": "TAP enregistré avec succès !",
