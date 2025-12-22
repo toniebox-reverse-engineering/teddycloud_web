@@ -429,7 +429,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         <div style={{ display: "flex", gap: 8 }}>
             {tonieCardOrTAFRecord && "ruid" in tonieCardOrTAFRecord && (
                 <ExportOutlined
-                    title={t("tonies.toniesaudioplayer.openInTonieAudioPlayer")}
+                    title={t("tonies.teddyaudioplayer.openInTonieAudioPlayer")}
                     onClick={() => {
                         const params = new URLSearchParams();
                         params.set("ruid", tonieCardOrTAFRecord.ruid);
@@ -439,9 +439,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 />
             )}
             {showAudioPlayerMinimal ? (
-                <ArrowsAltOutlined title={t("tonies.toniesaudioplayer.expand")} onClick={togglePlayerMinimal} />
+                <ArrowsAltOutlined title={t("tonies.teddyaudioplayer.expand")} onClick={togglePlayerMinimal} />
             ) : (
-                <ShrinkOutlined title={t("tonies.toniesaudioplayer.shrink")} onClick={togglePlayerMinimal} />
+                <ShrinkOutlined title={t("tonies.teddyaudioplayer.shrink")} onClick={togglePlayerMinimal} />
             )}
             <Popover
                 title={

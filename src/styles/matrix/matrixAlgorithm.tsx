@@ -28,6 +28,7 @@ export const matrixAlgorithm = (seedToken: SeedToken) => {
         colorTextSecondary: "#66ff66",
         colorTextPlaceholder: "#339966",
         colorTextDisabled: "#339933",
+        colorTextDescription: "#009900",
 
         // Borders & outlines
         colorBorder: "#009900",
