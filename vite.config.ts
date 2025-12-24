@@ -25,14 +25,6 @@ export default defineConfig(({ command, mode }) => {
     return {
         base: "/web",
         plugins: [react(), viteTsconfigPaths()],
-        preview: {
-            https: {
-                key: fs.readFileSync("./localhost-key.pem"),
-                cert: fs.readFileSync("./localhost.pem"),
-            },
-            host: "0.0.0.0",
-            port: 4173,
-        },
         server: {
             open: true,
             port: useHttps ? portHttps : portHttp,
