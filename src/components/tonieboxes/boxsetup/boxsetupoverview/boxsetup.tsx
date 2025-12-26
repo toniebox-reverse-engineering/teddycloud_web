@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
 import { Alert, Timeline, Typography, theme } from "antd";
-import { CheckCircleOutlined, DeliveredProcedureOutlined, SearchOutlined, SmileOutlined } from "@ant-design/icons";
+import {
+    CheckCircleOutlined,
+    DeliveredProcedureOutlined,
+    SearchOutlined,
+    SmileOutlined,
+    WarningFilled,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-import { useNewBoxesAllowed } from "../../../../hooks/useNewBoxesAllowed";
+import { useNewBoxesAllowed } from "../../../../hooks/getsettings/useGetSettingNewBoxesAllowed";
 
 import { forumUrl, telegramGroupUrl } from "../../../../constants/urls";
 import { useReachableNewbieGuideUrls } from "./hooks/useReachableNewbieGuideUrls";
@@ -140,6 +146,15 @@ export const BoxSetupContent: React.FC = () => {
                     style={{ marginBottom: 16 }}
                 />
             )}
+
+            <Alert
+                type="error"
+                showIcon
+                icon={<WarningFilled />}
+                title={t("tonieboxes.warningUseAtYourOwnRisk")}
+                description={t("tonieboxes.warningUseAtYourOwnRiskText")}
+                style={{ marginBottom: 16 }}
+            />
 
             <Alert
                 type="warning"

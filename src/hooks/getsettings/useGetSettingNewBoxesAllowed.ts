@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { TeddyCloudApi } from "../api";
-import { defaultAPIConfig } from "../config/defaultApiConfig";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useTranslation } from "react-i18next";
-import { useTeddyCloud } from "../contexts/TeddyCloudContext";
-import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
+import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -17,7 +17,8 @@ export const useNewBoxesAllowed = () => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const result = await api.apiGetNewBoxesAllowed();
+                const response = await api.apiGetTeddyCloudSettingRaw("core.allowNewBox");
+                const result = (await response.text()) === "true";
                 setValue(result);
             } catch (error) {
                 addNotification(

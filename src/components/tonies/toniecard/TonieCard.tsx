@@ -669,6 +669,7 @@ export const TonieCard: React.FC<{
             <SelectFileModal
                 open={isSelectFileModalOpen}
                 tempSelectedSource={tempSelectedSource}
+                selectedSource={selectedSource}
                 onTempSelectedSourceChange={setTempSelectedSource}
                 onCancel={handleCancelSelectFile}
                 onConfirm={handleConfirmSelectFile}

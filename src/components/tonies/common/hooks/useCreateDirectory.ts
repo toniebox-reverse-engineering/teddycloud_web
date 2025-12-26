@@ -15,7 +15,7 @@ export interface UseDirectoryCreateOptions {
     path?: string;
     directoryTree: DirectoryTreeApi;
     selectNewNode: boolean;
-    setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
+    setRebuildList?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface UseDirectoryCreateResult {
@@ -122,7 +122,7 @@ export const useDirectoryCreate = ({
                         t("fileBrowser.title")
                     );
 
-                    setRebuildList((prev) => !prev);
+                    setRebuildList && setRebuildList((prev) => !prev);
                     setCreateDirectoryPath(inputValueCreateDirectory);
                     closeCreateDirectoryModal();
                 })

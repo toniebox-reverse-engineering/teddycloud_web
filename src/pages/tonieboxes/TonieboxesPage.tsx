@@ -7,7 +7,7 @@ import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { TonieboxesList } from "../../components/tonieboxes/tonieboxeslist/TonieboxesList";
 
-import { useNewBoxesAllowed } from "../../hooks/useNewBoxesAllowed";
+import { useNewBoxesAllowed } from "../../hooks/getsettings/useGetSettingNewBoxesAllowed";
 import { useTonieboxes } from "../../hooks/useTonieboxes";
 
 export const TonieboxesPage = () => {

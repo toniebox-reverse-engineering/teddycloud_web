@@ -7,16 +7,13 @@ import {
     QuestionCircleOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Flex, Input, Table, theme, Tooltip } from "antd";
+import { Button, Flex, Input, Table, theme, Tooltip, Typography } from "antd";
 import { Key } from "antd/es/table/interface";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-import { TeddyCloudApi } from "../../../api";
-import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-
-import TonieAudioPlaylistEditor from "../TonieAudioPlaylistEditor";
+import TeddyAudioPlaylistEditor from "./modals/TeddyAudioPlaylistEditorModal";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
 
 import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
@@ -44,8 +41,9 @@ import RenameFileModal from "./modals/RenameFilesModal";
 import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
 import { canHover } from "../../../utils/browser/browserUtils";
+import { useTapEditor } from "./hooks/useTAPEditor";
 
-const api = new TeddyCloudApi(defaultAPIConfig());
+const { Paragraph } = Typography;
 
 const { useToken } = theme;
 
@@ -79,12 +77,8 @@ export const FileBrowser: React.FC<{
     const [currentRecord, setCurrentRecord] = useState<Record>();
     const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
 
-    const [jsonData, setJsonData] = useState<string>("");
     const [isJsonViewerModalOpen, setIsJsonViewerModalOpen] = useState<boolean>(false);
     const [jsonViewerFile, setJsonViewerFile] = useState<string | null>(null);
-
-    const [isTapEditorModalOpen, setIsTapEditorModalOpen] = useState<boolean>(false);
-    const [tapEditorKey, setTapEditorKey] = useState<number>(0);
 
     const [isTafMetaEditorModalOpen, setIsTafMetaEditorModalOpen] = useState<boolean>(false);
     const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
@@ -112,6 +106,8 @@ export const FileBrowser: React.FC<{
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
 
     const directoryTree = useDirectoryTree();
+
+    const currentPath = new URLSearchParams(location.search).get("path") || "";
 
     const { setTreeNodeId, rootTreeNode } = directoryTree;
 
@@ -163,16 +159,11 @@ export const FileBrowser: React.FC<{
         setRebuildList,
     });
 
-    // other helper functions
-    const fetchJsonData = async (path: string) => {
-        try {
-            const response = await api.apiGetTeddyCloudApiRaw(path);
-            const data = await response.json();
-            setJsonData(data);
-        } catch (error) {
-            console.error("Error fetching JSON data:", error);
-        }
-    };
+    const { isTapEditorModalOpen, initialValuesPath, openCreateTap, openEditTap, closeTapEditor, onTapCreateOrSave } =
+        useTapEditor({
+            currentPath,
+            setRebuildList,
+        });
 
     // information modal
     const showInformationModal = (record: any) => {
@@ -199,22 +190,6 @@ export const FileBrowser: React.FC<{
     const closeTafHeader = () => {
         setIsTafHeaderModalOpen(false);
         setTafHeaderRecord(null);
-    };
-
-    // tap functions
-    const handleEditTapClick = (file: string) => {
-        if (file.includes(".tap")) {
-            const folder = special === "library" ? "/library" : "/content";
-            fetchJsonData(folder + file);
-            setCurrentFile(file);
-            setTapEditorKey((prevKey) => prevKey + 1);
-            setIsTapEditorModalOpen(true);
-        }
-    };
-
-    const onTAPCreate = (values: any) => {
-        console.log("Received values of form: ", values);
-        setIsTapEditorModalOpen(false);
     };
 
     // taf meta placeholder
@@ -365,7 +340,7 @@ export const FileBrowser: React.FC<{
         playAudio,
         handleFileDownload,
         migrateContent2Lib,
-        handleEditTapClick,
+        handleEditTapClick: openEditTap,
         handleEditTafMetaDataClick,
         showRenameDialog,
         showMoveDialog,
@@ -471,14 +446,13 @@ export const FileBrowser: React.FC<{
                 />
             )}
             {isTapEditorModalOpen && (
-                <TonieAudioPlaylistEditor
+                <TeddyAudioPlaylistEditor
                     open={isTapEditorModalOpen}
-                    key={tapEditorKey}
-                    initialValuesJson={jsonData ? JSON.stringify(jsonData, null, 2) : undefined}
-                    onCreate={onTAPCreate}
-                    onCancel={() => {
-                        setIsTapEditorModalOpen(false);
-                    }}
+                    directoryTree={directoryTree}
+                    currentPath={currentPath}
+                    initialValuesPath={initialValuesPath}
+                    onCreate={onTapCreateOrSave}
+                    onCancel={closeTapEditor}
                 />
             )}
             {isHelpModalOpen && <HelpModal open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />}
@@ -635,6 +609,15 @@ export const FileBrowser: React.FC<{
                     </div>
                 </div>
             </div>
+            {isTapList && (
+                <Paragraph>
+                    <div>
+                        <Button type="primary" onClick={openCreateTap}>
+                            {t("tonies.tapEditor.titleCreateButton")}
+                        </Button>
+                    </div>
+                </Paragraph>
+            )}
             <div className="test" style={{ position: "relative" }} ref={parentRef}>
                 {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
                 <Table
@@ -722,6 +705,15 @@ export const FileBrowser: React.FC<{
                     locale={{ emptyText: noData }}
                 />
             </div>
+            {isTapList && (
+                <Paragraph>
+                    <div>
+                        <Button type="primary" style={{ marginTop: 8 }} onClick={openCreateTap}>
+                            {t("tonies.tapEditor.titleCreateButton")}
+                        </Button>
+                    </div>
+                </Paragraph>
+            )}
         </>
     );
 };

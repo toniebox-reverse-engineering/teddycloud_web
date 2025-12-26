@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.6.6
+
+-   gui: Added search field in audio player
+-   gui: Only show tags once in Audioplayer
+-   gui: Use new backend generic request API for macvendor.com requests [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/161](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/161)
+-   gui: footer not fixed anymore, only in case of open audio player (avoid iOS Display bug)
+-   gui: display hint if a new version is available (working in develop and release branch) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/260](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/260)
+-   gui: TeddyStudio: Added possibility to show series on image label, added possibility for custom settings per labelset
+-   gui: Revvox Flasher: Integrated new overworked and even more reliable version of revvox esp32 flasher, added more checks on file upload.
+-   gui: Revvox Flasher: Is the new default flasher, legacy flasher will be removed in next version. You can switch to legacy flasher through settings and disabling frontend.use_revvox_flasher (expert level setting)
+-   gui: Select source preselects the currently set path in the filebrowser according the selected source
+-   gui: Added warning flashing on users own risk.
+-   gui: Added logging output on flashing page.
+-   gui: Finalized TAP Editor functionality, but backend still in an early pre release stage.
+
+### Commits
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.5...tc_v0.6.6](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.5...tc_v0.6.6)
+-   [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.5...tcw_v0.6.6](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.5...tcw_v0.6.6)
+
+### Discussion
+
+-   [https://forum.revvox.de/t/release-notes-0-6-6/2980](https://forum.revvox.de/t/release-notes-0-6-6/2980)
+
+### GitHub Release
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.6](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.6)
+
 ## 0.6.5
 
 -   Stabilization backend

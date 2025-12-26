@@ -72,7 +72,17 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ stan
     });
 
     const playableTonieCards = useMemo(() => {
-        return tonies.filter((tonie) => tonie.valid || tonie.source.startsWith("http"));
+        const seen = new Set<string>();
+        return tonies.filter((tonie) => {
+            const isPlayable = tonie.valid || tonie.source.startsWith("http");
+            if (!isPlayable) return false;
+
+            const key = tonie.source;
+            if (seen.has(key)) return false;
+
+            seen.add(key);
+            return true;
+        });
     }, [tonies]);
 
     useEffect(() => {

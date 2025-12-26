@@ -8,6 +8,7 @@ import cc3200WiresAsTagConnect from "../../../../../assets/boxSetup/cc3200_wires
 import { TonieboxWifiGuide } from "../../common/elements/TonieboxWifiGuide";
 import { Uart3v3Hint } from "../../common/elements/Uart3v3Hint";
 import { installCC3200Tool } from "../elements/InstallCC3200Tool";
+import { WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -44,7 +45,14 @@ export const Step0Preparations: React.FC = () => {
     return (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.preparations")}</h3>
-
+            <Alert
+                type="error"
+                showIcon
+                icon={<WarningFilled />}
+                title={t("tonieboxes.warningUseAtYourOwnRisk")}
+                description={t("tonieboxes.warningUseAtYourOwnRiskText")}
+                style={{ marginBottom: 16 }}
+            />
             <Alert
                 type="warning"
                 closable={{ closeIcon: true, "aria-label": "close" }}

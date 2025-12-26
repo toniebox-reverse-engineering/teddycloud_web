@@ -14,6 +14,7 @@ import cc3235CH341Sop8remove from "../../../../../assets/boxSetup/02_CH341A_sop8
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { installCC3200Tool } from "../../cc3200/elements/InstallCC3200Tool";
 import { TonieboxWifiGuide } from "../../common/elements/TonieboxWifiGuide";
+import { WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -137,7 +138,14 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
     return (
         <>
             <h3>{t("tonieboxes.boxFlashingCommon.preparations")}</h3>
-
+            <Alert
+                type="error"
+                showIcon
+                icon={<WarningFilled />}
+                title={t("tonieboxes.warningUseAtYourOwnRisk")}
+                description={t("tonieboxes.warningUseAtYourOwnRiskText")}
+                style={{ marginBottom: 16 }}
+            />
             <Alert
                 type="warning"
                 closable={{ closeIcon: true, "aria-label": "close" }}

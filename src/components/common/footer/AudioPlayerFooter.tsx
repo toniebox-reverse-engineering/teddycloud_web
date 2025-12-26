@@ -31,7 +31,7 @@ interface AudioPlayerFooterProps {
     onNext?: () => void;
     currentPlayPosition?: string;
     songImage?: string;
-    onVisibilityChange: () => void;
+    onVisibilityChange: (visible: boolean) => void;
 }
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -132,7 +132,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     }, [globalAudio?.querySelector("source")]);
 
     useEffect(() => {
-        onVisibilityChange();
+        onVisibilityChange(audioPlayerDisplay !== "none");
         if (globalAudio?.querySelector("source") && audioPlayerDisplay === "none") {
             setAudioPlayerDisplay("flex");
         }
@@ -197,7 +197,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             globalAudio.load();
         }
         setAudioPlayerDisplay("none");
-        onVisibilityChange();
+        onVisibilityChange(false);
     };
 
     const handleTimeUpdate = (event: React.SyntheticEvent<HTMLAudioElement, Event>) => {
@@ -283,7 +283,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
 
     const togglePlayerMinimal = () => {
         setShowAudioPlayerMinimal((prev) => !prev);
-        onVisibilityChange();
+        onVisibilityChange(true);
     };
 
     const closeClosePlayerPopOver = () => setClosePlayerPopoverOpen(false);
@@ -408,7 +408,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         : styles.songContainer;
 
     useEffect(() => {
-        onVisibilityChange();
+        onVisibilityChange(true);
     }, [onVisibilityChange, isMobile]);
 
     const timeStringToSeconds = (time: string): number => {
@@ -429,7 +429,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         <div style={{ display: "flex", gap: 8 }}>
             {tonieCardOrTAFRecord && "ruid" in tonieCardOrTAFRecord && (
                 <ExportOutlined
-                    title={t("tonies.toniesaudioplayer.openInTonieAudioPlayer")}
+                    title={t("tonies.teddyaudioplayer.openInTonieAudioPlayer")}
                     onClick={() => {
                         const params = new URLSearchParams();
                         params.set("ruid", tonieCardOrTAFRecord.ruid);
@@ -439,9 +439,9 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 />
             )}
             {showAudioPlayerMinimal ? (
-                <ArrowsAltOutlined title={t("tonies.toniesaudioplayer.expand")} onClick={togglePlayerMinimal} />
+                <ArrowsAltOutlined title={t("tonies.teddyaudioplayer.expand")} onClick={togglePlayerMinimal} />
             ) : (
-                <ShrinkOutlined title={t("tonies.toniesaudioplayer.shrink")} onClick={togglePlayerMinimal} />
+                <ShrinkOutlined title={t("tonies.teddyaudioplayer.shrink")} onClick={togglePlayerMinimal} />
             )}
             <Popover
                 title={

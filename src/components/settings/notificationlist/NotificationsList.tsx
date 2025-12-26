@@ -116,24 +116,16 @@ const NotificationsList: React.FC = () => {
                 const d = date instanceof Date ? date : new Date(date);
                 if (Number.isNaN(d.getTime())) return "";
 
-                return isMobile
-                    ? d
-                          .toLocaleString("en-US", {
-                              year: "numeric",
-                              month: "2-digit",
-                              day: "2-digit",
-                          })
-                          .replace(",", "")
-                    : d
-                          .toLocaleString("en-US", {
-                              year: "numeric",
-                              month: "2-digit",
-                              day: "2-digit",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: false,
-                          })
-                          .replace(",", "");
+                return d
+                    .toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                    })
+                    .replace(",", "");
             },
             sorter: (a, b) => {
                 const dateA = a.date instanceof Date ? a.date : new Date(a.date);
@@ -141,6 +133,7 @@ const NotificationsList: React.FC = () => {
                 return dateA.getTime() - dateB.getTime();
             },
             ellipsis: true,
+            responsive: ["md"],
         },
         {
             title: t("settings.notifications.colStatus"),
@@ -320,17 +313,33 @@ const NotificationsList: React.FC = () => {
                                       <br />
                                       {isMobile ? (
                                           <div>
-                                              <strong>{t("settings.notifications.colStatus")}:</strong>{" "}
-                                              {record.flagConfirmed ? (
-                                                  t("settings.notifications.confirmed")
-                                              ) : (
-                                                  <Tooltip
-                                                      open={!canHover ? false : undefined}
-                                                      title={t("settings.notifications.clickToConfirm")}
-                                                  >
-                                                      {t("settings.notifications.unconfirmed")}
-                                                  </Tooltip>
-                                              )}
+                                              <div>
+                                                  <strong>{t("settings.notifications.colStatus")}:</strong>{" "}
+                                                  {record.flagConfirmed ? (
+                                                      t("settings.notifications.confirmed")
+                                                  ) : (
+                                                      <Tooltip
+                                                          open={!canHover ? false : undefined}
+                                                          title={t("settings.notifications.clickToConfirm")}
+                                                      >
+                                                          {t("settings.notifications.unconfirmed")}
+                                                      </Tooltip>
+                                                  )}
+                                              </div>
+                                              <br />
+                                              <div>
+                                                  <strong>{t("settings.notifications.colDate")}:</strong>{" "}
+                                                  {record.date
+                                                      .toLocaleString("en-US", {
+                                                          year: "numeric",
+                                                          month: "2-digit",
+                                                          day: "2-digit",
+                                                          hour: "2-digit",
+                                                          minute: "2-digit",
+                                                          hour12: false,
+                                                      })
+                                                      .replace(",", "")}
+                                              </div>
                                           </div>
                                       ) : null}
                                   </div>

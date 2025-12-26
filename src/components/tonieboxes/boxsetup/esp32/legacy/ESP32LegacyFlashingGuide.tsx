@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Divider, Steps, Typography } from "antd";
 import { EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
@@ -9,11 +9,13 @@ import { Step0Preparations } from "./steps/Step0Preparations";
 import { Step1Certificates } from "./steps/Step1Certificates";
 import { Step2Dns } from "./steps/Step2Dns";
 import AvailableBoxesModal from "../../common/modals/AvailableBoxesModal";
+import { scrollToTop } from "../../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 
 export const ESP32LegacyFlashingGuide: React.FC = () => {
     const { t } = useTranslation();
+    const scrollToTopAnchor = useRef<HTMLDivElement | null>(null);
 
     const [currentStep, setCurrentStep] = useState(0);
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
@@ -40,7 +42,7 @@ export const ESP32LegacyFlashingGuide: React.FC = () => {
     );
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop(scrollToTopAnchor.current);
     }, [currentStep]);
 
     const renderStepContent = () => {
@@ -64,7 +66,7 @@ export const ESP32LegacyFlashingGuide: React.FC = () => {
 
     return (
         <>
-            <h1>ESP32 {t("tonieboxes.esp32BoxFlashing.legacy.title")}</h1>
+            <h1 ref={scrollToTopAnchor}>ESP32 {t("tonieboxes.esp32BoxFlashing.legacy.title")}</h1>
             <Divider>{t("tonieboxes.esp32BoxFlashing.legacy.title")}</Divider>
 
             <Paragraph style={{ marginTop: 16 }}>

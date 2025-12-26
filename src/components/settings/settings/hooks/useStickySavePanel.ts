@@ -1,55 +1,56 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const useStickySavePanel = () => {
-    const [footerHeight, setFooterHeight] = useState(51);
+    const [measuredFooterHeight, setMeasuredFooterHeight] = useState(51);
+    const [isFooterVisible, setIsFooterVisible] = useState(false);
     const [showArrow, setShowArrow] = useState(true);
+
+    const footerHeight = useMemo(
+        () => (isFooterVisible ? measuredFooterHeight : 0),
+        [isFooterVisible, measuredFooterHeight]
+    );
 
     useEffect(() => {
         const footerElement = document.querySelector("footer") as HTMLElement | null;
+        if (!footerElement) return;
 
-        const updateFooterHeightAndScrollState = () => {
-            if (footerElement) {
-                setFooterHeight(footerElement.offsetHeight || 0);
-            }
-
+        const updateArrowState = () => {
             const scrollTop = window.scrollY;
             const windowHeight = window.innerHeight;
             const fullHeight = document.documentElement.scrollHeight;
 
-            if (scrollTop + windowHeight >= fullHeight - 20) {
-                setShowArrow(false);
-            } else {
-                setShowArrow(true);
-            }
+            setShowArrow(!(scrollTop + windowHeight >= fullHeight - 20));
         };
 
-        let resizeObserver: ResizeObserver | null = null;
+        setMeasuredFooterHeight(footerElement.offsetHeight || 0);
 
-        if (footerElement) {
-            setFooterHeight(footerElement.offsetHeight || 0);
-            resizeObserver = new ResizeObserver((entries) => {
-                for (const entry of entries) {
-                    const target = entry.target as HTMLElement;
-                    if (target === footerElement) {
-                        setFooterHeight(target.offsetHeight);
-                    }
-                }
-                updateFooterHeightAndScrollState();
-            });
-            resizeObserver.observe(footerElement);
-        }
+        const resizeObserver = new ResizeObserver(() => {
+            setMeasuredFooterHeight(footerElement.offsetHeight || 0);
+            updateArrowState();
+        });
+        resizeObserver.observe(footerElement);
 
-        window.addEventListener("scroll", updateFooterHeightAndScrollState);
-        window.addEventListener("resize", updateFooterHeightAndScrollState);
+        const intersectionObserver = new IntersectionObserver(
+            ([entry]) => {
+                setIsFooterVisible(entry.isIntersecting);
+            },
+            {
+                root: null,
+                threshold: 0,
+            }
+        );
+        intersectionObserver.observe(footerElement);
 
-        updateFooterHeightAndScrollState();
+        window.addEventListener("scroll", updateArrowState, { passive: true });
+        window.addEventListener("resize", updateArrowState);
+
+        updateArrowState();
 
         return () => {
-            window.removeEventListener("scroll", updateFooterHeightAndScrollState);
-            window.removeEventListener("resize", updateFooterHeightAndScrollState);
-            if (resizeObserver) {
-                resizeObserver.disconnect();
-            }
+            window.removeEventListener("scroll", updateArrowState);
+            window.removeEventListener("resize", updateArrowState);
+            resizeObserver.disconnect();
+            intersectionObserver.disconnect();
         };
     }, []);
 

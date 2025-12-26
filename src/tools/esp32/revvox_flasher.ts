@@ -1,3 +1,10 @@
+/*
+ * revvox_flasher.ts
+ * based on flasher.js by g3gg0
+ * https://github.com/g3gg0/esp32_flasher
+ * commit: d203da41a36e63c3f0f2bd7ad93e4843120b344e
+ */
+
 /* Command defines */
 const FLASH_BEGIN = 0x02;
 const FLASH_DATA = 0x03;
@@ -22,12 +29,59 @@ const READ_FLASH = 0xd2;
 const RUN_USER_CODE = 0xd3;
 
 class SlipLayer {
-    private buffer: number[];
-    private escaping: boolean;
+    buffer: number[];
+    escaping: boolean;
+
+    logDebug: (...args: unknown[]) => void;
+    logError: (...args: unknown[]) => void;
+
+    /** Enable/disable verbose SLIP logging (formatting work still gated by logPackets) */
+    verbose: boolean;
+    /** Enable/disable packet hexdumps */
+    logPackets: boolean;
 
     constructor() {
         this.buffer = [];
         this.escaping = false;
+        this.verbose = true;
+        this.logPackets = false;
+
+        this.logDebug = () => {};
+        this.logError = () => {};
+    }
+
+    /**
+     * Log SLIP layer data as a small hex/ascii dump.
+     * `type` is 'ENCODE' or 'DECODE'.
+     */
+    logSlipData(data: Uint8Array, type: "ENCODE" | "DECODE", label: string, maxBytes = 128) {
+        if (!this.verbose || !this.logPackets) return;
+
+        const isEncode = type === "ENCODE";
+        const symbol = isEncode ? "▶" : "◀";
+
+        const bytesToShow = Math.min(data.length, maxBytes);
+        const truncated = data.length > maxBytes;
+
+        let hexStr = "";
+        let asciiStr = "";
+        const lines: string[] = [];
+
+        for (let i = 0; i < bytesToShow; i++) {
+            const b = data[i];
+            hexStr += b.toString(16).padStart(2, "0").toUpperCase() + " ";
+            asciiStr += b >= 32 && b <= 126 ? String.fromCharCode(b) : ".";
+            if ((i + 1) % 16 === 0 || i === bytesToShow - 1) {
+                const hexPadding = " ".repeat(Math.max(0, (16 - ((i % 16) + 1)) * 3));
+                lines.push(`    ${hexStr}${hexPadding} | ${asciiStr}`);
+                hexStr = "";
+                asciiStr = "";
+            }
+        }
+
+        const truncMsg = truncated ? ` (showing ${bytesToShow}/${data.length} bytes)` : "";
+        this.logDebug(`${symbol} SLIP ${type} ${label} [${data.length} bytes]${truncMsg}`);
+        for (const line of lines) this.logDebug(line);
     }
 
     encode(packet: Uint8Array): Uint8Array {
@@ -35,6 +89,10 @@ class SlipLayer {
         const SLIP_ESC = 0xdb;
         const SLIP_ESC_END = 0xdc;
         const SLIP_ESC_ESC = 0xdd;
+
+        if (this.logPackets) {
+            this.logSlipData(packet, "ENCODE", "Payload before framing");
+        }
 
         const slipFrame: number[] = [SLIP_END];
 
@@ -68,15 +126,23 @@ class SlipLayer {
                 }
             } else if (this.escaping) {
                 if (byte === SLIP_ESC_END) {
-                    this.buffer.push(0xc0);
+                    this.buffer.push(SLIP_END);
                 } else if (byte === SLIP_ESC_ESC) {
-                    this.buffer.push(0xdb);
+                    this.buffer.push(SLIP_ESC);
                 }
                 this.escaping = false;
             } else if (byte === SLIP_ESC) {
                 this.escaping = true;
             } else {
                 this.buffer.push(byte);
+            }
+        }
+
+        if (this.logPackets) {
+            for (let i = 0; i < outputPackets.length; i++) {
+                const label =
+                    outputPackets.length > 1 ? `Decoded packet ${i + 1}/${outputPackets.length}` : "Decoded packet";
+                this.logSlipData(outputPackets[i], "DECODE", label);
             }
         }
 
@@ -103,6 +169,12 @@ export class RevvoxFlasher {
     logError: (...args: unknown[]) => void;
     reader: ReadableStreamDefaultReader<Uint8Array> | null;
 
+    /** Prevent concurrent command execution (ROM loader is not re-entrant) */
+    private _commandLock: Promise<any>;
+
+    /** Enable/disable verbose serial (RX/TX) hexdumps */
+    verboseSerial: boolean;
+
     disconnected?: () => void;
 
     constructor() {
@@ -123,11 +195,44 @@ export class RevvoxFlasher {
         this.logDebug = () => {};
         this.logError = () => {};
         this.reader = null;
+        /* Command execution lock to prevent concurrent command execution */
+        this._commandLock = Promise.resolve();
+
+        /* Verbose serial logging */
+        this.verboseSerial = false;
+    }
+    /**
+     * Log serial RX/TX data as hex/ascii dump (for debugging).
+     */
+    logSerialData(data: Uint8Array, direction: "TX" | "RX", maxBytes = 256) {
+        if (!this.verboseSerial) return;
+
+        const bytesToShow = Math.min(data.length, maxBytes);
+        const truncated = data.length > maxBytes;
+
+        let hexStr = "";
+        let asciiStr = "";
+        const lines: string[] = [];
+
+        for (let i = 0; i < bytesToShow; i++) {
+            const b = data[i];
+            hexStr += b.toString(16).padStart(2, "0").toUpperCase() + " ";
+            asciiStr += b >= 32 && b <= 126 ? String.fromCharCode(b) : ".";
+            if ((i + 1) % 16 === 0 || i === bytesToShow - 1) {
+                const hexPadding = " ".repeat(Math.max(0, (16 - ((i % 16) + 1)) * 3));
+                lines.push(`  ${hexStr}${hexPadding} | ${asciiStr}`);
+                hexStr = "";
+                asciiStr = "";
+            }
+        }
+
+        const truncMsg = truncated ? ` (showing ${bytesToShow}/${data.length} bytes)` : "";
+        this.logDebug(`[${direction}] [${data.length} bytes]${truncMsg}`);
+        for (const line of lines) this.logDebug(line);
     }
 
     async openPort(baudRate = 921600): Promise<void> {
         return new Promise(async (resolve, reject) => {
-            /* Request a port and open a connection */
             try {
                 this.port = await navigator.serial.requestPort();
                 await this.port.open({ baudRate: baudRate });
@@ -139,30 +244,28 @@ export class RevvoxFlasher {
             // Register for device lost
             navigator.serial.addEventListener("disconnect", (event: any) => {
                 if (event.target === this.port) {
-                    this.logError(`The device was disconnected`);
-                    this.disconnect();
+                    this.logError("The device was disconnected");
+                    void this.disconnect();
                 }
             });
 
-            // Register for port closing
-            this.port.addEventListener("close" as any, () => {
+            this.port!.addEventListener("close" as any, () => {
                 this.logError("Serial port closed");
-                this.disconnect();
+                void this.disconnect();
             });
 
             resolve();
 
-            /* Set up reading from the port */
-            this.reader = this.port.readable!.getReader();
+            this.reader = this.port!.readable!.getReader();
 
             try {
-                // eslint-disable-next-line no-constant-condition
                 while (true) {
                     const { value, done } = await this.reader.read();
                     if (done) {
                         break;
                     }
                     if (value) {
+                        this.logSerialData(value, "RX");
                         const packets = this.slipLayer.decode(value);
                         for (const packet of packets) {
                             await this.processPacket(packet);
@@ -170,7 +273,6 @@ export class RevvoxFlasher {
                     }
                 }
             } catch {
-                // Handle cancellation
             } finally {
                 if (this.reader) {
                     this.reader.releaseLock();
@@ -193,45 +295,156 @@ export class RevvoxFlasher {
         );
     }
 
+    async isStubLoader(): Promise<boolean> {
+        return this.executeCommand(
+            this.buildCommandPacketU32(READ_REG, this.chip_magic_addr),
+            async (resolve, reject, responsePacket) => {
+                if (responsePacket && responsePacket.data) {
+                    if (responsePacket.data.length === 2) {
+                        resolve(true);
+                    }
+                    if (responsePacket.data.length === 4) {
+                        resolve(false);
+                    }
+                    reject("Unexpected length");
+                } else {
+                    reject("Failed to read register");
+                }
+            }
+        );
+    }
+
     async executeCommand(
         packet: { command: number; payload: Uint8Array },
         callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, responsePacket: any) => void,
         default_callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, rawData: Uint8Array) => void,
-        timeout = 500
+        timeout = 500,
+        hasTimeoutCbr: (() => boolean) | null = null
+    ): Promise<any> {
+        /* Create command promise first */
+        const commandPromise = this._executeCommandUnlocked(packet, callback, default_callback, timeout, hasTimeoutCbr);
+
+        /* Chain it to the lock, ensuring lock always continues even on error */
+        this._commandLock = this._commandLock.then(
+            () => commandPromise,
+            () => commandPromise /* On previous error, still execute our command */
+        );
+
+        /* Return our command directly to propagate result/error to caller */
+        return commandPromise;
+    }
+
+    /**
+     * Internal command execution
+     */
+    private async _executeCommandUnlocked(
+        packet: { command: number; payload: Uint8Array },
+        callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, responsePacket: any) => void,
+        default_callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, rawData: Uint8Array) => void,
+        timeout = 500,
+        hasTimeoutCbr: (() => boolean) | null = null
     ): Promise<any> {
         if (!this.port || !this.port.writable) {
             throw new Error("Port is not writable.");
         }
 
         const pkt = this.parsePacket(packet.payload);
+
+        /* Log command execution with parameters */
+        const commandNames: Record<number, string> = {
+            0x02: "FLASH_BEGIN",
+            0x03: "FLASH_DATA",
+            0x04: "FLASH_END",
+            0x05: "MEM_BEGIN",
+            0x06: "MEM_END",
+            0x07: "MEM_DATA",
+            0x08: "SYNC",
+            0x09: "WRITE_REG",
+            0x0a: "READ_REG",
+            0x0b: "SPI_SET_PARAMS",
+            0x0d: "SPI_ATTACH",
+            0x0f: "CHANGE_BAUDRATE",
+            0x10: "FLASH_DEFL_BEGIN",
+            0x11: "FLASH_DEFL_DATA",
+            0x12: "FLASH_DEFL_END",
+            0x14: "GET_SECURITY_INFO",
+            0xd0: "ERASE_FLASH",
+            0xd1: "ERASE_REGION",
+            0xd2: "READ_FLASH",
+            0xd3: "RUN_USER_CODE",
+        };
+        const cmdName = commandNames[packet.command] ?? `0x${packet.command.toString(16)}`;
+        this.logDebug(`[CMD] ${cmdName} (0x${packet.command.toString(16).padStart(2, "0")})`, "params:", pkt);
+
         this.dumpPacket(pkt);
 
-        const responsePromise = new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
+            /* Register response handlers */
             this.responseHandlers.clear();
+
+            let settled = false;
+            const settleResolve = (value: any) => {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timeoutHandle);
+                resolve(value);
+            };
+            const settleReject = (reason?: any) => {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timeoutHandle);
+                reject(reason);
+            };
+
             this.responseHandlers.set(packet.command, async (response) => {
+                if (settled) return;
                 if (callback) {
-                    return callback(resolve, reject, response);
+                    return callback(settleResolve, settleReject, response);
                 }
             });
 
             if (default_callback) {
                 this.responseHandlers.set(-1, async (response) => {
-                    return default_callback(resolve, reject, response);
+                    if (settled) return;
+                    return default_callback(settleResolve, settleReject, response);
                 });
             }
 
-            setTimeout(() => {
-                reject(new Error(`Timeout after ${timeout} ms waiting for response to command ${packet.command}`));
+            /* Set timeout handler */
+            const timeoutHandle = setTimeout(() => {
+                if (settled) return;
+
+                if (hasTimeoutCbr) {
+                    if (hasTimeoutCbr()) {
+                        settleReject(new Error(`Timeout in command ${packet.command}`));
+                    }
+                } else {
+                    settleReject(
+                        new Error(`Timeout after ${timeout} ms waiting for response to command ${packet.command}`)
+                    );
+                }
             }, timeout);
+
+            /* Send the packet with proper error handling */
+            let writer: WritableStreamDefaultWriter<Uint8Array> | null = null;
+            try {
+                writer = this.port!.writable!.getWriter();
+                const slipFrame = this.slipLayer.encode(packet.payload);
+                this.logSerialData(slipFrame, "TX");
+                await writer.write(slipFrame);
+            } catch (error) {
+                clearTimeout(timeoutHandle);
+                settleReject(error);
+            } finally {
+                if (writer) {
+                    try {
+                        writer.releaseLock();
+                    } catch {
+                        /* ignore */
+                    }
+                }
+            }
         });
-
-        // Send the packet
-        const writer = this.port.writable.getWriter();
-        const slipFrame = this.slipLayer.encode(packet.payload);
-        await writer.write(slipFrame);
-        writer.releaseLock();
-
-        return responsePromise;
     }
 
     async disconnect(): Promise<void> {
@@ -340,7 +553,7 @@ export class RevvoxFlasher {
                     async (resolve) => {
                         resolve(undefined);
                     },
-                    null as any,
+                    undefined,
                     syncTimeoutMs
                 );
 
@@ -418,10 +631,10 @@ export class RevvoxFlasher {
         macBytes[4] = (lower >> 8) & 0xff;
         macBytes[5] = lower & 0xff;
 
-        const toHex = (byte: number): string => {
+        function toHex(byte: number): string {
             const hexString = byte.toString(16);
-            return hexString.length === 1 ? "0" + hexString : hexString;
-        };
+            return hexString.length === 1 ? `0${hexString}` : hexString;
+        }
 
         const mac = Array.from(macBytes)
             .map((byte) => toHex(byte))
@@ -441,13 +654,13 @@ export class RevvoxFlasher {
                     if (responsePacket) {
                         resolve(responsePacket.value);
                     } else {
-                        this.logError(`Test read failed`);
-                        reject(`Test read failed`);
+                        this.logError("Test read failed");
+                        reject("Test read failed");
                     }
                 }
             );
         } catch (error: any) {
-            this.logError(`Test read failed due to an error`, `${error.message}`);
+            this.logError("Test read failed due to an error", `${error.message}`);
             return false;
         }
 
@@ -467,7 +680,7 @@ export class RevvoxFlasher {
                         if (responsePacket) {
                             resolve(responsePacket.value);
                         } else {
-                            reject(`Test read failed`);
+                            reject("Test read failed");
                         }
                     }
                 );
@@ -480,7 +693,6 @@ export class RevvoxFlasher {
 
                 const elapsed = Date.now() - (endTime - duration);
                 const progressPercentage = Math.min(100, (elapsed / duration) * 100);
-
                 cbr && cbr(progressPercentage);
 
                 if (testread !== reference) {
@@ -492,7 +704,7 @@ export class RevvoxFlasher {
                     break;
                 }
             } catch (error: any) {
-                this.logError(`Test read failed due to an error`, `${error.message}`);
+                this.logError("Test read failed due to an error", `${error.message}`);
                 return false;
             }
         }
@@ -508,48 +720,60 @@ export class RevvoxFlasher {
     async downloadStub(): Promise<boolean> {
         const stub = this.chip_descriptions[this.current_chip].stub;
 
-        await this.downloadMem(stub.text_start, stub.text);
         await this.downloadMem(stub.data_start, stub.data);
+        await this.downloadMem(stub.text_start, stub.text);
 
         try {
             await this.executeCommand(
                 this.buildCommandPacketU32(MEM_END, 0, stub.entry),
                 async () => {
-                    console.log("Final MEM_END ACK");
+                    this.logDebug("Final MEM_END ACK");
                 },
-                async (resolve, _reject, rawData) => {
+                async (resolve, reject, rawData: Uint8Array) => {
                     const decoder = new TextDecoder("utf-8");
                     const responseData = decoder.decode(rawData);
 
                     if (responseData === "OHAI") {
-                        this.logDebug(`Stub loader executed successfully(received ${responseData})`);
+                        this.logDebug(`Stub loader executed successfully (received ${responseData})`);
                         this.stubLoaded = true;
                         resolve(undefined);
+                    } else {
+                        this.logError(`Unexpected stub response: ${responseData}`);
+                        reject(`Unexpected response from stub: ${responseData}`);
                     }
-                }
+                },
+                3000
             );
-        } catch {
+        } catch (error: any) {
             this.logError("Failed to execute stub", "Is the device locked?");
             return false;
         }
 
-        await this.executeCommand(
-            this.buildCommandPacketU32(SPI_SET_PARAMS, 0, 0x800000, 64 * 1024, 4 * 1024, 256, 0xffff),
-            async (resolve, _reject, responsePacket) => {
-                console.log("SPI_SET_PARAMS", responsePacket);
-                resolve(undefined);
-            }
-        );
+        try {
+            await this.executeCommand(
+                this.buildCommandPacketU32(SPI_SET_PARAMS, 0, 0x800000, 64 * 1024, 4 * 1024, 256, 0xffff),
+                async (resolve) => {
+                    this.logDebug("SPI_SET_PARAMS configured");
+                    resolve(undefined);
+                }
+            );
+        } catch (error: any) {
+            this.logError("Failed to configure SPI parameters", error.message);
+            return false;
+        }
 
         return true;
     }
 
-    async writeFlash(
+    /**
+     * Write data to flash memory (plain, no verification)
+     */
+    async writeFlashPlain(
         address: number,
         data: Uint8Array,
-        progressCallback?: (offset: number, totalLength: number) => void
+        progressCallback?: (bytesWritten: number, totalBytes: number) => void
     ): Promise<void> {
-        const MAX_PACKET_SIZE = 1024;
+        const MAX_PACKET_SIZE = 0x1000;
         const packets = Math.ceil(data.length / MAX_PACKET_SIZE);
 
         await this.executeCommand(
@@ -558,12 +782,9 @@ export class RevvoxFlasher {
                 data.length,
                 packets,
                 Math.min(MAX_PACKET_SIZE, data.length),
-                address,
-                this.stubLoaded ? undefined : 0
+                address
             ),
-            async (resolve) => {
-                resolve(undefined);
-            }
+            async (resolve) => resolve(undefined)
         );
 
         let seq = 0;
@@ -572,56 +793,269 @@ export class RevvoxFlasher {
 
             await this.executeCommand(
                 this.buildCommandPacketU32(FLASH_DATA, chunk.length, seq++, 0, 0, chunk),
-                async (resolve) => {
-                    resolve(undefined);
-                },
-                null as any,
-                1000
+                async (resolve) => resolve(undefined),
+                undefined,
+                5000
             );
-            if (progressCallback) {
-                progressCallback(offset, data.length);
-            }
+
+            progressCallback && progressCallback(offset + chunk.length, data.length);
         }
     }
 
-    async readFlash(address: number, blockSize = 0x100): Promise<Uint8Array> {
-        let packet = 0;
-        let data: Uint8Array | {} = {};
+    /**
+     * Read data from flash memory (plain, but MD5 verified by stub after transfer)
+     * Returns the read data if the on-wire MD5 matches.
+     */
+    async readFlashPlain(
+        address: number,
+        length = 0x1000,
+        progressCallback?: (bytesRead: number, totalBytes: number) => void
+    ): Promise<Uint8Array> {
+        const performRead = async (cbr?: (bytesRead: number, totalBytes: number) => void): Promise<Uint8Array> => {
+            let sectorSize = 0x1000;
+            if (sectorSize > length) sectorSize = length;
 
-        if (blockSize > 0x1000) {
-            blockSize = 0x1000;
-        }
+            const packets = length / sectorSize;
+            let packet = 0;
+            const ackMax = 64;
 
-        return this.executeCommand(
-            this.buildCommandPacketU32(READ_FLASH, address, blockSize, 0x1000, 1),
-            async (resolve, _reject, _responsePacket) => {
-                packet = 0;
-            },
-            async (resolve, _reject, rawData) => {
-                if (packet === 0) {
-                    data = rawData;
+            let data = new Uint8Array(0);
+            let lastDataTime = Date.now();
 
+            // Timing measurements
+            const readStartTime = Date.now();
+            const packetLatencies: number[] = [];
+            let lastPacketTime = readStartTime;
+            let totalBytesReceived = 0;
+
+            return this.executeCommand(
+                this.buildCommandPacketU32(READ_FLASH, address, length, sectorSize, ackMax),
+                async (resolve) => {
+                    packet = 0;
+                },
+                async (resolve, reject, rawData: Uint8Array) => {
+                    const currentTime = Date.now();
+                    lastDataTime = currentTime;
+
+                    if (data.length === length) {
+                        // Expect MD5 (16 bytes) at the end
+                        if (rawData.length === 16) {
+                            const calculatedMD5 = this.calculateMD5(data);
+                            const receivedMD5 = Array.from(rawData)
+                                .map((b) => b.toString(16).padStart(2, "0"))
+                                .join("");
+
+                            if (calculatedMD5.toLowerCase() === receivedMD5.toLowerCase()) {
+                                const totalTime = currentTime - readStartTime;
+                                const dataRate = totalBytesReceived / (totalTime / 1000);
+                                const avgLatency =
+                                    packetLatencies.length > 0
+                                        ? packetLatencies.reduce((a, b) => a + b, 0) / packetLatencies.length
+                                        : 0;
+                                const minLatency = packetLatencies.length > 0 ? Math.min(...packetLatencies) : 0;
+                                const maxLatency = packetLatencies.length > 0 ? Math.max(...packetLatencies) : 0;
+
+                                this.logDebug(`ReadFlash timing: ${totalBytesReceived} bytes in ${totalTime}ms`);
+                                this.logDebug(
+                                    `  Data rate: ${(dataRate / 1024 / 1024).toFixed(2)} MB/s (${dataRate.toFixed(
+                                        0
+                                    )} B/s)`
+                                );
+                                this.logDebug(
+                                    `  Packet latency: min=${minLatency}ms, max=${maxLatency}ms, avg=${avgLatency.toFixed(
+                                        1
+                                    )}ms`
+                                );
+                                this.logDebug(`  Packets received: ${packetLatencies.length}`);
+
+                                resolve(data);
+                            } else {
+                                const err = `MD5 mismatch! Expected: ${receivedMD5}, Got: ${calculatedMD5}`;
+                                reject(new Error(err));
+                            }
+                        } else {
+                            reject(new Error(`Unknown response length for MD5! Expected: 16, Got: ${rawData.length}`));
+                        }
+                        return;
+                    }
+
+                    // Track packet latency
+                    const packetLatency = currentTime - lastPacketTime;
+                    packetLatencies.push(packetLatency);
+                    lastPacketTime = currentTime;
+                    totalBytesReceived += rawData.length;
+
+                    // Append rawData
+                    const newData = new Uint8Array(data.length + rawData.length);
+                    newData.set(data);
+                    newData.set(rawData, data.length);
+                    data = newData;
+
+                    cbr && cbr(data.length, length);
+
+                    // Send ACK containing current received length (uint32 LE)
                     const resp = new Uint8Array(4);
-                    resp[0] = (blockSize >> 0) & 0xff;
-                    resp[1] = (blockSize >> 8) & 0xff;
-                    resp[2] = (blockSize >> 16) & 0xff;
-                    resp[3] = (blockSize >> 24) & 0xff;
+                    resp[0] = (data.length >> 0) & 0xff;
+                    resp[1] = (data.length >> 8) & 0xff;
+                    resp[2] = (data.length >> 16) & 0xff;
+                    resp[3] = (data.length >> 24) & 0xff;
 
                     const slipFrame = this.slipLayer.encode(resp);
-
+                    this.logSerialData(slipFrame, "TX");
                     const writer = this.port!.writable!.getWriter();
-                    await writer.write(slipFrame);
-                    writer.releaseLock();
-                } else if (packet === 1) {
-                    resolve(data as Uint8Array);
+                    try {
+                        await writer.write(slipFrame);
+                    } finally {
+                        writer.releaseLock();
+                    }
+
+                    packet++;
+                },
+                1000 * packets,
+                () => Date.now() - lastDataTime > 1000
+            );
+        };
+
+        return performRead(progressCallback);
+    }
+
+    /**
+     * Calculate MD5 checksum of flash region on device
+     */
+    async checksumFlash(address: number, length: number): Promise<string> {
+        return this.executeCommand(
+            this.buildCommandPacketU32(SPI_FLASH_MD5, address, length, 0, 0),
+            async (resolve, reject, responsePacket) => {
+                if (responsePacket && responsePacket.data) {
+                    const md5 = Array.from((responsePacket.data as Uint8Array).slice(0, 16))
+                        .map((b) => b.toString(16).padStart(2, "0"))
+                        .join("");
+                    resolve(md5);
+                } else {
+                    reject("No MD5 data received");
                 }
-                packet++;
             },
-            1000
+            async (resolve, _reject, rawData: Uint8Array) => {
+                const decoder = new TextDecoder("utf-8");
+                resolve(decoder.decode(rawData).trim());
+            },
+            Math.max(500, Math.floor(length / 500))
         );
     }
 
+    /**
+     * Calculate local MD5 hash (hex)
+     */
+    calculateMD5(data: Uint8Array | string): string {
+        const md5 = new Md5();
+        md5.update(data);
+        return md5.hex();
+    }
+
+    /**
+     * Read flash with MD5 verification (device MD5 vs local MD5)
+     */
+    async readFlash(
+        address: number,
+        size: number,
+        progressCallback?: (read: number, total: number, stage: string) => void
+    ): Promise<Uint8Array> {
+        const BLOCK_SIZE = 64 * 0x1000;
+
+        // Step 1: Read data in blocks
+        this.logDebug(`ReadFlashSafe: Reading ${size} bytes in ${BLOCK_SIZE}-byte blocks...`);
+        const allData = new Uint8Array(size);
+        let offset = 0;
+
+        while (offset < size) {
+            const readSize = Math.min(BLOCK_SIZE, size - offset);
+            const blockData = await this.readFlashPlain(address + offset, readSize, (read, _total) => {
+                progressCallback && progressCallback(offset + read, size, "Reading");
+            });
+
+            allData.set(blockData.slice(0, readSize), offset);
+            offset += readSize;
+
+            progressCallback && progressCallback(offset, size, "Reading");
+            this.logDebug(`ReadFlashSafe: Read ${offset}/${size} bytes (${Math.round((offset / size) * 100)}%)`);
+        }
+
+        this.logDebug(`ReadFlashSafe: Read complete`);
+
+        // Step 2: Local MD5
+        progressCallback && progressCallback(size, size, "Calculate MD5 of input");
+        this.logDebug(`ReadFlashSafe: Calculating MD5 of read data...`);
+        const actualMD5 = this.calculateMD5(allData);
+        this.logDebug(`Actual MD5: ${actualMD5}`);
+
+        // Step 3: Device MD5
+        progressCallback && progressCallback(size, size, "Calculate MD5 onchip");
+        this.logDebug(
+            `ReadFlashSafe: Calculating expected MD5 for ${size} bytes at 0x${address.toString(16).padStart(8, "0")}...`
+        );
+        const expectedMD5 = await this.checksumFlash(address, size);
+        this.logDebug(`Expected MD5: ${expectedMD5}`);
+
+        // Step 4: Compare
+        if (expectedMD5.toLowerCase() !== actualMD5.toLowerCase()) {
+            this.logError(`ReadFlashSafe FAILED: MD5 mismatch!`);
+            this.logError(`  Expected: ${expectedMD5}`);
+            this.logError(`  Actual:   ${actualMD5}`);
+            throw new Error(`MD5 verification failed: expected ${expectedMD5}, got ${actualMD5}`);
+        }
+
+        this.logDebug(`ReadFlashSafe: MD5 verification passed ✓`);
+        return allData;
+    }
+
+    /**
+     * Write flash with MD5 verification (device MD5 vs local MD5)
+     */
+    async writeFlash(
+        address: number,
+        data: Uint8Array,
+        progressCallback?: (written: number, total: number, stage: string) => void
+    ): Promise<{ success: boolean; md5: string }> {
+        this.logDebug(`WriteFlashSafe: Writing ${data.length} bytes to 0x${address.toString(16).padStart(8, "0")}...`);
+
+        // Step 1: Write
+        await this.writeFlashPlain(address, data, (written, total) => {
+            progressCallback && progressCallback(written, total, "Writing");
+        });
+        this.logDebug(`WriteFlashSafe: Write complete`);
+
+        // Step 2: Local MD5
+        progressCallback && progressCallback(data.length, data.length, "Calculate MD5 of input");
+        this.logDebug(`WriteFlashSafe: Calculating MD5 of ${data.length} bytes to write...`);
+        const expectedMD5 = this.calculateMD5(data);
+        this.logDebug(`Input data MD5: ${expectedMD5}`);
+
+        // Step 3: Device MD5
+        progressCallback && progressCallback(data.length, data.length, "Calculate MD5 onchip");
+        this.logDebug(`WriteFlashSafe: Calculating MD5 on device for verification...`);
+        const deviceMD5 = await this.checksumFlash(address, data.length);
+        this.logDebug(`Device MD5: ${deviceMD5}`);
+
+        // Step 4: Compare
+        if (expectedMD5.toLowerCase() !== deviceMD5.toLowerCase()) {
+            this.logError(`WriteFlashSafe FAILED: MD5 mismatch!`);
+            this.logError(`  Expected: ${expectedMD5}`);
+            this.logError(`  Device:   ${deviceMD5}`);
+            throw new Error(`MD5 verification failed after write: expected ${expectedMD5}, got ${deviceMD5}`);
+        }
+
+        this.logDebug(`WriteFlashSafe: MD5 verification passed ✓`);
+        progressCallback && progressCallback(data.length, data.length, "Verified");
+
+        return { success: true, md5: expectedMD5 };
+    }
+
+    /**
+     * Check if flash memory is erased (FF)
+     */
     async blankCheck(
+        startAddress = 0x000000,
+        endAddress = 0x800000,
         cbr?: (
             currentAddress: number,
             startAddress: number,
@@ -631,9 +1065,7 @@ export class RevvoxFlasher {
             erasedBytesTotal: number
         ) => void
     ): Promise<void> {
-        const startAddress = 0x000000;
-        const endAddress = 0x800000;
-        const blockSize = 0x200;
+        const blockSize = 0x1000;
 
         let totalReads = 0;
         let totalTime = 0;
@@ -643,15 +1075,13 @@ export class RevvoxFlasher {
         while (currentAddress < endAddress) {
             try {
                 const startTime = Date.now();
-                const rawData = await this.readFlash(currentAddress, blockSize);
+                const rawData = await this.readFlashPlain(currentAddress, blockSize);
                 const endTimeRead = Date.now();
                 const readDuration = endTimeRead - startTime;
 
                 let erasedBytes = 0;
                 for (let pos = 0; pos < rawData.length; pos++) {
-                    if (rawData[pos] === 0xff) {
-                        erasedBytes++;
-                    }
+                    if (rawData[pos] === 0xff) erasedBytes++;
                 }
 
                 currentAddress += rawData.length;
@@ -661,8 +1091,8 @@ export class RevvoxFlasher {
 
                 cbr && cbr(currentAddress, startAddress, endAddress, blockSize, erasedBytes, erasedBytesTotal);
             } catch (error: any) {
-                this.logError(`Read failed due to an error`, `${error.message}`);
-                this.disconnect();
+                this.logError("Read failed due to an error", `${error.message}`);
+                await this.disconnect();
                 break;
             }
         }
@@ -673,6 +1103,121 @@ export class RevvoxFlasher {
         }
     }
 
+    /**
+     * Write/Read stress test
+     */
+    async writeReadTest(
+        address: number,
+        size: number,
+        cbr?: (stage: string, step: number, totalSteps: number, percent?: number, result?: any) => void
+    ): Promise<any> {
+        try {
+            this.logDebug(`Test: Reading original ${size} bytes from 0x${address.toString(16).padStart(8, "0")}...`);
+            cbr && cbr("reading_original", 0, 3);
+            const originalData = await this.readFlashPlain(address, size);
+            this.logDebug(`Original data read complete`);
+
+            const dumpSize = Math.min(64, size);
+
+            this.logDebug(`Original data hexdump (first ${dumpSize} bytes):`);
+            for (let i = 0; i < dumpSize; i += 16) {
+                const chunk = originalData.slice(i, i + 16);
+                const hex = Array.from(chunk)
+                    .map((b) => b.toString(16).padStart(2, "0"))
+                    .join(" ");
+                const ascii = Array.from(chunk)
+                    .map((b) => (b >= 32 && b < 127 ? String.fromCharCode(b) : "."))
+                    .join("");
+                this.logDebug(`  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`);
+            }
+
+            this.logDebug(`Test: Generating ${size} bytes of random data...`);
+            cbr && cbr("generating_random", 1, 3);
+            const randomData = new Uint8Array(size);
+            for (let i = 0; i < size; i++) randomData[i] = Math.floor(Math.random() * 256);
+            this.logDebug(`Random data generated`);
+
+            this.logDebug(`Random data hexdump (first ${dumpSize} bytes):`);
+            for (let i = 0; i < dumpSize; i += 16) {
+                const chunk = randomData.slice(i, i + 16);
+                const hex = Array.from(chunk)
+                    .map((b) => b.toString(16).padStart(2, "0"))
+                    .join(" ");
+                const ascii = Array.from(chunk)
+                    .map((b) => (b >= 32 && b < 127 ? String.fromCharCode(b) : "."))
+                    .join("");
+                this.logDebug(`  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`);
+            }
+
+            this.logDebug(`Test: Writing ${size} bytes to flash at 0x${address.toString(16).padStart(8, "0")}...`);
+            cbr && cbr("writing", 2, 3);
+            await this.writeFlashPlain(address, randomData, (written, total) => {
+                const percent = Math.round((written / total) * 100);
+                cbr && cbr("writing", 2, 3, percent);
+            });
+            this.logDebug(`Write complete`);
+
+            this.logDebug(`Test: Reading back ${size} bytes from 0x${address.toString(16).padStart(8, "0")}...`);
+            cbr && cbr("reading_back", 3, 3);
+            const readbackData = await this.readFlashPlain(address, size);
+            this.logDebug(`Readback complete`);
+
+            this.logDebug(`Readback data hexdump (first ${dumpSize} bytes):`);
+            for (let i = 0; i < dumpSize; i += 16) {
+                const chunk = readbackData.slice(i, i + 16);
+                const hex = Array.from(chunk)
+                    .map((b) => b.toString(16).padStart(2, "0"))
+                    .join(" ");
+                const ascii = Array.from(chunk)
+                    .map((b) => (b >= 32 && b < 127 ? String.fromCharCode(b) : "."))
+                    .join("");
+                this.logDebug(`  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`);
+            }
+
+            let errors = 0;
+            let firstError = -1;
+            for (let i = 0; i < size; i++) {
+                if (randomData[i] !== readbackData[i]) {
+                    if (firstError === -1) firstError = i;
+                    errors++;
+                }
+            }
+
+            const result = {
+                success: errors === 0,
+                errors,
+                firstError,
+                address,
+                size,
+                originalData,
+                randomData,
+                readbackData,
+            };
+
+            if (errors === 0) {
+                this.logDebug(`✓ Test PASSED: All ${size} bytes match!`);
+            } else {
+                this.logError(`✗ Test FAILED: ${errors} byte(s) mismatch!`);
+                this.logError(
+                    `  First error at offset 0x${firstError.toString(16).padStart(4, "0")} (byte ${firstError})`
+                );
+                this.logError(
+                    `  Expected: 0x${randomData[firstError].toString(16).padStart(2, "0")}, Got: 0x${readbackData[
+                        firstError
+                    ]
+                        .toString(16)
+                        .padStart(2, "0")}`
+                );
+            }
+
+            cbr && cbr("complete", 3, 3, 100, result);
+            return result;
+        } catch (error: any) {
+            this.logError(`Write/Read test failed: ${error.message}`);
+            cbr && cbr("error", 0, 3, 0, { success: false, error: error.message });
+            throw error;
+        }
+    }
     buildCommandPacketU32(
         command: number,
         ...values: (number | Uint8Array | undefined)[]
@@ -730,36 +1275,34 @@ export class RevvoxFlasher {
         packet[7] = (checksum >> 24) & 0xff;
         packet.set(data, 8);
 
-        const ret: { command: number; payload: Uint8Array } = {
+        return {
             command,
             payload: packet,
         };
-
-        return ret;
     }
 
     dumpPacket(pkt: any): void {
         if (!this.devMode) {
             return;
         }
-
         if (pkt && pkt.dir === 0) {
-            console.log("Command: ", pkt);
-            console.log(
+            this.logDebug("Command: ", pkt);
+            this.logDebug(
                 `Command raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
                     .join(" ")}`
             );
         }
         if (pkt && pkt.dir === 1) {
-            console.log("Response: ", pkt);
-            console.log(
+            this.logDebug("Response: ", pkt);
+            this.logDebug(
                 `Response raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
                     .join(" ")}`
             );
         }
     }
+
     parsePacket(packet: Uint8Array): any {
         const pkt: any = {};
 
@@ -800,7 +1343,21 @@ export class RevvoxFlasher {
 }
 
 export class ChipDescriptions {
-    chip_descriptions: any;
+    chip_descriptions: Record<
+        string,
+        {
+            magic_value: number | number[];
+            mac_efuse_reg: number;
+            stub: {
+                text_start: number;
+                bss_start: number;
+                text: string;
+                data_start: number;
+                data: string;
+                entry: number;
+            };
+        }
+    >;
 
     constructor() {
         this.chip_descriptions = {
@@ -855,3 +1412,475 @@ export class ChipDescriptions {
         };
     }
 }
+
+/**
+ * MD5 Hash Implementation (from js-md5 library)
+ * Standalone client-side hashing for data verification
+ *
+ * Usage:
+ *   const hasher = new Md5();
+ *   hasher.update(data);
+ *   const hex = hasher.hex();
+ */
+const Md5 = (() => {
+    const ARRAY_BUFFER = typeof ArrayBuffer !== "undefined";
+    const HEX_CHARS = "0123456789abcdef".split("");
+    const EXTRA = [128, 32768, 8388608, -2147483648];
+    const SHIFT = [0, 8, 16, 24];
+    const FINALIZE_ERROR = "finalize already called";
+
+    // Shared memory (optional)
+    let sharedBlocks: Uint32Array | number[];
+    let sharedBuffer8: Uint8Array | undefined;
+
+    if (ARRAY_BUFFER) {
+        const buffer = new ArrayBuffer(68);
+        sharedBuffer8 = new Uint8Array(buffer);
+        sharedBlocks = new Uint32Array(buffer);
+    } else {
+        sharedBlocks = Array(17).fill(0);
+    }
+
+    type Message = string | ArrayBuffer | Uint8Array | number[];
+    type FormattedMessage = [string | Uint8Array | number[], boolean];
+
+    function formatMessage(message: Message): FormattedMessage {
+        if (typeof message === "string") return [message, true];
+        if (message instanceof ArrayBuffer) return [new Uint8Array(message), false];
+        if (message instanceof Uint8Array) return [message, false];
+        if (Array.isArray(message)) return [message, false];
+        // Should be unreachable due to Message union, but keep a fallback.
+        return [message as unknown as Uint8Array, false];
+    }
+
+    class Md5 {
+        blocks: Uint32Array | number[];
+        buffer8?: Uint8Array;
+
+        h0 = 0;
+        h1 = 0;
+        h2 = 0;
+        h3 = 0;
+        start = 0;
+        bytes = 0;
+        hBytes = 0;
+
+        finalized = false;
+        hashed = false;
+        first = true;
+
+        lastByteIndex = 0;
+
+        constructor(sharedMemory?: boolean) {
+            if (sharedMemory) {
+                const b = sharedBlocks as any;
+                b[0] =
+                    b[16] =
+                    b[1] =
+                    b[2] =
+                    b[3] =
+                    b[4] =
+                    b[5] =
+                    b[6] =
+                    b[7] =
+                    b[8] =
+                    b[9] =
+                    b[10] =
+                    b[11] =
+                    b[12] =
+                    b[13] =
+                    b[14] =
+                    b[15] =
+                        0;
+
+                this.blocks = sharedBlocks;
+                this.buffer8 = sharedBuffer8;
+            } else if (ARRAY_BUFFER) {
+                const buffer = new ArrayBuffer(68);
+                this.buffer8 = new Uint8Array(buffer);
+                this.blocks = new Uint32Array(buffer);
+            } else {
+                this.blocks = Array(17).fill(0);
+            }
+        }
+
+        update(message: Message): this {
+            if (this.finalized) throw new Error(FINALIZE_ERROR);
+
+            const [msg, isString] = formatMessage(message);
+            const blocks = this.blocks as any;
+            const buffer8 = this.buffer8;
+
+            let index = 0;
+            let i = 0;
+            let code = 0;
+
+            const length = isString ? (msg as string).length : (msg as Uint8Array | number[]).length;
+
+            while (index < length) {
+                if (this.hashed) {
+                    this.hashed = false;
+                    blocks[0] = blocks[16];
+                    blocks[16] =
+                        blocks[1] =
+                        blocks[2] =
+                        blocks[3] =
+                        blocks[4] =
+                        blocks[5] =
+                        blocks[6] =
+                        blocks[7] =
+                        blocks[8] =
+                        blocks[9] =
+                        blocks[10] =
+                        blocks[11] =
+                        blocks[12] =
+                        blocks[13] =
+                        blocks[14] =
+                        blocks[15] =
+                            0;
+                }
+
+                if (isString) {
+                    const s = msg as string;
+
+                    if (ARRAY_BUFFER) {
+                        if (!buffer8) throw new Error("Missing buffer8");
+                        for (i = this.start; index < length && i < 64; ++index) {
+                            code = s.charCodeAt(index);
+                            if (code < 0x80) {
+                                buffer8[i++] = code;
+                            } else if (code < 0x800) {
+                                buffer8[i++] = 0xc0 | (code >>> 6);
+                                buffer8[i++] = 0x80 | (code & 0x3f);
+                            } else if (code < 0xd800 || code >= 0xe000) {
+                                buffer8[i++] = 0xe0 | (code >>> 12);
+                                buffer8[i++] = 0x80 | ((code >>> 6) & 0x3f);
+                                buffer8[i++] = 0x80 | (code & 0x3f);
+                            } else {
+                                code = 0x10000 + (((code & 0x3ff) << 10) | (s.charCodeAt(++index) & 0x3ff));
+                                buffer8[i++] = 0xf0 | (code >>> 18);
+                                buffer8[i++] = 0x80 | ((code >>> 12) & 0x3f);
+                                buffer8[i++] = 0x80 | ((code >>> 6) & 0x3f);
+                                buffer8[i++] = 0x80 | (code & 0x3f);
+                            }
+                        }
+                    } else {
+                        for (i = this.start; index < length && i < 64; ++index) {
+                            code = s.charCodeAt(index);
+                            if (code < 0x80) {
+                                blocks[i >>> 2] |= code << SHIFT[i++ & 3];
+                            } else if (code < 0x800) {
+                                blocks[i >>> 2] |= (0xc0 | (code >>> 6)) << SHIFT[i++ & 3];
+                                blocks[i >>> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+                            } else if (code < 0xd800 || code >= 0xe000) {
+                                blocks[i >>> 2] |= (0xe0 | (code >>> 12)) << SHIFT[i++ & 3];
+                                blocks[i >>> 2] |= (0x80 | ((code >>> 6) & 0x3f)) << SHIFT[i++ & 3];
+                                blocks[i >>> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+                            } else {
+                                code = 0x10000 + (((code & 0x3ff) << 10) | (s.charCodeAt(++index) & 0x3ff));
+                                blocks[i >>> 2] |= (0xf0 | (code >>> 18)) << SHIFT[i++ & 3];
+                                blocks[i >>> 2] |= (0x80 | ((code >>> 12) & 0x3f)) << SHIFT[i++ & 3];
+                                blocks[i >>> 2] |= (0x80 | ((code >>> 6) & 0x3f)) << SHIFT[i++ & 3];
+                                blocks[i >>> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+                            }
+                        }
+                    }
+                } else {
+                    const a = msg as Uint8Array | number[];
+
+                    if (ARRAY_BUFFER) {
+                        if (!buffer8) throw new Error("Missing buffer8");
+                        for (i = this.start; index < length && i < 64; ++index) {
+                            buffer8[i++] = a[index] as number;
+                        }
+                    } else {
+                        for (i = this.start; index < length && i < 64; ++index) {
+                            blocks[i >>> 2] |= (a[index] as number) << SHIFT[i++ & 3];
+                        }
+                    }
+                }
+
+                this.lastByteIndex = i;
+                this.bytes += i - this.start;
+
+                if (i >= 64) {
+                    this.start = i - 64;
+                    this.hash();
+                    this.hashed = true;
+                } else {
+                    this.start = i;
+                }
+            }
+
+            if (this.bytes > 4294967295) {
+                this.hBytes += ((this.bytes / 4294967296) << 0) as number;
+                this.bytes = this.bytes % 4294967296;
+            }
+
+            return this;
+        }
+
+        finalize(): void {
+            if (this.finalized) return;
+
+            this.finalized = true;
+
+            const blocks = this.blocks as any;
+            let i = this.lastByteIndex;
+
+            blocks[i >>> 2] |= EXTRA[i & 3];
+
+            if (i >= 56) {
+                if (!this.hashed) {
+                    this.hash();
+                }
+
+                blocks[0] = blocks[16];
+                blocks[16] =
+                    blocks[1] =
+                    blocks[2] =
+                    blocks[3] =
+                    blocks[4] =
+                    blocks[5] =
+                    blocks[6] =
+                    blocks[7] =
+                    blocks[8] =
+                    blocks[9] =
+                    blocks[10] =
+                    blocks[11] =
+                    blocks[12] =
+                    blocks[13] =
+                    blocks[14] =
+                    blocks[15] =
+                        0;
+            }
+
+            blocks[14] = this.bytes << 3;
+            blocks[15] = (this.hBytes << 3) | (this.bytes >>> 29);
+
+            this.hash();
+        }
+
+        hash(): void {
+            let a: number;
+            let b: number;
+            let c: number;
+            let d: number;
+            let bc: number;
+            let da: number;
+            const blocks = this.blocks as any;
+
+            if (this.first) {
+                a = blocks[0] - 680876937;
+                a = (((a << 7) | (a >>> 25)) - 271733879) << 0;
+                d = (-1732584194 ^ (a & 2004318071)) + blocks[1] - 117830708;
+                d = (((d << 12) | (d >>> 20)) + a) << 0;
+                c = (-271733879 ^ (d & (a ^ -271733879))) + blocks[2] - 1126478375;
+                c = (((c << 17) | (c >>> 15)) + d) << 0;
+                b = (a ^ (c & (d ^ a))) + blocks[3] - 1316259209;
+                b = (((b << 22) | (b >>> 10)) + c) << 0;
+            } else {
+                a = this.h0;
+                b = this.h1;
+                c = this.h2;
+                d = this.h3;
+                a += (d ^ (b & (c ^ d))) + blocks[0] - 680876936;
+                a = (((a << 7) | (a >>> 25)) + b) << 0;
+                d += (c ^ (a & (b ^ c))) + blocks[1] - 389564586;
+                d = (((d << 12) | (d >>> 20)) + a) << 0;
+                c += (b ^ (d & (a ^ b))) + blocks[2] + 606105819;
+                c = (((c << 17) | (c >>> 15)) + d) << 0;
+                b += (a ^ (c & (d ^ a))) + blocks[3] - 1044525330;
+                b = (((b << 22) | (b >>> 10)) + c) << 0;
+            }
+
+            a += (d ^ (b & (c ^ d))) + blocks[4] - 176418897;
+            a = (((a << 7) | (a >>> 25)) + b) << 0;
+            d += (c ^ (a & (b ^ c))) + blocks[5] + 1200080426;
+            d = (((d << 12) | (d >>> 20)) + a) << 0;
+            c += (b ^ (d & (a ^ b))) + blocks[6] - 1473231341;
+            c = (((c << 17) | (c >>> 15)) + d) << 0;
+            b += (a ^ (c & (d ^ a))) + blocks[7] - 45705983;
+            b = (((b << 22) | (b >>> 10)) + c) << 0;
+            a += (d ^ (b & (c ^ d))) + blocks[8] + 1770035416;
+            a = (((a << 7) | (a >>> 25)) + b) << 0;
+            d += (c ^ (a & (b ^ c))) + blocks[9] - 1958414417;
+            d = (((d << 12) | (d >>> 20)) + a) << 0;
+            c += (b ^ (d & (a ^ b))) + blocks[10] - 42063;
+            c = (((c << 17) | (c >>> 15)) + d) << 0;
+            b += (a ^ (c & (d ^ a))) + blocks[11] - 1990404162;
+            b = (((b << 22) | (b >>> 10)) + c) << 0;
+            a += (d ^ (b & (c ^ d))) + blocks[12] + 1804603682;
+            a = (((a << 7) | (a >>> 25)) + b) << 0;
+            d += (c ^ (a & (b ^ c))) + blocks[13] - 40341101;
+            d = (((d << 12) | (d >>> 20)) + a) << 0;
+            c += (b ^ (d & (a ^ b))) + blocks[14] - 1502002290;
+            c = (((c << 17) | (c >>> 15)) + d) << 0;
+            b += (a ^ (c & (d ^ a))) + blocks[15] + 1236535329;
+            b = (((b << 22) | (b >>> 10)) + c) << 0;
+            a += (c ^ (d & (b ^ c))) + blocks[1] - 165796510;
+            a = (((a << 5) | (a >>> 27)) + b) << 0;
+            d += (b ^ (c & (a ^ b))) + blocks[6] - 1069501632;
+            d = (((d << 9) | (d >>> 23)) + a) << 0;
+            c += (a ^ (b & (d ^ a))) + blocks[11] + 643717713;
+            c = (((c << 14) | (c >>> 18)) + d) << 0;
+            b += (d ^ (a & (c ^ d))) + blocks[0] - 373897302;
+            b = (((b << 20) | (b >>> 12)) + c) << 0;
+            a += (c ^ (d & (b ^ c))) + blocks[5] - 701558691;
+            a = (((a << 5) | (a >>> 27)) + b) << 0;
+            d += (b ^ (c & (a ^ b))) + blocks[10] + 38016083;
+            d = (((d << 9) | (d >>> 23)) + a) << 0;
+            c += (a ^ (b & (d ^ a))) + blocks[15] - 660478335;
+            c = (((c << 14) | (c >>> 18)) + d) << 0;
+            b += (d ^ (a & (c ^ d))) + blocks[4] - 405537848;
+            b = (((b << 20) | (b >>> 12)) + c) << 0;
+            a += (c ^ (d & (b ^ c))) + blocks[9] + 568446438;
+            a = (((a << 5) | (a >>> 27)) + b) << 0;
+            d += (b ^ (c & (a ^ b))) + blocks[14] - 1019803690;
+            d = (((d << 9) | (d >>> 23)) + a) << 0;
+            c += (a ^ (b & (d ^ a))) + blocks[3] - 187363961;
+            c = (((c << 14) | (c >>> 18)) + d) << 0;
+            b += (d ^ (a & (c ^ d))) + blocks[8] + 1163531501;
+            b = (((b << 20) | (b >>> 12)) + c) << 0;
+            a += (c ^ (d & (b ^ c))) + blocks[13] - 1444681467;
+            a = (((a << 5) | (a >>> 27)) + b) << 0;
+            d += (b ^ (c & (a ^ b))) + blocks[2] - 51403784;
+            d = (((d << 9) | (d >>> 23)) + a) << 0;
+            c += (a ^ (b & (d ^ a))) + blocks[7] + 1735328473;
+            c = (((c << 14) | (c >>> 18)) + d) << 0;
+            b += (d ^ (a & (c ^ d))) + blocks[12] - 1926607734;
+            b = (((b << 20) | (b >>> 12)) + c) << 0;
+            bc = b ^ c;
+            a += (bc ^ d) + blocks[5] - 378558;
+            a = (((a << 4) | (a >>> 28)) + b) << 0;
+            d += (bc ^ a) + blocks[8] - 2022574463;
+            d = (((d << 11) | (d >>> 21)) + a) << 0;
+            da = d ^ a;
+            c += (da ^ b) + blocks[11] + 1839030562;
+            c = (((c << 16) | (c >>> 16)) + d) << 0;
+            b += (da ^ c) + blocks[14] - 35309556;
+            b = (((b << 23) | (b >>> 9)) + c) << 0;
+            bc = b ^ c;
+            a += (bc ^ d) + blocks[1] - 1530992060;
+            a = (((a << 4) | (a >>> 28)) + b) << 0;
+            d += (bc ^ a) + blocks[4] + 1272893353;
+            d = (((d << 11) | (d >>> 21)) + a) << 0;
+            da = d ^ a;
+            c += (da ^ b) + blocks[7] - 155497632;
+            c = (((c << 16) | (c >>> 16)) + d) << 0;
+            b += (da ^ c) + blocks[10] - 1094730640;
+            b = (((b << 23) | (b >>> 9)) + c) << 0;
+            bc = b ^ c;
+            a += (bc ^ d) + blocks[13] + 681279174;
+            a = (((a << 4) | (a >>> 28)) + b) << 0;
+            d += (bc ^ a) + blocks[0] - 358537222;
+            d = (((d << 11) | (d >>> 21)) + a) << 0;
+            da = d ^ a;
+            c += (da ^ b) + blocks[3] - 722521979;
+            c = (((c << 16) | (c >>> 16)) + d) << 0;
+            b += (da ^ c) + blocks[6] + 76029189;
+            b = (((b << 23) | (b >>> 9)) + c) << 0;
+            bc = b ^ c;
+            a += (bc ^ d) + blocks[9] - 640364487;
+            a = (((a << 4) | (a >>> 28)) + b) << 0;
+            d += (bc ^ a) + blocks[12] - 421815835;
+            d = (((d << 11) | (d >>> 21)) + a) << 0;
+            da = d ^ a;
+            c += (da ^ b) + blocks[15] + 530742520;
+            c = (((c << 16) | (c >>> 16)) + d) << 0;
+            b += (da ^ c) + blocks[2] - 995338651;
+            b = (((b << 23) | (b >>> 9)) + c) << 0;
+            a += (c ^ (b | ~d)) + blocks[0] - 198630844;
+            a = (((a << 6) | (a >>> 26)) + b) << 0;
+            d += (b ^ (a | ~c)) + blocks[7] + 1126891415;
+            d = (((d << 10) | (d >>> 22)) + a) << 0;
+            c += (a ^ (d | ~b)) + blocks[14] - 1416354905;
+            c = (((c << 15) | (c >>> 17)) + d) << 0;
+            b += (d ^ (c | ~a)) + blocks[5] - 57434055;
+            b = (((b << 21) | (b >>> 11)) + c) << 0;
+            a += (c ^ (b | ~d)) + blocks[12] + 1700485571;
+            a = (((a << 6) | (a >>> 26)) + b) << 0;
+            d += (b ^ (a | ~c)) + blocks[3] - 1894986606;
+            d = (((d << 10) | (d >>> 22)) + a) << 0;
+            c += (a ^ (d | ~b)) + blocks[10] - 1051523;
+            c = (((c << 15) | (c >>> 17)) + d) << 0;
+            b += (d ^ (c | ~a)) + blocks[1] - 2054922799;
+            b = (((b << 21) | (b >>> 11)) + c) << 0;
+            a += (c ^ (b | ~d)) + blocks[8] + 1873313359;
+            a = (((a << 6) | (a >>> 26)) + b) << 0;
+            d += (b ^ (a | ~c)) + blocks[15] - 30611744;
+            d = (((d << 10) | (d >>> 22)) + a) << 0;
+            c += (a ^ (d | ~b)) + blocks[6] - 1560198380;
+            c = (((c << 15) | (c >>> 17)) + d) << 0;
+            b += (d ^ (c | ~a)) + blocks[13] + 1309151649;
+            b = (((b << 21) | (b >>> 11)) + c) << 0;
+            a += (c ^ (b | ~d)) + blocks[4] - 145523070;
+            a = (((a << 6) | (a >>> 26)) + b) << 0;
+            d += (b ^ (a | ~c)) + blocks[11] - 1120210379;
+            d = (((d << 10) | (d >>> 22)) + a) << 0;
+            c += (a ^ (d | ~b)) + blocks[2] + 718787259;
+            c = (((c << 15) | (c >>> 17)) + d) << 0;
+            b += (d ^ (c | ~a)) + blocks[9] - 343485551;
+            b = (((b << 21) | (b >>> 11)) + c) << 0;
+
+            if (this.first) {
+                this.h0 = (a + 1732584193) << 0;
+                this.h1 = (b - 271733879) << 0;
+                this.h2 = (c - 1732584194) << 0;
+                this.h3 = (d + 271733878) << 0;
+                this.first = false;
+            } else {
+                this.h0 = (this.h0 + a) << 0;
+                this.h1 = (this.h1 + b) << 0;
+                this.h2 = (this.h2 + c) << 0;
+                this.h3 = (this.h3 + d) << 0;
+            }
+        }
+
+        hex(): string {
+            this.finalize();
+
+            const h0 = this.h0;
+            const h1 = this.h1;
+            const h2 = this.h2;
+            const h3 = this.h3;
+
+            return (
+                HEX_CHARS[(h0 >>> 4) & 0x0f] +
+                HEX_CHARS[h0 & 0x0f] +
+                HEX_CHARS[(h0 >>> 12) & 0x0f] +
+                HEX_CHARS[(h0 >>> 8) & 0x0f] +
+                HEX_CHARS[(h0 >>> 20) & 0x0f] +
+                HEX_CHARS[(h0 >>> 16) & 0x0f] +
+                HEX_CHARS[(h0 >>> 28) & 0x0f] +
+                HEX_CHARS[(h0 >>> 24) & 0x0f] +
+                HEX_CHARS[(h1 >>> 4) & 0x0f] +
+                HEX_CHARS[h1 & 0x0f] +
+                HEX_CHARS[(h1 >>> 12) & 0x0f] +
+                HEX_CHARS[(h1 >>> 8) & 0x0f] +
+                HEX_CHARS[(h1 >>> 20) & 0x0f] +
+                HEX_CHARS[(h1 >>> 16) & 0x0f] +
+                HEX_CHARS[(h1 >>> 28) & 0x0f] +
+                HEX_CHARS[(h1 >>> 24) & 0x0f] +
+                HEX_CHARS[(h2 >>> 4) & 0x0f] +
+                HEX_CHARS[h2 & 0x0f] +
+                HEX_CHARS[(h2 >>> 12) & 0x0f] +
+                HEX_CHARS[(h2 >>> 8) & 0x0f] +
+                HEX_CHARS[(h2 >>> 20) & 0x0f] +
+                HEX_CHARS[(h2 >>> 16) & 0x0f] +
+                HEX_CHARS[(h2 >>> 28) & 0x0f] +
+                HEX_CHARS[(h2 >>> 24) & 0x0f] +
+                HEX_CHARS[(h3 >>> 4) & 0x0f] +
+                HEX_CHARS[h3 & 0x0f] +
+                HEX_CHARS[(h3 >>> 12) & 0x0f] +
+                HEX_CHARS[(h3 >>> 8) & 0x0f] +
+                HEX_CHARS[(h3 >>> 20) & 0x0f] +
+                HEX_CHARS[(h3 >>> 16) & 0x0f] +
+                HEX_CHARS[(h3 >>> 28) & 0x0f] +
+                HEX_CHARS[(h3 >>> 24) & 0x0f]
+            );
+        }
+    }
+
+    return Md5;
+})();

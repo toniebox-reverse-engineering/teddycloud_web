@@ -9,13 +9,26 @@
     width: var(--labelElement-width);
     height: var(--labelElement-height);
     border-radius: var(--labelElement-radius);
+
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    overflow: visible;
+
+    overflow: visible; /* Bleed sichtbar */
+    isolation: isolate; /* stabiles stacking */
+
     font-size: var(--text-font-size, 14px);
     color: black;
+}
+
+.labelElement .labelTintBleed {
+    position: absolute;
+    top: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    left: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    right: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    border-radius: var(--labelElement-radius);
+    background-color: var(--label-background-color, #ffffff);
     z-index: 0;
 }
 
@@ -28,36 +41,82 @@
     overflow: hidden;
     padding: 0px;
     border-radius: var(--labelElement-radius);
+    background-color: var(--label-background-color, #ffffff);
 
     z-index: 0;
 }
 
-.labelElement::before {
-    content: "";
+.labelElement .labelBg {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--labelElement-radius);
+    background-color: var(--label-background-color, #ffffff);
+    z-index: 0;
+}
+
+.labelElement .labelImageBleed {
     position: absolute;
     top: calc(-1 * var(--paper-label-image-bleed, 0mm));
     left: calc(-1 * var(--paper-label-image-bleed, 0mm));
     right: calc(-1 * var(--paper-label-image-bleed, 0mm));
     bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
-    background-image: var(--label-bg-image);
-    background-size: cover;
-    background-position: var(--image-position, "center");
-    background-repeat: no-repeat;
+    z-index: 1;
     background-color: var(--label-background-color, #ffffff);
     border-radius: var(--labelElement-radius);
-    z-index: -1;
 }
 
-.labelElement::after {
+.labelElement .labelImage {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: var(--image-position, center);
+    border-radius: var(--labelElement-radius);
+}
+
+.labelElement .labelClip {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--labelElement-radius);
+    background: transparent;
+    z-index: 2;
+    overflow: visible;
+}
+
+.labelElement .labelContentBleed {
+    position: absolute;
+    top: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    left: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    right: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
+    z-index: 3;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--labelElement-radius);
+}
+
+.labelElement .labelClip::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     border: var(--label-border-width, 1px) solid var(--label-border-color, black);
-    box-sizing: border-box;
     border-radius: var(--labelElement-radius);
     box-sizing: border-box;
-    z-index: 1;
+    z-index: 10;
+}
+
+.labelElement .labelOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .traveltonieCouple {
@@ -79,8 +138,9 @@
         print-color-adjust: exact;
     }
 
-    html * {
-        background-color: white !important;
+    html,
+    body {
+        background: white !important;
     }
 
     body * {
@@ -115,8 +175,9 @@
         background-color: var(--label-background-color, #ffffff) !important;
     }
 
-    .labelElement * {
-        background-color: var(--label-background-color, #ffffff) !important;
+    .labelImage {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
     .traveltonieCouple {
