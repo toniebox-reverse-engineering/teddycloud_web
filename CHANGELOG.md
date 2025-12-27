@@ -2,6 +2,7 @@
 
 ## 0.6.7
 
+-   gui: fixed bug in TeddyStudio if running TeddyCloud in insecure context
 -   planned: removal of old esp32 flasher
 
 ### Commits
