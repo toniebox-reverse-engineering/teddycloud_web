@@ -101,7 +101,7 @@ export const PluginList = () => {
                                 >
                                     <PluginCard
                                         plugin={plugin}
-                                        onOpen={(pluginId) => navigate(`/community/plugin/${pluginId}`)}
+                                        onOpen={(pluginId) => navigate(`/community/tcplugins/${pluginId}`)}
                                         onOpenHomepage={(url) => window.open(url, "_blank")}
                                         onDelete={requestDelete}
                                     />

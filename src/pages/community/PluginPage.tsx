@@ -11,7 +11,11 @@ import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { PluginContainer } from "../../components/community/plugin/PluginContainter";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
-export const PluginPage = () => {
+type PluginPageProps = {
+    standalone?: boolean;
+};
+
+export const PluginPage: React.FC<PluginPageProps> = ({ standalone = false }) => {
     const { pluginId } = useParams<{ pluginId: string }>();
     const { t } = useTranslation();
     const location = useLocation();
@@ -59,14 +63,28 @@ export const PluginPage = () => {
         return null;
     }
 
-    return (
+    const pluginContent = <PluginContainer pluginId={pluginId} />;
+
+    return standalone ? (
+        <>
+            <style>
+                {`
+                    .ant-layout-header,
+                    .ant-breadcrumb,
+                    .additional-footer-padding, 
+                    .ant-layout-footer  {
+                        display: none !important;
+                    }
+                `}
+            </style>
+            {pluginContent}
+        </>
+    ) : (
         <>
             <StyledSider>{subNav}</StyledSider>
             <StyledLayout>
                 <BreadcrumbWrapper items={breadcrumbItems} />
-                <StyledContent>
-                    <PluginContainer pluginId={pluginId} />
-                </StyledContent>
+                <StyledContent>{pluginContent}</StyledContent>
             </StyledLayout>
         </>
     );

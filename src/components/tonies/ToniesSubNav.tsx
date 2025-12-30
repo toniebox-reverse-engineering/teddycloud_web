@@ -12,6 +12,7 @@ import {
     UserAddOutlined,
     FormatPainterOutlined,
     PlayCircleOutlined,
+    ExportOutlined,
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
@@ -42,13 +43,19 @@ export const ToniesSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={`/tonies/plugin/${plugin.pluginId}`}
+                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/tonies/plugin/${plugin.pluginId}`}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
                     }}
+                    target={plugin.standalone ? "_blank" : "_self"}
                 >
                     {plugin.pluginName}
+                    {plugin.standalone ? (
+                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                    ) : (
+                        ""
+                    )}
                 </Link>
             ),
             icon: React.createElement(plugin.icon),

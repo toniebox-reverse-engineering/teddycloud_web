@@ -237,7 +237,7 @@ function App() {
                                         <Route path="/community/contributors" element={<ContributorsPage />} />
                                         <Route path="/community/attribution" element={<AttributionPage />} />
                                         <Route path="/community/changelog" element={<ChangelogPage />} />
-
+                                        <Route path="/plugin/:pluginId" element={<PluginPage standalone />} />
                                         <Route path="/*" element={<Error404Page />} />
                                     </Routes>
                                 </Layout>
