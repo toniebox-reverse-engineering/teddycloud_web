@@ -77,7 +77,9 @@ export const PluginPage: React.FC<PluginPageProps> = ({ standalone = false }) =>
                     }
                 `}
             </style>
-            {pluginContent}
+            <StyledLayout>
+                <StyledContent>{pluginContent}</StyledContent>
+            </StyledLayout>
         </>
     ) : (
         <>
