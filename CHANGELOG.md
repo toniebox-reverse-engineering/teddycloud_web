@@ -3,6 +3,7 @@
 ## 0.6.7
 
 -   gui: fixed bug in TeddyStudio if running TeddyCloud in insecure context
+-   gui: added standalone flag to plugin.json (standalone set to true --> plugin is opened in standalone mode in a new tab) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/272](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/272)
 -   planned: removal of old esp32 flasher
 
 ### Commits

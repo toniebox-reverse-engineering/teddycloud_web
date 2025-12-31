@@ -302,6 +302,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                     author: meta.author || "",
                     version: meta.version || "",
                     description: meta.description || "",
+                    standalone: meta.standalone || false,
                     pluginHomepage: meta.pluginHomepage,
                     teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)
                         ? meta.teddyCloudSection

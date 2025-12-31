@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { MenuProps } from "antd";
 import {
     DeliveredProcedureOutlined,
+    ExportOutlined,
     InfoCircleOutlined,
     MinusOutlined,
     OrderedListOutlined,
@@ -32,13 +33,19 @@ export const TonieboxesSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={`/tonieboxes/plugin/${plugin.pluginId}`}
+                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/tonieboxes/plugin/${plugin.pluginId}`}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
                     }}
+                    target={plugin.standalone ? "_blank" : "_self"}
                 >
                     {plugin.pluginName}
+                    {plugin.standalone ? (
+                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                    ) : (
+                        ""
+                    )}
                 </Link>
             ),
             icon: React.createElement(plugin.icon),

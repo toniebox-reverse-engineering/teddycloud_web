@@ -17,4 +17,5 @@ export type PluginMeta = {
     pluginHomepage?: string;
     teddyCloudSection?: TeddyCloudSection;
     icon: ElementType;
+    standalone?: boolean;
 };

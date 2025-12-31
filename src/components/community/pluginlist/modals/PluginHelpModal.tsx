@@ -16,6 +16,7 @@ export const PluginHelpModal: React.FC<PluginHelpModalProps> = ({ open, onClose 
     const fields: [string, string][] = [
         ["pluginName", t("community.plugins.help.fields.pluginName")],
         ["description", t("community.plugins.help.fields.description")],
+        ["standalone", t("community.plugins.help.fields.standalone")],
         ["author", t("community.plugins.help.fields.author")],
         ["version", t("community.plugins.help.fields.version")],
         ["pluginHomepage", t("community.plugins.help.fields.pluginHomepage")],
@@ -59,6 +60,7 @@ export const PluginHelpModal: React.FC<PluginHelpModalProps> = ({ open, onClose 
                     code={`{
   "pluginName": "Awesome Plugin",
   "description": "A short summary of what this plugin does.",
+  "standalone": false,
   "author": "Authors name",
   "version": "Version of the plugin",
   "pluginHomepage": "Homepage of the plugin",
