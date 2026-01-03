@@ -105,7 +105,7 @@ export const PluginCard: React.FC<PluginCardProps> = ({ plugin, onOpen, onOpenHo
                     borderRadius: 0,
                 }}
                 alt={`${plugin.pluginName} preview`}
-                src={`/web/plugins/${plugin.pluginId}/preview.png`}
+                src={`/plugins/${plugin.pluginId}/preview.png`}
                 onError={(e) => {
                     e.currentTarget.style.display = "none";
                 }}
