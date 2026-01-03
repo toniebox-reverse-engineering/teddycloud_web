@@ -4,6 +4,7 @@ import { Alert, Checkbox, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { ExportOutlined, WarningFilled } from "@ant-design/icons";
 import { useReachableBackUpUrls } from "../hooks/useReachableBackupUrls";
+import { Uart3v3Hint } from "../../../common/elements/Uart3v3Hint";
 
 const { Paragraph } = Typography;
 interface Step0Props {
@@ -11,6 +12,7 @@ interface Step0Props {
         riskAccepted: boolean;
         latestFirmwareRead: boolean;
         backupWithOtherToolTaken: boolean;
+        uartHintRead: boolean;
     };
     onAcknowledgeChange: (patch: Partial<Step0Props["acknowledgements"]>) => void;
 }
@@ -59,6 +61,12 @@ export const Step0Preparations: React.FC<Step0Props> = ({ acknowledgements, onAc
                     style={{ marginBottom: 16 }}
                 />
 
+                <Uart3v3Hint
+                    checked={acknowledgements.uartHintRead}
+                    onCheckedChange={(checked) => onAcknowledgeChange({ uartHintRead: checked })}
+                    checkboxLabel={<b>{t("tonieboxes.esp32BoxFlashing.esp32flasher.ackUARTHint")}</b>}
+                />
+
                 <Alert
                     type="info"
                     showIcon
@@ -94,6 +102,7 @@ export const Step0Preparations: React.FC<Step0Props> = ({ acknowledgements, onAc
                             </Checkbox>
                         </>
                     }
+                    style={{ marginBottom: 16 }}
                 />
             </Paragraph>
         </>

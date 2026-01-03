@@ -82,6 +82,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
         riskAccepted: false,
         latestFirmwareRead: false,
         backupWithOtherToolTaken: false,
+        uartHintRead: false,
     });
 
     const steps = [
@@ -482,7 +483,13 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                                 <Button
                                     icon={<RightOutlined />}
                                     iconPlacement="end"
-                                    disabled={disableButtons || !step0Ack.riskAccepted || !step0Ack.latestFirmwareRead}
+                                    disabled={
+                                        disableButtons ||
+                                        !step0Ack.riskAccepted ||
+                                        !step0Ack.latestFirmwareRead ||
+                                        !step0Ack.backupWithOtherToolTaken ||
+                                        !step0Ack.uartHintRead
+                                    }
                                     onClick={next}
                                 >
                                     {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}

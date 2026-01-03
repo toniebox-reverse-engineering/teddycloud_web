@@ -1,4 +1,4 @@
-import { Alert, Image, Space, Typography } from "antd";
+import { Alert, Checkbox, Image, Space, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
 import jumper1 from "../../../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_black.jpg";
@@ -7,7 +7,13 @@ import jumper3 from "../../../../../assets/boxSetup/jumper/uart_3v3-5V_jumper_ye
 
 const { Paragraph, Text } = Typography;
 
-export const Uart3v3Hint: React.FC = () => {
+type Uart3v3HintProps = {
+    checked?: boolean;
+    onCheckedChange?: (checked: boolean) => void;
+    checkboxLabel?: React.ReactNode;
+};
+
+export const Uart3v3Hint: React.FC<Uart3v3HintProps> = ({ checked, onCheckedChange, checkboxLabel }) => {
     const { t } = useTranslation();
 
     return (
@@ -71,6 +77,11 @@ export const Uart3v3Hint: React.FC = () => {
                                 </Space>
                             </li>
                         </ol>
+                        {typeof checked === "boolean" && onCheckedChange && (
+                            <Checkbox checked={checked} onChange={(e) => onCheckedChange(e.target.checked)}>
+                                {checkboxLabel ?? t("tonieboxes.boxSetup.UARTHint.ack")}
+                            </Checkbox>
+                        )}
                     </>
                 }
             />
