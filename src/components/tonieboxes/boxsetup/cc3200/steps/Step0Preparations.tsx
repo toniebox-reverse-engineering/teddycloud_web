@@ -8,7 +8,7 @@ import cc3200WiresAsTagConnect from "../../../../../assets/boxSetup/cc3200_wires
 import { TonieboxWifiGuide } from "../../common/elements/TonieboxWifiGuide";
 import { Uart3v3Hint } from "../../common/elements/Uart3v3Hint";
 import { installCC3200Tool } from "../elements/InstallCC3200Tool";
-import { WarningFilled } from "@ant-design/icons";
+import { ExportOutlined, WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -95,7 +95,7 @@ export const Step0Preparations: React.FC = () => {
                     to="https://www.tag-connect.com/product/tc2050-idc-nl-10-pin-no-legs-cable-with-ribbon-connector"
                     target="_blank"
                 >
-                    TC2050-IDC-NL TagConnector
+                    TC2050-IDC-NL TagConnector {<ExportOutlined />}
                 </Link>
                 {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectDebugPortText2")}
             </Paragraph>

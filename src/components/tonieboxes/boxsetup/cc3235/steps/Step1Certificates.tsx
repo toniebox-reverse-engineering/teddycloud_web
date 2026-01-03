@@ -6,6 +6,7 @@ import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { CertificateIntro } from "../../common/elements/CertificateIntro";
 import { useState } from "react";
 import { CertificatesModal } from "../../../common/modals/CertificatesModal";
+import { ExportOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -52,7 +53,7 @@ export const Step1Certificates: React.FC<CC3235Step1CertificatesProps> = ({ hwTo
                             to="https://raw.githubusercontent.com/toniebox-reverse-engineering/teddycloud/master/contrib/gencerts.sh"
                             target="_blank"
                         >
-                            {t("tonieboxes.cc3235BoxFlashing.gencertLinkText")}{" "}
+                            {t("tonieboxes.cc3235BoxFlashing.gencertLinkText")} {<ExportOutlined />}
                         </Link>{" "}
                         {t("tonieboxes.cc3235BoxFlashing.flashCAReplacementDescription2")}{" "}
                         {t("tonieboxes.cc3235BoxFlashing.flashCAReplacementDescription3")}

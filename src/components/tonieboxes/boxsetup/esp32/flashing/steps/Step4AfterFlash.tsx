@@ -8,7 +8,7 @@ import { SafetyCertificateOutlined } from "@ant-design/icons";
 const { Paragraph, Text } = Typography;
 const { useToken } = theme;
 
-interface Step3Props {
+interface Step4Props {
     state: ESP32Flasher;
     certDir: string;
     disableButtons: boolean;
@@ -16,7 +16,7 @@ interface Step3Props {
     extractCertsFromFlash: () => void;
 }
 
-export const Step3AfterFlash: React.FC<Step3Props> = ({
+export const Step4AfterFlash: React.FC<Step4Props> = ({
     state,
     certDir,
     disableButtons,

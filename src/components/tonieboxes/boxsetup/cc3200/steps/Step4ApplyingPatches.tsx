@@ -2,6 +2,7 @@ import { Collapse, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
+import { ExportOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -187,14 +188,16 @@ export const Step4ApplyingPatches: React.FC = () => {
                     >
                         {t(
                             "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchDirectory"
-                        )}
+                        )}{" "}
+                        {<ExportOutlined />}
                     </Link>
                     {", "}
                     <Link
                         to="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/ofw-patches/"
                         target="_blank"
                     >
-                        {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchWiki")}
+                        {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchWiki")}{" "}
+                        {<ExportOutlined />}
                     </Link>
                 </>
             ),

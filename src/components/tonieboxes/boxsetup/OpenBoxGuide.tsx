@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Image, Timeline, Typography } from "antd";
-import { InfoCircleOutlined, SmileOutlined } from "@ant-design/icons";
+import { ExportOutlined, InfoCircleOutlined, SmileOutlined } from "@ant-design/icons";
 
 import openTBStep1_1 from "../../../assets/boxSetup/openTB_step1_1.png";
 import openTBStep1_2 from "../../../assets/boxSetup/openTB_step1_2.png";
@@ -116,17 +116,17 @@ export const OpenBoxGuide: React.FC = () => {
             <Paragraph style={{ fontSize: "small" }}>
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart1")}{" "}
                 <Link to={t("tonieboxes.boxSetup.openBoxGuide.link1")} target="_blank">
-                    iFixit[1]
+                    iFixit[1] {<ExportOutlined />}
                 </Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart2")}{" "}
                 <Link to={t("tonieboxes.boxSetup.openBoxGuide.link2")} target="_blank">
-                    iFixit[2]
+                    iFixit[2] {<ExportOutlined />}
                 </Link>
                 . {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart3")}{" "}
-                <Link to="https://www.ifixit.com/User/828031/Tobias+Isakeit">Tobias Isakeit</Link>{" "}
+                <Link to="https://www.ifixit.com/User/828031/Tobias+Isakeit">Tobias Isakeit {<ExportOutlined />}</Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart4")}{" "}
                 <Link to="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
-                    {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")}
+                    {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")} {<ExportOutlined />}
                 </Link>
             </Paragraph>
 
@@ -137,7 +137,7 @@ export const OpenBoxGuide: React.FC = () => {
             <Paragraph>
                 {t("tonieboxes.boxSetup.openBoxGuide.alternativeGuidelineVideo")}{" "}
                 <Link to="https://www.youtube.com/watch?v=Cv9ID4-P6_A" target="_blank">
-                    https://www.youtube.com/watch?v=Cv9ID4-P6_A
+                    https://www.youtube.com/watch?v=Cv9ID4-P6_A {<ExportOutlined />}
                 </Link>
             </Paragraph>
         </>

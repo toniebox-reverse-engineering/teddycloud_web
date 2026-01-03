@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { connectESP32Explanation } from "../../elements/ConnectESP32Explanation";
 import { TonieboxWifiGuide } from "../../../common/elements/TonieboxWifiGuide";
-import { WarningFilled } from "@ant-design/icons";
+import { ExportOutlined, WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -43,7 +43,7 @@ export const Step0Preparations: React.FC = () => {
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.installESPToolText")}</Paragraph>
             <Paragraph>
                 <Link to="https://github.com/espressif/esptool" target="_blank">
-                    {t("tonieboxes.esp32BoxFlashing.legacy.installESPToolLink")}
+                    {t("tonieboxes.esp32BoxFlashing.legacy.installESPToolLink")} {<ExportOutlined />}
                 </Link>
             </Paragraph>
 

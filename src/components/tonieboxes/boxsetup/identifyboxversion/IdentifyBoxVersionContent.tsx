@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme, Tooltip } from "antd";
-import { CloseOutlined, CodeOutlined } from "@ant-design/icons";
+import { CloseOutlined, CodeOutlined, ExportOutlined } from "@ant-design/icons";
 
 import pcb3235Image from "../../../../assets/boxSetup/3235_pcb.png";
 import pcb3235ImagePreview from "../../../../assets/boxSetup/3235_pcb_preview.png";
@@ -164,7 +164,7 @@ const MacIdentifyForm: React.FC<MacIdentifyFormProps> = ({
             <Paragraph style={{ fontSize: "small", marginTop: 16 }}>
                 {t("tonieboxes.boxSetup.identifyVersion.macvendors")}{" "}
                 <Link to="https://macvendors.com/" target="_blank">
-                    {t("tonieboxes.boxSetup.identifyVersion.macvendorsLink")}
+                    {t("tonieboxes.boxSetup.identifyVersion.macvendorsLink")} {<ExportOutlined />}
                 </Link>
             </Paragraph>
         </Form>

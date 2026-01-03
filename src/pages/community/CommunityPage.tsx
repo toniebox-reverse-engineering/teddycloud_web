@@ -6,6 +6,7 @@ import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants/
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import { ExportOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -35,7 +36,7 @@ export const CommunityPage = () => {
                         <ul>
                             <li>
                                 <Link to={gitHubUrl} target="_blank">
-                                    GitHub
+                                    GitHub {<ExportOutlined />}
                                 </Link>
                                 <ul>
                                     <li>{t("community.community.github")}</li>
@@ -43,7 +44,7 @@ export const CommunityPage = () => {
                             </li>
                             <li>
                                 <Link to={telegramGroupUrl} target="_blank">
-                                    Telegram Chat
+                                    Telegram Chat {<ExportOutlined />}
                                 </Link>
                                 <ul>
                                     <li>{t("community.community.telegram")}</li>
@@ -51,7 +52,7 @@ export const CommunityPage = () => {
                             </li>
                             <li>
                                 <Link to={forumUrl} target="_blank">
-                                    Discourse Forum
+                                    Discourse Forum {<ExportOutlined />}
                                 </Link>
                                 <ul>
                                     <li>{t("community.community.discourse")}</li>
@@ -59,7 +60,7 @@ export const CommunityPage = () => {
                             </li>
                             <li>
                                 <Link to={wikiUrl} target="_blank">
-                                    TeddyCloud Wiki
+                                    TeddyCloud Wiki {<ExportOutlined />}
                                 </Link>
                                 <ul>
                                     <li>{t("community.community.teddyCloudWiki")}</li>
