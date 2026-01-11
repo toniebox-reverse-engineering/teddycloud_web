@@ -3,6 +3,7 @@ import { Alert, Timeline, Typography, theme } from "antd";
 import {
     CheckCircleOutlined,
     DeliveredProcedureOutlined,
+    ExportOutlined,
     SearchOutlined,
     SmileOutlined,
     WarningFilled,
@@ -109,7 +110,7 @@ export const BoxSetupContent: React.FC = () => {
                                 {reachableNewbieGuideUrls.map(({ id, url, title }) => (
                                     <li key={id}>
                                         <a href={url} target="_blank">
-                                            {title}
+                                            {title} {<ExportOutlined />}
                                         </a>
                                     </li>
                                 ))}

@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import tbEsp32UartClamp from "../../../../../assets/boxSetup/tb-esp32-uart-clamp.png";
 import tbEsp32UartAnalogClamp from "../../../../../assets/boxSetup/esp32_pcb_clamp.png";
 import tbEsp32Uart from "../../../../../assets/boxSetup/tb-esp32-uart.png";
+import tbEsp32J100 from "../../../../../assets/boxSetup/esp32_j100.png";
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { Uart3v3Hint } from "../../common/elements/Uart3v3Hint";
 
@@ -24,6 +25,12 @@ export function connectESP32Explanation(): JSX.Element {
                     justifyContent: "center",
                 }}
             >
+                <Image
+                    src={tbEsp32J100}
+                    style={{ height: 200, width: "auto" }}
+                    preview={false}
+                    alt={t("tonieboxes.connectESP32Modal.esp32UartJ100")}
+                />
                 <Image
                     src={tbEsp32Uart}
                     style={{ height: 200, width: "auto" }}

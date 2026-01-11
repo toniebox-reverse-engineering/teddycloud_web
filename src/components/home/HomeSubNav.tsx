@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
-import { ContainerOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
+import { ContainerOutlined, ExportOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
 
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { StyledSubMenu } from "../common/StyledComponents";
@@ -24,13 +24,19 @@ export const HomeSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={`/home/plugin/${plugin.pluginId}`}
+                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/home/plugin/${plugin.pluginId}`}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
                     }}
+                    target={plugin.standalone ? "_blank" : "_self"}
                 >
                     {plugin.pluginName}
+                    {plugin.standalone ? (
+                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                    ) : (
+                        ""
+                    )}
                 </Link>
             ),
             icon: React.createElement(plugin.icon),

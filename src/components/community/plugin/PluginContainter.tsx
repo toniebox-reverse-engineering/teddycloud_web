@@ -23,15 +23,16 @@ export const PluginContainer: React.FC<PluginContainerProps> = ({ pluginId }) =>
         const iframe = iframeRef.current;
         if (!iframe) return;
 
+        let ro: ResizeObserver | null = null;
+        let intervalId: number | null = null;
         let hasNotified = false;
-        let prevHeight = 0;
 
-        const handleResize = () => {
-            if (!iframe || !iframe.contentWindow) return;
+        const setHeight = () => {
+            if (!iframe.contentWindow) return;
 
             try {
                 const doc = iframe.contentDocument || iframe.contentWindow.document;
-                if (!doc || !doc.body) return;
+                if (!doc) return;
 
                 const isError = doc.getElementById("error-404");
                 if (isError) {
@@ -50,23 +51,56 @@ export const PluginContainer: React.FC<PluginContainerProps> = ({ pluginId }) =>
                     setIsError404(false);
                 }
 
-                const newHeight = doc.body.scrollHeight + 48;
+                const body = doc.body;
+                const html = doc.documentElement;
+                if (!body || !html) return;
 
-                if (prevHeight && newHeight - prevHeight === 48) {
-                    clearInterval(observerInterval);
-                } else {
-                    iframe.style.height = newHeight + "px";
-                }
-                prevHeight = newHeight;
+                const height = Math.max(
+                    body.scrollHeight,
+                    body.offsetHeight,
+                    html.scrollHeight,
+                    html.offsetHeight,
+                    html.clientHeight
+                );
+
+                iframe.style.height = `${height}px`;
             } catch {
-                console.warn("Cross-origin content - can't access height.");
+                // Cross-origin: cannot measure
             }
         };
 
-        const observerInterval = window.setInterval(handleResize, 500);
+        const onLoad = () => {
+            setHeight();
+
+            try {
+                const doc = iframe.contentDocument || iframe.contentWindow?.document;
+                const html = doc?.documentElement;
+                if (!doc || !html) return;
+
+                ro?.disconnect();
+                ro = new ResizeObserver(() => setHeight());
+                ro.observe(html);
+
+                doc.addEventListener("transitionend", setHeight, true);
+                doc.addEventListener("animationend", setHeight, true);
+
+                const imgs = Array.from(doc.images || []);
+                imgs.forEach((img) => img.addEventListener("load", setHeight, { once: true }));
+            } catch {
+                // ignore, may be cross-origin
+            }
+
+            if (intervalId) window.clearInterval(intervalId);
+            intervalId = window.setInterval(setHeight, 300);
+        };
+
+        iframe.addEventListener("load", onLoad);
 
         return () => {
-            window.clearInterval(observerInterval);
+            iframe.removeEventListener("load", onLoad);
+            ro?.disconnect();
+            ro = null;
+            if (intervalId) window.clearInterval(intervalId);
         };
     }, [pluginId, addNotification, t]);
 

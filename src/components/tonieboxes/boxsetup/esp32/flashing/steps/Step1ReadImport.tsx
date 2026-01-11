@@ -5,11 +5,10 @@ import { ESP32Flasher } from "../hooks/useESP32Flasher";
 import DotAnimation from "../../../../../common/elements/DotAnimation";
 import { connectESP32Explanation } from "../../elements/ConnectESP32Explanation";
 import { useTranslation } from "react-i18next";
-import { WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
-interface Step0Props {
+interface Step1Props {
     state: ESP32Flasher;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
     onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -29,7 +28,7 @@ const renderStateWithAnimation = (text: string) => {
     return text;
 };
 
-export const Step0ReadImport: React.FC<Step0Props> = ({ state, fileInputRef, onFileChange, contentProgress }) => {
+export const Step1ReadImport: React.FC<Step1Props> = ({ state, fileInputRef, onFileChange, contentProgress }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const conESP32Explanation = connectESP32Explanation();
@@ -45,28 +44,6 @@ export const Step0ReadImport: React.FC<Step0Props> = ({ state, fileInputRef, onF
             <h3>{t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash")}</h3>
             {!state.actionInProgress && (
                 <>
-                    <Paragraph>
-                        <Alert
-                            type="error"
-                            showIcon
-                            icon={<WarningFilled />}
-                            title={t("tonieboxes.warningUseAtYourOwnRisk")}
-                            description={t("tonieboxes.warningUseAtYourOwnRiskText")}
-                            style={{ marginBottom: 16 }}
-                        />
-                        <Alert
-                            type="warning"
-                            closable={{ closeIcon: true, "aria-label": "close" }}
-                            showIcon
-                            title={t("tonieboxes.hintLatestFirmwareTitle")}
-                            description={
-                                <>
-                                    <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
-                                    <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}</Paragraph>
-                                </>
-                            }
-                        />
-                    </Paragraph>
                     <Paragraph>
                         <Alert
                             type="info"

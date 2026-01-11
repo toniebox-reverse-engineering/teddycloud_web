@@ -16,6 +16,7 @@ import {
     AppstoreOutlined,
     QuestionOutlined,
     CrownOutlined,
+    ExportOutlined,
 } from "@ant-design/icons";
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 
@@ -70,13 +71,19 @@ export const CommunitySubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={`/community/plugin/${plugin.pluginId}`}
+                    to={plugin.standalone ? `/plugins/${plugin.pluginId}` : `/community/plugin/${plugin.pluginId}`}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
                     }}
+                    target={plugin.standalone ? "_blank" : "_self"}
                 >
                     {plugin.pluginName}
+                    {plugin.standalone ? (
+                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                    ) : (
+                        ""
+                    )}
                 </Link>
             ),
             icon: React.createElement(plugin.icon),

@@ -19,12 +19,13 @@ import { useESP32Flasher } from "./hooks/useESP32Flasher";
 import AvailableBoxesModal from "../../common/modals/AvailableBoxesModal";
 import { BoxVersionsEnum } from "../../../../../types/tonieboxTypes";
 import ConfirmationDialog from "../../../../common/modals/ConfirmationModal";
-import { Step0ReadImport } from "./steps/Step0ReadImport";
-import { Step1PatchFlash } from "./steps/Step1PatchFlash";
-import { Step2FlashESP32 } from "./steps/Step2FlashESP32";
-import { Step3AfterFlash } from "./steps/Step3AfterFlash";
+import { Step1ReadImport } from "./steps/Step1ReadImport";
+import { Step2PatchFlash } from "./steps/Step2PatchFlash";
+import { Step3FlashESP32 } from "./steps/Step3FlashESP32";
+import { Step4AfterFlash } from "./steps/Step4AfterFlash";
 import { canHover, scrollToTop } from "../../../../../utils/browser/browserUtils";
 import { LogViewer } from "../elements/LogViewer";
+import { Step0Preparations } from "./steps/Step0Preparations";
 
 const { Paragraph } = Typography;
 const { Option } = Select;
@@ -77,7 +78,15 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
         openHttpsUrl,
     } = flasher;
 
+    const [step0Ack, setStep0Ack] = useState({
+        riskAccepted: false,
+        latestFirmwareRead: false,
+        backupWithOtherToolTaken: false,
+        uartHintRead: false,
+    });
+
     const steps = [
+        { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePreparations") },
         { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash") },
         { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash") },
         { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32") },
@@ -295,33 +304,40 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
         switch (currentStep) {
             case 0:
                 return (
-                    <Step0ReadImport
+                    <Step0Preparations
+                        acknowledgements={step0Ack}
+                        onAcknowledgeChange={(patch) => setStep0Ack((prev) => ({ ...prev, ...patch }))}
+                    />
+                );
+            case 1:
+                return (
+                    <Step1ReadImport
                         state={state}
                         fileInputRef={fileInputRef}
                         onFileChange={loadFlashFile}
                         contentProgress={contentProgress}
                     />
                 );
-            case 1:
+            case 2:
                 return (
-                    <Step1PatchFlash
+                    <Step2PatchFlash
                         state={state}
                         setState={setState}
                         backupHint={backupHint}
                         contentProgress={contentProgress}
                     />
                 );
-            case 2:
+            case 3:
                 return (
-                    <Step2FlashESP32
+                    <Step3FlashESP32
                         state={state}
                         useRevvoxFlasher={useRevvoxFlasher}
                         contentProgress={contentProgress}
                     />
                 );
-            case 3:
+            case 4:
                 return (
-                    <Step3AfterFlash
+                    <Step4AfterFlash
                         state={state}
                         certDir={certDir}
                         disableButtons={disableButtons}
@@ -429,17 +445,6 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                         {t("tonieboxes.esp32BoxFlashing.title")} {useRevvoxFlasher && "(Revvox Flasher)"}
                     </Divider>
 
-                    <ConfirmationDialog
-                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
-                        open={isConfirmFlashModalOpen}
-                        okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
-                        cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
-                        content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
-                        contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
-                        handleOk={handleConfirmFlash}
-                        handleCancel={handleCancelFlash}
-                    />
-
                     <Steps
                         current={currentStep}
                         items={steps.map((step, index) => ({
@@ -465,6 +470,35 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                     <div style={{ marginTop: 24, marginBottom: 24 }}>
                         {currentStep === 0 && (
                             <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                                <div>
+                                    <Paragraph>
+                                        <Button
+                                            disabled={disableButtons}
+                                            onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}
+                                        >
+                                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                        </Button>
+                                    </Paragraph>
+                                </div>
+                                <Button
+                                    icon={<RightOutlined />}
+                                    iconPlacement="end"
+                                    disabled={
+                                        disableButtons ||
+                                        !step0Ack.riskAccepted ||
+                                        !step0Ack.latestFirmwareRead ||
+                                        !step0Ack.backupWithOtherToolTaken ||
+                                        !step0Ack.uartHintRead
+                                    }
+                                    onClick={next}
+                                >
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.next")}
+                                </Button>
+                            </div>
+                        )}
+                        {currentStep === 1 && (
+                            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                                {previousButton}
                                 <div>
                                     <Paragraph>
                                         <Button
@@ -515,7 +549,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                             </div>
                         )}
 
-                        {currentStep === 1 && (
+                        {currentStep === 2 && (
                             <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                                 {previousButton}
                                 <div style={{ display: "flex", gap: 8 }}>
@@ -543,7 +577,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                             </div>
                         )}
 
-                        {currentStep === 2 && (
+                        {currentStep === 3 && (
                             <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                                 {previousButton}
                                 <div style={{ display: "flex", gap: 8 }}>
@@ -560,7 +594,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                             </div>
                         )}
 
-                        {currentStep === 3 && (
+                        {currentStep === 4 && (
                             <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                                 {previousButton}
                                 <div>
@@ -581,6 +615,17 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                     </div>
 
                     {availableBoxesModal}
+
+                    <ConfirmationDialog
+                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
+                        open={isConfirmFlashModalOpen}
+                        okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
+                        cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
+                        content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
+                        contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
+                        handleOk={handleConfirmFlash}
+                        handleCancel={handleCancelFlash}
+                    />
 
                     <ConfirmationDialog
                         title={t(

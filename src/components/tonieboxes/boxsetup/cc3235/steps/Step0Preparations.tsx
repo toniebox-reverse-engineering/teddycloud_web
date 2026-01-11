@@ -14,7 +14,7 @@ import cc3235CH341Sop8remove from "../../../../../assets/boxSetup/02_CH341A_sop8
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { installCC3200Tool } from "../../cc3200/elements/InstallCC3200Tool";
 import { TonieboxWifiGuide } from "../../common/elements/TonieboxWifiGuide";
-import { WarningFilled } from "@ant-design/icons";
+import { ExportOutlined, WarningFilled } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -34,7 +34,7 @@ export const CC3235Step0Preparations: React.FC<Step0PreparationsProps> = ({ hwTo
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.preparation")}</Paragraph>
             <Paragraph>
                 <Link to="https://github.com/stacksmashing/pico-serprog" target="_blank">
-                    {t("tonieboxes.cc3235BoxFlashing.serprogFirmwareLink")}
+                    {t("tonieboxes.cc3235BoxFlashing.serprogFirmwareLink")} {<ExportOutlined />}
                 </Link>
             </Paragraph>
         </>
@@ -266,7 +266,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
             {t("tonieboxes.cc3235BoxFlashing.installflashromtoolText")}
             <CodeSnippet language="shell" code={`sudo apt-get install flashrom`} />
             <Link to="https://www.flashrom.org/" target="_blank">
-                {t("tonieboxes.cc3235BoxFlashing.installflashromtoolLink")}
+                {t("tonieboxes.cc3235BoxFlashing.installflashromtoolLink")} {<ExportOutlined />}
             </Link>
 
             {installCC3200Tool()}

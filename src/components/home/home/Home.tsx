@@ -14,6 +14,7 @@ import { TonieboxesList } from "../../tonieboxes/tonieboxeslist/TonieboxesList";
 import { ToniesList } from "../../tonies/tonieslist/ToniesList";
 import { useHomeData } from "./data/useHomeData";
 import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
+import { ExportOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -166,7 +167,7 @@ export const Home = () => {
             <Paragraph>
                 {t("home.forumIntroPart1")}
                 <Link to={forumUrl} target="_blank">
-                    {forumUrl}
+                    {forumUrl} {<ExportOutlined />}
                 </Link>
                 {t("home.forumIntroPart2")}
             </Paragraph>
@@ -188,22 +189,22 @@ export const Home = () => {
                     </li>
                     <li>
                         <Link to={gitHubUrl} target="_blank">
-                            GitHub
+                            GitHub {<ExportOutlined />}
                         </Link>
                     </li>
                     <li>
                         <Link to={telegramGroupUrl} target="_blank">
-                            Telegram Chat
+                            Telegram Chat {<ExportOutlined />}
                         </Link>
                     </li>
                     <li>
                         <Link to={forumUrl} target="_blank">
-                            Discourse Forum
+                            Discourse Forum {<ExportOutlined />}
                         </Link>
                     </li>
                     <li>
                         <Link to={wikiUrl} target="_blank">
-                            TeddyCloud Wiki
+                            TeddyCloud Wiki {<ExportOutlined />}
                         </Link>
                     </li>
                 </ul>

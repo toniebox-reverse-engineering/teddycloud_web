@@ -1,6 +1,6 @@
 {
     "name": "teddycloud-web",
-    "version": "0.6.6",
+    "version": "0.6.7",
     "private": true,
     "homepage": "/web",
     "dependencies": {
@@ -14,7 +14,7 @@
         "@types/react-dom": "^19.2.3",
         "@types/w3c-web-serial": "^1.0.8",
         "@vitejs/plugin-react": "^5.1.2",
-        "antd": "^6.1.1",
+        "antd": "^6.1.3",
         "esptool-js": "^0.5.7",
         "formik": "^2.4.9",
         "i18next": "^25.7.3",
@@ -23,7 +23,7 @@
         "jszip": "^3.10.1",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
-        "react-i18next": "^16.5.0",
+        "react-i18next": "^16.5.1",
         "react-markdown": "^10.1.0",
         "react-minimal-pie-chart": "^9.1.2",
         "react-router-dom": "^7.11.0",

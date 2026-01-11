@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.6.7
+
+-   gui: fixed bug in TeddyStudio if running TeddyCloud in insecure context
+-   gui: added standalone flag to plugin.json (standalone set to true --> plugin is opened in standalone mode in a new tab) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/272](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/272)
+-   planned: removal of old esp32 flasher
+
+### Commits
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.6...tc_v0.6.7](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.6...tc_v0.6.7)
+-   [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.6...tcw_v0.6.7](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.6...tcw_v0.6.7)
+
+### Discussion
+
+-   [https://forum.revvox.de/t/release-notes-0-6-7/3043](https://forum.revvox.de/t/release-notes-0-6-7/3043)
+
+### GitHub Release
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.7](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.7)
+
 ## 0.6.6
 
 -   gui: Added search field in audio player

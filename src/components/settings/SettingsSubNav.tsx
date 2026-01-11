@@ -13,6 +13,7 @@ import {
     CodeSandboxOutlined,
     MinusOutlined,
     PlusOutlined,
+    ExportOutlined,
 } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
@@ -51,16 +52,23 @@ export const SettingsSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={`/settings/plugin/${plugin.pluginId}`}
+                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/settings/plugin/${plugin.pluginId}`}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
                     }}
+                    target={plugin.standalone ? "_blank" : "_self"}
                 >
                     {plugin.pluginName}
+                    {plugin.standalone ? (
+                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                    ) : (
+                        ""
+                    )}
                 </Link>
             ),
             icon: React.createElement(CodeSandboxOutlined),
+
             title: plugin.pluginName,
         }));
 

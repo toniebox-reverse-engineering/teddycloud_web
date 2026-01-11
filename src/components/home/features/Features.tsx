@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { gitHubTCCommitTreeBaseUrl, gitHubTCReleasesUrl } from "../../../constants/urls";
 import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 import { FeatureItems, renderFeatureList } from "./render/renderFeatureList";
+import { ExportOutlined } from "@ant-design/icons";
 
 export const Features = () => {
     const { t } = useTranslation();
@@ -33,7 +34,7 @@ export const Features = () => {
                     }
                     target="_blank"
                 >
-                    {version.replace(versionShort, "")}
+                    {version.replace(versionShort, "")} {<ExportOutlined />}
                 </Link>
             </p>
 

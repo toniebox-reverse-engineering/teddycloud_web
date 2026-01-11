@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { generateUUID } from "../../../../utils/ids/generateUUID";
 
 export interface CustomItem {
     id: string;
@@ -36,7 +37,7 @@ export const useCustomItems = (): CustomItemsHook => {
 
     const ensureId = <T extends Record<string, any>>(item: T): T & { id: string } => ({
         ...item,
-        id: item.id ?? crypto.randomUUID(),
+        id: item.id ?? generateUUID(),
     });
 
     const mergedResults: MergedItem[] = useMemo(() => {
@@ -71,10 +72,7 @@ export const useCustomItems = (): CustomItemsHook => {
 
     const addCustomImage = (file: File) => {
         const url = URL.createObjectURL(file);
-        setCustomItems((prev) => [
-            ...prev,
-            { id: crypto.randomUUID(), pic: url, text: "", episodes: "", trackTitles: [] },
-        ]);
+        setCustomItems((prev) => [...prev, { id: generateUUID(), pic: url, text: "", episodes: "", trackTitles: [] }]);
         return false;
     };
 

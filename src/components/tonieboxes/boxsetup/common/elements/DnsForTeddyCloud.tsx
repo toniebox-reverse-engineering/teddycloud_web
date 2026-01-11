@@ -2,6 +2,7 @@ import { Alert, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
+import { ExportOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -50,7 +51,7 @@ uci commit dhcp
                         <li>
                             {t("tonieboxes.boxFlashingCommon.adguard.moreInformation")}{" "}
                             <Link to="https://adguard.com/" target="_blank">
-                                https://adguard.com/
+                                https://adguard.com/ {<ExportOutlined />}
                             </Link>
                         </li>
                     </ul>
