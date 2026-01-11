@@ -1,3 +1,4 @@
+import { ExportOutlined } from "@ant-design/icons";
 import { Alert, Collapse, Col, Form, Input, Row, Typography, theme } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +27,7 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
                 target="_blank"
                 rel="noreferrer"
             >
-                {t("tonieboxes.cc3200BoxFlashing.patchesMoreInformationLink")}
+                {t("tonieboxes.cc3200BoxFlashing.patchesMoreInformationLink")} {<ExportOutlined />}
             </a>
 
             <h4>{t("tonieboxes.cc3200BoxFlashing.predefinedUrlPatches")}</h4>

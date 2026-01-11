@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
-interface Step1Props {
+interface Step2Props {
     state: ESP32Flasher;
     setState: React.Dispatch<React.SetStateAction<ESP32Flasher>>;
     backupHint: React.ReactNode;
@@ -18,7 +18,7 @@ const sanitizeHostname = (input: string) => {
     return input.replace(/[^a-zA-Z0-9-.]/g, "").trim();
 };
 
-export const Step1PatchFlash: React.FC<Step1Props> = ({ state, setState, backupHint, contentProgress }) => {
+export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupHint, contentProgress }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const stepStatusText = state.showStatus && (

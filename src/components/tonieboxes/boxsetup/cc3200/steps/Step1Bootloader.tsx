@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 import cc3200cfwUpdate from "../../../../../assets/boxSetup/cc3200_installCfwFlashUpload.png";
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
+import { ExportOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -189,7 +190,7 @@ export const Step1Bootloader: React.FC = () => {
             <Paragraph>
                 {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadText1")}
                 <Link to="https://github.com/toniebox-reverse-engineering/hackiebox_cfw_ng/releases" target="_blank">
-                    {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadLink")}
+                    {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadLink")} {<ExportOutlined />}
                 </Link>
                 {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadText2")}
             </Paragraph>

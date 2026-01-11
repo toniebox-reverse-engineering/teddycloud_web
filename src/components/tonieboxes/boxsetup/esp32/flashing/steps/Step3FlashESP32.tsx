@@ -7,7 +7,7 @@ import DotAnimation from "../../../../../common/elements/DotAnimation";
 const { Paragraph } = Typography;
 const { useToken } = theme;
 
-interface Step2Props {
+interface Step3Props {
     state: ESP32Flasher;
     useRevvoxFlasher: boolean;
     contentProgress: React.ReactNode;
@@ -26,7 +26,7 @@ const renderStateWithAnimation = (text: string) => {
     return text;
 };
 
-export const Step2FlashESP32: React.FC<Step2Props> = ({ state, useRevvoxFlasher, contentProgress }) => {
+export const Step3FlashESP32: React.FC<Step3Props> = ({ state, useRevvoxFlasher, contentProgress }) => {
     const { t } = useTranslation();
     const { token } = useToken();
 

@@ -8,6 +8,7 @@ import readmeRaw from "../../../README.md?raw";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
+import { ExportOutlined } from "@ant-design/icons";
 
 const { Paragraph } = Typography;
 
@@ -60,7 +61,7 @@ export const AttributionPage = () => {
                                 components={{
                                     a: ({ href, children }) => (
                                         <a href={href} target="_blank" rel="noopener noreferrer">
-                                            {children}
+                                            {children} {<ExportOutlined />}
                                         </a>
                                     ),
                                 }}
