@@ -1041,7 +1041,6 @@
         "restartTC": "TeddyCloud wird neu gestartet",
         "rtnl": {
             "clear": "RTNL Log leeren",
-            "enableRtnl": "Logging aktivieren",
             "navigationTitle": "RTNL log",
             "title": "RTNL Log"
         },

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 
 export const useRtnl = () => {
     const [logEntries, setLogEntries] = useState<string[]>([]);
-    const [rtnlActive, setRtnlActive] = useState(false);
 
     const hexToStr = useCallback((hex: string) => {
         let str = "";
@@ -34,10 +33,6 @@ export const useRtnl = () => {
     }, []);
 
     useEffect(() => {
-        if (!rtnlActive) {
-            return;
-        }
-
         const baseUrl = import.meta.env.VITE_APP_TEDDYCLOUD_API_URL;
         const eventSource = new EventSource(`${baseUrl}/api/sse`);
 
@@ -153,7 +148,7 @@ export const useRtnl = () => {
             console.log("RTNL SSE connection closed.");
             eventSource.close();
         };
-    }, [rtnlActive, hexToStr, littleEndianToNum]);
+    }, [hexToStr, littleEndianToNum]);
 
     const clearRtnl = useCallback(() => {
         setLogEntries([]);
@@ -161,8 +156,6 @@ export const useRtnl = () => {
 
     return {
         logEntries,
-        rtnlActive,
-        setRtnlActive,
         clearRtnl,
     };
 };
