@@ -12,7 +12,7 @@
 
 ### Discussion
 
--   [https://forum.revvox.de/t/release-notes-0-6-8/XXXX](https://forum.revvox.de/t/release-notes-0-6-8/XXXX)
+-   [https://forum.revvox.de/t/release-notes-0-6-8/3235](https://forum.revvox.de/t/release-notes-0-6-8/3235)
 
 ### GitHub Release
 
