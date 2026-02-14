@@ -1041,7 +1041,6 @@
         "restartTC": "Reiniciando TeddyCloud",
         "rtnl": {
             "clear": "Limpiar registro RTNL",
-            "enableRtnl": "Habilitar registro",
             "navigationTitle": "Registro RTNL",
             "title": "Registro RTNL"
         },

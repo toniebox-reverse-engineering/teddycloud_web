@@ -1041,7 +1041,6 @@
         "restartTC": "Redémarrage de TeddyCloud",
         "rtnl": {
             "clear": "Effacer le journal RTNL",
-            "enableRtnl": "Activer la journalisation",
             "navigationTitle": "Journal RTNL",
             "title": "Journal RTNL"
         },
