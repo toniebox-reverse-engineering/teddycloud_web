@@ -98,6 +98,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
 
     const [selectedFiles, setSelectedFiles] = useState<Array<Omit<FileItem, "uid">>>([]);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
+    const [maxSelectableFiles, setMaxSelectableFiles] = useState(99);
     const [filebrowserKey, setFilebrowserKey] = useState(0);
     const [selectedFileIndex, setSelectedFileIndex] = useState<number>(-1);
 
@@ -285,6 +286,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
     const showFileSelectModal = () => {
         setSelectedFiles([]);
         setSelectedFileIndex(-1);
+        setMaxSelectableFiles(99 - (form.getFieldValue("files")?.length ?? 0));
         setFilebrowserKey((prevKey) => prevKey + 1);
         setSelectFileModalOpen(true);
     };
@@ -293,7 +295,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
         setFilebrowserKey((prevKey) => prevKey + 1);
         setSelectFileModalOpen(true);
         setSelectedFileIndex(index);
-
+        setMaxSelectableFiles(1);
         const current = (form.getFieldValue("files") ?? []) as FileItem[];
         const item = current[index];
         setSelectedFiles(item ? [{ filepath: item.filepath, name: item.name }] : []);
@@ -576,7 +578,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                     footer={selectModalFooter}
                 >
                     <SelectFileFileBrowser
-                        maxSelectedRows={99}
+                        maxSelectedRows={maxSelectableFiles}
                         special="library"
                         trackUrl={false}
                         filetypeFilter={ffmpegSupportedExtensions}
