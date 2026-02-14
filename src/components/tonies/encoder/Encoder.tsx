@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, Divider, Input, Space, Switch, Tooltip, Upload, theme } from "antd";
+import { Button, Divider, Dropdown, Input, Space, Switch, Tooltip, Upload, theme } from "antd";
 import { useTranslation } from "react-i18next";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
+import { EllipsisOutlined, FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
 import { MAX_FILES } from "../../../constants/numbers";
 import { MyUploadFile } from "../../../utils/audio/audioEncoder";
@@ -30,7 +30,8 @@ export const Encoder: React.FC = () => {
 
         // Actions
         setUseFrontendEncoding,
-        sortFileListAlphabetically,
+        sortFileListAlphabeticallyLiteral,
+        sortFileListAlphabeticallyNatural,
         clearFileList,
         handleFileNameInputChange,
         handleUpload,
@@ -68,6 +69,21 @@ export const Encoder: React.FC = () => {
         selectNewNode: true,
         setRebuildList,
     });
+
+    const sortMenu = [
+        {
+            key: "literal",
+            label: t("tonies.encoder.sortAlphabeticallyLiteral"),
+            onClick: () => sortFileListAlphabeticallyLiteral(),
+            disabled: uploading,
+        },
+        {
+            key: "natural",
+            label: t("tonies.encoder.sortAlphabeticallyNatural"),
+            onClick: () => sortFileListAlphabeticallyNatural(),
+            disabled: uploading,
+        },
+    ];
 
     return (
         <>
@@ -115,9 +131,26 @@ export const Encoder: React.FC = () => {
                                 flexWrap: "wrap",
                             }}
                         >
-                            <Button type="default" disabled={uploading} onClick={sortFileListAlphabetically}>
-                                {t("tonies.encoder.sortAlphabetically")}
-                            </Button>
+                            <Space.Compact>
+                                <Button
+                                    style={{ width: "unset" }}
+                                    onClick={() => sortFileListAlphabeticallyLiteral()}
+                                    disabled={uploading}
+                                >
+                                    {t("tonies.encoder.sortAlphabeticallyLiteral")}
+                                </Button>{" "}
+                                <Dropdown
+                                    menu={{ items: sortMenu }}
+                                    disabled={uploading}
+                                    placement="bottomRight"
+                                    trigger={["click"]}
+                                >
+                                    <Button style={{ width: "unset" }}>
+                                        <EllipsisOutlined />
+                                    </Button>
+                                </Dropdown>
+                            </Space.Compact>
+
                             <Button
                                 type="default"
                                 disabled={uploading}

@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.8
+
+-   added tls support in mqtt
+-   gui: Audio encoder support literal and natural sorting [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276)
+
+### Commits
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8)
+-   [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8)
+
+### Discussion
+
+-   [https://forum.revvox.de/t/release-notes-0-6-8/XXXX](https://forum.revvox.de/t/release-notes-0-6-8/XXXX)
+
+### GitHub Release
+
+-   [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8)
+
 ## 0.6.7
 
 -   gui: fixed bug in TeddyStudio if running TeddyCloud in insecure context
