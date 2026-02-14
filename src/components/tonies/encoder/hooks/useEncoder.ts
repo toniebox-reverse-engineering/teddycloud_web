@@ -190,8 +190,14 @@ export const useEncoder = () => {
         onChange: onChangeUpload,
     };
 
-    const sortFileListAlphabetically = () => {
+    const sortFileListAlphabeticallyLiteral = () => {
         setFileList((prev) => [...prev].sort((a, b) => a.name.localeCompare(b.name)));
+    };
+
+    const sortFileListAlphabeticallyNatural = () => {
+        setFileList((prev) =>
+            [...prev].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }))
+        );
     };
 
     const clearFileList = () => {
@@ -407,7 +413,8 @@ export const useEncoder = () => {
 
         // Actions
         setUseFrontendEncoding,
-        sortFileListAlphabetically,
+        sortFileListAlphabeticallyLiteral,
+        sortFileListAlphabeticallyNatural,
         clearFileList,
         openCreateDirectoryModal,
         closeCreateDirectoryModal,
