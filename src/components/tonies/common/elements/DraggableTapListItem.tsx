@@ -113,14 +113,19 @@ export const DraggableTapListItem: React.FC<DraggableTapListItemProps> = ({
                                     form.setFieldsValue({ files: newValues });
                                 }}
                             />,
-                            <Divider key="divider-source" orientation="vertical" style={{ margin: "0 4px" }} />,
+                            <Divider
+                                key="divider-source"
+                                orientation="vertical"
+                                style={{ marginRight: 4, marginLeft: 0 }}
+                            />,
                         ]}
                         suffix={[
-                            <Divider key="divider-source-3" orientation="vertical" style={{ margin: "0 4px" }} />,
+                            <Divider key="divider-source-3" orientation="vertical" style={{ marginRight: 4 }} />,
                             <FolderOpenOutlined
                                 key="open"
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => onEditFile(index)}
+                                style={{ marginLeft: 4 }}
                             />,
                         ]}
                         disabled={disabled}
