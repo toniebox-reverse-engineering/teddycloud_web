@@ -4,6 +4,7 @@
 
 -   added tls support in mqtt
 -   gui: Audio encoder support literal and natural sorting [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276)
+-   gui: TAP editor: fixed file order (follows select order) and added drag and drop reorder functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277)
 
 ### Commits
 
