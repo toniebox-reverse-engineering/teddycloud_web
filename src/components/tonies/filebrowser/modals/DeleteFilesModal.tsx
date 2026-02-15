@@ -8,6 +8,7 @@ import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTy
 import { Record } from "../../../../types/fileBrowserTypes";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { RecordWithPath } from "../../../../utils/teddycloud/fetchTAFsInLibrary";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -15,7 +16,7 @@ interface DeleteFilesModalProps {
     special: string;
     overlay?: string;
 
-    files: Record[];
+    files: Record[] | RecordWithPath[];
     path: string;
 
     // multi selection
@@ -64,7 +65,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
             t("fileBrowser.messages.deleting"),
             t("fileBrowser.messages.deletingDetails", {
                 file: filePath,
-            })
+            }),
         );
 
         try {
@@ -83,7 +84,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
                     t("fileBrowser.messages.deleteSuccessfulDetails", {
                         file: filePath.split("/").slice(-1),
                     }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             } else {
                 addNotification(
@@ -92,7 +93,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
                     `${t("fileBrowser.messages.deleteFailedDetails", {
                         file: filePath.split("/").slice(-1),
                     })}: ${data}`,
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             }
         } catch (error) {
@@ -105,7 +106,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
                 `${t("fileBrowser.messages.deleteFailedDetails", {
                     file: filePath.split("/").slice(-1),
                 })}: ${error}`,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
     };
@@ -126,7 +127,7 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
                 NotificationTypeEnum.Warning,
                 t("tonies.messages.noRowsSelected"),
                 t("tonies.messages.noRowsSelectedForDeletion"),
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
             return;
         }
@@ -135,9 +136,14 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
         addLoadingNotification(key, t("fileBrowser.messages.deleting"), t("fileBrowser.messages.deleting"));
 
         for (const rowName of selectedRowKeys) {
-            const file = files.find((f) => f.name === rowName);
+            const file =
+                files.find((f) => f.name === rowName) || files.find((f) => "fullPath" in f && f.fullPath === rowName);
             if (file) {
-                const filePath = decodeURIComponent(path) + "/" + file.name;
+                const filePath = path
+                    ? decodeURIComponent(path) + "/" + file.name
+                    : "fullPath" in file
+                      ? "" + file.fullPath
+                      : "/" + file.name;
                 const apiCall = "?special=" + special + (overlay ? `&overlay=${overlay}` : "");
                 await deleteFile(filePath, apiCall, true);
             }
