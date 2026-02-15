@@ -15,12 +15,6 @@ import { ToniesList } from "../../tonies/tonieslist/ToniesList";
 import { useHomeData } from "./data/useHomeData";
 import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 import { ExportOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import {
-    RecordWithPath,
-    fetchAllTAFsInLibrary,
-    fetchUnusedTAFsInLibrary,
-} from "../../../utils/teddycloud/fetchTAFsInLibrary";
 
 const { Paragraph } = Typography;
 
