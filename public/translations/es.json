@@ -311,6 +311,14 @@
         }
     ],
     "fileBrowser": {
+        "unusedTafsModal": {
+            "fullPath": "Ruta completa",
+            "name": "Nombre del archivo TAF",
+            "noUnusedTafs": "¡No se encontraron TAF sin usar!",
+            "title": "Archivos TAF sin usar",
+            "actions": "Acciones",
+            "ok": "Aceptar"
+        },
         "actions": "Acciones",
         "attention": "¡Atención!",
         "cancel": "Cancelar",

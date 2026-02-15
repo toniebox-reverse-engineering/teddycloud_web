@@ -6,6 +6,7 @@
 - gui: Audio encoder support literal and natural sorting [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276)
 - gui: TAP editor: fixed file order (follows select order) and added drag and drop reorder functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277)
 - gui: removed switch enable rtnl on rtnl page, is now autoenabled
+- gui: Added find all unused TAF Search in Library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279)
 
 ### Commits
 
