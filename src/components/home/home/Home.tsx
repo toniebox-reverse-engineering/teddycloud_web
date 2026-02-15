@@ -15,12 +15,6 @@ import { ToniesList } from "../../tonies/tonieslist/ToniesList";
 import { useHomeData } from "./data/useHomeData";
 import { useTeddyCloudVersion } from "../../../hooks/useTeddyCloudVersion";
 import { ExportOutlined } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import {
-    RecordWithPath,
-    fetchAllTAFsInLibrary,
-    fetchUnusedTAFsInLibrary,
-} from "../../../utils/teddycloud/fetchTAFsInLibrary";
 
 const { Paragraph } = Typography;
 
@@ -28,8 +22,6 @@ export const Home = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { newVersionAvailable, isDevelopVersion, latestDevelopSHA, latestReleaseVersion } = useTeddyCloudVersion();
-    const [records, setRecords] = useState<RecordWithPath[]>([]);
-    const [records2, setRecords2] = useState<RecordWithPath[]>([]);
 
     const {
         tonies,
@@ -42,27 +34,6 @@ export const Home = () => {
         activeTab,
         setActiveTab,
     } = useHomeData();
-
-    useEffect(() => {
-        if (loading) return; // <- WICHTIG
-        if (!tonies) return;
-
-        const load = async () => {
-            try {
-                const [allResult, result2] = await Promise.all([
-                    fetchAllTAFsInLibrary({}),
-                    fetchUnusedTAFsInLibrary(tonies, {}),
-                ]);
-
-                setRecords(allResult);
-                setRecords2(result2);
-            } catch (e) {
-                console.error("Failed to load TAFs:", e);
-            }
-        };
-
-        load();
-    }, [tonies]);
 
     const boxesApiAccessDisabled: [string, boolean][] = accessApiEnabled.filter((item) => !item[1]);
 
@@ -238,22 +209,6 @@ export const Home = () => {
                     </li>
                 </ul>
             </Paragraph>
-            <div style={{ padding: 16 }}>
-                Anzahl egal Zuordnung
-                {records.filter((r) => !r.isDir && r.name.toLowerCase().endsWith(".taf")).length}
-                Anzahl ohne Zuordnung:
-                {records2.filter((r) => !r.isDir && r.name.toLowerCase().endsWith(".taf")).length}
-                {records2
-                    .filter((r) => !r.isDir && r.name.toLowerCase().endsWith(".taf"))
-                    .map((r, index) => (
-                        <div key={index} style={{ marginBottom: 8 }}>
-                            <strong>Path:</strong> {r.fullPath} <br />
-                            <strong>File:</strong> {r.name} <br />
-                            <strong>Series:</strong> {r.tonieInfo?.series ?? ""} <br />
-                            <strong>Episodes:</strong> {r.tonieInfo?.episode ?? ""} <br />
-                        </div>
-                    ))}
-            </div>
         </>
     );
 };
