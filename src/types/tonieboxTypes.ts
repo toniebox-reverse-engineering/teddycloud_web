@@ -21,4 +21,5 @@ export enum BoxVersionsEnum {
     cc3200 = "CC3200",
     cc3235 = "CC3235",
     esp32 = "ESP32",
+    tb2 = "TB2",
 }
