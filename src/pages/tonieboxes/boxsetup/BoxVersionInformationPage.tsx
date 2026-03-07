@@ -135,7 +135,7 @@ export const BoxVersionInformationPage: React.FC = () => {
 
     const versionsData: Version[] = [
         {
-            name: "V1/V2 CC3200",
+            name: "TB1 V1/V2 CC3200",
             pros: [
                 t("tonieboxes.boxSetup.boxVersion.cc3200pro1"),
                 t("tonieboxes.boxSetup.boxVersion.cc3200pro2"),
@@ -146,7 +146,7 @@ export const BoxVersionInformationPage: React.FC = () => {
             cons: [t("tonieboxes.boxSetup.boxVersion.cc3200con1")],
         },
         {
-            name: "V3 CC3235",
+            name: "TB1 3 CC3235",
             pros: [],
             cons: [
                 t("tonieboxes.boxSetup.boxVersion.cc3235con1"),
@@ -155,7 +155,7 @@ export const BoxVersionInformationPage: React.FC = () => {
             ],
         },
         {
-            name: "V4 ESP32",
+            name: "TB1 V4 ESP32",
             pros: [
                 t("tonieboxes.boxSetup.boxVersion.esp32pro1"),
                 t("tonieboxes.boxSetup.boxVersion.esp32pro2"),
@@ -187,13 +187,16 @@ export const BoxVersionInformationPage: React.FC = () => {
                         {t("tonieboxes.boxSetup.boxVersion.intro")}
                         <ul>
                             <li>
-                                <b>V1/V2</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} TI CC3200
+                                <b>TB1 V1/V2</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} TI CC3200
                             </li>
                             <li>
-                                <b>V3</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} TI CC3235
+                                <b>TB1 V3</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} TI CC3235
                             </li>
                             <li>
-                                <b>V4</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} ESP32
+                                <b>TB1 V4</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} ESP32
+                            </li>
+                            <li>
+                                <b>TB2</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} NXP MIMXRT1061DVL6A
                             </li>
                         </ul>
                     </Paragraph>

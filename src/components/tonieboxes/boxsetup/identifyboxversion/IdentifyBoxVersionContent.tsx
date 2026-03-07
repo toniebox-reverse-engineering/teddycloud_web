@@ -32,7 +32,14 @@ export const IdentifyBoxVersionContent: React.FC = () => {
     return (
         <>
             <h1>{t("tonieboxes.boxSetup.identifyVersion.title")}</h1>
-
+            <Alert
+                type="info"
+                closable={{ closeIcon: true, "aria-label": "close" }}
+                showIcon
+                title={t("tonieboxes.boxSetup.identifyVersion.tb2")}
+                description={<Paragraph>{t("tonieboxes.boxSetup.identifyVersion.tb2Details")}</Paragraph>}
+                style={{ marginBottom: 16 }}
+            />
             <MacIdentifyForm
                 boxMac={boxMac}
                 warningTextMac={warningTextMac}
@@ -275,7 +282,7 @@ const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onAc
         (item) =>
             ((vendor?.toLowerCase().includes("texas") || !vendor) &&
                 (item.key === "cc3200" || item.key === "cc3235")) ||
-            ((vendor?.toLowerCase().includes("espressif") || !vendor) && item.key === "esp32")
+            ((vendor?.toLowerCase().includes("espressif") || !vendor) && item.key === "esp32"),
     );
 
     return (

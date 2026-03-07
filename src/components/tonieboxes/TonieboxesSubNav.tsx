@@ -57,7 +57,9 @@ export const TonieboxesSubNav = () => {
 
         if (pathname.includes("/tonieboxes/boxsetup")) {
             newKeys.push("boxsetup");
-            if (pathname.includes("/tonieboxes/boxsetup/esp32")) {
+            if (pathname.includes("/tonieboxes/boxsetup/tb2")) {
+                newKeys.push("tb2");
+            } else if (pathname.includes("/tonieboxes/boxsetup/esp32")) {
                 newKeys.push("esp32");
             } else if (pathname.includes("/tonieboxes/boxsetup/cc3200")) {
                 newKeys.push("cc3200");
@@ -73,8 +75,8 @@ export const TonieboxesSubNav = () => {
     }, [location.pathname]);
 
     const onOpenChange = (keys: string[]) => {
-        const latestOpenKey = keys.find((key) => !openKeys.includes(key)); // New key being opened
-        const latestCloseKey = openKeys.find((key) => !keys.includes(key)); // Key being closed
+        const latestOpenKey = keys.find((key) => !openKeys.includes(key));
+        const latestCloseKey = openKeys.find((key) => !keys.includes(key));
 
         if (latestOpenKey) {
             setOpenKeys((prevKeys) => [...prevKeys, latestOpenKey]);
@@ -177,6 +179,22 @@ export const TonieboxesSubNav = () => {
                     ),
                     icon: React.createElement(OrderedListOutlined),
                     title: t("tonieboxes.boxSetup.openBoxGuide.navigationTitle"),
+                },
+                {
+                    key: "tb2",
+                    label: (
+                        <Link
+                            to="/tonieboxes/boxsetup/tb2/flashing"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
+                            {t("tonieboxes.tb2BoxFlashing.navigationTitle")}
+                        </Link>
+                    ),
+                    icon: React.createElement(DeliveredProcedureOutlined),
+                    title: t("tonieboxes.tb2BoxFlashing.navigationTitle"),
                 },
                 {
                     key: "esp32",

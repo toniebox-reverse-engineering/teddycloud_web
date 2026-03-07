@@ -1,12 +1,12 @@
+import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 import { ConfigProvider, Layout, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 
-import { TeddyCloudProvider } from "./contexts/TeddyCloudContext";
-import { AudioProvider } from "./contexts/AudioContext";
 import { StyledFooter } from "./components/common/footer/StyledFooter";
 import { StyledHeader } from "./components/common/header/StyledHeader";
+import { AudioProvider } from "./contexts/AudioContext";
+import { TeddyCloudProvider } from "./contexts/TeddyCloudContext";
 
 import { Error404Page } from "./pages/Error404Page";
 import { ChangelogPage } from "./pages/community/ChangelogPage";
@@ -14,6 +14,7 @@ import { CommunityPage } from "./pages/community/CommunityPage";
 import { ContributionPage } from "./pages/community/ContributionPage";
 import { ContributionToniesJsonPage } from "./pages/community/ContributionToniesJsonPage";
 import { ContributorsPage } from "./pages/community/ContributorsPage";
+import { AttributionPage } from "./pages/community/AttributionPage";
 import { FAQPage } from "./pages/community/FAQPage";
 import { HowToGetSupportPage } from "./pages/community/HowToGetSupportPage";
 import { PluginListPage } from "./pages/community/PluginListPage";
@@ -25,11 +26,11 @@ import { HomePage } from "./pages/home/HomePage";
 import { StatsPage } from "./pages/home/StatsPage";
 import { TonieMeetingPage } from "./pages/home/TonieMeetingPage";
 
+import { GUISettingsPage } from "./pages/settings/GUISettingsPage";
 import { NotificationsListPage } from "./pages/settings/NotificationsListPage";
 import { RtnlPage } from "./pages/settings/RtnlPage";
 import { SettingsPage } from "./pages/settings/SettingsPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
-import { GUISettingsPage } from "./pages/settings/GUISettingsPage";
 
 import { TonieboxesPage } from "./pages/tonieboxes/TonieboxesPage";
 import { BoxSetupPage } from "./pages/tonieboxes/boxsetup/BoxSetupPage";
@@ -40,22 +41,22 @@ import { CC3200BoxFlashingGuidePage } from "./pages/tonieboxes/boxsetup/cc3200/C
 import { CC3235BoxFlashingGuidePage } from "./pages/tonieboxes/boxsetup/cc3235/CC3235BoxFlashingGuidePage";
 import { ESP32BoxFlashingPage } from "./pages/tonieboxes/boxsetup/esp32/ESP32BoxFlashingPage";
 import { ESP32LegacyFlashingGuidePage } from "./pages/tonieboxes/boxsetup/esp32/ESP32LegacyFlashingGuidePage";
+import { TB2BoxFlashingGuidePage } from "./pages/tonieboxes/boxsetup/tb2/TB2BoxFlashingGuidePage";
 
 import { ContentPage } from "./pages/tonies/ContentPage";
 import { EncoderPage } from "./pages/tonies/EncoderPage";
 import { LibraryPage } from "./pages/tonies/LibraryPage";
 import { SystemSoundsPage } from "./pages/tonies/SystemSoundsPage";
-import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
-import { TeddyAudioPlaylistsPage } from "./pages/tonies/TeddyAudioPlaylistsPage";
 import { TeddyAudioPlayerPage } from "./pages/tonies/TeddyAudioPlayerPage";
+import { TeddyAudioPlaylistsPage } from "./pages/tonies/TeddyAudioPlaylistsPage";
+import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 
+import "./styles/matrix/matrix.css";
 import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
 import MatrixRain from "./styles/matrix/matrixRain";
-import "./styles/matrix/matrix.css";
 
 import { detectColorScheme } from "./utils/browser/browserUtils";
-import { AttributionPage } from "./pages/community/AttributionPage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -128,8 +129,8 @@ function App() {
         effectiveThemeMode === "dark"
             ? darkAlgorithm
             : effectiveThemeMode === "matrix"
-            ? matrixAlgorithm
-            : defaultAlgorithm;
+              ? matrixAlgorithm
+              : defaultAlgorithm;
 
     return (
         <ConfigProvider
@@ -190,6 +191,10 @@ function App() {
                                         <Route
                                             path="/tonieboxes/boxsetup/boxversioninfo"
                                             element={<BoxVersionInformationPage />}
+                                        />
+                                        <Route
+                                            path="/tonieboxes/boxsetup/tb2/flashing"
+                                            element={<TB2BoxFlashingGuidePage />}
                                         />
                                         <Route
                                             path="/tonieboxes/boxsetup/esp32/flashing"
