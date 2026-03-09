@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Divider, Form, Input, Modal, theme } from "antd";
+import { Button, Divider, Form, Input, Modal, Space, theme } from "antd";
 import { CloseOutlined, FolderOpenOutlined, RollbackOutlined, SaveFilled } from "@ant-design/icons";
 
 import { ToniesJsonSearch } from "../../common/searchs/ToniesJsonSearch";
@@ -44,6 +44,9 @@ interface EditTonieModalProps {
 
     // File selection
     onOpenFileSelectModal: () => void;
+    onOpenCreateModelEditor?: () => void;
+    onOpenSelectedModelEditor?: () => void;
+    canOpenSelectedModelEditor?: boolean;
 }
 
 export const EditTonieModal: React.FC<EditTonieModalProps> = ({
@@ -67,6 +70,9 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
     onSearchModelChange,
     hasPendingChanges,
     onOpenFileSelectModal,
+    onOpenCreateModelEditor,
+    onOpenSelectedModelEditor,
+    canOpenSelectedModelEditor = false,
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
@@ -186,7 +192,16 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                         clearInputAfterSelection={false}
                         onChange={onSearchModelChange}
                         key={keyTonieArticleSearch}
+                        onOpenCustomModelEditor={onOpenCreateModelEditor}
                     />
+                    <Space style={{ marginTop: 8 }}>
+                        <Button type="primary" onClick={onOpenCreateModelEditor}>
+                            {t("tonies.customEditor.actions.newModel", { defaultValue: "Neues Modell" })}
+                        </Button>
+                        <Button onClick={onOpenSelectedModelEditor} disabled={!canOpenSelectedModelEditor}>
+                            {t("tonies.editModal.editSelectedCustomModel", { defaultValue: "Modell weiter bearbeiten" })}
+                        </Button>
+                    </Space>
                 </Form.Item>
             </div>
         </Modal>

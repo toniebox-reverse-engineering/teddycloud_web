@@ -1802,6 +1802,22 @@
             "track": "Piste"
         },
         "addToniesCustomJsonEntry": "WIP: Ajouter un modèle",
+        "customToniesEditorJsonEntry": "Gérer les modèles personnalisés",
+        "imageManager": {
+            "title": "Sélectionner et gérer les images",
+            "okText": "Appliquer",
+            "sourceCustom": "Personnalisé",
+            "sourceDefault": "Par défaut",
+            "noDefaultImages": "Aucune image par défaut trouvée"
+        },
+        "customEditor": {
+            "audio": {
+                "libraryLabel": "Audio personnalisé (bibliothèque)"
+            },
+            "errors": {
+                "invalidSelectedIndex": "Index sélectionné invalide"
+            }
+        },
         "alternativeSource": "Cette Tonie {{originalTonie}} est assignée à un contenu {{assignedContent}} !",
         "alternativeSourceUnknown": "Cette Tonie {{originalTonie}} est assignée à un contenu alternatif  !",
         "cancel": "Annuler",

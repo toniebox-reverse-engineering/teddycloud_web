@@ -58,7 +58,13 @@ export interface CreateColumnsOptions {
     showRenameDialog?: (fileName: string) => void;
     showMoveDialog?: (fileName: string) => void;
     showDeleteConfirmDialog?: (fileName: string, fullPath: string, query: string) => void;
+    buildContentUrl?: (fileName: string, options?: { ogg?: boolean }) => string;
+    onImagePreviewClick?: (imageUrl: string) => void;
 }
+
+const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
+const isImageFileName = (name: string) =>
+    IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));
 
 export const createColumns = (options: CreateColumnsOptions): any[] => {
     const { t } = useTranslation();
@@ -85,45 +91,68 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        buildContentUrl,
+        onImagePreviewClick,
     } = options;
+
+    const baseApiUrl = (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) || "";
+
+    const getPictureSrc = (record: any): string | null => {
+        if (!record) return null;
+        if (record.tonieInfo?.picture) return record.tonieInfo.picture;
+        if (special === "custom_img" && !record.isDir && buildContentUrl && isImageFileName(record.name)) {
+            const path = buildContentUrl(record.name);
+            return baseApiUrl ? `${baseApiUrl.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}` : path;
+        }
+        return null;
+    };
 
     let columns: any[] = [
         {
-            title: mode === "full" ? <div style={{ minHeight: 32 }}></div> : "",
+            title: mode === "full" ? t("fileBrowser.image", { defaultValue: "Bild" }) : "",
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
-            width: 10,
-            render: (picture: string, record: any) => (
-                <>
-                    {record && record.tonieInfo?.picture ? (
-                        <img
-                            key={`picture-${record.name}`}
-                            src={record.tonieInfo.picture}
-                            alt={t("tonies.content.toniePicture")}
-                            onClick={() => showInformationModal(record)}
-                            style={{
-                                height: 40,
-                                width: 40,
-                                objectFit: "contain",
-                                cursor: "pointer",
-                                marginRight: 8,
-                            }}
-                        />
-                    ) : (
-                        <></>
-                    )}
-                    {mode === "full" && record.hide ? (
-                        <div style={{ textAlign: "center" }}>
-                            <Tag style={{ border: 0 }} color="warning">
-                                {t("fileBrowser.hidden")}
-                            </Tag>
-                        </div>
-                    ) : (
-                        ""
-                    )}
-                </>
-            ),
+            width: 56,
+            render: (picture: string, record: any) => {
+                const src = getPictureSrc(record);
+                return (
+                    <>
+                        {record && src ? (
+                            <img
+                                key={`picture-${record.name}`}
+                                src={src}
+                                alt={t("tonies.content.toniePicture")}
+                                referrerPolicy="no-referrer"
+                                loading="lazy"
+                                onClick={() => {
+                                    if (record.tonieInfo) {
+                                        showInformationModal(record);
+                                    } else if (onImagePreviewClick) {
+                                        onImagePreviewClick(src);
+                                    }
+                                }}
+                                style={{
+                                    height: 40,
+                                    width: 40,
+                                    objectFit: "contain",
+                                    cursor: record.tonieInfo || onImagePreviewClick ? "pointer" : "default",
+                                    marginRight: 8,
+                                }}
+                            />
+                        ) : record?.isDir ? (
+                            <FolderOutlined style={{ fontSize: 24, marginRight: 8 }} />
+                        ) : null}
+                        {mode === "full" && record?.hide ? (
+                            <div style={{ textAlign: "center" }}>
+                                <Tag style={{ border: 0 }} color="warning">
+                                    {t("fileBrowser.hidden")}
+                                </Tag>
+                            </div>
+                        ) : null}
+                    </>
+                );
+            },
             showOnDirOnly: false,
         },
 
@@ -278,6 +307,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         dataIndex: "controls",
         key: "controls",
         sorter: undefined,
+        width: 100,
         render: (name: string, record: any) => {
             const actions: React.ReactNode[] = [];
 
@@ -422,7 +452,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     );
                 }
 
-                if (special === "library" && record.name !== "..") {
+                if ((special === "library" || special === "custom_img") && record.name !== "..") {
                     if (!record.isDir && showRenameDialog) {
                         actions.push(
                             <Tooltip
@@ -484,7 +514,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 }
             }
 
-            return actions;
+            return <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4 }}>{actions}</div>;
         },
         showOnDirOnly: false,
     };

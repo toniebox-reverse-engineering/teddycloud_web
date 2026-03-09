@@ -9,6 +9,7 @@ import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTy
 import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 import { canHover } from "../../../../utils/browser/browserUtils";
+import { useCustomModelsEditorLauncher } from "../../hooks/useCustomModelsEditorFeature";
 
 export interface ToniesJsonSearchResult {
     value: string;
@@ -25,6 +26,7 @@ interface ToniesJsonSearchProps {
     placeholder: string;
     showAddCustomTonieButton?: boolean;
     clearInputAfterSelection?: boolean;
+    onOpenCustomModelEditor?: () => void;
 
     onChange: (newValue: string) => void;
 
@@ -35,13 +37,14 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
     placeholder,
     showAddCustomTonieButton = true,
     clearInputAfterSelection = true,
+    onOpenCustomModelEditor,
     onChange,
     onSelectResult,
 }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
-
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
+    const { isEnhancedCustomEditorEnabled, launchCustomModelsEditor } = useCustomModelsEditorLauncher();
 
     const { value, options, search, select, setValue } = useToniesJsonSearch((error) => {
         addNotification(
@@ -123,21 +126,36 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 
             {showAddCustomTonieButton && (
                 <>
-                    <ToniesCustomJsonEditor
-                        open={showAddCustomTonieModal}
-                        props={{ placeholder, onChange }}
-                        setValue={(v) => {
-                            setValue(v);
-                            if (clearInputAfterSelection) {
-                                setSearchText("");
-                            } else {
-                                setSearchText(v);
-                            }
-                        }}
-                        onClose={() => setShowAddCustomTonieModal(false)}
-                    />
+                    {!isEnhancedCustomEditorEnabled && (
+                        <ToniesCustomJsonEditor
+                            open={showAddCustomTonieModal}
+                            props={{ placeholder, onChange }}
+                            setValue={(v) => {
+                                setValue(v);
+                                if (clearInputAfterSelection) {
+                                    setSearchText("");
+                                } else {
+                                    setSearchText(v);
+                                }
+                            }}
+                            onClose={() => setShowAddCustomTonieModal(false)}
+                        />
+                    )}
                     <Tooltip open={!canHover ? false : undefined} title={t("tonies.addNewCustomTonieHint")}>
-                        <Button onClick={handleAddNewCustomButtonClick} style={{ marginTop: 8 }}>
+                        <Button
+                            onClick={() => {
+                                if (onOpenCustomModelEditor) {
+                                    onOpenCustomModelEditor();
+                                    return;
+                                }
+                                if (isEnhancedCustomEditorEnabled) {
+                                    launchCustomModelsEditor(handleAddNewCustomButtonClick);
+                                    return;
+                                }
+                                handleAddNewCustomButtonClick();
+                            }}
+                            style={{ marginTop: 8 }}
+                        >
                             {t("tonies.addNewCustomTonie")}
                         </Button>
                     </Tooltip>

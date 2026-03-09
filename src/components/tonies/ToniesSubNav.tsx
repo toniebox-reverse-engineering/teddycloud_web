@@ -19,12 +19,15 @@ import i18n from "../../i18n";
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { StyledSubMenu } from "../common/StyledComponents";
 import ToniesCustomJsonEditor from "./ToniesCustomJsonEditor";
+import ToniesCustomJsonEditorEnhanced from "./ToniesCustomJsonEditorEnhanced";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
+import { useCustomModelsEditorLauncher } from "./hooks/useCustomModelsEditorFeature";
 
 export const ToniesSubNav = () => {
     const { t } = useTranslation();
     const { setNavOpen, setSubNavOpen, setCurrentTCSection, plugins } = useTeddyCloud();
     const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
+    const { isEnhancedCustomEditorEnabled, launchCustomModelsEditor } = useCustomModelsEditorLauncher();
     const [selectedKey, setSelectedKey] = useState("");
     const currentLanguage = i18n.language;
 
@@ -198,7 +201,17 @@ export const ToniesSubNav = () => {
         },
         {
             key: "custom-json",
-            label: (
+            label: isEnhancedCustomEditorEnabled ? (
+                <Link
+                    to="/tonies/custom-editor"
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t(isEnhancedCustomEditorEnabled ? "tonies.customToniesEditorJsonEntry" : "tonies.addToniesCustomJsonEntry")}
+                </Link>
+            ) : (
                 <label
                     style={{
                         overflow: "hidden",
@@ -207,16 +220,22 @@ export const ToniesSubNav = () => {
                         cursor: "pointer",
                     }}
                 >
-                    {t("tonies.addToniesCustomJsonEntry")}
+                    {t(isEnhancedCustomEditorEnabled ? "tonies.customToniesEditorJsonEntry" : "tonies.addToniesCustomJsonEntry")}
                 </label>
             ),
-            onClick: () => {
-                handleAddNewCustomButtonClick();
-                setNavOpen(false);
-                setSubNavOpen(false);
-            },
+            onClick: isEnhancedCustomEditorEnabled
+                ? () => {
+                      launchCustomModelsEditor(handleAddNewCustomButtonClick);
+                      setNavOpen(false);
+                      setSubNavOpen(false);
+                  }
+                : () => {
+                      handleAddNewCustomButtonClick();
+                      setNavOpen(false);
+                      setSubNavOpen(false);
+                  },
             icon: React.createElement(UserAddOutlined),
-            title: t("tonies.addToniesCustomJsonEntry"),
+            title: t(isEnhancedCustomEditorEnabled ? "tonies.customToniesEditorJsonEntry" : "tonies.addToniesCustomJsonEntry"),
         },
 
         ...pluginItems,
@@ -226,10 +245,19 @@ export const ToniesSubNav = () => {
         <>
             <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />
             {showAddCustomTonieModal && (
-                <ToniesCustomJsonEditor
-                    open={showAddCustomTonieModal}
-                    onClose={() => setShowAddCustomTonieModal(false)}
-                />
+                <>
+                    {isEnhancedCustomEditorEnabled ? (
+                        <ToniesCustomJsonEditorEnhanced
+                            open={showAddCustomTonieModal}
+                            onClose={() => setShowAddCustomTonieModal(false)}
+                        />
+                    ) : (
+                        <ToniesCustomJsonEditor
+                            open={showAddCustomTonieModal}
+                            onClose={() => setShowAddCustomTonieModal(false)}
+                        />
+                    )}
+                </>
             )}
         </>
     );

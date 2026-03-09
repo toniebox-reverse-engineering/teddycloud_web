@@ -1802,6 +1802,22 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Add Model",
+        "customToniesEditorJsonEntry": "Manage custom models",
+        "imageManager": {
+            "title": "Select & manage images",
+            "okText": "Apply",
+            "sourceCustom": "Custom",
+            "sourceDefault": "Default",
+            "noDefaultImages": "No default images found"
+        },
+        "customEditor": {
+            "audio": {
+                "libraryLabel": "Custom audio (library)"
+            },
+            "errors": {
+                "invalidSelectedIndex": "Invalid selected index"
+            }
+        },
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
         "cancel": "Cancel",

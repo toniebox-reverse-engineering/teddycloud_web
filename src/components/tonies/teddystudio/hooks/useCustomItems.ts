@@ -15,6 +15,7 @@ export interface CustomItemsHook {
     mergedResults: MergedItem[];
     addResult: (dataset: any) => void;
     addCustomImage: (file: File) => boolean;
+    addCustomImageByPath: (path: string) => void;
     removeByMergedIndex: (indexToRemove: number) => void;
     editByMergedIndex: (indexToEdit: number, titles: string[], episodes: string, text: string, picture: string) => void;
     clearAll: () => void;
@@ -76,6 +77,12 @@ export const useCustomItems = (): CustomItemsHook => {
         return false;
     };
 
+    const addCustomImageByPath = (path: string) => {
+        const trimmed = path.trim();
+        if (!trimmed) return;
+        setCustomItems((prev) => [...prev, { id: generateUUID(), pic: trimmed, text: "", episodes: "", trackTitles: [] }]);
+    };
+
     const clearAll = () => {
         setResults([]);
         setCustomItems([]);
@@ -135,6 +142,7 @@ export const useCustomItems = (): CustomItemsHook => {
         mergedResults,
         addResult,
         addCustomImage,
+        addCustomImageByPath,
         removeByMergedIndex,
         editByMergedIndex,
         clearAll,

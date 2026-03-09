@@ -129,11 +129,31 @@ export const useFileBrowserCore = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [overlay]);
 
-    // fetch directory listing
+    // fetch directory listing (SWR for custom_img: show cache first, revalidate in background)
     useEffect(() => {
-        setLoading(true);
-
         const apiPathParam = mode === "fileBrowser" ? path : encodeURIComponent(path);
+        const cacheKey = `fileIndexV2:${special}:${overlay || ""}:${apiPathParam}:${showDirOnly}:${filetypeFilter.join(",")}`;
+        const useSwr = special === "custom_img";
+
+        let hadCache = false;
+        if (useSwr) {
+            try {
+                const cached = sessionStorage.getItem(cacheKey);
+                if (cached) {
+                    const parsed = JSON.parse(cached) as Record[];
+                    if (Array.isArray(parsed)) {
+                        setFiles(parsed);
+                        setLoading(false);
+                        hadCache = true;
+                    }
+                }
+            } catch {
+                /* ignore parse errors */
+            }
+        }
+        if (!hadCache) {
+            setLoading(true);
+        }
 
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${apiPathParam}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
@@ -163,6 +183,14 @@ export const useFileBrowserCore = ({
                 });
 
                 setFiles(filteredList);
+
+                if (useSwr) {
+                    try {
+                        sessionStorage.setItem(cacheKey, JSON.stringify(filteredList));
+                    } catch {
+                        /* ignore quota errors */
+                    }
+                }
             })
             .catch((error: any) => {
                 // If the requested path is invalid/unavailable -> go back to root
@@ -285,6 +313,9 @@ export const useFileBrowserCore = ({
     };
 
     const defaultSorter = (a: any, b: any, dataIndex: string | string[]) => {
+        if (a?.name === "..") return -1;
+        if (b?.name === "..") return 1;
+
         const fieldA = Array.isArray(dataIndex) ? getFieldValue(a, dataIndex) : a[dataIndex];
         const fieldB = Array.isArray(dataIndex) ? getFieldValue(b, dataIndex) : b[dataIndex];
 
@@ -301,6 +332,8 @@ export const useFileBrowserCore = ({
     };
 
     const dirNameSorter = (a: any, b: any) => {
+        if (a?.name === "..") return -1;
+        if (b?.name === "..") return 1;
         if (a.isDir === b.isDir) return defaultSorter(a, b, "name");
         return a.isDir ? -1 : 1;
     };

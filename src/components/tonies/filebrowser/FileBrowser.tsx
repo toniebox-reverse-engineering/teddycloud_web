@@ -107,7 +107,7 @@ export const FileBrowser: React.FC<{
 
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
 
-    const directoryTree = useDirectoryTree();
+    const directoryTree = useDirectoryTree(special);
 
     const currentPath = new URLSearchParams(location.search).get("path") || "";
 
@@ -160,6 +160,7 @@ export const FileBrowser: React.FC<{
         directoryTree,
         selectNewNode: true,
         setRebuildList,
+        special,
     });
 
     const { isTapEditorModalOpen, initialValuesPath, openCreateTap, openEditTap, closeTapEditor, onTapCreateOrSave } =
@@ -513,13 +514,12 @@ export const FileBrowser: React.FC<{
                         minHeight: 32,
                     }}
                 >
-                    {special === "library" ? (
+                    {special === "library" || special === "custom_img" ? (
                         <div style={{ width: "100%" }}>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, minHeight: 32 }}>
                                 {selectedRowKeys.length > 0 ? (
                                     <>
-                                        {special === "library" &&
-                                        files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
+                                        {files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
                                             .length > 0 ? (
                                             <Tooltip
                                                 open={!canHover ? false : undefined}

@@ -83,6 +83,20 @@ body.theme-switching *::after {
     padding: 8px !important;
 }
 
+/* Custom Tonie Table: Sort column highlighting must not override row selection/hover/status.
+   - selected/hover: unset lets Ant Design's selection/hover styles apply
+   - focused/deleted/new/changed: transparent lets the row's inline background show through */
+.custom-tonie-table .ant-table-row.ant-table-row-selected > td.ant-table-column-sort,
+.custom-tonie-table .ant-table-row:hover > td.ant-table-column-sort {
+    background: unset !important;
+}
+.custom-tonie-table .ant-table-row.custom-tonie-row-focused > td.ant-table-column-sort,
+.custom-tonie-table .ant-table-row.custom-tonie-row-deleted > td.ant-table-column-sort,
+.custom-tonie-table .ant-table-row.custom-tonie-row-new > td.ant-table-column-sort,
+.custom-tonie-table .ant-table-row.custom-tonie-row-changed > td.ant-table-column-sort {
+    background: transparent !important;
+}
+
 .ant-steps-item-active .ant-steps-item-title {
     font-weight: 500;
 }

@@ -23,6 +23,7 @@ import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes
 import { EditTonieModal } from "./modals/EditTonieModal";
 import { SelectFileModal } from "./modals/SelectFileModal";
 import { useAudioContext } from "../../../contexts/AudioContext";
+import ToniesCustomJsonEditorEnhanced from "../ToniesCustomJsonEditorEnhanced";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -74,6 +75,9 @@ export const TonieCard: React.FC<{
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
+    const [isCustomModelEditorOpen, setIsCustomModelEditorOpen] = useState(false);
+    const [customModelEditorInitialModel, setCustomModelEditorInitialModel] = useState<string>("");
+    const [customModelEditorStartCreate, setCustomModelEditorStartCreate] = useState(false);
 
     // ------------------------
     // Form / Input State
@@ -453,6 +457,29 @@ export const TonieCard: React.FC<{
         setIsEditModalOpen(true);
     };
 
+    const openCreateModelEditor = () => {
+        setCustomModelEditorStartCreate(true);
+        setCustomModelEditorInitialModel("");
+        setIsCustomModelEditorOpen(true);
+    };
+
+    const openSelectedModelEditor = () => {
+        if (!selectedModel.trim()) return;
+        setCustomModelEditorStartCreate(false);
+        setCustomModelEditorInitialModel(selectedModel.trim());
+        setIsCustomModelEditorOpen(true);
+    };
+
+    const handleCustomModelCreated = (model: string) => {
+        const trimmed = model.trim();
+        if (!trimmed) return;
+        setSelectedModel(trimmed);
+        setInputValidationModel({ validateStatus: "", help: "" });
+        setCustomModelEditorInitialModel(trimmed);
+        setCustomModelEditorStartCreate(false);
+        setIsCustomModelEditorOpen(false);
+    };
+
     const editModalTitle = (
         <>
             <h3>
@@ -701,6 +728,17 @@ export const TonieCard: React.FC<{
                 onSearchModelChange={searchModelResultChanged}
                 hasPendingChanges={hasPendingChanges}
                 onOpenFileSelectModal={showFileSelectModal}
+                onOpenCreateModelEditor={openCreateModelEditor}
+                onOpenSelectedModelEditor={openSelectedModelEditor}
+                canOpenSelectedModelEditor={selectedModel.trim().toLowerCase().startsWith("custom-")}
+            />
+            <ToniesCustomJsonEditorEnhanced
+                open={isCustomModelEditorOpen}
+                onClose={() => setIsCustomModelEditorOpen(false)}
+                tonieCardProps={tonieCard}
+                startInCreateMode={customModelEditorStartCreate}
+                initialSelectedModel={customModelEditorInitialModel}
+                onModelCreated={handleCustomModelCreated}
             />
         </>
     );

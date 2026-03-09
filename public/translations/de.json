@@ -1802,6 +1802,22 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Modell anlegen",
+        "customToniesEditorJsonEntry": "Custom-Modelle verwalten",
+        "imageManager": {
+            "title": "Bilder auswählen & verwalten",
+            "okText": "Übernehmen",
+            "sourceCustom": "Custom",
+            "sourceDefault": "Default",
+            "noDefaultImages": "Keine Default-Bilder gefunden"
+        },
+        "customEditor": {
+            "audio": {
+                "libraryLabel": "Custom-Audio (Bibliothek)"
+            },
+            "errors": {
+                "invalidSelectedIndex": "Ungültiger ausgewählter Index"
+            }
+        },
         "alternativeSource": "Der Toniefigur {{originalTonie}} ist der Inhalt {{assignedContent}} zugewiesen!",
         "alternativeSourceUnknown": "Der Toniefigur {{originalTonie}} ist alternativer Inhalt zugewiesen!",
         "cancel": "Abbrechen",

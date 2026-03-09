@@ -51,6 +51,7 @@ import { TeddyAudioPlayerPage } from "./pages/tonies/TeddyAudioPlayerPage";
 import { TeddyAudioPlaylistsPage } from "./pages/tonies/TeddyAudioPlaylistsPage";
 import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
+import { CustomTonieCreatorPage } from "./pages/tonies/CustomTonieCreatorPage";
 
 import "./styles/matrix/matrix.css";
 import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
@@ -176,6 +177,7 @@ function App() {
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />
                                         <Route path="/tonies/tap" element={<TeddyAudioPlaylistsPage />} />
                                         <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
+                                        <Route path="/tonies/custom-editor" element={<CustomTonieCreatorPage />} />
                                         <Route path="/tonies/plugin/:pluginId" element={<PluginPage />} />
 
                                         <Route path="/tonieboxes" element={<TonieboxesPage />} />
