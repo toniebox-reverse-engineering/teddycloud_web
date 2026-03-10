@@ -10,6 +10,13 @@
         "errorNoOggOpusSupportByApple": "Your browser does not support OGG/Opus (taf) files at the moment. If you are using an Apple device, help us out by submitting a ticket to Apple for a fix!",
         "unknownSource": "Unkown"
     },
+    "common": {
+        "cancel": "Cancel",
+        "clean": "unchanged",
+        "changed": "changed*",
+        "deleted": "deleted*",
+        "new": "new*"
+    },
     "community": {
         "attribution": {
             "navigationTitle": "Attribution",
@@ -566,7 +573,7 @@
                     "items": {
                         "01assignContent": "assign content and other properties to each tag",
                         "02searchStreams": "search and assign webradio streams to each tag",
-                        "03defineMetaData": "define meta data of your custom tags (PoC in WebFrontend)",
+                        "03defineMetaData": "define meta data of your custom tags (Custom Models Editor in WebFrontend)",
                         "04filterTonies": "filter Tonies/Tags",
                         "05hideTonies": "hide unavailable Tonies/Tags",
                         "06showLastPlayed": "show last played Tonies/Tags"
@@ -636,9 +643,8 @@
                 "01firmwareUpdate": "Firmware update through TeddyCloud",
                 "03reportUnknownTonies": "Report unknown Tonies",
                 "04completeTAPIntegration": "Completion of TAP WebFrontend Integration",
-                "05completeCustomToniesIntegration": "Completion of Custom Tonies Json WebFront Integration (\"Meta data of custom tags\")",
-                "06moreStats": "More stats about your played Tonies/Tags",
-                "07securityImprovements": "Security improvements like Access control (tonieboxes and user)"
+                "05moreStats": "More stats about your played Tonies/Tags",
+                "06securityImprovements": "Security improvements like Access control (tonieboxes and user)"
             },
             "navigationTitle": "Features",
             "title": "Features TeddyCloud",
@@ -1802,20 +1808,83 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Add Model",
-        "customToniesEditorJsonEntry": "Manage custom models",
+        "customToniesEditorJsonEntry": "Custom models",
         "imageManager": {
             "title": "Select & manage images",
             "okText": "Apply",
             "sourceCustom": "Custom",
-            "sourceDefault": "Default",
-            "noDefaultImages": "No default images found"
+            "sourceOriginal": "Original",
+            "noOriginalImages": "No original images found"
         },
         "customEditor": {
+            "actions": {
+                "delete": "Delete",
+                "deleteCount": "Delete {{count}} model(s)",
+                "discard": "Discard",
+                "duplicate": "Duplicate",
+                "edit": "Edit",
+                "newModel": "New model",
+                "preview": "Preview",
+                "restore": "Restore",
+                "toggleChangesOnly": "Changes only"
+            },
             "audio": {
-                "libraryLabel": "Custom audio (library)"
+                "libraryLabel": "Custom audio (library)",
+                "notInIndex": "Not in custom audio index: {{audioId}}/{{hash}}",
+                "placeholder": "Select custom audio from library"
+            },
+            "batch": {
+                "description": "Changes apply to all selected models.",
+                "title": "Batch editing active"
+            },
+            "coinHint": {
+                "description": "Optional – only for metadata (title, tracks). Custom coins work without a model. Use only custom audio – official IDs overwrite real Tonies. Does not link NFC tags to audio.",
+                "title": "Hint: Audio assignment"
+            },
+            "columns": {
+                "actions": "Actions",
+                "image": "Image",
+                "status": "Status"
             },
             "errors": {
-                "invalidSelectedIndex": "Invalid selected index"
+                "emptyResult": "At least one model must remain.",
+                "invalidSelectedIndex": "Invalid selected index",
+                "releaseNumeric": "Release must be numeric"
+            },
+            "filterPlaceholder": "Filter models...",
+            "modelsTitle": "Models",
+            "noChangesBody": "There is nothing to save at the moment.",
+            "noChangesTitle": "No changes detected",
+            "optionalColumns": "Optional columns",
+            "picHint": "Select image from custom_img or from original tonies",
+            "preflight": {
+                "confirm": "Save now",
+                "deletes": "Deletions: {{count}}",
+                "description": "Please confirm the scope of this save operation.",
+                "renames": "Renames: {{count}}",
+                "title": "Review changes before saving",
+                "upserts": "Updates/new entries: {{count}}"
+            },
+            "previewTitle": "Image preview",
+            "saveSuccessWithCount": "tonies.custom.json saved ({{count}} entries). Backup and reload triggered.",
+            "savedState": "All changes saved",
+            "sections": {
+                "audio": "Audio assignment",
+                "media": "Media and images",
+                "metadata": "Optional metadata",
+                "tracks": "Tracks"
+            },
+            "selection": {
+                "description": "The edit form below always applies to the current selection.",
+                "multiple": "{{count}} models selected",
+                "none": "No model selected",
+                "single": "Selected model: {{model}}"
+            },
+            "tableMenu": "Table menu",
+            "title": "Model editor",
+            "unsaved": "{{count}} unsaved change(s)",
+            "validation": {
+                "title": "Please fix these issues first"
             }
         },
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
@@ -1838,6 +1907,7 @@
         },
         "currentPath": "Current Path: ",
         "editModal": {
+            "editSelectedCustomModel": "Continue editing model",
             "model": "Model",
             "placeholderSearchForAModel": "Search for a model",
             "placeholderSearchForARadioStream": "Search for a radio stream",

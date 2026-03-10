@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.8
+## 0.7.0
 
 - added tls support in mqtt
 - prepared support of TB2 (added new v3 tonies APIs)
@@ -9,19 +9,20 @@
 - gui: removed switch enable rtnl on rtnl page, is now autoenabled
 - gui: Added find all unused TAF Search in Library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279)
 - gui: Prepared support for TB2
+- gui: Added Custom Tonies Editor with Image Manager for managing custom models [PR #283](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/283)
 
 ### Commits
 
-- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8)
-- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8)
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.7.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.7.0)
 
 ### Discussion
 
-- [https://forum.revvox.de/t/release-notes-0-6-8/3235](https://forum.revvox.de/t/release-notes-0-6-8/3235)
+- [https://forum.revvox.de/t/release-notes-0-7-0/3235](https://forum.revvox.de/t/release-notes-0-7-0/3235)
 
 ### GitHub Release
 
-- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8)
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0)
 
 ## 0.6.7
 

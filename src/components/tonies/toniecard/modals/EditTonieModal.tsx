@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Divider, Form, Input, Modal, Space, theme } from "antd";
-import { CloseOutlined, FolderOpenOutlined, RollbackOutlined, SaveFilled } from "@ant-design/icons";
+import { Button, Divider, Form, Input, Modal, Space, Tooltip, theme } from "antd";
+import { CloseOutlined, EditOutlined, FolderOpenOutlined, PlusOutlined, RollbackOutlined, SaveFilled } from "@ant-design/icons";
 
 import { ToniesJsonSearch } from "../../common/searchs/ToniesJsonSearch";
 import { RadioStreamSearch } from "../search/RadioStreamSearch";
@@ -195,12 +195,12 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                         onOpenCustomModelEditor={onOpenCreateModelEditor}
                     />
                     <Space style={{ marginTop: 8 }}>
-                        <Button type="primary" onClick={onOpenCreateModelEditor}>
-                            {t("tonies.customEditor.actions.newModel", { defaultValue: "Neues Modell" })}
-                        </Button>
-                        <Button onClick={onOpenSelectedModelEditor} disabled={!canOpenSelectedModelEditor}>
-                            {t("tonies.editModal.editSelectedCustomModel", { defaultValue: "Modell weiter bearbeiten" })}
-                        </Button>
+                        <Tooltip title={t("tonies.customEditor.actions.newModel", { defaultValue: "New model" })}>
+                            <Button type="primary" icon={<PlusOutlined />} onClick={onOpenCreateModelEditor} />
+                        </Tooltip>
+                        <Tooltip title={t("tonies.editModal.editSelectedCustomModel", { defaultValue: "Continue editing model" })}>
+                            <Button icon={<EditOutlined />} onClick={onOpenSelectedModelEditor} disabled={!canOpenSelectedModelEditor} />
+                        </Tooltip>
                     </Space>
                 </Form.Item>
             </div>

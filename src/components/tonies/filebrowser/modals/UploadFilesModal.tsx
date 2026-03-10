@@ -6,12 +6,12 @@ import { useTranslation } from "react-i18next";
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { UPLOAD_TIMEOUT_MS } from "../../../../constants/numbers";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { useToken } = theme;
-const UPLOAD_TIMEOUT_MS = 45000;
 
 const normalizePathForQuery = (inputPath: string) => {
     const raw = (inputPath || "").trim();

@@ -15,6 +15,7 @@ import {
     LoadingOutlined,
 } from "@ant-design/icons";
 
+import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
 import { humanFileSize } from "../../../../utils/files/humanFileSize";
 import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
@@ -62,7 +63,6 @@ export interface CreateColumnsOptions {
     onImagePreviewClick?: (imageUrl: string) => void;
 }
 
-const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
 const isImageFileName = (name: string) =>
     IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));
 

@@ -177,7 +177,7 @@ function App() {
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />
                                         <Route path="/tonies/tap" element={<TeddyAudioPlaylistsPage />} />
                                         <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
-                                        <Route path="/tonies/custom-editor" element={<CustomTonieCreatorPage />} />
+                                        <Route path="/tonies/customeditor" element={<CustomTonieCreatorPage />} />
                                         <Route path="/tonies/plugin/:pluginId" element={<PluginPage />} />
 
                                         <Route path="/tonieboxes" element={<TonieboxesPage />} />

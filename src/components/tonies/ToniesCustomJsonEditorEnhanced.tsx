@@ -15,14 +15,24 @@ import {
     Select,
     Space,
     Table,
+    Tag,
     Tooltip,
     Typography,
 } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import {
+    CopyOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    EyeOutlined,
+    InfoCircleOutlined,
+    PlusOutlined,
+    RollbackOutlined,
+} from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
+import { IMAGE_EXTENSIONS } from "../../constants/fileTypes";
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import ImageManagerModal from "./filebrowser/modals/ImageManagerModal";
@@ -95,7 +105,6 @@ type FormValues = {
     tracks: TrackRow[];
 };
 
-const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
 const TABLE_SETTINGS_STORAGE_KEY = "tonies.customEditor.tableSettings.v1";
 
 type OptionalColumnKey = "title" | "episodes" | "release" | "language" | "category" | "no" | "status";
@@ -628,7 +637,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 key,
                 value: key,
                 label: t("tonies.customEditor.audio.notInIndex", {
-                    defaultValue: "Nicht im Custom-Audio-Index: {{audioId}}/{{hash}}",
+                    defaultValue: "Not in custom audio index: {{audioId}}/{{hash}}",
                     audioId,
                     hash: hashValue,
                 }),
@@ -853,10 +862,19 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     const hasDeletedSelection = selectedDeletedIndexes.length > 0;
 
     const getStatusLabel = (status: DraftStatus) => {
-        if (status === "clean") return t("common.clean", { defaultValue: "unverändert" });
-        if (status === "new") return t("common.new", { defaultValue: "neu*" });
-        if (status === "changed") return t("common.changed", { defaultValue: "geändert*" });
-        return t("common.deleted", { defaultValue: "gelöscht*" });
+        if (status === "clean") return t("common.clean", { defaultValue: "unchanged" });
+        if (status === "new") return t("common.new", { defaultValue: "new*" });
+        if (status === "changed") return t("common.changed", { defaultValue: "changed*" });
+        return t("common.deleted", { defaultValue: "deleted*" });
+    };
+
+    const getStatusBadge = (status: DraftStatus) => {
+        const label = getStatusLabel(status);
+        if (status === "clean") return <Tag style={{ background: "transparent", borderColor: "rgba(255,255,255,0.2)" }}>{label}</Tag>;
+        if (status === "changed") return <Tag color="orange">{label}</Tag>;
+        if (status === "deleted") return <Tag color="red">{label}</Tag>;
+        if (status === "new") return <Tag color="green">{label}</Tag>;
+        return <Tag>{label}</Tag>;
     };
 
 
@@ -1006,7 +1024,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         }
 
         if (nextWithoutDeleted.length === 0) {
-            throw new Error(t("tonies.customEditor.errors.emptyResult", { defaultValue: "Mindestens ein Modell muss erhalten bleiben." }));
+            throw new Error(t("tonies.customEditor.errors.emptyResult", { defaultValue: "At least one model must remain." }));
         }
 
         const modelKey = (model: string) => model.trim().toLowerCase();
@@ -1137,8 +1155,8 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             if (operationCount === 0) {
                 addNotification(
                     NotificationTypeEnum.Success,
-                    t("tonies.customEditor.noChangesTitle", { defaultValue: "Keine Änderungen erkannt" }),
-                    t("tonies.customEditor.noChangesBody", { defaultValue: "Es gibt aktuell nichts zu speichern." }),
+                    t("tonies.customEditor.noChangesTitle", { defaultValue: "No changes detected" }),
+                    t("tonies.customEditor.noChangesBody", { defaultValue: "There is nothing to save at the moment." }),
                     t("tonies.customToniesEditorJsonEntry")
                 );
                 return;
@@ -1169,7 +1187,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 NotificationTypeEnum.Success,
                 t("tonies.addNewCustomTonieModal.successfullyCreated"),
                 t("tonies.customEditor.saveSuccessWithCount", {
-                    defaultValue: "tonies.custom.json gespeichert ({{count}} Einträge). Sicherung und Neuladen wurden ausgelöst.",
+                    defaultValue: "tonies.custom.json saved ({{count}} entries). Backup and reload triggered.",
                     count: result.count,
                 }),
                 t("tonies.customToniesEditorJsonEntry")
@@ -1208,7 +1226,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     const tableColumns = useMemo(
         () => [
             {
-                title: t("tonies.customEditor.columns.image", { defaultValue: "Bild" }),
+                title: t("tonies.customEditor.columns.image", { defaultValue: "Image" }),
                 key: "pic",
                 width: 70,
                 fixed: "left" as const,
@@ -1219,7 +1237,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     return (
                         <button
                             type="button"
-                            aria-label={t("tonies.customEditor.actions.preview", { defaultValue: "Vorschau" })}
+                            aria-label={t("tonies.customEditor.actions.preview", { defaultValue: "Preview" })}
                             onClick={(event) => {
                                 event.stopPropagation();
                                 setPreviewUrl(imageUrl);
@@ -1389,42 +1407,42 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                           width: 130,
                           sorter: true,
                           sortOrder: tableSortColumn === "status" ? tableSortOrder || undefined : undefined,
-                          render: (_: unknown, row: TableRow) => getStatusLabel(row.status),
+                          render: (_: unknown, row: TableRow) => getStatusBadge(row.status),
                       },
                   ] : []),
             {
-                title: t("tonies.customEditor.columns.actions", { defaultValue: "Aktionen" }),
+                title: t("tonies.customEditor.columns.actions", { defaultValue: "Actions" }),
                 key: "actions",
-                width: 210,
+                width: 130,
                 render: (_: unknown, row: TableRow) => (
                     <Space size="small">
-                        <Button size="small" onClick={() => handleSelectEntry(row.idx)}>
-                            {t("tonies.customEditor.actions.edit", { defaultValue: "Bearbeiten" })}
-                        </Button>
-                        <Button size="small" onClick={() => handleDuplicateEntryByIndex(row.idx)}>
-                            {t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplizieren" })}
-                        </Button>
+                        <Tooltip title={t("tonies.customEditor.actions.edit", { defaultValue: "Edit" })}>
+                            <Button type="text" size="small" icon={<EditOutlined />} onClick={() => handleSelectEntry(row.idx)} />
+                        </Tooltip>
+                        <Tooltip title={t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplicate" })}>
+                            <Button type="text" size="small" icon={<CopyOutlined />} onClick={() => handleDuplicateEntryByIndex(row.idx)} />
+                        </Tooltip>
                         {row.status === "deleted" ? (
-                            <Button size="small" onClick={() => handleRestoreEntryByIndex(row.idx)}>
-                                {t("tonies.customEditor.actions.restore", { defaultValue: "Wiederherstellen" })}
-                            </Button>
+                            <Tooltip title={t("tonies.customEditor.actions.restore", { defaultValue: "Restore" })}>
+                                <Button type="text" size="small" icon={<RollbackOutlined />} onClick={() => handleRestoreEntryByIndex(row.idx)} />
+                            </Tooltip>
                         ) : (
-                            <Button size="small" danger onClick={() => handleDeleteEntryByIndex(row.idx)}>
-                                {t("tonies.customEditor.actions.delete", { defaultValue: "Löschen" })}
-                            </Button>
+                            <Tooltip title={t("tonies.customEditor.actions.delete", { defaultValue: "Delete" })}>
+                                <Button type="text" size="small" danger icon={<DeleteOutlined />} onClick={() => handleDeleteEntryByIndex(row.idx)} />
+                            </Tooltip>
                         )}
                     </Space>
                 ),
             },
         ],
-        [brokenImageUrls, tableSortColumn, tableSortOrder, visibleOptionalColumns, getStatusLabel, t]
+        [brokenImageUrls, tableSortColumn, tableSortOrder, visibleOptionalColumns, getStatusBadge, t]
     );
 
     const editorBody = (
         <Row gutter={16}>
             <Col span={24}>
                 <Typography.Title level={5} style={{ marginTop: 0 }}>
-                    {t("tonies.customEditor.title", { defaultValue: "Modell-Editor" })}
+                    {t("tonies.customEditor.title", { defaultValue: "Model editor" })}
                 </Typography.Title>
 
                 <div
@@ -1443,31 +1461,38 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         <Space wrap>
                             <Button
                                 type="primary"
+                                icon={<PlusOutlined />}
                                 style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
                                 onClick={() => {
                                     const nextEntries = mergeCurrentFormIntoEntries(customEntries);
                                     void createAndSelectNewEntry(nextEntries);
                                 }}
                             >
-                                {t("tonies.customEditor.actions.newModel", { defaultValue: "Neues Modell" })}
+                                {t("tonies.customEditor.actions.newModel", { defaultValue: "New model" })}
                             </Button>
                             {isMultiSelectMode ? (
                                 <>
-                                    <Button onClick={handleDuplicateSelection} disabled={selectedNonDeletedIndexes.length === 0}>
-                                        {t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplizieren" })}
-                                    </Button>
+                                    <Tooltip title={t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplicate" })}>
+                                        <Button
+                                            icon={<CopyOutlined />}
+                                            onClick={handleDuplicateSelection}
+                                            disabled={selectedNonDeletedIndexes.length === 0}
+                                        />
+                                    </Tooltip>
                                     {selectedNonDeletedIndexes.length > 0 ? (
-                                        <Button danger onClick={handleDeleteEntry}>
-                                            {t("tonies.customEditor.actions.deleteCount", {
-                                                defaultValue: "{{count}} Modell(e) löschen",
+                                        <Tooltip
+                                            title={t("tonies.customEditor.actions.deleteCount", {
+                                                defaultValue: "Delete {{count}} model(s)",
                                                 count: selectedNonDeletedIndexes.length,
                                             })}
-                                        </Button>
+                                        >
+                                            <Button danger icon={<DeleteOutlined />} onClick={handleDeleteEntry} />
+                                        </Tooltip>
                                     ) : null}
                                     {selectedDeletedIndexes.length > 0 ? (
-                                        <Button onClick={handleRestoreEntry}>
-                                            {t("tonies.customEditor.actions.restore", { defaultValue: "Wiederherstellen" })}
-                                        </Button>
+                                        <Tooltip title={t("tonies.customEditor.actions.restore", { defaultValue: "Restore" })}>
+                                            <Button icon={<RollbackOutlined />} onClick={handleRestoreEntry} />
+                                        </Tooltip>
                                     ) : null}
                                 </>
                             ) : null}
@@ -1479,7 +1504,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     <Input
                         autoFocus
                         allowClear
-                        placeholder={t("tonies.customEditor.filterPlaceholder", { defaultValue: "Modelle filtern..." })}
+                        placeholder={t("tonies.customEditor.filterPlaceholder", { defaultValue: "Filter models..." })}
                         value={filterText}
                         onChange={(event) => setFilterText(event.target.value)}
                         style={{ width: 240 }}
@@ -1527,19 +1552,19 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                             }
                         }}
                     >
-                        {t("tonies.customEditor.actions.toggleChangesOnly", { defaultValue: "Nur Änderungen" })}
+                        {t("tonies.customEditor.actions.toggleChangesOnly", { defaultValue: "Changes only" })}
                     </Button>
                 </Space>
 
                 <div className="custom-tonie-table" style={{ border: "1px solid #303030", borderRadius: 8, padding: 8, marginBottom: 8 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                        <Typography.Text strong>{t("tonies.customEditor.modelsTitle", { defaultValue: "Modelle" })}</Typography.Text>
+                        <Typography.Text strong>{t("tonies.customEditor.modelsTitle", { defaultValue: "Models" })}</Typography.Text>
                         <Popover
                             trigger="click"
                             placement="bottomRight"
                             content={
                                 <Space direction="vertical" size={10} style={{ minWidth: 260 }}>
-                                    <Typography.Text strong>{t("tonies.customEditor.optionalColumns", { defaultValue: "Zusatzspalten" })}</Typography.Text>
+                                    <Typography.Text strong>{t("tonies.customEditor.optionalColumns", { defaultValue: "Optional columns" })}</Typography.Text>
                                     <Checkbox.Group
                                         value={visibleOptionalColumns}
                                         onChange={(values) =>
@@ -1566,7 +1591,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                 </Space>
                             }
                         >
-                            <Button>{t("tonies.customEditor.tableMenu", { defaultValue: "Tabellen-Menü" })}</Button>
+                            <Button>{t("tonies.customEditor.tableMenu", { defaultValue: "Table menu" })}</Button>
                         </Popover>
                     </div>
 
@@ -1575,14 +1600,6 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         pagination={false}
                         scroll={{ y: 320, x: "max-content" }}
                         rowKey={(row) => String(row.idx)}
-                        rowClassName={(row: TableRow) => {
-                            const classes: string[] = [];
-                            if (selectedIndex === row.idx) classes.push("custom-tonie-row-focused");
-                            if (row.status === "deleted") classes.push("custom-tonie-row-deleted");
-                            if (row.status === "new") classes.push("custom-tonie-row-new");
-                            if (row.status === "changed") classes.push("custom-tonie-row-changed");
-                            return classes.join(" ");
-                        }}
                         rowSelection={{
                             selectedRowKeys: selectedRowIndexes.map((idx) => String(idx)),
                             onChange: (keys) => applySelectionForVisibleRows(tableRows, keys),
@@ -1601,22 +1618,10 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                             setTableSortColumn(key);
                             setTableSortOrder(singleSorter.order || null);
                         }}
-                        onRow={(row: TableRow) => {
-                            const status = row.status;
-                            return {
-                                onClick: () => handleSelectEntry(row.idx),
-                                style:
-                                    selectedIndex === row.idx
-                                        ? { backgroundColor: "rgba(22, 119, 255, 0.12)", cursor: "pointer" }
-                                        : status === "deleted"
-                                          ? { backgroundColor: "rgba(255, 77, 79, 0.08)", cursor: "pointer" }
-                                          : status === "new"
-                                            ? { backgroundColor: "rgba(82, 196, 26, 0.08)", cursor: "pointer" }
-                                            : status === "changed"
-                                              ? { backgroundColor: "rgba(250, 173, 20, 0.08)", cursor: "pointer" }
-                                              : { cursor: "pointer" },
-                            };
-                        }}
+                        onRow={(row: TableRow) => ({
+                            onClick: () => handleSelectEntry(row.idx),
+                            style: { cursor: "pointer" },
+                        })}
                         columns={tableColumns}
                         dataSource={tableRows}
                     />
@@ -1629,18 +1634,18 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     message={
                         selectedRowIndexes.length > 1
                             ? t("tonies.customEditor.selection.multiple", {
-                                  defaultValue: "{{count}} Modelle ausgewählt",
+                                  defaultValue: "{{count}} models selected",
                                   count: selectedRowIndexes.length,
                               })
                             : selectedEntry?.model
                               ? t("tonies.customEditor.selection.single", {
-                                    defaultValue: "Ausgewähltes Modell: {{model}}",
+                                    defaultValue: "Selected model: {{model}}",
                                     model: selectedEntry.model,
                                 })
-                              : t("tonies.customEditor.selection.none", { defaultValue: "Kein Modell ausgewählt" })
+                              : t("tonies.customEditor.selection.none", { defaultValue: "No model selected" })
                     }
                     description={t("tonies.customEditor.selection.description", {
-                        defaultValue: "Das Bearbeitungsformular unten gilt immer für die aktuelle Auswahl.",
+                        defaultValue: "The edit form below always applies to the current selection.",
                     })}
                 />
                 {isMultiSelectMode ? (
@@ -1648,7 +1653,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         type="warning"
                         showIcon
                         style={{ marginBottom: 8 }}
-                        message={t("tonies.customEditor.batch.title", { defaultValue: "Batch-Bearbeitung aktiv" })}
+                        message={t("tonies.customEditor.batch.title", { defaultValue: "Batch editing active" })}
                         description={t("tonies.customEditor.batch.description", {
                             defaultValue:
                                 "Bei Mehrfachauswahl werden nur Serie, Release, Sprache, Kategorie und Bild auf alle ausgewählten Modelle angewendet.",
@@ -1660,7 +1665,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         type="error"
                         showIcon
                         style={{ marginBottom: 8 }}
-                        message={t("tonies.customEditor.validation.title", { defaultValue: "Bitte zuerst diese Probleme beheben" })}
+                        message={t("tonies.customEditor.validation.title", { defaultValue: "Please fix these issues first" })}
                         description={
                             <Space direction="vertical">
                                 {validationMessages.map((issue) => (
@@ -1721,7 +1726,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     >
                         <Collapse.Panel
                             key="media"
-                            header={t("tonies.customEditor.sections.media", { defaultValue: "Medien und Bilder" })}
+                            header={t("tonies.customEditor.sections.media", { defaultValue: "Media and images" })}
                         >
 
                     <Row gutter={12}>
@@ -1758,24 +1763,25 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                 <Button disabled={disablePerFieldInMultiSelect.pic} onClick={() => setImageManagerOpen(true)}>
                                     {t("tonies.imageManager.title")}
                                 </Button>
-                                <Button
-                                    onClick={() => {
-                                        const pic = form.getFieldValue("pic");
-                                        if (!pic) return;
-                                        setPreviewUrl(toPreviewableImageUrl(pic));
-                                        setPreviewOpen(true);
-                                    }}
-                                    disabled={!selectedPic}
-                                >
-                                    {t("tonies.customEditor.actions.preview", { defaultValue: "Vorschau" })}
-                                </Button>
+                                <Tooltip title={t("tonies.customEditor.actions.preview", { defaultValue: "Preview" })}>
+                                    <Button
+                                        icon={<EyeOutlined />}
+                                        onClick={() => {
+                                            const pic = form.getFieldValue("pic");
+                                            if (!pic) return;
+                                            setPreviewUrl(toPreviewableImageUrl(pic));
+                                            setPreviewOpen(true);
+                                        }}
+                                        disabled={!selectedPic}
+                                    />
+                                </Tooltip>
                             </Space>
                         </Col>
                     </Row>
                         </Collapse.Panel>
                         <Collapse.Panel
                             key="metadata"
-                            header={t("tonies.customEditor.sections.metadata", { defaultValue: "Optionale Metadaten" })}
+                            header={t("tonies.customEditor.sections.metadata", { defaultValue: "Optional metadata" })}
                         >
 
                     <Row gutter={12}>
@@ -1807,7 +1813,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                             return Promise.reject(
                                                 new Error(
                                                     t("tonies.customEditor.errors.releaseNumeric", {
-                                                        defaultValue: "Release muss numerisch sein",
+                                                        defaultValue: "Release must be numeric",
                                                     })
                                                 )
                                             );
@@ -1832,7 +1838,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         </Collapse.Panel>
                         <Collapse.Panel
                             key="audio"
-                            header={t("tonies.customEditor.sections.audio", { defaultValue: "Audio-Zuordnung" })}
+                            header={t("tonies.customEditor.sections.audio", { defaultValue: "Audio assignment" })}
                         >
 
                     <Form.List name="audioPairs">
@@ -1847,13 +1853,13 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                     }}
                                 >
                                 <Alert
-                                    type="warning"
+                                    type="info"
                                     showIcon
                                     style={{ marginBottom: 12 }}
-                                    message={t("tonies.customEditor.coinWarning.title", { defaultValue: "Warnung zur Coin-Zuordnung" })}
-                                    description={t("tonies.customEditor.coinWarning.description", {
+                                    message={t("tonies.customEditor.coinHint.title", { defaultValue: "Hint: Audio assignment" })}
+                                    description={t("tonies.customEditor.coinHint.description", {
                                         defaultValue:
-                                            "Nutze für Coin-Zuordnungen keine offiziellen Audio-IDs. Das kann offizielle Tonies überschreiben. Verwende nur Audio aus deiner eigenen Custom-Bibliothek.",
+                                            "Optional – only for metadata (title, tracks). Custom coins work without a model. Use only custom audio – official IDs overwrite real Tonies. Does not link NFC tags to audio.",
                                     })}
                                 />
                                 {fields.map(({ key, name, ...restField }, idx) => (
@@ -1879,7 +1885,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                                             showSearch
                                                             loading={customAudioOptionsLoading}
                                                             placeholder={t("tonies.customEditor.audio.placeholder", {
-                                                                defaultValue: "Custom-Audio aus der Bibliothek wählen",
+                                                                defaultValue: "Select custom audio from library",
                                                             })}
                                                             optionFilterProp="label"
                                                             options={audioPairSelectOptions}
@@ -2016,14 +2022,14 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                 text={
                                     hasUnsavedChanges
                                         ? t("tonies.customEditor.unsaved", {
-                                              defaultValue: "{{count}} ungespeicherte Änderung(en)",
+                                              defaultValue: "{{count}} unsaved change(s)",
                                               count: changedCount,
                                           })
-                                        : t("tonies.customEditor.savedState", { defaultValue: "Alle Änderungen gespeichert" })
+                                        : t("tonies.customEditor.savedState", { defaultValue: "All changes saved" })
                                 }
                             />
                             <Button onClick={handleDiscard}>
-                                {t("tonies.customEditor.actions.discard", { defaultValue: "Verwerfen" })}
+                                {t("tonies.customEditor.actions.discard", { defaultValue: "Discard" })}
                             </Button>
                             <Button type="primary" loading={saving || loading} onClick={handleSave}>
                                 {t("tonies.addNewCustomTonieModal.save")}
@@ -2045,14 +2051,14 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                 text={
                                     hasUnsavedChanges
                                         ? t("tonies.customEditor.unsaved", {
-                                              defaultValue: "{{count}} ungespeicherte Änderung(en)",
+                                              defaultValue: "{{count}} unsaved change(s)",
                                               count: changedCount,
                                           })
-                                        : t("tonies.customEditor.savedState", { defaultValue: "Alle Änderungen gespeichert" })
+                                        : t("tonies.customEditor.savedState", { defaultValue: "All changes saved" })
                                 }
                             />
                             <Button onClick={handleDiscard}>
-                                {t("tonies.customEditor.actions.discard", { defaultValue: "Verwerfen" })}
+                                {t("tonies.customEditor.actions.discard", { defaultValue: "Discard" })}
                             </Button>
                             <Button type="primary" loading={saving || loading} onClick={handleSave}>
                                 {t("tonies.addNewCustomTonieModal.save")}
@@ -2076,7 +2082,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             />
 
             <Modal
-                title={t("tonies.customEditor.previewTitle", { defaultValue: "Bildvorschau" })}
+                title={t("tonies.customEditor.previewTitle", { defaultValue: "Image preview" })}
                 open={previewOpen}
                 onCancel={() => setPreviewOpen(false)}
                 footer={null}
@@ -2084,38 +2090,38 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 {previewUrl ? <img src={previewUrl} alt="preview" referrerPolicy="no-referrer" style={{ width: "100%" }} /> : null}
             </Modal>
             <Modal
-                title={t("tonies.customEditor.preflight.title", { defaultValue: "Änderungen vor dem Speichern prüfen" })}
+                title={t("tonies.customEditor.preflight.title", { defaultValue: "Review changes before saving" })}
                 open={preflightOpen}
                 onCancel={() => {
                     setPreflightOpen(false);
                     setPendingSavePlan(null);
                 }}
                 onOk={handlePreflightConfirm}
-                okText={t("tonies.customEditor.preflight.confirm", { defaultValue: "Jetzt speichern" })}
-                cancelText={t("common.cancel", { defaultValue: "Abbrechen" })}
+                okText={t("tonies.customEditor.preflight.confirm", { defaultValue: "Save now" })}
+                cancelText={t("common.cancel", { defaultValue: "Cancel" })}
                 confirmLoading={saving}
             >
                 <Space direction="vertical">
                     <Typography.Text>
                         {t("tonies.customEditor.preflight.description", {
-                            defaultValue: "Bitte bestätige den Umfang dieses Speichervorgangs.",
+                            defaultValue: "Please confirm the scope of this save operation.",
                         })}
                     </Typography.Text>
                     <Typography.Text>
                         {t("tonies.customEditor.preflight.upserts", {
-                            defaultValue: "Aktualisierungen/Neuanlagen: {{count}}",
+                            defaultValue: "Updates/new entries: {{count}}",
                             count: pendingSavePlan?.upsertEntries.length || 0,
                         })}
                     </Typography.Text>
                     <Typography.Text>
                         {t("tonies.customEditor.preflight.renames", {
-                            defaultValue: "Umbenennungen: {{count}}",
+                            defaultValue: "Renames: {{count}}",
                             count: pendingSavePlan?.renameOps.length || 0,
                         })}
                     </Typography.Text>
                     <Typography.Text>
                         {t("tonies.customEditor.preflight.deletes", {
-                            defaultValue: "Löschungen: {{count}}",
+                            defaultValue: "Deletions: {{count}}",
                             count: pendingSavePlan?.deleteModels.length || 0,
                         })}
                     </Typography.Text>

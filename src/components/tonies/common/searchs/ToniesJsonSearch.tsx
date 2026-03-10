@@ -6,7 +6,6 @@ import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
 import { useToniesJsonSearch } from "../hooks/useToniesJsonSearch";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 import { canHover } from "../../../../utils/browser/browserUtils";
 import { useCustomModelsEditorLauncher } from "../../hooks/useCustomModelsEditorFeature";
@@ -43,8 +42,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
-    const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
-    const { isEnhancedCustomEditorEnabled, launchCustomModelsEditor } = useCustomModelsEditorLauncher();
+    const { launchCustomModelsEditor } = useCustomModelsEditorLauncher();
 
     const { value, options, search, select, setValue } = useToniesJsonSearch((error) => {
         addNotification(
@@ -107,10 +105,6 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         }
     };
 
-    const handleAddNewCustomButtonClick = () => {
-        setShowAddCustomTonieModal(true);
-    };
-
     return (
         <>
             <SearchDropdown
@@ -125,41 +119,20 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
             />
 
             {showAddCustomTonieButton && (
-                <>
-                    {!isEnhancedCustomEditorEnabled && (
-                        <ToniesCustomJsonEditor
-                            open={showAddCustomTonieModal}
-                            props={{ placeholder, onChange }}
-                            setValue={(v) => {
-                                setValue(v);
-                                if (clearInputAfterSelection) {
-                                    setSearchText("");
-                                } else {
-                                    setSearchText(v);
-                                }
-                            }}
-                            onClose={() => setShowAddCustomTonieModal(false)}
-                        />
-                    )}
-                    <Tooltip open={!canHover ? false : undefined} title={t("tonies.addNewCustomTonieHint")}>
-                        <Button
-                            onClick={() => {
-                                if (onOpenCustomModelEditor) {
-                                    onOpenCustomModelEditor();
-                                    return;
-                                }
-                                if (isEnhancedCustomEditorEnabled) {
-                                    launchCustomModelsEditor(handleAddNewCustomButtonClick);
-                                    return;
-                                }
-                                handleAddNewCustomButtonClick();
-                            }}
-                            style={{ marginTop: 8 }}
-                        >
-                            {t("tonies.addNewCustomTonie")}
-                        </Button>
-                    </Tooltip>
-                </>
+                <Tooltip open={!canHover ? false : undefined} title={t("tonies.addNewCustomTonieHint")}>
+                    <Button
+                        onClick={() => {
+                            if (onOpenCustomModelEditor) {
+                                onOpenCustomModelEditor();
+                                return;
+                            }
+                            launchCustomModelsEditor();
+                        }}
+                        style={{ marginTop: 8 }}
+                    >
+                        {t("tonies.addNewCustomTonie")}
+                    </Button>
+                </Tooltip>
             )}
         </>
     );

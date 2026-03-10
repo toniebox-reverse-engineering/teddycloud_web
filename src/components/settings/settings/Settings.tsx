@@ -15,7 +15,6 @@ const { useToken } = theme;
 
 type SettingsOption = {
     iD: string;
-    ID?: string;
 };
 
 export const Settings: React.FC = () => {
@@ -89,16 +88,14 @@ export const Settings: React.FC = () => {
                 >
                     <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
                         {settingsOptions.map((option, index, array) => {
-                            const optionId = option.iD || option.ID || "";
+                            const optionId = option.iD;
 
                             if (optionId.includes("core.settings_level")) {
                                 return null;
                             }
 
                             const parts = optionId.split(".");
-                            const previousOptionId = array[index - 1]
-                                ? array[index - 1].iD || array[index - 1].ID || ""
-                                : "";
+                            const previousOptionId = array[index - 1] ? array[index - 1].iD : "";
                             const lastParts = previousOptionId ? previousOptionId.split(".") : [];
 
                             return (

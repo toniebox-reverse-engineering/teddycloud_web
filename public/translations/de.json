@@ -10,6 +10,13 @@
         "errorNoOggOpusSupportByApple": "Dein Browser unterstützt im Moment keine OGG/Opus (taf) Dateien. Nutzt du ein Apple Gerät, dann hilf uns, indem Sie ein Ticket bei Apple zur Behebung des Problems einreichen!",
         "unknownSource": "Unbekannt"
     },
+    "common": {
+        "cancel": "Abbrechen",
+        "clean": "unverändert",
+        "changed": "geändert*",
+        "deleted": "gelöscht*",
+        "new": "neu*"
+    },
     "community": {
         "attribution": {
             "navigationTitle": "Lizenzhinweise",
@@ -566,7 +573,7 @@
                     "items": {
                         "01assignContent": "Inhalte und andere Eigenschaften jedem Tag zuweisen",
                         "02searchStreams": "Webradio-Streams suchen und jedem Tag zuweisen",
-                        "03defineMetaData": "Metadaten deiner benutzerdefinierten Tags definieren (PoC im WebFrontend)",
+                        "03defineMetaData": "Metadaten deiner benutzerdefinierten Tags definieren (Custom Models Editor im WebFrontend)",
                         "04filterTonies": "Tonies/Tags filtern",
                         "05hideTonies": "Nicht verfügbare Tonies/Tags ausblenden",
                         "06showLastPlayed": "Zuletzt gespielte Tonies/Tags anzeigen"
@@ -636,9 +643,8 @@
                 "01firmwareUpdate": "Firmware-Update über TeddyCloud",
                 "03reportUnknownTonies": "Unbekannte Tonies melden",
                 "04completeTAPIntegration": "Abschluss der TAP-WebFrontend-Integration",
-                "05completeCustomToniesIntegration": "Abschluss der Integration benutzerdefinierter Tonies im JSON-WebFront (\"Metadaten benutzerdefinierter Tags\")",
-                "06moreStats": "Mehr Statistiken über deine gespielten Tonies/Tags",
-                "07securityImprovements": "Sicherheitsverbesserungen wie Zugriffskontrolle (Tonieboxen und Benutzer)"
+                "05moreStats": "Mehr Statistiken über deine gespielten Tonies/Tags",
+                "06securityImprovements": "Sicherheitsverbesserungen wie Zugriffskontrolle (Tonieboxen und Benutzer)"
             },
             "navigationTitle": "Features",
             "title": "Features TeddyCloud",
@@ -1802,20 +1808,83 @@
             "track": "Track"
         },
         "addToniesCustomJsonEntry": "WIP: Modell anlegen",
-        "customToniesEditorJsonEntry": "Custom-Modelle verwalten",
+        "customToniesEditorJsonEntry": "Custom-Modelle",
         "imageManager": {
             "title": "Bilder auswählen & verwalten",
             "okText": "Übernehmen",
             "sourceCustom": "Custom",
-            "sourceDefault": "Default",
-            "noDefaultImages": "Keine Default-Bilder gefunden"
+            "sourceOriginal": "Original",
+            "noOriginalImages": "Keine Original-Bilder gefunden"
         },
         "customEditor": {
+            "actions": {
+                "delete": "Löschen",
+                "deleteCount": "{{count}} Modell(e) löschen",
+                "discard": "Verwerfen",
+                "duplicate": "Duplizieren",
+                "edit": "Bearbeiten",
+                "newModel": "Neues Modell",
+                "preview": "Vorschau",
+                "restore": "Wiederherstellen",
+                "toggleChangesOnly": "Nur Änderungen"
+            },
             "audio": {
-                "libraryLabel": "Custom-Audio (Bibliothek)"
+                "libraryLabel": "Custom-Audio (Bibliothek)",
+                "notInIndex": "Nicht im Custom-Audio-Index: {{audioId}}/{{hash}}",
+                "placeholder": "Custom-Audio aus der Bibliothek wählen"
+            },
+            "batch": {
+                "description": "Änderungen gelten für alle ausgewählten Modelle.",
+                "title": "Batch-Bearbeitung aktiv"
+            },
+            "coinHint": {
+                "description": "Optional – nur für Metadaten (Titel, Tracks). Custom Coins funktionieren auch ohne Modell. Nur Custom-Audio – offizielle IDs überschreiben echte Tonies. Verknüpft keine NFC-Tags mit Audio.",
+                "title": "Hinweis: Audio-Zuordnung"
+            },
+            "columns": {
+                "actions": "Aktionen",
+                "image": "Bild",
+                "status": "Status"
             },
             "errors": {
-                "invalidSelectedIndex": "Ungültiger ausgewählter Index"
+                "emptyResult": "Mindestens ein Modell muss erhalten bleiben.",
+                "invalidSelectedIndex": "Ungültiger ausgewählter Index",
+                "releaseNumeric": "Release muss numerisch sein"
+            },
+            "filterPlaceholder": "Modelle filtern...",
+            "modelsTitle": "Modelle",
+            "noChangesBody": "Es gibt aktuell nichts zu speichern.",
+            "noChangesTitle": "Keine Änderungen erkannt",
+            "optionalColumns": "Zusatzspalten",
+            "picHint": "Bild aus custom_img oder von Original-Tonies wählen",
+            "preflight": {
+                "confirm": "Jetzt speichern",
+                "deletes": "Löschungen: {{count}}",
+                "description": "Bitte bestätige den Umfang dieses Speichervorgangs.",
+                "renames": "Umbenennungen: {{count}}",
+                "title": "Änderungen vor dem Speichern prüfen",
+                "upserts": "Aktualisierungen/Neuanlagen: {{count}}"
+            },
+            "previewTitle": "Bildvorschau",
+            "saveSuccessWithCount": "tonies.custom.json gespeichert ({{count}} Einträge). Sicherung und Neuladen wurden ausgelöst.",
+            "savedState": "Alle Änderungen gespeichert",
+            "sections": {
+                "audio": "Audio-Zuordnung",
+                "media": "Medien und Bilder",
+                "metadata": "Optionale Metadaten",
+                "tracks": "Tracks"
+            },
+            "selection": {
+                "description": "Das Bearbeitungsformular unten gilt immer für die aktuelle Auswahl.",
+                "multiple": "{{count}} Modelle ausgewählt",
+                "none": "Kein Modell ausgewählt",
+                "single": "Ausgewähltes Modell: {{model}}"
+            },
+            "tableMenu": "Tabellen-Menü",
+            "title": "Modell-Editor",
+            "unsaved": "{{count}} ungespeicherte Änderung(en)",
+            "validation": {
+                "title": "Bitte zuerst diese Probleme beheben"
             }
         },
         "alternativeSource": "Der Toniefigur {{originalTonie}} ist der Inhalt {{assignedContent}} zugewiesen!",
@@ -1838,6 +1907,7 @@
         },
         "currentPath": "Aktueller Pfad: ",
         "editModal": {
+            "editSelectedCustomModel": "Modell weiter bearbeiten",
             "model": "Modell",
             "placeholderSearchForAModel": "Nach einem Modell suchen",
             "placeholderSearchForARadioStream": "Suche nach einem Radiostream",

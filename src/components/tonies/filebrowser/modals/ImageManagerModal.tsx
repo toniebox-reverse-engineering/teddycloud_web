@@ -4,13 +4,12 @@ import { useTranslation } from "react-i18next";
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
 import { SelectFileFileBrowser } from "../SelectFileFileBrowser";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".webp", ".gif"];
-
-type ImageSource = "custom" | "default";
+type ImageSource = "custom" | "original";
 
 const normalizeDirPath = (value: string) => value.replace(/^\/+/, "").replace(/\/+$/, "");
 
@@ -59,23 +58,22 @@ export const ImageManagerModal: React.FC<ImageManagerModalProps> = ({
     const [source, setSource] = useState<ImageSource>("custom");
     const [customPath, setCustomPath] = useState("");
     const [customSelection, setCustomSelection] = useState("");
-    const [defaultSelection, setDefaultSelection] = useState("");
-    const [defaultImages, setDefaultImages] = useState<string[]>([]);
-
+    const [originalSelection, setOriginalSelection] = useState("");
+    const [originalImages, setOriginalImages] = useState<string[]>([]);
 
     useEffect(() => {
         if (!open) return;
         const initialIsCustom = isCustomImagePath(initialSelection);
-        const initialIsDefault = initialSelection && !initialIsCustom;
-        setSource(initialIsCustom ? "custom" : initialIsDefault ? "default" : "custom");
+        const initialIsOriginal = initialSelection && !initialIsCustom;
+        setSource(initialIsCustom ? "custom" : initialIsOriginal ? "original" : "custom");
         setCustomSelection(initialIsCustom ? initialSelection : "");
-        setDefaultSelection(initialIsDefault ? initialSelection : "");
+        setOriginalSelection(initialIsOriginal ? initialSelection : "");
         setCustomPath(initialIsCustom ? deriveCustomImgDirectory(initialSelection) : "");
     }, [initialSelection, open]);
 
     useEffect(() => {
-        if (!open || source !== "default") return;
-        const loadDefaultImages = async () => {
+        if (!open || source !== "original") return;
+        const loadOriginalImages = async () => {
             try {
                 const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJson");
                 if (!response.ok) return;
@@ -90,15 +88,15 @@ export const ImageManagerModal: React.FC<ImageManagerModalProps> = ({
                     ])
                     .map((pic: string) => normalizePreviewPath(pic))
                     .filter((pic: string) => pic.length > 0);
-                setDefaultImages(Array.from(new Set(pics)).sort((a, b) => a.localeCompare(b)));
+                setOriginalImages(Array.from(new Set(pics)).sort((a, b) => a.localeCompare(b)));
             } catch {
-                setDefaultImages([]);
+                setOriginalImages([]);
             }
         };
-        void loadDefaultImages();
+        void loadOriginalImages();
     }, [open, source]);
 
-    const selectedImage = source === "custom" ? customSelection : defaultSelection;
+    const selectedImage = source === "custom" ? customSelection : originalSelection;
 
     const canConfirm = useMemo(() => selectedImage.trim().length > 0, [selectedImage]);
 
@@ -122,7 +120,7 @@ export const ImageManagerModal: React.FC<ImageManagerModalProps> = ({
                         value={source}
                         options={[
                             { label: t("tonies.imageManager.sourceCustom"), value: "custom" },
-                            { label: t("tonies.imageManager.sourceDefault"), value: "default" },
+                            { label: t("tonies.imageManager.sourceOriginal"), value: "original" },
                         ]}
                         onChange={(value) => setSource(value)}
                     />
@@ -153,29 +151,29 @@ export const ImageManagerModal: React.FC<ImageManagerModalProps> = ({
                 </div>
                 <div
                     style={{
-                        display: source === "default" ? "block" : "none",
+                        display: source === "original" ? "block" : "none",
                         maxHeight: 520,
                         overflowY: "auto",
                         border: "1px solid #303030",
                         borderRadius: 8,
                     }}
                 >
-                    {defaultImages.length === 0 ? (
+                    {originalImages.length === 0 ? (
                         <Empty
                             style={{ margin: "40px 0" }}
-                            description={t("tonies.imageManager.noDefaultImages")}
+                            description={t("tonies.imageManager.noOriginalImages")}
                         />
                     ) : (
                         <List
-                            dataSource={defaultImages}
+                            dataSource={originalImages}
                             renderItem={(item) => (
                                 <List.Item
-                                    onClick={() => setDefaultSelection(item)}
+                                    onClick={() => setOriginalSelection(item)}
                                     style={{
                                         cursor: "pointer",
                                         padding: 8,
                                         border:
-                                            defaultSelection === item ? "1px solid #1677ff" : "1px solid transparent",
+                                            originalSelection === item ? "1px solid #1677ff" : "1px solid transparent",
                                         borderRadius: 8,
                                         margin: 4,
                                     }}

@@ -10,6 +10,13 @@
         "errorNoOggOpusSupportByApple": "Votre navigateur ne prend pas en charge les fichiers OGG/Opus (taf) pour le moment. Si vous utilisez un appareil Apple, aidez-nous en soumettant un ticket à Apple pour demander une solution !",
         "unknownSource": "Inconnu"
     },
+    "common": {
+        "cancel": "Annuler",
+        "clean": "inchangé",
+        "changed": "modifié*",
+        "deleted": "supprimé*",
+        "new": "nouveau*"
+    },
     "community": {
         "attribution": {
             "navigationTitle": "Attributions",
@@ -566,7 +573,7 @@
                     "items": {
                         "01assignContent": "attribuer du contenu et d'autres propriétés à chaque tag",
                         "02searchStreams": "rechercher et attribuer des flux de webradio à chaque tag",
-                        "03defineMetaData": "définir les métadonnées de vos tags personnalisés (PoC dans le WebFrontend)",
+                        "03defineMetaData": "définir les métadonnées de vos tags personnalisés (éditeur de modèles personnalisés dans le WebFrontend)",
                         "04filterTonies": "filtrer les Tonies/Tags",
                         "05hideTonies": "masquer les Tonies/Tags non disponibles",
                         "06showLastPlayed": "afficher les derniers Tonies/Tags joués"
@@ -636,9 +643,8 @@
                 "01firmwareUpdate": "Mise à jour du firmware via TeddyCloud",
                 "03reportUnknownTonies": "Signaler les Tonies inconnus",
                 "04completeTAPIntegration": "Achèvement de l'intégration de TAP WebFrontend",
-                "05completeCustomToniesIntegration": "Achèvement de l'intégration des Tonies personnalisés dans le WebFront JSON (\"Métadonnées des tags personnalisés\")",
-                "06moreStats": "Plus de statistiques sur vos Tonies/Tags joués",
-                "07securityImprovements": "Améliorations de la sécurité comme le contrôle d'accès (tonieboxes et utilisateur)"
+                "05moreStats": "Plus de statistiques sur vos Tonies/Tags joués",
+                "06securityImprovements": "Améliorations de la sécurité comme le contrôle d'accès (tonieboxes et utilisateur)"
             },
             "navigationTitle": "Fonctionnalités",
             "title": "Fonctionnalités TeddyCloud",
@@ -1802,20 +1808,83 @@
             "track": "Piste"
         },
         "addToniesCustomJsonEntry": "WIP: Ajouter un modèle",
-        "customToniesEditorJsonEntry": "Gérer les modèles personnalisés",
+        "customToniesEditorJsonEntry": "Modèles personnalisés",
         "imageManager": {
             "title": "Sélectionner et gérer les images",
             "okText": "Appliquer",
             "sourceCustom": "Personnalisé",
-            "sourceDefault": "Par défaut",
-            "noDefaultImages": "Aucune image par défaut trouvée"
+            "sourceOriginal": "Original",
+            "noOriginalImages": "Aucune image originale trouvée"
         },
         "customEditor": {
+            "actions": {
+                "delete": "Supprimer",
+                "deleteCount": "Supprimer {{count}} modèle(s)",
+                "discard": "Annuler",
+                "duplicate": "Dupliquer",
+                "edit": "Modifier",
+                "newModel": "Nouveau modèle",
+                "preview": "Aperçu",
+                "restore": "Restaurer",
+                "toggleChangesOnly": "Modifications uniquement"
+            },
             "audio": {
-                "libraryLabel": "Audio personnalisé (bibliothèque)"
+                "libraryLabel": "Audio personnalisé (bibliothèque)",
+                "notInIndex": "Pas dans l'index audio personnalisé : {{audioId}}/{{hash}}",
+                "placeholder": "Sélectionner l'audio personnalisé dans la bibliothèque"
+            },
+            "batch": {
+                "description": "Les modifications s'appliquent à tous les modèles sélectionnés.",
+                "title": "Édition par lot active"
+            },
+            "coinHint": {
+                "description": "Optionnel – uniquement pour les métadonnées (titre, pistes). Les pièces personnalisées fonctionnent sans modèle. Uniquement l'audio personnalisé – les IDs officiels écrasent les vrais Tonies. Ne lie pas les tags NFC à l'audio.",
+                "title": "Conseil : Assignation audio"
+            },
+            "columns": {
+                "actions": "Actions",
+                "image": "Image",
+                "status": "Statut"
             },
             "errors": {
-                "invalidSelectedIndex": "Index sélectionné invalide"
+                "emptyResult": "Au moins un modèle doit rester.",
+                "invalidSelectedIndex": "Index sélectionné invalide",
+                "releaseNumeric": "Release doit être numérique"
+            },
+            "filterPlaceholder": "Filtrer les modèles...",
+            "modelsTitle": "Modèles",
+            "noChangesBody": "Il n'y a rien à enregistrer pour le moment.",
+            "noChangesTitle": "Aucune modification détectée",
+            "optionalColumns": "Colonnes optionnelles",
+            "picHint": "Sélectionner une image depuis custom_img ou les tonies originaux",
+            "preflight": {
+                "confirm": "Enregistrer maintenant",
+                "deletes": "Suppressions : {{count}}",
+                "description": "Veuillez confirmer la portée de cette opération d'enregistrement.",
+                "renames": "Renommages : {{count}}",
+                "title": "Vérifier les modifications avant l'enregistrement",
+                "upserts": "Mises à jour/nouvelles entrées : {{count}}"
+            },
+            "previewTitle": "Aperçu de l'image",
+            "saveSuccessWithCount": "tonies.custom.json enregistré ({{count}} entrées). Sauvegarde et rechargement déclenchés.",
+            "savedState": "Toutes les modifications enregistrées",
+            "sections": {
+                "audio": "Assignation audio",
+                "media": "Médias et images",
+                "metadata": "Métadonnées optionnelles",
+                "tracks": "Pistes"
+            },
+            "selection": {
+                "description": "Le formulaire d'édition ci-dessous s'applique toujours à la sélection actuelle.",
+                "multiple": "{{count}} modèles sélectionnés",
+                "none": "Aucun modèle sélectionné",
+                "single": "Modèle sélectionné : {{model}}"
+            },
+            "tableMenu": "Menu du tableau",
+            "title": "Éditeur de modèles",
+            "unsaved": "{{count}} modification(s) non enregistrée(s)",
+            "validation": {
+                "title": "Veuillez d'abord corriger ces problèmes"
             }
         },
         "alternativeSource": "Cette Tonie {{originalTonie}} est assignée à un contenu {{assignedContent}} !",
@@ -1838,6 +1907,7 @@
         },
         "currentPath": "Chemin actuel : ",
         "editModal": {
+            "editSelectedCustomModel": "Continuer l'édition du modèle",
             "model": "Modèle",
             "placeholderSearchForAModel": "Rechercher un modèle",
             "placeholderSearchForARadioStream": "Rechercher un flux radio",
