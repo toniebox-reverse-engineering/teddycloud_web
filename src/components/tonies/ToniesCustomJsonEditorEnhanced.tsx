@@ -1445,59 +1445,45 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     {t("tonies.customEditor.title", { defaultValue: "Model editor" })}
                 </Typography.Title>
 
-                <div
-                    style={{
-                        position: "sticky",
-                        top: 0,
-                        zIndex: 5,
-                        background: "var(--ant-color-bg-container, #141414)",
-                        border: "1px solid #303030",
-                        borderRadius: 8,
-                        padding: 10,
-                        marginBottom: 10,
-                    }}
-                >
-                    <Space wrap style={{ width: "100%", justifyContent: "space-between" }}>
+                {isMultiSelectMode ? (
+                    <div
+                        style={{
+                            position: "sticky",
+                            top: 0,
+                            zIndex: 5,
+                            background: "var(--ant-color-bg-container, #141414)",
+                            border: "1px solid #303030",
+                            borderRadius: 8,
+                            padding: 10,
+                            marginBottom: 10,
+                        }}
+                    >
                         <Space wrap>
-                            <Button
-                                type="default"
-                                icon={<PlusOutlined />}
-                                onClick={() => {
-                                    const nextEntries = mergeCurrentFormIntoEntries(customEntries);
-                                    void createAndSelectNewEntry(nextEntries);
-                                }}
-                            >
-                                {t("tonies.customEditor.actions.newModel", { defaultValue: "New model" })}
-                            </Button>
-                            {isMultiSelectMode ? (
-                                <>
-                                    <Tooltip title={t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplicate" })}>
-                                        <Button
-                                            icon={<CopyOutlined />}
-                                            onClick={handleDuplicateSelection}
-                                            disabled={selectedNonDeletedIndexes.length === 0}
-                                        />
-                                    </Tooltip>
-                                    {selectedNonDeletedIndexes.length > 0 ? (
-                                        <Tooltip
-                                            title={t("tonies.customEditor.actions.deleteCount", {
-                                                defaultValue: "Delete {{count}} model(s)",
-                                                count: selectedNonDeletedIndexes.length,
-                                            })}
-                                        >
-                                            <Button danger icon={<DeleteOutlined />} onClick={handleDeleteEntry} />
-                                        </Tooltip>
-                                    ) : null}
-                                    {selectedDeletedIndexes.length > 0 ? (
-                                        <Tooltip title={t("tonies.customEditor.actions.restore", { defaultValue: "Restore" })}>
-                                            <Button icon={<RollbackOutlined />} onClick={handleRestoreEntry} />
-                                        </Tooltip>
-                                    ) : null}
-                                </>
+                            <Tooltip title={t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplicate" })}>
+                                <Button
+                                    icon={<CopyOutlined />}
+                                    onClick={handleDuplicateSelection}
+                                    disabled={selectedNonDeletedIndexes.length === 0}
+                                />
+                            </Tooltip>
+                            {selectedNonDeletedIndexes.length > 0 ? (
+                                <Tooltip
+                                    title={t("tonies.customEditor.actions.deleteCount", {
+                                        defaultValue: "Delete {{count}} model(s)",
+                                        count: selectedNonDeletedIndexes.length,
+                                    })}
+                                >
+                                    <Button danger icon={<DeleteOutlined />} onClick={handleDeleteEntry} />
+                                </Tooltip>
+                            ) : null}
+                            {selectedDeletedIndexes.length > 0 ? (
+                                <Tooltip title={t("tonies.customEditor.actions.restore", { defaultValue: "Restore" })}>
+                                    <Button icon={<RollbackOutlined />} onClick={handleRestoreEntry} />
+                                </Tooltip>
                             ) : null}
                         </Space>
-                    </Space>
-                </div>
+                    </div>
+                ) : null}
 
                 <Space wrap style={{ marginBottom: 8 }}>
                     <Input
@@ -1543,6 +1529,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     />
                     <Button
                         type={showChangesOnly ? "primary" : "default"}
+                        disabled={changedCount === 0}
                         onClick={() => {
                             setShowChangesOnly((prev) => !prev);
                             if (tableSortColumn !== "status") {
@@ -1558,10 +1545,22 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 <div className="custom-tonie-table" style={{ border: "1px solid #303030", borderRadius: 8, padding: 8, marginBottom: 8 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
                         <Typography.Text strong>{t("tonies.customEditor.modelsTitle", { defaultValue: "Models" })}</Typography.Text>
-                        <Popover
-                            trigger="click"
-                            placement="bottomRight"
-                            content={
+                        <Space>
+                            <Button
+                                type="default"
+                                size="small"
+                                icon={<PlusOutlined />}
+                                onClick={() => {
+                                    const nextEntries = mergeCurrentFormIntoEntries(customEntries);
+                                    void createAndSelectNewEntry(nextEntries);
+                                }}
+                            >
+                                {t("tonies.customEditor.actions.newModel", { defaultValue: "New model" })}
+                            </Button>
+                            <Popover
+                                trigger="click"
+                                placement="bottomRight"
+                                content={
                                 <Space direction="vertical" size={10} style={{ minWidth: 260 }}>
                                     <Typography.Text strong>{t("tonies.customEditor.optionalColumns", { defaultValue: "Optional columns" })}</Typography.Text>
                                     <Checkbox.Group
@@ -1588,10 +1587,11 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                         ]}
                                     />
                                 </Space>
-                            }
-                        >
-                            <Button>{t("tonies.customEditor.tableMenu", { defaultValue: "Table menu" })}</Button>
-                        </Popover>
+                                }
+                            >
+                                <Button size="small">{t("tonies.customEditor.tableMenu", { defaultValue: "Table menu" })}</Button>
+                            </Popover>
+                        </Space>
                     </div>
 
                     <Table<any>
@@ -2027,10 +2027,10 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                         : t("tonies.customEditor.savedState", { defaultValue: "All changes saved" })
                                 }
                             />
-                            <Button onClick={handleDiscard}>
+                            <Button onClick={handleDiscard} disabled={!hasUnsavedChanges}>
                                 {t("tonies.customEditor.actions.discard", { defaultValue: "Discard" })}
                             </Button>
-                            <Button type="primary" loading={saving || loading} onClick={handleSave}>
+                            <Button type="primary" loading={saving || loading} onClick={handleSave} disabled={!hasUnsavedChanges}>
                                 {t("tonies.addNewCustomTonieModal.save")}
                             </Button>
                         </Space>
@@ -2056,10 +2056,10 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                         : t("tonies.customEditor.savedState", { defaultValue: "All changes saved" })
                                 }
                             />
-                            <Button onClick={handleDiscard}>
+                            <Button onClick={handleDiscard} disabled={!hasUnsavedChanges}>
                                 {t("tonies.customEditor.actions.discard", { defaultValue: "Discard" })}
                             </Button>
-                            <Button type="primary" loading={saving || loading} onClick={handleSave}>
+                            <Button type="primary" loading={saving || loading} onClick={handleSave} disabled={!hasUnsavedChanges}>
                                 {t("tonies.addNewCustomTonieModal.save")}
                             </Button>
                         </Space>
