@@ -1460,9 +1460,8 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     <Space wrap style={{ width: "100%", justifyContent: "space-between" }}>
                         <Space wrap>
                             <Button
-                                type="primary"
+                                type="default"
                                 icon={<PlusOutlined />}
-                                style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
                                 onClick={() => {
                                     const nextEntries = mergeCurrentFormIntoEntries(customEntries);
                                     void createAndSelectNewEntry(nextEntries);
