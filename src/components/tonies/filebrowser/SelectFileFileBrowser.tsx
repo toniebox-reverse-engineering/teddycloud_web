@@ -196,7 +196,7 @@ export const SelectFileFileBrowser: React.FC<{
         <>
             {special === "custom_img" && (
                 <Modal
-                    title={t("tonies.customEditor.previewTitle", { defaultValue: "Image preview" })}
+                    title={t("tonies.customEditor.previewTitle")}
                     open={imagePreviewOpen}
                     onCancel={() => setImagePreviewOpen(false)}
                     footer={null}

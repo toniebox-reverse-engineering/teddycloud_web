@@ -610,10 +610,7 @@ export const TonieCard: React.FC<{
                                 <Tooltip
                                     placement="top"
                                     zIndex={2}
-                                    title={t("languageUtil." + tonieCard.tonieInfo.language, {
-                                        defaultValue:
-                                            t("languageUtil.unknownLanguageCode") + tonieCard.tonieInfo.language,
-                                    })}
+                                    title={t("languageUtil." + tonieCard.tonieInfo.language)}
                                 >
                                     <Text style={{ height: 20, width: "auto" }}>
                                         <LanguageFlagIcon

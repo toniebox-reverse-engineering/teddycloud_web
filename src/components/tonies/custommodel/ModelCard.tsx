@@ -84,7 +84,7 @@ export const ModelCard: React.FC<ModelCardProps> = ({
                     </div>
                 }
                 actions={[
-                    <Tooltip key="edit" title={t("tonies.customEditor.actions.edit", { defaultValue: "Edit" })}>
+                    <Tooltip key="edit" title={t("tonies.customEditor.actions.edit")}>
                         <span
                             onClick={() => onEdit(idx)}
                             style={{ cursor: "pointer" }}
@@ -95,7 +95,7 @@ export const ModelCard: React.FC<ModelCardProps> = ({
                             <EditOutlined />
                         </span>
                     </Tooltip>,
-                    <Tooltip key="dup" title={t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplicate" })}>
+                    <Tooltip key="dup" title={t("tonies.customEditor.actions.duplicate")}>
                         <span
                             onClick={() => onDuplicate(idx)}
                             style={{ cursor: "pointer" }}
@@ -108,16 +108,15 @@ export const ModelCard: React.FC<ModelCardProps> = ({
                     </Tooltip>,
                     <Popconfirm
                         key="del"
-                        title={t("tonies.customEditor.deleteConfirm.title", { defaultValue: "Delete model" })}
+                        title={t("tonies.customEditor.deleteConfirm.title")}
                         description={t("tonies.customEditor.deleteConfirm.description", {
-                            defaultValue: 'Really delete "{{model}}"? This cannot be undone.',
                             model: entry.model,
                         })}
                         onConfirm={() => void onDelete(idx)}
-                        okText={t("tonies.customEditor.deleteConfirm.confirm", { defaultValue: "Delete" })}
-                        cancelText={t("tonies.customEditor.deleteConfirm.abort", { defaultValue: "Abort" })}
+                        okText={t("tonies.customEditor.deleteConfirm.confirm")}
+                        cancelText={t("tonies.customEditor.deleteConfirm.abort")}
                     >
-                        <Tooltip title={t("tonies.customEditor.actions.delete", { defaultValue: "Delete" })}>
+                        <Tooltip title={t("tonies.customEditor.actions.delete")}>
                             <span style={{ cursor: "pointer", color: token.colorError }} role="button" tabIndex={0}>
                                 <DeleteOutlined />
                             </span>

@@ -32,7 +32,7 @@ interface ToniesJsonSearchProps {
 
     onSelectResult?: (result: ToniesJsonSearchResult) => void;
 
-    /** Display text when a model is selected (e.g. "[01-0013] Benjamin Blümchen - Der Zoo-Kindergarten") */
+    /** Display text when a model is selected (e.g. "[01-0013] Sample Series - Episode Title") */
     modelDisplayText?: string;
 
     prefix?: React.ReactNode;

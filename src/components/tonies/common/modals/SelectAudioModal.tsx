@@ -98,7 +98,6 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
     const defaultTitle = requireTafHeader
         ? t("tonies.customEditor.audio.selectFromLibrary", {
               library: t("tonies.library.title"),
-              defaultValue: "Select audio from library",
           })
         : t("tonies.selectFileModal.selectFile");
     const title = titleProp ?? defaultTitle;

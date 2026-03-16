@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import {
     Alert,
     Button,
-    Card,
     Checkbox,
     Col,
     Collapse,
@@ -13,10 +12,7 @@ import {
     Grid,
     Input,
     Modal,
-    Pagination,
-    Popconfirm,
     Row,
-    Select,
     Space,
     theme,
     Tooltip,
@@ -24,28 +20,54 @@ import {
 } from "antd";
 import {
     CloseOutlined,
-    CopyOutlined,
     DeleteOutlined,
-    EditOutlined,
     EyeOutlined,
     FolderOpenOutlined,
     InfoCircleOutlined,
-    PlusOutlined,
     RollbackOutlined,
 } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
-import { IMAGE_EXTENSIONS } from "../../constants/fileTypes";
 import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import SelectImageModal from "./common/modals/SelectImageModal";
 import { EditCustomModelModal } from "./custommodel/modals/EditCustomModelModal";
 import { SelectAudioModal } from "./common/modals/SelectAudioModal";
-import { ModelCard } from "./custommodel/ModelCard";
-import { languageOptions } from "../common/icons/LanguageFlagIcon";
-import { normalizeDirPath, toCustomImgWebPath, toPreviewableImageUrl } from "./common/utils/imagePathUtils";
+import { CustomModelFilterBar } from "./custommodel/CustomModelFilterBar";
+import { CustomModelList } from "./custommodel/CustomModelList";
+import { toPreviewableImageUrl } from "./common/utils/imagePathUtils";
+import type {
+    CustomEntry,
+    FormValues,
+    SortColumnKey,
+    SortOrder,
+    FilterFieldKey,
+    PendingRenameSave,
+    TableRow,
+} from "./custommodel/types/customEditorTypes";
+import {
+    TABLE_SETTINGS_STORAGE_KEY,
+    CUSTOM_EDITOR_PAGE_SIZE_KEY,
+    ALLOWED_SORT_COLUMNS,
+    ALLOWED_FILTER_FIELDS,
+} from "./custommodel/types/customEditorTypes";
+import {
+    cloneEntry,
+    normalizeText,
+    normalizeAudioPairs,
+    normalizeTracks,
+    areStringArraysEqual,
+    toModelKey,
+    toFormValues,
+    toEntry,
+    buildSuggestedModel,
+    sortValueForEntry,
+    filterValueForEntry,
+    isImageFile,
+} from "./custommodel/utils/customEditorUtils";
+import { toCustomImgWebPath } from "./common/utils/imagePathUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -64,155 +86,6 @@ interface ToniesCustomJsonEditorProps {
     initialSelectedModel?: string;
     onModelCreated?: (model: string) => void;
 }
-
-type AudioPair = { audio_id: string; hash: string; path?: string };
-type TrackRow = { track: string };
-type LibraryRecord = {
-    name?: string;
-    isDir?: boolean;
-    tafHeader?: {
-        audioId?: string | number;
-        sha1Hash?: string;
-    };
-    tonieInfo?: {
-        model?: string;
-        series?: string;
-    };
-};
-
-type CustomEntry = {
-    no?: string;
-    model: string;
-    audio_id?: string[];
-    hash?: string[];
-    title?: string;
-    series: string;
-    episodes?: string;
-    tracks?: string[];
-    release?: string;
-    language?: string;
-    category?: string;
-    pic?: string;
-    /** Cache-resolved URL for display when tonie_json.cache_images is enabled */
-    cachePic?: string;
-};
-
-type FormValues = {
-    no?: string;
-    model: string;
-    title?: string;
-    series: string;
-    episodes?: string;
-    release?: string | number;
-    language?: string;
-    category?: string;
-    pic?: string;
-    audioPairs: AudioPair[];
-    tracks: TrackRow[];
-};
-
-const TABLE_SETTINGS_STORAGE_KEY = "tonies.customEditor.tableSettings.v1";
-const CUSTOM_EDITOR_PAGE_SIZE_KEY = "tonies.customEditor.pageSize.v1";
-
-type SortColumnKey = "series" | "model" | "title" | "episodes" | "release" | "language" | "category" | "no";
-type SortOrder = "ascend" | "descend" | null;
-type FilterFieldKey = "series" | "model" | "title" | "episodes" | "release" | "language" | "category" | "no";
-type DraftStatus = "clean" | "changed" | "new" | "deleted";
-
-type TableRow = {
-    idx: number;
-    entry: CustomEntry;
-    status: DraftStatus;
-};
-
-const buildAudioPairKey = (audioId: string, hash: string) => `${audioId.trim()}::${hash.trim().toLowerCase()}`;
-
-const cloneEntry = (entry: CustomEntry): CustomEntry => JSON.parse(JSON.stringify(entry));
-
-const normalizeText = (value?: string) => (value || "").trim();
-
-const normalizeAudioPairs = (entry: CustomEntry) => {
-    const audioIds = entry.audio_id || [];
-    const hashes = entry.hash || [];
-    return audioIds
-        .map((audioId, index) => `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`)
-        .filter((pair) => pair !== "::");
-};
-
-const normalizeTracks = (entry: CustomEntry) => (entry.tracks || []).map((track) => normalizeText(track)).filter(Boolean);
-
-const areStringArraysEqual = (left: string[], right: string[]) =>
-    left.length === right.length && left.every((value, index) => value === right[index]);
-
-const toModelKey = (model?: string) => normalizeText(model).toLowerCase();
-
-const toFormValues = (entry: CustomEntry): FormValues => ({
-    no: entry.no ?? "",
-    model: entry.model ?? "",
-    title: entry.title ?? "",
-    series: entry.series ?? "",
-    episodes: entry.episodes ?? "",
-    release: entry.release ?? "",
-    language: entry.language ?? "",
-    category: entry.category ?? "",
-    pic: entry.pic ?? "",
-    audioPairs:
-        entry.audio_id && entry.hash
-            ? entry.audio_id.map((audio_id, idx) => ({ audio_id: audio_id ?? "", hash: entry.hash?.[idx] ?? "", path: "" }))
-            : [{ audio_id: "", hash: "", path: "" }],
-    tracks: entry.tracks && entry.tracks.length > 0 ? entry.tracks.map((track) => ({ track })) : [{ track: "" }],
-});
-
-const parseModelId = (model: string): number | null => {
-    const match = /^custom-(\d+)$/i.exec(model.trim());
-    return match ? Number(match[1]) : null;
-};
-
-const buildSuggestedModel = (entries: CustomEntry[]): string => {
-    let maxId = 0;
-    entries.forEach((entry) => {
-        const parsed = parseModelId(entry.model || "");
-        if (parsed !== null && parsed > maxId) maxId = parsed;
-    });
-    return `custom-${maxId + 1}`;
-};
-
-const toEntry = (values: FormValues): CustomEntry => {
-    const pairs = (values.audioPairs || [])
-        .filter((pair): pair is AudioPair => pair != null && typeof pair === "object")
-        .map((pair) => ({
-            audio_id: (pair.audio_id || "").trim(),
-            hash: (pair.hash || "").trim(),
-        }))
-        .filter((pair) => pair.audio_id && pair.hash);
-
-    const tracks = (values.tracks || [])
-        .filter((track): track is TrackRow => track != null && typeof track === "object")
-        .map((track) => (track.track || "").trim())
-        .filter((track) => track.length > 0);
-
-    const releaseRaw = values.release === undefined || values.release === null ? "" : String(values.release).trim();
-    const releaseNormalized = releaseRaw.length > 0 ? releaseRaw : undefined;
-
-    const entry: CustomEntry = {
-        no: (values.no || "").trim() || undefined,
-        model: (values.model || "").trim(),
-        audio_id: pairs.length > 0 ? pairs.map((pair) => pair.audio_id) : undefined,
-        hash: pairs.length > 0 ? pairs.map((pair) => pair.hash) : undefined,
-        title: (values.title || "").trim() || undefined,
-        series: (values.series || "").trim(),
-        episodes: (values.episodes || "").trim() || undefined,
-        tracks: tracks.length > 0 ? tracks : undefined,
-        release: releaseNormalized,
-        language: (values.language || "").trim() || undefined,
-        category: (values.category || "").trim() || undefined,
-        pic: (values.pic || "").trim() || undefined,
-    };
-
-    return entry;
-};
-
-const isImageFile = (name: string) => IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));
 
 export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     open,
@@ -276,12 +149,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     const [paginationEnabled, setPaginationEnabled] = useState(true);
     const [renameConfirmOpen, setRenameConfirmOpen] = useState(false);
     const [renameConfirmSkipUpdate, setRenameConfirmSkipUpdate] = useState(false);
-    const [pendingRenameSave, setPendingRenameSave] = useState<{
-        fromModel: string;
-        toModel: string;
-        draft: CustomEntry;
-        silent: boolean;
-    } | null>(null);
+    const [pendingRenameSave, setPendingRenameSave] = useState<PendingRenameSave | null>(null);
     const [validationMessages, setValidationMessages] = useState<string[]>([]);
     const [brokenImageUrls, setBrokenImageUrls] = useState<Set<string>>(new Set());
 
@@ -332,7 +200,9 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         if (baseWarningModels.length > 0) {
             return {
                 error: "",
-                baseWarning: `Modell existiert in base tonies.json: ${Array.from(new Set(baseWarningModels)).join(", ")}`,
+                baseWarning: t("tonies.customEditor.errors.modelExistsInBase", {
+                    models: Array.from(new Set(baseWarningModels)).join(", "),
+                }),
             };
         }
 
@@ -463,7 +333,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     NotificationTypeEnum.Success,
                     t("tonies.teddystudio.labelSavedSuccesful"),
                     t("tonies.teddystudio.labelSavedSuccesfulDetails", { title: draft.series || draft.model }),
-                    t("tonies.customEditor.title", { defaultValue: "Model editor" }),
+                    t("tonies.customEditor.title"),
                     undefined,
                     false
                 );
@@ -497,7 +367,6 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 NotificationTypeEnum.Success,
                 t("tonies.addNewCustomTonieModal.successfullyCreated"),
                 t("tonies.customEditor.saveSuccessWithCount", {
-                    defaultValue: "tonies.custom.json saved ({{count}} entries). Backup and reload triggered.",
                     count: customEntries.length,
                 }),
                 t("tonies.customToniesEditorJsonEntry")
@@ -507,7 +376,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,
-                t("tonies.customEditor.renameFailed", { defaultValue: "Rename failed" }),
+                t("tonies.customEditor.renameFailed"),
                 formatApiError(error),
                 t("tonies.customToniesEditorJsonEntry")
             );
@@ -669,9 +538,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 filterFields?: FilterFieldKey[];
                 filterCollapsed?: boolean;
             };
-            const allowedSort: SortColumnKey[] = ["series", "model", "title", "episodes", "release", "language", "category", "no"];
-            const allowedFilterFields: FilterFieldKey[] = ["series", "model", "title", "episodes", "release", "language", "category", "no"];
-            if (parsed.tableSortColumn && allowedSort.includes(parsed.tableSortColumn)) {
+            if (parsed.tableSortColumn && ALLOWED_SORT_COLUMNS.includes(parsed.tableSortColumn)) {
                 setTableSortColumn(parsed.tableSortColumn);
             }
             if (parsed.tableSortOrder === "ascend" || parsed.tableSortOrder === "descend" || parsed.tableSortOrder === null) {
@@ -679,7 +546,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             }
             if (Array.isArray(parsed.filterFields)) {
                 const nextFilterFields = parsed.filterFields.filter(
-                    (value): value is FilterFieldKey => allowedFilterFields.includes(value as FilterFieldKey)
+                    (value): value is FilterFieldKey => ALLOWED_FILTER_FIELDS.includes(value as FilterFieldKey)
                 );
                 if (nextFilterFields.length > 0) {
                     setFilterFields(nextFilterFields);
@@ -903,46 +770,6 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
         setPaginationEnabled(true);
     };
 
-    const listPagination =
-        tableRows.length > 0 ? (
-            <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
-                {!paginationEnabled ? (
-                    <Button onClick={handleShowPagination}>
-                        {t("tonies.tonies.showPagination", { defaultValue: "Show pagination" })}
-                    </Button>
-                ) : (
-                    <>
-                        <Pagination
-                            current={modelListPage}
-                            total={tableRows.length}
-                            pageSize={modelListPageSize}
-                            onChange={(page, size) => {
-                                setModelListPage(page);
-                                const newSize = size || modelListPageSize;
-                                if (newSize !== modelListPageSize) {
-                                    setModelListPageSize(newSize);
-                                    localStorage.setItem(CUSTOM_EDITOR_PAGE_SIZE_KEY, String(newSize));
-                                    setModelListPage(1);
-                                }
-                            }}
-                            showSizeChanger
-                            pageSizeOptions={["24", "48", "96", "192"]}
-                            locale={{
-                                items_per_page: t("tonies.customEditor.pagination.modelsPerPage", {
-                                    defaultValue: " models/page",
-                                }),
-                            }}
-                            style={{ marginBottom: 8 }}
-                            showLessItems
-                        />
-                        <Button onClick={handleShowAll} style={{ marginLeft: 16 }}>
-                            {t("tonies.tonies.showAll", { defaultValue: "Show all" })}
-                        </Button>
-                    </>
-                )}
-            </div>
-        ) : null;
-
     useEffect(() => {
         if (modelListPage > modelListTotalPages) {
             setModelListPage(modelListTotalPages);
@@ -967,9 +794,8 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             }
             addNotification(
                 NotificationTypeEnum.Success,
-                t("tonies.customEditor.actions.delete", { defaultValue: "Delete" }),
+                t("tonies.customEditor.actions.delete"),
                 t("tonies.customEditor.deleteConfirm.deleted", {
-                    defaultValue: 'Model "{{model}}" has been deleted.',
                     model: entry.model,
                 }),
                 t("tonies.customToniesEditorJsonEntry")
@@ -1025,157 +851,59 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
     const editorBody = (
         <Row gutter={16}>
             <Col span={24}>
-                <Collapse
-                    items={[
-                        {
-                            key: "custom-model-filters",
-                            label: filterCollapsed
-                                ? t("tonies.tonies.filterBar.showFilters")
-                                : t("tonies.tonies.filterBar.hideFilters"),
-                            children: (
-                                <>
-                                    <Card size="small" title={t("tonies.tonies.filterBar.basicFilters")} style={{ marginBottom: 8 }}>
-                                        <Input
-                                            allowClear
-                                            placeholder={t("tonies.tonies.filterBar.searchPlaceholder")}
-                                            value={filterText}
-                                            onChange={(e) => setFilterText(e.target.value)}
-                    style={{ marginBottom: 8 }}
+                <CustomModelFilterBar
+                    filterText={filterText}
+                    setFilterText={setFilterText}
+                    seriesFilter={seriesFilter}
+                    setSeriesFilter={setSeriesFilter}
+                    episodeFilter={episodeFilter}
+                    setEpisodeFilter={setEpisodeFilter}
+                    selectedLanguages={selectedLanguages}
+                    setSelectedLanguages={setSelectedLanguages}
+                    filterFields={filterFields}
+                    setFilterFields={setFilterFields}
+                    filterCollapsed={filterCollapsed}
+                    setFilterCollapsed={setFilterCollapsed}
                 />
-                                        <Input
-                                            placeholder={t("tonies.tonies.filterBar.seriesFilterPlaceholder")}
-                                            value={seriesFilter}
-                                            onChange={(e) => setSeriesFilter(e.target.value)}
-                                            style={{ marginBottom: 8 }}
-                                        />
-                                        <Input
-                                            placeholder={t("tonies.tonies.filterBar.episodeFilterPlaceholder")}
-                                            value={episodeFilter}
-                                            onChange={(e) => setEpisodeFilter(e.target.value)}
-                                            style={{ marginBottom: 8 }}
-                                        />
-                                        <Select
-                                            mode="multiple"
-                                            placeholder={t("tonies.tonies.filterBar.languagePlaceholder")}
-                                            value={selectedLanguages}
-                                            onChange={(values: string[]) => setSelectedLanguages(values)}
-                                            style={{ width: "100%", marginBottom: 8 }}
-                                        >
-                                            {languageOptions.map((langKey: string) => (
-                                                <Select.Option key={langKey} value={langKey}>
-                                                    {langKey ? t("languageUtil." + langKey, { defaultValue: langKey }) : t("languageUtil.other", { defaultValue: "Other" })}
-                                                </Select.Option>
-                                            ))}
-                                        </Select>
-                                        <Select<FilterFieldKey[]>
-                                            mode="multiple"
-                                            placeholder={t("tonies.customEditor.filterFieldsPlaceholder", { defaultValue: "Search in fields" })}
-                                            value={filterFields}
-                                            style={{ width: "100%" }}
-                                            onChange={(values: FilterFieldKey[]) => {
-                                                const next = values.filter(
-                                                    (value): value is FilterFieldKey =>
-                                                        ["series", "model", "title", "episodes", "release", "language", "category", "no"].includes(value)
-                                                );
-                                                setFilterFields(next.length > 0 ? next : ["series", "model"]);
-                                            }}
-                                            options={[
-                                                { value: "series", label: t("tonies.addNewCustomTonieModal.series") },
-                                                { value: "model", label: t("tonies.addNewCustomTonieModal.model") },
-                                                { value: "title", label: t("tonies.addNewCustomTonieModal.formfieldTitle") },
-                                                { value: "episodes", label: t("tonies.addNewCustomTonieModal.episode") },
-                                                { value: "release", label: t("tonies.addNewCustomTonieModal.release") },
-                                                { value: "language", label: t("tonies.addNewCustomTonieModal.language") },
-                                                { value: "category", label: t("tonies.addNewCustomTonieModal.category") },
-                                                { value: "no", label: t("tonies.addNewCustomTonieModal.no") },
-                                            ]}
-                                        />
-                                    </Card>
-                                    <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 8 }}>
-                                        <Button onClick={() => {
-                                            setFilterText("");
-                                            setSeriesFilter("");
-                                            setEpisodeFilter("");
-                                            setSelectedLanguages([]);
-                                        }}>
-                                            {t("tonies.tonies.filterBar.resetFilters")}
-                                        </Button>
-                                    </div>
-                                </>
-                            ),
-                        },
-                    ]}
-                    activeKey={filterCollapsed ? [] : ["custom-model-filters"]}
-                    onChange={(key) => {
-                        const activeKeys = Array.isArray(key) ? key : (key ? [key] : []);
-                        setFilterCollapsed(activeKeys.length === 0);
+
+                <CustomModelList
+                    tableRows={tableRows}
+                    paginatedRows={paginatedRows}
+                    paginationEnabled={paginationEnabled}
+                    modelListPage={modelListPage}
+                    modelListPageSize={modelListPageSize}
+                    modelListTotalPages={modelListTotalPages}
+                    gridColumns={gridColumns}
+                    token={token}
+                    onMergeAndCreateNew={() => {
+                        const nextEntries = mergeCurrentFormIntoEntries(customEntries);
+                        void createAndSelectNewEntry(nextEntries);
                     }}
-                    bordered={false}
-                    style={{ marginBottom: 8 }}
+                    onEdit={handleOpenEditModal}
+                    onDuplicate={handleDuplicateEntryByIndex}
+                    onDelete={handleDeleteEntryByIndex}
+                    onPreviewClick={(url) => {
+                        setPreviewUrl(url);
+                        setPreviewOpen(true);
+                    }}
+                    onShowAll={handleShowAll}
+                    onShowPagination={handleShowPagination}
+                    onPageChange={(page, size) => {
+                        setModelListPage(page);
+                        const newSize = size || modelListPageSize;
+                        if (newSize !== modelListPageSize) {
+                            setModelListPageSize(newSize);
+                            localStorage.setItem(CUSTOM_EDITOR_PAGE_SIZE_KEY, String(newSize));
+                            setModelListPage(1);
+                        }
+                    }}
                 />
-
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, flexWrap: "wrap", gap: 8 }}>
-                    <Button
-                        type="primary"
-                        size="small"
-                        icon={<PlusOutlined />}
-                        onClick={() => {
-                            const nextEntries = mergeCurrentFormIntoEntries(customEntries);
-                            void createAndSelectNewEntry(nextEntries);
-                        }}
-                    >
-                        {t("tonies.customEditor.actions.newModel", { defaultValue: "New model" })}
-                    </Button>
-                    {listPagination}
-                </div>
-
-                <Flex vertical gap={16}>
-                    {tableRows.length === 0 ? (
-                        <div
-                            style={{
-                                width: "100%",
-                                padding: 48,
-                                textAlign: "center",
-                                background: token.colorFillQuaternary,
-                                borderRadius: 8,
-                            }}
-                        >
-                            <Typography.Text type="secondary" style={{ display: "block", marginBottom: 16 }}>
-                                {t("tonies.customEditor.emptyState", { defaultValue: "No custom models" })}
-                            </Typography.Text>
-                            <Typography.Text type="secondary" style={{ display: "block", marginBottom: 16, fontSize: 12 }}>
-                                {t("tonies.customEditor.emptyStateHint", {
-                                    defaultValue: "tonies.custom.json is empty. Add your first model.",
-                                })}
-                            </Typography.Text>
-                        </div>
-                    ) : (
-                        <Flex wrap="wrap" gap={16}>
-                            {paginatedRows.map((row) => (
-                                <ModelCard
-                                    key={row.idx}
-                                    idx={row.idx}
-                                    entry={row.entry}
-                                    gridColumns={gridColumns}
-                                    onEdit={handleOpenEditModal}
-                                    onDuplicate={handleDuplicateEntryByIndex}
-                                    onDelete={handleDeleteEntryByIndex}
-                                    onPreviewClick={(url) => {
-                                        setPreviewUrl(url);
-                                        setPreviewOpen(true);
-                                    }}
-                                />
-                            ))}
-                        </Flex>
-                    )}
-                    {listPagination}
-                </Flex>
                 {validationMessages.length > 0 ? (
                     <Alert
                         type="error"
                         showIcon
                         style={{ marginBottom: 8 }}
-                        message={t("tonies.customEditor.validation.title", { defaultValue: "Please fix these issues first" })}
+                        message={t("tonies.customEditor.validation.title")}
                         description={
                             <Space direction="vertical">
                                 {validationMessages.map((issue) => (
@@ -1263,7 +991,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                     >
                         <Collapse.Panel
                             key="media"
-                            header={t("tonies.customEditor.sections.media", { defaultValue: "Media and images" })}
+                            header={t("tonies.customEditor.sections.media")}
                         >
 
                     <Row gutter={12}>
@@ -1273,10 +1001,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                     <>
                                         {t("tonies.addNewCustomTonieModal.pic")}
                                             <Tooltip
-                                            title={t("tonies.customEditor.picHint", {
-                                                defaultValue:
-                                                    "Extern: https://example.com/images/sample.png | Lokal: /custom_img/images/custom-tonies/sample-coin.png",
-                                            })}
+                                            title={t("tonies.customEditor.picHint")}
                                         >
                                             <InfoCircleOutlined style={{ marginLeft: 6 }} />
                                         </Tooltip>
@@ -1300,7 +1025,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                 <Button disabled={disablePerFieldInMultiSelect.pic} onClick={() => setImageManagerOpen(true)}>
                                     {t("tonies.imageManager.titleSelect")}
                                 </Button>
-                                <Tooltip title={t("tonies.customEditor.actions.preview", { defaultValue: "Preview" })}>
+                                <Tooltip title={t("tonies.customEditor.actions.preview")}>
                                     <Button
                                         icon={<EyeOutlined />}
                                         onClick={() => {
@@ -1318,7 +1043,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         </Collapse.Panel>
                         <Collapse.Panel
                             key="metadata"
-                            header={t("tonies.customEditor.sections.metadata", { defaultValue: "Optional metadata" })}
+                            header={t("tonies.customEditor.sections.metadata")}
                         >
 
                     <Row gutter={12}>
@@ -1349,9 +1074,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                             }
                                             return Promise.reject(
                                                 new Error(
-                                                    t("tonies.customEditor.errors.releaseNumeric", {
-                                                        defaultValue: "Release must be numeric",
-                                                    })
+                                                    t("tonies.customEditor.errors.releaseNumeric")
                                                 )
                                             );
                                         },
@@ -1375,7 +1098,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         </Collapse.Panel>
                         <Collapse.Panel
                             key="audio"
-                            header={t("tonies.customEditor.sections.audio", { defaultValue: "Audio assignment" })}
+                            header={t("tonies.customEditor.sections.audio")}
                         >
 
                     <Form.List name="audioPairs">
@@ -1393,11 +1116,8 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                     type="info"
                                     showIcon
                                     style={{ marginBottom: 12 }}
-                                    message={t("tonies.customEditor.coinHint.title", { defaultValue: "Hint: Audio assignment" })}
-                                    description={t("tonies.customEditor.coinHint.description", {
-                                        defaultValue:
-                                            "Optional – only for metadata (title, tracks). Custom coins work without a model. Use only custom audio – official IDs overwrite real Tonies. Does not link NFC tags to audio.",
-                                    })}
+                                    message={t("tonies.customEditor.coinHint.title")}
+                                    description={t("tonies.customEditor.coinHint.description")}
                                 />
                                 {fields.map(({ key, name, ...restField }, idx) => {
                                                     const baselineAudioId = currentBaselineEntry?.audio_id?.[idx] ?? "";
@@ -1438,7 +1158,6 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                                             disabled={disablePerFieldInMultiSelect.audioPairs}
                                                             placeholder={t("tonies.customEditor.audio.placeholder", {
                                                                 library: t("tonies.library.title"),
-                                                                defaultValue: "Select custom audio from library",
                                                             })}
                                                             readOnly
                                                             style={changedInputStyle(areAudioPairsChanged)}
@@ -1513,7 +1232,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                         )}
                                     </Form.List>
                         </Collapse.Panel>
-                        <Collapse.Panel key="tracks" header={t("tonies.customEditor.sections.tracks", { defaultValue: "Tracks" })}>
+                        <Collapse.Panel key="tracks" header={t("tonies.customEditor.sections.tracks")}>
 
                     <Form.List name="tracks">
                                 {(fields, { add, remove }) => (
@@ -1628,7 +1347,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 <Collapse defaultActiveKey={["media", "metadata"]} size="small" style={{ marginBottom: 8 }}>
                     <Collapse.Panel
                         key="media"
-                        header={t("tonies.customEditor.sections.media", { defaultValue: "Media and images" })}
+                        header={t("tonies.customEditor.sections.media")}
                     >
                         <Row gutter={12}>
                             <Col span={24}>
@@ -1637,10 +1356,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                         <>
                                             {t("tonies.addNewCustomTonieModal.pic")}
                                             <Tooltip
-                                                title={t("tonies.customEditor.picHint", {
-                                                    defaultValue:
-                                                        "Extern: https://example.com/images/sample.png | Lokal: /custom_img/images/custom-tonies/sample-coin.png",
-                                                })}
+                                                title={t("tonies.customEditor.picHint")}
                                             >
                                                 <InfoCircleOutlined style={{ marginLeft: 6 }} />
                                             </Tooltip>
@@ -1657,7 +1373,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                                                 icon={<FolderOpenOutlined />}
                                                 onClick={() => setImageManagerOpen(true)}
                                             >
-                                                {t("tonies.customEditor.actions.browse", { defaultValue: "Browse" })}
+                                                {t("tonies.customEditor.actions.browse")}
                                             </Button>
                                         }
                                     />
@@ -1667,12 +1383,9 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         <Row gutter={12}>
                             <Col span={24}>
                                 <Form.Item
-                                    label={t("tonies.customEditor.sections.audioAssignment", { defaultValue: "Audio assignment" })}
+                                    label={t("tonies.customEditor.sections.audioAssignment")}
                                     tooltip={{
-                                        title: t("tonies.customEditor.coinHint.description", {
-                                            defaultValue:
-                                                "Assign audio_id and hash from TAF files in the library. Use the folder icon to select a TAF file.",
-                                        }),
+                                        title: t("tonies.customEditor.coinHint.description"),
                                     }}
                                 >
                                     <Form.List name="audioPairs">
@@ -1716,7 +1429,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                             </Col>
                         </Row>
                     </Collapse.Panel>
-                    <Collapse.Panel key="metadata" header={t("tonies.customEditor.sections.metadata", { defaultValue: "Optional metadata" })}>
+                    <Collapse.Panel key="metadata" header={t("tonies.customEditor.sections.metadata")}>
                         <Form.Item label={t("tonies.addNewCustomTonieModal.no")} name="no">
                             <Input />
                         </Form.Item>
@@ -1733,7 +1446,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                             <Input />
                         </Form.Item>
                     </Collapse.Panel>
-                    <Collapse.Panel key="tracks" header={t("tonies.customEditor.sections.tracks", { defaultValue: "Tracks" })}>
+                    <Collapse.Panel key="tracks" header={t("tonies.customEditor.sections.tracks")}>
                         <Form.List name="tracks">
                             {(fields, { add, remove }) => (
                                 <>
@@ -1813,7 +1526,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
             />
 
             <Modal
-                title={t("tonies.customEditor.previewTitle", { defaultValue: "Image preview" })}
+                title={t("tonies.customEditor.previewTitle")}
                 open={previewOpen}
                 onCancel={() => setPreviewOpen(false)}
                 footer={null}
@@ -1821,21 +1534,20 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                 {previewUrl ? <img src={previewUrl} alt="preview" referrerPolicy="no-referrer" style={{ width: "100%" }} /> : null}
             </Modal>
             <Modal
-                title={t("tonies.customEditor.renameConfirm.title", { defaultValue: "Rename model" })}
+                title={t("tonies.customEditor.renameConfirm.title")}
                 open={renameConfirmOpen}
                 onCancel={() => {
                     setRenameConfirmOpen(false);
                     setPendingRenameSave(null);
                 }}
                 onOk={() => void handleRenameConfirmOk()}
-                okText={t("tonies.customEditor.renameConfirm.confirm", { defaultValue: "Confirm" })}
-                cancelText={t("tonies.customEditor.renameConfirm.abort", { defaultValue: "Abort" })}
+                okText={t("tonies.customEditor.renameConfirm.confirm")}
+                cancelText={t("tonies.customEditor.renameConfirm.abort")}
                 confirmLoading={saving}
             >
                 <Space direction="vertical" style={{ width: "100%" }}>
                     <Typography.Text>
                         {t("tonies.customEditor.renameConfirm.description", {
-                            defaultValue: 'Model ID will change from "{{from}}" to "{{to}}". Linked Tonies will be updated automatically.',
                             from: pendingRenameSave?.fromModel ?? "",
                             to: pendingRenameSave?.toModel ?? "",
                         })}
@@ -1844,7 +1556,7 @@ export const ToniesCustomJsonEditor: React.FC<ToniesCustomJsonEditorProps> = ({
                         checked={renameConfirmSkipUpdate}
                         onChange={(e) => setRenameConfirmSkipUpdate(e.target.checked)}
                     >
-                        {t("tonies.customEditor.renameConfirm.skipUpdate", { defaultValue: "Do not update linked Tonies" })}
+                        {t("tonies.customEditor.renameConfirm.skipUpdate")}
                     </Checkbox>
                 </Space>
             </Modal>

@@ -942,6 +942,7 @@
         "tl-ph": "Tagalo (Filipinas)",
         "tr-tr": "Turco (Turquía)",
         "uk-ua": "Ucraniano (Ucrania)",
+        "other": "Otro",
         "undefined": "Otro/no definido",
         "unknownLanguageCode": "Código de idioma desconocido: ",
         "ur-pk": "Urdu (Pakistán)",
@@ -1816,6 +1817,7 @@
         },
         "customEditor": {
             "actions": {
+                "browse": "Explorar",
                 "delete": "Eliminar",
                 "deleteCount": "Eliminar {{count}} modelo(s)",
                 "discard": "Descartar",
@@ -1848,7 +1850,8 @@
                 "invalidSelectedIndex": "Índice seleccionado no válido",
                 "releaseNumeric": "Release debe ser numérico",
                 "duplicateModel": "Duplicado: {{model}}",
-                "duplicateAudioHash": "Combinación audio_id+hash duplicada: {{audioId}}"
+                "duplicateAudioHash": "Combinación audio_id+hash duplicada: {{audioId}}",
+                "modelExistsInBase": "El modelo existe en base tonies.json: {{models}}"
             },
             "duplicateTitleSuffix": "Copia",
             "editModalTitle": "Editar modelo {{current}} de {{total}}",
@@ -1873,6 +1876,7 @@
             "savedState": "Todos los cambios guardados",
             "sections": {
                 "audio": "Asignación de audio",
+                "audioAssignment": "Asignación de audio",
                 "media": "Medios e imágenes",
                 "metadata": "Metadatos opcionales",
                 "tracks": "Pistas"

@@ -48,7 +48,7 @@ interface EditTonieModalProps {
     // Set audio from model (when source differs from model and model audio exists in library)
     modelAudioPath?: string | null;
 
-    // Display text for selected model (e.g. "[01-0013] Benjamin Blümchen - Der Zoo-Kindergarten")
+    // Display text for selected model (e.g. "[01-0013] Sample Series - Episode Title")
     modelDisplayText?: string;
 
     // Create new model

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Card, Empty, Input, Modal, Space, Typography, theme } from "antd";
-import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { PictureOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../../api";
@@ -92,7 +92,7 @@ export const CustomModelPickerModal: React.FC<CustomModelPickerModalProps> = ({
     return (
         <>
             <Modal
-                title={t("tonies.customModelPicker.title", { defaultValue: "Select custom model" })}
+                title={t("tonies.customModelPicker.title")}
                 open={open && !showCreateEditor}
                 onCancel={onClose}
                 width={Math.max(Math.min(window.innerWidth * 0.85, 900), 500)}
@@ -103,9 +103,7 @@ export const CustomModelPickerModal: React.FC<CustomModelPickerModalProps> = ({
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                         <Input
                             allowClear
-                            placeholder={t("tonies.customModelPicker.searchPlaceholder", {
-                                defaultValue: "Search model, series...",
-                            })}
+                            placeholder={t("tonies.customModelPicker.searchPlaceholder")}
                             prefix={<SearchOutlined />}
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
@@ -116,25 +114,23 @@ export const CustomModelPickerModal: React.FC<CustomModelPickerModalProps> = ({
                             icon={<PlusOutlined />}
                             onClick={() => setShowCreateEditor(true)}
                         >
-                            {t("tonies.customModelPicker.addNew", { defaultValue: "Add new" })}
+                            {t("tonies.customModelPicker.addNew")}
                         </Button>
                     </div>
 
                     {loading ? (
                         <div style={{ padding: 48, textAlign: "center" }}>
                             <Typography.Text type="secondary">
-                                {t("tonies.customModelPicker.loading", { defaultValue: "Loading..." })}
+                                {t("tonies.customModelPicker.loading")}
                             </Typography.Text>
                         </div>
                     ) : filteredEntries.length === 0 ? (
                         <Empty
-                            description={t("tonies.customModelPicker.noModels", {
-                                defaultValue: "No custom models found",
-                            })}
+                            description={t("tonies.customModelPicker.noModels")}
                             style={{ padding: 32 }}
                         >
                             <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowCreateEditor(true)}>
-                                {t("tonies.customModelPicker.addNew", { defaultValue: "Add new" })}
+                                {t("tonies.customModelPicker.addNew")}
                             </Button>
                         </Empty>
                     ) : (
@@ -188,9 +184,7 @@ export const CustomModelPickerModal: React.FC<CustomModelPickerModalProps> = ({
                                                     }}
                                                 />
                                             ) : (
-                                                <Typography.Text type="secondary" style={{ fontSize: 24 }}>
-                                                    🎵
-                                                </Typography.Text>
+                                                <PictureOutlined style={{ fontSize: 24, color: token.colorTextPlaceholder }} />
                                             )}
                                         </div>
                                         <Typography.Text
