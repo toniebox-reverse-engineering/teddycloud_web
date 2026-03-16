@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Table, Input, theme, Button, Flex, Tooltip, Modal } from "antd";
+import { Table, Input, theme, Modal } from "antd";
 import { Key } from "antd/es/table/interface";
-import { CloseOutlined, DeleteOutlined, FolderAddOutlined, NodeExpandOutlined, UploadOutlined } from "@ant-design/icons";
+import { CloseOutlined } from "@ant-design/icons";
 
 import { Record } from "../../../types/fileBrowserTypes";
 
@@ -14,15 +14,6 @@ import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { createColumns } from "./helper/Columns";
 import { useAudioContext } from "../../../contexts/AudioContext";
-import { useDirectoryTree } from "../common/hooks/useDirectoryTree";
-import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
-import { useFileDownload } from "./hooks/useFileDownload";
-import CreateDirectoryModal from "../common/modals/CreateDirectoryModal";
-import DeleteFilesModal from "./modals/DeleteFilesModal";
-import MoveFilesModal from "./modals/MoveFilesModal";
-import RenameFileModal from "./modals/RenameFilesModal";
-import UploadFilesModal from "./modals/UploadFilesModal";
-import { canHover } from "../../../utils/browser/browserUtils";
 
 const { useToken } = theme;
 
@@ -35,9 +26,8 @@ export const SelectFileFileBrowser: React.FC<{
     trackUrl?: boolean;
     showDirOnly?: boolean;
     showColumns?: string[];
-    enableFileManagement?: boolean;
+    rebuildTrigger?: number;
     onFileSelectChange?: (files: any[], path: string, special: string) => void;
-    onUploadedFiles?: (files: string[], path: string, special: string) => void;
 }> = ({
     special,
     initialPath = "",
@@ -47,9 +37,8 @@ export const SelectFileFileBrowser: React.FC<{
     trackUrl = true,
     showDirOnly = false,
     showColumns = undefined,
-    enableFileManagement = false,
+    rebuildTrigger,
     onFileSelectChange,
-    onUploadedFiles,
 }) => {
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
@@ -62,17 +51,6 @@ export const SelectFileFileBrowser: React.FC<{
 
     const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
 
-    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-    const [isConfirmMultipleDeleteModalOpen, setIsConfirmMultipleDeleteModalOpen] = useState(false);
-    const [fileToDelete, setFileToDelete] = useState<string | null>(null);
-    const [deletePath, setDeletePath] = useState<string>("");
-    const [deleteApiCall, setDeleteApiCall] = useState<string>("");
-    const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
-    const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
-    const [currentFile, setCurrentFile] = useState<string>("");
-    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-    const [uploadFileList, setUploadFileList] = useState<any[]>([]);
-    const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
     const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
     const [imagePreviewUrl, setImagePreviewUrl] = useState("");
     const [currentRecord, setCurrentRecord] = useState<Record>();
@@ -109,36 +87,15 @@ export const SelectFileFileBrowser: React.FC<{
         initialPath,
     });
 
-    const directoryTree = useDirectoryTree(special, {
-        skipPreload: special === "custom_img",
-    });
-
-    const {
-        open: isCreateDirectoryModalOpen,
-        createDirectoryPath,
-        createDirectoryInputKey,
-        hasNewDirectoryInvalidChars,
-        isCreateDirectoryButtonDisabled,
-        inputCreateDirectoryRef,
-        openCreateDirectoryModal,
-        closeCreateDirectoryModal,
-        handleCreateDirectoryInputChange,
-        createDirectory,
-    } = useDirectoryCreate({
-        path,
-        directoryTree,
-        selectNewNode: true,
-        setRebuildList: enableFileManagement ? setRebuildList : undefined,
-        special,
-    });
-
-    const { handleFileDownload } = useFileDownload({
-        setDownloading: enableFileManagement ? setDownloading : () => {},
-    });
-
     useEffect(() => {
         setSelectedRowKeys([]);
     }, [rebuildList]);
+
+    useEffect(() => {
+        if (rebuildTrigger !== undefined) {
+            setRebuildList((prev) => !prev);
+        }
+    }, [rebuildTrigger, setRebuildList]);
 
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
@@ -202,44 +159,17 @@ export const SelectFileFileBrowser: React.FC<{
         setPath(newPath);
     };
 
-    const showDeleteConfirmDialog = (fileName: string, pathWithFile: string, apiCall: string) => {
-        setFileToDelete(fileName);
-        setDeletePath(decodeURIComponent(pathWithFile));
-        setDeleteApiCall(apiCall);
-        setIsConfirmDeleteModalOpen(true);
+    const handleRowSelect = (record: Record) => {
+        if (record.isDir || record.name === "..") return;
+        const newSelectedKeys = selectedRowKeys.includes(record.name)
+            ? selectedRowKeys.filter((key) => key !== record.name)
+            : [...selectedRowKeys, record.name];
+        onSelectChange(newSelectedKeys);
     };
-
-    const showMoveDialog = (fileName: string) => {
-        directoryTree.setTreeNodeId(directoryTree.rootTreeNode.id);
-        setCurrentFile(fileName || "");
-        setIsMoveFileModalOpen(true);
-    };
-
-    const showRenameDialog = (fileName: string) => {
-        setCurrentFile(fileName);
-        setIsRenameFileModalOpen(true);
-    };
-
-    const closeMoveFileModal = () => {
-        setIsMoveFileModalOpen(false);
-        directoryTree.setTreeNodeId(directoryTree.rootTreeNode.id);
-    };
-
-    const closeRenameFileModal = () => {
-        setIsRenameFileModalOpen(false);
-    };
-
-    const handleMultipleDelete = () => {
-        setIsConfirmMultipleDeleteModalOpen(true);
-    };
-
-    const imageFilesSelected = enableFileManagement
-        ? files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir).length
-        : 0;
 
     // columns
     const columns = createColumns({
-        mode: enableFileManagement ? "full" : "select",
+        mode: "select",
         path,
         special,
         overlay,
@@ -248,14 +178,9 @@ export const SelectFileFileBrowser: React.FC<{
         showColumns,
         defaultSorter,
         dirNameSorter,
-        downloading: enableFileManagement ? downloading : undefined,
         handleDirClick,
         showInformationModal,
         playAudio,
-        handleFileDownload: enableFileManagement ? handleFileDownload : undefined,
-        showRenameDialog: enableFileManagement ? showRenameDialog : undefined,
-        showMoveDialog: enableFileManagement ? showMoveDialog : undefined,
-        showDeleteConfirmDialog: enableFileManagement ? showDeleteConfirmDialog : undefined,
         buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
         onImagePreviewClick:
             special === "custom_img"
@@ -264,80 +189,11 @@ export const SelectFileFileBrowser: React.FC<{
                       setImagePreviewOpen(true);
                   }
                 : undefined,
+        onRowSelect: handleRowSelect,
     });
 
     return (
         <>
-            {enableFileManagement && (
-                <>
-                    <DeleteFilesModal
-                        special={special}
-                        overlay={overlay}
-                        files={files as Record[]}
-                        path={path}
-                        setRebuildList={setRebuildList}
-                        selectedRowKeys={selectedRowKeys}
-                        setSelectedRowKeys={setSelectedRowKeys}
-                        singleOpen={isConfirmDeleteModalOpen}
-                        fileToDelete={fileToDelete}
-                        deletePath={deletePath}
-                        deleteApiCall={deleteApiCall}
-                        onCloseSingle={() => setIsConfirmDeleteModalOpen(false)}
-                        multipleOpen={isConfirmMultipleDeleteModalOpen}
-                        onCloseMultiple={() => setIsConfirmMultipleDeleteModalOpen(false)}
-                    />
-                    {isCreateDirectoryModalOpen && (
-                        <CreateDirectoryModal
-                            open={isCreateDirectoryModalOpen}
-                            createDirectoryPath={createDirectoryPath}
-                            createDirectoryInputKey={createDirectoryInputKey}
-                            hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
-                            isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
-                            inputRef={inputCreateDirectoryRef}
-                            onInputChange={handleCreateDirectoryInputChange}
-                            onClose={closeCreateDirectoryModal}
-                            onCreate={createDirectory}
-                        />
-                    )}
-                    <UploadFilesModal
-                        open={isUploadModalOpen}
-                        onClose={() => setIsUploadModalOpen(false)}
-                        path={path}
-                        special={special}
-                        uploadFileList={uploadFileList}
-                        setUploadFileList={setUploadFileList}
-                        setRebuildList={setRebuildList}
-                        onUploadedFiles={onUploadedFiles}
-                    />
-                    {isMoveFileModalOpen && (
-                        <MoveFilesModal
-                            open={isMoveFileModalOpen}
-                            onClose={closeMoveFileModal}
-                            special={special}
-                            overlay={overlay}
-                            path={path}
-                            files={files as Record[]}
-                            currentFile={currentFile || null}
-                            selectedRowKeys={selectedRowKeys}
-                            setSelectedRowKeys={setSelectedRowKeys}
-                            directoryTree={directoryTree}
-                            setFilterFieldAutoFocus={() => {}}
-                            setRebuildList={setRebuildList}
-                        />
-                    )}
-                    {isRenameFileModalOpen && (
-                        <RenameFileModal
-                            open={isRenameFileModalOpen}
-                            onClose={closeRenameFileModal}
-                            special={special}
-                            overlay={overlay}
-                            path={path}
-                            currentFile={currentFile || null}
-                            setRebuildList={setRebuildList}
-                        />
-                    )}
-                </>
-            )}
             {special === "custom_img" && (
                 <Modal
                     title={t("tonies.customEditor.previewTitle", { defaultValue: "Image preview" })}
@@ -368,67 +224,15 @@ export const SelectFileFileBrowser: React.FC<{
                     <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
                     {generateBreadcrumbs(path)}
                 </div>
-                {enableFileManagement && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8, minHeight: 32 }}>
-                        {selectedRowKeys.length > 0 && (
-                            <>
-                                {imageFilesSelected > 0 && (
-                                    <Tooltip
-                                        open={!canHover ? false : undefined}
-                                        title={t("fileBrowser.moveMultiple", {
-                                            selectedRowCount: selectedRowKeys.length,
-                                        })}
-                                    >
-                                        <Button
-                                            size="small"
-                                            icon={<NodeExpandOutlined />}
-                                            onClick={() => showMoveDialog("")}
-                                        >
-                                            {t("fileBrowser.move")}
-                                        </Button>
-                                    </Tooltip>
-                                )}
-                                <Tooltip
-                                    open={!canHover ? false : undefined}
-                                    title={t("fileBrowser.deleteMultiple", {
-                                        selectedRowCount: selectedRowKeys.length,
-                                    })}
-                                >
-                                    <Button
-                                        size="small"
-                                        icon={<DeleteOutlined />}
-                                        onClick={handleMultipleDelete}
-                                    >
-                                        {t("fileBrowser.delete")}
-                                    </Button>
-                                </Tooltip>
-                            </>
-                        )}
-                        <Button
-                            icon={<FolderAddOutlined />}
-                            size="small"
-                            onClick={() => openCreateDirectoryModal(path)}
-                        >
-                            {t("fileBrowser.createDirectory.createDirectory")}
-                        </Button>
-                        <Button
-                            icon={<UploadOutlined />}
-                            size="small"
-                            onClick={() => setIsUploadModalOpen(true)}
-                        >
-                            {t("fileBrowser.upload.showUploadFilesDragNDrop")}
-                        </Button>
-                    </div>
-                )}
             </div>
-            <div className="test" style={{ position: "relative" }} ref={parentRef}>
+            <div style={{ position: "relative" }} ref={parentRef}>
                 {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
                 <Table
                     dataSource={files}
                     columns={columns}
                     rowKey={(record) => record.name}
                     pagination={false}
-                    scroll={enableFileManagement ? { x: "max-content" } : undefined}
+                    scroll={undefined}
                     onRow={(record) => ({
                         onDoubleClick: () => {
                             if (record.isDir) {

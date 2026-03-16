@@ -2,6 +2,12 @@
 
 ## 0.7.0
 
+- gui: added Custom-Model-Editor to create and edit custom models
+- gui: added custom image management to library
+- gui: added selection for custom and original images for TeddyStudio and Custom-Model-Editor
+- gui: added option in tonie edit modal to set audio from model in case they differ
+- backend: added cuustom tonies API
+- backend: Cache improvement, now diabling/loosing cache will not break images as we store the real url but  return the cached image internally.
 - added tls support in mqtt
 - prepared support of TB2 (added new v3 tonies APIs)
 - gui: Audio encoder support literal and natural sorting [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276)
@@ -9,7 +15,8 @@
 - gui: removed switch enable rtnl on rtnl page, is now autoenabled
 - gui: Added find all unused TAF Search in Library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279)
 - gui: Prepared support for TB2
-- gui: Added Custom Tonies Editor with Image Manager for managing custom models [PR #283](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/283)
+- gui: Custom-Model-Editor: Aligned with Tonies interface (card grid, pagination, model picker, edit modal) [PR #283](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/283)
+
 
 ### Commits
 

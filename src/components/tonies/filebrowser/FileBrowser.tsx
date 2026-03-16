@@ -8,7 +8,7 @@ import {
     SearchOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Flex, Input, Table, theme, Tooltip, Typography } from "antd";
+import { Button, Flex, Input, Modal, Table, theme, Tooltip, Typography } from "antd";
 import { Key } from "antd/es/table/interface";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import TeddyAudioPlaylistEditor from "./modals/TeddyAudioPlaylistEditorModal";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
 
+import { IMAGE_EXTENSIONS } from "../../../constants/fileTypes";
 import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
 
 import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
@@ -104,6 +105,9 @@ export const FileBrowser: React.FC<{
     const [encodeFileList, setEncodeFileList] = useState<FileObject[]>([]);
 
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+
+    const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
 
@@ -359,6 +363,14 @@ export const FileBrowser: React.FC<{
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
+        onImagePreviewClick:
+            special === "custom_img"
+                ? (url) => {
+                      setImagePreviewUrl(url);
+                      setImagePreviewOpen(true);
+                  }
+                : undefined,
     });
 
     return (
@@ -489,6 +501,23 @@ export const FileBrowser: React.FC<{
             ) : (
                 ""
             )}
+            {special === "custom_img" && (
+                <Modal
+                    title={t("tonies.customEditor.previewTitle", { defaultValue: "Image preview" })}
+                    open={imagePreviewOpen}
+                    onCancel={() => setImagePreviewOpen(false)}
+                    footer={null}
+                >
+                    {imagePreviewUrl ? (
+                        <img
+                            src={imagePreviewUrl}
+                            alt="preview"
+                            referrerPolicy="no-referrer"
+                            style={{ width: "100%" }}
+                        />
+                    ) : null}
+                </Modal>
+            )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <div
                     style={{
@@ -614,9 +643,11 @@ export const FileBrowser: React.FC<{
                                         {t("fileBrowser.upload.showUploadFilesDragNDrop")}
                                     </div>
                                 </Button>
-                                <Button size="small" icon={<SearchOutlined />} onClick={openUnusedTAFsModal}>
-                                    {t("fileBrowser.unusedTafsModal.title")}
-                                </Button>
+                                {special === "library" && (
+                                    <Button size="small" icon={<SearchOutlined />} onClick={openUnusedTAFsModal}>
+                                        {t("fileBrowser.unusedTafsModal.title")}
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -654,6 +685,20 @@ export const FileBrowser: React.FC<{
                         onDoubleClick: () => {
                             if (record.isDir) {
                                 handleDirClick(record.name);
+                            } else if (
+                                special === "custom_img" &&
+                                IMAGE_EXTENSIONS.some((ext) => record.name.toLowerCase().endsWith(ext))
+                            ) {
+                                const contentPath = buildContentUrl(record.name);
+                                const baseApiUrl =
+                                    (typeof import.meta !== "undefined" &&
+                                        (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
+                                    "";
+                                const url = baseApiUrl
+                                    ? `${baseApiUrl.replace(/\/$/, "")}${contentPath.startsWith("/") ? contentPath : `/${contentPath}`}`
+                                    : contentPath;
+                                setImagePreviewUrl(url);
+                                setImagePreviewOpen(true);
                             } else if (record.name.includes(".json") || record.name.includes(".tap")) {
                                 showJsonViewer(path + "/" + record.name);
                             } else if (record.tafHeader) {

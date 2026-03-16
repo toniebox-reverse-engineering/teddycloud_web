@@ -369,6 +369,10 @@ export const useFileBrowserCore = ({
 
         const encodedName = encodeURIComponent(fileName);
 
+        if (special === "custom_img") {
+            return encodedPath ? `/custom_img/${encodedPath}/${encodedName}` : `/custom_img/${encodedName}`;
+        }
+
         let url = `/content/${encodedPath ? encodedPath + "/" : "/"}${encodedName}`;
 
         const params = new URLSearchParams();

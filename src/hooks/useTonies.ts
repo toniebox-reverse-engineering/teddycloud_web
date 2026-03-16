@@ -43,6 +43,14 @@ export const useTonies = (options: UseToniesOptions = {}) => {
                     tonieData = await api.apiGetTagIndex(overlay ?? "", true);
                 }
 
+                const seen = new Set<string>();
+                tonieData = tonieData.filter((t) => {
+                    const r = (t?.ruid ?? "").trim();
+                    if (r && seen.has(r)) return false;
+                    if (r) seen.add(r);
+                    return true;
+                });
+
                 if (!includeHidden) {
                     tonieData = tonieData.filter((item) => !item.hide);
                 }
@@ -73,7 +81,7 @@ export const useTonies = (options: UseToniesOptions = {}) => {
         };
 
         fetchTonies();
-    }, [overlay]);
+    }, [overlay, merged]);
 
     useEffect(() => {
         const counts: LanguageCounts = {};

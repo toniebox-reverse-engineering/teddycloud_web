@@ -11,11 +11,7 @@
         "unknownSource": "Inconnu"
     },
     "common": {
-        "cancel": "Annuler",
-        "clean": "inchangé",
-        "changed": "modifié*",
-        "deleted": "supprimé*",
-        "new": "nouveau*"
+        "cancel": "Annuler"
     },
     "community": {
         "attribution": {
@@ -442,6 +438,7 @@
             "title": "Aide"
         },
         "hidden": "Caché",
+        "image": "Image",
         "maxSelectedRows": "Vous ne pouvez sélectionner que jusqu'à {{maxSelectedRows}} fichiers",
         "maxSelectedRowsWarning": "Trop de fichiers sélectionnés !",
         "messages": {
@@ -1807,14 +1804,15 @@
             "title": "Créer un nouveau Tonie/Tag personnalisé",
             "track": "Piste"
         },
-        "addToniesCustomJsonEntry": "WIP: Ajouter un modèle",
         "customToniesEditorJsonEntry": "Modèles personnalisés",
         "imageManager": {
-            "title": "Sélectionner et gérer les images",
+            "title": "Bibliothèque : Sélectionner et télécharger des images",
+            "titleSelect": "Sélectionner une image",
             "okText": "Appliquer",
             "sourceCustom": "Personnalisé",
             "sourceOriginal": "Original",
-            "noOriginalImages": "Aucune image originale trouvée"
+            "noOriginalImages": "Aucune image originale trouvée",
+            "originalImagesLoading": "Chargement des images originales …"
         },
         "customEditor": {
             "actions": {
@@ -1825,13 +1823,13 @@
                 "edit": "Modifier",
                 "newModel": "Nouveau modèle",
                 "preview": "Aperçu",
-                "restore": "Restaurer",
-                "toggleChangesOnly": "Modifications uniquement"
+                "restore": "Restaurer"
             },
             "audio": {
-                "libraryLabel": "Audio personnalisé (bibliothèque)",
+                "libraryLabel": "Audio personnalisé ({{library}})",
+                "selectFromLibrary": "Sélectionner l'audio dans {{library}}",
                 "notInIndex": "Pas dans l'index audio personnalisé : {{audioId}}/{{hash}}",
-                "placeholder": "Sélectionner l'audio personnalisé dans la bibliothèque"
+                "placeholder": "Sélectionner l'audio personnalisé dans {{library}}"
             },
             "batch": {
                 "description": "Les modifications s'appliquent à tous les modèles sélectionnés.",
@@ -1843,14 +1841,19 @@
             },
             "columns": {
                 "actions": "Actions",
-                "image": "Image",
-                "status": "Statut"
+                "image": "Image"
             },
             "errors": {
                 "emptyResult": "Au moins un modèle doit rester.",
                 "invalidSelectedIndex": "Index sélectionné invalide",
-                "releaseNumeric": "Release doit être numérique"
+                "releaseNumeric": "Release doit être numérique",
+                "duplicateModel": "Doublon : {{model}}",
+                "duplicateAudioHash": "Combinaison audio_id+hash en double : {{audioId}}"
             },
+            "duplicateTitleSuffix": "Copie",
+            "editModalTitle": "Modifier le modèle {{current}} sur {{total}}",
+            "editModalTitleCreate": "Nouveau modèle",
+            "filterFieldsPlaceholder": "Rechercher dans les champs",
             "filterPlaceholder": "Filtrer les modèles...",
             "modelsTitle": "Modèles",
             "noChangesBody": "Il n'y a rien à enregistrer pour le moment.",
@@ -1885,7 +1888,34 @@
             "unsaved": "{{count}} modification(s) non enregistrée(s)",
             "validation": {
                 "title": "Veuillez d'abord corriger ces problèmes"
+            },
+            "renameFailed": "Échec du renommage",
+            "renameConfirm": {
+                "title": "Renommer le modèle",
+                "description": "L'ID du modèle passera de \"{{from}}\" à \"{{to}}\". Les Tonies liés seront mis à jour automatiquement.",
+                "skipUpdate": "Ne pas mettre à jour les Tonies liés",
+                "confirm": "Confirmer",
+                "abort": "Annuler"
+            },
+            "deleteConfirm": {
+                "title": "Supprimer le modèle",
+                "description": "Voulez-vous vraiment supprimer \"{{model}}\" ? Cette action est irréversible.",
+                "deleted": "Le modèle \"{{model}}\" a été supprimé.",
+                "confirm": "Supprimer",
+                "abort": "Annuler"
+            },
+            "emptyState": "Aucun modèle personnalisé",
+            "emptyStateHint": "tonies.custom.json est vide. Ajoutez votre premier modèle.",
+            "pagination": {
+                "modelsPerPage": "modèles/page"
             }
+        },
+        "customModelPicker": {
+            "title": "Sélectionner un modèle personnalisé",
+            "searchPlaceholder": "Rechercher modèle, série...",
+            "addNew": "Ajouter",
+            "loading": "Chargement...",
+            "noModels": "Aucun modèle personnalisé trouvé"
         },
         "alternativeSource": "Cette Tonie {{originalTonie}} est assignée à un contenu {{assignedContent}} !",
         "alternativeSourceUnknown": "Cette Tonie {{originalTonie}} est assignée à un contenu alternatif  !",
@@ -1912,8 +1942,10 @@
             "placeholderSearchForAModel": "Rechercher un modèle",
             "placeholderSearchForARadioStream": "Rechercher un flux radio",
             "save": "Enregistrer",
+            "setAudioFromModel": "Définir l'audio du modèle",
             "source": "Source",
-            "title": "Modifier le modèle"
+            "createNewModelTooltip": "Créer un nouveau modèle",
+            "title": "Modifier Tonie/Coin"
         },
         "encoder": {
             "browserEncodingInProgress": "Encodage des fichiers audio dans le navigateur...",
@@ -2063,6 +2095,13 @@
             "navigationTitle": "Bibliothèque",
             "title": "Bibliothèque"
         },
+        "customImages": {
+            "navigationTitle": "Images",
+            "title": "Gérer les images personnalisées"
+        },
+        "libraryAudio": {
+            "navigationTitle": "Audio"
+        },
         "messages": {
             "cloudAccessBlocked": "Accès au cloud bloqué!",
             "cloudAccessBlockedDetails": "Accès au cloud bloqué pour \"{{model}}\" [{{ruid}}]",
@@ -2196,9 +2235,9 @@
             "currentLabel": "Étiquette actuelle",
             "custom": "Personnalisé",
             "customImage": "Images personnalisées",
-            "customImageHint": "Tu peux aussi ajouter des images temporaires pour tes Traveltonies. Elles ne seront pas sauvegardées définitivement !",
+            "customImageHint": "Tu peux ajouter des images temporairement – elles ne seront PAS ajoutées à la bibliothèque et sont utilisées uniquement pour cette feuille.",
             "customImageTitle": "Saisis un titre à imprimer",
-            "customImageUpload": "Ajouter ton image",
+            "customImageUpload": "Ajouter image temporaire (sans Bibliothèque)",
             "diameter": "Diamètre intérieur",
             "empty": "Vide - Sélectionne d'abord des Tonies ou Tags ou ajoute une image personnalisée !",
             "episodes": "Épisodes",

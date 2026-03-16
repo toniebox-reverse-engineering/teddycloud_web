@@ -1,9 +1,9 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Divider, Form, Input, Modal, Space, Tooltip, theme } from "antd";
-import { CloseOutlined, EditOutlined, FolderOpenOutlined, PlusOutlined, RollbackOutlined, SaveFilled } from "@ant-design/icons";
+import { Button, Divider, Form, Input, Modal, theme, Tooltip } from "antd";
+import { CloseOutlined, FolderOpenOutlined, PlusOutlined, RollbackOutlined, SaveFilled, SwapOutlined } from "@ant-design/icons";
 
-import { ToniesJsonSearch } from "../../common/searchs/ToniesJsonSearch";
+import { ToniesJsonSearch } from "../../common/searches/ToniesJsonSearch";
 import { RadioStreamSearch } from "../search/RadioStreamSearch";
 
 const { useToken } = theme;
@@ -44,9 +44,18 @@ interface EditTonieModalProps {
 
     // File selection
     onOpenFileSelectModal: () => void;
-    onOpenCreateModelEditor?: () => void;
-    onOpenSelectedModelEditor?: () => void;
-    canOpenSelectedModelEditor?: boolean;
+
+    // Set audio from model (when source differs from model and model audio exists in library)
+    modelAudioPath?: string | null;
+
+    // Display text for selected model (e.g. "[01-0013] Benjamin Blümchen - Der Zoo-Kindergarten")
+    modelDisplayText?: string;
+
+    // Create new model
+    onCreateNewModel?: () => void;
+
+    // Called when user selects a model from search (to update display text)
+    onModelSelectResult?: (result: { value: string; selectionText: string }) => void;
 }
 
 export const EditTonieModal: React.FC<EditTonieModalProps> = ({
@@ -70,9 +79,10 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
     onSearchModelChange,
     hasPendingChanges,
     onOpenFileSelectModal,
-    onOpenCreateModelEditor,
-    onOpenSelectedModelEditor,
-    canOpenSelectedModelEditor = false,
+    modelAudioPath,
+    modelDisplayText = "",
+    onCreateNewModel,
+    onModelSelectResult,
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
@@ -155,6 +165,20 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                         key={keyRadioStreamSearch}
                     />
                 </Form.Item>
+                {modelAudioPath && selectedSource !== modelAudioPath && (
+                    <Form.Item>
+                        <Button
+                            type="default"
+                            icon={<SwapOutlined />}
+                            onClick={() => {
+                                onSelectedSourceChange(modelAudioPath);
+                                setInputValidationSource({ validateStatus: "", help: "" });
+                            }}
+                        >
+                            {t("tonies.editModal.setAudioFromModel")}
+                        </Button>
+                    </Form.Item>
+                )}
             </div>
 
             <Divider orientation="horizontal" titlePlacement="left">
@@ -162,46 +186,47 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
             </Divider>
             <div>
                 <Form.Item validateStatus={inputValidationModel.validateStatus} help={inputValidationModel.help}>
-                    <Input
-                        key="model"
-                        value={selectedModel}
-                        width="auto"
-                        onChange={(e) => onSelectedModelChange(e.target.value)}
-                        prefix={[
-                            <CloseOutlined
-                                key="close-model"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={handleClearModel}
-                            />,
-                            <Divider key="divider-model-1" orientation="vertical" style={{ marginLeft: 2 }} />,
-                            <RollbackOutlined
-                                key="rollback-model"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={handleRollbackModel}
-                                style={{
-                                    color: isModelUnchanged ? token.colorTextDisabled : token.colorText,
-                                    cursor: isModelUnchanged ? "default" : "pointer",
-                                }}
-                                className={isModelUnchanged ? "disabled" : "enabled"}
-                            />,
-                            <Divider key="divider-model-2" orientation="vertical" style={{ marginLeft: 2 }} />,
-                        ]}
-                    />
                     <ToniesJsonSearch
                         placeholder={t("tonies.editModal.placeholderSearchForAModel")}
                         clearInputAfterSelection={false}
                         onChange={onSearchModelChange}
+                        onSelectResult={(result) => {
+                            onModelSelectResult?.({ value: result.value, selectionText: result.selectionText });
+                        }}
                         key={keyTonieArticleSearch}
-                        onOpenCustomModelEditor={onOpenCreateModelEditor}
+                        showAddCustomTonieButton={false}
+                        modelDisplayText={modelDisplayText}
+                        prefix={
+                            <>
+                                <CloseOutlined
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={handleClearModel}
+                                    style={{ cursor: "pointer" }}
+                                />
+                                <Divider orientation="vertical" style={{ marginLeft: 2 }} />
+                                <RollbackOutlined
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={handleRollbackModel}
+                                    style={{
+                                        color: isModelUnchanged ? token.colorTextDisabled : token.colorText,
+                                        cursor: isModelUnchanged ? "default" : "pointer",
+                                    }}
+                                />
+                                <Divider orientation="vertical" style={{ marginLeft: 2 }} />
+                            </>
+                        }
+                        suffix={
+                            onCreateNewModel ? (
+                                <Tooltip title={t("tonies.editModal.createNewModelTooltip")}>
+                                    <PlusOutlined
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onClick={onCreateNewModel}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </Tooltip>
+                            ) : undefined
+                        }
                     />
-                    <Space style={{ marginTop: 8 }}>
-                        <Tooltip title={t("tonies.customEditor.actions.newModel", { defaultValue: "New model" })}>
-                            <Button type="primary" icon={<PlusOutlined />} onClick={onOpenCreateModelEditor} />
-                        </Tooltip>
-                        <Tooltip title={t("tonies.editModal.editSelectedCustomModel", { defaultValue: "Continue editing model" })}>
-                            <Button icon={<EditOutlined />} onClick={onOpenSelectedModelEditor} disabled={!canOpenSelectedModelEditor} />
-                        </Tooltip>
-                    </Space>
                 </Form.Item>
             </div>
         </Modal>

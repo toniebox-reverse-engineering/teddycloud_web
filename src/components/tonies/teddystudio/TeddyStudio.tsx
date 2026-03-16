@@ -15,7 +15,7 @@ import { ToniesJsonSearchWrapper } from "./input/ToniesJsonSearchWrapper";
 import { CustomImages } from "./input/CustomImages";
 import { EditLabelModal } from "./modals/EditLabelModal";
 import { LabelOverridesById, LabelOverrides } from "./types/labelOverrides";
-import ImageManagerModal from "../filebrowser/modals/ImageManagerModal";
+import SelectImageModal from "../common/modals/SelectImageModal";
 
 const { Paragraph } = Typography;
 
@@ -151,7 +151,7 @@ export const TeddyStudio: React.FC = () => {
                 onOpenImageManager={() => setImageManagerOpen(true)}
             />
 
-            <ImageManagerModal
+            <SelectImageModal
                 open={imageManagerOpen}
                 onClose={() => setImageManagerOpen(false)}
                 onSelectImage={(path) => addCustomImageByPath(path)}

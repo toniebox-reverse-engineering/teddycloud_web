@@ -1,0 +1,144 @@
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Card, Popconfirm, Tooltip, theme } from "antd";
+import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
+import { toImageSrc, toPreviewableImageUrl } from "../common/utils/imagePathUtils";
+
+export interface ModelCardEntry {
+    model: string;
+    series?: string;
+    episodes?: string;
+    pic?: string;
+    /** Cache-resolved URL for display when tonie_json.cache_images is enabled */
+    cachePic?: string;
+}
+
+export interface ModelCardProps {
+    idx: number;
+    entry: ModelCardEntry;
+    gridColumns: number;
+    onEdit: (idx: number) => void;
+    onDuplicate: (idx: number) => void;
+    onDelete: (idx: number) => void;
+    onPreviewClick: (url: string) => void;
+}
+
+export const ModelCard: React.FC<ModelCardProps> = ({
+    idx,
+    entry,
+    gridColumns,
+    onEdit,
+    onDuplicate,
+    onDelete,
+    onPreviewClick,
+}) => {
+    const { t } = useTranslation();
+    const { token } = theme.useToken();
+
+    const previewUrl = toPreviewableImageUrl(entry.cachePic ?? entry.pic);
+
+    return (
+        <div
+            style={{
+                flex: `0 0 calc(${100 / gridColumns}% - 16px)`,
+                maxWidth: `calc(${100 / gridColumns}% - 16px)`,
+            }}
+        >
+            <Card
+                hoverable={false}
+                size="small"
+                style={{
+                    background: token.colorBgContainerDisabled,
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                }}
+                title={
+                    <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {entry.series || entry.model || "—"}
+                    </div>
+                }
+                cover={
+                    <div
+                        style={{ position: "relative" }}
+                        onClick={() => {
+                            if (previewUrl) {
+                                onPreviewClick(previewUrl);
+                            }
+                        }}
+                    >
+                        {previewUrl ? (
+                            <img
+                                src={toImageSrc(previewUrl)}
+                                alt={entry.series || entry.model || ""}
+                                style={{ padding: 8, width: "100%" }}
+                            />
+                        ) : (
+                            <img
+                                src={toImageSrc("/img_unknown.png")}
+                                alt=""
+                                style={{ padding: 8, paddingTop: 10, width: "100%" }}
+                            />
+                        )}
+                    </div>
+                }
+                actions={[
+                    <Tooltip key="edit" title={t("tonies.customEditor.actions.edit", { defaultValue: "Edit" })}>
+                        <span
+                            onClick={() => onEdit(idx)}
+                            style={{ cursor: "pointer" }}
+                            onKeyDown={(e) => e.key === "Enter" && onEdit(idx)}
+                            role="button"
+                            tabIndex={0}
+                        >
+                            <EditOutlined />
+                        </span>
+                    </Tooltip>,
+                    <Tooltip key="dup" title={t("tonies.customEditor.actions.duplicate", { defaultValue: "Duplicate" })}>
+                        <span
+                            onClick={() => onDuplicate(idx)}
+                            style={{ cursor: "pointer" }}
+                            onKeyDown={(e) => e.key === "Enter" && onDuplicate(idx)}
+                            role="button"
+                            tabIndex={0}
+                        >
+                            <CopyOutlined />
+                        </span>
+                    </Tooltip>,
+                    <Popconfirm
+                        key="del"
+                        title={t("tonies.customEditor.deleteConfirm.title", { defaultValue: "Delete model" })}
+                        description={t("tonies.customEditor.deleteConfirm.description", {
+                            defaultValue: 'Really delete "{{model}}"? This cannot be undone.',
+                            model: entry.model,
+                        })}
+                        onConfirm={() => void onDelete(idx)}
+                        okText={t("tonies.customEditor.deleteConfirm.confirm", { defaultValue: "Delete" })}
+                        cancelText={t("tonies.customEditor.deleteConfirm.abort", { defaultValue: "Abort" })}
+                    >
+                        <Tooltip title={t("tonies.customEditor.actions.delete", { defaultValue: "Delete" })}>
+                            <span style={{ cursor: "pointer", color: token.colorError }} role="button" tabIndex={0}>
+                                <DeleteOutlined />
+                            </span>
+                        </Tooltip>
+                    </Popconfirm>
+                ]}
+            >
+                {(() => {
+                    const metaTitle = (entry.episodes || "").trim() || undefined;
+                    const displayName = (entry.series || entry.model || "").trim();
+                    const metaDescription =
+                        entry.model && entry.model.trim() !== displayName ? entry.model : undefined;
+                    if (!metaTitle && !metaDescription) return null;
+                    return (
+                        <Card.Meta
+                            title={metaTitle}
+                            description={metaDescription}
+                        />
+                    );
+                })()}
+            </Card>
+        </div>
+    );
+};

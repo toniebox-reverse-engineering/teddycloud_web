@@ -11,11 +11,7 @@
         "unknownSource": "Unbekannt"
     },
     "common": {
-        "cancel": "Abbrechen",
-        "clean": "unverändert",
-        "changed": "geändert*",
-        "deleted": "gelöscht*",
-        "new": "neu*"
+        "cancel": "Abbrechen"
     },
     "community": {
         "attribution": {
@@ -378,12 +374,12 @@
                     "title": "TAP-Playlist bearbeiten"
                 },
                 "migrateToAudioIdFolder": {
-                    "text": "Verschiebt die TAF-Datei in den Ordner 'by/audioId' der Bibliothek und aktualisiert die Quelle in der JSON-Datei.",
-                    "title": "TAF-Datei nach AudioId in die Bibliothek verschieben"
+                    "text": "Verschiebt die TAF-Datei in den Ordner 'by/audioId' der Library und aktualisiert die Quelle in der JSON-Datei.",
+                    "title": "TAF-Datei nach AudioId in die Library verschieben"
                 },
                 "migrateToLibraryRoot": {
-                    "text": "Verschiebt die TAF-Datei in den Hauptordner der Bibliothek und aktualisiert die Quelle in der zugehörigen JSON-Datei.",
-                    "title": "TAF-Datei in die Bibliothekswurzel verschieben"
+                    "text": "Verschiebt die TAF-Datei in den Hauptordner der Library und aktualisiert die Quelle in der zugehörigen JSON-Datei.",
+                    "title": "TAF-Datei in die Library-Wurzel verschieben"
                 },
                 "moveFile": {
                     "text": "Verschiebt die Datei an einen neuen Speicherort. Hinweis: Wenn diese Datei einem Tonie/Tag zugewiesen ist, wird der Verweis nicht aktualisiert.",
@@ -442,6 +438,7 @@
             "title": "Hilfe"
         },
         "hidden": "Versteckt",
+        "image": "Bild",
         "maxSelectedRows": "Du kannst nur maximal {{maxSelectedRows}} Dateien auswählen",
         "maxSelectedRowsWarning": "Zu viele Dateien ausgewählt!",
         "messages": {
@@ -580,8 +577,8 @@
                     },
                     "title": "Verwalte alle deine Tonies/Tags"
                 },
-                "04manageLibrary": "Verwalte deine Inhaltsbibliothek",
-                "05managePlaylists": "Verwalte deine Tonie-Audio-Playlist-Bibliothek (PoC im WebFrontend)",
+                "04manageLibrary": "Verwalte deine Library",
+                "05managePlaylists": "Verwalte deine Tonie-Audio-Playlist-Library (PoC im WebFrontend)",
                 "06convertAudioFile": "Beliebige Audiodatei in eine Tonie-Audiodatei konvertieren",
                 "07manageTonieboxes": {
                     "items": {
@@ -1807,14 +1804,15 @@
             "title": "Neuen Custom Tonie/Tag anlegen",
             "track": "Track"
         },
-        "addToniesCustomJsonEntry": "WIP: Modell anlegen",
         "customToniesEditorJsonEntry": "Custom-Modelle",
         "imageManager": {
-            "title": "Bilder auswählen & verwalten",
+            "title": "Library: Bilder auswählen & hochladen",
+            "titleSelect": "Bild auswählen",
             "okText": "Übernehmen",
             "sourceCustom": "Custom",
             "sourceOriginal": "Original",
-            "noOriginalImages": "Keine Original-Bilder gefunden"
+            "noOriginalImages": "Keine Original-Bilder gefunden",
+            "originalImagesLoading": "Original Bilder werden geladen …"
         },
         "customEditor": {
             "actions": {
@@ -1825,13 +1823,13 @@
                 "edit": "Bearbeiten",
                 "newModel": "Neues Modell",
                 "preview": "Vorschau",
-                "restore": "Wiederherstellen",
-                "toggleChangesOnly": "Nur Änderungen"
+                "restore": "Wiederherstellen"
             },
             "audio": {
-                "libraryLabel": "Custom-Audio (Bibliothek)",
+                "libraryLabel": "Custom-Audio ({{library}})",
+                "selectFromLibrary": "Audio aus {{library}} auswählen",
                 "notInIndex": "Nicht im Custom-Audio-Index: {{audioId}}/{{hash}}",
-                "placeholder": "Custom-Audio aus der Bibliothek wählen"
+                "placeholder": "Custom-Audio aus {{library}} wählen"
             },
             "batch": {
                 "description": "Änderungen gelten für alle ausgewählten Modelle.",
@@ -1843,14 +1841,19 @@
             },
             "columns": {
                 "actions": "Aktionen",
-                "image": "Bild",
-                "status": "Status"
+                "image": "Bild"
             },
             "errors": {
                 "emptyResult": "Mindestens ein Modell muss erhalten bleiben.",
                 "invalidSelectedIndex": "Ungültiger ausgewählter Index",
-                "releaseNumeric": "Release muss numerisch sein"
+                "releaseNumeric": "Release muss numerisch sein",
+                "duplicateModel": "Duplikat: {{model}}",
+                "duplicateAudioHash": "Doppelte audio_id+hash-Kombination: {{audioId}}"
             },
+            "duplicateTitleSuffix": "Kopie",
+            "editModalTitle": "Modell {{current}} von {{total}} bearbeiten",
+            "editModalTitleCreate": "Neues Modell",
+            "filterFieldsPlaceholder": "In Feldern suchen",
             "filterPlaceholder": "Modelle filtern...",
             "modelsTitle": "Modelle",
             "noChangesBody": "Es gibt aktuell nichts zu speichern.",
@@ -1885,7 +1888,34 @@
             "unsaved": "{{count}} ungespeicherte Änderung(en)",
             "validation": {
                 "title": "Bitte zuerst diese Probleme beheben"
+            },
+            "renameFailed": "Umbenennung fehlgeschlagen",
+            "renameConfirm": {
+                "title": "Modell umbenennen",
+                "description": "Modell-ID wird von \"{{from}}\" zu \"{{to}}\" geändert. Verknüpfte Tonies werden automatisch aktualisiert.",
+                "skipUpdate": "Verknüpfte Tonies nicht aktualisieren",
+                "confirm": "Bestätigen",
+                "abort": "Abbrechen"
+            },
+            "deleteConfirm": {
+                "title": "Modell löschen",
+                "description": "\"{{model}}\" wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+                "deleted": "Modell \"{{model}}\" wurde gelöscht.",
+                "confirm": "Löschen",
+                "abort": "Abbrechen"
+            },
+            "emptyState": "Keine Custom-Modelle",
+            "emptyStateHint": "tonies.custom.json ist leer. Füge dein erstes Modell hinzu.",
+            "pagination": {
+                "modelsPerPage": "Modelle/Seite"
             }
+        },
+        "customModelPicker": {
+            "title": "Custom-Modell auswählen",
+            "searchPlaceholder": "Modell, Serie suchen...",
+            "addNew": "Neu hinzufügen",
+            "loading": "Laden...",
+            "noModels": "Keine Custom-Modelle gefunden"
         },
         "alternativeSource": "Der Toniefigur {{originalTonie}} ist der Inhalt {{assignedContent}} zugewiesen!",
         "alternativeSourceUnknown": "Der Toniefigur {{originalTonie}} ist alternativer Inhalt zugewiesen!",
@@ -1912,8 +1942,10 @@
             "placeholderSearchForAModel": "Nach einem Modell suchen",
             "placeholderSearchForARadioStream": "Suche nach einem Radiostream",
             "save": "Speichern",
+            "setAudioFromModel": "Audio aus Modell setzen",
             "source": "Quelle",
-            "title": "Modell bearbeiten"
+            "createNewModelTooltip": "Neues Modell erstellen",
+            "title": "Tonie/Coin bearbeiten"
         },
         "encoder": {
             "browserEncodingInProgress": "Audio-Dateien werden im Browser encodiert...",
@@ -1947,7 +1979,7 @@
             "uploading": "Lädt hoch...",
             "uploadingDetails": "Datei \"{{file}}\" wird hochgeladen...",
             "uploadSuccessful": "Dateikodierung erfolgreich!",
-            "uploadSuccessfulDetails": "Dateien wurden als \"{{file}}\" kodiert und erfolgreich zur Bibliothek hinzugefügt!",
+            "uploadSuccessfulDetails": "Dateien wurden als \"{{file}}\" kodiert und erfolgreich zur Library hinzugefügt!",
             "uploadText": "Klicke oder ziehe bis zu {{maxFiles}} Audiodateien, die du in eine TAF-Datei konvertieren möchtest, zum Hochladen in diesen Bereich"
         },
         "errorFetchingSystemSounds": "Fehler beim Abrufen der System Sounds",
@@ -1979,7 +2011,7 @@
                         "title": "Radio-Stream-Suche"
                     },
                     "source": {
-                        "description": "Du kannst Inhalte aus deiner Bibliothek (z. B. TAF- oder TAP-Dateien) zuweisen oder eine Stream-URL eingeben.",
+                        "description": "Du kannst Inhalte aus deiner Library (z.B. TAF- oder TAP-Dateien) zuweisen oder eine Stream-URL eingeben.",
                         "text": "Zeigt die aktuell zugewiesene Inhaltsquelle an.",
                         "title": "Quelle"
                     },
@@ -2062,6 +2094,13 @@
         "library": {
             "navigationTitle": "Library",
             "title": "Library"
+        },
+        "customImages": {
+            "navigationTitle": "Bilder",
+            "title": "Eigene Bilder verwalten"
+        },
+        "libraryAudio": {
+            "navigationTitle": "Audio"
         },
         "messages": {
             "cloudAccessBlocked": "Cloud-Zugang blockiert!",
@@ -2196,9 +2235,9 @@
             "currentLabel": "Aktuelles Label",
             "custom": "Benutzerdefiniert",
             "customImage": "Eigene Bilder",
-            "customImageHint": "Du kannst auch temporär eigene Bilder für deine Traveltonies hinzufügen. Sie werden jedoch nicht dauerhaft gespeichert!",
+            "customImageHint": "Du kannst temporär eigene Bilder hinzufügen – sie werden NICHT in die Library übernommen und nur für dieses Druckblatt verwendet.",
             "customImageTitle": "Gib einen Titel ein, der gedruckt werden soll",
-            "customImageUpload": "Eigenes Bild hinzufügen",
+            "customImageUpload": "Temporäres Bild hinzufügen (ohne Library)",
             "diameter": "Innendurchmesser",
             "empty": "Leer - Bitte wähle zuerst Tonies oder Tags aus oder füge ein eigenes Bild hinzu!",
             "episodes": "Episoden",

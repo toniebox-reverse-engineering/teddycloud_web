@@ -32,9 +32,23 @@ export default defineConfig(({ command, mode }) => {
             https: httpsOptions,
             proxy: {
                 "/img_unknown.png": {
-                    target: targetUrl,
+                    target: proxyUrl,
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/img_unknown\.png/, `${baseApiUrl}/web/img_unknown.png`),
+                    rewrite: (path) => path.replace(/^\/img_unknown\.png/, "/img_unknown.png"),
+                    secure: false,
+                },
+
+                // Proxy /cache/* (cached figurine images when tonie_json.cache_images is enabled)
+                "/cache": {
+                    target: proxyUrl,
+                    changeOrigin: true,
+                    secure: false,
+                },
+
+                // Proxy /img/* (static images from tonies.json)
+                "/img": {
+                    target: proxyUrl,
+                    changeOrigin: true,
                     secure: false,
                 },
 

@@ -1,5 +1,5 @@
 import { Button, Tooltip } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
@@ -8,6 +8,7 @@ import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 import { canHover } from "../../../../utils/browser/browserUtils";
+import { toImageSrc } from "../utils/imagePathUtils";
 import { useCustomModelsEditorLauncher } from "../../hooks/useCustomModelsEditorFeature";
 
 export interface ToniesJsonSearchResult {
@@ -30,6 +31,12 @@ interface ToniesJsonSearchProps {
     onChange: (newValue: string) => void;
 
     onSelectResult?: (result: ToniesJsonSearchResult) => void;
+
+    /** Display text when a model is selected (e.g. "[01-0013] Benjamin Blümchen - Der Zoo-Kindergarten") */
+    modelDisplayText?: string;
+
+    prefix?: React.ReactNode;
+    suffix?: React.ReactNode;
 }
 
 export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
@@ -39,6 +46,9 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
     onOpenCustomModelEditor,
     onChange,
     onSelectResult,
+    modelDisplayText = "",
+    prefix,
+    suffix,
 }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
@@ -55,10 +65,17 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 
     const [searchText, setSearchText] = useState("");
 
+    useEffect(() => {
+        if (!modelDisplayText) setSearchText("");
+    }, [modelDisplayText]);
+
     const debouncedSearch = useDebouncedCallback(search, 300);
 
     const handleSearch = (text: string) => {
         setSearchText(text);
+        if (!text.trim()) {
+            onChange("");
+        }
         debouncedSearch(text);
     };
 
@@ -70,7 +87,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
             <div style={{ display: "flex", alignItems: "center" }}>
                 {d.picture && (
                     <img
-                        src={d.picture}
+                        src={toImageSrc(d.picture)}
                         alt={d.selectionText}
                         style={{
                             width: 64,
@@ -105,17 +122,21 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         }
     };
 
+    const displayValue = searchText || modelDisplayText;
+
     return (
         <>
             <SearchDropdown
-                value={searchText}
+                value={displayValue}
                 placeholder={placeholder}
                 options={dropdownOptions}
                 onInputChange={handleSearch}
                 onSelect={handleSelect}
                 noResultsContent={t("toniesJsonSearch.noResults")}
                 allowClear
-                style={{ marginTop: 8 }}
+                style={{ marginTop: prefix || suffix ? 0 : 8 }}
+                prefix={prefix}
+                suffix={suffix}
             />
 
             {showAddCustomTonieButton && (

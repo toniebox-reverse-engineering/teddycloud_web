@@ -1,7 +1,7 @@
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 import { ConfigProvider, Layout, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import { StyledFooter } from "./components/common/footer/StyledFooter";
 import { StyledHeader } from "./components/common/header/StyledHeader";
@@ -172,8 +172,12 @@ function App() {
                                         />
                                         <Route path="/audioplayer" element={<TeddyAudioPlayerPage standalone />} />
                                         <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
-                                        <Route path="/tonies/content" element={<ContentPage />} />
-                                        <Route path="/tonies/library" element={<LibraryPage />} />
+                        <Route path="/tonies/content" element={<ContentPage />} />
+                        <Route path="/tonies/library" element={<LibraryPage />} />
+                        <Route
+                            path="/tonies/custom-images"
+                            element={<Navigate to="/tonies/library?view=custom_img" replace />}
+                        />
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />
                                         <Route path="/tonies/tap" element={<TeddyAudioPlaylistsPage />} />
                                         <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />

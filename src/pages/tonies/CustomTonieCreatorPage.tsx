@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import ToniesCustomJsonEditorEnhanced from "../../components/tonies/ToniesCustomJsonEditorEnhanced";
+import ToniesCustomJsonEditor from "../../components/tonies/ToniesCustomJsonEditor";
 
 export const CustomTonieCreatorPage: React.FC = () => {
     const { t } = useTranslation();
@@ -24,7 +24,8 @@ export const CustomTonieCreatorPage: React.FC = () => {
                     ]}
                 />
                 <StyledContent>
-                    <ToniesCustomJsonEditorEnhanced
+                    <h1 style={{ marginBottom: 16 }}>{t("tonies.customToniesEditorJsonEntry")}</h1>
+                    <ToniesCustomJsonEditor
                         open={true}
                         embedded={true}
                         onClose={() => navigate("/tonies")}

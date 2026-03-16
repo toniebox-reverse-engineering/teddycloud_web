@@ -11,11 +11,7 @@
         "unknownSource": "Unkown"
     },
     "common": {
-        "cancel": "Cancel",
-        "clean": "unchanged",
-        "changed": "changed*",
-        "deleted": "deleted*",
-        "new": "new*"
+        "cancel": "Cancel"
     },
     "community": {
         "attribution": {
@@ -442,6 +438,7 @@
             "title": "Help"
         },
         "hidden": "Hidden",
+        "image": "Image",
         "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files",
         "maxSelectedRowsWarning": "Too many files selected!",
         "messages": {
@@ -1807,14 +1804,15 @@
             "title": "Create new Custom Tonie/Tag",
             "track": "Track"
         },
-        "addToniesCustomJsonEntry": "WIP: Add Model",
         "customToniesEditorJsonEntry": "Custom models",
         "imageManager": {
-            "title": "Select & manage images",
+            "title": "Library: Select & upload images",
+            "titleSelect": "Select image",
             "okText": "Apply",
             "sourceCustom": "Custom",
             "sourceOriginal": "Original",
-            "noOriginalImages": "No original images found"
+            "noOriginalImages": "No original images found",
+            "originalImagesLoading": "Loading original images …"
         },
         "customEditor": {
             "actions": {
@@ -1825,13 +1823,13 @@
                 "edit": "Edit",
                 "newModel": "New model",
                 "preview": "Preview",
-                "restore": "Restore",
-                "toggleChangesOnly": "Changes only"
+                "restore": "Restore"
             },
             "audio": {
-                "libraryLabel": "Custom audio (library)",
+                "libraryLabel": "Custom audio ({{library}})",
+                "selectFromLibrary": "Select audio from {{library}}",
                 "notInIndex": "Not in custom audio index: {{audioId}}/{{hash}}",
-                "placeholder": "Select custom audio from library"
+                "placeholder": "Select custom audio from {{library}}"
             },
             "batch": {
                 "description": "Changes apply to all selected models.",
@@ -1843,14 +1841,19 @@
             },
             "columns": {
                 "actions": "Actions",
-                "image": "Image",
-                "status": "Status"
+                "image": "Image"
             },
             "errors": {
                 "emptyResult": "At least one model must remain.",
                 "invalidSelectedIndex": "Invalid selected index",
-                "releaseNumeric": "Release must be numeric"
+                "releaseNumeric": "Release must be numeric",
+                "duplicateModel": "Duplicate: {{model}}",
+                "duplicateAudioHash": "Duplicate audio_id+hash combination: {{audioId}}"
             },
+            "duplicateTitleSuffix": "Copy",
+            "editModalTitle": "Edit model {{current}} of {{total}}",
+            "editModalTitleCreate": "New model",
+            "filterFieldsPlaceholder": "Search in fields",
             "filterPlaceholder": "Filter models...",
             "modelsTitle": "Models",
             "noChangesBody": "There is nothing to save at the moment.",
@@ -1885,7 +1888,34 @@
             "unsaved": "{{count}} unsaved change(s)",
             "validation": {
                 "title": "Please fix these issues first"
+            },
+            "renameFailed": "Rename failed",
+            "renameConfirm": {
+                "title": "Rename model",
+                "description": "Model ID will change from \"{{from}}\" to \"{{to}}\". Linked Tonies will be updated automatically.",
+                "skipUpdate": "Do not update linked Tonies",
+                "confirm": "Confirm",
+                "abort": "Abort"
+            },
+            "deleteConfirm": {
+                "title": "Delete model",
+                "description": "Really delete \"{{model}}\"? This cannot be undone.",
+                "deleted": "Model \"{{model}}\" has been deleted.",
+                "confirm": "Delete",
+                "abort": "Abort"
+            },
+            "emptyState": "No custom models",
+            "emptyStateHint": "tonies.custom.json is empty. Add your first model.",
+            "pagination": {
+                "modelsPerPage": "models/page"
             }
+        },
+        "customModelPicker": {
+            "title": "Select custom model",
+            "searchPlaceholder": "Search model, series...",
+            "addNew": "Add new",
+            "loading": "Loading...",
+            "noModels": "No custom models found"
         },
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
@@ -1912,8 +1942,10 @@
             "placeholderSearchForAModel": "Search for a model",
             "placeholderSearchForARadioStream": "Search for a radio stream",
             "save": "Save",
+            "setAudioFromModel": "Set audio from model",
             "source": "Source",
-            "title": "Edit model"
+            "createNewModelTooltip": "Create new model",
+            "title": "Edit Tonie/Coin"
         },
         "encoder": {
             "browserEncodingInProgress": "Encoding audio files in browser...",
@@ -2063,6 +2095,13 @@
             "navigationTitle": "Library",
             "title": "Library"
         },
+        "customImages": {
+            "navigationTitle": "Images",
+            "title": "Manage custom images"
+        },
+        "libraryAudio": {
+            "navigationTitle": "Audio"
+        },
         "messages": {
             "cloudAccessBlocked": "Cloud access blocked!",
             "cloudAccessBlockedDetails": "Cloud access blocked for \"{{model}}\" [{{ruid}}]",
@@ -2196,9 +2235,9 @@
             "currentLabel": "Current label",
             "custom": "Custom",
             "customImage": "Custom Images",
-            "customImageHint": "You can also add temporary images for your Traveltonies. Note that they will not be saved permanently!",
+            "customImageHint": "You can add images temporarily – they will NOT be added to the library and are only used for this print sheet.",
             "customImageTitle": "Enter a title to be printed",
-            "customImageUpload": "Add your own image",
+            "customImageUpload": "Add temporary image (without Library)",
             "diameter": "Inner diameter",
             "empty": "Empty - Please select Tonies or Tags or add custom image first!",
             "episodes": "Episodes",

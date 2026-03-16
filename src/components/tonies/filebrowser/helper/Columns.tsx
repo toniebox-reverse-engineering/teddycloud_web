@@ -22,6 +22,7 @@ import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupport
 import { TonieCardProps } from "../../../../types/tonieTypes";
 import { useTranslation } from "react-i18next";
 import { canHover } from "../../../../utils/browser/browserUtils";
+import { toImageSrc } from "../../common/utils/imagePathUtils";
 
 const { useToken } = theme;
 
@@ -61,6 +62,7 @@ export interface CreateColumnsOptions {
     showDeleteConfirmDialog?: (fileName: string, fullPath: string, query: string) => void;
     buildContentUrl?: (fileName: string, options?: { ogg?: boolean }) => string;
     onImagePreviewClick?: (imageUrl: string) => void;
+    onRowSelect?: (record: Record) => void;
 }
 
 const isImageFileName = (name: string) =>
@@ -93,23 +95,22 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         showDeleteConfirmDialog,
         buildContentUrl,
         onImagePreviewClick,
+        onRowSelect,
     } = options;
-
-    const baseApiUrl = (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) || "";
 
     const getPictureSrc = (record: any): string | null => {
         if (!record) return null;
-        if (record.tonieInfo?.picture) return record.tonieInfo.picture;
+        if (record.tonieInfo?.picture) return toImageSrc(record.tonieInfo.picture);
         if (special === "custom_img" && !record.isDir && buildContentUrl && isImageFileName(record.name)) {
             const path = buildContentUrl(record.name);
-            return baseApiUrl ? `${baseApiUrl.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}` : path;
+            return toImageSrc(path.startsWith("/") ? path : `/${path}`);
         }
         return null;
     };
 
     let columns: any[] = [
         {
-            title: mode === "full" ? t("fileBrowser.image", { defaultValue: "Bild" }) : "",
+            title: mode === "full" ? t("fileBrowser.image") : "",
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
@@ -154,6 +155,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 );
             },
             showOnDirOnly: false,
+            hideForSpecial: "library",
         },
 
         {
@@ -162,26 +164,78 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             key: "name",
             sorter: dirNameSorter,
             defaultSortOrder: "ascend" as SortOrder,
-            render: (picture: string, record: any) =>
-                record && (
-                    <div key={`name-${record.name}`}>
-                        <div className="showSmallDevicesOnly">
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <div style={{ display: "flex" }}>
-                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                        {record.isDir ? <>{record.name}</> : record.name}
+            render: (picture: string, record: any) => {
+                const isImagePreviewClickable =
+                    special === "custom_img" &&
+                    !record?.isDir &&
+                    isImageFileName(record?.name) &&
+                    onImagePreviewClick;
+                const isSelectableFile = mode === "select" && onRowSelect && !record?.isDir && record?.name !== "..";
+                const nameContent = isSelectableFile ? (
+                    <span
+                        role="button"
+                        tabIndex={0}
+                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onRowSelect(record);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                onRowSelect(record);
+                            }
+                        }}
+                    >
+                        {record.name}
+                    </span>
+                ) : isImagePreviewClickable ? (
+                    <span
+                        role="button"
+                        tabIndex={0}
+                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            const src = getPictureSrc(record);
+                            if (src) onImagePreviewClick(src);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                const src = getPictureSrc(record);
+                                if (src) onImagePreviewClick(src);
+                            }
+                        }}
+                    >
+                        {record.name}
+                    </span>
+                ) : (
+                    record?.isDir ? <>{record.name}</> : record?.name
+                );
+                return (
+                    record && (
+                        <div key={`name-${record.name}`}>
+                            <div className="showSmallDevicesOnly">
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <div style={{ display: "flex" }}>
+                                        {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
+                                        <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                            {nameContent}
+                                        </div>
                                     </div>
-                                </div>
                                 {mode === "full" && !record.isDir && record.size
                                     ? " (" + humanFileSize(record.size) + ")"
                                     : ""}
                             </div>
-                            <div>{record.tonieInfo?.model}</div>
-                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                    (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
-                            </div>
+                            {special !== "custom_img" && (
+                                <>
+                                    <div>{record.tonieInfo?.model}</div>
+                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
+                                            (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                                    </div>
+                                </>
+                            )}
                             {mode === "full" && (
                                 <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
                             )}
@@ -191,7 +245,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 <div style={{ display: "flex" }}>
                                     {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
                                     <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                        {record.isDir ? <>{record.name}</> : record.name}
+                                        {nameContent}
                                     </div>
                                 </div>
                                 {mode === "full" && !record.isDir && record.size
@@ -206,12 +260,14 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             <div style={{ display: "flex" }}>
                                 {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
                                 <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {record.isDir ? <>{record.name}</> : record.name}
+                                    {nameContent}
                                 </div>
                             </div>
                         </div>
                     </div>
-                ),
+                    )
+                );
+            },
             filteredValue: [filterText],
             onFilter: (value: string, record: Record) => {
                 const text = value.toLowerCase();
@@ -250,6 +306,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             showOnDirOnly: false,
             responsive: ["xl"],
             render: (_model: string, record: any) => <div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>,
+            hideForSpecial: "custom_img",
         },
 
         {
@@ -277,6 +334,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             ),
             showOnDirOnly: false,
             responsive: ["md"],
+            hideForSpecial: "custom_img",
         },
 
         {
@@ -288,6 +346,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             render: (episode: string, record: any) => (
                 <div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>
             ),
+            hideForSpecial: "custom_img",
         },
 
         {
@@ -307,7 +366,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         dataIndex: "controls",
         key: "controls",
         sorter: undefined,
-        width: 100,
         render: (name: string, record: any) => {
             const actions: React.ReactNode[] = [];
 
@@ -539,6 +597,11 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             return false;
         });
     }
+
+    columns = columns.filter((column) => {
+        const hideFor = (column as any).hideForSpecial;
+        return !hideFor || hideFor !== special;
+    });
 
     return columns;
 };
