@@ -2,14 +2,14 @@
 
 ## 0.7.0
 
+- added tls support in mqtt
+- prepared support of TB2 (added new v3 tonies APIs)
+- added custom tonies API
+- improved cache, now disable/loosing cache will not break images as we store the real url but  return the cached image internally.
 - gui: added Custom-Model-Editor to create and edit custom models
 - gui: added custom image management to library
 - gui: added selection for custom and original images for TeddyStudio and Custom-Model-Editor
 - gui: added option in tonie edit modal to set audio from model in case they differ
-- backend: added cuustom tonies API
-- backend: Cache improvement, now diabling/loosing cache will not break images as we store the real url but  return the cached image internally.
-- added tls support in mqtt
-- prepared support of TB2 (added new v3 tonies APIs)
 - gui: Audio encoder support literal and natural sorting [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276)
 - gui: TAP editor: fixed file order (follows select order) and added drag and drop reorder functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277)
 - gui: removed switch enable rtnl on rtnl page, is now autoenabled

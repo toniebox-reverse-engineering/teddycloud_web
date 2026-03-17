@@ -536,7 +536,8 @@
             "uploadSuccessful": "Fichiers téléversés avec succès.",
             "uploadSuccessfulDetails": "Tous les fichiers ont été téléchargés avec succès.",
             "uploadSuccessfulForFile": "Fichier \"{{file}}\" téléversé avec succès.",
-            "uploadText": "Cliquez ou faites glisser les fichiers dans cette zone pour les téléverser"
+            "uploadText": "Cliquez ou faites glisser les fichiers dans cette zone pour les téléverser",
+            "uploadTimeout": "Délai d'attente de téléversement dépassé après {{ms}}ms"
         }
     },
     "footer": {

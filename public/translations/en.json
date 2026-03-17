@@ -536,7 +536,8 @@
             "uploadSuccessful": "Files uploaded successfully.",
             "uploadSuccessfulDetails": "All files were uploaded successfully.",
             "uploadSuccessfulForFile": "File \"{{file}}\" uploaded successfully.",
-            "uploadText": "Click or drag files to this area to upload"
+            "uploadText": "Click or drag files to this area to upload",
+            "uploadTimeout": "Upload timeout after {{ms}}ms"
         }
     },
     "footer": {

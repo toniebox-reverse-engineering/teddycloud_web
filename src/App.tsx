@@ -175,7 +175,7 @@ function App() {
                         <Route path="/tonies/content" element={<ContentPage />} />
                         <Route path="/tonies/library" element={<LibraryPage />} />
                         <Route
-                            path="/tonies/custom-images"
+                            path="/tonies/customimages"
                             element={<Navigate to="/tonies/library?view=custom_img" replace />}
                         />
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />

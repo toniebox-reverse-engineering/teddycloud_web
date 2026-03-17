@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { UPLOAD_TIMEOUT_MS } from "../../../../constants/numbers";
+import { useUploadTimeoutMs } from "../../../../hooks/getsettings/useUploadTimeoutMs";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
@@ -57,6 +57,7 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const uploadTimeoutMs = useUploadTimeoutMs();
 
     const [uploading, setUploading] = useState<boolean>(false);
 
@@ -122,10 +123,11 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
             formData.append("file", originalBlob, file.name);
 
             try {
+                const timeoutMsg = t("fileBrowser.upload.uploadTimeout", { ms: uploadTimeoutMs });
                 const response = await Promise.race<Response>([
                     api.apiPostTeddyCloudFormDataRaw(`/api/fileUpload?path=${encodedPath}&special=${encodedSpecial}`, formData),
                     new Promise<Response>((_, reject) =>
-                        setTimeout(() => reject(new Error(`Upload timeout after ${UPLOAD_TIMEOUT_MS}ms`)), UPLOAD_TIMEOUT_MS)
+                        setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs)
                     ),
                 ]);
                 if (response.ok) {

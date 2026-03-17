@@ -536,7 +536,8 @@
             "uploadSuccessful": "Archivos subidos con éxito.",
             "uploadSuccessfulDetails": "Todos los archivos se han subido con éxito.",
             "uploadSuccessfulForFile": "Archivo \"{{file}}\" subido con éxito.",
-            "uploadText": "Haz clic o arrastra archivos a esta área para subir"
+            "uploadText": "Haz clic o arrastra archivos a esta área para subir",
+            "uploadTimeout": "Tiempo de espera de subida agotado después de {{ms}}ms"
         }
     },
     "footer": {

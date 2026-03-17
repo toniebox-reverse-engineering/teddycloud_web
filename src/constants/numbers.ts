@@ -1,2 +1,2 @@
 export const MAX_FILES = 99;
-export const UPLOAD_TIMEOUT_MS = 45000;
+export const DEFAULT_UPLOAD_TIMEOUT_MS = 120000;

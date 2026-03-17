@@ -536,7 +536,8 @@
             "uploadSuccessful": "Dateien erfolgreich hochgeladen.",
             "uploadSuccessfulDetails": "Alle Dateien wurden erfolgreich hochgeladen.",
             "uploadSuccessfulForFile": "Datei \"{{file}}\" erfolgreich hochgeladen.",
-            "uploadText": "Klicke oder ziehe die Dateien zum Hochladen in diesen Bereich"
+            "uploadText": "Klicke oder ziehe die Dateien zum Hochladen in diesen Bereich",
+            "uploadTimeout": "Upload-Timeout nach {{ms}}ms"
         }
     },
     "footer": {

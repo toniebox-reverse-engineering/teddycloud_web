@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
-import { UPLOAD_TIMEOUT_MS } from "../../../../constants/numbers";
+import { useUploadTimeoutMs } from "../../../../hooks/getsettings/useUploadTimeoutMs";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { SelectFileFileBrowser } from "../../filebrowser/SelectFileFileBrowser";
@@ -79,6 +79,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const uploadTimeoutMs = useUploadTimeoutMs();
     const title = titleProp ?? t("tonies.imageManager.title");
     const [source, setSource] = useState<ImageSource>("custom");
     const [customPath, setCustomPath] = useState("");
@@ -165,11 +166,12 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
         const encodedPath = normalizePathForQuery(customPath);
         const formData = new FormData();
         formData.append("file", file, file.name);
+        const timeoutMsg = t("fileBrowser.upload.uploadTimeout", { ms: uploadTimeoutMs });
         try {
             const response = await Promise.race<Response>([
                 api.apiPostTeddyCloudFormDataRaw(`/api/fileUpload?path=${encodedPath}&special=custom_img`, formData),
                 new Promise<Response>((_, reject) =>
-                    setTimeout(() => reject(new Error(`Upload timeout after ${UPLOAD_TIMEOUT_MS}ms`)), UPLOAD_TIMEOUT_MS)
+                    setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs)
                 ),
             ]);
             await closeLoadingNotification(key);
