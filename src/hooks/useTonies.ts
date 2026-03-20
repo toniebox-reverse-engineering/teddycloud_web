@@ -24,7 +24,7 @@ export const useTonies = (options: UseToniesOptions = {}) => {
     const { overlay = "", merged = true, shuffle = false, sort, includeHidden = false, filter = undefined } = options;
 
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
+    const { addNotification, toniesRefreshTrigger } = useTeddyCloud();
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [defaultLanguage, setDefaultLanguage] = useState<string>("");
@@ -81,7 +81,7 @@ export const useTonies = (options: UseToniesOptions = {}) => {
         };
 
         fetchTonies();
-    }, [overlay, merged]);
+    }, [overlay, merged, toniesRefreshTrigger]);
 
     useEffect(() => {
         const counts: LanguageCounts = {};

@@ -18,9 +18,11 @@ export default defineConfig(({ command, mode }) => {
         : undefined;
 
     const targetUrl = useHttps ? `https://localhost:${portHttps}` : `http://localhost:${portHttp}`;
-    const proxyUrl = process.env.VITE_APP_TEDDYCLOUD_API_URL
-        ? process.env.VITE_APP_TEDDYCLOUD_API_URL.replace(/^https:/, "http:")
-        : "http://teddycloud.local";
+    const proxyUrl =
+        process.env.VITE_PROXY_TARGET ||
+        (process.env.VITE_APP_TEDDYCLOUD_API_URL
+            ? process.env.VITE_APP_TEDDYCLOUD_API_URL.replace(/^https:/, "http:")
+            : "http://teddycloud.local");
 
     return {
         base: "/web",
@@ -31,6 +33,11 @@ export default defineConfig(({ command, mode }) => {
             host: true,
             https: httpsOptions,
             proxy: {
+                "/api": {
+                    target: proxyUrl,
+                    changeOrigin: true,
+                    secure: false,
+                },
                 "/img_unknown.png": {
                     target: proxyUrl,
                     changeOrigin: true,

@@ -1852,11 +1852,13 @@
                 "releaseNumeric": "Release doit être numérique",
                 "duplicateModel": "Doublon : {{model}}",
                 "duplicateAudioHash": "Combinaison audio_id+hash en double : {{audioId}}",
-                "modelExistsInBase": "Le modèle existe dans base tonies.json : {{models}}"
+                "modelExistsInBase": "Le modèle existe dans base tonies.json : {{models}}",
+                "invalidLanguageCode": "Code de langue invalide. Veuillez utiliser un code comme {{example}}."
             },
             "duplicateTitleSuffix": "Copie",
             "editModalTitle": "Modifier le modèle {{current}} sur {{total}}",
             "editModalTitleCreate": "Nouveau modèle",
+            "editModalTitleEdit": "Modifier le modèle",
             "filterFieldsPlaceholder": "Rechercher dans les champs",
             "filterPlaceholder": "Filtrer les modèles...",
             "modelsTitle": "Modèles",
@@ -1875,6 +1877,7 @@
             "previewTitle": "Aperçu de l'image",
             "saveSuccessWithCount": "tonies.custom.json enregistré ({{count}} entrées). Sauvegarde et rechargement déclenchés.",
             "savedState": "Toutes les modifications enregistrées",
+            "modelSavedSuccessful": "Modèle {{title}} enregistré avec succès",
             "sections": {
                 "audio": "Assignation audio",
                 "audioAssignment": "Assignation audio",
@@ -1898,7 +1901,7 @@
             "renameConfirm": {
                 "title": "Renommer le modèle",
                 "description": "L'ID du modèle passera de \"{{from}}\" à \"{{to}}\". Les Tonies liés seront mis à jour automatiquement.",
-                "skipUpdate": "Ne pas mettre à jour les Tonies liés",
+                "skipUpdate": "Retirer l'assignation du modèle des Tonies liés (l'audio reste)",
                 "confirm": "Confirmer",
                 "abort": "Annuler"
             },
@@ -1933,6 +1936,13 @@
             "hide": "Masquer",
             "title": "Masquer le Tonie/Tag"
         },
+        "confirmAudioModelMismatchModal": {
+            "cancel": "Annuler",
+            "confirm": "Continuer",
+            "title": "Modèle vs. Audio",
+            "content": "L'audio assigné a le modèle \"{{audioModel}}\". L'affichage sur la boîte provient de l'audio_id du TAF. Le modèle vide sera réinitialisé à \"{{audioModel}}\". Continuer?",
+            "unknownModel": "inconnu"
+        },
         "connectionToBoxineNotAvailable": "Impossible de se connecter à Boxine/Toniecloud. Veuillez activer l'accès pour permettre le téléchargement.",
         "content": {
             "navigationTitle": "Contenu",
@@ -1943,13 +1953,27 @@
         "currentPath": "Chemin actuel : ",
         "editModal": {
             "editSelectedCustomModel": "Continuer l'édition du modèle",
+            "invalidModelError": "Le modèle \"{{model}}\" est invalide. Veuillez sélectionner un modèle existant dans la recherche.",
+            "modelInfoHeading": "Infos du modèle",
+            "audioInfoHeading": "Infos audio",
+            "modelInfoModel": "Modèle",
+            "modelInfoSeries": "Série",
+            "modelInfoEpisode": "Épisode",
+            "modelInfoTitle": "Titre",
+            "modelInfoLanguage": "Langue",
+            "modelInfoCategory": "Catégorie",
+            "modelInfoAudioPath": "Chemin audio",
             "model": "Modèle",
+            "modelReadOnlyHint": "Tonie original : le modèle ne peut pas être modifié. Vous pouvez uniquement assigner un audio personnalisé.",
             "placeholderSearchForAModel": "Rechercher un modèle",
             "placeholderSearchForARadioStream": "Rechercher un flux radio",
             "save": "Enregistrer",
             "setAudioFromModel": "Définir l'audio du modèle",
+            "setAudioFromModelUnavailableInLibrary": "L'audio du modèle n'est pas encore disponible dans la bibliothèque.",
+            "setModelFromAudio": "Définir le modèle depuis l'audio",
             "source": "Source",
             "createNewModelTooltip": "Créer un nouveau modèle",
+            "editModelTooltip": "Modifier le modèle",
             "title": "Modifier Tonie/Coin"
         },
         "encoder": {

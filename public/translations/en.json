@@ -1852,11 +1852,13 @@
                 "releaseNumeric": "Release must be numeric",
                 "duplicateModel": "Duplicate: {{model}}",
                 "duplicateAudioHash": "Duplicate audio_id+hash combination: {{audioId}}",
-                "modelExistsInBase": "Model exists in base tonies.json: {{models}}"
+                "modelExistsInBase": "Model exists in base tonies.json: {{models}}",
+                "invalidLanguageCode": "Invalid language code. Please use a code like {{example}}."
             },
             "duplicateTitleSuffix": "Copy",
             "editModalTitle": "Edit model {{current}} of {{total}}",
             "editModalTitleCreate": "New model",
+            "editModalTitleEdit": "Edit model",
             "filterFieldsPlaceholder": "Search in fields",
             "filterPlaceholder": "Filter models...",
             "modelsTitle": "Models",
@@ -1875,6 +1877,7 @@
             "previewTitle": "Image preview",
             "saveSuccessWithCount": "tonies.custom.json saved ({{count}} entries). Backup and reload triggered.",
             "savedState": "All changes saved",
+            "modelSavedSuccessful": "Model {{title}} was successfully saved",
             "sections": {
                 "audio": "Audio assignment",
                 "audioAssignment": "Audio assignment",
@@ -1898,7 +1901,7 @@
             "renameConfirm": {
                 "title": "Rename model",
                 "description": "Model ID will change from \"{{from}}\" to \"{{to}}\". Linked Tonies will be updated automatically.",
-                "skipUpdate": "Do not update linked Tonies",
+                "skipUpdate": "Remove model assignment from linked Tonies (audio remains)",
                 "confirm": "Confirm",
                 "abort": "Abort"
             },
@@ -1933,6 +1936,13 @@
             "hide": "Hide",
             "title": "Hide Tonie/Tag"
         },
+        "confirmAudioModelMismatchModal": {
+            "cancel": "Cancel",
+            "confirm": "Continue",
+            "title": "Model vs. Audio",
+            "content": "The assigned audio has model \"{{audioModel}}\". The display on the box comes from the audio_id of the TAF. The empty model will be reset to \"{{audioModel}}\". Continue?",
+            "unknownModel": "unknown"
+        },
         "connectionToBoxineNotAvailable": "Unable to connect to Boxine/Toniecloud. Please enable access to allow downloading.",
         "content": {
             "navigationTitle": "Content",
@@ -1943,13 +1953,27 @@
         "currentPath": "Current Path: ",
         "editModal": {
             "editSelectedCustomModel": "Continue editing model",
+            "invalidModelError": "Model \"{{model}}\" is invalid. Please select an existing model from search.",
+            "modelInfoHeading": "Model Info",
+            "audioInfoHeading": "Audio Info",
+            "modelInfoModel": "Model",
+            "modelInfoSeries": "Series",
+            "modelInfoEpisode": "Episode",
+            "modelInfoTitle": "Title",
+            "modelInfoLanguage": "Language",
+            "modelInfoCategory": "Category",
+            "modelInfoAudioPath": "Audio Path",
             "model": "Model",
+            "modelReadOnlyHint": "Original tonie: Model cannot be changed. You can only assign custom audio.",
             "placeholderSearchForAModel": "Search for a model",
             "placeholderSearchForARadioStream": "Search for a radio stream",
             "save": "Save",
             "setAudioFromModel": "Set audio from model",
+            "setAudioFromModelUnavailableInLibrary": "Model audio is not yet available in the library.",
+            "setModelFromAudio": "Set model from audio",
             "source": "Source",
             "createNewModelTooltip": "Create new model",
+            "editModelTooltip": "Edit model",
             "title": "Edit Tonie/Coin"
         },
         "encoder": {

@@ -23,6 +23,7 @@ import { TonieCardProps } from "../../../../types/tonieTypes";
 import { useTranslation } from "react-i18next";
 import { canHover } from "../../../../utils/browser/browserUtils";
 import { toImageSrc } from "../../common/utils/imagePathUtils";
+import { toModelKey } from "../../utils/modelKey";
 
 const { useToken } = theme;
 
@@ -279,7 +280,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                         record.tafHeader.size &&
                         humanFileSize(record.tafHeader.size).toString().includes(text)) ||
                     ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.model.toLowerCase().includes(text)) ||
+                    ("tonieInfo" in record && toModelKey(record.tonieInfo?.model).includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
                     ("tonieInfo" in record && record.tonieInfo?.episode.toLowerCase().includes(text)) ||
                     (record.date && new Date(record.date * 1000).toLocaleString().includes(text))

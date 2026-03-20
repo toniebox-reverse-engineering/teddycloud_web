@@ -28,6 +28,7 @@ export const SelectFileFileBrowser: React.FC<{
     showColumns?: string[];
     rebuildTrigger?: number;
     onFileSelectChange?: (files: any[], path: string, special: string) => void;
+    onFileDoubleClick?: (file: any, path: string, special: string) => void;
 }> = ({
     special,
     initialPath = "",
@@ -39,6 +40,7 @@ export const SelectFileFileBrowser: React.FC<{
     showColumns = undefined,
     rebuildTrigger,
     onFileSelectChange,
+    onFileDoubleClick,
 }) => {
     const { t } = useTranslation();
     const { playAudio } = useAudioContext();
@@ -107,7 +109,7 @@ export const SelectFileFileBrowser: React.FC<{
 
     // table helpers
     const rowClassName = (record: any) => {
-        return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
+        return selectedRowKeys.includes(record.name) ? "highlight-row" : "";
     };
 
     const onSelectChange = (newSelectedRowKeys: Key[]) => {
@@ -165,6 +167,15 @@ export const SelectFileFileBrowser: React.FC<{
             ? selectedRowKeys.filter((key) => key !== record.name)
             : [...selectedRowKeys, record.name];
         onSelectChange(newSelectedKeys);
+    };
+
+    const isSingleSelect = maxSelectedRows === 1;
+
+    const handleRowClick = (record: Record) => {
+        if (record.isDir || record.name === "..") return;
+        if (isSingleSelect) {
+            onSelectChange([record.name]);
+        }
     };
 
     // columns
@@ -234,39 +245,57 @@ export const SelectFileFileBrowser: React.FC<{
                     pagination={false}
                     scroll={undefined}
                     onRow={(record) => ({
+                        onClick: () => {
+                            if (isSingleSelect) {
+                                handleRowClick(record);
+                            }
+                        },
                         onDoubleClick: () => {
                             if (record.isDir) {
                                 handleDirClick(record.name);
+                            } else if (isSingleSelect) {
+                                onSelectChange([record.name]);
+                                onFileDoubleClick?.(record, path, special);
                             } else {
                                 const newSelectedKeys = selectedRowKeys.includes(record.name)
                                     ? selectedRowKeys.filter((key) => key !== record.name)
                                     : [...selectedRowKeys, record.name];
-
                                 onSelectChange(newSelectedKeys);
                             }
                         },
-                        style: { cursor: record.isDir ? "context-menu" : "unset" },
+                        style: {
+                            cursor: record.isDir ? "context-menu" : isSingleSelect ? "pointer" : "unset",
+                        },
                     })}
                     rowClassName={rowClassName}
                     rowSelection={
-                        maxSelectedRows > 0
+                        isSingleSelect
                             ? {
+                                  type: "radio" as const,
                                   selectedRowKeys,
                                   onChange: onSelectChange,
+                                  columnWidth: 0,
+                                  renderCell: () => null,
+                                  hideSelectAll: true,
                               }
-                            : {
-                                  selectedRowKeys,
-                                  onChange: onSelectChange,
-                                  getCheckboxProps: (record: Record) => ({
-                                      disabled: record.name === "..",
-                                  }),
-                                  onSelectAll: (selected: boolean, selectedRows: any[]) => {
-                                      const selectedKeys = selected
-                                          ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
-                                          : [];
-                                      setSelectedRowKeys(selectedKeys);
-                                  },
-                              }
+                            : maxSelectedRows > 0
+                              ? {
+                                    selectedRowKeys,
+                                    onChange: onSelectChange,
+                                }
+                              : {
+                                    selectedRowKeys,
+                                    onChange: onSelectChange,
+                                    getCheckboxProps: (record: Record) => ({
+                                        disabled: record.name === "..",
+                                    }),
+                                    onSelectAll: (selected: boolean, selectedRows: any[]) => {
+                                        const selectedKeys = selected
+                                            ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                            : [];
+                                        setSelectedRowKeys(selectedKeys);
+                                    },
+                                }
                     }
                     components={{
                         header: {

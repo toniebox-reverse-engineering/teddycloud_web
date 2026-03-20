@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { languageOptions } from "../../../common/icons/LanguageFlagIcon";
 import type { TonieCardProps } from "../../../../types/tonieTypes";
 import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";
+import { toModelKey } from "../../utils/modelKey";
 
 const STORAGE_KEY_FILTERS = "tonieFilters";
 
@@ -578,8 +579,8 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                     (tonie.sourceInfo?.series && tonie.sourceInfo.series.toLowerCase().includes(q)) ||
                     tonie.tonieInfo.episode.toLowerCase().includes(q) ||
                     (tonie.sourceInfo?.episode && tonie.sourceInfo.episode.toLowerCase().includes(q)) ||
-                    tonie.tonieInfo.model.toLowerCase().includes(q) ||
-                    (tonie.sourceInfo?.model && tonie.sourceInfo.model.toLowerCase().includes(q)) ||
+                    toModelKey(tonie.tonieInfo.model).includes(q) ||
+                    (tonie.sourceInfo?.model && toModelKey(tonie.sourceInfo.model).includes(q)) ||
                     tonie.ruid.toLowerCase().includes(q) ||
                     tonie.uid.toLowerCase().includes(q) ||
                     tonie.source.toLowerCase().includes(q)

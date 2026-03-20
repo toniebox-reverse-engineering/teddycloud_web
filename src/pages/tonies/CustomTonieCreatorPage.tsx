@@ -4,11 +4,13 @@ import { useTranslation } from "react-i18next";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
-import ToniesCustomJsonEditor from "../../components/tonies/ToniesCustomJsonEditor";
+import { CustomModelEditor } from "../../components/tonies/custommodel/CustomModelEditor";
+import { useTonieboxContentOverlay } from "../../hooks/useTonieboxContentOverlay";
 
 export const CustomTonieCreatorPage: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { overlay } = useTonieboxContentOverlay();
 
     return (
         <>
@@ -25,10 +27,11 @@ export const CustomTonieCreatorPage: React.FC = () => {
                 />
                 <StyledContent>
                     <h1 style={{ marginBottom: 16 }}>{t("tonies.customToniesEditorJsonEntry")}</h1>
-                    <ToniesCustomJsonEditor
+                    <CustomModelEditor
                         open={true}
-                        embedded={true}
+                        mode="full"
                         onClose={() => navigate("/tonies")}
+                        overlay={overlay ?? ""}
                     />
                 </StyledContent>
             </StyledLayout>

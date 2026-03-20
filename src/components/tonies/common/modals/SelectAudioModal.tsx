@@ -46,34 +46,33 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
         hash?: string;
     } | null>(null);
 
+    const resolveSelectedFile = (files: any[], path: string) => {
+        if (!files || files.length !== 1) return null;
+        const file = files[0];
+        const normalizedPath = path === "" || path.endsWith("/") ? path : `${path}/`;
+        const filePath = `lib://${normalizedPath}${file.name}`;
+
+        if (!requireTafHeader) {
+            return { path: filePath };
+        }
+
+        const audioIdRaw = file?.tafHeader?.audioId;
+        const hashRaw = file?.tafHeader?.sha1Hash;
+        if (audioIdRaw == null || !hashRaw) return null;
+
+        return {
+            path: filePath,
+            audioId: String(audioIdRaw).trim(),
+            hash: String(hashRaw).trim(),
+        };
+    };
+
     useEffect(() => {
         if (open) setSelectedFile(null);
     }, [open]);
 
     const handleFileSelectChange = (files: any[], path: string, _special: string) => {
-        if (files && files.length === 1) {
-            const file = files[0];
-            const normalizedPath = path === "" || path.endsWith("/") ? path : path + "/";
-            const filePath = `lib://${normalizedPath}${file.name}`;
-
-            if (requireTafHeader) {
-                const audioIdRaw = file?.tafHeader?.audioId;
-                const hashRaw = file?.tafHeader?.sha1Hash;
-                if (audioIdRaw != null && hashRaw) {
-                    setSelectedFile({
-                        path: filePath,
-                        audioId: String(audioIdRaw).trim(),
-                        hash: String(hashRaw).trim(),
-                    });
-                } else {
-                    setSelectedFile(null);
-                }
-            } else {
-                setSelectedFile({ path: filePath });
-            }
-        } else {
-            setSelectedFile(null);
-        }
+        setSelectedFile(resolveSelectedFile(files, path));
     };
 
     const canConfirm = selectedFile && (!requireTafHeader || (selectedFile.audioId != null && selectedFile.hash != null));
@@ -101,6 +100,9 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
           })
         : t("tonies.selectFileModal.selectFile");
     const title = titleProp ?? defaultTitle;
+    // If TAF header data is required (audio_id/hash), only .taf is valid.
+    // .tap does not provide the required header metadata for this flow.
+    const allowedFileTypes = requireTafHeader ? [".taf"] : [".taf", ".tap"];
 
     const footer = (
         <div
@@ -113,8 +115,8 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
                 background: token.colorBgElevated,
             }}
         >
-            <Button onClick={handleCancel}>{t("tonies.selectFileModal.cancel")}</Button>
-            <Button type="primary" onClick={handleConfirm} disabled={!canConfirm}>
+            <Button htmlType="button" onClick={handleCancel}>{t("tonies.selectFileModal.cancel")}</Button>
+            <Button htmlType="button" type="primary" onClick={handleConfirm} disabled={!canConfirm}>
                 {t("tonies.selectFileModal.ok")}
             </Button>
         </div>
@@ -131,6 +133,7 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
             title={title}
             open={open}
             onCancel={handleCancel}
+            onOk={handleConfirm}
             width="auto"
             footer={footer}
         >
@@ -140,8 +143,15 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
                 special="library"
                 maxSelectedRows={1}
                 trackUrl={false}
-                filetypeFilter={[".taf", ".tap"]}
+                filetypeFilter={allowedFileTypes}
                 onFileSelectChange={handleFileSelectChange}
+                onFileDoubleClick={(file, path) => {
+                    const resolved = resolveSelectedFile([file], path);
+                    if (!resolved) return;
+                    onSelect(resolved);
+                    setSelectedFile(null);
+                    onClose();
+                }}
             />
         </Modal>
     );

@@ -2,8 +2,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Flex, Pagination, theme, Typography } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { ModelCard } from "./ModelCard";
-import type { CustomEntry, TableRow } from "./types/customEditorTypes";
+import { CustomModelCard } from "./CustomModelCard";
+import type { CustomEntry, TableRow } from "./types/customModelEditorTypes";
 
 export type CustomModelListProps = {
     tableRows: TableRow[];
@@ -124,7 +124,7 @@ export const CustomModelList: React.FC<CustomModelListProps> = ({
                 ) : (
                     <Flex wrap="wrap" gap={16}>
                         {paginatedRows.map((row) => (
-                            <ModelCard
+                            <CustomModelCard
                                 key={row.idx}
                                 idx={row.idx}
                                 entry={row.entry}

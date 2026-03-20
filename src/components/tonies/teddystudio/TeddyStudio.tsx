@@ -155,6 +155,7 @@ export const TeddyStudio: React.FC = () => {
                 open={imageManagerOpen}
                 onClose={() => setImageManagerOpen(false)}
                 onSelectImage={(path) => addCustomImageByPath(path)}
+                allowMultiple
             />
 
             <Collapse

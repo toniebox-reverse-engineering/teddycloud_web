@@ -18,7 +18,6 @@ export type CustomEntry = {
     language?: string;
     category?: string;
     pic?: string;
-    /** Cache-resolved URL for display when tonie_json.cache_images is enabled */
     cachePic?: string;
 };
 
@@ -36,25 +35,9 @@ export type FormValues = {
     tracks: TrackRow[];
 };
 
-export type SortColumnKey =
-    | "series"
-    | "model"
-    | "title"
-    | "episodes"
-    | "release"
-    | "language"
-    | "category"
-    | "no";
+export type SortColumnKey = "series" | "model" | "title" | "episodes" | "release" | "language" | "category" | "no";
 export type SortOrder = "ascend" | "descend" | null;
-export type FilterFieldKey =
-    | "series"
-    | "model"
-    | "title"
-    | "episodes"
-    | "release"
-    | "language"
-    | "category"
-    | "no";
+export type FilterFieldKey = "series" | "model" | "title" | "episodes" | "release" | "language" | "category" | "no";
 export type DraftStatus = "clean" | "changed" | "new" | "deleted";
 
 export type TableRow = {
@@ -73,23 +56,5 @@ export type PendingRenameSave = {
 export const TABLE_SETTINGS_STORAGE_KEY = "tonies.customEditor.tableSettings.v1";
 export const CUSTOM_EDITOR_PAGE_SIZE_KEY = "tonies.customEditor.pageSize.v1";
 
-export const ALLOWED_SORT_COLUMNS: SortColumnKey[] = [
-    "series",
-    "model",
-    "title",
-    "episodes",
-    "release",
-    "language",
-    "category",
-    "no",
-];
-export const ALLOWED_FILTER_FIELDS: FilterFieldKey[] = [
-    "series",
-    "model",
-    "title",
-    "episodes",
-    "release",
-    "language",
-    "category",
-    "no",
-];
+export const ALLOWED_SORT_COLUMNS: SortColumnKey[] = ["series", "model", "title", "episodes", "release", "language", "category", "no"];
+export const ALLOWED_FILTER_FIELDS: FilterFieldKey[] = ["series", "model", "title", "episodes", "release", "language", "category", "no"];

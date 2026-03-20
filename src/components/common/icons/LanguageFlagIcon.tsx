@@ -303,3 +303,17 @@ export const languageOptions = [
 ];
 
 export type LanguageCode = (typeof languageOptions)[number];
+
+export function toLanguageCode(input?: string): LanguageCode | "" {
+    const value = String(input ?? "").trim();
+    if (!value) return "";
+    return languageOptions.includes(value as LanguageCode) ? (value as LanguageCode) : "";
+}
+
+export function getFlagCountryCodeFromLanguage(input?: string): string {
+    const languageCode = toLanguageCode(input);
+    if (!languageCode) return "UNKNOWN";
+    const parts = languageCode.split("-");
+    if (parts.length > 1 && parts[1]) return parts[1].toUpperCase();
+    return "UNKNOWN";
+}
