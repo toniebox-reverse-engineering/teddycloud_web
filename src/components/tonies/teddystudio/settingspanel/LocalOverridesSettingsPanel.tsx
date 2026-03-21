@@ -87,6 +87,28 @@ export const LocalOverrideSettings: React.FC<LocalOverrideSettingsProps> = ({
                                         ]}
                                     />
                                 </div>
+                                <div
+                                    style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}
+                                >
+                                    <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.imageScale")}</label>
+                                    <Input
+                                        size="small"
+                                        type="number"
+                                        value={(localOverride.imageScale ?? settings.imageScale) || 1.0}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (!isNaN(Number(val)) && Number(val) >= 0) {
+                                                setLabelOverride(itemId, {
+                                                    imageScale: Number(val) || 1.0,
+                                                });
+                                            }
+                                        }}
+                                        style={{ width: 100 }}
+                                        min={0}
+                                        step={0.1}
+                                        placeholder={t("tonies.teddystudio.imageScale")}
+                                    />
+                                </div>
 
                                 <div>
                                     <div>{t("tonies.teddystudio.showLanguageFlag")}</div>
@@ -112,7 +134,7 @@ export const LocalOverrideSettings: React.FC<LocalOverrideSettingsProps> = ({
                                         min={1}
                                         max={20}
                                         value={parseFloat(
-                                            (localOverride.textFontSize ?? settings.textFontSize) || "12"
+                                            (localOverride.textFontSize ?? settings.textFontSize) || "12",
                                         )}
                                         onChange={(e) => {
                                             const val = stripUnit(e.target.value, "px");
@@ -174,7 +196,7 @@ export const LocalOverrideSettings: React.FC<LocalOverrideSettingsProps> = ({
                                             value={parseFloat(
                                                 (localOverride.seriesOnImageLabelFontSize ??
                                                     settings.seriesOnImageLabelFontSize) ||
-                                                    "12"
+                                                    "12",
                                             )}
                                             onChange={(e) => {
                                                 const val = stripUnit(e.target.value, "px");
@@ -208,7 +230,7 @@ export const LocalOverrideSettings: React.FC<LocalOverrideSettingsProps> = ({
                                     <Input
                                         size="small"
                                         type="number"
-                                        min={1}
+                                        min={0}
                                         max={
                                             settings.width && settings.height
                                                 ? Math.min(parseFloat(settings.width), parseFloat(settings.height)) / 3

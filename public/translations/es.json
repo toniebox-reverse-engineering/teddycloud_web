@@ -2117,6 +2117,7 @@
             "empty": "Vacío - ¡Primero selecciona Tonies o Tags o añade una imagen propia!",
             "episodes": "Episodios",
             "imagePosition": "Posición de la imagen",
+            "imageScale": "Escala de imagen",
             "intro": "Busca todos los Tonies y etiquetas - tanto los oficiales como los personalizados - para crear tu hoja imprimible de Traveltonies (moneda).",
             "labelBackgroundColor": "Fondo",
             "labelEditTitle": "Editar elementos de la etiqueta",

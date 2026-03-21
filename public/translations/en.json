@@ -2117,6 +2117,7 @@
             "empty": "Empty - Please select Tonies or Tags or add custom image first!",
             "episodes": "Episodes",
             "imagePosition": "Image position",
+            "imageScale": "Image scale",
             "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies (coin) sheet.",
             "labelBackgroundColor": "Background",
             "labelEditTitle": "Edit Label elements",
