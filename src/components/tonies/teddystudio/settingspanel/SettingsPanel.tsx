@@ -43,6 +43,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         printMode,
         textFontSize,
         imagePosition,
+        imageScale,
         contentPadding,
         showLanguageFlag,
         showModelNo,
@@ -382,7 +383,19 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 ]}
                             />
                         </div>
-
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
+                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.imageScale")}</label>
+                            <Input
+                                size="small"
+                                type="number"
+                                value={imageScale}
+                                onChange={(e) => actions.setImageScale(Number(e.target.value))}
+                                style={{ width: 100 }}
+                                min={0}
+                                step={0.1}
+                                placeholder={t("tonies.teddystudio.imageScale")}
+                            />
+                        </div>
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 6 }}>
                             <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.showSeriesOnImageLabel")}</label>
                             <Switch

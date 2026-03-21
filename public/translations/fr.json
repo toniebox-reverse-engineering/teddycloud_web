@@ -2117,6 +2117,7 @@
             "empty": "Vide - Sélectionne d'abord des Tonies ou Tags ou ajoute une image personnalisée !",
             "episodes": "Épisodes",
             "imagePosition": "Position de l'image",
+            "imageScale": "Échelle de l'image",
             "intro": "Recherche tous les Tonies et Tags, officiels et tes propres, pour créer ta feuille imprimable de Traveltonies (pièce).",
             "labelBackgroundColor": "Fond",
             "labelEditTitle": "Modifier les éléments de l'étiquette",

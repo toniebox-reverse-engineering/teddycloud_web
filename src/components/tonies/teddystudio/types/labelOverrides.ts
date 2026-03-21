@@ -5,6 +5,7 @@ export type LocalLabelSettings = Pick<
     | "labelBackgroundColor"
     | "textFontSize"
     | "imagePosition"
+    | "imageScale"
     | "showLanguageFlag"
     | "showModelNo"
     | "showSeriesOnImageLabel"
