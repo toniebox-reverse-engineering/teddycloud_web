@@ -4,11 +4,13 @@
 
 - added tls support in mqtt
 - prepared support of TB2 (added new v3 tonies APIs)
+- improved MQTT functionality [https://github.com/toniebox-reverse-engineering/teddycloud/pull/427](https://github.com/toniebox-reverse-engineering/teddycloud/pull/427)
 - gui: Audio encoder support literal and natural sorting [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276)
 - gui: TAP editor: fixed file order (follows select order) and added drag and drop reorder functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277)
 - gui: removed switch enable rtnl on rtnl page, is now autoenabled
 - gui: Added find all unused TAF Search in Library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279)
 - gui: Prepared support for TB2
+- gui: Added TeddyStudio image scale factor [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
 
 ### Commits
 
