@@ -530,7 +530,7 @@
             "uploadedFileFailed": "Échec du téléchargement du fichier!",
             "uploadFailed": "Certains fichiers n'ont pas pu être téléversés. Veuillez réessayer.",
             "uploadFailedForFile": "Échec du téléversement de \"{{file}}\".",
-            "uploadHint": "Faites glisser les fichiers ici pour les téléverser",
+            "uploadHint": "Cliquez ou glissez les fichiers dans la zone d’envoi / sur la liste de fichiers pour les téléverser",
             "uploading": "Téléversement en cours...",
             "uploadInProgress": "Téléversement de \"{{file}}\"...",
             "uploadSuccessful": "Fichiers téléversés avec succès.",
@@ -1814,7 +1814,10 @@
             "sourceCustom": "Personnalisé",
             "sourceOriginal": "Original",
             "noOriginalImages": "Aucune image originale trouvée",
-            "originalImagesLoading": "Chargement des images originales …"
+            "originalImagesLoading": "Chargement des images originales …",
+            "originalUrlSearchPlaceholder": "Mots à trouver dans l’URL (tous requis, ordre libre) …",
+            "noOriginalSearchResults": "Aucune URL ne correspond à la recherche",
+            "originalUrlColumn": "URL"
         },
         "customEditor": {
             "actions": {

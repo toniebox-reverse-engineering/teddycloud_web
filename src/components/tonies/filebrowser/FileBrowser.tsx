@@ -125,6 +125,7 @@ export const FileBrowser: React.FC<{
         rebuildList,
         loading,
         filterText,
+        filterInputText,
         filterFieldAutoFocus,
         setFilterFieldAutoFocus,
         handleFilterChange,
@@ -681,6 +682,7 @@ export const FileBrowser: React.FC<{
                     columns={columns}
                     rowKey={(record) => record.name}
                     pagination={false}
+                    tableLayout={special === "custom_img" ? "fixed" : undefined}
                     onRow={(record) => ({
                         onDoubleClick: () => {
                             if (record.isDir) {
@@ -740,7 +742,7 @@ export const FileBrowser: React.FC<{
                                             <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
                                                 <Input
                                                     placeholder={t("fileBrowser.filter")}
-                                                    value={filterText}
+                                                    value={filterInputText}
                                                     onChange={handleFilterChange}
                                                     onFocus={handleFilterFieldInputFocus}
                                                     onBlur={handleFilterFieldInputBlur}
@@ -751,13 +753,13 @@ export const FileBrowser: React.FC<{
                                                         <CloseOutlined
                                                             onMouseDown={(e) => e.preventDefault()}
                                                             onClick={clearFilterField}
-                                                            disabled={filterText.length === 0}
+                                                            disabled={filterInputText.length === 0}
                                                             style={{
                                                                 color:
-                                                                    filterText.length === 0
+                                                                    filterInputText.length === 0
                                                                         ? token.colorTextDisabled
                                                                         : token.colorText,
-                                                                cursor: filterText.length === 0 ? "default" : "pointer",
+                                                                cursor: filterInputText.length === 0 ? "default" : "pointer",
                                                             }}
                                                         />
                                                     }

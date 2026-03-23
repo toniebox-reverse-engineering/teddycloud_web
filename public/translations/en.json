@@ -530,7 +530,7 @@
             "uploadedFileFailed": "File upload failed!",
             "uploadFailed": "Some files could not be uploaded. Please try again.",
             "uploadFailedForFile": "Upload of \"{{file}}\" failed.",
-            "uploadHint": "Drag files here to upload",
+            "uploadHint": "Click or drag files into the upload area / onto the file list to upload",
             "uploading": "Uploading...",
             "uploadInProgress": "Uploading \"{{file}}\"...",
             "uploadSuccessful": "Files uploaded successfully.",
@@ -1814,7 +1814,10 @@
             "sourceCustom": "Custom",
             "sourceOriginal": "Original",
             "noOriginalImages": "No original images found",
-            "originalImagesLoading": "Loading original images …"
+            "originalImagesLoading": "Loading original images …",
+            "originalUrlSearchPlaceholder": "Words to find in URL (all must match, order ignored) …",
+            "noOriginalSearchResults": "No URLs match your search",
+            "originalUrlColumn": "URL"
         },
         "customEditor": {
             "actions": {

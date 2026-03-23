@@ -530,7 +530,7 @@
             "uploadedFileFailed": "¡Error al subir el archivo!",
             "uploadFailed": "Algunos archivos no pudieron subirse. Por favor, inténtalo de nuevo.",
             "uploadFailedForFile": "Error al subir \"{{file}}\".",
-            "uploadHint": "Arrastra archivos aquí para subir",
+            "uploadHint": "Haz clic o arrastra archivos al área de subida / a la lista de archivos para subirlos",
             "uploading": "Subiendo...",
             "uploadInProgress": "Subiendo \"{{file}}\"...",
             "uploadSuccessful": "Archivos subidos con éxito.",
@@ -1814,7 +1814,10 @@
             "sourceCustom": "Personalizado",
             "sourceOriginal": "Original",
             "noOriginalImages": "No se encontraron imágenes originales",
-            "originalImagesLoading": "Cargando imágenes originales …"
+            "originalImagesLoading": "Cargando imágenes originales …",
+            "originalUrlSearchPlaceholder": "Palabras en la URL (deben aparecer todas, el orden no importa) …",
+            "noOriginalSearchResults": "Ninguna URL coincide con la búsqueda",
+            "originalUrlColumn": "URL"
         },
         "customEditor": {
             "actions": {

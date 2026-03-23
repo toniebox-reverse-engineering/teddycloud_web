@@ -530,7 +530,7 @@
             "uploadedFileFailed": "Datei-Upload fehlgeschlagen!",
             "uploadFailed": "Einige Dateien konnten nicht hochgeladen werden. Versuche es erneut.",
             "uploadFailedForFile": "Hochladen von \"{{file}}\" fehlgeschlagen.",
-            "uploadHint": "Ziehe die hochzuladenden Dateien hierher",
+            "uploadHint": "Klicken oder Dateien zum Hochladen in den Bereich / auf die Dateiliste ziehen",
             "uploading": "Lädt hoch...",
             "uploadInProgress": "Lade \"{{file}}\" hoch...",
             "uploadSuccessful": "Dateien erfolgreich hochgeladen.",
@@ -1814,7 +1814,10 @@
             "sourceCustom": "Custom",
             "sourceOriginal": "Original",
             "noOriginalImages": "Keine Original-Bilder gefunden",
-            "originalImagesLoading": "Original Bilder werden geladen …"
+            "originalImagesLoading": "Original Bilder werden geladen …",
+            "originalUrlSearchPlaceholder": "Suchwörter (alle müssen in der URL vorkommen, Reihenfolge egal) …",
+            "noOriginalSearchResults": "Keine URLs passen zur Suche",
+            "originalUrlColumn": "URL"
         },
         "customEditor": {
             "actions": {

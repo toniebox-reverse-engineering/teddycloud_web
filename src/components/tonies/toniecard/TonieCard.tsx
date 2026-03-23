@@ -32,7 +32,7 @@ import { toImageSrc } from "../common/utils/imagePathUtils";
 import { useTonieCardActions } from "./hooks/useTonieCardActions";
 import { useResolvedModelAudio } from "./hooks/useResolvedModelAudio";
 import { useTooltipInfoByModel } from "./hooks/useTooltipInfoByModel";
-import { getInfoForTooltip, normalized } from "./utils/tooltipInfo";
+import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
 import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
 
@@ -198,9 +198,7 @@ export const TonieCard: React.FC<{
     const { tooltipInfoByModel } = useTooltipInfoByModel({
         isEditModalOpen,
         selectedModel,
-        tonieModel: tonieCard.tonieInfo.model || "",
         resolvedAudioModel,
-        sourceModel: tonieCard.sourceInfo?.model || "",
         overlay,
     });
 
@@ -296,12 +294,6 @@ export const TonieCard: React.FC<{
 
     const modelInfoFromTonie = tonieCard.tonieInfo as unknown as TooltipInfo;
     const audioInfoFromSource = tonieCard.sourceInfo as unknown as TooltipInfo;
-    const sourceMatchesModelAudio =
-        Boolean(modelAudioPath) && normalized(selectedSource || tonieCard.source) === normalized(modelAudioPath || "");
-    const infoForModelTooltip =
-        sourceMatchesModelAudio && (audioInfoFromSource?.series || audioInfoFromSource?.episode || audioInfoFromSource?.title)
-            ? audioInfoFromSource
-            : modelInfoFromTonie;
     const renderInfoTooltip = (
         kind: "model" | "audio",
         modelName: string,
@@ -311,14 +303,9 @@ export const TonieCard: React.FC<{
         const info = getInfoForTooltip({
             kind,
             modelName,
-            selectedModel,
-            tonieModel: tonieCard.tonieInfo.model || "",
-            resolvedAudioModel,
-            sourceModel: tonieCard.sourceInfo?.model || "",
             tooltipInfoByModel,
             modelInfoFromTonie,
             audioInfoFromSource,
-            infoForModelTooltip,
         });
         const headingKey = kind === "audio" ? "tonies.editModal.audioInfoHeading" : "tonies.editModal.modelInfoHeading";
         const headingDefault = kind === "audio" ? "Audio Info" : "Model Info";

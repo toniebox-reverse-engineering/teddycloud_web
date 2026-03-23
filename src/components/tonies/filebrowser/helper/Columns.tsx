@@ -8,7 +8,6 @@ import {
     CloudServerOutlined,
     TruckOutlined,
     EditOutlined,
-    CopyOutlined,
     FormOutlined,
     NodeExpandOutlined,
     DeleteOutlined,
@@ -23,7 +22,13 @@ import { TonieCardProps } from "../../../../types/tonieTypes";
 import { useTranslation } from "react-i18next";
 import { canHover } from "../../../../utils/browser/browserUtils";
 import { toImageSrc } from "../../common/utils/imagePathUtils";
+import ThumbnailCell from "../../common/elements/ThumbnailCell";
 import { toModelKey } from "../../utils/modelKey";
+import {
+    SELECT_IMAGE_CELL_GAP,
+    SELECT_IMAGE_CELL_GAP_HALF,
+    SELECT_IMAGE_THUMB_COL_WIDTH,
+} from "../../../../constants/selectImageTableLayout";
 
 const { useToken } = theme;
 
@@ -64,6 +69,8 @@ export interface CreateColumnsOptions {
     buildContentUrl?: (fileName: string, options?: { ogg?: boolean }) => string;
     onImagePreviewClick?: (imageUrl: string) => void;
     onRowSelect?: (record: Record) => void;
+    /** compact custom_img: false when single-select (no visible checkbox column). */
+    compactSelectHasVisibleSelectionColumn?: boolean;
 }
 
 const isImageFileName = (name: string) =>
@@ -97,7 +104,19 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         buildContentUrl,
         onImagePreviewClick,
         onRowSelect,
+        compactSelectHasVisibleSelectionColumn: compactSelectHasVisibleSelectionColumnOpt,
     } = options;
+
+    const isCompactCustomSelect = mode === "select" && special === "custom_img";
+    const compactSelectHasVisibleSelectionColumn = isCompactCustomSelect
+        ? compactSelectHasVisibleSelectionColumnOpt !== false
+        : true;
+    const wrapCompactCustomCell = (content: React.ReactNode) =>
+        isCompactCustomSelect ? (
+            <div style={{ display: "flex", alignItems: "center", minHeight: 40 }}>{content}</div>
+        ) : (
+            content
+        );
 
     const getPictureSrc = (record: any): string | null => {
         if (!record) return null;
@@ -115,33 +134,42 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
-            width: 56,
+            width: isCompactCustomSelect ? SELECT_IMAGE_THUMB_COL_WIDTH : 56,
+            onCell: () => ({
+                style: isCompactCustomSelect
+                    ? {
+                          /* Multi: half-gap after checkbox column; single: no fake inset — avoids wide empty strip */
+                          paddingLeft: compactSelectHasVisibleSelectionColumn
+                              ? SELECT_IMAGE_CELL_GAP_HALF
+                              : 0,
+                          paddingRight: SELECT_IMAGE_CELL_GAP_HALF,
+                      }
+                    : {},
+            }),
             render: (picture: string, record: any) => {
                 const src = getPictureSrc(record);
+                const onThumbnailClick =
+                    src && onImagePreviewClick
+                        ? () => onImagePreviewClick(src)
+                        : record?.tonieInfo && src
+                          ? () => showInformationModal(record)
+                          : undefined;
                 return (
                     <>
                         {record && src ? (
-                            <img
-                                key={`picture-${record.name}`}
-                                src={src}
-                                alt={t("tonies.content.toniePicture")}
-                                referrerPolicy="no-referrer"
-                                loading="lazy"
-                                onClick={() => {
-                                    if (record.tonieInfo) {
-                                        showInformationModal(record);
-                                    } else if (onImagePreviewClick) {
-                                        onImagePreviewClick(src);
-                                    }
-                                }}
+                            <div
                                 style={{
-                                    height: 40,
-                                    width: 40,
-                                    objectFit: "contain",
-                                    cursor: record.tonieInfo || onImagePreviewClick ? "pointer" : "default",
-                                    marginRight: 8,
+                                    display: "flex",
+                                    justifyContent: isCompactCustomSelect ? "flex-start" : "center",
+                                    alignItems: "center",
                                 }}
-                            />
+                            >
+                                <ThumbnailCell
+                                    src={src}
+                                    alt={t("tonies.content.toniePicture")}
+                                    onClick={onThumbnailClick}
+                                />
+                            </div>
                         ) : record?.isDir ? (
                             <FolderOutlined style={{ fontSize: 24, marginRight: 8 }} />
                         ) : null}
@@ -165,6 +193,13 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             key: "name",
             sorter: dirNameSorter,
             defaultSortOrder: "ascend" as SortOrder,
+            onCell: isCompactCustomSelect
+                ? () => ({
+                      style: {
+                          paddingLeft: SELECT_IMAGE_CELL_GAP_HALF,
+                      },
+                  })
+                : undefined,
             render: (picture: string, record: any) => {
                 const isImagePreviewClickable =
                     special === "custom_img" &&
@@ -213,6 +248,14 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 ) : (
                     record?.isDir ? <>{record.name}</> : record?.name
                 );
+                if (isCompactCustomSelect) {
+                    return wrapCompactCustomCell(
+                        <div key={`name-${record.name}`} style={{ display: "flex", alignItems: "center" }}>
+                            {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : null}
+                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>{nameContent}</div>
+                        </div>
+                    );
+                }
                 return (
                     record && (
                         <div key={`name-${record.name}`}>
@@ -293,9 +336,10 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             title: t("fileBrowser.size"),
             dataIndex: "size",
             key: "size",
-            render: (size: number, record: any) => (
-                <div key={`size-${record.name}`}>{record.isDir ? "<DIR>" : humanFileSize(size)}</div>
-            ),
+            render: (size: number, record: any) =>
+                wrapCompactCustomCell(
+                    <div key={`size-${record.name}`}>{record.isDir ? "<DIR>" : humanFileSize(size)}</div>
+                ),
             showOnDirOnly: false,
             responsive: ["xl"],
         },
@@ -306,7 +350,8 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             key: "model",
             showOnDirOnly: false,
             responsive: ["xl"],
-            render: (_model: string, record: any) => <div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>,
+            render: (_model: string, record: any) =>
+                wrapCompactCustomCell(<div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>),
             hideForSpecial: "custom_img",
         },
 
@@ -344,9 +389,8 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             key: "episode",
             showOnDirOnly: false,
             responsive: ["xl"],
-            render: (episode: string, record: any) => (
-                <div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>
-            ),
+            render: (episode: string, record: any) =>
+                wrapCompactCustomCell(<div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>),
             hideForSpecial: "custom_img",
         },
 
@@ -354,9 +398,10 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             title: t("fileBrowser.date"),
             dataIndex: "date",
             key: "date",
-            render: (timestamp: number, record: any) => (
-                <div key={`date-${record.name}`}>{new Date(timestamp * 1000).toLocaleString()}</div>
-            ),
+            render: (timestamp: number, record: any) =>
+                wrapCompactCustomCell(
+                    <div key={`date-${record.name}`}>{new Date(timestamp * 1000).toLocaleString()}</div>
+                ),
             showOnDirOnly: true,
             responsive: ["xl"],
         },
@@ -603,6 +648,20 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         const hideFor = (column as any).hideForSpecial;
         return !hideFor || hideFor !== special;
     });
+
+    columns = columns.map((column) => ({
+        ...column,
+        onCell: (record: any) => {
+            const existing = typeof column.onCell === "function" ? column.onCell(record) : {};
+            return {
+                ...existing,
+                style: {
+                    verticalAlign: "middle",
+                    ...(existing?.style || {}),
+                },
+            };
+        },
+    }));
 
     return columns;
 };

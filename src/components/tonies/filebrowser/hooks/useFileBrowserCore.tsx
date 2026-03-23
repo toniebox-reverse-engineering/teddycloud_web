@@ -9,6 +9,7 @@ import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTy
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { UI_SEARCH_DEBOUNCE_MS } from "../../../../constants/numbers";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -22,6 +23,7 @@ interface UseFileBrowserCoreOptions {
     filetypeFilter?: string[];
     trackUrl?: boolean;
     initialPath?: string;
+    active?: boolean;
 }
 
 interface UseFileBrowserCoreResult {
@@ -32,7 +34,10 @@ interface UseFileBrowserCoreResult {
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
     loading: boolean;
 
+    /** Debounced value applied to table column filter. */
     filterText: string;
+    /** Immediate input value (typing). */
+    filterInputText: string;
     filterFieldAutoFocus: boolean;
     setFilterFieldAutoFocus: React.Dispatch<React.SetStateAction<boolean>>;
     handleFilterChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -61,6 +66,7 @@ export const useFileBrowserCore = ({
     filetypeFilter = [],
     trackUrl = true,
     initialPath: initialPathProp = "",
+    active = true,
 }: UseFileBrowserCoreOptions): UseFileBrowserCoreResult => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
@@ -88,6 +94,7 @@ export const useFileBrowserCore = ({
     const [path, setPath] = useState<string>(() => resolvedInitialPath);
     const [rebuildList, setRebuildList] = useState<boolean>(false);
 
+    const [filterInputText, setFilterInputText] = useState<string>("");
     const [filterText, setFilterText] = useState<string>("");
     const [filterFieldAutoFocus, setFilterFieldAutoFocus] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
@@ -131,6 +138,7 @@ export const useFileBrowserCore = ({
 
     // fetch directory listing (SWR for custom_img: show cache first, revalidate in background)
     useEffect(() => {
+        if (!active) return;
         const apiPathParam = mode === "fileBrowser" ? path : encodeURIComponent(path);
         const cacheKey = `fileIndexV2:${special}:${overlay || ""}:${apiPathParam}:${showDirOnly}:${filetypeFilter.join(",")}`;
         const useSwr = special === "custom_img";
@@ -228,23 +236,29 @@ export const useFileBrowserCore = ({
             .finally(() => {
                 setLoading(false);
             });
-    }, [path, special, showDirOnly, rebuildList]);
+    }, [active, path, special, showDirOnly, rebuildList]);
+
+    useEffect(() => {
+        const timer = window.setTimeout(() => setFilterText(filterInputText), UI_SEARCH_DEBOUNCE_MS);
+        return () => window.clearTimeout(timer);
+    }, [filterInputText]);
 
     // restore caret position in filter field
     useEffect(() => {
         if (cursorPositionFilterRef.current !== null && inputFilterRef.current) {
             inputFilterRef.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
         }
-    }, [filterText]);
+    }, [filterInputText]);
 
     // filter handlers
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterText(e.target.value);
+        setFilterInputText(e.target.value);
         cursorPositionFilterRef.current = e.target.selectionStart;
         setFilterFieldAutoFocus(true);
     };
 
     const clearFilterField = () => {
+        setFilterInputText("");
         setFilterText("");
         cursorPositionFilterRef.current = 0;
     };
@@ -395,6 +409,7 @@ export const useFileBrowserCore = ({
         loading,
 
         filterText,
+        filterInputText,
         filterFieldAutoFocus,
         setFilterFieldAutoFocus,
         handleFilterChange,

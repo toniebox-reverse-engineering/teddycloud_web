@@ -1,23 +1,32 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Button, Checkbox, Empty, List, Modal, Segmented, Space, Upload, theme } from "antd";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Button, Modal, Segmented, Space, Upload, theme } from "antd";
 import type { UploadFile, UploadProps } from "antd";
-import { FolderAddOutlined, InboxOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
+import { SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS, UI_SEARCH_DEBOUNCE_MS } from "../../../../constants/numbers";
 import { useUploadTimeoutMs } from "../../../../hooks/getsettings/useUploadTimeoutMs";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { SelectFileFileBrowser } from "../../filebrowser/SelectFileFileBrowser";
 import { useDirectoryTree } from "../hooks/useDirectoryTree";
 import { useDirectoryCreate } from "../hooks/useCreateDirectory";
-import CreateDirectoryModal from "./CreateDirectoryModal";
-import { toCustomImgWebPath, toImageSrc } from "../utils/imagePathUtils";
+import { toCustomImgWebPath } from "../utils/imagePathUtils";
+import {
+    originalImageUrlMatchesTokens,
+    tokenizeOriginalImageSearch,
+} from "../utils/originalImageUrlSearch";
+import CustomImagesPanel from "./select-image/CustomImagesPanel";
+import OriginalImagesPanel from "./select-image/OriginalImagesPanel";
+import { useOriginalImagesData } from "./select-image/useOriginalImagesData";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { useToken } = theme;
+
+const ORIGINAL_PICS_SESSION_KEY = "teddy:selectImageModal:originalPicUrls:v1";
+
+const MODAL_WIDTH_CSS = "min(1200px, calc(100vw - 16px))";
 
 const normalizePathForQuery = (inputPath: string) => {
     const raw = (inputPath || "").trim();
@@ -37,6 +46,11 @@ const normalizePathForQuery = (inputPath: string) => {
 
 type ImageSource = "custom" | "original";
 
+const ORIGINAL_TABLE_MIN_SCROLL_Y = 220;
+const ORIGINAL_TABLE_MAX_SCROLL_Y = 560;
+const PICKER_RESERVED_HEIGHT = 420;
+const CUSTOM_TABLE_RESERVED_HEIGHT = 450;
+
 const deriveCustomImgDirectory = (pic?: string): string => {
     if (!pic || !pic.startsWith("/custom_img/")) return "";
     const normalized = pic.slice("/custom_img/".length);
@@ -47,15 +61,7 @@ const deriveCustomImgDirectory = (pic?: string): string => {
 
 const isCustomImagePath = (path?: string) => !!path && path.startsWith("/custom_img/");
 
-const normalizePreviewPath = (value?: string) => {
-    const raw = (value || "").trim();
-    if (!raw) return "";
-    if (/^(https?:\/\/|data:|blob:)/i.test(raw)) return raw;
-    if (raw.startsWith("/")) return raw;
-    if (raw.startsWith("custom_img/")) return `/${raw}`;
-    if (raw.startsWith("img/")) return `/${raw}`;
-    return raw;
-};
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 interface SelectImageModalProps {
     open: boolean;
@@ -63,6 +69,8 @@ interface SelectImageModalProps {
     onSelectImage: (path: string) => void;
     initialSelection?: string;
     title?: string;
+    /** Optional stacking override for nested modal usage. */
+    zIndex?: number;
     /** When true, allows selecting multiple images (Custom + Original). onSelectImage is called for each. Used by TeddyStudio. */
     allowMultiple?: boolean;
 }
@@ -77,6 +85,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     onSelectImage,
     initialSelection = "",
     title: titleProp,
+    zIndex,
     allowMultiple = false,
 }) => {
     const { t } = useTranslation();
@@ -88,10 +97,28 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     const [customPath, setCustomPath] = useState("");
     const [customSelections, setCustomSelections] = useState<string[]>([]);
     const [originalSelections, setOriginalSelections] = useState<string[]>([]);
-    const [originalImages, setOriginalImages] = useState<string[]>([]);
-    const [originalImagesLoading, setOriginalImagesLoading] = useState(false);
     const [rebuildTrigger, setRebuildTrigger] = useState(0);
     const [uploadFileList, setUploadFileList] = useState<UploadFile<any>[]>([]);
+    const [originalSearchInput, setOriginalSearchInput] = useState("");
+    const [debouncedOriginalSearch, setDebouncedOriginalSearch] = useState("");
+    /** After first visit, keep Original UI mounted — avoids rebuilding thousands of table rows on each tab switch. */
+    const [originalPanelEverShown, setOriginalPanelEverShown] = useState(false);
+    const [viewportHeight, setViewportHeight] = useState<number>(() =>
+        typeof window === "undefined" ? 900 : window.innerHeight
+    );
+    const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+
+    const openImagePreview = useCallback((url: string) => {
+        setImagePreviewUrl(url);
+        setImagePreviewOpen(true);
+    }, []);
+
+    const { originalImages, originalImagesLoading } = useOriginalImagesData({
+        open,
+        source,
+        sessionKey: ORIGINAL_PICS_SESSION_KEY,
+    });
 
     const directoryTree = useDirectoryTree("custom_img", { skipPreload: true });
     const {
@@ -114,6 +141,18 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     });
 
     useEffect(() => {
+        const timer = window.setTimeout(() => setDebouncedOriginalSearch(originalSearchInput), UI_SEARCH_DEBOUNCE_MS);
+        return () => window.clearTimeout(timer);
+    }, [originalSearchInput]);
+
+    useEffect(() => {
+        if (!open) {
+            setOriginalSearchInput("");
+            setDebouncedOriginalSearch("");
+        }
+    }, [open]);
+
+    useEffect(() => {
         if (!open) return;
         const initialIsCustom = isCustomImagePath(initialSelection);
         const initialIsOriginal = initialSelection && !initialIsCustom;
@@ -125,38 +164,46 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
 
     useEffect(() => {
         if (!open) {
-            setOriginalImagesLoading(false);
+            setOriginalPanelEverShown(false);
             return;
         }
-        setOriginalImagesLoading(true);
-        let cancelled = false;
-        const loadOriginalImages = async () => {
-            try {
-                const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJson");
-                if (cancelled || !response.ok) return;
-                const data = await response.json();
-                const normalized = Array.isArray(data) ? data : [];
-                const pics = normalized
-                    .flatMap((entry: any) => [
-                        typeof entry?.pic === "string" ? entry.pic : "",
-                        typeof entry?.cachePic === "string" ? entry.cachePic : "",
-                        typeof entry?.tonieInfo?.picture === "string" ? entry.tonieInfo.picture : "",
-                        typeof entry?.sourceInfo?.picture === "string" ? entry.sourceInfo.picture : "",
-                    ])
-                    .map((pic: string) => normalizePreviewPath(pic))
-                    .filter((pic: string) => pic.length > 0);
-                if (!cancelled) setOriginalImages(Array.from(new Set(pics)).sort((a, b) => a.localeCompare(b)));
-            } catch {
-                if (!cancelled) setOriginalImages([]);
-            } finally {
-                if (!cancelled) setOriginalImagesLoading(false);
-            }
-        };
-        void loadOriginalImages();
-        return () => {
-            cancelled = true;
-        };
+        if (source === "original") setOriginalPanelEverShown(true);
+    }, [open, source]);
+
+    useEffect(() => {
+        if (!open || typeof window === "undefined") return;
+        const update = () => setViewportHeight(window.innerHeight);
+        update();
+        window.addEventListener("resize", update, { passive: true });
+        return () => window.removeEventListener("resize", update);
     }, [open]);
+
+    const searchTokens = useMemo(() => tokenizeOriginalImageSearch(debouncedOriginalSearch), [debouncedOriginalSearch]);
+
+    const filteredOriginalUrls = useMemo(
+        () => originalImages.filter((url) => originalImageUrlMatchesTokens(url, searchTokens)),
+        [originalImages, searchTokens]
+    );
+    const originalTableScrollY = useMemo(
+        () =>
+            clamp(
+                viewportHeight - PICKER_RESERVED_HEIGHT,
+                ORIGINAL_TABLE_MIN_SCROLL_Y,
+                ORIGINAL_TABLE_MAX_SCROLL_Y
+            ),
+        [viewportHeight]
+    );
+    const customTableScrollY = useMemo(
+        () =>
+            clamp(
+                viewportHeight - CUSTOM_TABLE_RESERVED_HEIGHT,
+                ORIGINAL_TABLE_MIN_SCROLL_Y,
+                ORIGINAL_TABLE_MAX_SCROLL_Y
+            ),
+        [viewportHeight]
+    );
+
+    const originalTableData = useMemo(() => filteredOriginalUrls.map((url) => ({ url })), [filteredOriginalUrls]);
 
     const selectedImages = source === "custom" ? customSelections : originalSelections;
     const selectedImagesForConfirm = useMemo(
@@ -242,29 +289,82 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
         showUploadList: { showPreviewIcon: false },
     };
 
+    const handleConfirm = () => {
+        if (!canConfirm) return;
+        confirmSelection(selectedImagesForConfirm);
+    };
+    const handleCustomFileSelectChange = useCallback(
+        (paths: string[], path: string) => {
+            setCustomPath(path);
+            setCustomSelections(allowMultiple ? paths : paths.slice(0, 1));
+        },
+        [allowMultiple]
+    );
+    const handleCustomFileDoubleClick = useCallback(
+        (path: string, fileName: string) => {
+            if (allowMultiple) return;
+            confirmSelection([toCustomImgWebPath(path, fileName)]);
+        },
+        [allowMultiple]
+    );
+
+    const footer = (
+        <div
+            style={{
+                display: "flex",
+                gap: 8,
+                justifyContent: "flex-end",
+                padding: "16px 0",
+                margin: "-24px -24px -12px -24px",
+                background: token.colorBgElevated,
+            }}
+        >
+            <Button htmlType="button" onClick={onClose}>
+                {t("tonies.selectFileModal.cancel")}
+            </Button>
+            <Button htmlType="button" type="primary" onClick={handleConfirm} disabled={!canConfirm}>
+                {t("tonies.imageManager.okText")}
+            </Button>
+        </div>
+    );
+
     return (
         <>
             <Modal
+                title={t("tonies.customEditor.previewTitle")}
+                open={imagePreviewOpen}
+                onCancel={() => setImagePreviewOpen(false)}
+                footer={null}
+                zIndex={zIndex !== undefined ? zIndex + 1 : undefined}
+            >
+                {imagePreviewUrl ? (
+                    <img
+                        src={imagePreviewUrl}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        style={{ width: "100%" }}
+                    />
+                ) : null}
+            </Modal>
+            <Modal
+                className="sticky-footer"
                 open={open}
                 onCancel={onClose}
                 destroyOnClose
                 title={title}
-                width={1200}
+                width={MODAL_WIDTH_CSS}
+                footer={footer}
+                zIndex={zIndex}
                 bodyStyle={{
+                    maxHeight: "calc(100dvh - 200px)",
+                    overflow: "hidden",
+                    padding: "12px 16px",
                     display: "flex",
                     flexDirection: "column",
-                    maxHeight: "calc(80vh - 140px)",
-                    overflow: "hidden",
                 }}
-                onOk={() => {
-                    if (!canConfirm) return;
-                    confirmSelection(selectedImagesForConfirm);
-                }}
-                okButtonProps={{ disabled: !canConfirm }}
-                okText={t("tonies.imageManager.okText")}
             >
-                <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, width: "100%" }}>
-                    <Space style={{ marginBottom: 12, flexShrink: 0 }}>
+                <div style={{ width: "100%", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                    <Space style={{ marginBottom: 8 }}>
                         <Segmented<ImageSource>
                             value={source}
                             options={[
@@ -275,152 +375,59 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                         />
                     </Space>
 
-                    <div
-                        style={{
-                            flex: 1,
-                            minHeight: 0,
-                            overflowY: "auto",
-                            display: source === "custom" ? "block" : "none",
-                        }}
-                    >
-                        {source === "custom" && (
-                            <>
-                                <Upload.Dragger
-                                    {...uploadDraggerProps}
-                                    style={{ width: "100%", padding: "8px 16px", marginBottom: 12 }}
-                                >
-                                    <p className="ant-upload-drag-icon" style={{ marginBottom: 4 }}>
-                                        <InboxOutlined />
-                                    </p>
-                                    <p className="ant-upload-text" style={{ margin: 0, fontSize: 12 }}>
-                                        {t("fileBrowser.upload.uploadHint")}
-                                    </p>
-                                </Upload.Dragger>
-                                <div style={{ marginBottom: 12 }}>
-                                    <Button
-                                        icon={<FolderAddOutlined />}
-                                        size="small"
-                                        onClick={() => openCreateDirectoryModal(customPath)}
-                                    >
-                                        {t("fileBrowser.createDirectory.createDirectory")}
-                                    </Button>
-                                </div>
-                            </>
-                        )}
-                        {isCreateDirectoryModalOpen && (
-                            <CreateDirectoryModal
-                                open={isCreateDirectoryModalOpen}
-                                createDirectoryPath={createDirectoryPath}
-                                createDirectoryInputKey={createDirectoryInputKey}
-                                hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
-                                isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
-                                inputRef={inputCreateDirectoryRef}
-                                onInputChange={handleCreateDirectoryInputChange}
-                                onClose={closeCreateDirectoryModal}
-                                onCreate={createDirectory}
-                            />
-                        )}
-                        <SelectFileFileBrowser
-                            key={`custom-picker-${rebuildTrigger}`}
-                            special="custom_img"
-                            initialPath={customPath}
-                            filetypeFilter={IMAGE_EXTENSIONS}
-                            trackUrl={false}
-                            maxSelectedRows={allowMultiple ? 0 : 1}
-                            showColumns={["picture", "name", "size", "date", "controls"]}
-                            onFileSelectChange={(files, path) => {
-                                setCustomPath(path);
-                                const paths = files
-                                    .filter((f) => !f.isDir)
-                                    .map((f) => toCustomImgWebPath(path, f.name));
-                                setCustomSelections(allowMultiple ? paths : paths.slice(0, 1));
-                            }}
-                            onFileDoubleClick={(file, path) => {
-                                if (allowMultiple || file?.isDir) return;
-                                confirmSelection([toCustomImgWebPath(path, file.name)]);
+                    <div style={{ display: source === "custom" ? "block" : "none" }}>
+                        <CustomImagesPanel
+                            allowMultiple={allowMultiple}
+                            customPath={customPath}
+                            rebuildTrigger={rebuildTrigger}
+                            active={source === "custom"}
+                            tableScrollY={customTableScrollY}
+                            onImagePreview={openImagePreview}
+                            uploadDraggerProps={uploadDraggerProps}
+                            isCreateDirectoryModalOpen={isCreateDirectoryModalOpen}
+                            createDirectoryPath={createDirectoryPath}
+                            createDirectoryInputKey={createDirectoryInputKey}
+                            hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
+                            isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
+                            inputCreateDirectoryRef={inputCreateDirectoryRef}
+                            handleCreateDirectoryInputChange={handleCreateDirectoryInputChange}
+                            closeCreateDirectoryModal={closeCreateDirectoryModal}
+                            createDirectory={createDirectory}
+                            openCreateDirectoryModal={openCreateDirectoryModal}
+                            onCustomSelect={handleCustomFileSelectChange}
+                            onCustomDoubleClick={handleCustomFileDoubleClick}
+                            onCustomImgDropFiles={(files) => {
+                                Array.from(files).forEach((file) => {
+                                    if (!IMAGE_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
+                                        return;
+                                    }
+                                    void handleUploadRequest({
+                                        file: file as any,
+                                        onSuccess: () => {},
+                                        onError: () => {},
+                                    });
+                                });
                             }}
                         />
                     </div>
-                    <div
-                        style={{
-                            flex: 1,
-                            minHeight: 0,
-                            overflowY: "auto",
-                            display: source === "original" ? "block" : "none",
-                            border: `1px solid ${token.colorBorder}`,
-                            borderRadius: 8,
-                        }}
-                    >
-                        {originalImagesLoading ? (
-                            <Empty
-                                style={{ margin: "40px 0" }}
-                                description={t("tonies.imageManager.originalImagesLoading")}
+
+                    {originalPanelEverShown ? (
+                        <div style={{ display: source === "original" ? "block" : "none" }}>
+                            <OriginalImagesPanel
+                                allowMultiple={allowMultiple}
+                                originalImagesLoading={originalImagesLoading}
+                                originalImages={originalImages}
+                                originalSearchInput={originalSearchInput}
+                                setOriginalSearchInput={setOriginalSearchInput}
+                                originalSelections={originalSelections}
+                                setOriginalSelections={setOriginalSelections}
+                                originalTableData={originalTableData}
+                                originalTableScrollY={originalTableScrollY}
+                                onConfirmSingle={(url) => confirmSelection([url])}
+                                onImagePreview={openImagePreview}
                             />
-                        ) : originalImages.length === 0 ? (
-                            <Empty
-                                style={{ margin: "40px 0" }}
-                                description={t("tonies.imageManager.noOriginalImages")}
-                            />
-                        ) : (
-                            <List
-                                dataSource={originalImages}
-                                renderItem={(item) => {
-                                    const isSelected = originalSelections.includes(item);
-                                    const handleToggle = () => {
-                                        if (allowMultiple) {
-                                            setOriginalSelections((prev) =>
-                                                isSelected ? prev.filter((p) => p !== item) : [...prev, item]
-                                            );
-                                        } else {
-                                            setOriginalSelections([item]);
-                                        }
-                                    };
-                                    return (
-                                        <List.Item
-                                            onClick={handleToggle}
-                                            onDoubleClick={() => {
-                                                if (allowMultiple) return;
-                                                setOriginalSelections([item]);
-                                                confirmSelection([item]);
-                                            }}
-                                            style={{
-                                                cursor: "pointer",
-                                                padding: 8,
-                                                border:
-                                                    isSelected
-                                                        ? `1px solid ${token.colorPrimary}`
-                                                        : "1px solid transparent",
-                                                borderRadius: 8,
-                                                margin: 4,
-                                            }}
-                                        >
-                                            <Space align="center">
-                                                {allowMultiple && (
-                                                    <Checkbox
-                                                        checked={isSelected}
-                                                        onChange={(e) => {
-                                                            e.stopPropagation();
-                                                            handleToggle();
-                                                        }}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                    />
-                                                )}
-                                                <img
-                                                    src={toImageSrc(item)}
-                                                    alt="default"
-                                                    referrerPolicy="no-referrer"
-                                                    loading="lazy"
-                                                    decoding="async"
-                                                    style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 6 }}
-                                                />
-                                                <span>{item}</span>
-                                            </Space>
-                                        </List.Item>
-                                    );
-                                }}
-                            />
-                        )}
-                    </div>
+                        </div>
+                    ) : null}
                 </div>
             </Modal>
         </>

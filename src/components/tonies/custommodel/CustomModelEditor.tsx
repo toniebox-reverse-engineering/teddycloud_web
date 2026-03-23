@@ -993,6 +993,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 onClose={() => setImageManagerOpen(false)}
                 title={t("tonies.imageManager.titleSelect")}
                 initialSelection={form.getFieldValue("pic") || ""}
+                zIndex={1200}
                 onSelectImage={(path) => {
                     form.setFieldValue("pic", path);
                     void collectImagePaths();
