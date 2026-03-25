@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { theme } from "antd";
 
 type ThumbnailCellProps = {
     src: string;
@@ -19,6 +20,7 @@ export const ThumbnailCell: React.FC<ThumbnailCellProps> = ({
     onClick,
     loadingMargin = "120px 0px",
 }) => {
+    const { token } = theme.useToken();
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const [isVisible, setIsVisible] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -92,7 +94,7 @@ export const ThumbnailCell: React.FC<ThumbnailCellProps> = ({
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: 10,
-                        color: "rgba(0,0,0,0.45)",
+                        color: token.colorTextDescription,
                         userSelect: "none",
                     }}
                 >

@@ -6,7 +6,10 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
-import { SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS, UI_SEARCH_DEBOUNCE_MS } from "../../../../constants/numbers";
+import {
+    SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS,
+    UI_SEARCH_DEBOUNCE_MS,
+} from "../../../../constants/numbers";
 import { useUploadTimeoutMs } from "../../../../hooks/getsettings/useUploadTimeoutMs";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
@@ -17,9 +20,9 @@ import {
     originalImageUrlMatchesTokens,
     tokenizeOriginalImageSearch,
 } from "../utils/originalImageUrlSearch";
-import CustomImagesPanel from "./select-image/CustomImagesPanel";
-import OriginalImagesPanel from "./select-image/OriginalImagesPanel";
-import { useOriginalImagesData } from "./select-image/useOriginalImagesData";
+import CustomImagesPanel from "./selectImage/CustomImagesPanel";
+import OriginalImagesPanel from "./selectImage/OriginalImagesPanel";
+import { useOriginalImagesData } from "./selectImage/useOriginalImagesData";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const { useToken } = theme;
@@ -46,11 +49,6 @@ const normalizePathForQuery = (inputPath: string) => {
 
 type ImageSource = "custom" | "original";
 
-const ORIGINAL_TABLE_MIN_SCROLL_Y = 220;
-const ORIGINAL_TABLE_MAX_SCROLL_Y = 560;
-const PICKER_RESERVED_HEIGHT = 420;
-const CUSTOM_TABLE_RESERVED_HEIGHT = 450;
-
 const deriveCustomImgDirectory = (pic?: string): string => {
     if (!pic || !pic.startsWith("/custom_img/")) return "";
     const normalized = pic.slice("/custom_img/".length);
@@ -60,8 +58,6 @@ const deriveCustomImgDirectory = (pic?: string): string => {
 };
 
 const isCustomImagePath = (path?: string) => !!path && path.startsWith("/custom_img/");
-
-const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
 
 interface SelectImageModalProps {
     open: boolean;
@@ -101,11 +97,6 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     const [uploadFileList, setUploadFileList] = useState<UploadFile<any>[]>([]);
     const [originalSearchInput, setOriginalSearchInput] = useState("");
     const [debouncedOriginalSearch, setDebouncedOriginalSearch] = useState("");
-    /** After first visit, keep Original UI mounted — avoids rebuilding thousands of table rows on each tab switch. */
-    const [originalPanelEverShown, setOriginalPanelEverShown] = useState(false);
-    const [viewportHeight, setViewportHeight] = useState<number>(() =>
-        typeof window === "undefined" ? 900 : window.innerHeight
-    );
     const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
     const [imagePreviewUrl, setImagePreviewUrl] = useState("");
 
@@ -162,47 +153,12 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
         setCustomPath(initialIsCustom ? deriveCustomImgDirectory(initialSelection) : "");
     }, [initialSelection, open]);
 
-    useEffect(() => {
-        if (!open) {
-            setOriginalPanelEverShown(false);
-            return;
-        }
-        if (source === "original") setOriginalPanelEverShown(true);
-    }, [open, source]);
-
-    useEffect(() => {
-        if (!open || typeof window === "undefined") return;
-        const update = () => setViewportHeight(window.innerHeight);
-        update();
-        window.addEventListener("resize", update, { passive: true });
-        return () => window.removeEventListener("resize", update);
-    }, [open]);
-
     const searchTokens = useMemo(() => tokenizeOriginalImageSearch(debouncedOriginalSearch), [debouncedOriginalSearch]);
 
     const filteredOriginalUrls = useMemo(
         () => originalImages.filter((url) => originalImageUrlMatchesTokens(url, searchTokens)),
         [originalImages, searchTokens]
     );
-    const originalTableScrollY = useMemo(
-        () =>
-            clamp(
-                viewportHeight - PICKER_RESERVED_HEIGHT,
-                ORIGINAL_TABLE_MIN_SCROLL_Y,
-                ORIGINAL_TABLE_MAX_SCROLL_Y
-            ),
-        [viewportHeight]
-    );
-    const customTableScrollY = useMemo(
-        () =>
-            clamp(
-                viewportHeight - CUSTOM_TABLE_RESERVED_HEIGHT,
-                ORIGINAL_TABLE_MIN_SCROLL_Y,
-                ORIGINAL_TABLE_MAX_SCROLL_Y
-            ),
-        [viewportHeight]
-    );
-
     const originalTableData = useMemo(() => filteredOriginalUrls.map((url) => ({ url })), [filteredOriginalUrls]);
 
     const selectedImages = source === "custom" ? customSelections : originalSelections;
@@ -363,7 +319,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                     flexDirection: "column",
                 }}
             >
-                <div style={{ width: "100%", display: "flex", flexDirection: "column", minHeight: 0 }}>
+                <div style={{ width: "100%", display: "flex", flexDirection: "column", minHeight: 0, flex: 1 }}>
                     <Space style={{ marginBottom: 8 }}>
                         <Segmented<ImageSource>
                             value={source}
@@ -375,44 +331,45 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                         />
                     </Space>
 
-                    <div style={{ display: source === "custom" ? "block" : "none" }}>
-                        <CustomImagesPanel
-                            allowMultiple={allowMultiple}
-                            customPath={customPath}
-                            rebuildTrigger={rebuildTrigger}
-                            active={source === "custom"}
-                            tableScrollY={customTableScrollY}
-                            onImagePreview={openImagePreview}
-                            uploadDraggerProps={uploadDraggerProps}
-                            isCreateDirectoryModalOpen={isCreateDirectoryModalOpen}
-                            createDirectoryPath={createDirectoryPath}
-                            createDirectoryInputKey={createDirectoryInputKey}
-                            hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
-                            isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
-                            inputCreateDirectoryRef={inputCreateDirectoryRef}
-                            handleCreateDirectoryInputChange={handleCreateDirectoryInputChange}
-                            closeCreateDirectoryModal={closeCreateDirectoryModal}
-                            createDirectory={createDirectory}
-                            openCreateDirectoryModal={openCreateDirectoryModal}
-                            onCustomSelect={handleCustomFileSelectChange}
-                            onCustomDoubleClick={handleCustomFileDoubleClick}
-                            onCustomImgDropFiles={(files) => {
-                                Array.from(files).forEach((file) => {
-                                    if (!IMAGE_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
-                                        return;
-                                    }
-                                    void handleUploadRequest({
-                                        file: file as any,
-                                        onSuccess: () => {},
-                                        onError: () => {},
+                    {source === "custom" ? (
+                        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+                            <CustomImagesPanel
+                                allowMultiple={allowMultiple}
+                                customPath={customPath}
+                                rebuildTrigger={rebuildTrigger}
+                                active
+                                onImagePreview={openImagePreview}
+                                uploadDraggerProps={uploadDraggerProps}
+                                isCreateDirectoryModalOpen={isCreateDirectoryModalOpen}
+                                createDirectoryPath={createDirectoryPath}
+                                createDirectoryInputKey={createDirectoryInputKey}
+                                hasNewDirectoryInvalidChars={hasNewDirectoryInvalidChars}
+                                isCreateDirectoryButtonDisabled={isCreateDirectoryButtonDisabled}
+                                inputCreateDirectoryRef={inputCreateDirectoryRef}
+                                handleCreateDirectoryInputChange={handleCreateDirectoryInputChange}
+                                closeCreateDirectoryModal={closeCreateDirectoryModal}
+                                createDirectory={createDirectory}
+                                openCreateDirectoryModal={openCreateDirectoryModal}
+                                onCustomSelect={handleCustomFileSelectChange}
+                                onCustomDoubleClick={handleCustomFileDoubleClick}
+                                onCustomImgDropFiles={(files) => {
+                                    Array.from(files).forEach((file) => {
+                                        if (!IMAGE_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
+                                            return;
+                                        }
+                                        void handleUploadRequest({
+                                            file: file as any,
+                                            onSuccess: () => {},
+                                            onError: () => {},
+                                        });
                                     });
-                                });
-                            }}
-                        />
-                    </div>
+                                }}
+                            />
+                        </div>
+                    ) : null}
 
-                    {originalPanelEverShown ? (
-                        <div style={{ display: source === "original" ? "block" : "none" }}>
+                    {source === "original" ? (
+                        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
                             <OriginalImagesPanel
                                 allowMultiple={allowMultiple}
                                 originalImagesLoading={originalImagesLoading}
@@ -422,7 +379,6 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                                 originalSelections={originalSelections}
                                 setOriginalSelections={setOriginalSelections}
                                 originalTableData={originalTableData}
-                                originalTableScrollY={originalTableScrollY}
                                 onConfirmSingle={(url) => confirmSelection([url])}
                                 onImagePreview={openImagePreview}
                             />

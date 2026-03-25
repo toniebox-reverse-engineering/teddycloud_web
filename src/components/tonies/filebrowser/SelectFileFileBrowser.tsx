@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Table, Input, theme, Modal, Upload } from "antd";
@@ -82,6 +82,9 @@ const SelectFileFileBrowserComponent: React.FC<{
     const [imagePreviewUrl, setImagePreviewUrl] = useState("");
     const [currentRecord, setCurrentRecord] = useState<Record>();
     const [currentAudioUrl, setCurrentAudioUrl] = useState<string>("");
+    const compactTableViewportRef = useRef<HTMLDivElement | null>(null);
+    const [measuredCompactTableScrollY, setMeasuredCompactTableScrollY] = useState<number>(120);
+    const isCompactCustomSelect = special === "custom_img";
 
     const {
         path,
@@ -197,7 +200,6 @@ const SelectFileFileBrowserComponent: React.FC<{
     };
 
     const isSingleSelect = maxSelectedRows === 1;
-    const isCompactCustomSelect = special === "custom_img";
     /** No Ant selection column: avoids empty gutter; selection via row click + rowClassName only. */
     const omitSelectionColumn = isSingleSelect && isCompactCustomSelect;
     const compactSelectHasVisibleSelectionColumn = isCompactCustomSelect && !isSingleSelect;
@@ -219,6 +221,45 @@ const SelectFileFileBrowserComponent: React.FC<{
                       renderSelectImageSelectionCell(originNode),
               }
             : undefined;
+
+    const recomputeCompactTableScrollY = useCallback(() => {
+        const element = compactTableViewportRef.current;
+        if (!element) return;
+        const rect = element.getBoundingClientRect();
+        const maxByViewport = Math.floor(window.innerHeight - rect.top - 24);
+        setMeasuredCompactTableScrollY(Math.max(120, maxByViewport));
+    }, []);
+
+    useEffect(() => {
+        if (!isCompactCustomSelect || typeof tableScrollY === "number") return;
+        const element = compactTableViewportRef.current;
+        if (!element || typeof ResizeObserver === "undefined") return;
+
+        recomputeCompactTableScrollY();
+
+        const observer = new ResizeObserver(() => recomputeCompactTableScrollY());
+        observer.observe(element);
+        window.addEventListener("resize", recomputeCompactTableScrollY);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener("resize", recomputeCompactTableScrollY);
+        };
+    }, [isCompactCustomSelect, tableScrollY, recomputeCompactTableScrollY]);
+
+    useEffect(() => {
+        if (!isCompactCustomSelect || typeof tableScrollY === "number" || !active) return;
+        recomputeCompactTableScrollY();
+        const frameId = window.requestAnimationFrame(() => recomputeCompactTableScrollY());
+        return () => window.cancelAnimationFrame(frameId);
+    }, [active, isCompactCustomSelect, tableScrollY, recomputeCompactTableScrollY]);
+
+    const effectiveTableScrollY =
+        typeof tableScrollY === "number"
+            ? tableScrollY
+            : isCompactCustomSelect && measuredCompactTableScrollY > 0
+              ? measuredCompactTableScrollY
+              : undefined;
 
     const handleRowClick = (record: Record) => {
         if (record.isDir || record.name === "..") return;
@@ -332,8 +373,8 @@ const SelectFileFileBrowserComponent: React.FC<{
             columns={columns}
             rowKey={(record) => record.name}
             pagination={false}
-            virtual={typeof tableScrollY === "number"}
-            scroll={typeof tableScrollY === "number" ? { y: tableScrollY } : undefined}
+            virtual={typeof effectiveTableScrollY === "number"}
+            scroll={typeof effectiveTableScrollY === "number" ? { y: effectiveTableScrollY } : undefined}
             onRow={(record) => ({
                 onClick: () => {
                     handleRowClick(record);
@@ -421,7 +462,7 @@ const SelectFileFileBrowserComponent: React.FC<{
                     overlay={overlay}
                 />
             )}
-            <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+            <div style={{ display: "flex", flexDirection: "column", width: "100%", flex: 1, minHeight: 0 }}>
                 <div
                     style={{
                         display: "flex",
@@ -442,7 +483,7 @@ const SelectFileFileBrowserComponent: React.FC<{
             {isCompactCustomSelect ? (
                 (() => {
                     const compactTableFrame = (
-                        <div style={selectImageTableFrameStyle}>
+                        <div style={{ ...selectImageTableFrameStyle, display: "flex", flexDirection: "column", minHeight: 0, flex: 1 }}>
                             <Input
                                 allowClear
                                 placeholder={t("fileBrowser.filter")}
@@ -463,9 +504,11 @@ const SelectFileFileBrowserComponent: React.FC<{
                                     ) : null
                                 }
                             />
-                            <div style={{ position: "relative" }} ref={parentRef}>
-                                {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
-                                {tableElement}
+                            <div style={{ position: "relative", flex: 1, minHeight: 0 }} ref={compactTableViewportRef}>
+                                <div style={{ position: "relative" }} ref={parentRef}>
+                                    {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
+                                    {tableElement}
+                                </div>
                             </div>
                         </div>
                     );

@@ -17,7 +17,7 @@ export interface CustomModelEditModalProps {
     hasChanges?: () => boolean;
     title?: string;
     hideNavigationControls?: boolean;
-    /** e.g. when opened from Tonie bearbeiten, stack above the parent Modal */
+    /** e.g. when opened from edit Tonie, stack above the parent Modal */
     zIndex?: number;
     children: React.ReactNode;
 }

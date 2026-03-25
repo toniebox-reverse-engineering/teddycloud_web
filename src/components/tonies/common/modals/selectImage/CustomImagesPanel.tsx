@@ -25,7 +25,7 @@ interface CustomImagesPanelProps {
     customPath: string;
     rebuildTrigger: number;
     active: boolean;
-    tableScrollY: number;
+    tableScrollY?: number;
     uploadDraggerProps: UploadProps;
     isCreateDirectoryModalOpen: boolean;
     createDirectoryPath: string;
@@ -84,50 +84,52 @@ export const CustomImagesPanel: React.FC<CustomImagesPanelProps> = ({
                     onCreate={createDirectory}
                 />
             )}
-            <SelectFileFileBrowser
-                key={`custom-picker-${rebuildTrigger}`}
-                special="custom_img"
-                initialPath={customPath}
-                filetypeFilter={IMAGE_EXTENSIONS}
-                trackUrl={false}
-                active={active}
-                tableScrollY={tableScrollY}
-                maxSelectedRows={allowMultiple ? 0 : 1}
-                onImagePreview={onImagePreview}
-                customImgTableDropZone={{
-                    uploadDraggerProps,
-                    uploadDraggerRef,
-                    onDropFiles: onCustomImgDropFiles,
-                }}
-                pathActions={
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <Button
-                            size="small"
-                            icon={<InboxOutlined />}
-                            title={t("fileBrowser.upload.uploadHint")}
-                            onClick={openUploadDialog}
-                        >
-                            {t("fileBrowser.upload.upload")}
-                        </Button>
-                        <Button
-                            icon={<FolderAddOutlined />}
-                            size="small"
-                            onClick={() => openCreateDirectoryModal(customPath)}
-                        >
-                            {t("fileBrowser.createDirectory.createDirectory")}
-                        </Button>
-                    </div>
-                }
-                showColumns={["picture", "name", "size", "date", "controls"]}
-                onFileSelectChange={(files, path) => {
-                    const paths = files.filter((f) => !f.isDir).map((f) => toCustomImgWebPath(path, f.name));
-                    onCustomSelect(paths, path);
-                }}
-                onFileDoubleClick={(file, path) => {
-                    if (allowMultiple || file?.isDir) return;
-                    onCustomDoubleClick(path, file.name);
-                }}
-            />
+            <div style={{ flex: 1, minHeight: 0 }}>
+                <SelectFileFileBrowser
+                    key={`custom-picker-${rebuildTrigger}`}
+                    special="custom_img"
+                    initialPath={customPath}
+                    filetypeFilter={IMAGE_EXTENSIONS}
+                    trackUrl={false}
+                    active={active}
+                    tableScrollY={tableScrollY}
+                    maxSelectedRows={allowMultiple ? 0 : 1}
+                    onImagePreview={onImagePreview}
+                    customImgTableDropZone={{
+                        uploadDraggerProps,
+                        uploadDraggerRef,
+                        onDropFiles: onCustomImgDropFiles,
+                    }}
+                    pathActions={
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <Button
+                                size="small"
+                                icon={<InboxOutlined />}
+                                title={t("fileBrowser.upload.uploadHint")}
+                                onClick={openUploadDialog}
+                            >
+                                {t("fileBrowser.upload.upload")}
+                            </Button>
+                            <Button
+                                icon={<FolderAddOutlined />}
+                                size="small"
+                                onClick={() => openCreateDirectoryModal(customPath)}
+                            >
+                                {t("fileBrowser.createDirectory.createDirectory")}
+                            </Button>
+                        </div>
+                    }
+                    showColumns={["picture", "name", "size", "date", "controls"]}
+                    onFileSelectChange={(files, path) => {
+                        const paths = files.filter((f) => !f.isDir).map((f) => toCustomImgWebPath(path, f.name));
+                        onCustomSelect(paths, path);
+                    }}
+                    onFileDoubleClick={(file, path) => {
+                        if (allowMultiple || file?.isDir) return;
+                        onCustomDoubleClick(path, file.name);
+                    }}
+                />
+            </div>
         </div>
     );
 };

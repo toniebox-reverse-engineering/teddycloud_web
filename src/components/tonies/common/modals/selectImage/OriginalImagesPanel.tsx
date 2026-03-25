@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { CloseOutlined } from "@ant-design/icons";
 import { Empty, Input, Spin, Table, theme } from "antd";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,6 @@ interface OriginalImagesPanelProps {
     originalSelections: string[];
     setOriginalSelections: React.Dispatch<React.SetStateAction<string[]>>;
     originalTableData: OriginalTableRow[];
-    originalTableScrollY: number;
     onConfirmSingle: (url: string) => void;
     onImagePreview: (imageUrl: string) => void;
 }
@@ -40,12 +39,25 @@ export const OriginalImagesPanel: React.FC<OriginalImagesPanelProps> = ({
     originalSelections,
     setOriginalSelections,
     originalTableData,
-    originalTableScrollY,
     onConfirmSingle,
     onImagePreview,
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const tableViewportRef = useRef<HTMLDivElement | null>(null);
+    const [originalTableScrollY, setOriginalTableScrollY] = useState(320);
+
+    useEffect(() => {
+        const element = tableViewportRef.current;
+        if (!element || typeof ResizeObserver === "undefined") return;
+
+        const update = () => setOriginalTableScrollY(Math.max(0, Math.floor(element.clientHeight)));
+        update();
+
+        const observer = new ResizeObserver(() => update());
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, []);
 
     const columns = useMemo(
         () => [
@@ -111,6 +123,10 @@ export const OriginalImagesPanel: React.FC<OriginalImagesPanelProps> = ({
                 border: `1px solid ${token.colorBorder}`,
                 borderRadius: 8,
                 padding: 8,
+                display: "flex",
+                flexDirection: "column",
+                minHeight: 0,
+                height: "100%",
             }}
         >
             {originalImagesLoading ? (
@@ -140,43 +156,45 @@ export const OriginalImagesPanel: React.FC<OriginalImagesPanelProps> = ({
                     {originalTableData.length === 0 ? (
                         <Empty style={{ margin: "24px 0" }} description={t("tonies.imageManager.noOriginalSearchResults")} />
                     ) : (
-                        <Table<OriginalTableRow>
-                            className="select-image-table"
-                            rowKey={(r) => r.url}
-                            dataSource={originalTableData}
-                            columns={columns}
-                            pagination={false}
-                            tableLayout="fixed"
-                            virtual
-                            scroll={{ y: originalTableScrollY }}
-                            rowSelection={
-                                allowMultiple
-                                    ? {
-                                          selectedRowKeys: originalSelections,
-                                          onChange: (keys) => setOriginalSelections(keys.map(String)),
-                                          columnWidth: SELECT_IMAGE_CHECKBOX_COL_WIDTH,
-                                          align: "center",
-                                          renderCell: (_: boolean, __: OriginalTableRow, ___: number, originNode: React.ReactNode) =>
-                                              renderSelectImageSelectionCell(originNode),
-                                      }
-                                    : undefined
-                            }
-                            onRow={(record) => ({
-                                onClick: () =>
-                                    setOriginalSelections((prev) =>
-                                        nextSelectionForMode(prev, record.url, allowMultiple)
-                                    ),
-                                onDoubleClick: () => {
-                                    if (allowMultiple) {
-                                        setOriginalSelections((prev) => nextSelectionForMode(prev, record.url, true));
-                                        return;
-                                    }
-                                    onConfirmSingle(record.url);
-                                },
-                                style: { cursor: "pointer" },
-                            })}
-                            rowClassName={(record) => (originalSelections.includes(record.url) ? "ant-table-row-selected" : "")}
-                        />
+                        <div ref={tableViewportRef} style={{ flex: 1, minHeight: 0 }}>
+                            <Table<OriginalTableRow>
+                                className="select-image-table"
+                                rowKey={(r) => r.url}
+                                dataSource={originalTableData}
+                                columns={columns}
+                                pagination={false}
+                                tableLayout="fixed"
+                                virtual
+                                scroll={{ y: originalTableScrollY }}
+                                rowSelection={
+                                    allowMultiple
+                                        ? {
+                                              selectedRowKeys: originalSelections,
+                                              onChange: (keys) => setOriginalSelections(keys.map(String)),
+                                              columnWidth: SELECT_IMAGE_CHECKBOX_COL_WIDTH,
+                                              align: "center",
+                                              renderCell: (_: boolean, __: OriginalTableRow, ___: number, originNode: React.ReactNode) =>
+                                                  renderSelectImageSelectionCell(originNode),
+                                          }
+                                        : undefined
+                                }
+                                onRow={(record) => ({
+                                    onClick: () =>
+                                        setOriginalSelections((prev) =>
+                                            nextSelectionForMode(prev, record.url, allowMultiple)
+                                        ),
+                                    onDoubleClick: () => {
+                                        if (allowMultiple) {
+                                            setOriginalSelections((prev) => nextSelectionForMode(prev, record.url, true));
+                                            return;
+                                        }
+                                        onConfirmSingle(record.url);
+                                    },
+                                    style: { cursor: "pointer" },
+                                })}
+                                rowClassName={(record) => (originalSelections.includes(record.url) ? "ant-table-row-selected" : "")}
+                            />
+                        </div>
                     )}
                 </>
             )}
