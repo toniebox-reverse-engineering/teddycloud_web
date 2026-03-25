@@ -1223,6 +1223,7 @@
                 "proceedToFlashLinkText": "Flashage de la boîte",
                 "tb2": "Concernant la Toniebox 2",
                 "tb2Details": "Une seule version de la dernière Toniebox 2 est connue, donc l’identification est simple. Si votre box est une Toniebox 2, vous pouvez aller directement aux instructions de flash pour la Toniebox 2.",
+                "tb2text": "Cette version est unique et a TB-MAIN_2.0.P imprimé sur le pcb comme montré dans l'image suivante.",
                 "tiInstruction": "Pour connaître la version spécifique, tu dois ouvrir ta Toniebox et utiliser la puce principale de la carte PCB pour l'identifier.",
                 "title": "Identifie ta version de Toniebox 1",
                 "vendor": "Le fabricant de la puce principale de ta Toniebox est",

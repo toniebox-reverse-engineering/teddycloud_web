@@ -11,6 +11,7 @@
 - gui: Added find all unused TAF Search in Library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279)
 - gui: Prepared support for TB2
 - gui: Added TeddyStudio image scale factor [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
+- gui: Fixed box identification by mac (tb2 was wrongly shown as cc3200/cc3235) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/287](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/287)
 
 ### Commits
 

@@ -1223,6 +1223,7 @@
                 "proceedToFlashLinkText": "Box Flashing",
                 "tb2": "Regarding Toniebox 2",
                 "tb2Details": "Only one version of the latest Toniebox 2 is known, so identification is straightforward. If your box is a Toniebox 2, you can go directly to the flashing instructions for the Toniebox 2.",
+                "tb2text": "This version is unique and has TB-MAIN_2.0.P printed on the pcb as shown in the following picture.",
                 "tiInstruction": "To find out the specific version, you have to open your Toniebox and use the main chip of the PCB for identification.",
                 "title": "Identify your Toniebox version",
                 "vendor": "The vendor of your Toniebox main chip is",
