@@ -12,6 +12,8 @@ import chip3200Image from "../../../../assets/boxSetup/cc3200.jpg";
 import chip3235Image from "../../../../assets/boxSetup/cc3235.jpg";
 import pcbesp32Image from "../../../../assets/boxSetup/esp32_pcb.png";
 import pcbesp32ImagePreview from "../../../../assets/boxSetup/esp32_pcb_preview.png";
+import pcbtb2Image from "../../../../assets/boxSetup/tb2_pcb.png";
+import pcbtb2ImagePreview from "../../../../assets/boxSetup/tb2_pcb_preview.png";
 import chipesp32Image from "../../../../assets/boxSetup/esp32.jpg";
 
 import { useMacVendorLookup } from "./hooks/useMacVendorLookup";
@@ -61,14 +63,22 @@ export const IdentifyBoxVersionContent: React.FC = () => {
                                 {t("tonieboxes.boxSetup.identifyVersion.vendor")}: <b>{vendor}</b>{" "}
                                 {t("tonieboxes.boxSetup.identifyVersion.boxVersion")}
                                 {vendor.includes("Espressif") ? (
-                                    <b> ESP32</b>
-                                ) : (
+                                    <>
+                                        <b> ESP32</b> {t("tonieboxes.boxSetup.identifyVersion.version")}
+                                    </>
+                                ) : vendor.includes("Texas Instruments") ? (
                                     <>
                                         <b> CC3200</b> {t("tonieboxes.boxSetup.identifyVersion.or")}
-                                        <b> CC3235</b>
+                                        <b> CC3235</b> {t("tonieboxes.boxSetup.identifyVersion.version")}
                                     </>
-                                )}{" "}
-                                {t("tonieboxes.boxSetup.identifyVersion.version")}.
+                                ) : vendor.includes("tonies GmbH") ? (
+                                    <b> TonieBox 2</b>
+                                ) : (
+                                    <>
+                                        <b> Unknown</b> {t("tonieboxes.boxSetup.identifyVersion.version")}
+                                    </>
+                                )}
+                                .
                             </>
                         }
                     />
@@ -272,17 +282,44 @@ const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onAc
         </>
     );
 
+    const tb2Tab = (
+        <>
+            <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.tb2text")}</Paragraph>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    flexWrap: "wrap",
+                    gap: 16,
+                }}
+            >
+                <Image.PreviewGroup>
+                    <Paragraph style={{ maxWidth: 400 }}>
+                        <Image
+                            src={pcbtb2Image}
+                            alt="PCB TB2"
+                            placeholder={<Image preview={false} src={pcbtb2ImagePreview} />}
+                        />
+                    </Paragraph>
+                </Image.PreviewGroup>
+            </Paragraph>
+        </>
+    );
+
     const versionItems: TabsProps["items"] = [
         { key: "cc3200", label: "CC3200", children: cc3200Tab },
         { key: "cc3235", label: "CC3235", children: cc3235Tab },
         { key: "esp32", label: "ESP32", children: esp32Tab },
+        { key: "tb2", label: "TonieBox 2", children: tb2Tab },
     ];
 
     const filteredItems = versionItems.filter(
         (item) =>
             ((vendor?.toLowerCase().includes("texas") || !vendor) &&
                 (item.key === "cc3200" || item.key === "cc3235")) ||
-            ((vendor?.toLowerCase().includes("espressif") || !vendor) && item.key === "esp32"),
+            ((vendor?.toLowerCase().includes("espressif") || !vendor) && item.key === "esp32") ||
+            ((vendor?.toLowerCase().includes("tonies gmbh") || !vendor) && item.key === "tb2"),
     );
 
     return (
@@ -290,16 +327,30 @@ const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onAc
             <Tabs
                 activeKey={activeKey}
                 onChange={onActiveKeyChange}
-                defaultActiveKey={vendor?.toLowerCase().includes("espressif") ? "esp32" : "cc3200"}
+                defaultActiveKey={
+                    vendor?.toLowerCase().includes("espressif")
+                        ? "esp32"
+                        : vendor?.toLowerCase().includes("tonies gmbh")
+                          ? "tb2"
+                          : "cc3200"
+                }
                 items={filteredItems}
                 indicator={{ size: (origin) => origin - 20, align: "center" }}
             />
-            <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.proceedToFlash1")} </Paragraph>
-            <Paragraph style={{ marginTop: 16 }}>
-                <Button type="primary" onClick={() => onProceed(activeKey)}>
-                    {`${activeKey.toUpperCase()} ${t("tonieboxes.boxSetup.identifyVersion.proceedToFlashLinkText")}`}
-                </Button>
-            </Paragraph>
+            {(!vendor ||
+                vendor?.toLowerCase().includes("espressif") ||
+                vendor?.toLowerCase().includes("tonies gmbh") ||
+                vendor?.toLowerCase().includes("texas")) &&
+                (activeKey === "tb2" || activeKey === "cc3200" || activeKey === "cc3235" || activeKey === "esp32") && (
+                    <>
+                        <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.proceedToFlash1")} </Paragraph>
+                        <Paragraph style={{ marginTop: 16 }}>
+                            <Button type="primary" onClick={() => onProceed(activeKey)}>
+                                {`${activeKey.toUpperCase()} ${t("tonieboxes.boxSetup.identifyVersion.proceedToFlashLinkText")}`}
+                            </Button>
+                        </Paragraph>
+                    </>
+                )}
         </>
     );
 };
