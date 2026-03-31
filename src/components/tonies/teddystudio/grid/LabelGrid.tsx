@@ -93,6 +93,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                     labelBackgroundColor,
                     textFontSize,
                     imagePosition,
+                    imageScale,
                     showLanguageFlag,
                     showModelNo,
                     showSeriesOnImageLabel,
@@ -139,7 +140,17 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                 <div className="labelBg" />
 
                                 <div className="labelImageBleed">
-                                    <img className="labelImage" src={dataset.pic} alt="" />
+                                    <img
+                                        className="labelImage"
+                                        src={dataset.pic}
+                                        alt=""
+                                        style={{
+                                            position: "absolute",
+                                            inset: 0,
+                                            transform: `scale(${imageScale})`,
+                                            transformOrigin: "center center",
+                                        }}
+                                    />
                                 </div>
 
                                 <div className="labelClip">
@@ -161,7 +172,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                         overflow: "hidden",
                                                         whiteSpace: "nowrap",
                                                         fontSize: parseFloat(
-                                                            seriesOnImageLabelFontSize || textFontSize
+                                                            seriesOnImageLabelFontSize || textFontSize,
                                                         ),
                                                         minWidth: 0,
                                                         color: effectiveTextColor,

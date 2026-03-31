@@ -89,6 +89,7 @@ export const TonieboxCard: React.FC<{
                 "1": BoxVersionsEnum.cc3200,
                 "2": BoxVersionsEnum.cc3235,
                 "3": BoxVersionsEnum.esp32,
+                "4": BoxVersionsEnum.tb2,
             };
 
             if (versionRaw in BoxVersions) {
@@ -107,7 +108,7 @@ export const TonieboxCard: React.FC<{
                 const tonieData = await api.apiGetTagIndex(tonieboxCard.ID);
                 setLastPlayedTonie(
                     tonieData.filter((tonie) => tonie.ruid === ruid),
-                    ruidTime
+                    ruidTime,
                 );
             }
         };
@@ -167,7 +168,7 @@ export const TonieboxCard: React.FC<{
                         top: 0,
                         left: 0,
                     }}
-                />
+                />,
             );
         } else {
             setBoxImage(
@@ -192,7 +193,7 @@ export const TonieboxCard: React.FC<{
                             left: 0,
                         }}
                     />
-                </Tooltip>
+                </Tooltip>,
             );
         }
     };
@@ -226,7 +227,7 @@ export const TonieboxCard: React.FC<{
                         }}
                     />
                 </Tooltip>
-            </Link>
+            </Link>,
         );
     };
 
@@ -335,7 +336,7 @@ export const TonieboxCard: React.FC<{
                             model: selectedModel,
                             mac: tonieboxCard.ID,
                         }),
-                        t("tonieboxes.navigationTitle")
+                        t("tonieboxes.navigationTitle"),
                     );
                 })
                 .catch((e) => {
@@ -343,7 +344,7 @@ export const TonieboxCard: React.FC<{
                         NotificationTypeEnum.Error,
                         t("settings.errorWhileSavingConfig"),
                         t("settings.errorWhileSavingConfigDetails") + e,
-                        t("tonieboxes.navigationTitle")
+                        t("tonieboxes.navigationTitle"),
                     );
                 });
         } catch (error) {
@@ -351,7 +352,7 @@ export const TonieboxCard: React.FC<{
                 NotificationTypeEnum.Error,
                 t("tonieboxes.editModelModal.errorOnModelChange"),
                 t("tonieboxes.editModelModal.errorOnModelChangeDetails", { mac: tonieboxCard.ID, error: error }),
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     };
@@ -372,7 +373,7 @@ export const TonieboxCard: React.FC<{
                             name: boxName,
                             mac: tonieboxCard.ID,
                         }),
-                        t("tonieboxes.navigationTitle")
+                        t("tonieboxes.navigationTitle"),
                     );
                 })
                 .catch((e) => {
@@ -380,7 +381,7 @@ export const TonieboxCard: React.FC<{
                         NotificationTypeEnum.Error,
                         t("settings.errorWhileSavingConfig"),
                         t("settings.errorWhileSavingConfigDetails") + e,
-                        t("tonieboxes.navigationTitle")
+                        t("tonieboxes.navigationTitle"),
                     );
                 });
         } catch (error) {
@@ -388,7 +389,7 @@ export const TonieboxCard: React.FC<{
                 NotificationTypeEnum.Error,
                 t("tonieboxes.editModelModal.errorOnNameChange"),
                 t("tonieboxes.editModelModal.errorOnNameChangeDetails", { mac: tonieboxCard.ID, error: error }),
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     };
@@ -424,7 +425,7 @@ export const TonieboxCard: React.FC<{
             addLoadingNotification(
                 key,
                 t("tonieboxes.messages.deleting"),
-                t("tonieboxes.messages.deletingDetails", { mac: tonieboxCard.ID })
+                t("tonieboxes.messages.deletingDetails", { mac: tonieboxCard.ID }),
             );
 
             api.apiPostTeddyCloudRaw("/api/settings/removeOverlay?overlay=" + tonieboxCard.ID)
@@ -438,7 +439,7 @@ export const TonieboxCard: React.FC<{
                             t("tonieboxes.messages.deleteSuccessfulDetails", {
                                 mac: tonieboxCard.ID,
                             }),
-                            t("tonieboxes.navigationTitle")
+                            t("tonieboxes.navigationTitle"),
                         );
                         window.location.reload();
                     } else {
@@ -448,7 +449,7 @@ export const TonieboxCard: React.FC<{
                             t("tonieboxes.messages.deleteFailedDetails", {
                                 mac: tonieboxCard.ID,
                             }),
-                            t("tonieboxes.navigationTitle")
+                            t("tonieboxes.navigationTitle"),
                         );
                     }
                 })
@@ -462,7 +463,7 @@ export const TonieboxCard: React.FC<{
                         }) +
                             ": " +
                             error,
-                        t("tonieboxes.navigationTitle")
+                        t("tonieboxes.navigationTitle"),
                     );
                 });
         } catch (error) {
@@ -475,7 +476,7 @@ export const TonieboxCard: React.FC<{
                 }) +
                     ": " +
                     error,
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     };
@@ -506,7 +507,7 @@ export const TonieboxCard: React.FC<{
                             t("tonieboxes.messages.apiAccessDisabledDetails", {
                                 mac: tonieboxCard.ID,
                             }),
-                            t("tonieboxes.navigationTitle")
+                            t("tonieboxes.navigationTitle"),
                         );
                     } else {
                         addNotification(
@@ -515,7 +516,7 @@ export const TonieboxCard: React.FC<{
                             t("tonieboxes.messages.apiAccessEnabledDetails", {
                                 mac: tonieboxCard.ID,
                             }),
-                            t("tonieboxes.navigationTitle")
+                            t("tonieboxes.navigationTitle"),
                         );
                     }
                 })
@@ -529,7 +530,7 @@ export const TonieboxCard: React.FC<{
                 t("tonieboxes.messages.apiAccessNotChangedErrorDetails", {
                     mac: tonieboxCard.ID,
                 }) + error,
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     };

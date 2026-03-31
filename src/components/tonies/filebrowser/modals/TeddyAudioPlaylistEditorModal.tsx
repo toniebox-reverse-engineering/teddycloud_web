@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Form, Input, Button, Space, theme, Tooltip, Divider } from "antd";
-import {
-    CloseOutlined,
-    FolderAddOutlined,
-    FolderOpenOutlined,
-    InfoCircleOutlined,
-    MinusCircleOutlined,
-    PlusOutlined,
-} from "@ant-design/icons";
+import { Modal, Form, Input, Button, theme, Tooltip } from "antd";
+import { FolderAddOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
+
+import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
@@ -20,10 +16,13 @@ import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 import { useDirectoryCreate } from "../../common/hooks/useCreateDirectory";
 import CreateDirectoryModal from "../../common/modals/CreateDirectoryModal";
 import LoadingSpinner from "../../../common/elements/LoadingSpinner";
+import { generateUUID } from "../../../../utils/ids/generateUUID";
+import { DraggableTapListItem } from "../../common/elements/DraggableTapListItem";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 export interface FileItem {
+    uid: string;
     filepath: string;
     name: string;
 }
@@ -50,6 +49,22 @@ export interface TeddyAudioPlaylistEditorProps {
 const { useToken } = theme;
 
 const ensureLeadingSlash = (p: string) => (p.startsWith("/") ? p : `/${p}`);
+
+const ensureFileUids = (files: any[]): FileItem[] =>
+    (files ?? []).map((f: any) => ({
+        uid: f?.uid ?? generateUUID(),
+        filepath: (f?.filepath ?? "").toString(),
+        name: (f?.name ?? "").toString(),
+    }));
+
+const normalizeSelectedBrowserFiles = (files: any[], path: string, special: string): Omit<FileItem, "uid">[] => {
+    const normalizedPath = path === "" || path.endsWith("/") ? path : path + "/";
+    const prefix = special === "library" ? "lib://" : "content://";
+    return (files ?? []).map((file) => ({
+        filepath: prefix + normalizedPath + file.name,
+        name: file.name,
+    }));
+};
 
 const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
     open,
@@ -80,20 +95,26 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
     });
 
     const [form] = Form.useForm<TAPFormValues>();
-    const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
+
+    const [selectedFiles, setSelectedFiles] = useState<Array<Omit<FileItem, "uid">>>([]);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
+    const [maxSelectableFiles, setMaxSelectableFiles] = useState(99);
     const [filebrowserKey, setFilebrowserKey] = useState(0);
     const [selectedFileIndex, setSelectedFileIndex] = useState<number>(-1);
 
     const [tafBaseName, setTafBaseName] = useState<string>("");
     const [isInitializing, setIsInitializing] = useState(false);
-
     const [initialValuesObj, setInitialValuesObj] = useState<Partial<TAPFormValues> | null>(null);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: { distance: 6 },
+        })
+    );
 
     const stripLibPrefix = (p?: string) => {
         const v = (p ?? "").toString().trim();
         if (!v) return "";
-
         const noPrefix = v.replace(/^lib:\/\//, "");
         return noPrefix.startsWith("/") ? noPrefix : `/${noPrefix}`;
     };
@@ -212,7 +233,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                     audio_id: (initialValues.audio_id as any) ?? undefined,
                     filepath: fp,
                     name: initialValues.name ?? "",
-                    files: (initialValues.files as any) ?? [],
+                    files: ensureFileUids((initialValues.files as any) ?? []),
                 } as TAPFormValues);
 
                 const base = fp ? fp.split("/").pop() ?? "" : "";
@@ -237,28 +258,35 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
         };
     }, [open, initialValuesPath, initialValuesObj]);
 
-    useEffect(() => {
-        setSelectedFiles([]);
-    }, []);
-
     const resetForm = () => {
         form.resetFields();
         setTafBaseName("");
     };
 
     const handleFileSelectChange = (files: any[], path: string, special: string) => {
-        if (files) {
-            const normalizedPath = path === "" || path.endsWith("/") ? path : path + "/";
-            const prefix = special === "library" ? "lib://" : "content://";
-            const newFiles = files.map((file) => ({
-                filepath: prefix + normalizedPath + file.name,
-                name: file.name,
-            }));
-            setSelectedFiles(newFiles);
+        const incoming = normalizeSelectedBrowserFiles(files, path, special); // [{filepath,name},...]
+
+        if (selectedFileIndex !== -1) {
+            setSelectedFiles(incoming.slice(0, 1));
+            return;
         }
+
+        setSelectedFiles((prev) => {
+            const incomingSet = new Set(incoming.map((f) => f.filepath));
+
+            const kept = prev.filter((p) => incomingSet.has(p.filepath));
+
+            const keptSet = new Set(kept.map((k) => k.filepath));
+            const added = incoming.filter((f) => !keptSet.has(f.filepath));
+
+            return [...kept, ...added];
+        });
     };
 
     const showFileSelectModal = () => {
+        setSelectedFiles([]);
+        setSelectedFileIndex(-1);
+        setMaxSelectableFiles(99 - (form.getFieldValue("files")?.length ?? 0));
         setFilebrowserKey((prevKey) => prevKey + 1);
         setSelectFileModalOpen(true);
     };
@@ -267,7 +295,10 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
         setFilebrowserKey((prevKey) => prevKey + 1);
         setSelectFileModalOpen(true);
         setSelectedFileIndex(index);
-        setSelectedFiles([form.getFieldValue(["files", index])]);
+        setMaxSelectableFiles(1);
+        const current = (form.getFieldValue("files") ?? []) as FileItem[];
+        const item = current[index];
+        setSelectedFiles(item ? [{ filepath: item.filepath, name: item.name }] : []);
     };
 
     const handleOkSelectFile = () => {
@@ -275,12 +306,19 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
         let updatedFiles = [...(currentValues.files ?? [])];
 
         if (selectedFileIndex !== -1) {
+            const old = updatedFiles[selectedFileIndex];
             updatedFiles[selectedFileIndex] = {
-                filepath: selectedFiles[0].filepath,
-                name: selectedFiles[0].name,
+                uid: old?.uid ?? generateUUID(),
+                filepath: selectedFiles[0]?.filepath ?? "",
+                name: selectedFiles[0]?.name ?? "",
             };
         } else {
-            updatedFiles = [...updatedFiles, ...selectedFiles];
+            const toAdd: FileItem[] = (selectedFiles ?? []).map((f) => ({
+                uid: generateUUID(),
+                filepath: f.filepath,
+                name: f.name,
+            }));
+            updatedFiles = [...updatedFiles, ...toAdd];
         }
 
         form.setFieldsValue({
@@ -331,6 +369,8 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                               path: currentPath.startsWith("/") ? currentPath : `/${currentPath}`,
                           })
                 }
+                width="90%"
+                style={{ maxWidth: 900 }}
                 okText={isEditMode ? t("tonies.tapEditor.save") : t("tonies.tapEditor.create")}
                 cancelText={t("tonies.tapEditor.cancel")}
                 onCancel={() => {
@@ -465,100 +505,65 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                         </Form.Item>
 
                         <Form.List name="files">
-                            {(fields, { remove }) => (
-                                <>
-                                    {fields.map(({ key, name }, index) => (
-                                        <div key={`files-${key}`} className="playlistTitle">
-                                            <Space
-                                                key={`space-${key}`}
-                                                style={{
-                                                    display: "flex",
-                                                    marginBottom: 8,
-                                                    alignItems: "center",
-                                                    width: "100%",
-                                                }}
-                                                align="baseline"
-                                            >
-                                                <Form.Item
-                                                    name={[name, "filepath"]}
-                                                    label={
-                                                        <div style={{ display: "flex", gap: 8 }}>
-                                                            <label>{t("tonies.tapEditor.filePathContentFile")}</label>
-                                                            <Tooltip
-                                                                title={t("tonies.tapEditor.filePathContentFileTooltip")}
-                                                            >
-                                                                <InfoCircleOutlined />
-                                                            </Tooltip>
-                                                        </div>
-                                                    }
-                                                    rules={[
-                                                        {
-                                                            required: true,
-                                                            message: t("tonies.tapEditor.filePathContentFileRequired"),
-                                                        },
-                                                    ]}
-                                                >
-                                                    <Input
-                                                        width="auto"
-                                                        prefix={[
-                                                            <CloseOutlined
-                                                                key="clear"
-                                                                onMouseDown={(e) => e.preventDefault()}
-                                                                onClick={() => {
-                                                                    const newValues = [
-                                                                        ...(form.getFieldsValue().files ?? []),
-                                                                    ];
-                                                                    newValues[index].filepath = "";
-                                                                    form.setFieldsValue({ files: newValues });
-                                                                }}
-                                                            />,
-                                                            <Divider
-                                                                key="divider-source"
-                                                                orientation="vertical"
-                                                                style={{ marginLeft: 2 }}
-                                                            />,
-                                                        ]}
-                                                        suffix={[
-                                                            <Divider
-                                                                key="divider-source-3"
-                                                                orientation="vertical"
-                                                                style={{ marginLeft: 2 }}
-                                                            />,
-                                                            <FolderOpenOutlined
-                                                                key="open"
-                                                                onMouseDown={(e) => e.preventDefault()}
-                                                                onClick={() => handleEditFile(index)}
-                                                            />,
-                                                        ]}
-                                                        disabled={isInitializing}
-                                                    />
-                                                </Form.Item>
+                            {(fields, { remove }) => {
+                                const currentFiles = ensureFileUids((form.getFieldValue("files") ?? []) as any[]);
+                                const items = currentFiles.map((f) => f.uid);
 
-                                                <Form.Item
-                                                    name={[name, "name"]}
-                                                    label={t("tonies.tapEditor.fileNameContentFile")}
-                                                >
-                                                    <Input placeholder="Name" disabled={isInitializing} />
-                                                </Form.Item>
+                                return (
+                                    <>
+                                        <DndContext
+                                            sensors={sensors}
+                                            collisionDetection={closestCenter}
+                                            onDragEnd={({ active, over }) => {
+                                                if (!over || active.id === over.id) return;
 
-                                                <MinusCircleOutlined onClick={() => remove(name)} />
-                                            </Space>
-                                        </div>
-                                    ))}
+                                                const from = currentFiles.findIndex((f) => f.uid === String(active.id));
+                                                const to = currentFiles.findIndex((f) => f.uid === String(over.id));
+                                                if (from < 0 || to < 0) return;
 
-                                    <Form.Item>
-                                        <Button
-                                            type="dashed"
-                                            onClick={() => showFileSelectModal()}
-                                            block
-                                            icon={<PlusOutlined />}
-                                            disabled={isInitializing}
+                                                form.setFieldsValue({ files: arrayMove(currentFiles, from, to) });
+                                            }}
                                         >
-                                            {t("tonies.tapEditor.addFile")}
-                                        </Button>
-                                    </Form.Item>
-                                </>
-                            )}
+                                            <SortableContext
+                                                items={items}
+                                                strategy={verticalListSortingStrategy}
+                                                disabled={isInitializing}
+                                            >
+                                                {fields.map(({ name }, index) => {
+                                                    const file = currentFiles[index];
+                                                    if (!file?.uid) return null;
+
+                                                    return (
+                                                        <DraggableTapListItem
+                                                            key={file.uid}
+                                                            file={file}
+                                                            index={index}
+                                                            disabled={isInitializing}
+                                                            namePath={name as unknown as number}
+                                                            form={form}
+                                                            t={t}
+                                                            onEditFile={handleEditFile}
+                                                            onRemove={() => remove(name)}
+                                                        />
+                                                    );
+                                                })}
+                                            </SortableContext>
+                                        </DndContext>
+
+                                        <Form.Item>
+                                            <Button
+                                                type="dashed"
+                                                onClick={showFileSelectModal}
+                                                block
+                                                icon={<PlusOutlined />}
+                                                disabled={isInitializing}
+                                            >
+                                                {t("tonies.tapEditor.addFile")}
+                                            </Button>
+                                        </Form.Item>
+                                    </>
+                                );
+                            }}
                         </Form.List>
                     </Form>
                 )}
@@ -573,7 +578,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                     footer={selectModalFooter}
                 >
                     <SelectFileFileBrowser
-                        maxSelectedRows={99}
+                        maxSelectedRows={maxSelectableFiles}
                         special="library"
                         trackUrl={false}
                         filetypeFilter={ffmpegSupportedExtensions}

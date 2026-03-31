@@ -5,6 +5,7 @@ import {
     FolderAddOutlined,
     NodeExpandOutlined,
     QuestionCircleOutlined,
+    SearchOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
 import { Button, Flex, Input, Table, theme, Tooltip, Typography } from "antd";
@@ -42,6 +43,7 @@ import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
 import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
+import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 
 const { Paragraph } = Typography;
 
@@ -116,6 +118,7 @@ export const FileBrowser: React.FC<{
         setPath,
         files,
         setRebuildList,
+        rebuildList,
         loading,
         filterText,
         filterFieldAutoFocus,
@@ -197,6 +200,16 @@ export const FileBrowser: React.FC<{
         // ToDo
     };
 
+    // unused TAFs modal
+    const [isUnusedTAFsModalOpen, setIsUnusedTAFsModalOpen] = useState(false);
+
+    const openUnusedTAFsModal = () => setIsUnusedTAFsModalOpen(true);
+    const closeUnusedTAFsModal = () => setIsUnusedTAFsModalOpen(false);
+
+    const handleUnusedOk = () => {
+        setIsUnusedTAFsModalOpen(false);
+    };
+
     // delete functions
     const showDeleteConfirmDialog = (fileName: string, pathWithFile: string, apiCall: string) => {
         setFileToDelete(fileName);
@@ -255,7 +268,7 @@ export const FileBrowser: React.FC<{
             const file = files.find(
                 (file) =>
                     file.name === rowName &&
-                    ffmpegSupportedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
+                    ffmpegSupportedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
             );
 
             if (file) {
@@ -365,6 +378,15 @@ export const FileBrowser: React.FC<{
                 multipleOpen={isConfirmMultipleDeleteModalOpen}
                 onCloseMultiple={closeMultipleDeleteModal}
             />
+            {isUnusedTAFsModalOpen && (
+                <UnusedTAFsModal
+                    open={isUnusedTAFsModalOpen}
+                    onCancel={closeUnusedTAFsModal}
+                    onOk={handleUnusedOk}
+                    setRebuildList={setRebuildList}
+                    rebuildList={rebuildList}
+                />
+            )}
             {isJsonViewerModalOpen && (
                 <JsonViewerModal
                     open={isJsonViewerModalOpen}
@@ -543,9 +565,9 @@ export const FileBrowser: React.FC<{
                                                 (item) =>
                                                     selectedRowKeys.includes(item.name) &&
                                                     ffmpegSupportedExtensions.some((ext) =>
-                                                        item.name.toLowerCase().endsWith(ext)
-                                                    )
-                                            ).length
+                                                        item.name.toLowerCase().endsWith(ext),
+                                                    ),
+                                            ).length,
                                         ) && special === "library" ? (
                                             <Tooltip
                                                 open={!canHover ? false : undefined}
@@ -592,6 +614,9 @@ export const FileBrowser: React.FC<{
                                         {t("fileBrowser.upload.showUploadFilesDragNDrop")}
                                     </div>
                                 </Button>
+                                <Button size="small" icon={<SearchOutlined />} onClick={openUnusedTAFsModal}>
+                                    {t("fileBrowser.unusedTafsModal.title")}
+                                </Button>
                             </div>
                         </div>
                     ) : (
@@ -618,7 +643,7 @@ export const FileBrowser: React.FC<{
                     </div>
                 </Paragraph>
             )}
-            <div className="test" style={{ position: "relative" }} ref={parentRef}>
+            <div className="filesTable" style={{ position: "relative" }} ref={parentRef}>
                 {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
                 <Table
                     dataSource={files}

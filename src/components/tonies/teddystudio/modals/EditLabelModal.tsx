@@ -67,7 +67,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     const localOverride = (itemId ? labelOverridesById[itemId] : undefined) ?? {};
     const effectiveSettingsForPreview = useMemo(
         () => buildEffectiveSettings(settings, itemId ? labelOverridesById[itemId] : undefined),
-        [settings, itemId, labelOverridesById]
+        [settings, itemId, labelOverridesById],
     );
 
     useEffect(() => {

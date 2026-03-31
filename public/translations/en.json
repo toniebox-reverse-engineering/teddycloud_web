@@ -508,6 +508,14 @@
             }
         },
         "title": "Filebrowser",
+        "unusedTafsModal": {
+            "actions": "Actions",
+            "fullPath": "Full path",
+            "name": "TAF filename",
+            "noUnusedTafs": "No unused TAFs found!",
+            "ok": "OK",
+            "title": "Unused TAF files"
+        },
         "upload": {
             "cancel": "Cancel",
             "hideUploadFilesDragNDrop": "Hide file upload",
@@ -1041,7 +1049,6 @@
         "restartTC": "Restarting TeddyCloud",
         "rtnl": {
             "clear": "Clear RTNL Log",
-            "enableRtnl": "Enable logging",
             "navigationTitle": "RTNL log",
             "title": "RTNL Log"
         },
@@ -1176,20 +1183,20 @@
                 "esp32pro1": "Latest version available",
                 "esp32pro2": "Easiest flashing method via browser + UART adapter",
                 "esp32pro3": "ESP32 supported by a large developer community",
-                "howToIdentify": "How to identify your Toniebox version without opening the package",
+                "howToIdentify": "How to identify your Toniebox 1 version without opening the package",
                 "howToIdentifyIntro": "Since there is no label specifying the exact version, identifying the Toniebox version requires some minor hints:",
                 "howToIdentifyOutro": "For more details, see ",
-                "intro": "Currently, there are four known versions of the Toniebox, which mainly differ by the MCU (Microcontroller Unit) they use:",
+                "intro": "Currently, there are four known versions of the Toniebox 1, which mainly differ by the MCU (Microcontroller Unit) they use and one version of the Toniebox 2:",
                 "macAddressCheck": "MAC Address Check:",
                 "macAddressCheckText": "The most reliable way to determine the version is by checking for a printed MAC address, which may be on the package or directly on the Toniebox. Use macvendors.com to look up the MAC address and find out the vendor of the MCU, which can help you identify the Toniebox version.",
                 "navigationTitle": "Versions",
                 "pros": "Pros",
                 "title": "About the different Toniebox versions",
                 "uses": "Uses the",
-                "whatVersion": "What version of Toniebox should I get?",
-                "whatVersionConclusion": "We do not recommend the V3 CC3235 version due to the difficulties in flashing and limited support. Currently, the V1/V2 (TI CC3200) version offers the most features, including custom bootloader and firmware support. However, for future-proofing, the ESP32-based V4 version is our top recommendation.",
+                "whatVersion": "What version of Toniebox 1 should I get?",
+                "whatVersionConclusion": "We do not recommend the TB1 V3 CC3235 version due to the difficulties in flashing and limited support. Currently, the TB1 V1/V2 (TI CC3200) version offers the most features, including custom bootloader and firmware support. However, for future-proofing, the ESP32-based TB1 V4 version is our top recommendation.",
                 "whatVersionConclusionHeader": "Conclusion",
-                "whatVersionIntro": "If you haven't yet chosen a Toniebox, here are the pros and cons of each version to help you decide. Ultimately, the choice depends on your specific needs and preferences. At least all versions are compatible with TeddyCloud."
+                "whatVersionIntro": "If you haven't yet chosen a Toniebox 1, here are the pros and cons of each version to help you decide. Ultimately, the choice depends on your specific needs and preferences. At least all versions are compatible with TeddyCloud."
             },
             "flashBox": "Flash Toniebox",
             "flashBoxText": "To add your Toniebox to TeddyCloud, some modifications are required. Depending on your Toniebox version, there are three specific guidelines to follow:",
@@ -1214,6 +1221,9 @@
                 "or": "or",
                 "proceedToFlash1": "Proceed to the flashing page for the selected version:",
                 "proceedToFlashLinkText": "Box Flashing",
+                "tb2": "Regarding Toniebox 2",
+                "tb2Details": "Only one version of the latest Toniebox 2 is known, so identification is straightforward. If your box is a Toniebox 2, you can go directly to the flashing instructions for the Toniebox 2.",
+                "tb2text": "This version is unique and has TB-MAIN_2.0.P printed on the pcb as shown in the following picture.",
                 "tiInstruction": "To find out the specific version, you have to open your Toniebox and use the main chip of the PCB for identification.",
                 "title": "Identify your Toniebox version",
                 "vendor": "The vendor of your Toniebox main chip is",
@@ -1630,7 +1640,7 @@
                 "hintUseOtherToolForAdditionalBackup": "Please use an additional tool to create a separate backup.",
                 "hostname": "TeddyCloud Hostname:",
                 "hostnameSettings": "Hostname TeddyCloud",
-                "hostnameTooLong": "The hostname should be less than 13 characters long.",
+                "hostnameTooLong": "If you want to connect a CC3200 Toniebox later, the hostname must not exceed 12 characters (firmware limitation).",
                 "importanceBackup": "Before making any changes of your Toniebox, download and securely store a copy of the original firmware. This ensures you can always restore your Toniebox to its factory state if something goes wrong. Save it in multiple locations, such as your main computer or laptop, an external hard drive or USB stick and/or a trusted cloud storage service (e.g. Google Drive, Dropbox, OneDrive). Never store your only copy on the TeddyCloud-Server.",
                 "infoTable": "ESP32 info",
                 "invalidFlashData": "Read / loaded flash consists only of 0x00 or 0xFF! Please check connection or the loaded file and try again!",
@@ -1743,6 +1753,12 @@
         "offline": "offline",
         "online": "online",
         "processing": "Processing...",
+        "tb2BoxFlashing": {
+            "navigationTitle": "TB2",
+            "title": "TB2 Box Flashing",
+            "underDevelopment": "Under development",
+            "underDevelopmentBePatient": "We are currently working on a solution for the TB2 version. Please be patient and check back later for updates. In the meantime, you can follow the progress and discussions in our forum or Telegram group."
+        },
         "title": "Your Tonieboxes",
         "uploadTonieboxCertificatesModal": {
             "AttentionGeneralPath": "(ATTENTION: Default Path!)",
@@ -1831,7 +1847,8 @@
             "removeFile": "Remove file",
             "saveAs": "Save file as",
             "serverSideEncoding": "Server-side encoding",
-            "sortAlphabetically": "Sort files alphabetically",
+            "sortAlphabeticallyLiteral": "Sort alphabetically (lexicographical)",
+            "sortAlphabeticallyNatural": "Sort alphabetically (numeric order)",
             "targetDirectory": "Choose target directory",
             "title": "Audio Encoder",
             "tooManyFilesError": "Too many files!",
@@ -2101,6 +2118,7 @@
             "empty": "Empty - Please select Tonies or Tags or add custom image first!",
             "episodes": "Episodes",
             "imagePosition": "Image position",
+            "imageScale": "Image scale",
             "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies (coin) sheet.",
             "labelBackgroundColor": "Background",
             "labelEditTitle": "Edit Label elements",
