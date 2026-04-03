@@ -4,6 +4,8 @@
 
 - gui: Updated packages
 - gui: Removed legacy ESP32 flasher
+- gui: Fixed decimal input on ios [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289)
+- gui: TeddyStudio: Added Image Bottom/Left margin [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
 
 ### Commits
 
