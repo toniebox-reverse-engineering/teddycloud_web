@@ -542,7 +542,7 @@ export const TonieboxCard: React.FC<{
             <Card
                 key={tonieboxCard.ID}
                 hoverable={false}
-                size="default"
+                size="medium"
                 style={{ background: token.colorBgContainerDisabled, cursor: "default" }}
                 title={<span>{tonieboxName}</span>}
                 cover={
