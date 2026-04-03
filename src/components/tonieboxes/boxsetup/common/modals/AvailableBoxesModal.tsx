@@ -55,7 +55,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                         status: statusString,
                         version,
                     };
-                })
+                }),
             );
 
             setTonieboxes(updatedBoxes);
@@ -141,7 +141,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
             <h4>{t("tonieboxes.availableBoxModal.availableBoxes", { boxVersion })}</h4>
             {loading ? (
                 <div style={{ display: "flex", justifyContent: "center", padding: 20 }}>
-                    <Spin size="default" />
+                    <Spin size="medium" />
                 </div>
             ) : (
                 <Table
