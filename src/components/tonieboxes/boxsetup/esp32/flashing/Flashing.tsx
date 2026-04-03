@@ -31,11 +31,7 @@ const { Paragraph } = Typography;
 const { Option } = Select;
 const { useToken } = theme;
 
-interface FlashingProps {
-    useRevvoxFlasher: boolean;
-}
-
-export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
+export const Flashing: React.FC = () => {
     const { t } = useTranslation();
     const { token } = useToken();
     const navigate = useNavigate();
@@ -45,7 +41,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
 
     const scrollToTopAnchor = useRef<HTMLDivElement | null>(null);
 
-    const flasher = useESP32Flasher(useRevvoxFlasher, scrollToTopAnchor.current, logEntries, setLogEntries);
+    const flasher = useESP32Flasher(scrollToTopAnchor.current, logEntries, setLogEntries);
 
     const {
         state,
@@ -125,7 +121,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
         const pad = (n: number) => String(n).padStart(2, "0");
         const d = new Date();
         const filename = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(
-            d.getMinutes()
+            d.getMinutes(),
         )}-${pad(d.getSeconds())}_esp32_flashing.log`;
 
         const url = URL.createObjectURL(blob);
@@ -328,13 +324,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                     />
                 );
             case 3:
-                return (
-                    <Step3FlashESP32
-                        state={state}
-                        useRevvoxFlasher={useRevvoxFlasher}
-                        contentProgress={contentProgress}
-                    />
-                );
+                return <Step3FlashESP32 state={state} contentProgress={contentProgress} />;
             case 4:
                 return (
                     <Step4AfterFlash
@@ -441,9 +431,7 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                 </>
             ) : (
                 <>
-                    <Divider>
-                        {t("tonieboxes.esp32BoxFlashing.title")} {useRevvoxFlasher && "(Revvox Flasher)"}
-                    </Divider>
+                    <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
 
                     <Steps
                         current={currentStep}
@@ -454,12 +442,12 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
                                 index === currentStep && index === steps.length - 1
                                     ? "finish"
                                     : index === currentStep
-                                    ? state.error
-                                        ? "error"
-                                        : "process"
-                                    : index < currentStep
-                                    ? "finish"
-                                    : "wait",
+                                      ? state.error
+                                          ? "error"
+                                          : "process"
+                                      : index < currentStep
+                                        ? "finish"
+                                        : "wait",
                             className:
                                 index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : "",
                         }))}
@@ -629,15 +617,15 @@ export const Flashing: React.FC<FlashingProps> = ({ useRevvoxFlasher }) => {
 
                     <ConfirmationDialog
                         title={t(
-                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwrite"
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwrite",
                         )}
                         okText={t(
-                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwriteConfirmButton"
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwriteConfirmButton",
                         )}
                         cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
                         content={t(
                             "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates409ResponseForceOverwriteContent",
-                            { error: extractCertificateErrorMessage }
+                            { error: extractCertificateErrorMessage },
                         )}
                         open={isOverwriteForceConfirmationModalOpen}
                         handleOk={() => extractAndStoreCertsFromFlash(true)}

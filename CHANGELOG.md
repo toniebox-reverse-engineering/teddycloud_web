@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.7.0
+
+- gui: Updated packages
+- gui: Removed legacy ESP32 flasher
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.8...tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.8...tc_v0.7.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.8...tcw_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.8...tcw_v0.7.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-7-0/3363](https://forum.revvox.de/t/release-notes-0-7-0/3363)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0)
+
 ## 0.6.8
 
 - added tls support in mqtt

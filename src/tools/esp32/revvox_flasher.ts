@@ -291,7 +291,7 @@ export class RevvoxFlasher {
                 } else {
                     reject("Failed to read register");
                 }
-            }
+            },
         );
     }
 
@@ -310,7 +310,7 @@ export class RevvoxFlasher {
                 } else {
                     reject("Failed to read register");
                 }
-            }
+            },
         );
     }
 
@@ -319,7 +319,7 @@ export class RevvoxFlasher {
         callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, responsePacket: any) => void,
         default_callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, rawData: Uint8Array) => void,
         timeout = 500,
-        hasTimeoutCbr: (() => boolean) | null = null
+        hasTimeoutCbr: (() => boolean) | null = null,
     ): Promise<any> {
         /* Create command promise first */
         const commandPromise = this._executeCommandUnlocked(packet, callback, default_callback, timeout, hasTimeoutCbr);
@@ -327,7 +327,7 @@ export class RevvoxFlasher {
         /* Chain it to the lock, ensuring lock always continues even on error */
         this._commandLock = this._commandLock.then(
             () => commandPromise,
-            () => commandPromise /* On previous error, still execute our command */
+            () => commandPromise /* On previous error, still execute our command */,
         );
 
         /* Return our command directly to propagate result/error to caller */
@@ -342,7 +342,7 @@ export class RevvoxFlasher {
         callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, responsePacket: any) => void,
         default_callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, rawData: Uint8Array) => void,
         timeout = 500,
-        hasTimeoutCbr: (() => boolean) | null = null
+        hasTimeoutCbr: (() => boolean) | null = null,
     ): Promise<any> {
         if (!this.port || !this.port.writable) {
             throw new Error("Port is not writable.");
@@ -420,7 +420,7 @@ export class RevvoxFlasher {
                     }
                 } else {
                     settleReject(
-                        new Error(`Timeout after ${timeout} ms waiting for response to command ${packet.command}`)
+                        new Error(`Timeout after ${timeout} ms waiting for response to command ${packet.command}`),
                     );
                 }
             }, timeout);
@@ -502,7 +502,7 @@ export class RevvoxFlasher {
             return true;
         } catch (error) {
             this.logError(
-                `Could not set signals for automatic reset: ${error}. Please ensure device is in bootloader mode manually.`
+                `Could not set signals for automatic reset: ${error}. Please ensure device is in bootloader mode manually.`,
             );
             return false;
         }
@@ -524,13 +524,13 @@ export class RevvoxFlasher {
             this.buildCommandPacketU32(MEM_BEGIN, binary.length, 1, binary.length, address),
             async (resolve) => {
                 resolve(undefined);
-            }
+            },
         );
         await this.executeCommand(
             this.buildCommandPacketU32(MEM_DATA, binary.length, 0, 0, 0, binary),
             async (resolve) => {
                 resolve(undefined);
-            }
+            },
         );
     }
 
@@ -554,7 +554,7 @@ export class RevvoxFlasher {
                         resolve(undefined);
                     },
                     undefined,
-                    syncTimeoutMs
+                    syncTimeoutMs,
                 );
 
                 this.logDebug(`Synchronized successfully on attempt ${attempt}.`);
@@ -657,7 +657,7 @@ export class RevvoxFlasher {
                         this.logError("Test read failed");
                         reject("Test read failed");
                     }
-                }
+                },
             );
         } catch (error: any) {
             this.logError("Test read failed due to an error", `${error.message}`);
@@ -682,7 +682,7 @@ export class RevvoxFlasher {
                         } else {
                             reject("Test read failed");
                         }
-                    }
+                    },
                 );
 
                 const endTimeRead = Date.now();
@@ -699,7 +699,7 @@ export class RevvoxFlasher {
                     this.logError(
                         `Test read failed! Expected: 0x${reference.toString(16).padStart(8, "0")}, but got: 0x${testread
                             .toString(16)
-                            .padStart(8, "0")}`
+                            .padStart(8, "0")}`,
                     );
                     break;
                 }
@@ -742,7 +742,7 @@ export class RevvoxFlasher {
                         reject(`Unexpected response from stub: ${responseData}`);
                     }
                 },
-                3000
+                3000,
             );
         } catch (error: any) {
             this.logError("Failed to execute stub", "Is the device locked?");
@@ -755,7 +755,7 @@ export class RevvoxFlasher {
                 async (resolve) => {
                     this.logDebug("SPI_SET_PARAMS configured");
                     resolve(undefined);
-                }
+                },
             );
         } catch (error: any) {
             this.logError("Failed to configure SPI parameters", error.message);
@@ -771,7 +771,7 @@ export class RevvoxFlasher {
     async writeFlashPlain(
         address: number,
         data: Uint8Array,
-        progressCallback?: (bytesWritten: number, totalBytes: number) => void
+        progressCallback?: (bytesWritten: number, totalBytes: number) => void,
     ): Promise<void> {
         const MAX_PACKET_SIZE = 0x1000;
         const packets = Math.ceil(data.length / MAX_PACKET_SIZE);
@@ -782,9 +782,9 @@ export class RevvoxFlasher {
                 data.length,
                 packets,
                 Math.min(MAX_PACKET_SIZE, data.length),
-                address
+                address,
             ),
-            async (resolve) => resolve(undefined)
+            async (resolve) => resolve(undefined),
         );
 
         let seq = 0;
@@ -795,7 +795,7 @@ export class RevvoxFlasher {
                 this.buildCommandPacketU32(FLASH_DATA, chunk.length, seq++, 0, 0, chunk),
                 async (resolve) => resolve(undefined),
                 undefined,
-                5000
+                5000,
             );
 
             progressCallback && progressCallback(offset + chunk.length, data.length);
@@ -809,7 +809,7 @@ export class RevvoxFlasher {
     async readFlashPlain(
         address: number,
         length = 0x1000,
-        progressCallback?: (bytesRead: number, totalBytes: number) => void
+        progressCallback?: (bytesRead: number, totalBytes: number) => void,
     ): Promise<Uint8Array> {
         const performRead = async (cbr?: (bytesRead: number, totalBytes: number) => void): Promise<Uint8Array> => {
             let sectorSize = 0x1000;
@@ -858,13 +858,13 @@ export class RevvoxFlasher {
                                 this.logDebug(`ReadFlash timing: ${totalBytesReceived} bytes in ${totalTime}ms`);
                                 this.logDebug(
                                     `  Data rate: ${(dataRate / 1024 / 1024).toFixed(2)} MB/s (${dataRate.toFixed(
-                                        0
-                                    )} B/s)`
+                                        0,
+                                    )} B/s)`,
                                 );
                                 this.logDebug(
                                     `  Packet latency: min=${minLatency}ms, max=${maxLatency}ms, avg=${avgLatency.toFixed(
-                                        1
-                                    )}ms`
+                                        1,
+                                    )}ms`,
                                 );
                                 this.logDebug(`  Packets received: ${packetLatencies.length}`);
 
@@ -912,7 +912,7 @@ export class RevvoxFlasher {
                     packet++;
                 },
                 1000 * packets,
-                () => Date.now() - lastDataTime > 1000
+                () => Date.now() - lastDataTime > 1000,
             );
         };
 
@@ -939,7 +939,7 @@ export class RevvoxFlasher {
                 const decoder = new TextDecoder("utf-8");
                 resolve(decoder.decode(rawData).trim());
             },
-            Math.max(500, Math.floor(length / 500))
+            Math.max(500, Math.floor(length / 500)),
         );
     }
 
@@ -958,7 +958,7 @@ export class RevvoxFlasher {
     async readFlash(
         address: number,
         size: number,
-        progressCallback?: (read: number, total: number, stage: string) => void
+        progressCallback?: (read: number, total: number, stage: string) => void,
     ): Promise<Uint8Array> {
         const BLOCK_SIZE = 64 * 0x1000;
 
@@ -991,7 +991,7 @@ export class RevvoxFlasher {
         // Step 3: Device MD5
         progressCallback && progressCallback(size, size, "Calculate MD5 onchip");
         this.logDebug(
-            `ReadFlashSafe: Calculating expected MD5 for ${size} bytes at 0x${address.toString(16).padStart(8, "0")}...`
+            `ReadFlashSafe: Calculating expected MD5 for ${size} bytes at 0x${address.toString(16).padStart(8, "0")}...`,
         );
         const expectedMD5 = await this.checksumFlash(address, size);
         this.logDebug(`Expected MD5: ${expectedMD5}`);
@@ -1014,7 +1014,7 @@ export class RevvoxFlasher {
     async writeFlash(
         address: number,
         data: Uint8Array,
-        progressCallback?: (written: number, total: number, stage: string) => void
+        progressCallback?: (written: number, total: number, stage: string) => void,
     ): Promise<{ success: boolean; md5: string }> {
         this.logDebug(`WriteFlashSafe: Writing ${data.length} bytes to 0x${address.toString(16).padStart(8, "0")}...`);
 
@@ -1062,8 +1062,8 @@ export class RevvoxFlasher {
             endAddress: number,
             blockSize: number,
             erasedBytes: number,
-            erasedBytesTotal: number
-        ) => void
+            erasedBytesTotal: number,
+        ) => void,
     ): Promise<void> {
         const blockSize = 0x1000;
 
@@ -1109,7 +1109,7 @@ export class RevvoxFlasher {
     async writeReadTest(
         address: number,
         size: number,
-        cbr?: (stage: string, step: number, totalSteps: number, percent?: number, result?: any) => void
+        cbr?: (stage: string, step: number, totalSteps: number, percent?: number, result?: any) => void,
     ): Promise<any> {
         try {
             this.logDebug(`Test: Reading original ${size} bytes from 0x${address.toString(16).padStart(8, "0")}...`);
@@ -1199,14 +1199,14 @@ export class RevvoxFlasher {
             } else {
                 this.logError(`✗ Test FAILED: ${errors} byte(s) mismatch!`);
                 this.logError(
-                    `  First error at offset 0x${firstError.toString(16).padStart(4, "0")} (byte ${firstError})`
+                    `  First error at offset 0x${firstError.toString(16).padStart(4, "0")} (byte ${firstError})`,
                 );
                 this.logError(
                     `  Expected: 0x${randomData[firstError].toString(16).padStart(2, "0")}, Got: 0x${readbackData[
                         firstError
                     ]
                         .toString(16)
-                        .padStart(2, "0")}`
+                        .padStart(2, "0")}`,
                 );
             }
 
@@ -1290,7 +1290,7 @@ export class RevvoxFlasher {
             this.logDebug(
                 `Command raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
-                    .join(" ")}`
+                    .join(" ")}`,
             );
         }
         if (pkt && pkt.dir === 1) {
@@ -1298,7 +1298,7 @@ export class RevvoxFlasher {
             this.logDebug(
                 `Response raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
-                    .join(" ")}`
+                    .join(" ")}`,
             );
         }
     }
