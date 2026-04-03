@@ -24,6 +24,8 @@ export interface SettingsState {
     textFontSize: string;
     imagePosition: string;
     imageScale: number;
+    imageBottom: number;
+    imageLeft: number;
     contentPadding: string;
     showLanguageFlag: boolean;
     showModelNo: boolean;
@@ -115,6 +117,8 @@ const INITIAL_STATE: SettingsState = {
     textFontSize: "14px",
     imagePosition: "center",
     imageScale: 1.0,
+    imageBottom: 0,
+    imageLeft: 0,
     contentPadding: "0mm",
     showLanguageFlag: false,
     showModelNo: false,
@@ -184,6 +188,8 @@ export interface SettingsActions {
     setTextFontSize: (v: string) => void;
     setImagePosition: (v: string) => void;
     setImageScale: (v: number) => void;
+    setImageBottom: (v: number) => void;
+    setImageLeft: (v: number) => void;
     setContentPadding: (v: string) => void;
     setShowLanguageFlag: (v: boolean) => void;
     setShowModelNo: (v: boolean) => void;
@@ -227,6 +233,8 @@ export const useSettings = (): SettingsHook => {
             textFontSize: state.textFontSize,
             imagePosition: state.imagePosition,
             imageScale: state.imageScale,
+            imageBottom: state.imageBottom,
+            imageLeft: state.imageLeft,
             contentPadding: state.contentPadding,
             labelShape: state.labelShape,
             showLanguageFlag: state.showLanguageFlag,
@@ -282,6 +290,8 @@ export const useSettings = (): SettingsHook => {
         setTextFontSize: (v) => dispatch({ type: "SET", payload: { textFontSize: v } }),
         setImagePosition: (v) => dispatch({ type: "SET", payload: { imagePosition: v } }),
         setImageScale: (v) => dispatch({ type: "SET", payload: { imageScale: v } }),
+        setImageBottom: (v) => dispatch({ type: "SET", payload: { imageBottom: v } }),
+        setImageLeft: (v) => dispatch({ type: "SET", payload: { imageLeft: v } }),
         setContentPadding: (v) => dispatch({ type: "SET", payload: { contentPadding: v } }),
         setShowLanguageFlag: (v) => dispatch({ type: "SET", payload: { showLanguageFlag: v } }),
         setShowModelNo: (v) => dispatch({ type: "SET", payload: { showModelNo: v } }),

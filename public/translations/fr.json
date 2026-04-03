@@ -2118,6 +2118,7 @@
             "episodes": "Épisodes",
             "imagePosition": "Position de l'image",
             "imageScale": "Échelle de l'image",
+            "imageBottomLeft": "Marge de l'image en bas / à gauche",
             "intro": "Recherche tous les Tonies et Tags, officiels et tes propres, pour créer ta feuille imprimable de Traveltonies (pièce).",
             "labelBackgroundColor": "Fond",
             "labelEditTitle": "Modifier les éléments de l'étiquette",

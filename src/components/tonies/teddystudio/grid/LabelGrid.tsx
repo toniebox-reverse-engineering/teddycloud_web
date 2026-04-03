@@ -94,6 +94,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                     textFontSize,
                     imagePosition,
                     imageScale,
+                    imageBottom,
+                    imageLeft,
                     showLanguageFlag,
                     showModelNo,
                     showSeriesOnImageLabel,
@@ -146,7 +148,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                         alt=""
                                         style={{
                                             position: "absolute",
-                                            inset: 0,
+                                            bottom: `${imageBottom}px`,
+                                            left: `${imageLeft}px`,
                                             transform: `scale(${imageScale})`,
                                             transformOrigin: "center center",
                                         }}

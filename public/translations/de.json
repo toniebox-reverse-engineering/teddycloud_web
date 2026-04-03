@@ -2118,6 +2118,7 @@
             "episodes": "Episoden",
             "imagePosition": "Bildausrichtung",
             "imageScale": "Bildskalierung",
+            "imageBottomLeft": "Bildabstand unten/links",
             "intro": "Durchsuche alle Tonies und Tags - sowohl offizielle als auch deine eigenen - um dein druckbares Traveltonies (Münze) Blatt zu erstellen.",
             "labelBackgroundColor": "Hintergrund",
             "labelEditTitle": "Label-Elemente bearbeiten",

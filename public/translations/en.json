@@ -2118,6 +2118,7 @@
             "episodes": "Episodes",
             "imagePosition": "Image position",
             "imageScale": "Image scale",
+            "imageBottomLeft": "Image margin bottom/left",
             "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies (coin) sheet.",
             "labelBackgroundColor": "Background",
             "labelEditTitle": "Edit Label elements",
