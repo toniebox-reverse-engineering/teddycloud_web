@@ -9,7 +9,6 @@ const { useToken } = theme;
 
 interface Step3Props {
     state: ESP32Flasher;
-    useRevvoxFlasher: boolean;
     contentProgress: React.ReactNode;
 }
 
@@ -26,7 +25,7 @@ const renderStateWithAnimation = (text: string) => {
     return text;
 };
 
-export const Step3FlashESP32: React.FC<Step3Props> = ({ state, useRevvoxFlasher, contentProgress }) => {
+export const Step3FlashESP32: React.FC<Step3Props> = ({ state, contentProgress }) => {
     const { t } = useTranslation();
     const { token } = useToken();
 
@@ -43,11 +42,7 @@ export const Step3FlashESP32: React.FC<Step3Props> = ({ state, useRevvoxFlasher,
                 <Paragraph>
                     <Alert
                         type="info"
-                        description={
-                            useRevvoxFlasher
-                                ? t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32RevvoxFlasher")
-                                : t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32")
-                        }
+                        description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32RevvoxFlasher")}
                     />
                 </Paragraph>
             )}
