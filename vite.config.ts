@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import viteTsconfigPaths from "vite-tsconfig-paths";
 import fs from "fs";
 import path from "path";
 
@@ -24,7 +23,10 @@ export default defineConfig(({ command, mode }) => {
 
     return {
         base: "/web",
-        plugins: [react(), viteTsconfigPaths()],
+        plugins: [react()],
+        resolve: {
+            tsconfigPaths: true,
+        },
         server: {
             open: true,
             port: useHttps ? portHttps : portHttp,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, ColorPicker, Input, Radio, Select, Switch, Tooltip, Typography } from "antd";
 import { ClearOutlined, CloseOutlined, SaveOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
@@ -43,6 +43,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         printMode,
         textFontSize,
         imagePosition,
+        imageScale,
+        imageBottom,
+        imageLeft,
         contentPadding,
         showLanguageFlag,
         showModelNo,
@@ -154,6 +157,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
     const handleImagePositionChange = (e: string) => {
         actions.setImagePosition(e);
     };
+    const [imageScaleInput, setImageScaleInput] = useState(String(imageScale));
+
+    useEffect(() => {
+        setImageScaleInput(String(imageScale));
+    }, [imageScale]);
 
     return (
         <Paragraph style={{ marginBottom: 0 }}>
@@ -382,7 +390,63 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 ]}
                             />
                         </div>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
+                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.imageScale")}</label>
+                            <Input
+                                size="small"
+                                type="number"
+                                inputMode="decimal"
+                                value={imageScaleInput}
+                                onChange={(e) => {
+                                    const raw = e.target.value;
+                                    setImageScaleInput(raw);
+                                    const normalized = raw.replace(",", ".");
 
+                                    if (
+                                        normalized === "" ||
+                                        normalized === "." ||
+                                        normalized === "," ||
+                                        normalized.endsWith(".")
+                                    ) {
+                                        return;
+                                    }
+
+                                    const parsed = Number(normalized);
+                                    if (!Number.isNaN(parsed) && parsed >= 0) {
+                                        actions.setImageScale(parsed);
+                                    }
+                                }}
+                                style={{ width: 100 }}
+                                min={0}
+                                step={0.1}
+                                placeholder={t("tonies.teddystudio.imageScale")}
+                            />
+                        </div>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.imageBottomLeft")}</label>
+                            <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                                <Input
+                                    size="small"
+                                    type="number"
+                                    value={imageBottom}
+                                    onChange={(e) => actions.setImageBottom(Number(e.target.value))}
+                                    style={{ width: 100 }}
+                                    step={1}
+                                    suffix="px"
+                                    placeholder={t("tonies.teddystudio.imageBottom")}
+                                />
+                                <Input
+                                    size="small"
+                                    type="number"
+                                    value={imageLeft}
+                                    onChange={(e) => actions.setImageLeft(Number(e.target.value))}
+                                    style={{ width: 100 }}
+                                    step={1}
+                                    suffix="px"
+                                    placeholder={t("tonies.teddystudio.imageLeft")}
+                                />
+                            </div>
+                        </div>
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 6 }}>
                             <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.showSeriesOnImageLabel")}</label>
                             <Switch

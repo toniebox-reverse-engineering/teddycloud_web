@@ -2,21 +2,41 @@
 
 ## 0.7.0
 
-- added tls support in mqtt
-- prepared support of TB2 (added new v3 tonies APIs)
 - added custom tonies API
-- improved cache, now disable/loosing cache will not break images as we store the real url but  return the cached image internally.
+- gui: Updated packages
+- gui: Removed legacy ESP32 flasher
+- gui: Fixed decimal input on ios [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289)
+- gui: TeddyStudio: Added Image Bottom/Left margin [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
 - gui: added Custom-Model-Editor to create and edit custom models
 - gui: added custom image management to library
 - gui: added selection for custom and original images for TeddyStudio and Custom-Model-Editor
 - gui: added option in tonie edit modal to set audio from model in case they differ
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.8...tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.8...tc_v0.7.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.8...tcw_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.8...tcw_v0.7.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-7-0/3363](https://forum.revvox.de/t/release-notes-0-7-0/3363)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0)
+
+## 0.6.8
+
+- added tls support in mqtt
+- prepared support of TB2 (added new v3 tonies APIs)
+- improved MQTT functionality [https://github.com/toniebox-reverse-engineering/teddycloud/pull/427](https://github.com/toniebox-reverse-engineering/teddycloud/pull/427)
 - gui: Audio encoder support literal and natural sorting [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/276)
 - gui: TAP editor: fixed file order (follows select order) and added drag and drop reorder functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/277)
 - gui: removed switch enable rtnl on rtnl page, is now autoenabled
 - gui: Added find all unused TAF Search in Library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/279)
 - gui: Prepared support for TB2
-- gui: Custom-Model-Editor: Aligned with Tonies interface (card grid, pagination, model picker, edit modal) [PR #283](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/283)
-
+- gui: Added TeddyStudio image scale factor [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
+- gui: Fixed box identification by mac (tb2 was wrongly shown as cc3200/cc3235) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/287](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/287)
 
 ### Commits
 

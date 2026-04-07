@@ -82,7 +82,7 @@ export const TeddyStudio: React.FC = () => {
             NotificationTypeEnum.Success,
             t("tonies.teddystudio.settingsSavedSuccessful"),
             t("tonies.teddystudio.settingsSavedSuccessful"),
-            t("tonies.teddystudio.navigationTitle")
+            t("tonies.teddystudio.navigationTitle"),
         );
     };
 
@@ -117,7 +117,7 @@ export const TeddyStudio: React.FC = () => {
             t("tonies.teddystudio.labelSavedSuccesfulDetails", { title: values.text }),
             t("tonies.teddystudio.navigationTitle"),
             undefined,
-            false
+            false,
         );
     };
 
@@ -130,7 +130,7 @@ export const TeddyStudio: React.FC = () => {
     }`;
 
     const printModeSummary = t(
-        `tonies.teddystudio.printMode${settings.printMode.charAt(0).toUpperCase() + settings.printMode.slice(1)}`
+        `tonies.teddystudio.printMode${settings.printMode.charAt(0).toUpperCase() + settings.printMode.slice(1)}`,
     );
 
     const paperSizeSummary =
@@ -165,10 +165,11 @@ export const TeddyStudio: React.FC = () => {
                     {
                         key: "1",
                         label: `${t("tonies.teddystudio.settings")}: ${labelSettingsSummary} | ${t(
-                            "tonies.teddystudio.printMode"
+                            "tonies.teddystudio.printMode",
                         )}: ${printModeSummary} | ${t("tonies.teddystudio.paperSize")}: ${paperSizeSummary}`,
                         children: [
                             <SettingsPanel
+                                key="settingsPanel"
                                 settings={settings}
                                 paperOptions={paperOptions}
                                 actions={actions}

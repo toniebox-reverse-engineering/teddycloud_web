@@ -14,8 +14,8 @@
     justify-content: center;
     align-items: center;
 
-    overflow: visible; /* Bleed sichtbar */
-    isolation: isolate; /* stabiles stacking */
+    overflow: visible;
+    isolation: isolate;
 
     font-size: var(--text-font-size, 14px);
     color: black;
@@ -63,6 +63,7 @@
     z-index: 1;
     background-color: var(--label-background-color, #ffffff);
     border-radius: var(--labelElement-radius);
+    overflow: hidden;
 }
 
 .labelElement .labelImage {
@@ -71,7 +72,6 @@
     display: block;
     object-fit: cover;
     object-position: var(--image-position, center);
-    border-radius: var(--labelElement-radius);
 }
 
 .labelElement .labelClip {
