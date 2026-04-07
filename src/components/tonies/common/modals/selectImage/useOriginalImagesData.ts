@@ -71,7 +71,6 @@ export const useOriginalImagesData = ({
             const pics = normalized
                 .flatMap((entry: any) => [
                     typeof entry?.pic === "string" ? entry.pic : "",
-                    typeof entry?.cachePic === "string" ? entry.cachePic : "",
                     typeof entry?.tonieInfo?.picture === "string" ? entry.tonieInfo.picture : "",
                     typeof entry?.sourceInfo?.picture === "string" ? entry.sourceInfo.picture : "",
                 ])

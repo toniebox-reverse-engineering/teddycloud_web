@@ -18,7 +18,6 @@ export type CustomEntry = {
     language?: string;
     category?: string;
     pic?: string;
-    cachePic?: string;
 };
 
 export type FormValues = {

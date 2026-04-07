@@ -9,7 +9,6 @@ export interface CustomModelCardEntry {
     series?: string;
     episodes?: string;
     pic?: string;
-    cachePic?: string;
 }
 
 export interface CustomModelCardProps {
@@ -33,7 +32,7 @@ export const CustomModelCard: React.FC<CustomModelCardProps> = ({
 }) => {
     const { t } = useTranslation();
     const { token } = theme.useToken();
-    const previewUrl = toPreviewableImageUrl(entry.cachePic ?? entry.pic);
+    const previewUrl = toPreviewableImageUrl(entry.pic);
     return (
         <div style={{ flex: `0 0 calc(${100 / gridColumns}% - 16px)`, maxWidth: `calc(${100 / gridColumns}% - 16px)` }}>
             <Card hoverable={false} size="small" style={{ background: token.colorBgContainerDisabled, height: "100%", display: "flex", flexDirection: "column" }}
