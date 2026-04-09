@@ -19,6 +19,8 @@ export interface SearchDropdownProps {
     allowClear?: boolean;
     showNoResults?: boolean;
     style?: React.CSSProperties;
+    prefix?: React.ReactNode;
+    suffix?: React.ReactNode;
 }
 
 export const SearchDropdown: React.FC<SearchDropdownProps> = ({
@@ -31,6 +33,8 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
     allowClear = true,
     showNoResults = true,
     style,
+    prefix,
+    suffix,
 }) => {
     const { token } = useToken();
     const { t } = useTranslation();
@@ -214,6 +218,8 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     allowClear={allowClear}
+                    prefix={prefix}
+                    suffix={suffix}
                 />
             </div>
         </Dropdown>

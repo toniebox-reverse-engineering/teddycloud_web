@@ -10,6 +10,7 @@ import { usePageLoaded } from "./hooks/usePageLoaded";
 import { useWheelHorizontalScroll } from "./hooks/useWheelHorizontalScroll";
 import { useTranslation } from "react-i18next";
 import { useDebouncedCallback } from "../common/hooks/useDebouncedCallback";
+import { toImageSrc } from "../common/utils/imagePathUtils";
 
 const { useToken } = theme;
 
@@ -208,7 +209,7 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
                                                 onMouseLeave={() => setHoveredTonieRUID(null)}
                                             >
                                                 <img
-                                                    src={picture}
+                                                    src={toImageSrc(picture)}
                                                     alt={series}
                                                     style={{
                                                         width: "100%",

@@ -8,6 +8,7 @@ import { RecordWithPath, fetchUnusedTAFsInLibrary } from "../../../../utils/tedd
 import { LoadingSpinnerAsOverlay } from "../../../common/elements/LoadingSpinner";
 import { useTonies } from "../../../../hooks/useTonies";
 import { canHover } from "../../../../utils/browser/browserUtils";
+import { toImageSrc } from "../../common/utils/imagePathUtils";
 import DeleteFilesModal from "./DeleteFilesModal";
 
 const { useToken } = theme;
@@ -84,7 +85,7 @@ export const UnusedTAFsModal: React.FC<UnusedTAFsModalProps> = ({
                 render: (_picture: string, record: RecordWithPath) =>
                     record?.tonieInfo?.picture ? (
                         <img
-                            src={record.tonieInfo.picture}
+                            src={toImageSrc(record.tonieInfo.picture)}
                             alt={t("tonies.content.toniePicture")}
                             style={{
                                 height: 40,

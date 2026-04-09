@@ -1,7 +1,7 @@
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
 import { ConfigProvider, Layout, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import { StyledFooter } from "./components/common/footer/StyledFooter";
 import { StyledHeader } from "./components/common/header/StyledHeader";
@@ -51,6 +51,7 @@ import { TeddyAudioPlayerPage } from "./pages/tonies/TeddyAudioPlayerPage";
 import { TeddyAudioPlaylistsPage } from "./pages/tonies/TeddyAudioPlaylistsPage";
 import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
+import { CustomTonieCreatorPage } from "./pages/tonies/CustomTonieCreatorPage";
 
 import "./styles/matrix/matrix.css";
 import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
@@ -171,11 +172,16 @@ function App() {
                                         />
                                         <Route path="/audioplayer" element={<TeddyAudioPlayerPage standalone />} />
                                         <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
-                                        <Route path="/tonies/content" element={<ContentPage />} />
-                                        <Route path="/tonies/library" element={<LibraryPage />} />
+                        <Route path="/tonies/content" element={<ContentPage />} />
+                        <Route path="/tonies/library" element={<LibraryPage />} />
+                        <Route
+                            path="/tonies/customimages"
+                            element={<Navigate to="/tonies/library?view=custom_img" replace />}
+                        />
                                         <Route path="/tonies/encoder" element={<EncoderPage />} />
                                         <Route path="/tonies/tap" element={<TeddyAudioPlaylistsPage />} />
                                         <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
+                                        <Route path="/tonies/customeditor" element={<CustomTonieCreatorPage />} />
                                         <Route path="/tonies/plugin/:pluginId" element={<PluginPage />} />
 
                                         <Route path="/tonieboxes" element={<TonieboxesPage />} />

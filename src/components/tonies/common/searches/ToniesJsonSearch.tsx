@@ -1,14 +1,15 @@
 import { Button, Tooltip } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
 import { useToniesJsonSearch } from "../hooks/useToniesJsonSearch";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import ToniesCustomJsonEditor from "../../ToniesCustomJsonEditor";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 import { canHover } from "../../../../utils/browser/browserUtils";
+import { toImageSrc } from "../utils/imagePathUtils";
+import { useCustomModelsEditorLauncher } from "../../hooks/useCustomModelsEditorFeature";
 
 export interface ToniesJsonSearchResult {
     value: string;
@@ -25,23 +26,33 @@ interface ToniesJsonSearchProps {
     placeholder: string;
     showAddCustomTonieButton?: boolean;
     clearInputAfterSelection?: boolean;
+    onOpenCustomModelEditor?: () => void;
 
     onChange: (newValue: string) => void;
 
     onSelectResult?: (result: ToniesJsonSearchResult) => void;
+
+    /** Display text when a model is selected (e.g. "[01-0013] Sample Series - Episode Title") */
+    modelDisplayText?: string;
+
+    prefix?: React.ReactNode;
+    suffix?: React.ReactNode;
 }
 
 export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
     placeholder,
     showAddCustomTonieButton = true,
     clearInputAfterSelection = true,
+    onOpenCustomModelEditor,
     onChange,
     onSelectResult,
+    modelDisplayText = "",
+    prefix,
+    suffix,
 }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
-
-    const [showAddCustomTonieModal, setShowAddCustomTonieModal] = useState<boolean>(false);
+    const { launchCustomModelsEditor } = useCustomModelsEditorLauncher();
 
     const { value, options, search, select, setValue } = useToniesJsonSearch((error) => {
         addNotification(
@@ -54,10 +65,17 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 
     const [searchText, setSearchText] = useState("");
 
+    useEffect(() => {
+        if (!modelDisplayText) setSearchText("");
+    }, [modelDisplayText]);
+
     const debouncedSearch = useDebouncedCallback(search, 300);
 
     const handleSearch = (text: string) => {
         setSearchText(text);
+        if (!text.trim()) {
+            onChange("");
+        }
         debouncedSearch(text);
     };
 
@@ -69,7 +87,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
             <div style={{ display: "flex", alignItems: "center" }}>
                 {d.picture && (
                     <img
-                        src={d.picture}
+                        src={toImageSrc(d.picture)}
                         alt={d.selectionText}
                         style={{
                             width: 64,
@@ -104,44 +122,38 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         }
     };
 
-    const handleAddNewCustomButtonClick = () => {
-        setShowAddCustomTonieModal(true);
-    };
+    const displayValue = searchText || modelDisplayText;
 
     return (
         <>
             <SearchDropdown
-                value={searchText}
+                value={displayValue}
                 placeholder={placeholder}
                 options={dropdownOptions}
                 onInputChange={handleSearch}
                 onSelect={handleSelect}
                 noResultsContent={t("toniesJsonSearch.noResults")}
                 allowClear
-                style={{ marginTop: 8 }}
+                style={{ marginTop: prefix || suffix ? 0 : 8 }}
+                prefix={prefix}
+                suffix={suffix}
             />
 
             {showAddCustomTonieButton && (
-                <>
-                    <ToniesCustomJsonEditor
-                        open={showAddCustomTonieModal}
-                        props={{ placeholder, onChange }}
-                        setValue={(v) => {
-                            setValue(v);
-                            if (clearInputAfterSelection) {
-                                setSearchText("");
-                            } else {
-                                setSearchText(v);
+                <Tooltip open={!canHover ? false : undefined} title={t("tonies.addNewCustomTonieHint")}>
+                    <Button
+                        onClick={() => {
+                            if (onOpenCustomModelEditor) {
+                                onOpenCustomModelEditor();
+                                return;
                             }
+                            launchCustomModelsEditor();
                         }}
-                        onClose={() => setShowAddCustomTonieModal(false)}
-                    />
-                    <Tooltip open={!canHover ? false : undefined} title={t("tonies.addNewCustomTonieHint")}>
-                        <Button onClick={handleAddNewCustomButtonClick} style={{ marginTop: 8 }}>
-                            {t("tonies.addNewCustomTonie")}
-                        </Button>
-                    </Tooltip>
-                </>
+                        style={{ marginTop: 8 }}
+                    >
+                        {t("tonies.addNewCustomTonie")}
+                    </Button>
+                </Tooltip>
             )}
         </>
     );

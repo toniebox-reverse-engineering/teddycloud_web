@@ -15,6 +15,7 @@ import { ToniesJsonSearchWrapper } from "./input/ToniesJsonSearchWrapper";
 import { CustomImages } from "./input/CustomImages";
 import { EditLabelModal } from "./modals/EditLabelModal";
 import { LabelOverridesById, LabelOverrides } from "./types/labelOverrides";
+import SelectImageModal from "../common/modals/SelectImageModal";
 
 const { Paragraph } = Typography;
 
@@ -25,8 +26,17 @@ export const TeddyStudio: React.FC = () => {
     const { handleSearch } = useData();
     const [editIndex, setEditIndex] = useState<number | null>(null);
 
-    const { customItems, mergedResults, addResult, addCustomImage, removeByMergedIndex, editByMergedIndex, clearAll } =
-        useCustomItems();
+    const {
+        customItems,
+        mergedResults,
+        addResult,
+        addCustomImage,
+        addCustomImageByPath,
+        removeByMergedIndex,
+        editByMergedIndex,
+        clearAll,
+    } = useCustomItems();
+    const [imageManagerOpen, setImageManagerOpen] = useState(false);
 
     const settingsStore = useSettings();
 
@@ -135,7 +145,18 @@ export const TeddyStudio: React.FC = () => {
 
             <ToniesJsonSearchWrapper onSelectDataset={addResult} />
 
-            <CustomImages customItems={customItems} onAddImage={addCustomImage} />
+            <CustomImages
+                customItems={customItems}
+                onAddImage={addCustomImage}
+                onOpenImageManager={() => setImageManagerOpen(true)}
+            />
+
+            <SelectImageModal
+                open={imageManagerOpen}
+                onClose={() => setImageManagerOpen(false)}
+                onSelectImage={(path) => addCustomImageByPath(path)}
+                allowMultiple
+            />
 
             <Collapse
                 className="settingsPanel"

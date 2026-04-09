@@ -571,7 +571,11 @@ export class TeddyCloudApi extends runtime.BaseAPI {
             }
             return response;
         } catch (err: any) {
-            return err.response;
+            if (err?.response) {
+                return err.response;
+            }
+            const causeMsg = err?.cause?.message ?? err?.message;
+            throw new Error(causeMsg || "Network error, please try again");
         }
     }
 

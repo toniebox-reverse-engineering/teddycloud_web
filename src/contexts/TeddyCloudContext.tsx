@@ -58,7 +58,7 @@ interface TeddyCloudContextType {
         confirmed?: boolean,
         persist?: boolean
     ) => void;
-    addLoadingNotification: (key: string, message: string, description: string) => void;
+    addLoadingNotification: (key: string, message: string, description?: string) => void;
     closeLoadingNotification: (key: string) => Promise<void>;
     confirmNotification: (uuid: string) => void;
     unconfirmedCount: number;
@@ -78,32 +78,38 @@ interface TeddyCloudContextType {
 
     boxModelImages: TonieboxImage[];
     boxModelImagesLoading: boolean;
+
+    /** Increment to trigger tonies list refetch (e.g. after custom model save) */
+    toniesRefreshTrigger: number;
+    invalidateTonies: () => void;
 }
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
     fetchCloudStatus: false,
-    setFetchCloudStatus: () => {},
+    setFetchCloudStatus: () => { },
     toniesCloudAvailable: false,
-    setToniesCloudAvailable: () => {},
+    setToniesCloudAvailable: () => { },
     notifications: [],
-    addNotification: () => {},
-    addLoadingNotification: () => {},
-    closeLoadingNotification: async () => {},
-    confirmNotification: () => {},
+    addNotification: () => { },
+    addLoadingNotification: () => { },
+    closeLoadingNotification: async () => { },
+    confirmNotification: () => { },
     unconfirmedCount: 0,
-    clearAllNotifications: () => {},
-    removeNotifications: () => {},
+    clearAllNotifications: () => { },
+    removeNotifications: () => { },
     navOpen: false,
-    setNavOpen: () => {},
+    setNavOpen: () => { },
     subNavOpen: false,
-    setSubNavOpen: () => {},
+    setSubNavOpen: () => { },
     currentTCSection: "",
-    setCurrentTCSection: () => {},
+    setCurrentTCSection: () => { },
     plugins: [],
     getPluginMeta: () => undefined,
-    fetchPlugins: async () => {},
+    fetchPlugins: async () => { },
     boxModelImages: [],
     boxModelImagesLoading: false,
+    toniesRefreshTrigger: 0,
+    invalidateTonies: () => { },
 });
 
 interface TeddyCloudProviderProps {
@@ -123,6 +129,11 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
     const [subNavOpen, setSubNavOpen] = useState(false);
     const [currentTCSection, setCurrentTCSection] = useState("");
     const [plugins, setPlugins] = useState<PluginMeta[]>([]);
+    const [toniesRefreshTrigger, setToniesRefreshTrigger] = useState(0);
+
+    const invalidateTonies = useCallback(() => {
+        setToniesRefreshTrigger((prev) => prev + 1);
+    }, []);
 
     const { boxModelImages, loading: boxModelImagesLoading } = useBoxModelImages();
 
@@ -210,7 +221,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         []
     );
 
-    const addLoadingNotification = useCallback((key: string, title: string, description: string) => {
+    const addLoadingNotification = useCallback((key: string, title: string, description?: string) => {
         setTimeout(() => {
             antdNotification.open({
                 key,
@@ -381,6 +392,8 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             fetchPlugins,
             boxModelImages,
             boxModelImagesLoading,
+            toniesRefreshTrigger,
+            invalidateTonies,
         }),
         [
             fetchCloudStatus,
@@ -401,6 +414,8 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             fetchPlugins,
             boxModelImages,
             boxModelImagesLoading,
+            toniesRefreshTrigger,
+            invalidateTonies,
         ]
     );
 

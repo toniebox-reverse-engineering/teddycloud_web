@@ -2,10 +2,15 @@
 
 ## 0.7.0
 
+- added custom tonies API
 - gui: Updated packages
 - gui: Removed legacy ESP32 flasher
 - gui: Fixed decimal input on ios [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289)
 - gui: TeddyStudio: Added Image Bottom/Left margin [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
+- gui: added Custom-Model-Editor to create and edit custom models
+- gui: added custom image management to library
+- gui: added selection for custom and original images for TeddyStudio and Custom-Model-Editor
+- gui: added option in tonie edit modal to set audio from model in case they differ
 
 ### Commits
 
@@ -35,16 +40,16 @@
 
 ### Commits
 
-- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8)
-- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8)
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.7.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.7.0)
 
 ### Discussion
 
-- [https://forum.revvox.de/t/release-notes-0-6-8/3235](https://forum.revvox.de/t/release-notes-0-6-8/3235)
+- [https://forum.revvox.de/t/release-notes-0-7-0/3235](https://forum.revvox.de/t/release-notes-0-7-0/3235)
 
 ### GitHub Release
 
-- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8)
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0)
 
 ## 0.6.7
 

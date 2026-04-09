@@ -14,6 +14,7 @@ import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useAudioContext } from "../../../../contexts/AudioContext";
+import { toImageSrc } from "../utils/imagePathUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -247,11 +248,11 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 <div style={{ position: "relative" }}>
                     {
                         <img
-                            src={
-                                tonieCardOrTAFRecord.tonieInfo?.picture
-                                    ? tonieCardOrTAFRecord.tonieInfo?.picture
+                            src={toImageSrc(
+                                tonieCardOrTAFRecord.tonieInfo?.picture?.trim()
+                                    ? tonieCardOrTAFRecord.tonieInfo.picture
                                     : "/img_unknown.png"
-                            }
+                            )}
                             alt=""
                             style={{ width: "100%" }}
                         />
@@ -271,7 +272,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                             placement="bottom"
                         >
                             <img
-                                src={sourcePic}
+                                src={toImageSrc(sourcePic)}
                                 alt=""
                                 style={{
                                     bottom: 0,

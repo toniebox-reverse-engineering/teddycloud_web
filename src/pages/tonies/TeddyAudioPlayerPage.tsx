@@ -5,6 +5,7 @@ import { Button } from "antd";
 import { ExportOutlined, ImportOutlined } from "@ant-design/icons";
 
 import { TonieCardProps } from "../../types/tonieTypes";
+import { naturalCompare } from "../../utils/helper";
 
 import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
@@ -51,17 +52,11 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ stan
     const sortTonies = (a: TonieCardProps, b: TonieCardProps) => {
         const seriesA = a.sourceInfo?.series || a.tonieInfo.series || "Unknown";
         const seriesB = b.sourceInfo?.series || b.tonieInfo.series || "Unknown";
-
-        if (seriesA < seriesB) return -1;
-        if (seriesA > seriesB) return 1;
-
+        const bySeries = naturalCompare(seriesA, seriesB);
+        if (bySeries !== 0) return bySeries;
         const episodeA = a.sourceInfo?.episode || a.tonieInfo.episode || "";
         const episodeB = b.sourceInfo?.episode || b.tonieInfo.episode || "";
-
-        if (episodeA < episodeB) return -1;
-        if (episodeA > episodeB) return 1;
-
-        return 0;
+        return naturalCompare(episodeA, episodeB);
     };
 
     const { tonies, loading } = useTonies({

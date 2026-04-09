@@ -16,6 +16,7 @@ export interface UseDirectoryCreateOptions {
     directoryTree: DirectoryTreeApi;
     selectNewNode: boolean;
     setRebuildList?: React.Dispatch<React.SetStateAction<boolean>>;
+    special?: string;
 }
 
 export interface UseDirectoryCreateResult {
@@ -41,6 +42,7 @@ export const useDirectoryCreate = ({
     directoryTree,
     selectNewNode,
     setRebuildList,
+    special = "library",
 }: UseDirectoryCreateOptions): UseDirectoryCreateResult => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
@@ -100,7 +102,7 @@ export const useDirectoryCreate = ({
         const dirFullPath = `${decodeURIComponent(createDirectoryPath)}/${inputValueCreateDirectory}`;
 
         try {
-            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, dirFullPath)
+            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=${encodeURIComponent(special)}`, dirFullPath)
                 .then((response) => response.text())
                 .then((text) => {
                     if (text !== "OK") {

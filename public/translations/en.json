@@ -10,6 +10,9 @@
         "errorNoOggOpusSupportByApple": "Your browser does not support OGG/Opus (taf) files at the moment. If you are using an Apple device, help us out by submitting a ticket to Apple for a fix!",
         "unknownSource": "Unkown"
     },
+    "common": {
+        "cancel": "Cancel"
+    },
     "community": {
         "attribution": {
             "navigationTitle": "Attribution",
@@ -435,6 +438,7 @@
             "title": "Help"
         },
         "hidden": "Hidden",
+        "image": "Image",
         "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files",
         "maxSelectedRowsWarning": "Too many files selected!",
         "messages": {
@@ -526,13 +530,14 @@
             "uploadedFileFailed": "File upload failed!",
             "uploadFailed": "Some files could not be uploaded. Please try again.",
             "uploadFailedForFile": "Upload of \"{{file}}\" failed.",
-            "uploadHint": "Drag files here to upload",
+            "uploadHint": "Click or drag files into the upload area / onto the file list to upload",
             "uploading": "Uploading...",
             "uploadInProgress": "Uploading \"{{file}}\"...",
             "uploadSuccessful": "Files uploaded successfully.",
             "uploadSuccessfulDetails": "All files were uploaded successfully.",
             "uploadSuccessfulForFile": "File \"{{file}}\" uploaded successfully.",
-            "uploadText": "Click or drag files to this area to upload"
+            "uploadText": "Click or drag files to this area to upload",
+            "uploadTimeout": "Upload timeout after {{ms}}ms"
         }
     },
     "footer": {
@@ -566,7 +571,7 @@
                     "items": {
                         "01assignContent": "assign content and other properties to each tag",
                         "02searchStreams": "search and assign webradio streams to each tag",
-                        "03defineMetaData": "define meta data of your custom tags (PoC in WebFrontend)",
+                        "03defineMetaData": "define meta data of your custom tags (Custom Models Editor in WebFrontend)",
                         "04filterTonies": "filter Tonies/Tags",
                         "05hideTonies": "hide unavailable Tonies/Tags",
                         "06showLastPlayed": "show last played Tonies/Tags"
@@ -636,9 +641,8 @@
                 "01firmwareUpdate": "Firmware update through TeddyCloud",
                 "03reportUnknownTonies": "Report unknown Tonies",
                 "04completeTAPIntegration": "Completion of TAP WebFrontend Integration",
-                "05completeCustomToniesIntegration": "Completion of Custom Tonies Json WebFront Integration (\"Meta data of custom tags\")",
-                "06moreStats": "More stats about your played Tonies/Tags",
-                "07securityImprovements": "Security improvements like Access control (tonieboxes and user)"
+                "05moreStats": "More stats about your played Tonies/Tags",
+                "06securityImprovements": "Security improvements like Access control (tonieboxes and user)"
             },
             "navigationTitle": "Features",
             "title": "Features TeddyCloud",
@@ -939,6 +943,7 @@
         "tl-ph": "Tagalog (Philippines)",
         "tr-tr": "Turkish (Turkey)",
         "uk-ua": "Ukrainian (Ukraine)",
+        "other": "Other",
         "undefined": "Other/undefined",
         "unknownLanguageCode": "Unknown language code: ",
         "ur-pk": "Urdu (Pakistan)",
@@ -1801,7 +1806,128 @@
             "title": "Create new Custom Tonie/Tag",
             "track": "Track"
         },
-        "addToniesCustomJsonEntry": "WIP: Add Model",
+        "customToniesEditorJsonEntry": "Custom models",
+        "imageManager": {
+            "title": "Library: Select & upload images",
+            "titleSelect": "Select image",
+            "okText": "Apply",
+            "sourceCustom": "Custom",
+            "sourceOriginal": "Original",
+            "noOriginalImages": "No original images found",
+            "originalImagesLoading": "Loading original images …",
+            "originalUrlSearchPlaceholder": "Words to find in URL (all must match, order ignored) …",
+            "noOriginalSearchResults": "No URLs match your search",
+            "originalUrlColumn": "URL"
+        },
+        "customEditor": {
+            "actions": {
+                "browse": "Browse",
+                "delete": "Delete",
+                "deleteCount": "Delete {{count}} model(s)",
+                "discard": "Discard",
+                "duplicate": "Duplicatee",
+                "edit": "Edit",
+                "newModel": "New model",
+                "preview": "Preview",
+                "restore": "Restore"
+            },
+            "audio": {
+                "libraryLabel": "Custom audio ({{library}})",
+                "selectFromLibrary": "Select audio from {{library}}",
+                "notInIndex": "Not in custom audio index: {{audioId}}/{{hash}}",
+                "placeholder": "Select custom audio from {{library}}"
+            },
+            "batch": {
+                "description": "Changes apply to all selected models.",
+                "title": "Batch editing active"
+            },
+            "coinHint": {
+                "description": "Optional – only for metadata (title, tracks). Custom coins work without a model. Use only custom audio – official IDs overwrite real Tonies. Does not link NFC tags to audio.",
+                "title": "Hint: Audio assignment"
+            },
+            "columns": {
+                "actions": "Actions",
+                "image": "Image"
+            },
+            "errors": {
+                "emptyResult": "At least one model must remain.",
+                "invalidSelectedIndex": "Invalid selected index",
+                "releaseNumeric": "Release must be numeric",
+                "duplicateModel": "Duplicate: {{model}}",
+                "duplicateAudioHash": "Duplicate audio_id+hash combination: {{audioId}}",
+                "modelExistsInBase": "Model exists in base tonies.json: {{models}}",
+                "invalidLanguageCode": "Invalid language code. Please use a code like {{example}}."
+            },
+            "duplicateTitleSuffix": "Copy",
+            "editModalTitle": "Edit model {{current}} of {{total}}",
+            "editModalTitleCreate": "New model",
+            "editModalTitleEdit": "Edit model",
+            "filterFieldsPlaceholder": "Search in fields",
+            "filterPlaceholder": "Filter models...",
+            "modelsTitle": "Models",
+            "noChangesBody": "There is nothing to save at the moment.",
+            "noChangesTitle": "No changes detected",
+            "optionalColumns": "Optional columns",
+            "picHint": "Select image from custom_img or from original tonies",
+            "preflight": {
+                "confirm": "Save now",
+                "deletes": "Deletions: {{count}}",
+                "description": "Please confirm the scope of this save operation.",
+                "renames": "Renames: {{count}}",
+                "title": "Review changes before saving",
+                "upserts": "Updates/new entries: {{count}}"
+            },
+            "previewTitle": "Image preview",
+            "saveSuccessWithCount": "tonies.custom.json saved ({{count}} entries). Backup and reload triggered.",
+            "savedState": "All changes saved",
+            "modelSavedSuccessful": "Model {{title}} was successfully saved",
+            "sections": {
+                "audio": "Audio assignment",
+                "audioAssignment": "Audio assignment",
+                "media": "Media and images",
+                "metadata": "Optional metadata",
+                "tracks": "Tracks"
+            },
+            "selection": {
+                "description": "The edit form below always applies to the current selection.",
+                "multiple": "{{count}} models selected",
+                "none": "No model selected",
+                "single": "Selected model: {{model}}"
+            },
+            "tableMenu": "Table menu",
+            "title": "Model editor",
+            "unsaved": "{{count}} unsaved change(s)",
+            "validation": {
+                "title": "Please fix these issues first"
+            },
+            "renameFailed": "Rename failed",
+            "renameConfirm": {
+                "title": "Rename model",
+                "description": "Model ID will change from \"{{from}}\" to \"{{to}}\". Linked Tonies will be updated automatically.",
+                "skipUpdate": "Remove model assignment from linked Tonies (audio remains)",
+                "confirm": "Confirm",
+                "abort": "Abort"
+            },
+            "deleteConfirm": {
+                "title": "Delete model",
+                "description": "Really delete \"{{model}}\"? This cannot be undone.",
+                "deleted": "Model \"{{model}}\" has been deleted.",
+                "confirm": "Delete",
+                "abort": "Abort"
+            },
+            "emptyState": "No custom models",
+            "emptyStateHint": "tonies.custom.json is empty. Add your first model.",
+            "pagination": {
+                "modelsPerPage": "models/page"
+            }
+        },
+        "customModelPicker": {
+            "title": "Select custom model",
+            "searchPlaceholder": "Search model, series...",
+            "addNew": "Add new",
+            "loading": "Loading...",
+            "noModels": "No custom models found"
+        },
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
         "cancel": "Cancel",
@@ -1813,6 +1939,13 @@
             "hide": "Hide",
             "title": "Hide Tonie/Tag"
         },
+        "confirmAudioModelMismatchModal": {
+            "cancel": "Cancel",
+            "confirm": "Continue",
+            "title": "Model vs. Audio",
+            "content": "The assigned audio has model \"{{audioModel}}\". The display on the box comes from the audio_id of the TAF. The empty model will be reset to \"{{audioModel}}\". Continue?",
+            "unknownModel": "unknown"
+        },
         "connectionToBoxineNotAvailable": "Unable to connect to Boxine/Toniecloud. Please enable access to allow downloading.",
         "content": {
             "navigationTitle": "Content",
@@ -1822,12 +1955,29 @@
         },
         "currentPath": "Current Path: ",
         "editModal": {
+            "editSelectedCustomModel": "Continue editing model",
+            "invalidModelError": "Model \"{{model}}\" is invalid. Please select an existing model from search.",
+            "modelInfoHeading": "Model Info",
+            "audioInfoHeading": "Audio Info",
+            "modelInfoModel": "Model",
+            "modelInfoSeries": "Series",
+            "modelInfoEpisode": "Episode",
+            "modelInfoTitle": "Title",
+            "modelInfoLanguage": "Language",
+            "modelInfoCategory": "Category",
+            "modelInfoAudioPath": "Audio Path",
             "model": "Model",
+            "modelReadOnlyHint": "Original tonie: Model cannot be changed. You can only assign custom audio.",
             "placeholderSearchForAModel": "Search for a model",
             "placeholderSearchForARadioStream": "Search for a radio stream",
             "save": "Save",
+            "setAudioFromModel": "Set audio from model",
+            "setAudioFromModelUnavailableInLibrary": "Model audio is not yet available in the library.",
+            "setModelFromAudio": "Set model from audio",
             "source": "Source",
-            "title": "Edit model"
+            "createNewModelTooltip": "Create new model",
+            "editModelTooltip": "Edit model",
+            "title": "Edit Tonie/Coin"
         },
         "encoder": {
             "browserEncodingInProgress": "Encoding audio files in browser...",
@@ -1977,6 +2127,13 @@
             "navigationTitle": "Library",
             "title": "Library"
         },
+        "customImages": {
+            "navigationTitle": "Images",
+            "title": "Manage custom images"
+        },
+        "libraryAudio": {
+            "navigationTitle": "Audio"
+        },
         "messages": {
             "cloudAccessBlocked": "Cloud access blocked!",
             "cloudAccessBlockedDetails": "Cloud access blocked for \"{{model}}\" [{{ruid}}]",
@@ -2110,9 +2267,9 @@
             "currentLabel": "Current label",
             "custom": "Custom",
             "customImage": "Custom Images",
-            "customImageHint": "You can also add temporary images for your Traveltonies. Note that they will not be saved permanently!",
+            "customImageHint": "You can add images temporarily – they will NOT be added to the library and are only used for this print sheet.",
             "customImageTitle": "Enter a title to be printed",
-            "customImageUpload": "Add your own image",
+            "customImageUpload": "Add temporary image (without Library)",
             "diameter": "Inner diameter",
             "empty": "Empty - Please select Tonies or Tags or add custom image first!",
             "episodes": "Episodes",
