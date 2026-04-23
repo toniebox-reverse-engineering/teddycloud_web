@@ -13,7 +13,8 @@ const { Paragraph } = Typography;
 export const RadioStreamSearch: React.FC<{
     placeholder: string;
     onChange: (newValue: string) => void;
-}> = ({ placeholder, onChange }) => {
+    style?: React.CSSProperties;
+}> = ({ placeholder, onChange, style }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
 
@@ -77,7 +78,7 @@ export const RadioStreamSearch: React.FC<{
                 onSelect={handleSelect}
                 noResultsContent={t("radioStreamSearch.noResults")}
                 allowClear
-                style={{ width: "100%" }}
+                style={{ width: "100%", ...style }}
             />
         </>
     );

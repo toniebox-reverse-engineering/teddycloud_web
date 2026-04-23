@@ -1,4 +1,4 @@
-import { Button, Tooltip } from "antd";
+import { Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -7,7 +7,6 @@ import { useToniesJsonSearch } from "../hooks/useToniesJsonSearch";
 import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
-import { canHover } from "../../../../utils/browser/browserUtils";
 import { toImageSrc } from "../utils/imagePathUtils";
 import { useCustomModelsEditorLauncher } from "../../hooks/useCustomModelsEditorFeature";
 
@@ -37,6 +36,7 @@ interface ToniesJsonSearchProps {
 
     prefix?: React.ReactNode;
     suffix?: React.ReactNode;
+    style?: React.CSSProperties;
 }
 
 export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
@@ -49,6 +49,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
     modelDisplayText = "",
     prefix,
     suffix,
+    style,
 }) => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
@@ -134,29 +135,24 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
                 onSelect={handleSelect}
                 noResultsContent={t("toniesJsonSearch.noResults")}
                 allowClear
-                style={{ marginTop: prefix || suffix ? 0 : 8 }}
+                style={{ marginTop: prefix || suffix ? 0 : 8, ...(style || {}) }}
                 prefix={prefix}
                 suffix={suffix}
             />
 
             {showAddCustomTonieButton && (
-                <Tooltip
-                    open={!canHover ? false : undefined}
-                    title={t("tonies.addNewCustomTonieHint")}
+                <Button
+                    onClick={() => {
+                        if (onOpenCustomModelEditor) {
+                            onOpenCustomModelEditor();
+                            return;
+                        }
+                        launchCustomModelsEditor();
+                    }}
+                    style={{ marginTop: 8 }}
                 >
-                    <Button
-                        onClick={() => {
-                            if (onOpenCustomModelEditor) {
-                                onOpenCustomModelEditor();
-                                return;
-                            }
-                            launchCustomModelsEditor();
-                        }}
-                        style={{ marginTop: 8 }}
-                    >
-                        {t("tonies.addNewCustomTonie")}
-                    </Button>
-                </Tooltip>
+                    {t("tonies.addNewCustomTonie")}
+                </Button>
             )}
         </>
     );

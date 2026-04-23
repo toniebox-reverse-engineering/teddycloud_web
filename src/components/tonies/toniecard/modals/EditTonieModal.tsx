@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Divider, Form, Input, Modal, theme, Tooltip, Typography } from "antd";
+import { Button, Divider, Form, Input, Modal, Grid, theme, Typography } from "antd";
 import {
     CloseOutlined,
     EditOutlined,
@@ -17,6 +17,7 @@ import { RadioStreamSearch } from "../search/RadioStreamSearch";
 import { toModelKey } from "../../utils/modelKey";
 
 const { useToken } = theme;
+const { useBreakpoint } = Grid;
 const { Text } = Typography;
 
 type ValidateStatus = "" | "success" | "warning" | "error" | "validating" | undefined;
@@ -117,6 +118,8 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+    const screens = useBreakpoint();
+    const isMobile = !screens.md;
     const handleClearSource = () => {
         onSelectedSourceChange("");
         setInputValidationSource({ validateStatus: "", help: "" });
@@ -184,6 +187,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                         key="source"
                         value={selectedSource}
                         width="auto"
+                        style={{ width: "100%" }}
                         onChange={(e) => onSelectedSourceChange(e.target.value)}
                         prefix={[
                             <CloseOutlined
@@ -191,11 +195,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleClearSource}
                             />,
-                            <Divider
-                                key="divider-source-1"
-                                orientation="vertical"
-                                style={{ marginLeft: 2 }}
-                            />,
+                            <Divider key="divider-source-1" orientation="vertical" style={{ margin: "0 4px" }} />,
                             <RollbackOutlined
                                 key="rollback-source"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -208,34 +208,11 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                 }}
                                 className={isSourceUnchanged ? "disabled" : "enabled"}
                             />,
-                            <Divider
-                                key="divider-source-2"
-                                orientation="vertical"
-                                style={{ marginLeft: 2 }}
-                            />,
+                            <Divider key="divider-source-2" orientation="vertical" style={{ margin: "0 4px" }} />,
                         ]}
                         suffix={[
-                            audioInfoTooltip ? (
-                                <Tooltip
-                                    key="audio-info"
-                                    trigger={["hover", "click"]}
-                                    title={audioInfoTooltip}
-                                >
-                                    <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} />
-                                </Tooltip>
-                            ) : null,
-                            audioInfoTooltip ? (
-                                <Divider
-                                    key="divider-source-info"
-                                    orientation="vertical"
-                                    style={{ marginLeft: 2 }}
-                                />
-                            ) : null,
-                            <Divider
-                                key="divider-source-3"
-                                orientation="vertical"
-                                style={{ marginLeft: 2 }}
-                            />,
+                            audioInfoTooltip ? <InfoCircleOutlined key="audio-info" onMouseDown={(e) => e.preventDefault()} /> : null,
+                            audioInfoTooltip ? <Divider key="divider-source-info" orientation="vertical" style={{ margin: "0 4px" }} /> : null,
                             <FolderOpenOutlined
                                 key="select-file"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -247,23 +224,24 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                         placeholder={t("tonies.editModal.placeholderSearchForARadioStream")}
                         onChange={onSearchRadioChange}
                         key={keyRadioStreamSearch}
+                        style={{ width: "100%" }}
                     />
                     {showSetAudioFromModelAction && (
                         <Form.Item style={{ marginTop: 8, marginBottom: 0 }}>
-                            <Tooltip title={setAudioFromModelTooltip}>
-                                <Button
-                                    type="default"
-                                    icon={<SwapOutlined />}
-                                    disabled={setAudioFromModelDisabled}
-                                    onClick={() => {
-                                        if (!modelAudioPath) return;
-                                        onSelectedSourceChange(modelAudioPath);
-                                        setInputValidationSource({ validateStatus: "", help: "" });
-                                    }}
-                                >
-                                    {t("tonies.editModal.setAudioFromModel")}
-                                </Button>
-                            </Tooltip>
+                            <Button
+                                type="default"
+                                icon={<SwapOutlined />}
+                                disabled={setAudioFromModelDisabled}
+                                title={setAudioFromModelTooltip}
+                                onClick={() => {
+                                    if (!modelAudioPath) return;
+                                    onSelectedSourceChange(modelAudioPath);
+                                    setInputValidationSource({ validateStatus: "", help: "" });
+                                }}
+                                style={isMobile ? { width: "100%" } : undefined}
+                            >
+                                {t("tonies.editModal.setAudioFromModel")}
+                            </Button>
                         </Form.Item>
                     )}
                 </Form.Item>
@@ -280,15 +258,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             readOnly
                             disabled
                             style={{ color: token.colorText, cursor: "default" }}
-                            suffix={
-                                modelInfoTooltip ? (
-                                    <Tooltip trigger={["hover", "click"]} title={modelInfoTooltip}>
-                                        <InfoCircleOutlined
-                                            onMouseDown={(e) => e.preventDefault()}
-                                        />
-                                    </Tooltip>
-                                ) : null
-                            }
+                            suffix={modelInfoTooltip ? <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} /> : null}
                         />
                         <Text
                             type="secondary"
@@ -304,6 +274,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                     >
                         <Input
                             value={selectedModel}
+                            style={{ width: "100%" }}
                             onChange={(e) => onSelectedModelChange(e.target.value)}
                             prefix={
                                 <>
@@ -312,7 +283,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                         onClick={handleClearModel}
                                         style={{ cursor: "pointer" }}
                                     />
-                                    <Divider orientation="vertical" style={{ marginLeft: 2 }} />
+                                    <Divider orientation="vertical" style={{ margin: "0 4px" }} />
                                     <RollbackOutlined
                                         onMouseDown={(e) => e.preventDefault()}
                                         onClick={handleRollbackModel}
@@ -323,54 +294,35 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                             cursor: isModelUnchanged ? "default" : "pointer",
                                         }}
                                     />
-                                    <Divider orientation="vertical" style={{ marginLeft: 2 }} />
+                                    <Divider orientation="vertical" style={{ margin: "0 4px" }} />
                                 </>
                             }
                             suffix={
                                 <>
                                     {modelInfoTooltip ? (
                                         <>
-                                            <Tooltip
-                                                trigger={["hover", "click"]}
-                                                title={modelInfoTooltip}
-                                            >
-                                                <InfoCircleOutlined
-                                                    onMouseDown={(e) => e.preventDefault()}
-                                                />
-                                            </Tooltip>
-                                            <Divider
-                                                orientation="vertical"
-                                                style={{ marginLeft: 2, marginRight: 2 }}
-                                            />
+                                            <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} />
+                                            <Divider orientation="vertical" style={{ margin: "0 4px" }} />
                                         </>
                                     ) : null}
                                     {selectedModel && onEditModel && isSelectedModelCustom ? (
                                         <>
-                                            <Tooltip title={t("tonies.editModal.editModelTooltip")}>
-                                                <EditOutlined
-                                                    onMouseDown={(e) => e.preventDefault()}
-                                                    onClick={onEditModel}
-                                                    style={{ cursor: "pointer" }}
-                                                />
-                                            </Tooltip>
+                                            <EditOutlined
+                                                onMouseDown={(e) => e.preventDefault()}
+                                                onClick={onEditModel}
+                                                style={{ cursor: "pointer", marginLeft: 2 }}
+                                            />
                                             {onCreateNewModel ? (
-                                                <Divider
-                                                    orientation="vertical"
-                                                    style={{ marginLeft: 2, marginRight: 2 }}
-                                                />
+                                                <Divider orientation="vertical" style={{ margin: "0 4px" }} />
                                             ) : null}
                                         </>
                                     ) : null}
                                     {onCreateNewModel ? (
-                                        <Tooltip
-                                            title={t("tonies.editModal.createNewModelTooltip")}
-                                        >
-                                            <PlusOutlined
-                                                onMouseDown={(e) => e.preventDefault()}
-                                                onClick={onCreateNewModel}
-                                                style={{ cursor: "pointer" }}
-                                            />
-                                        </Tooltip>
+                                        <PlusOutlined
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={onCreateNewModel}
+                                            style={{ cursor: "pointer", marginLeft: 2 }}
+                                        />
                                     ) : null}
                                 </>
                             }
@@ -387,6 +339,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             }}
                             key={keyTonieArticleSearch}
                             showAddCustomTonieButton={false}
+                            style={{ width: "100%" }}
                         />
                         {showSetModelFromAudioAction ? (
                             <Form.Item style={{ marginTop: 8, marginBottom: 0 }}>
@@ -397,6 +350,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                         onSetModelFromAudio?.();
                                         setInputValidationModel({ validateStatus: "", help: "" });
                                     }}
+                                    style={isMobile ? { width: "100%" } : undefined}
                                 >
                                     {t("tonies.editModal.setModelFromAudio")}
                                 </Button>
