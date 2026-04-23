@@ -1977,7 +1977,7 @@
             "source": "Source",
             "createNewModelTooltip": "Créer un nouveau modèle",
             "editModelTooltip": "Modifier le modèle",
-            "title": "Modifier Tonie/Coin"
+            "title": "Modifier Tonie/Tag"
         },
         "encoder": {
             "browserEncodingInProgress": "Encodage des fichiers audio dans le navigateur...",
