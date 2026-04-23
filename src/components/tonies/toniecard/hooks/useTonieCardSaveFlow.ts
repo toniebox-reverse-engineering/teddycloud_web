@@ -17,7 +17,6 @@ type UseTonieCardSaveFlowParams = {
     resolvedAudioModel: string;
     modelAudioPath: string | null;
     fetchUpdatedTonieCard: () => Promise<void>;
-    invalidateTonies: () => void;
     setIsEditModalOpen: (open: boolean) => void;
     setInputValidationModel: (value: ValidationState) => void;
     setInputValidationSource: (value: ValidationState) => void;
@@ -114,7 +113,6 @@ export const useTonieCardSaveFlow = ({
     resolvedAudioModel,
     modelAudioPath,
     fetchUpdatedTonieCard,
-    invalidateTonies,
     setIsEditModalOpen,
     setInputValidationModel,
     setInputValidationSource,
@@ -262,7 +260,6 @@ export const useTonieCardSaveFlow = ({
 
         setIsEditModalOpen(false);
         await fetchUpdatedTonieCard();
-        invalidateTonies();
     };
 
     return {
