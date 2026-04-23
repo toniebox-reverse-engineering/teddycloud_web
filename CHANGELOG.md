@@ -16,6 +16,7 @@
 - gui: Fixed double episode content in TeddyStudio [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296)
 - gui: Added formatting (internal)
 - gui: Fixed some display issues in TeddyStudio labels
+- gui: Fixed custom model manager regressions (model lock removal, mobile layout/tooltips, loading state, dialog title, list reload behavior, deprecations, sorting, legacy JSON parsing, optional audio_id/hash) [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/291](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/291)
 
 ### Commits
 
