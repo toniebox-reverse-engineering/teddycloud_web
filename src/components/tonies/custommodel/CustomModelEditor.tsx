@@ -13,7 +13,6 @@ import {
     Row,
     Space,
     theme,
-    Tooltip,
     Typography,
 } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -111,6 +110,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     const [form] = Form.useForm<FormValues>();
 
     const [saving, setSaving] = useState(false);
+    const [listLoading, setListLoading] = useState(false);
 
     const [customEntries, setCustomEntries] = useState<CustomEntry[]>([]);
     const [persistedEntries, setPersistedEntries] = useState<CustomEntry[]>([]);
@@ -476,6 +476,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     };
 
     const loadJsonData = async () => {
+        setListLoading(true);
         try {
             const [customResponse, baseResponse] = await Promise.all([
                 api.apiGetTeddyCloudApiRaw("/api/toniesCustomJson"),
@@ -536,6 +537,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 String(error),
                 t("tonies.customToniesEditorJsonEntry"),
             );
+        } finally {
+            setListLoading(false);
         }
     };
 
@@ -930,6 +933,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                         />
 
                         <CustomModelList
+                            loading={listLoading}
                             tableRows={tableRows}
                             paginatedRows={paginatedRows}
                             paginationEnabled={paginationEnabled}
