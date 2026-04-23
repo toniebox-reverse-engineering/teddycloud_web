@@ -67,7 +67,7 @@ export const AudioLibraryPathInput: React.FC<{
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={onClear}
                 />,
-                <Divider key="d1" orientation="vertical" style={{ marginLeft: 2 }} />,
+                <Divider key="d1" orientation="vertical" style={{ margin: "0 4px" }} />,
                 <RollbackOutlined
                     key="undo"
                     onMouseDown={(e) => e.preventDefault()}
@@ -77,7 +77,7 @@ export const AudioLibraryPathInput: React.FC<{
                         cursor: isUnchanged ? "default" : "pointer",
                     }}
                 />,
-                <Divider key="d2" orientation="vertical" style={{ marginLeft: 2 }} />,
+                <Divider key="d2" orientation="vertical" style={{ margin: "0 4px" }} />,
             ]}
             suffix={
                 <FolderOpenOutlined
