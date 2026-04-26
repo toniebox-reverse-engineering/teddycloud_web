@@ -978,7 +978,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     onCancel={onClose}
                     width={Math.max(Math.min(window.innerWidth * 0.92, 1500), 900)}
                     footer={null}
-                    destroyOnClose
+                    destroyOnHidden
                 >
                     {editorBody}
                 </Modal>
