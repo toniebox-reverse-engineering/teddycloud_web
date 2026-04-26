@@ -29,7 +29,7 @@ export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = (
     const handleSelectResult = (result: ToniesJsonSearchResult) => {
         const dataset = {
             custom: false,
-            text: result.series,
+            text: result.series ?? "",
             pic: result.picture,
             episodes: result.episodes ?? "",
             series: result.series ?? "",
