@@ -12,7 +12,7 @@ import { ServerStatus } from "./ServerStatus";
 import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import NotificationButton from "../buttons/NotificationButton";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { HomeSubNav } from "../../home/HomeSubNav";
 import { CommunitySubNav } from "../../community/CommunitySubNav";
 import { SettingsSubNav } from "../../settings/SettingsSubNav";
@@ -135,7 +135,7 @@ export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.Re
                 </Link>
             );
         },
-        [isMobile, setCurrentTCSection, setSubNavOpen, setNavOpen]
+        [isMobile, setCurrentTCSection, setSubNavOpen, setNavOpen],
     );
 
     // Main Navigation Items
@@ -147,7 +147,7 @@ export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.Re
             { key: "settings", label: <NavItem title={t("settings.navigationTitle")} to="/settings" /> },
             { key: "community", label: <NavItem title={t("community.navigationTitle")} to="/community" /> },
         ],
-        [NavItem, t]
+        [NavItem, t],
     );
 
     // Get selected navigation key

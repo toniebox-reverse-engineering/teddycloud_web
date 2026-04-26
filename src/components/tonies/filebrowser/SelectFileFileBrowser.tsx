@@ -10,11 +10,11 @@ import { Record } from "../../../types/fileBrowserTypes";
 
 import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { createColumns } from "./helper/Columns";
-import { useAudioContext } from "../../../contexts/AudioContext";
+import { useAudioContext } from "../../../provider/AudioProvider";
 import {
     SELECT_IMAGE_CHECKBOX_COL_WIDTH,
     renderSelectImageSelectionCell,
@@ -158,7 +158,7 @@ const SelectFileFileBrowserComponent: React.FC<{
                         NotificationTypeEnum.Warning,
                         t("fileBrowser.fileTypesWarning"),
                         t("fileBrowser.selectAllowedFileTypesOnly", { fileTypes: filetypeFilter.join(", ") }),
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
                 }
             }
@@ -169,7 +169,7 @@ const SelectFileFileBrowserComponent: React.FC<{
                     t("fileBrowser.maxSelectedRows", {
                         maxSelectedRows: maxSelectedRows,
                     }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             } else {
                 setSelectedRowKeys(newSelectedRowKeys);
@@ -205,10 +205,12 @@ const SelectFileFileBrowserComponent: React.FC<{
     const compactSelectHasVisibleSelectionColumn = isCompactCustomSelect && !isSingleSelect;
 
     const openImagePreview = (url: string) => {
-        const handler = onImagePreview ?? ((u: string) => {
-            setImagePreviewUrl(u);
-            setImagePreviewOpen(true);
-        });
+        const handler =
+            onImagePreview ??
+            ((u: string) => {
+                setImagePreviewUrl(u);
+                setImagePreviewOpen(true);
+            });
         handler(url);
     };
 
@@ -474,7 +476,17 @@ const SelectFileFileBrowserComponent: React.FC<{
                         width: "100%",
                     }}
                 >
-                    {pathActions ?? null}<div style={{ display: "flex", flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 8, minWidth: 0 }}>
+                    {pathActions ?? null}
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                            gap: 8,
+                            minWidth: 0,
+                        }}
+                    >
                         <span style={{ lineHeight: 1.5 }}>{t("tonies.currentPath")}</span>
                         {generateBreadcrumbs(path)}
                     </div>
@@ -483,7 +495,15 @@ const SelectFileFileBrowserComponent: React.FC<{
             {isCompactCustomSelect ? (
                 (() => {
                     const compactTableFrame = (
-                        <div style={{ ...selectImageTableFrameStyle, display: "flex", flexDirection: "column", minHeight: 0, flex: 1 }}>
+                        <div
+                            style={{
+                                ...selectImageTableFrameStyle,
+                                display: "flex",
+                                flexDirection: "column",
+                                minHeight: 0,
+                                flex: 1,
+                            }}
+                        >
                             <Input
                                 allowClear
                                 placeholder={t("fileBrowser.filter")}

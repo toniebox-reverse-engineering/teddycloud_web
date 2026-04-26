@@ -13,7 +13,7 @@ import {
 } from "../../../../utils/validation/fieldInputValidator";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
 import { useDirectoryCreate } from "../../common/hooks/useCreateDirectory";
@@ -159,7 +159,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
         addLoadingNotification(
             key,
             t("fileBrowser.encodeFiles.encoding"),
-            t("fileBrowser.encodeFiles.encodingInProgress")
+            t("fileBrowser.encodeFiles.encodingInProgress"),
         );
 
         const currentNodeId = directoryTree.treeNodeId;
@@ -178,7 +178,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                     NotificationTypeEnum.Success,
                     t("fileBrowser.encodeFiles.encodingSuccessful"),
                     t("fileBrowser.encodeFiles.encodingSuccessfulDetails", { file: target }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
                 directoryTree.setTreeNodeId(directoryTree.rootTreeNode.id);
                 setSelectedRowKeys([]);
@@ -190,7 +190,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                     NotificationTypeEnum.Error,
                     t("fileBrowser.encodeFiles.encodingFailed"),
                     t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }).replace(": ", ""),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             }
         } catch (err) {
@@ -199,7 +199,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                 NotificationTypeEnum.Error,
                 t("fileBrowser.encodeFiles.encodingFailed"),
                 t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }) + err,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
         setProcessing(false);
@@ -297,7 +297,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                             icon={<FolderAddOutlined />}
                                             onClick={() => {
                                                 const basePath = directoryTree.getPathFromNodeId(
-                                                    directoryTree.treeNodeId
+                                                    directoryTree.treeNodeId,
                                                 );
                                                 openCreateDirectoryModal(basePath);
                                                 setFilterFieldAutoFocus(false);

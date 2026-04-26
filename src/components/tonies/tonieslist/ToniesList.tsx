@@ -10,7 +10,7 @@ import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import { TonieCard } from "../toniecard/TonieCard";
 import { useToniesFilter } from "./hooks/useToniesFilter";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
 import { canHover, scrollToTop } from "../../../utils/browser/browserUtils";
@@ -183,7 +183,7 @@ export const ToniesList: React.FC<{
                     const lastRUID = await fetchTonieboxLastRUID(toniebox.ID);
                     const lastRUIDTime = await fetchTonieboxLastRUIDTime(toniebox.ID);
                     return [lastRUID, lastRUIDTime, toniebox.boxName] as [string, string, string];
-                })
+                }),
             );
             setLastTonieboxRUIDs(tonieboxLastRUIDs);
         };
@@ -257,7 +257,7 @@ export const ToniesList: React.FC<{
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
         setFilteredTonies((prev) =>
-            prev.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+            prev.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie)),
         );
         onToniesCardUpdate?.(updatedTonieCard);
         setListKey((prevKey) => prevKey + 1);
@@ -380,7 +380,7 @@ export const ToniesList: React.FC<{
                     overlay,
                     addNotification,
                     handleHideTonieCard,
-                    (label) => showHideTonieConfirm(t, label)
+                    (label) => showHideTonieConfirm(t, label),
                 ),
         },
     ];
@@ -430,7 +430,7 @@ export const ToniesList: React.FC<{
             NotificationTypeEnum.Success,
             t("tonies.messages.filterSaved"),
             t("tonies.messages.filterSavedDetails", { name }),
-            t("tonies.title")
+            t("tonies.title"),
         );
         const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<string, ToniesFilterSettings>;
         setExistingFilters(stored);
@@ -444,7 +444,7 @@ export const ToniesList: React.FC<{
                 NotificationTypeEnum.Error,
                 t("tonies.messages.noFilterFound"),
                 t("tonies.messages.noFilterFoundWithName", { name }),
-                t("tonies.title")
+                t("tonies.title"),
             );
             return;
         }
@@ -463,7 +463,7 @@ export const ToniesList: React.FC<{
             NotificationTypeEnum.Success,
             t("tonies.messages.filterDeleted"),
             t("tonies.messages.filterDeletedDetails", { name }),
-            t("tonies.title")
+            t("tonies.title"),
         );
     };
 
@@ -561,7 +561,7 @@ export const ToniesList: React.FC<{
                                         overlay,
                                         addNotification,
                                         true,
-                                        handleUpdate
+                                        handleUpdate,
                                     )
                                 }
                                 disabled={selectedTonies.length === 0}

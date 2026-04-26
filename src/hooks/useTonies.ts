@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { TonieCardProps } from "../types/tonieTypes";
-import { useTeddyCloud } from "../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -73,7 +73,7 @@ export const useTonies = (options: UseToniesOptions = {}) => {
                     NotificationTypeEnum.Error,
                     t("tonies.errorFetchingTonies"),
                     t("tonies.errorFetchingTonies") + ": " + error,
-                    t("tonies.navigationTitle")
+                    t("tonies.navigationTitle"),
                 );
             } finally {
                 setLoading(false);

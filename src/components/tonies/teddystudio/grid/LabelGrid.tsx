@@ -247,14 +247,12 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                             </div>
 
                                             <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                                                {dataset.series && (
-                                                    <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
-                                                )}
                                                 {dataset.text && (
                                                     <div
                                                         style={{
                                                             whiteSpace: "pre-wrap",
                                                             wordBreak: "break-word",
+                                                            fontWeight: "bold",
                                                         }}
                                                     >
                                                         {dataset.text}

@@ -1,12 +1,10 @@
 import { JSX, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Layout, Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import styled from "styled-components";
 import { extractText } from "../../utils/strings/extractText";
-
-const { useToken } = theme;
 
 type BreadcrumbItem = {
     title: JSX.Element | string;
@@ -41,7 +39,7 @@ export const StyledContent = styled(Layout.Content)`
     padding: 24px;
     margin: 0;
     min-height: 280px;
-    background: ${() => useToken().token.colorBgContainer};
+    background: ${({ theme }) => theme.antdToken.colorBgContainer};
 `;
 
 export const HiddenDesktop = styled.span`

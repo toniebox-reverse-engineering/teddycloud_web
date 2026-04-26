@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { SearchDropdown } from "../../../common/elements/SearchDropdown";
 
 export const ModelSearch: React.FC<{
@@ -15,7 +15,7 @@ export const ModelSearch: React.FC<{
                 value: d.id,
                 label: d.name,
             })),
-        [boxModelImages]
+        [boxModelImages],
     );
 
     return (

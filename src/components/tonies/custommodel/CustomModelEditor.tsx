@@ -21,7 +21,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { TonieCardProps } from "../../../types/tonieTypes";
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import SelectImageModal from "../common/modals/SelectImageModal";
 import { CustomModelEditModal } from "./modals/CustomModelEditModal";
@@ -176,7 +176,11 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             const modelKey = toModelKey(entry.model);
             if (modelMap.has(modelKey)) {
                 return {
-                    error: t("tonies.addNewCustomTonieModal.modelRequired") + " (" + t("tonies.customEditor.errors.duplicateModel", { model: entry.model }) + ")",
+                    error:
+                        t("tonies.addNewCustomTonieModal.modelRequired") +
+                        " (" +
+                        t("tonies.customEditor.errors.duplicateModel", { model: entry.model }) +
+                        ")",
                     baseWarning: "",
                 };
             }
@@ -281,13 +285,12 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         }
         const currentEntry = customEntries[editIndex];
         const isNewEntry =
-            currentEntry &&
-            !persistedEntries.some((e) => toModelKey(e.model) === toModelKey(currentEntry.model));
+            currentEntry && !persistedEntries.some((e) => toModelKey(e.model) === toModelKey(currentEntry.model));
         if (isNewEntry) {
             setCustomEntries(customEntries.filter((_, i) => i !== editIndex));
         } else {
             const next = customEntries.map((entry, i) =>
-                i === editIndex ? cloneEntry(persistedEntries[editIndex]) : cloneEntry(entry)
+                i === editIndex ? cloneEntry(persistedEntries[editIndex]) : cloneEntry(entry),
             );
             setCustomEntries(next);
         }
@@ -297,13 +300,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     };
 
     const postJson = async (path: string, payload: unknown) => {
-        const response = await api.apiPostTeddyCloudRaw(
-            path,
-            JSON.stringify(payload),
-            undefined,
-            undefined,
-            { "Content-Type": "application/json" }
-        );
+        const response = await api.apiPostTeddyCloudRaw(path, JSON.stringify(payload), undefined, undefined, {
+            "Content-Type": "application/json",
+        });
         const responseText = await response.text();
         if (!response.ok) {
             throw new Error(responseText || `HTTP ${response.status}`);
@@ -329,9 +328,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         const originalEntry = customEntries[editIndex];
         const isNewEntry = !persistedEntries.some((e) => toModelKey(e.model) === toModelKey(originalEntry.model));
         const isRename =
-            !isNewEntry &&
-            originalEntry &&
-            normalizeText(originalEntry.model) !== normalizeText(draft.model);
+            !isNewEntry && originalEntry && normalizeText(originalEntry.model) !== normalizeText(draft.model);
 
         if (isRename && originalEntry) {
             setPendingRenameSave({ fromModel: originalEntry.model, toModel: draft.model, draft, silent });
@@ -368,7 +365,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     t("tonies.customEditor.modelSavedSuccessful", { title: draft.series || draft.model }),
                     t("tonies.customEditor.title"),
                     undefined,
-                    false
+                    false,
                 );
             }
             // In create-model flow (opened from Tonie edit), avoid refreshing the Tonie list
@@ -378,7 +375,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             }
             setValue?.(draft.model);
             if (props?.onChange) props.onChange(draft.model);
-            const selectionText = `[${draft.model}] ${draft.series || ""}${draft.episodes ? ` - ${draft.episodes}` : ""}`.trim();
+            const selectionText =
+                `[${draft.model}] ${draft.series || ""}${draft.episodes ? ` - ${draft.episodes}` : ""}`.trim();
             onCreated?.(draft.model, selectionText);
             onUpdated?.(draft.model, selectionText);
             setEditModalOpen(false);
@@ -389,7 +387,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 NotificationTypeEnum.Error,
                 t("tonies.addNewCustomTonieModal.failedToCreate"),
                 formatApiError(error),
-                t("tonies.customToniesEditorJsonEntry")
+                t("tonies.customToniesEditorJsonEntry"),
             );
         } finally {
             setSaving(false);
@@ -413,7 +411,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 t("tonies.customEditor.saveSuccessWithCount", {
                     count: customEntries.length,
                 }),
-                t("tonies.customToniesEditorJsonEntry")
+                t("tonies.customToniesEditorJsonEntry"),
             );
             setRenameConfirmOpen(false);
             setPendingRenameSave(null);
@@ -422,7 +420,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 NotificationTypeEnum.Error,
                 t("tonies.customEditor.renameFailed"),
                 formatApiError(error),
-                t("tonies.customToniesEditorJsonEntry")
+                t("tonies.customToniesEditorJsonEntry"),
             );
         } finally {
             setSaving(false);
@@ -503,7 +501,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 NotificationTypeEnum.Error,
                 t("tonies.addNewCustomTonieModal.failedToCreate"),
                 String(error),
-                t("tonies.customToniesEditorJsonEntry")
+                t("tonies.customToniesEditorJsonEntry"),
             );
         }
     };
@@ -514,7 +512,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             const subdirs: string[] = [];
             try {
                 const response = await api.apiGetTeddyCloudApiRaw(
-                    `/api/fileIndexV2?path=${encodeURIComponent(current)}&special=custom_img`
+                    `/api/fileIndexV2?path=${encodeURIComponent(current)}&special=custom_img`,
                 );
                 if (!response.ok) return [];
                 const data = await response.json();
@@ -582,12 +580,16 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             if (parsed.tableSortColumn && ALLOWED_SORT_COLUMNS.includes(parsed.tableSortColumn)) {
                 setTableSortColumn(parsed.tableSortColumn);
             }
-            if (parsed.tableSortOrder === "ascend" || parsed.tableSortOrder === "descend" || parsed.tableSortOrder === null) {
+            if (
+                parsed.tableSortOrder === "ascend" ||
+                parsed.tableSortOrder === "descend" ||
+                parsed.tableSortOrder === null
+            ) {
                 setTableSortOrder(parsed.tableSortOrder);
             }
             if (Array.isArray(parsed.filterFields)) {
-                const nextFilterFields = parsed.filterFields.filter(
-                    (value): value is FilterFieldKey => ALLOWED_FILTER_FIELDS.includes(value as FilterFieldKey)
+                const nextFilterFields = parsed.filterFields.filter((value): value is FilterFieldKey =>
+                    ALLOWED_FILTER_FIELDS.includes(value as FilterFieldKey),
                 );
                 if (nextFilterFields.length > 0) {
                     setFilterFields(nextFilterFields);
@@ -610,13 +612,12 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     tableSortOrder,
                     filterFields,
                     filterCollapsed,
-                })
+                }),
             );
         } catch {
             // ignore storage write errors
         }
     }, [filterCollapsed, filterFields, tableSortColumn, tableSortOrder]);
-
 
     const watchedValues = Form.useWatch([], form) as FormValues | undefined;
 
@@ -625,15 +626,13 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     const currentDraft = useMemo(() => toEntry((watchedValues || {}) as FormValues), [watchedValues]);
 
     const persistedByModel = useMemo(
-        () =>
-            new Map(
-                persistedEntries.map((entry) => [toModelKey(entry.model), cloneEntry(entry)] as const)
-            ),
-        [persistedEntries]
+        () => new Map(persistedEntries.map((entry) => [toModelKey(entry.model), cloneEntry(entry)] as const)),
+        [persistedEntries],
     );
 
     const currentBaselineEntry = useMemo(() => {
-        const originalEntry = editIndex !== null && editIndex >= 0 && editIndex < customEntries.length ? customEntries[editIndex] : null;
+        const originalEntry =
+            editIndex !== null && editIndex >= 0 && editIndex < customEntries.length ? customEntries[editIndex] : null;
         const lookupModel = originalEntry ? originalEntry.model : currentDraft.model;
         const modelKey = toModelKey(lookupModel);
         return persistedByModel.get(modelKey) || null;
@@ -664,9 +663,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     const changedInputStyle = (changed: boolean) =>
         changed
             ? ({
-                backgroundColor: token.colorWarningBg,
-                borderColor: token.colorWarningBorder,
-            } as const)
+                  backgroundColor: token.colorWarningBg,
+                  borderColor: token.colorWarningBorder,
+              } as const)
             : undefined;
 
     const modelDraftStatusByIndex = useMemo(() => {
@@ -755,14 +754,14 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 t("tonies.customEditor.deleteConfirm.deleted", {
                     model: entry.model,
                 }),
-                t("tonies.customToniesEditorJsonEntry")
+                t("tonies.customToniesEditorJsonEntry"),
             );
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,
                 t("tonies.addNewCustomTonieModal.failedToCreate"),
                 String(error),
-                t("tonies.customToniesEditorJsonEntry")
+                t("tonies.customToniesEditorJsonEntry"),
             );
         } finally {
             setSaving(false);
@@ -783,7 +782,6 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         setEditModalOpen(true);
         form.setFieldsValue(toFormValues(base));
     };
-
 
     const selectedPic = Form.useWatch("pic", form);
     const disablePerFieldInMultiSelect = {
@@ -972,9 +970,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     return (
         <>
             {inlineMode ? (
-                <div style={{ marginTop: 8 }}>
-                    {editorBody}
-                </div>
+                <div style={{ marginTop: 8 }}>{editorBody}</div>
             ) : (
                 <Modal
                     title={t("tonies.customToniesEditorJsonEntry")}
@@ -1025,7 +1021,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 onCancel={() => setPreviewOpen(false)}
                 footer={null}
             >
-                {previewUrl ? <img src={previewUrl} alt="preview" referrerPolicy="no-referrer" style={{ width: "100%" }} /> : null}
+                {previewUrl ? (
+                    <img src={previewUrl} alt="preview" referrerPolicy="no-referrer" style={{ width: "100%" }} />
+                ) : null}
             </Modal>
             <Modal
                 title={t("tonies.customEditor.renameConfirm.title")}

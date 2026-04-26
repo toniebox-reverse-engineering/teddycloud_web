@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
 import { ContainerOutlined, ExportOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
 
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { StyledSubMenu } from "../common/StyledComponents";
 import { gitHubSponsoringUrl } from "../../constants/urls";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";

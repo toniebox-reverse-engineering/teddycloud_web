@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -24,7 +24,7 @@ export const useTapEditor = ({ currentPath, setRebuildList }: UseTapEditorArgs) 
 
     const normalizedCurrentPath = useMemo(
         () => (currentPath.startsWith("/") ? currentPath : `/${currentPath}`),
-        [currentPath]
+        [currentPath],
     );
 
     const initialValuesPath = useMemo(() => {
@@ -68,7 +68,7 @@ export const useTapEditor = ({ currentPath, setRebuildList }: UseTapEditorArgs) 
 
                 const response = await api.apiPostTeddyCloudFormDataRaw(
                     `/api/fileUpload?path=${encodeURIComponent(normalizedCurrentPath)}&special=library`,
-                    formData
+                    formData,
                 );
 
                 if (!response.ok) {
@@ -85,7 +85,7 @@ export const useTapEditor = ({ currentPath, setRebuildList }: UseTapEditorArgs) 
                         file: fileName,
                         path: normalizedCurrentPath || "/",
                     }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
 
                 setRebuildList((prev) => !prev);
@@ -97,11 +97,11 @@ export const useTapEditor = ({ currentPath, setRebuildList }: UseTapEditorArgs) 
                         file: `${values?.name || "unknown"}.tap`,
                         path: currentPath || "/",
                     }) + ` ${err?.message || ""}`,
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             }
         },
-        [addNotification, currentPath, normalizedCurrentPath, setRebuildList, t]
+        [addNotification, currentPath, normalizedCurrentPath, setRebuildList, t],
     );
 
     return {

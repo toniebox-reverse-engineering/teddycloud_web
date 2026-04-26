@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Alert, Typography, theme } from "antd";
 import { useTranslation } from "react-i18next";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 const { Paragraph } = Typography;
@@ -43,7 +43,7 @@ export const PluginContainer: React.FC<PluginContainerProps> = ({ pluginId }) =>
                             NotificationTypeEnum.Error,
                             t("community.plugins.error.notification.title"),
                             t("community.plugins.error.notification.missingPluginIndexHtml", { pluginId }),
-                            t("community.plugins.title")
+                            t("community.plugins.title"),
                         );
                     }
                     return;
@@ -60,7 +60,7 @@ export const PluginContainer: React.FC<PluginContainerProps> = ({ pluginId }) =>
                     body.offsetHeight,
                     html.scrollHeight,
                     html.offsetHeight,
-                    html.clientHeight
+                    html.clientHeight,
                 );
 
                 iframe.style.height = `${height}px`;

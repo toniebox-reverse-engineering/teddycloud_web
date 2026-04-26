@@ -20,7 +20,7 @@ interface AudioContextType {
 }
 
 interface AudioProviderProps {
-    children: React.ReactNode; // Define the children prop
+    children: React.ReactNode;
 }
 
 const AudioContext = React.createContext<AudioContextType | undefined>(undefined);
@@ -84,7 +84,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 setSongArtist(
                     meta.series || meta.episode
                         ? meta.series
-                        : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource")))
+                        : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource"))),
                 );
                 setSongTitle(meta.episode);
             } else {
@@ -100,8 +100,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                     "trackSeconds" in tonieCardOrTAFRecord
                         ? tonieCardOrTAFRecord.trackSeconds || [0]
                         : "tafHeader" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.tafHeader?.trackSeconds
-                        ? tonieCardOrTAFRecord.tafHeader.trackSeconds
-                        : [0];
+                          ? tonieCardOrTAFRecord.tafHeader.trackSeconds
+                          : [0];
                 setSongTracks(trackSeconds);
             } else {
                 setSongTracks([]);

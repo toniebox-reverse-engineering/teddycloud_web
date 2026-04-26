@@ -3,7 +3,7 @@ import { Button, Collapse, Divider, Typography } from "antd";
 import { ClearOutlined, PrinterOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 import { useData } from "./hooks/useData";

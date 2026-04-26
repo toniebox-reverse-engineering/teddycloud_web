@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { isInputValid } from "../../../../utils/validation/fieldInputValidator";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { DirectoryTreeApi } from "../hooks/useDirectoryTree";
 
@@ -121,7 +121,7 @@ export const useDirectoryCreate = ({
                         t("fileBrowser.createDirectory.directoryCreatedDetails", {
                             directory: dirFullPath,
                         }),
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
 
                     setRebuildList && setRebuildList((prev) => !prev);
@@ -135,7 +135,7 @@ export const useDirectoryCreate = ({
                         t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
                             directory: dirFullPath,
                         }) + error,
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
                 });
         } catch (error) {
@@ -145,7 +145,7 @@ export const useDirectoryCreate = ({
                 t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
                     directory: dirFullPath,
                 }) + error,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
     };

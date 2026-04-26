@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
 import { useToniesJsonSearch } from "../hooks/useToniesJsonSearch";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 import { canHover } from "../../../../utils/browser/browserUtils";
@@ -14,9 +14,9 @@ import { useCustomModelsEditorLauncher } from "../../hooks/useCustomModelsEditor
 export interface ToniesJsonSearchResult {
     value: string;
     selectionText: string;
-    contentText: string;
     picture?: string;
     episodes?: string;
+    series?: string;
     model?: string;
     language?: string;
     trackTitles?: string[];
@@ -59,7 +59,7 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
             NotificationTypeEnum.Error,
             t("toniesJsonSearch.failedToFetchSearchResults"),
             t("toniesJsonSearch.failedToFetchSearchResultsDetails") + String(error),
-            t("tonies.navigationTitle")
+            t("tonies.navigationTitle"),
         );
     });
 

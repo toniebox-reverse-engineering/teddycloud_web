@@ -6,7 +6,7 @@ import { TonieboxCardProps } from "../../../types/tonieboxTypes";
 
 import { TonieboxCard } from "../tonieboxcard/TonieboxCard";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useGetSettingCheckCC3200CFW } from "./hooks/useGetSettingCheckCC3200CFW";
 
@@ -28,7 +28,7 @@ export const TonieboxesList: React.FC<{
                 NotificationTypeEnum.Error,
                 t("settings.notifications.error"),
                 t("tonieboxes.errorFetchingModels"),
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     }, [boxModelImagesLoading, boxModelImages.length, addNotification, t]);

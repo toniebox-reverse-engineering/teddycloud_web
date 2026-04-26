@@ -6,7 +6,7 @@ import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { RecordWithPath } from "../../../../utils/teddycloud/fetchTAFsInLibrary";
 

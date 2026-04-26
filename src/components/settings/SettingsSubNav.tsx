@@ -21,7 +21,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import { StyledSubMenu } from "../common/StyledComponents";
 import { restartServer } from "../../utils/system/restartTeddyCloud";
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
@@ -96,14 +96,14 @@ export const SettingsSubNav = () => {
                     NotificationTypeEnum.Error,
                     t("settings.toniesJsonUpdateFailed"),
                     t("settings.toniesJsonUpdateFailed") + ": " + data.toString(),
-                    t("settings.navigationTitle")
+                    t("settings.navigationTitle"),
                 );
             } else {
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("settings.toniesJsonUpdateSuccessful"),
                     t("settings.toniesJsonUpdateSuccessful"),
-                    t("settings.navigationTitle")
+                    t("settings.navigationTitle"),
                 );
             }
         } catch (error) {
@@ -111,7 +111,7 @@ export const SettingsSubNav = () => {
                 NotificationTypeEnum.Error,
                 t("settings.toniesJsonUpdateFailed"),
                 t("settings.toniesJsonUpdateFailed") + ": " + error,
-                t("settings.navigationTitle")
+                t("settings.navigationTitle"),
             );
         }
     };

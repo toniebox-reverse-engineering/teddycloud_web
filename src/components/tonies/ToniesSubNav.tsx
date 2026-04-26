@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons";
 import i18n from "../../i18n";
 
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { StyledSubMenu } from "../common/StyledComponents";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 import { useCustomModelsEditorLauncher } from "./hooks/useCustomModelsEditorFeature";
