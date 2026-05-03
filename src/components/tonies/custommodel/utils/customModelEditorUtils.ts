@@ -15,29 +15,35 @@ import { toModelKey } from "../../utils/modelKey";
 import { toLanguageCode } from "../../../common/icons/LanguageFlagIcon";
 
 export const cloneEntry = (entry: CustomEntry): CustomEntry => JSON.parse(JSON.stringify(entry));
-export const normalizeText = (value?: string) => (value || "").trim();
+export const normalizeText = (value?: unknown) => (value === null || value === undefined ? "" : String(value)).trim();
 export { toModelKey };
 
-export const normalizeAudioPairs = (entry: CustomEntry): string[] => {
-    const audioIds = entry.audio_id || [];
-    const hashes = entry.hash || [];
-    return audioIds
-        .map(
-            (audioId, index) =>
-                `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`,
-        )
-        .filter((pair) => pair !== "::");
+const toOptionalText = (value: unknown): string | undefined => {
+    const normalized = normalizeText(value);
+    return normalized.length > 0 ? normalized : undefined;
 };
 
-export const normalizeTracks = (entry: CustomEntry): string[] =>
-    (entry.tracks || []).map((track) => normalizeText(track)).filter(Boolean);
-export const areStringArraysEqual = (left: string[], right: string[]): boolean =>
-    left.length === right.length && left.every((value, index) => value === right[index]);
+const toStringArray = (value: unknown): string[] => {
+    if (Array.isArray(value)) {
+        return value.map((item) => normalizeText(item)).filter((item) => item.length > 0);
+    }
+    const normalized = normalizeText(value);
+    return normalized.length > 0 ? [normalized] : [];
+};
+
+export const normalizeAudioPairs = (entry: CustomEntry): string[] => {
+    const audioIds = toStringArray(entry.audio_id);
+    const hashes = toStringArray(entry.hash);
+    return audioIds.map((audioId, index) => `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`).filter((pair) => pair !== "::");
+};
+
+export const normalizeTracks = (entry: CustomEntry): string[] => toStringArray(entry.tracks);
+export const areStringArraysEqual = (left: string[], right: string[]): boolean => left.length === right.length && left.every((value, index) => value === right[index]);
 
 /** At least one row; empty `audio_id`/`hash` arrays are truthy, so length must be used. */
 const audioPairsForForm = (entry: CustomEntry): FormValues["audioPairs"] => {
-    const ids = entry.audio_id ?? [];
-    const hashes = entry.hash ?? [];
+    const ids = toStringArray(entry.audio_id);
+    const hashes = toStringArray(entry.hash);
     const n = Math.max(ids.length, hashes.length);
     if (n === 0) {
         return [{ audio_id: "", hash: "", path: "" }];
@@ -66,8 +72,8 @@ export const toFormValues = (entry: CustomEntry): FormValues => ({
             : [{ track: "" }],
 });
 
-const parseModelId = (model: string): number | null => {
-    const match = /^custom-(\d+)$/i.exec(model.trim());
+const parseModelId = (model: unknown): number | null => {
+    const match = /^custom-(\d+)$/i.exec(normalizeText(model));
     return match ? Number(match[1]) : null;
 };
 
@@ -80,36 +86,55 @@ export const buildSuggestedModel = (entries: CustomEntry[]): string => {
     return `custom-${maxId + 1}`;
 };
 
+export const normalizeEntryFromApi = (entry: unknown): CustomEntry => {
+    const source = entry && typeof entry === "object" ? (entry as Record<string, unknown>) : {};
+    const audioIds = toStringArray(source.audio_id);
+    const hashes = toStringArray(source.hash);
+    const tracks = toStringArray(source.tracks);
+
+    return {
+        no: toOptionalText(source.no),
+        model: normalizeText(source.model),
+        audio_id: audioIds.length > 0 ? audioIds : undefined,
+        hash: hashes.length > 0 ? hashes : undefined,
+        title: toOptionalText(source.title),
+        series: normalizeText(source.series),
+        episodes: toOptionalText(source.episodes),
+        tracks: tracks.length > 0 ? tracks : undefined,
+        release: toOptionalText(source.release),
+        language: toOptionalText(source.language),
+        category: toOptionalText(source.category),
+        pic: toOptionalText(source.pic),
+    };
+};
+
 export const toEntry = (values: FormValues): CustomEntry => {
     const pairs = (values.audioPairs || [])
         .filter((pair): pair is AudioPair => pair != null && typeof pair === "object")
-        .map((pair) => ({ audio_id: (pair.audio_id || "").trim(), hash: (pair.hash || "").trim() }))
-        .filter((pair) => pair.audio_id && pair.hash);
+        .map((pair) => ({ audio_id: normalizeText(pair.audio_id), hash: normalizeText(pair.hash) }))
+        .filter((pair) => pair.audio_id.length > 0 && pair.hash.length > 0);
     const tracks = (values.tracks || [])
         .filter((track): track is TrackRow => track != null && typeof track === "object")
-        .map((track) => (track.track || "").trim())
+        .map((track) => normalizeText(track.track))
         .filter((track) => track.length > 0);
-    const releaseRaw =
-        values.release === undefined || values.release === null
-            ? ""
-            : String(values.release).trim();
+    const releaseRaw = values.release === undefined || values.release === null ? "" : String(values.release).trim();
     const releaseNormalized = releaseRaw.length > 0 ? releaseRaw : undefined;
     const languageRaw = String(values.language ?? "").trim();
     const languageNormalized =
         languageRaw.length > 0 ? toLanguageCode(languageRaw) || undefined : undefined;
     return {
-        no: (values.no || "").trim() || undefined,
-        model: (values.model || "").trim(),
+        no: toOptionalText(values.no),
+        model: normalizeText(values.model),
         audio_id: pairs.length > 0 ? pairs.map((pair) => pair.audio_id) : undefined,
         hash: pairs.length > 0 ? pairs.map((pair) => pair.hash) : undefined,
-        title: (values.title || "").trim() || undefined,
-        series: (values.series || "").trim(),
-        episodes: (values.episodes || "").trim() || undefined,
+        title: toOptionalText(values.title),
+        series: normalizeText(values.series),
+        episodes: toOptionalText(values.episodes),
         tracks: tracks.length > 0 ? tracks : undefined,
         release: releaseNormalized,
         language: languageNormalized,
-        category: (values.category || "").trim() || undefined,
-        pic: (values.pic || "").trim() || undefined,
+        category: toOptionalText(values.category),
+        pic: toOptionalText(values.pic),
     };
 };
 

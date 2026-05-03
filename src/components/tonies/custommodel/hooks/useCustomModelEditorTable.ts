@@ -86,16 +86,33 @@ export const useCustomModelEditorTable = ({
 
         const direction = tableSortOrder === "descend" ? -1 : 1;
         return filtered.sort((left, right) => {
-            const leftSort = sortValueForEntry(left.entry, tableSortColumn);
-            const rightSort = sortValueForEntry(right.entry, tableSortColumn);
-            const bySort =
-                String(leftSort).localeCompare(String(rightSort), undefined, { numeric: true }) *
-                direction;
-            if (bySort !== 0) return bySort;
-            return (
-                left.entry.model.localeCompare(right.entry.model, undefined, { numeric: true }) *
-                direction
-            );
+            if (tableSortColumn === "series") {
+                const bySeries =
+                    String(sortValueForEntry(left.entry, "series")).localeCompare(
+                        String(sortValueForEntry(right.entry, "series")),
+                        undefined,
+                        { numeric: true }
+                    ) * direction;
+                if (bySeries !== 0) return bySeries;
+
+                const byEpisode =
+                    String(sortValueForEntry(left.entry, "episodes")).localeCompare(
+                        String(sortValueForEntry(right.entry, "episodes")),
+                        undefined,
+                        { numeric: true }
+                    ) * direction;
+                if (byEpisode !== 0) return byEpisode;
+            } else {
+                const leftSort = sortValueForEntry(left.entry, tableSortColumn);
+                const rightSort = sortValueForEntry(right.entry, tableSortColumn);
+                const bySort =
+                    String(leftSort).localeCompare(String(rightSort), undefined, { numeric: true }) * direction;
+                if (bySort !== 0) return bySort;
+            }
+
+            return String(left.entry.model || "").localeCompare(String(right.entry.model || ""), undefined, {
+                numeric: true,
+            }) * direction;
         });
     }, [
         episodeFilter,

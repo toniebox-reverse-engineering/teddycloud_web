@@ -45,6 +45,7 @@ import {
 import {
     cloneEntry,
     normalizeText,
+    normalizeEntryFromApi,
     normalizeAudioPairs,
     normalizeTracks,
     areStringArraysEqual,
@@ -129,7 +130,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
     const [imagePathOptions, setImagePathOptions] = useState<string[]>([]);
     const imagePathsCollectedRef = useRef(false);
-    const [tableSortColumn, setTableSortColumn] = useState<SortColumnKey>("model");
+    const [tableSortColumn, setTableSortColumn] = useState<SortColumnKey>("series");
     const [tableSortOrder, setTableSortOrder] = useState<SortOrder>("ascend");
     const [filterText, setFilterText] = useState("");
     const [filterFields, setFilterFields] = useState<FilterFieldKey[]>(["series", "model"]);
@@ -189,7 +190,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             const audioIds = entry.audio_id || [];
             const hashes = entry.hash || [];
             for (let j = 0; j < Math.min(audioIds.length, hashes.length); j++) {
-                const pair = `${audioIds[j]}::${hashes[j].toLowerCase()}`;
+                const pair = `${normalizeText(audioIds[j])}::${normalizeText(hashes[j]).toLowerCase()}`;
                 if (pairMap.has(pair)) {
                     return {
                         error: t("tonies.customEditor.errors.duplicateAudioHash", {
@@ -220,8 +221,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
     const categoryOptions = useMemo(() => {
         const counts = new Map<string, number>();
-        const addCategory = (value?: string) => {
-            const normalized = String(value || "").trim();
+        const addCategory = (value?: unknown) => {
+            const normalized = normalizeText(value);
             if (!normalized) return;
             counts.set(normalized, (counts.get(normalized) || 0) + 1);
         };
@@ -483,12 +484,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 api.apiGetTeddyCloudApiRaw("/api/toniesJson"),
             ]);
 
-            const [customData, baseData] = await Promise.all([
-                customResponse.json(),
-                baseResponse.json(),
-            ]);
-            const normalizedCustom = Array.isArray(customData) ? customData : [];
-            const normalizedBase = Array.isArray(baseData) ? baseData : [];
+            const [customData, baseData] = await Promise.all([customResponse.json(), baseResponse.json()]);
+            const normalizedCustom = Array.isArray(customData) ? customData.map((entry) => normalizeEntryFromApi(entry)) : [];
+            const normalizedBase = Array.isArray(baseData) ? baseData.map((entry) => normalizeEntryFromApi(entry)) : [];
             setCustomEntries(normalizedCustom);
             setPersistedEntries(normalizedCustom);
             setBaseEntries(normalizedBase);
@@ -973,7 +971,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                                 type="error"
                                 showIcon
                                 style={{ marginBottom: 8 }}
-                                message={t("tonies.customEditor.validation.title")}
+                                title={t("tonies.customEditor.validation.title")}
                                 description={
                                     <Space direction="vertical">
                                         {validationMessages.map((issue) => (
