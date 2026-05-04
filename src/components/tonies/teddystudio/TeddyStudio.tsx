@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Collapse, Divider, Typography } from "antd";
-import { ClearOutlined, PrinterOutlined } from "@ant-design/icons";
+import { ClearOutlined, PrinterOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
@@ -12,6 +12,7 @@ import { useSettings } from "./hooks/useSettings";
 import { SettingsPanel } from "./settingspanel/SettingsPanel";
 import { LabelGrid } from "./grid/LabelGrid";
 import { ToniesJsonSearchWrapper } from "./input/ToniesJsonSearchWrapper";
+import { BulkAddToniesModal } from "./input/BulkAddToniesModal";
 import { CustomImages } from "./input/CustomImages";
 import { EditLabelModal } from "./modals/EditLabelModal";
 import { LabelOverridesById, LabelOverrides } from "./types/labelOverrides";
@@ -30,6 +31,7 @@ export const TeddyStudio: React.FC = () => {
         customItems,
         mergedResults,
         addResult,
+        addResults,
         addCustomImage,
         addCustomImageByPath,
         removeByMergedIndex,
@@ -37,6 +39,7 @@ export const TeddyStudio: React.FC = () => {
         clearAll,
     } = useCustomItems();
     const [imageManagerOpen, setImageManagerOpen] = useState(false);
+    const [bulkAddOpen, setBulkAddOpen] = useState(false);
 
     const settingsStore = useSettings();
 
@@ -144,6 +147,18 @@ export const TeddyStudio: React.FC = () => {
             <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
 
             <ToniesJsonSearchWrapper onSelectDataset={addResult} />
+
+            <div style={{ marginTop: 8 }}>
+                <Button icon={<UnorderedListOutlined />} onClick={() => setBulkAddOpen(true)}>
+                    {t("tonies.teddystudio.bulkAdd.button")}
+                </Button>
+            </div>
+
+            <BulkAddToniesModal
+                open={bulkAddOpen}
+                onClose={() => setBulkAddOpen(false)}
+                onConfirm={(datasets) => addResults(datasets)}
+            />
 
             <CustomImages
                 customItems={customItems}

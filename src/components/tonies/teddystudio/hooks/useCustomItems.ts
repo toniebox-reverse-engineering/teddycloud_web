@@ -14,6 +14,7 @@ export interface CustomItemsHook {
     customItems: CustomItem[];
     mergedResults: MergedItem[];
     addResult: (dataset: any) => void;
+    addResults: (datasets: any[]) => void;
     addCustomImage: (file: File) => boolean;
     addCustomImageByPath: (path: string) => void;
     removeByMergedIndex: (indexToRemove: number) => void;
@@ -70,6 +71,11 @@ export const useCustomItems = (): CustomItemsHook => {
 
     const addResult = (dataset: any) => {
         setResults((prev) => [...prev, ensureId(dataset)]);
+    };
+
+    const addResults = (datasets: any[]) => {
+        if (!datasets || datasets.length === 0) return;
+        setResults((prev) => [...prev, ...datasets.map((d) => ensureId(d))]);
     };
 
     const addCustomImage = (file: File) => {
@@ -145,6 +151,7 @@ export const useCustomItems = (): CustomItemsHook => {
         customItems,
         mergedResults,
         addResult,
+        addResults,
         addCustomImage,
         addCustomImageByPath,
         removeByMergedIndex,
