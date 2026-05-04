@@ -12,6 +12,10 @@ distributed with the upstream font projects on Google Fonts:
 
 | Font family | Subsets bundled | Upstream | License |
 |---|---|---|---|
+| Inter | latin, latin-ext | Rasmus Andersson | OFL-1.1 |
+| Roboto | latin, latin-ext | Christian Robertson / Google | OFL-1.1 |
+| Open Sans | latin, latin-ext | Steve Matteson / Google | OFL-1.1 |
+| Merriweather | latin, latin-ext | Sorkin Type | OFL-1.1 |
 | Atkinson Hyperlegible | latin, latin-ext | Braille Institute of America | OFL-1.1 |
 | Fredoka | latin, latin-ext | Milena Brandao / Hafontia | OFL-1.1 |
 | Bubblegum Sans | latin, latin-ext | Angelina Maria Castro / Sudtipos | OFL-1.1 |

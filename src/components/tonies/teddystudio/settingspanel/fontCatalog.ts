@@ -25,8 +25,14 @@ export const LABEL_FONT_OPTIONS: LabelFontOption[] = [
     { value: '"Comic Sans MS", "Comic Sans", cursive', label: "Comic Sans MS", bundled: false },
     { value: '"Courier New", Courier, monospace', label: "Courier New", bundled: false },
 
-    // Bundled OFL Google Fonts
+    // Clean / professional (bundled OFL Google Fonts)
+    { value: '"Inter", sans-serif', label: "Inter", bundled: true },
+    { value: '"Roboto", sans-serif', label: "Roboto", bundled: true },
+    { value: '"Open Sans", sans-serif', label: "Open Sans", bundled: true },
+    { value: '"Merriweather", serif', label: "Merriweather", bundled: true },
     { value: '"Atkinson Hyperlegible", sans-serif', label: "Atkinson Hyperlegible", bundled: true },
+
+    // Kid-friendly / display (bundled OFL Google Fonts)
     { value: '"Fredoka", sans-serif', label: "Fredoka", bundled: true },
     { value: '"Bubblegum Sans", cursive', label: "Bubblegum Sans", bundled: true },
     { value: '"Patrick Hand", cursive', label: "Patrick Hand", bundled: true },
