@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { LabelShape, PaperSize, PrintMode, SettingsActions, SettingsState } from "../hooks/useSettings";
 import { canHover } from "../../../../utils/browser/browserUtils";
 import { stripUnit } from "../../../../utils/helper";
+import { LABEL_FONT_OPTIONS } from "./fontCatalog";
 
 const { Paragraph } = Typography;
 
@@ -42,6 +43,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         labelBackgroundColor,
         printMode,
         textFontSize,
+        fontFamily,
         imagePosition,
         imageScale,
         imageBottom,
@@ -518,6 +520,28 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 style={{ width: 100 }}
                                 suffix="px"
                                 placeholder={t("tonies.teddystudio.textFontSize")}
+                            />
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
+                            <label style={{ marginRight: 8 }}>
+                                <Tooltip
+                                    open={!canHover ? false : undefined}
+                                    title={t("tonies.teddystudio.fontFamilyHelp")}
+                                >
+                                    {t("tonies.teddystudio.fontFamily")}
+                                </Tooltip>
+                            </label>
+                            <Select
+                                size="small"
+                                value={fontFamily}
+                                onChange={(v) => actions.setFontFamily(v)}
+                                style={{ width: 220 }}
+                                placeholder={t("tonies.teddystudio.fontFamilyPlaceholder")}
+                                options={LABEL_FONT_OPTIONS.map((o) => ({
+                                    value: o.value,
+                                    label: <span style={{ fontFamily: o.value }}>{o.label}</span>,
+                                }))}
                             />
                         </div>
 
