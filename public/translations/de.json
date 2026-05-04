@@ -2328,7 +2328,10 @@
             "square": "Eckig",
             "textFontSize": "Textgröße",
             "title": "TeddyStudio",
-            "trackTitles": "Titel (jeweils eine Zeile)"
+            "trackTitles": "Titel (jeweils eine Zeile)",
+            "fontFamily": "Etikettenschrift",
+            "fontFamilyPlaceholder": "Schriftart wählen",
+            "fontFamilyHelp": "Schriftart, die für Etikettentext verwendet wird. Systemschriften verwenden die Standardschrift des Betriebssystems; mitgelieferte Schriften sind in der App enthalten und funktionieren offline (Drucken ohne Internet)."
         },
         "title": "Tonies",
         "tonies": {

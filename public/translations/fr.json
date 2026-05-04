@@ -2328,7 +2328,10 @@
             "square": "Carrée",
             "textFontSize": "Taille du texte",
             "title": "TeddyStudio",
-            "trackTitles": "Titres (un par ligne)"
+            "trackTitles": "Titres (un par ligne)",
+            "fontFamily": "Police de l'étiquette",
+            "fontFamilyPlaceholder": "Choisir une police",
+            "fontFamilyHelp": "Police utilisée pour le texte des étiquettes. Les options système utilisent la police par défaut du système d'exploitation ; les options groupées sont incluses dans l'application et fonctionnent hors ligne (impression sans Internet)."
         },
         "title": "Tonies",
         "tonies": {

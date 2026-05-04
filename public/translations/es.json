@@ -2328,7 +2328,10 @@
             "square": "Cuadrada",
             "textFontSize": "Tamaño de texto",
             "title": "TeddyStudio",
-            "trackTitles": "Títulos (uno por línea)"
+            "trackTitles": "Títulos (uno por línea)",
+            "fontFamily": "Fuente de etiqueta",
+            "fontFamilyPlaceholder": "Elegir una fuente",
+            "fontFamilyHelp": "Tipo de letra utilizado para el texto de las etiquetas. Las opciones del sistema utilizan la fuente predeterminada del sistema operativo; las opciones incluidas vienen con la aplicación y funcionan sin conexión (imprimir sin internet)."
         },
         "title": "Tonies",
         "tonies": {
