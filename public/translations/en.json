@@ -2444,6 +2444,10 @@
     "toniesJsonSearch": {
         "failedToFetchSearchResults": "Error fetching models",
         "failedToFetchSearchResultsDetails": "Failed to fetch models search results: ",
+        "multiSelect": {
+            "addN": "Add {{n}} selected",
+            "cancel": "Clear selection"
+        },
         "noResults": "No entries found in tonies(.custom).json for search."
     },
     "utils": {

@@ -2444,6 +2444,10 @@
     "toniesJsonSearch": {
         "failedToFetchSearchResults": "Fehler beim Abrufen der Modelle",
         "failedToFetchSearchResultsDetails": "Fehler beim Abrufen der Suchergebnisse: ",
+        "multiSelect": {
+            "addN": "{{n}} ausgewählte hinzufügen",
+            "cancel": "Auswahl aufheben"
+        },
         "noResults": "Keine Einträge in tonies(.custom).json für die Suche gefunden."
     },
     "utils": {
