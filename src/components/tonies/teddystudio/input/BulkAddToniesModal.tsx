@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal, Transfer } from "antd";
+import { Input, Modal, Transfer } from "antd";
 import type { TransferProps } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +8,21 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { toImageSrc } from "../../common/utils/imagePathUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
+
+const SEARCH_MIN_CHARS = 2;
+const SEARCH_DEBOUNCE_MS = 300;
+
+// Local debounced-value hook. The repo already ships `useDebouncedCallback`
+// (callback variant) but no value variant; rather than pull in a new dep
+// (lodash isn't in package.json), keep this small and inline.
+function useDebouncedValue<T>(value: T, delay: number): T {
+    const [debounced, setDebounced] = useState(value);
+    useEffect(() => {
+        const handle = setTimeout(() => setDebounced(value), delay);
+        return () => clearTimeout(handle);
+    }, [value, delay]);
+    return debounced;
+}
 
 export interface BulkAddDataset {
     custom: boolean;
@@ -51,6 +66,8 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
     const [targetKeys, setTargetKeys] = useState<string[]>([]);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
+    const [searchInput, setSearchInput] = useState("");
+    const debouncedSearch = useDebouncedValue(searchInput, SEARCH_DEBOUNCE_MS);
 
     // Reset transient pickup state when the modal closes; only re-fetch on open
     // if we don't have the catalog yet (it's effectively static within a session).
@@ -58,6 +75,7 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
         if (!open) {
             setTargetKeys([]);
             setSelectedKeys([]);
+            setSearchInput("");
             return;
         }
         if (catalog.length > 0) return;
@@ -138,16 +156,55 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
         };
     }, [open, catalog.length]);
 
-    const dataSource = useMemo(
-        () =>
-            catalog.map((entry) => ({
+    // Gate the dataSource behind the modal-level search. The full catalog can
+    // be thousands of rows; mounting them all in <Transfer> on open is what
+    // made the modal unusably slow. Empty array until the user types
+    // SEARCH_MIN_CHARS+ characters, then filter by substring against the
+    // visible title plus the raw model / series / episodes fields so users
+    // can find an entry by any of those.
+    const dataSource = useMemo(() => {
+        const needle = debouncedSearch.trim().toLowerCase();
+        if (needle.length < SEARCH_MIN_CHARS) return [];
+        return catalog
+            .filter((entry) => {
+                const haystack = [
+                    entry.title,
+                    entry.description,
+                    entry.raw.model,
+                    entry.raw.text,
+                    entry.raw.episodes,
+                ]
+                    .join(" ")
+                    .toLowerCase();
+                return haystack.includes(needle);
+            })
+            .map((entry) => ({
                 key: entry.key,
                 title: entry.title,
                 description: entry.description,
                 pic: entry.pic,
-            })),
-        [catalog]
-    );
+            }));
+    }, [catalog, debouncedSearch]);
+
+    // Always include the queued (right-pane) items in the dataSource, even
+    // when they don't match the current search. <Transfer> needs to find a
+    // dataSource entry for every targetKey or it silently drops the row from
+    // the right pane on re-render.
+    const dataSourceWithQueued = useMemo(() => {
+        if (targetKeys.length === 0) return dataSource;
+        const present = new Set(dataSource.map((d) => d.key));
+        const extras = catalog
+            .filter((e) => targetKeys.includes(e.key) && !present.has(e.key))
+            .map((entry) => ({
+                key: entry.key,
+                title: entry.title,
+                description: entry.description,
+                pic: entry.pic,
+            }));
+        return [...dataSource, ...extras];
+    }, [dataSource, targetKeys, catalog]);
+
+    const searchTooShort = debouncedSearch.trim().length < SEARCH_MIN_CHARS;
 
     const handleChange: TransferProps["onChange"] = (nextTargetKeys) => {
         // antd 6 returns Key[]; coerce to string[] for our string-keyed catalog.
@@ -156,15 +213,6 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
 
     const handleSelectChange: TransferProps["onSelectChange"] = (sourceSelected, targetSelected) => {
         setSelectedKeys([...sourceSelected, ...targetSelected].map((k) => String(k)));
-    };
-
-    const filterOption: NonNullable<TransferProps["filterOption"]> = (inputValue, option) => {
-        const needle = inputValue.toLowerCase();
-        const opt = option as unknown as { title?: string; description?: string };
-        return (
-            (opt.title ?? "").toLowerCase().includes(needle) ||
-            (opt.description ?? "").toLowerCase().includes(needle)
-        );
     };
 
     const renderItem: NonNullable<TransferProps<any>["render"]> = (item: any) => {
@@ -224,28 +272,47 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
             width={900}
             destroyOnClose
         >
-            <Transfer
-                dataSource={dataSource}
-                titles={[
-                    t("tonies.teddystudio.bulkAdd.modal.leftTitle"),
-                    t("tonies.teddystudio.bulkAdd.modal.rightTitle"),
-                ]}
-                targetKeys={targetKeys}
-                selectedKeys={selectedKeys}
-                onChange={handleChange}
-                onSelectChange={handleSelectChange}
-                showSearch
-                filterOption={filterOption}
-                locale={{
-                    itemUnit: t("tonies.teddystudio.bulkAdd.modal.itemUnit"),
-                    itemsUnit: t("tonies.teddystudio.bulkAdd.modal.itemsUnit"),
-                    searchPlaceholder: t("tonies.teddystudio.bulkAdd.modal.searchPlaceholder"),
-                    notFoundContent: t("tonies.teddystudio.bulkAdd.modal.notFound"),
-                }}
-                render={renderItem}
-                listStyle={{ width: 400, height: 480 }}
-                disabled={loading}
+            <Input.Search
+                placeholder={t("tonies.teddystudio.bulkAdd.modal.searchPrompt")}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                allowClear
+                style={{ marginBottom: 12 }}
             />
+            {searchTooShort && targetKeys.length === 0 ? (
+                <div
+                    style={{
+                        textAlign: "center",
+                        padding: "48px 16px",
+                        color: "rgba(0, 0, 0, 0.45)",
+                    }}
+                >
+                    {t("tonies.teddystudio.bulkAdd.modal.searchHint")}
+                </div>
+            ) : (
+                <Transfer
+                    dataSource={dataSourceWithQueued}
+                    titles={[
+                        t("tonies.teddystudio.bulkAdd.modal.leftTitle"),
+                        t("tonies.teddystudio.bulkAdd.modal.rightTitle"),
+                    ]}
+                    targetKeys={targetKeys}
+                    selectedKeys={selectedKeys}
+                    onChange={handleChange}
+                    onSelectChange={handleSelectChange}
+                    showSearch={false}
+                    locale={{
+                        itemUnit: t("tonies.teddystudio.bulkAdd.modal.itemUnit"),
+                        itemsUnit: t("tonies.teddystudio.bulkAdd.modal.itemsUnit"),
+                        notFoundContent: searchTooShort
+                            ? t("tonies.teddystudio.bulkAdd.modal.searchHint")
+                            : t("tonies.teddystudio.bulkAdd.modal.notFound"),
+                    }}
+                    render={renderItem}
+                    listStyle={{ width: 400, height: 480 }}
+                    disabled={loading}
+                />
+            )}
         </Modal>
     );
 };

@@ -2338,6 +2338,8 @@
                     "leftTitle": "Catalog",
                     "rightTitle": "Queued to add",
                     "searchPlaceholder": "Search",
+                    "searchPrompt": "Search the tonies catalog…",
+                    "searchHint": "Type at least 2 characters to search the catalog.",
                     "itemUnit": "tonie",
                     "itemsUnit": "tonies",
                     "notFound": "No matching tonies",

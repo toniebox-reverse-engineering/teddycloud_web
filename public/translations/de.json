@@ -2338,6 +2338,8 @@
                     "leftTitle": "Katalog",
                     "rightTitle": "Zum Hinzufügen vorgemerkt",
                     "searchPlaceholder": "Suchen",
+                    "searchPrompt": "Tonies-Katalog durchsuchen…",
+                    "searchHint": "Bitte mindestens 2 Zeichen eingeben, um den Katalog zu durchsuchen.",
                     "itemUnit": "Tonie",
                     "itemsUnit": "Tonies",
                     "notFound": "Keine passenden Tonies",
