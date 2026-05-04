@@ -1,4 +1,4 @@
-import { Button, Tooltip } from "antd";
+import { Button, Checkbox, Space, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -32,6 +32,16 @@ interface ToniesJsonSearchProps {
 
     onSelectResult?: (result: ToniesJsonSearchResult) => void;
 
+    /** When true, the dropdown renders per-row checkboxes plus an "Add N selected" footer
+     * button. Selecting/deselecting rows does NOT close the dropdown; clicking the footer
+     * button calls `onSelectResults` with all currently checked entries and clears the
+     * selection. Default: false (legacy single-add behavior is bit-identical). */
+    multiSelect?: boolean;
+
+    /** Batch sibling of `onSelectResult`, invoked once with every checked row when the user
+     * confirms a multi-select. Required when `multiSelect` is true. */
+    onSelectResults?: (results: ToniesJsonSearchResult[]) => void;
+
     /** Display text when a model is selected (e.g. "[01-0013] Sample Series - Episode Title") */
     modelDisplayText?: string;
 
@@ -46,6 +56,8 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
     onOpenCustomModelEditor,
     onChange,
     onSelectResult,
+    multiSelect = false,
+    onSelectResults,
     modelDisplayText = "",
     prefix,
     suffix,
@@ -65,6 +77,12 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 
     const [searchText, setSearchText] = useState("");
 
+    // Multi-select state — only meaningful when `multiSelect` is true.
+    // We store the full result objects keyed by `value` so the parent gets a clean
+    // ToniesJsonSearchResult[] back even after the user types a different query and the
+    // current `options` no longer contains the previously checked rows.
+    const [selectedById, setSelectedById] = useState<Record<string, ToniesJsonSearchResult>>({});
+
     useEffect(() => {
         if (!modelDisplayText) setSearchText("");
     }, [modelDisplayText]);
@@ -81,10 +99,22 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
 
     const results = options as ToniesJsonSearchResult[];
 
+    const isChecked = (value: string) => Object.prototype.hasOwnProperty.call(selectedById, value);
+
     const dropdownOptions: SearchDropdownOption[] = results.map((d) => ({
         value: d.value,
         label: (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                {multiSelect && (
+                    <Checkbox
+                        checked={isChecked(d.value)}
+                        // Row click toggles selection, so we don't need the checkbox to
+                        // independently fire onChange — let the click bubble to the row.
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={() => toggleSelection(d)}
+                        style={{ marginRight: 8 }}
+                    />
+                )}
                 {d.picture && (
                     <img
                         src={toImageSrc(d.picture)}
@@ -103,7 +133,51 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         ),
     }));
 
+    const toggleSelection = (entry: ToniesJsonSearchResult) => {
+        setSelectedById((prev) => {
+            const next = { ...prev };
+            if (Object.prototype.hasOwnProperty.call(next, entry.value)) {
+                delete next[entry.value];
+            } else {
+                next[entry.value] = entry;
+            }
+            return next;
+        });
+    };
+
+    const handleConfirmMulti = () => {
+        const picked = Object.values(selectedById);
+        if (picked.length === 0) return;
+        if (onSelectResults) {
+            onSelectResults(picked);
+        } else if (onSelectResult) {
+            // Defensive fallback so a caller that forgot `onSelectResults` still gets
+            // every checked row delivered (one callback per item) instead of silently
+            // dropping the click. New callers should always supply onSelectResults.
+            picked.forEach((p) => onSelectResult(p));
+        }
+        setSelectedById({});
+        // Mirror the single-select clear semantics so the input is ready for the next
+        // batch search.
+        if (clearInputAfterSelection) {
+            setSearchText("");
+            setValue("");
+        }
+    };
+
+    const handleClearMultiSelection = () => {
+        setSelectedById({});
+    };
+
     const handleSelect = (newValue: string) => {
+        if (multiSelect) {
+            const match = results.find((o) => o.value === newValue);
+            if (match) {
+                toggleSelection(match);
+            }
+            return;
+        }
+
         select(newValue);
 
         const match = results.find((o) => o.value === newValue);
@@ -122,6 +196,20 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
         }
     };
 
+    const selectedCount = multiSelect ? Object.keys(selectedById).length : 0;
+
+    const multiFooter =
+        multiSelect && selectedCount > 0 ? (
+            <Space style={{ display: "flex", justifyContent: "flex-end", padding: "0 4px 4px 4px" }}>
+                <Button size="small" onClick={handleClearMultiSelection}>
+                    {t("toniesJsonSearch.multiSelect.cancel")}
+                </Button>
+                <Button size="small" type="primary" onClick={handleConfirmMulti}>
+                    {t("toniesJsonSearch.multiSelect.addN", { n: selectedCount })}
+                </Button>
+            </Space>
+        ) : undefined;
+
     const displayValue = searchText || modelDisplayText;
 
     return (
@@ -137,6 +225,8 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
                 style={{ marginTop: prefix || suffix ? 0 : 8 }}
                 prefix={prefix}
                 suffix={suffix}
+                keepOpenOnSelect={multiSelect}
+                footer={multiFooter}
             />
 
             {showAddCustomTonieButton && (

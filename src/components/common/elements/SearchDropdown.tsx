@@ -21,6 +21,12 @@ export interface SearchDropdownProps {
     style?: React.CSSProperties;
     prefix?: React.ReactNode;
     suffix?: React.ReactNode;
+    /** When true, selecting a row (click/Enter) does NOT close the dropdown.
+     * Use together with `footer` for multi-select / batch flows. */
+    keepOpenOnSelect?: boolean;
+    /** Optional content rendered below the option list (e.g. an "Add N selected" button).
+     * The dropdown stays open while this is interacted with. */
+    footer?: React.ReactNode;
 }
 
 export const SearchDropdown: React.FC<SearchDropdownProps> = ({
@@ -35,6 +41,8 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
     style,
     prefix,
     suffix,
+    keepOpenOnSelect = false,
+    footer,
 }) => {
     const { token } = useToken();
     const { t } = useTranslation();
@@ -145,12 +153,15 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
 
     const handleSelect = (selectedValue: string) => {
         onSelect(selectedValue);
-        setIsOpen(false);
-        setHighlightedIndex(-1);
+        if (!keepOpenOnSelect) {
+            setIsOpen(false);
+            setHighlightedIndex(-1);
+        }
     };
 
     const effectiveShowNoResults = showNoResults && internalShowNoResults;
-    const shouldOpenDropdown = isOpen && (displayOptions.length > 0 || effectiveShowNoResults);
+    const hasFooter = footer !== undefined && footer !== null && footer !== false;
+    const shouldOpenDropdown = isOpen && (displayOptions.length > 0 || effectiveShowNoResults || hasFooter);
 
     const popupWidth = triggerRef.current?.offsetWidth;
 
@@ -205,6 +216,18 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
                                 {option.label}
                             </div>
                         ))
+                    )}
+                    {hasFooter && (
+                        <div
+                            onMouseDown={(e) => e.preventDefault()}
+                            style={{
+                                marginTop: 4,
+                                paddingTop: 8,
+                                borderTop: `1px solid ${token.colorBorderSecondary}`,
+                            }}
+                        >
+                            {footer}
+                        </div>
                     )}
                 </div>
             )}
