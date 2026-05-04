@@ -14,6 +14,7 @@ export interface CustomItemsHook {
     customItems: CustomItem[];
     mergedResults: MergedItem[];
     addResult: (dataset: any) => void;
+    addResults: (datasets: any[]) => void;
     addCustomImage: (file: File) => boolean;
     addCustomImageByPath: (path: string) => void;
     removeByMergedIndex: (indexToRemove: number) => void;
@@ -69,6 +70,15 @@ export const useCustomItems = (): CustomItemsHook => {
 
     const addResult = (dataset: any) => {
         setResults((prev) => [...prev, ensureId(dataset)]);
+    };
+
+    // Batch sibling of `addResult` — a single state update for N datasets so the
+    // grid only re-renders once when the user confirms a multi-select. Empty input
+    // is a no-op (no spurious render).
+    const addResults = (datasets: any[]) => {
+        if (!datasets || datasets.length === 0) return;
+        const mapped = datasets.map((d) => ensureId(d));
+        setResults((prev) => [...prev, ...mapped]);
     };
 
     const addCustomImage = (file: File) => {
@@ -141,6 +151,7 @@ export const useCustomItems = (): CustomItemsHook => {
         customItems,
         mergedResults,
         addResult,
+        addResults,
         addCustomImage,
         addCustomImageByPath,
         removeByMergedIndex,

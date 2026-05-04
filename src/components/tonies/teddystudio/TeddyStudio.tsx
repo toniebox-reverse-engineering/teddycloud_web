@@ -30,6 +30,7 @@ export const TeddyStudio: React.FC = () => {
         customItems,
         mergedResults,
         addResult,
+        addResults,
         addCustomImage,
         addCustomImageByPath,
         removeByMergedIndex,
@@ -143,7 +144,11 @@ export const TeddyStudio: React.FC = () => {
             <h1>{t("tonies.teddystudio.title")}</h1>
             <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
 
-            <ToniesJsonSearchWrapper onSelectDataset={addResult} />
+            <ToniesJsonSearchWrapper
+                onSelectDataset={addResult}
+                onSelectDatasets={addResults}
+                multiSelect
+            />
 
             <CustomImages
                 customItems={customItems}
