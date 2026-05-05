@@ -29,6 +29,7 @@ export interface BulkAddDataset {
     text: string;
     pic?: string;
     episodes: string;
+    series: string;
     model: string;
     language: string;
     trackTitles: string[];
@@ -121,8 +122,10 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
                     const titleHead = titleParts.join(" ");
                     const title = episodes ? `${titleHead} - ${episodes}`.trim() : titleHead || episodes || key;
 
-                    const text = series && episodes ? `${series} - ${episodes}` : series || episodes || "";
-
+                    // Match post-#297 dataset shape (gh-296 fix): `text` is just
+                    // the series, and `series` is a separate field. Renderer
+                    // composes display from series + episodes separately, so
+                    // concatenating into `text` here causes doubled label text.
                     entries.push({
                         key,
                         title,
@@ -130,9 +133,10 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
                         pic,
                         raw: {
                             custom: false,
-                            text,
+                            text: series,
                             pic,
                             episodes,
+                            series,
                             model,
                             language,
                             trackTitles: tracks,
