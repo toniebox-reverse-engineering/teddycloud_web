@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1
+
+- gui: TeddyStudio: Added bulk-add tonies modal [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/300]
+
 ## 0.7.0
 
 - added custom tonies API
