@@ -2330,8 +2330,7 @@
             "title": "TeddyStudio",
             "trackTitles": "Track titles (one per line)",
             "fontFamily": "Label font",
-            "fontFamilyPlaceholder": "Choose a font",
-            "fontFamilyHelp": "Typeface used for label text. Web-safe options use the operating system's default; bundled options ship with the app and work offline (printing without internet)."
+            "fontFamilyPlaceholder": "Choose a font"
         },
         "title": "Tonies",
         "tonies": {

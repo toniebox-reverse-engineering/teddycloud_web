@@ -524,14 +524,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                            <label style={{ marginRight: 8 }}>
-                                <Tooltip
-                                    open={!canHover ? false : undefined}
-                                    title={t("tonies.teddystudio.fontFamilyHelp")}
-                                >
-                                    {t("tonies.teddystudio.fontFamily")}
-                                </Tooltip>
-                            </label>
+                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.fontFamily")}</label>
                             <Select
                                 size="small"
                                 value={fontFamily}
