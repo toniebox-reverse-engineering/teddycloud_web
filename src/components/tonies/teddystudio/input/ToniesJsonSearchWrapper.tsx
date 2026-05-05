@@ -12,6 +12,7 @@ export interface ToniesJsonSearchWrapperProps {
         pic?: string;
         episodes: string;
         model: string;
+        series: string;
         language: string;
     }) => void;
 }
@@ -28,9 +29,10 @@ export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = (
     const handleSelectResult = (result: ToniesJsonSearchResult) => {
         const dataset = {
             custom: false,
-            text: result.contentText,
+            text: result.series ?? "",
             pic: result.picture,
             episodes: result.episodes ?? "",
+            series: result.series ?? "",
             model: result.model ?? "",
             language: result.language ?? "",
             trackTitles: result.trackTitles ?? [],

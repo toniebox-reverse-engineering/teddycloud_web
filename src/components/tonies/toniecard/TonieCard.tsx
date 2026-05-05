@@ -17,15 +17,12 @@ import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../api";
 
 import TonieInformationModal from "../common/modals/TonieInformationModal";
-import {
-    toLanguageCode,
-    LanguageFlagIcon,
-} from "../../common/icons/LanguageFlagIcon";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { toLanguageCode, LanguageFlagIcon } from "../../common/icons/LanguageFlagIcon";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { EditTonieModal } from "./modals/EditTonieModal";
 import { SelectAudioModal } from "../common/modals/SelectAudioModal";
-import { useAudioContext } from "../../../contexts/AudioContext";
+import { useAudioContext } from "../../../provider/AudioProvider";
 import { CustomModelEditor } from "../custommodel/CustomModelEditor";
 import { toModelKey, useCustomModelKeys, useToniesJsonModelKeys } from "../hooks/useCustomModelKeys";
 import { toImageSrc } from "../common/utils/imagePathUtils";
@@ -69,8 +66,13 @@ export const TonieCard: React.FC<{
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { addNotification, addLoadingNotification, closeLoadingNotification, toniesCloudAvailable, invalidateTonies } =
-        useTeddyCloud();
+    const {
+        addNotification,
+        addLoadingNotification,
+        closeLoadingNotification,
+        toniesCloudAvailable,
+        invalidateTonies,
+    } = useTeddyCloud();
     const { playAudio } = useAudioContext();
 
     const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false);
@@ -160,7 +162,7 @@ export const TonieCard: React.FC<{
         .map(([, ruidTime, boxName]) => ({ ruidTime, boxName }));
 
     const picture =
-        (tonieCard.tonieInfo.picture && tonieCard.tonieInfo.picture.trim() !== "")
+        tonieCard.tonieInfo.picture && tonieCard.tonieInfo.picture.trim() !== ""
             ? tonieCard.tonieInfo.picture
             : "/img_unknown.png";
     const pictureLooksUnknown = picture.endsWith("img_unknown.png");
@@ -184,7 +186,7 @@ export const TonieCard: React.FC<{
                     model: modelTitle,
                     ruid: tonieCard.ruid,
                 }).replace(' "" ', "") + error,
-                t("tonies.title")
+                t("tonies.title"),
             );
         }
     };
@@ -298,7 +300,7 @@ export const TonieCard: React.FC<{
         kind: "model" | "audio",
         modelName: string,
         includeAudioPath: boolean,
-        overrideAudioPath?: string
+        overrideAudioPath?: string,
     ) => {
         const info = getInfoForTooltip({
             kind,
@@ -319,12 +321,19 @@ export const TonieCard: React.FC<{
             { label: t("tonies.editModal.modelInfoLanguage", { defaultValue: "Language" }), value: info?.language },
             { label: t("tonies.editModal.modelInfoCategory", { defaultValue: "Category" }), value: info?.category },
             ...(includeAudioPath
-                ? [{ label: t("tonies.editModal.modelInfoAudioPath", { defaultValue: "Audio Path" }), value: audioPath }]
+                ? [
+                      {
+                          label: t("tonies.editModal.modelInfoAudioPath", { defaultValue: "Audio Path" }),
+                          value: audioPath,
+                      },
+                  ]
                 : []),
         ].filter((r) => Boolean(String(r.value || "").trim()));
         return (
             <div style={{ maxWidth: 420 }}>
-                <div style={{ fontWeight: 600, marginBottom: 4 }}>{t(headingKey, { defaultValue: headingDefault })}</div>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                    {t(headingKey, { defaultValue: headingDefault })}
+                </div>
                 <div style={{ marginBottom: 4 }}>
                     <strong>{t("tonies.editModal.modelInfoModel", { defaultValue: "Model" })}:</strong>{" "}
                     {modelName || t("tonies.unsetTonie")}
@@ -377,7 +386,7 @@ export const TonieCard: React.FC<{
                     handlePlayPauseClick(
                         tonieCard.valid
                             ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl
-                            : tonieCard.source
+                            : tonieCard.source,
                     )
                 }
             />
@@ -473,28 +482,18 @@ export const TonieCard: React.FC<{
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                             {languageCode && languageCode !== defaultLanguageCode ? (
-                                <Tooltip
-                                    placement="top"
-                                    zIndex={2}
-                                    title={t("languageUtil." + languageTooltipKey)}
-                                >
+                                <Tooltip placement="top" zIndex={2} title={t("languageUtil." + languageTooltipKey)}>
                                     <Text style={{ height: 20, width: "auto" }}>
                                         <LanguageFlagIcon name={languageCode.split("-")[1].toUpperCase()} height={20} />
                                     </Text>
                                 </Tooltip>
-                            ) : (
-                                null
-                            )}
-                            {readOnly ? (
-                                null
-                            ) : selectionMode ? (
+                            ) : null}
+                            {readOnly ? null : selectionMode ? (
                                 <Checkbox
                                     checked={selected}
                                     onChange={() => onToggleSelect && onToggleSelect(tonieCard.ruid)}
                                 />
-                            ) : (
-                                null
-                            )}
+                            ) : null}
                         </div>
                     </div>
                 }
@@ -536,9 +535,7 @@ export const TonieCard: React.FC<{
                                     }}
                                 />
                             </Tooltip>
-                        ) : (
-                            null
-                        )}
+                        ) : null}
                     </div>
                 }
                 actions={actions}
@@ -617,13 +614,16 @@ export const TonieCard: React.FC<{
                 }}
                 modelInfoTooltip={
                     currentModelForTooltip
-                        ? renderInfoTooltip("model", currentModelForTooltip, Boolean(modelAudioPath), modelAudioPath || undefined)
+                        ? renderInfoTooltip(
+                              "model",
+                              currentModelForTooltip,
+                              Boolean(modelAudioPath),
+                              modelAudioPath || undefined,
+                          )
                         : undefined
                 }
                 audioInfoTooltip={
-                    currentAudioModelForSet
-                        ? renderInfoTooltip("audio", currentAudioModelForSet, true)
-                        : undefined
+                    currentAudioModelForSet ? renderInfoTooltip("audio", currentAudioModelForSet, true) : undefined
                 }
                 audioModelForSet={currentAudioModelForSet}
                 onSetModelFromAudio={() => {
@@ -632,7 +632,9 @@ export const TonieCard: React.FC<{
                     setSelectedModel(m);
                     const series = (audioInfoFromSource?.series || "").trim();
                     const episode = (audioInfoFromSource?.episode || "").trim();
-                    setSelectedModelDisplayText(series ? `[${m}] ${series}${episode ? ` - ${episode}` : ""}` : `[${m}]`);
+                    setSelectedModelDisplayText(
+                        series ? `[${m}] ${series}${episode ? ` - ${episode}` : ""}` : `[${m}]`,
+                    );
                 }}
             />
 

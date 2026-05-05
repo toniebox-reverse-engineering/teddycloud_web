@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useUploadTimeoutMs } from "../../../../hooks/getsettings/useUploadTimeoutMs";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -107,7 +107,7 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
             addLoadingNotification(
                 key,
                 t("fileBrowser.upload.uploading"),
-                t("fileBrowser.upload.uploadInProgress", { file: file.name })
+                t("fileBrowser.upload.uploadInProgress", { file: file.name }),
             );
 
             const formData = new FormData();
@@ -115,7 +115,7 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
             if (!originalBlob) {
                 failure = true;
                 setUploadFileList((prevList) =>
-                    prevList.map((f) => (f.uid === file.uid ? { ...f, status: "error" } : f))
+                    prevList.map((f) => (f.uid === file.uid ? { ...f, status: "error" } : f)),
                 );
                 continue;
             }
@@ -125,9 +125,12 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
             try {
                 const timeoutMsg = t("fileBrowser.upload.uploadTimeout", { ms: uploadTimeoutMs });
                 const response = await Promise.race<Response>([
-                    api.apiPostTeddyCloudFormDataRaw(`/api/fileUpload?path=${encodedPath}&special=${encodedSpecial}`, formData),
+                    api.apiPostTeddyCloudFormDataRaw(
+                        `/api/fileUpload?path=${encodedPath}&special=${encodedSpecial}`,
+                        formData,
+                    ),
                     new Promise<Response>((_, reject) =>
-                        setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs)
+                        setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs),
                     ),
                 ]);
                 if (response.ok) {
@@ -137,18 +140,18 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
                         NotificationTypeEnum.Success,
                         t("fileBrowser.upload.uploadedFile"),
                         t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }),
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
                 } else {
                     failure = true;
                     setUploadFileList((prevList) =>
-                        prevList.map((f) => (f.uid === file.uid ? { ...f, status: "error" } : f))
+                        prevList.map((f) => (f.uid === file.uid ? { ...f, status: "error" } : f)),
                     );
                     addNotification(
                         NotificationTypeEnum.Error,
                         t("fileBrowser.upload.uploadedFileFailed"),
                         t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
                 }
             } catch (err) {
@@ -158,10 +161,10 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
                     NotificationTypeEnum.Error,
                     t("fileBrowser.upload.uploadedFileFailed"),
                     `${t("fileBrowser.upload.uploadFailedForFile", { file: file.name })} (${errorMessage})`,
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
                 setUploadFileList((prevList) =>
-                    prevList.map((f) => (f.uid === file.uid ? { ...f, status: "error" } : f))
+                    prevList.map((f) => (f.uid === file.uid ? { ...f, status: "error" } : f)),
                 );
             }
         }
@@ -178,14 +181,14 @@ const UploadFilesModal: React.FC<UploadFilesModalProps> = ({
                 NotificationTypeEnum.Error,
                 t("fileBrowser.upload.uploadFailed"),
                 t("fileBrowser.upload.uploadFailed"),
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         } else {
             addNotification(
                 NotificationTypeEnum.Success,
                 t("fileBrowser.upload.uploadSuccessful"),
                 t("fileBrowser.upload.uploadSuccessfulDetails"),
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
             onClose();
         }

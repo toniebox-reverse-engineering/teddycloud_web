@@ -137,10 +137,14 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
         setInputValidationModel({ validateStatus: "", help: "" });
     };
 
-    const normalized = (value?: string | null) => String(value || "").trim().toLowerCase();
+    const normalized = (value?: string | null) =>
+        String(value || "")
+            .trim()
+            .toLowerCase();
     const isSourceUnchanged = selectedSource === (originalSource || "");
     const isModelUnchanged = selectedModel === (originalModel || "");
-    const sourceMatchesModelAudio = Boolean(modelAudioPath) && normalized(selectedSource) === normalized(modelAudioPath);
+    const sourceMatchesModelAudio =
+        Boolean(modelAudioPath) && normalized(selectedSource) === normalized(modelAudioPath);
     const showSyncActions = !sourceMatchesModelAudio;
     const normalizedAudioModelForSet = (audioModelForSet || "").trim();
     // Show when model has a tonies.json mapping and source ≠ model audio; enable once library path resolved.
@@ -152,8 +156,9 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
         Boolean(onSetModelFromAudio) &&
         toModelKey(selectedModel) !== toModelKey(normalizedAudioModelForSet);
     const setAudioFromModelDisabled = showSetAudioFromModelAction && !modelAudioPath;
-    const setAudioFromModelTooltip =
-        !modelAudioPath ? t("tonies.editModal.setAudioFromModelUnavailableInLibrary") : undefined;
+    const setAudioFromModelTooltip = !modelAudioPath
+        ? t("tonies.editModal.setAudioFromModelUnavailableInLibrary")
+        : undefined;
 
     return (
         <Modal
@@ -207,6 +212,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             ) : null,
                             <Divider key="divider-source-3" orientation="vertical" style={{ marginLeft: 2 }} />,
                             <FolderOpenOutlined
+                                key="select-file"
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={onOpenFileSelectModal}
                             />,
@@ -305,7 +311,10 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                                 />
                                             </Tooltip>
                                             {onCreateNewModel ? (
-                                                <Divider orientation="vertical" style={{ marginLeft: 2, marginRight: 2 }} />
+                                                <Divider
+                                                    orientation="vertical"
+                                                    style={{ marginLeft: 2, marginRight: 2 }}
+                                                />
                                             ) : null}
                                         </>
                                     ) : null}

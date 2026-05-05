@@ -8,7 +8,7 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 import LoadingSpinner from "../../../common/elements/LoadingSpinner";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { SettingsOptionItem } from "../../../common/form/SettingsOptionItem";
 import SettingsButton from "../../../common/buttons/SettingsButtons";
 import SettingsDataHandler from "../../../../data/SettingsDataHandler";
@@ -80,14 +80,14 @@ export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({ 
     useEffect(() => {
         if (loading) return;
         const modalContentElement = document.querySelector(
-            ".ant-modal-wrap.overlay-" + overlay.toUpperCase()
+            ".ant-modal-wrap.overlay-" + overlay.toUpperCase(),
         ) as HTMLElement | null;
 
         if (modalContentElement) {
             const updateFooterHeightAndScrollState = () => {
                 setShowArrow(
                     modalContentElement.scrollTop + modalContentElement.clientHeight <
-                        modalContentElement.scrollHeight - 20
+                        modalContentElement.scrollHeight - 20,
                 );
             };
             modalContentElement.addEventListener("scroll", updateFooterHeightAndScrollState);
@@ -109,7 +109,7 @@ export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({ 
                 NotificationTypeEnum.Error,
                 t("settings.errorSettingSettingsLevel"),
                 t("settings.errorSettingSettingsLevelDetails") + error,
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     };

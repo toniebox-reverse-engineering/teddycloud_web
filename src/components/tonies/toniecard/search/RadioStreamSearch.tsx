@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
 
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useRadioStreamSearch } from "../hooks/useRadioStreamSearch";
 import { useDebouncedCallback } from "../../common/hooks/useDebouncedCallback";
@@ -23,7 +23,7 @@ export const RadioStreamSearch: React.FC<{
                 NotificationTypeEnum.Error,
                 t("radioStreamSearch.failedToFetchSearchResults"),
                 t("radioStreamSearch.failedToFetchSearchResultsDetails") + String(error),
-                t("tonies.title")
+                t("tonies.title"),
             );
         });
 

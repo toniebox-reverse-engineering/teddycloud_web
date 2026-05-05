@@ -3,7 +3,7 @@ import { Modal, Divider, Input, Typography, Button, Select, theme } from "antd";
 import { useTranslation } from "react-i18next";
 import { RollbackOutlined, SaveFilled } from "@ant-design/icons";
 
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 
 const { Paragraph, Text } = Typography;
 const { useToken } = theme;
@@ -44,7 +44,7 @@ export const EditBoxModal: React.FC<EditBoxModalProps> = ({
     const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
         boxModelImages.map((v) => {
             return { label: v.name, value: v.id };
-        })
+        }),
     );
 
     const footer = (

@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Record } from "../../../../types/fileBrowserTypes";
 
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 import { TeddyCloudApi } from "../../../../api";
@@ -164,7 +164,7 @@ export const useFileBrowserCore = ({
         }
 
         api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${apiPathParam}&special=${special}` + (overlay ? `&overlay=${overlay}` : "")
+            `/api/fileIndexV2?path=${apiPathParam}&special=${special}` + (overlay ? `&overlay=${overlay}` : ""),
         )
             .then(async (response: Response) => {
                 // IMPORTANT: make non-2xx fail deterministically (so we can fallback)
@@ -219,7 +219,7 @@ export const useFileBrowserCore = ({
                         NotificationTypeEnum.Warning,
                         t("fileBrowser.messages.errorFetchingDirContent"),
                         t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
 
                     // reset to root
@@ -375,11 +375,11 @@ export const useFileBrowserCore = ({
             mode === "fileBrowser"
                 ? path || ""
                 : path
-                ? path
-                      .split("/")
-                      .map((segment) => encodeURIComponent(segment))
-                      .join("/")
-                : "";
+                  ? path
+                        .split("/")
+                        .map((segment) => encodeURIComponent(segment))
+                        .join("/")
+                  : "";
 
         const encodedName = encodeURIComponent(fileName);
 

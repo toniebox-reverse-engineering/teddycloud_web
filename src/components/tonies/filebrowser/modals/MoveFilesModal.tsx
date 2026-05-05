@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
@@ -86,7 +86,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
             moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
             moving
                 ? t("fileBrowser.messages.movingDetails", { file: source.split("/").slice(-1) })
-                : t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) })
+                : t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) }),
         );
 
         try {
@@ -111,7 +111,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                               fileSource: source.split("/").slice(-1),
                               fileTarget: target.split("/").slice(-1),
                           }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             } else {
                 throw data;
@@ -127,7 +127,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                     ? t("fileBrowser.messages.movingFailedDetails", { fileSource: source, fileTarget: target })
                     : t("fileBrowser.messages.renamingFailedDetails", { fileSource: source, fileTarget: target })) +
                     error,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
     };
@@ -151,7 +151,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                 NotificationTypeEnum.Warning,
                 t("tonies.messages.noRowsSelected"),
                 t("tonies.messages.noRowsSelectedForMoving"),
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
             return;
         }

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 type LocalSettings = Record<string, unknown>;
@@ -114,7 +114,7 @@ export const useGuiLocalSettings = () => {
                     NotificationTypeEnum.Success,
                     t("settings.guiSettings.jsonLoaded"),
                     t("settings.guiSettings.jsonLoadedDetails"),
-                    t("settings.title")
+                    t("settings.title"),
                 );
             } catch (err) {
                 console.error(err);
@@ -122,11 +122,11 @@ export const useGuiLocalSettings = () => {
                     NotificationTypeEnum.Error,
                     t("settings.guiSettings.jsonLoadFailed"),
                     t("settings.guiSettings.jsonLoadFailedDetails") + String(err),
-                    t("settings.title")
+                    t("settings.title"),
                 );
             }
         },
-        [addNotification, loadLocalSettings, t]
+        [addNotification, loadLocalSettings, t],
     );
 
     const settingKeys = useMemo(() => Object.keys(localSettings), [localSettings]);

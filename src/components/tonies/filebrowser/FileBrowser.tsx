@@ -26,7 +26,7 @@ import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
 import HelpModal from "./modals/FileBrowserHelpModal";
 
 import { MAX_FILES } from "../../../constants/numbers";
-import { useAudioContext } from "../../../contexts/AudioContext";
+import { useAudioContext } from "../../../provider/AudioProvider";
 import { generateUUID } from "../../../utils/ids/generateUUID";
 import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
 import { useDirectoryTree } from "../common/hooks/useDirectoryTree";
@@ -759,7 +759,10 @@ export const FileBrowser: React.FC<{
                                                                     filterInputText.length === 0
                                                                         ? token.colorTextDisabled
                                                                         : token.colorText,
-                                                                cursor: filterInputText.length === 0 ? "default" : "pointer",
+                                                                cursor:
+                                                                    filterInputText.length === 0
+                                                                        ? "default"
+                                                                        : "pointer",
                                                             }}
                                                         />
                                                     }

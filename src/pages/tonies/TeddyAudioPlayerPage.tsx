@@ -13,7 +13,7 @@ import { useTonieboxContent } from "../../hooks/useTonieboxContent";
 import { TeddyAudioPlayer } from "../../components/tonies/teddyaudioplayer/TeddyAudioPlayer";
 import LoadingSpinner from "../../components/common/elements/LoadingSpinner";
 import { useTonies } from "../../hooks/useTonies";
-import { useAudioContext } from "../../contexts/AudioContext";
+import { useAudioContext } from "../../provider/AudioProvider";
 
 type TeddyAudioPlayerPageProps = {
     standalone?: boolean;
@@ -126,7 +126,7 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ stan
                                     import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + newTonie.audioUrl,
                                     newTonie.tonieInfo,
                                     newTonie,
-                                    currentPlayPosition
+                                    currentPlayPosition,
                                 );
                                 setCurrentTonie(undefined);
                                 setCurrentPlayPosition(0);

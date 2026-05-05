@@ -18,7 +18,7 @@ import {
     CrownOutlined,
     ExportOutlined,
 } from "@ant-design/icons";
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 
 import { forumUrl } from "../../constants/urls";
 

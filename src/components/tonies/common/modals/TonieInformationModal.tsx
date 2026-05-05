@@ -11,9 +11,9 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
-import { useAudioContext } from "../../../../contexts/AudioContext";
+import { useAudioContext } from "../../../../provider/AudioProvider";
 import { toImageSrc } from "../utils/imagePathUtils";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -84,7 +84,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 ? tonieCardOrTAFRecord.sourceInfo
                 : tonieCardOrTAFRecord.tonieInfo,
             tonieCardOrTAFRecord,
-            startTime
+            startTime,
         );
     };
 
@@ -165,7 +165,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     NotificationTypeEnum.Success,
                     t("tonies.messages.hideTonieSuccessful"),
                     t("tonies.messages.hideTonieSuccessfulDetails", { ruid: tonieCardOrTAFRecord.ruid }),
-                    t("tonies.navigationTitle")
+                    t("tonies.navigationTitle"),
                 );
                 onHide(tonieCardOrTAFRecord.ruid);
             } catch (error) {
@@ -173,7 +173,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     NotificationTypeEnum.Error,
                     t("tonies.messages.hideTonieFailed"),
                     t("tonies.messages.hideTonieFailedDetails", { ruid: tonieCardOrTAFRecord.ruid }) + error,
-                    t("tonies.navigationTitle")
+                    t("tonies.navigationTitle"),
                 );
             }
         }
@@ -189,8 +189,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 tonieToHide: tonieInfoString
                     ? tonieInfoString
                     : "uid" in tonieCardOrTAFRecord
-                    ? tonieCardOrTAFRecord.uid
-                    : "",
+                      ? tonieCardOrTAFRecord.uid
+                      : "",
             })}
             handleOk={handleConfirmHide}
             handleCancel={handleCancelHide}
@@ -203,8 +203,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 {title
                     ? title
                     : "model" in tonieCardOrTAFRecord.tonieInfo && tonieCardOrTAFRecord.tonieInfo.model
-                    ? t("tonies.unsetTonie") + " " + tonieCardOrTAFRecord.tonieInfo.model
-                    : t("tonies.informationModal.unknownModel")}
+                      ? t("tonies.unsetTonie") + " " + tonieCardOrTAFRecord.tonieInfo.model
+                      : t("tonies.informationModal.unknownModel")}
                 <br />
                 {"uid" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.uid ? (
                     <Text type="secondary">{tonieCardOrTAFRecord.uid}</Text>
@@ -251,7 +251,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                             src={toImageSrc(
                                 tonieCardOrTAFRecord.tonieInfo?.picture?.trim()
                                     ? tonieCardOrTAFRecord.tonieInfo.picture
-                                    : "/img_unknown.png"
+                                    : "/img_unknown.png",
                             )}
                             alt=""
                             style={{ width: "100%" }}
@@ -330,14 +330,14 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                             {"audioUrl" in tonieCardOrTAFRecord &&
                                             trackSecondsMatchSourceTracks(
                                                 tonieCardOrTAFRecord,
-                                                tonieCardOrTAFRecord.sourceInfo.tracks?.length
+                                                tonieCardOrTAFRecord.sourceInfo.tracks?.length,
                                             ) ? (
                                                 <PlayCircleOutlined
                                                     onClick={() =>
                                                         handlePlayPauseClick(
                                                             import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
                                                                 tonieCardOrTAFRecord.audioUrl,
-                                                            getTrackStartTime(tonieCardOrTAFRecord, index)
+                                                            getTrackStartTime(tonieCardOrTAFRecord, index),
                                                         )
                                                     }
                                                 />
@@ -362,14 +362,14 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                         {"audioUrl" in tonieCardOrTAFRecord &&
                                         trackSecondsMatchSourceTracks(
                                             tonieCardOrTAFRecord,
-                                            tonieCardOrTAFRecord.tonieInfo?.tracks?.length
+                                            tonieCardOrTAFRecord.tonieInfo?.tracks?.length,
                                         ) ? (
                                             <PlayCircleOutlined
                                                 onClick={() =>
                                                     handlePlayPauseClick(
                                                         import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
                                                             tonieCardOrTAFRecord.audioUrl,
-                                                        getTrackStartTime(tonieCardOrTAFRecord, index)
+                                                        getTrackStartTime(tonieCardOrTAFRecord, index),
                                                     )
                                                 }
                                             />
@@ -401,7 +401,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                           handleDownload(
                                               import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
                                                   tonieCardOrTAFRecord.audioUrl,
-                                              sourceTitle ? sourceTitle : modelTitle + ".ogg"
+                                              sourceTitle ? sourceTitle : modelTitle + ".ogg",
                                           )
                                     : undefined
                             }

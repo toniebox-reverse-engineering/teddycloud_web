@@ -6,20 +6,14 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
-import {
-    SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS,
-    UI_SEARCH_DEBOUNCE_MS,
-} from "../../../../constants/numbers";
+import { SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS, UI_SEARCH_DEBOUNCE_MS } from "../../../../constants/numbers";
 import { useUploadTimeoutMs } from "../../../../hooks/getsettings/useUploadTimeoutMs";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useDirectoryTree } from "../hooks/useDirectoryTree";
 import { useDirectoryCreate } from "../hooks/useCreateDirectory";
 import { toCustomImgWebPath } from "../utils/imagePathUtils";
-import {
-    originalImageUrlMatchesTokens,
-    tokenizeOriginalImageSearch,
-} from "../utils/originalImageUrlSearch";
+import { originalImageUrlMatchesTokens, tokenizeOriginalImageSearch } from "../utils/originalImageUrlSearch";
 import CustomImagesPanel from "./selectImage/CustomImagesPanel";
 import OriginalImagesPanel from "./selectImage/OriginalImagesPanel";
 import { useOriginalImagesData } from "./selectImage/useOriginalImagesData";
@@ -157,17 +151,14 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
 
     const filteredOriginalUrls = useMemo(
         () => originalImages.filter((url) => originalImageUrlMatchesTokens(url, searchTokens)),
-        [originalImages, searchTokens]
+        [originalImages, searchTokens],
     );
     const originalTableData = useMemo(() => filteredOriginalUrls.map((url) => ({ url })), [filteredOriginalUrls]);
 
     const selectedImages = source === "custom" ? customSelections : originalSelections;
     const selectedImagesForConfirm = useMemo(
-        () =>
-            allowMultiple
-                ? Array.from(new Set([...customSelections, ...originalSelections]))
-                : selectedImages,
-        [allowMultiple, customSelections, originalSelections, selectedImages]
+        () => (allowMultiple ? Array.from(new Set([...customSelections, ...originalSelections])) : selectedImages),
+        [allowMultiple, customSelections, originalSelections, selectedImages],
     );
 
     const canConfirm = useMemo(() => selectedImagesForConfirm.length > 0, [selectedImagesForConfirm]);
@@ -181,7 +172,11 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     const handleUploadRequest = async (options: any) => {
         const { file, onSuccess, onError } = options;
         const key = "upload-img-" + Date.now();
-        addLoadingNotification(key, t("fileBrowser.upload.uploading"), t("fileBrowser.upload.uploadInProgress", { file: file.name }));
+        addLoadingNotification(
+            key,
+            t("fileBrowser.upload.uploading"),
+            t("fileBrowser.upload.uploadInProgress", { file: file.name }),
+        );
         const encodedPath = normalizePathForQuery(customPath);
         const formData = new FormData();
         formData.append("file", file, file.name);
@@ -189,9 +184,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
         try {
             const response = await Promise.race<Response>([
                 api.apiPostTeddyCloudFormDataRaw(`/api/fileUpload?path=${encodedPath}&special=custom_img`, formData),
-                new Promise<Response>((_, reject) =>
-                    setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs)
-                ),
+                new Promise<Response>((_, reject) => setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs)),
             ]);
             await closeLoadingNotification(key);
             if (response.ok) {
@@ -199,7 +192,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                     NotificationTypeEnum.Success,
                     t("fileBrowser.upload.uploadedFile"),
                     t("fileBrowser.upload.uploadSuccessfulForFile", { file: file.name }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
                 setRebuildTrigger((prev) => prev + 1);
                 if (IMAGE_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
@@ -211,7 +204,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                     NotificationTypeEnum.Error,
                     t("fileBrowser.upload.uploadedFileFailed"),
                     t("fileBrowser.upload.uploadFailedForFile", { file: file.name }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
                 onError?.(new Error("Upload failed"));
             }
@@ -222,7 +215,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                 NotificationTypeEnum.Error,
                 t("fileBrowser.upload.uploadedFileFailed"),
                 `${t("fileBrowser.upload.uploadFailedForFile", { file: file.name })} (${msg})`,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
             onError?.(err);
         }
@@ -254,14 +247,14 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
             setCustomPath(path);
             setCustomSelections(allowMultiple ? paths : paths.slice(0, 1));
         },
-        [allowMultiple]
+        [allowMultiple],
     );
     const handleCustomFileDoubleClick = useCallback(
         (path: string, fileName: string) => {
             if (allowMultiple) return;
             confirmSelection([toCustomImgWebPath(path, fileName)]);
         },
-        [allowMultiple]
+        [allowMultiple],
     );
 
     const footer = (
@@ -294,29 +287,26 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                 zIndex={zIndex !== undefined ? zIndex + 1 : undefined}
             >
                 {imagePreviewUrl ? (
-                    <img
-                        src={imagePreviewUrl}
-                        alt=""
-                        referrerPolicy="no-referrer"
-                        style={{ width: "100%" }}
-                    />
+                    <img src={imagePreviewUrl} alt="" referrerPolicy="no-referrer" style={{ width: "100%" }} />
                 ) : null}
             </Modal>
             <Modal
                 className="sticky-footer"
                 open={open}
                 onCancel={onClose}
-                destroyOnClose
+                destroyOnHidden
                 title={title}
                 width={MODAL_WIDTH_CSS}
                 footer={footer}
                 zIndex={zIndex}
-                bodyStyle={{
-                    maxHeight: "calc(100dvh - 200px)",
-                    overflow: "hidden",
-                    padding: "12px 16px",
-                    display: "flex",
-                    flexDirection: "column",
+                styles={{
+                    body: {
+                        maxHeight: "calc(100dvh - 200px)",
+                        overflow: "hidden",
+                        padding: "12px 16px",
+                        display: "flex",
+                        flexDirection: "column",
+                    },
                 }}
             >
                 <div style={{ width: "100%", display: "flex", flexDirection: "column", minHeight: 0, flex: 1 }}>

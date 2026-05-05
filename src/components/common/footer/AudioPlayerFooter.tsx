@@ -22,7 +22,7 @@ import TonieInformationModal from "../../tonies/common/modals/TonieInformationMo
 import { isIOS } from "../../../utils/browser/browserUtils";
 import { useNavigate } from "react-router";
 import { getLongestStringByPixelWidth } from "../../../utils/strings/getLongestStringByPixelWidth";
-import { useAudioContext } from "../../../contexts/AudioContext";
+import { useAudioContext } from "../../../provider/AudioProvider";
 
 interface AudioPlayerFooterProps {
     isPlaying?: boolean;
@@ -212,8 +212,8 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
                 ("trackSeconds" in tonieCardOrTAFRecord
                     ? tonieCardOrTAFRecord.trackSeconds
                     : "tafHeader" in tonieCardOrTAFRecord
-                    ? tonieCardOrTAFRecord.tafHeader.trackSeconds
-                    : [])) ||
+                      ? tonieCardOrTAFRecord.tafHeader.trackSeconds
+                      : [])) ||
             [];
 
         const tracks =

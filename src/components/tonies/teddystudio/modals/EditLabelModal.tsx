@@ -53,6 +53,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     const { t } = useTranslation();
 
     const [text, setText] = useState("");
+    const [series, setSeries] = useState("");
     const [episodes, setEpisodes] = useState("");
     const [trackTitlesText, setTrackTitlesText] = useState("");
 
@@ -81,6 +82,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
         }
 
         setText(item.text ?? "");
+        setSeries(item.series ?? "");
         setEpisodes(item.episodes ?? "");
         setTrackTitlesText((item.trackTitles ?? []).join("\n"));
 
@@ -135,6 +137,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
         ...item,
         id: item?.id, // wichtig: ID behalten
         text,
+        series: "",
         episodes,
         pic: picture,
         trackTitles: trackTitlesText

@@ -10,7 +10,7 @@ import {
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
     isInputValid,
 } from "../../../../utils/validation/fieldInputValidator";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -67,7 +67,7 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
         addLoadingNotification(
             key,
             t("fileBrowser.messages.renaming"),
-            t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) })
+            t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) }),
         );
 
         try {
@@ -85,7 +85,7 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
                         fileSource: source.split("/").slice(-1),
                         fileTarget: target.split("/").slice(-1),
                     }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             } else {
                 throw data;
@@ -99,7 +99,7 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
                     fileSource: source,
                     fileTarget: target,
                 }) + error,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
     };

@@ -3,7 +3,7 @@ import { RevvoxFlasher } from "../../../../../../tools/esp32/revvox_flasher";
 import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../../../api";
 import { defaultAPIConfig } from "../../../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../../../types/teddyCloudNotificationTypes";
 import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial";
 import { ESP32_CHIPNAME, ESP32_FLASHSIZE } from "../../../../../../constants/esp32";

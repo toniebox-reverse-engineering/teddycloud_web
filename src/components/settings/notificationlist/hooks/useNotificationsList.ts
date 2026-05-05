@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationRecord } from "../../../../types/teddyCloudNotificationTypes";
 
 type NotificationStatusFilter = "Confirmed" | "Unconfirmed";
@@ -59,10 +59,10 @@ export const useNotificationsList = () => {
                 new Set(
                     notifications
                         .map((notification) => notification.context)
-                        .filter((value): value is string => Boolean(value))
-                )
+                        .filter((value): value is string => Boolean(value)),
+                ),
             ),
-        [notifications]
+        [notifications],
     );
 
     const confirmSelectedNotifications = () => {

@@ -26,6 +26,7 @@ export interface MergedItem {
     custom: boolean;
     text?: string;
     pic?: string;
+    series: string;
     episodes: string;
     model: string;
     language: string;
@@ -80,7 +81,10 @@ export const useCustomItems = (): CustomItemsHook => {
     const addCustomImageByPath = (path: string) => {
         const trimmed = path.trim();
         if (!trimmed) return;
-        setCustomItems((prev) => [...prev, { id: generateUUID(), pic: trimmed, text: "", episodes: "", trackTitles: [] }]);
+        setCustomItems((prev) => [
+            ...prev,
+            { id: generateUUID(), pic: trimmed, text: "", episodes: "", trackTitles: [] },
+        ]);
     };
 
     const clearAll = () => {
@@ -102,7 +106,7 @@ export const useCustomItems = (): CustomItemsHook => {
         titles: string[],
         episodes: string,
         text: string,
-        picture: string
+        picture: string,
     ) => {
         if (indexToEdit < results.length) {
             setResults((prev) =>
@@ -115,8 +119,8 @@ export const useCustomItems = (): CustomItemsHook => {
                               text,
                               pic: picture,
                           }
-                        : item
-                )
+                        : item,
+                ),
             );
         } else {
             const customIndex = indexToEdit - results.length;
@@ -130,8 +134,8 @@ export const useCustomItems = (): CustomItemsHook => {
                               text,
                               pic: picture,
                           }
-                        : item
-                )
+                        : item,
+                ),
             );
         }
     };
