@@ -5,7 +5,8 @@
  * (so it can be applied directly without a lookup). System web-safe values
  * resolve via the OS; bundled families are declared in
  * `../styles/fonts.css` as `@font-face` rules pointing at woff2 assets in
- * `../styles/fonts/` — see `../styles/fonts/LICENSES.md` for attribution.
+ * `src/assets/fonts/teddystudio/` — see that directory's `LICENSES.md`
+ * for attribution.
  *
  * Defaults to "sans-serif" so that users who never open the picker get
  * exactly the same rendering as before this feature landed.

@@ -2329,7 +2329,7 @@
             "textFontSize": "Textgröße",
             "title": "TeddyStudio",
             "trackTitles": "Titel (jeweils eine Zeile)",
-            "fontFamily": "Etikettenschrift",
+            "fontFamily": "Schriftart",
             "fontFamilyPlaceholder": "Schriftart wählen",
             "fontFamilyHelp": "Schriftart, die für Etikettentext verwendet wird. Systemschriften verwenden die Standardschrift des Betriebssystems; mitgelieferte Schriften sind in der App enthalten und funktionieren offline (Drucken ohne Internet)."
         },
