@@ -1,9 +1,5 @@
 # Changelog
 
-## 0.7.1
-
-- gui: TeddyStudio: Added font selection for label text [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/299]
-
 ## 0.7.0
 
 - added custom tonies API
@@ -11,6 +7,7 @@
 - gui: Removed legacy ESP32 flasher
 - gui: Fixed decimal input on ios [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289)
 - gui: TeddyStudio: Added Image Bottom/Left margin [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
+- gui: TeddyStudio: Added font selection for label text [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/299]
 - gui: added Custom-Model-Editor to create and edit custom models
 - gui: added custom image management to library
 - gui: added selection for custom and original images for TeddyStudio and Custom-Model-Editor
