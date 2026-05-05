@@ -313,7 +313,7 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
                             : t("tonies.teddystudio.bulkAdd.modal.notFound"),
                     }}
                     render={renderItem}
-                    listStyle={{ width: 400, height: 480 }}
+                    styles={{ section: { width: 400, height: 480 } }}
                     disabled={loading}
                 />
             )}
