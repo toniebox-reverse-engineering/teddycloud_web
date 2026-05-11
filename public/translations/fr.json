@@ -2328,7 +2328,9 @@
             "square": "Carrée",
             "textFontSize": "Taille du texte",
             "title": "TeddyStudio",
-            "trackTitles": "Titres (un par ligne)"
+            "trackTitles": "Titres (un par ligne)",
+            "fontFamily": "Police de l'étiquette",
+            "fontFamilyPlaceholder": "Choisir une police"
         },
         "title": "Tonies",
         "tonies": {

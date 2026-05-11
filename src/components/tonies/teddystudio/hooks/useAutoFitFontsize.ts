@@ -1,7 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-export function useAutoFitFontSize(opts: { text: string; maxFontSize: number; minFontSize: number }) {
-    const { text, maxFontSize, minFontSize } = opts;
+export function useAutoFitFontSize(opts: {
+    text: string;
+    maxFontSize: number;
+    minFontSize: number;
+    fontFamily?: string;
+}) {
+    const { text, maxFontSize, minFontSize, fontFamily } = opts;
     const ref = useRef<HTMLDivElement | null>(null);
     const [fontSize, setFontSize] = useState(maxFontSize);
 
@@ -9,7 +14,7 @@ export function useAutoFitFontSize(opts: { text: string; maxFontSize: number; mi
 
     useLayoutEffect(() => {
         setFontSize(clamp(maxFontSize));
-    }, [text, maxFontSize, minFontSize]);
+    }, [text, maxFontSize, minFontSize, fontFamily]);
 
     useEffect(() => {
         const el = ref.current;
@@ -33,7 +38,7 @@ export function useAutoFitFontSize(opts: { text: string; maxFontSize: number; mi
         ro.observe(el);
 
         return () => ro.disconnect();
-    }, [text, maxFontSize, minFontSize]);
+    }, [text, maxFontSize, minFontSize, fontFamily]);
 
     return { ref, fontSize };
 }

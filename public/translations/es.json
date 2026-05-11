@@ -2328,7 +2328,9 @@
             "square": "Cuadrada",
             "textFontSize": "Tamaño de texto",
             "title": "TeddyStudio",
-            "trackTitles": "Títulos (uno por línea)"
+            "trackTitles": "Títulos (uno por línea)",
+            "fontFamily": "Fuente de etiqueta",
+            "fontFamilyPlaceholder": "Elegir una fuente"
         },
         "title": "Tonies",
         "tonies": {

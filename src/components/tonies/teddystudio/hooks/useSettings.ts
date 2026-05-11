@@ -22,6 +22,7 @@ export interface SettingsState {
     paperLabelImageBleed: string;
 
     textFontSize: string;
+    fontFamily: string;
     imagePosition: string;
     imageScale: number;
     imageBottom: number;
@@ -115,6 +116,7 @@ const INITIAL_STATE: SettingsState = {
     paperLabelImageBleed: "0mm",
 
     textFontSize: "14px",
+    fontFamily: "sans-serif",
     imagePosition: "center",
     imageScale: 1.0,
     imageBottom: 0,
@@ -186,6 +188,7 @@ export interface SettingsActions {
     setPaperMarginLeft: (v: string) => void;
     setPaperLabelImageBleed: (v: string) => void;
     setTextFontSize: (v: string) => void;
+    setFontFamily: (v: string) => void;
     setImagePosition: (v: string) => void;
     setImageScale: (v: number) => void;
     setImageBottom: (v: number) => void;
@@ -231,6 +234,7 @@ export const useSettings = (): SettingsHook => {
             width: state.width,
             height: state.height,
             textFontSize: state.textFontSize,
+            fontFamily: state.fontFamily,
             imagePosition: state.imagePosition,
             imageScale: state.imageScale,
             imageBottom: state.imageBottom,
@@ -288,6 +292,7 @@ export const useSettings = (): SettingsHook => {
         setPaperMarginLeft: (v) => dispatch({ type: "SET", payload: { paperMarginLeft: v } }),
         setPaperLabelImageBleed: (v) => dispatch({ type: "SET", payload: { paperLabelImageBleed: v } }),
         setTextFontSize: (v) => dispatch({ type: "SET", payload: { textFontSize: v } }),
+        setFontFamily: (v) => dispatch({ type: "SET", payload: { fontFamily: v } }),
         setImagePosition: (v) => dispatch({ type: "SET", payload: { imagePosition: v } }),
         setImageScale: (v) => dispatch({ type: "SET", payload: { imageScale: v } }),
         setImageBottom: (v) => dispatch({ type: "SET", payload: { imageBottom: v } }),

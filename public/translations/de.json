@@ -2328,7 +2328,9 @@
             "square": "Eckig",
             "textFontSize": "Textgröße",
             "title": "TeddyStudio",
-            "trackTitles": "Titel (jeweils eine Zeile)"
+            "trackTitles": "Titel (jeweils eine Zeile)",
+            "fontFamily": "Schriftart",
+            "fontFamilyPlaceholder": "Schriftart wählen"
         },
         "title": "Tonies",
         "tonies": {

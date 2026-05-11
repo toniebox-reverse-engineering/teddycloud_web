@@ -5,6 +5,7 @@ import { ClearOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { LanguageFlagIcon } from "../../../common/icons/LanguageFlagIcon";
 import type { SettingsState } from "../hooks/useSettings";
 import "./../styles/print.css";
+import "./../styles/fonts.css";
 import { useTranslation } from "react-i18next";
 import { CircleText } from "../elements/CircleText";
 import { buildEffectiveSettings, LabelOverridesById } from "../types/labelOverrides";
@@ -92,6 +93,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                 const {
                     labelBackgroundColor,
                     textFontSize,
+                    fontFamily,
                     imagePosition,
                     imageScale,
                     imageBottom,
@@ -105,6 +107,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                     contentPadding,
                 } = effectiveSettings;
 
+                const effectiveFontFamily = fontFamily || "sans-serif";
+
                 const effectiveTextColor = getContrastTextColor(labelBackgroundColor || "#ffffff");
 
                 return (
@@ -117,6 +121,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                             justifyContent: previewMode ? "center" : "unset",
                             flexDirection: "row",
                             padding: 10,
+                            fontFamily: effectiveFontFamily,
                             ["--label-border-color" as any]: effectiveTextColor,
                             ["--text-color" as any]: effectiveTextColor,
                         }}
@@ -166,6 +171,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                     fontSize={parseFloat(seriesOnImageLabelFontSize || textFontSize)}
                                                     rotateDeg={seriesOnImageLabelRotationDeg || 0}
                                                     color={effectiveTextColor}
+                                                    fontFamily={effectiveFontFamily}
                                                 />
                                             ) : (
                                                 <div

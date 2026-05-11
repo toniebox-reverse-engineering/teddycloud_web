@@ -5,17 +5,20 @@ export function SquareTextLabel({
     color,
     maxFontSizePx,
     minFontSizePx = 10,
+    fontFamily,
 }: {
     text: string;
     color?: string;
     maxFontSizePx: number;
     minFontSizePx?: number;
+    fontFamily?: string;
 }) {
     const safeText = text ?? "";
     const { ref, fontSize } = useAutoFitFontSize({
         text: safeText,
         maxFontSize: maxFontSizePx,
         minFontSize: minFontSizePx,
+        fontFamily,
     });
 
     return (
@@ -29,6 +32,7 @@ export function SquareTextLabel({
                 minWidth: 0,
                 color: color,
                 fontSize,
+                fontFamily,
                 margin: 8,
                 paddingTop: 8,
             }}
