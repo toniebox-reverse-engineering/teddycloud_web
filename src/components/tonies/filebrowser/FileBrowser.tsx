@@ -98,7 +98,8 @@ export const FileBrowser: React.FC<{
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
 
-    const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
+    const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] =
+        useState<boolean>(false);
     const [uploadFileList, setUploadFileList] = useState<any[]>([]);
 
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
@@ -168,11 +169,17 @@ export const FileBrowser: React.FC<{
         special,
     });
 
-    const { isTapEditorModalOpen, initialValuesPath, openCreateTap, openEditTap, closeTapEditor, onTapCreateOrSave } =
-        useTapEditor({
-            currentPath,
-            setRebuildList,
-        });
+    const {
+        isTapEditorModalOpen,
+        initialValuesPath,
+        openCreateTap,
+        openEditTap,
+        closeTapEditor,
+        onTapCreateOrSave,
+    } = useTapEditor({
+        currentPath,
+        setRebuildList,
+    });
 
     // information modal
     const showInformationModal = (record: any) => {
@@ -491,7 +498,9 @@ export const FileBrowser: React.FC<{
                     onCancel={closeTapEditor}
                 />
             )}
-            {isHelpModalOpen && <HelpModal open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />}
+            {isHelpModalOpen && (
+                <HelpModal open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+            )}
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
@@ -530,10 +539,14 @@ export const FileBrowser: React.FC<{
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
+                        <div style={{ lineHeight: 1.5, marginRight: 16 }}>
+                            {t("tonies.currentPath")}
+                        </div>
                         {generateBreadcrumbs(path)}
                     </div>
-                    <div style={{ alignSelf: "flex-end" }}>({files.filter((x) => x.name != "..").length})</div>
+                    <div style={{ alignSelf: "flex-end" }}>
+                        ({files.filter((x) => x.name != "..").length})
+                    </div>
                 </div>
                 <div
                     style={{
@@ -546,11 +559,15 @@ export const FileBrowser: React.FC<{
                 >
                     {special === "library" || special === "custom_img" ? (
                         <div style={{ width: "100%" }}>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, minHeight: 32 }}>
+                            <div
+                                style={{ display: "flex", flexWrap: "wrap", gap: 8, minHeight: 32 }}
+                            >
                                 {selectedRowKeys.length > 0 ? (
                                     <>
-                                        {files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
-                                            .length > 0 ? (
+                                        {files.filter(
+                                            (item) =>
+                                                selectedRowKeys.includes(item.name) && !item.isDir,
+                                        ).length > 0 ? (
                                             <Tooltip
                                                 open={!canHover ? false : undefined}
                                                 key="moveMultiple"
@@ -645,7 +662,11 @@ export const FileBrowser: React.FC<{
                                     </div>
                                 </Button>
                                 {special === "library" && (
-                                    <Button size="small" icon={<SearchOutlined />} onClick={openUnusedTAFsModal}>
+                                    <Button
+                                        size="small"
+                                        icon={<SearchOutlined />}
+                                        onClick={openUnusedTAFsModal}
+                                    >
                                         {t("fileBrowser.unusedTafsModal.title")}
                                     </Button>
                                 )}
@@ -689,7 +710,9 @@ export const FileBrowser: React.FC<{
                                 handleDirClick(record.name);
                             } else if (
                                 special === "custom_img" &&
-                                IMAGE_EXTENSIONS.some((ext) => record.name.toLowerCase().endsWith(ext))
+                                IMAGE_EXTENSIONS.some((ext) =>
+                                    record.name.toLowerCase().endsWith(ext),
+                                )
                             ) {
                                 const contentPath = buildContentUrl(record.name);
                                 const baseApiUrl =
@@ -701,7 +724,10 @@ export const FileBrowser: React.FC<{
                                     : contentPath;
                                 setImagePreviewUrl(url);
                                 setImagePreviewOpen(true);
-                            } else if (record.name.includes(".json") || record.name.includes(".tap")) {
+                            } else if (
+                                record.name.includes(".json") ||
+                                record.name.includes(".tap")
+                            ) {
                                 showJsonViewer(path + "/" + record.name);
                             } else if (record.tafHeader) {
                                 showTafHeader(record.name, record.tafHeader);
@@ -724,7 +750,9 @@ export const FileBrowser: React.FC<{
                         }),
                         onSelectAll: (selected: boolean, selectedRows: any[]) => {
                             const selectedKeys = selected
-                                ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                ? selectedRows
+                                      .filter((row) => row.name !== "..")
+                                      .map((row) => row.name)
                                 : [];
                             setSelectedRowKeys(selectedKeys);
                         },
@@ -739,7 +767,10 @@ export const FileBrowser: React.FC<{
                                     <>
                                         <tr {...props} />
                                         <tr>
-                                            <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
+                                            <th
+                                                style={{ padding: "10px 8px" }}
+                                                colSpan={columns.length + 1}
+                                            >
                                                 <Input
                                                     placeholder={t("fileBrowser.filter")}
                                                     value={filterInputText}
@@ -773,7 +804,12 @@ export const FileBrowser: React.FC<{
                                 );
                             },
                             cell: (props: any) => {
-                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 8 }} />;
+                                return (
+                                    <th
+                                        {...props}
+                                        style={{ position: "sticky", top: 0, zIndex: 8 }}
+                                    />
+                                );
                             },
                         },
                     }}

@@ -44,7 +44,8 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
     const [copyStatus, setCopyStatus] = useState<string>("");
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-    const isSecureContext = typeof window !== "undefined" && window.isSecureContext && !!navigator.clipboard;
+    const isSecureContext =
+        typeof window !== "undefined" && window.isSecureContext && !!navigator.clipboard;
 
     // Clear copy status after 2 seconds
     useEffect(() => {

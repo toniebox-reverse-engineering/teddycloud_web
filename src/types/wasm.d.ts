@@ -2,7 +2,7 @@
  * Type declarations for WASM modules
  */
 
-declare module '/web/wasm/taf_encoder.js' {
+declare module "/web/wasm/taf_encoder.js" {
     interface TafEncoderModule {
         _taf_encoder_create(audioId: number, bitrate: number): number;
         _taf_encoder_encode(ctx: number, pcmDataPtr: number, numSamples: number): number;

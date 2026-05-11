@@ -12,7 +12,7 @@ export const useUrlReachable = (url: string | null | undefined) => {
                       },
                   ]
                 : [],
-        [url]
+        [url],
     );
 
     const reachable = useUrlsReachable(urls);

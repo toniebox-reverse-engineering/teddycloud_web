@@ -12,7 +12,9 @@ export function CertificateIntro({ asC2Der }: { asC2Der: boolean }) {
             <Paragraph>{t("tonieboxes.boxFlashingCommon.certificatesIntro")}</Paragraph>
             <Paragraph>
                 <Button onClick={() => handleTCCADerDownload(asC2Der)}>
-                    {asC2Der ? t("tonieboxes.downloadC2DerFile") : t("tonieboxes.downloadCADerFile")}
+                    {asC2Der
+                        ? t("tonieboxes.downloadC2DerFile")
+                        : t("tonieboxes.downloadCADerFile")}
                 </Button>
             </Paragraph>
             <h4>{t("tonieboxes.boxFlashingCommon.dumpCertificates")}</h4>

@@ -112,7 +112,13 @@ export const TeddyStudio: React.FC = () => {
         picture: string;
     }) => {
         if (editIndex === null) return;
-        editByMergedIndex(editIndex, values.trackTitles, values.episodes, values.text, values.picture);
+        editByMergedIndex(
+            editIndex,
+            values.trackTitles,
+            values.episodes,
+            values.text,
+            values.picture,
+        );
 
         addNotification(
             NotificationTypeEnum.Success,
@@ -210,7 +216,14 @@ export const TeddyStudio: React.FC = () => {
                     }}
                 >
                     <div>{t("tonies.teddystudio.adaptLabelsHint")}</div>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: 8,
+                            flexWrap: "wrap",
+                            justifyContent: "flex-end",
+                        }}
+                    >
                         <Button
                             icon={<ClearOutlined />}
                             onClick={() => {
@@ -219,7 +232,11 @@ export const TeddyStudio: React.FC = () => {
                         >
                             {t("tonies.teddystudio.clear")}
                         </Button>
-                        <Button type="primary" icon={<PrinterOutlined />} onClick={() => window.print()}>
+                        <Button
+                            type="primary"
+                            icon={<PrinterOutlined />}
+                            onClick={() => window.print()}
+                        >
                             {t("tonies.teddystudio.printPage")}
                         </Button>
                     </div>

@@ -56,9 +56,20 @@ export interface CreateColumnsOptions {
     withinTafBoundaries?: (numberOfFiles: number) => boolean;
     handleDirClick: (dirName: string) => void;
     showInformationModal: (record: Record) => void;
-    playAudio: (url: string, meta?: any, tonieCardOrTAFRecord?: TonieCardTAFRecord, startTime?: number) => void;
+    playAudio: (
+        url: string,
+        meta?: any,
+        tonieCardOrTAFRecord?: TonieCardTAFRecord,
+        startTime?: number,
+    ) => void;
 
-    handleFileDownload?: (record: Record, baseUrl: string, path: string, special: string, overlay?: string) => void;
+    handleFileDownload?: (
+        record: Record,
+        baseUrl: string,
+        path: string,
+        special: string,
+        overlay?: string,
+    ) => void;
 
     migrateContent2Lib?: (ruid: string, libroot: boolean, overlay?: string) => void;
     handleEditTapClick?: (fullPath: string) => void;
@@ -121,7 +132,12 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
     const getPictureSrc = (record: any): string | null => {
         if (!record) return null;
         if (record.tonieInfo?.picture) return toImageSrc(record.tonieInfo.picture);
-        if (special === "custom_img" && !record.isDir && buildContentUrl && isImageFileName(record.name)) {
+        if (
+            special === "custom_img" &&
+            !record.isDir &&
+            buildContentUrl &&
+            isImageFileName(record.name)
+        ) {
             const path = buildContentUrl(record.name);
             return toImageSrc(path.startsWith("/") ? path : `/${path}`);
         }
@@ -206,7 +222,8 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     !record?.isDir &&
                     isImageFileName(record?.name) &&
                     onImagePreviewClick;
-                const isSelectableFile = mode === "select" && onRowSelect && !record?.isDir && record?.name !== "..";
+                const isSelectableFile =
+                    mode === "select" && onRowSelect && !record?.isDir && record?.name !== "..";
                 const nameContent = isSelectableFile ? (
                     <span
                         role="button"
@@ -245,15 +262,22 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     >
                         {record.name}
                     </span>
+                ) : record?.isDir ? (
+                    <>{record.name}</>
                 ) : (
-                    record?.isDir ? <>{record.name}</> : record?.name
+                    record?.name
                 );
                 if (isCompactCustomSelect) {
                     return wrapCompactCustomCell(
-                        <div key={`name-${record.name}`} style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                            key={`name-${record.name}`}
+                            style={{ display: "flex", alignItems: "center" }}
+                        >
                             {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : null}
-                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>{nameContent}</div>
-                        </div>
+                            <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                {nameContent}
+                            </div>
+                        </div>,
                     );
                 }
                 return (
@@ -262,53 +286,91 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             <div className="showSmallDevicesOnly">
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <div style={{ display: "flex" }}>
-                                        {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                        <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                        {record.isDir ? (
+                                            <FolderOutlined style={{ marginRight: 8 }} />
+                                        ) : (
+                                            ""
+                                        )}
+                                        <div
+                                            style={{
+                                                wordBreak: record.isDir ? "normal" : "break-word",
+                                            }}
+                                        >
                                             {nameContent}
                                         </div>
                                     </div>
-                                {mode === "full" && !record.isDir && record.size
-                                    ? " (" + humanFileSize(record.size) + ")"
-                                    : ""}
-                            </div>
-                            {special !== "custom_img" && (
-                                <>
-                                    <div>{record.tonieInfo?.model}</div>
-                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                        {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                            (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                                    {mode === "full" && !record.isDir && record.size
+                                        ? " (" + humanFileSize(record.size) + ")"
+                                        : ""}
+                                </div>
+                                {special !== "custom_img" && (
+                                    <>
+                                        <div>{record.tonieInfo?.model}</div>
+                                        <div
+                                            style={{
+                                                wordBreak: record.isDir ? "normal" : "break-word",
+                                            }}
+                                        >
+                                            {(record.tonieInfo?.series
+                                                ? record.tonieInfo?.series
+                                                : "") +
+                                                (record.tonieInfo?.episode
+                                                    ? " - " + record.tonieInfo?.episode
+                                                    : "")}
+                                        </div>
+                                    </>
+                                )}
+                                {mode === "full" && (
+                                    <div>
+                                        {!record.isDir &&
+                                            new Date(record.date * 1000).toLocaleString()}
                                     </div>
-                                </>
-                            )}
-                            {mode === "full" && (
-                                <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
-                            )}
-                        </div>
-                        <div className="showMediumDevicesOnly">
-                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                )}
+                            </div>
+                            <div className="showMediumDevicesOnly">
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <div style={{ display: "flex" }}>
+                                        {record.isDir ? (
+                                            <FolderOutlined style={{ marginRight: 8 }} />
+                                        ) : (
+                                            ""
+                                        )}
+                                        <div
+                                            style={{
+                                                wordBreak: record.isDir ? "normal" : "break-word",
+                                            }}
+                                        >
+                                            {nameContent}
+                                        </div>
+                                    </div>
+                                    {mode === "full" && !record.isDir && record.size
+                                        ? " (" + humanFileSize(record.size) + ")"
+                                        : ""}
+                                </div>
+                                {mode === "full" && (
+                                    <div>
+                                        {!record.isDir &&
+                                            new Date(record.date * 1000).toLocaleString()}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="showBigDevicesOnly">
                                 <div style={{ display: "flex" }}>
-                                    {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                    <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                                    {record.isDir ? (
+                                        <FolderOutlined style={{ marginRight: 8 }} />
+                                    ) : (
+                                        ""
+                                    )}
+                                    <div
+                                        style={{
+                                            wordBreak: record.isDir ? "normal" : "break-word",
+                                        }}
+                                    >
                                         {nameContent}
                                     </div>
                                 </div>
-                                {mode === "full" && !record.isDir && record.size
-                                    ? " (" + humanFileSize(record.size) + ")"
-                                    : ""}
-                            </div>
-                            {mode === "full" && (
-                                <div>{!record.isDir && new Date(record.date * 1000).toLocaleString()}</div>
-                            )}
-                        </div>
-                        <div className="showBigDevicesOnly">
-                            <div style={{ display: "flex" }}>
-                                {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : ""}
-                                <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
-                                    {nameContent}
-                                </div>
                             </div>
                         </div>
-                    </div>
                     )
                 );
             },
@@ -322,10 +384,13 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                         "tafHeader" in record &&
                         record.tafHeader.size &&
                         humanFileSize(record.tafHeader.size).toString().includes(text)) ||
-                    ("tafHeader" in record && record.tafHeader.audioId?.toString().includes(text)) ||
+                    ("tafHeader" in record &&
+                        record.tafHeader.audioId?.toString().includes(text)) ||
                     ("tonieInfo" in record && toModelKey(record.tonieInfo?.model).includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.series.toLowerCase().includes(text)) ||
-                    ("tonieInfo" in record && record.tonieInfo?.episode.toLowerCase().includes(text)) ||
+                    ("tonieInfo" in record &&
+                        record.tonieInfo?.series.toLowerCase().includes(text)) ||
+                    ("tonieInfo" in record &&
+                        record.tonieInfo?.episode.toLowerCase().includes(text)) ||
                     (record.date && new Date(record.date * 1000).toLocaleString().includes(text))
                 );
             },
@@ -338,7 +403,9 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             key: "size",
             render: (size: number, record: any) =>
                 wrapCompactCustomCell(
-                    <div key={`size-${record.name}`}>{record.isDir ? "<DIR>" : humanFileSize(size)}</div>
+                    <div key={`size-${record.name}`}>
+                        {record.isDir ? "<DIR>" : humanFileSize(size)}
+                    </div>,
                 ),
             showOnDirOnly: false,
             responsive: ["xl"],
@@ -351,7 +418,9 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             showOnDirOnly: false,
             responsive: ["xl"],
             render: (_model: string, record: any) =>
-                wrapCompactCustomCell(<div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>),
+                wrapCompactCustomCell(
+                    <div key={`model-${record.name}`}>{record.tonieInfo?.model}</div>,
+                ),
             hideForSpecial: "custom_img",
         },
 
@@ -359,7 +428,8 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             title: (
                 <>
                     <div className="showMediumDevicesOnly">
-                        {t("fileBrowser.model")}/{t("fileBrowser.series")}/{t("fileBrowser.episode")}
+                        {t("fileBrowser.model")}/{t("fileBrowser.series")}/
+                        {t("fileBrowser.episode")}
                     </div>
                     <div className="showBigDevicesOnly">{t("fileBrowser.series")}</div>
                 </>
@@ -372,10 +442,14 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                         <div>{record.tonieInfo?.model}</div>
                         <div style={{ wordBreak: "break-word" }}>
                             {(record.tonieInfo?.series ? record.tonieInfo?.series : "") +
-                                (record.tonieInfo?.episode ? " - " + record.tonieInfo?.episode : "")}
+                                (record.tonieInfo?.episode
+                                    ? " - " + record.tonieInfo?.episode
+                                    : "")}
                         </div>
                     </div>
-                    <div className="showBigDevicesOnly">{record.tonieInfo?.series ? record.tonieInfo?.series : ""}</div>
+                    <div className="showBigDevicesOnly">
+                        {record.tonieInfo?.series ? record.tonieInfo?.series : ""}
+                    </div>
                 </div>
             ),
             showOnDirOnly: false,
@@ -390,7 +464,9 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             showOnDirOnly: false,
             responsive: ["xl"],
             render: (episode: string, record: any) =>
-                wrapCompactCustomCell(<div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>),
+                wrapCompactCustomCell(
+                    <div key={`episode-${record.name}`}>{record.tonieInfo?.episode}</div>,
+                ),
             hideForSpecial: "custom_img",
         },
 
@@ -400,7 +476,9 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
             key: "date",
             render: (timestamp: number, record: any) =>
                 wrapCompactCustomCell(
-                    <div key={`date-${record.name}`}>{new Date(timestamp * 1000).toLocaleString()}</div>
+                    <div key={`date-${record.name}`}>
+                        {new Date(timestamp * 1000).toLocaleString()}
+                    </div>,
                 ),
             showOnDirOnly: true,
             responsive: ["xl"],
@@ -408,14 +486,21 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
     ];
 
     const actionsColumn = {
-        title: <div className="showMediumDevicesOnly showBigDevicesOnly">{t("fileBrowser.actions")}</div>,
+        title: (
+            <div className="showMediumDevicesOnly showBigDevicesOnly">
+                {t("fileBrowser.actions")}
+            </div>
+        ),
         dataIndex: "controls",
         key: "controls",
         sorter: undefined,
         render: (name: string, record: any) => {
             const actions: React.ReactNode[] = [];
 
-            if (!record.isDir && ffmpegSupportedExtensions.some((ending) => record.name.endsWith(ending))) {
+            if (
+                !record.isDir &&
+                ffmpegSupportedExtensions.some((ending) => record.name.endsWith(ending))
+            ) {
                 actions.push(
                     <Tooltip
                         open={!canHover ? false : undefined}
@@ -431,7 +516,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                             "/content/" +
                                             decodeURIComponent(path) +
                                             "/" +
-                                            record.name
+                                            record.name,
                                     ) +
                                         "?ogg=true&special=" +
                                         special +
@@ -440,15 +525,20 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                     {
                                         ...record,
                                         audioUrl:
-                                            encodeURI("/content/" + decodeURIComponent(path) + "/" + record.name) +
+                                            encodeURI(
+                                                "/content/" +
+                                                    decodeURIComponent(path) +
+                                                    "/" +
+                                                    record.name,
+                                            ) +
                                             "?ogg=true&special=" +
                                             special +
                                             (overlay ? `&overlay=${overlay}` : ""),
-                                    }
+                                    },
                                 )
                             }
                         />
-                    </Tooltip>
+                    </Tooltip>,
                 );
             }
 
@@ -464,7 +554,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTapClick(path + "/" + record.name)}
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                 }
 
@@ -479,7 +569,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                 onClick={() => handleEditTafMetaDataClick(path, record)}
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                 }
 
@@ -520,16 +610,21 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                             import.meta.env.VITE_APP_TEDDYCLOUD_API_URL,
                                             path,
                                             special,
-                                            overlay
+                                            overlay,
                                         )
                                     }
                                 />
                             </Tooltip>
-                        )
+                        ),
                     );
                 }
 
-                if (record.tafHeader && !record.isDir && special !== "library" && migrateContent2Lib) {
+                if (
+                    record.tafHeader &&
+                    !record.isDir &&
+                    special !== "library" &&
+                    migrateContent2Lib
+                ) {
                     actions.push(
                         <Tooltip
                             open={!canHover ? false : undefined}
@@ -537,10 +632,16 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             title={t("fileBrowser.migrateContentToLib")}
                         >
                             <CloudServerOutlined
-                                onClick={() => migrateContent2Lib(path.replace("/", "") + record.name, false, overlay)}
+                                onClick={() =>
+                                    migrateContent2Lib(
+                                        path.replace("/", "") + record.name,
+                                        false,
+                                        overlay,
+                                    )
+                                }
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                     actions.push(
                         <Tooltip
@@ -552,7 +653,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 onClick={() => migrateContent2Lib(record.ruid, true, overlay)}
                                 style={{ margin: "4px 8px 4px 0", padding: 4 }}
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                 }
 
@@ -571,7 +672,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                         padding: 4,
                                     }}
                                 />
-                            </Tooltip>
+                            </Tooltip>,
                         );
                     }
                     if (!record.isDir && showMoveDialog) {
@@ -588,7 +689,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                         padding: 4,
                                     }}
                                 />
-                            </Tooltip>
+                            </Tooltip>,
                         );
                     }
                 }
@@ -605,7 +706,9 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                     showDeleteConfirmDialog(
                                         record.name,
                                         path + "/" + record.name,
-                                        "?special=" + special + (overlay ? `&overlay=${overlay}` : "")
+                                        "?special=" +
+                                            special +
+                                            (overlay ? `&overlay=${overlay}` : ""),
                                     )
                                 }
                                 style={{
@@ -613,12 +716,16 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                     padding: 4,
                                 }}
                             />
-                        </Tooltip>
+                        </Tooltip>,
                     );
                 }
             }
 
-            return <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4 }}>{actions}</div>;
+            return (
+                <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 4 }}>
+                    {actions}
+                </div>
+            );
         },
         showOnDirOnly: false,
     };

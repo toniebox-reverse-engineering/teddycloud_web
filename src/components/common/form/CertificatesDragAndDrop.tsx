@@ -21,7 +21,9 @@ export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ over
     const { t } = useTranslation();
     const { addNotification, setFetchCloudStatus } = useTeddyCloud();
 
-    const navigationTitle = overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle");
+    const navigationTitle = overlay
+        ? t("tonieboxes.navigationTitle")
+        : t("settings.navigationTitle");
 
     const triggerWriteConfig = async () => {
         try {

@@ -23,7 +23,13 @@ export const usePluginList = () => {
 
     const allSections = useMemo(
         () =>
-            Array.from(new Set(plugins.map((p: any) => p.teddyCloudSection || t("community.plugins.filter.unknown")))),
+            Array.from(
+                new Set(
+                    plugins.map(
+                        (p: any) => p.teddyCloudSection || t("community.plugins.filter.unknown"),
+                    ),
+                ),
+            ),
         [plugins, t],
     );
 
@@ -53,7 +59,9 @@ export const usePluginList = () => {
     );
 
     const toggleSectionFilter = (section: string, checked: boolean) => {
-        setActiveSectionFilters((prev) => (checked ? [...prev, section] : prev.filter((s) => s !== section)));
+        setActiveSectionFilters((prev) =>
+            checked ? [...prev, section] : prev.filter((s) => s !== section),
+        );
     };
 
     const openHelp = () => setIsVisibleHelpModal(true);
@@ -81,7 +89,10 @@ export const usePluginList = () => {
         setUploading(true);
 
         try {
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/plugins/upload`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/plugins/upload`,
+                formData,
+            );
 
             if (!response.ok) throw new Error(response.statusText);
             addNotification(
@@ -111,7 +122,9 @@ export const usePluginList = () => {
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await api.apiPostTeddyCloudRaw(`/api/plugins/delete/${pluginIdForDeletion}`);
+            const response = await api.apiPostTeddyCloudRaw(
+                `/api/plugins/delete/${pluginIdForDeletion}`,
+            );
 
             if (!response.ok) throw new Error(response.statusText);
             addNotification(

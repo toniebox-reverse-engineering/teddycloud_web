@@ -19,11 +19,15 @@ export const SettingsInputField: React.FC<InputFieldProps> = (props) => {
     const [field, meta] = useField(name!);
     const [overlayed, setOverlayed] = useState<boolean | undefined>(initialOverlayed); // State to track overlayed boolean
 
-    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    const [fieldValue, setFieldValue] = useState(
+        SettingsDataHandler.getInstance().getSetting(name)?.value,
+    );
     const idListener = () => {
         setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
         setOverlayed(
-            overlayed !== undefined ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed : undefined
+            overlayed !== undefined
+                ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed
+                : undefined,
         );
     };
     SettingsDataHandler.getInstance().addIdListener(idListener, name);
@@ -39,7 +43,10 @@ export const SettingsInputField: React.FC<InputFieldProps> = (props) => {
             <Checkbox
                 checked={overlayed}
                 onChange={(changeEventHandler) => {
-                    SettingsDataHandler.getInstance().changeSettingOverlayed(name, changeEventHandler.target.checked);
+                    SettingsDataHandler.getInstance().changeSettingOverlayed(
+                        name,
+                        changeEventHandler.target.checked,
+                    );
                     setOverlayed(SettingsDataHandler.getInstance().getSetting(name)?.overlayed);
                 }}
                 key="overlayCheckBox"
@@ -60,7 +67,11 @@ export const SettingsInputField: React.FC<InputFieldProps> = (props) => {
                 {...field}
                 value={value}
                 onChange={(changeEventHandler) => {
-                    SettingsDataHandler.getInstance().changeSetting(name, changeEventHandler.target.value, overlayed);
+                    SettingsDataHandler.getInstance().changeSetting(
+                        name,
+                        changeEventHandler.target.value,
+                        overlayed,
+                    );
                     setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                 }}
                 {...(overlayed !== undefined ? { suffix } : null)}

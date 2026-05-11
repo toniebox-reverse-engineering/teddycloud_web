@@ -22,7 +22,10 @@ export interface UseSelectFilesResult {
     handleOk: () => void;
 }
 
-export const useSelectFiles = ({ onConfirm, selectableFileTypes }: UseSelectFilesOptions): UseSelectFilesResult => {
+export const useSelectFiles = ({
+    onConfirm,
+    selectableFileTypes,
+}: UseSelectFilesOptions): UseSelectFilesResult => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [selectedNewFiles, setSelectedNewFiles] = useState<FileObject[]>([]);
     const [browserKey, setBrowserKey] = useState<number>(0);
@@ -44,7 +47,8 @@ export const useSelectFiles = ({ onConfirm, selectableFileTypes }: UseSelectFile
                 if (!name) continue;
 
                 const isAllowedExtension =
-                    !selectableFileTypes || selectableFileTypes.some((ext) => name.toLowerCase().endsWith(ext));
+                    !selectableFileTypes ||
+                    selectableFileTypes.some((ext) => name.toLowerCase().endsWith(ext));
 
                 if (!isAllowedExtension) {
                     continue;

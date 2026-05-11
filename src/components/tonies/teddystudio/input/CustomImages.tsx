@@ -16,7 +16,11 @@ interface CustomImagesProps {
     onOpenImageManager: () => void;
 }
 
-export const CustomImages: React.FC<CustomImagesProps> = ({ customItems, onAddImage, onOpenImageManager }) => {
+export const CustomImages: React.FC<CustomImagesProps> = ({
+    customItems,
+    onAddImage,
+    onOpenImageManager,
+}) => {
     const { t } = useTranslation();
 
     const [showHint, setShowHint] = useState(false);
@@ -39,12 +43,20 @@ export const CustomImages: React.FC<CustomImagesProps> = ({ customItems, onAddIm
 
     return (
         <>
-            <Paragraph style={{ marginBottom: 8, marginTop: 8 }}>{t("tonies.teddystudio.customImageHint")}</Paragraph>
+            <Paragraph style={{ marginBottom: 8, marginTop: 8 }}>
+                {t("tonies.teddystudio.customImageHint")}
+            </Paragraph>
             <div style={{ display: "flex", gap: 16, flexDirection: "column", marginBottom: 16 }}>
                 <div style={{ alignSelf: "flex-start" }}>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <Upload showUploadList={false} maxCount={1} beforeUpload={handleBeforeUpload}>
-                            <Button icon={<PlusOutlined />}>{t("tonies.teddystudio.customImageUpload")}</Button>
+                        <Upload
+                            showUploadList={false}
+                            maxCount={1}
+                            beforeUpload={handleBeforeUpload}
+                        >
+                            <Button icon={<PlusOutlined />}>
+                                {t("tonies.teddystudio.customImageUpload")}
+                            </Button>
                         </Upload>
                         <Button icon={<PictureOutlined />} onClick={onOpenImageManager}>
                             {t("tonies.imageManager.title")}

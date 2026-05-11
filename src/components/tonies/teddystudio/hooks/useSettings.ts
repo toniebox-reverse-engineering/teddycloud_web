@@ -284,13 +284,15 @@ export const useSettings = (): SettingsHook => {
         setHeight: (v) => dispatch({ type: "SET", payload: { height: v } }),
         setLabelSpacingX: (v) => dispatch({ type: "SET", payload: { labelSpacingX: v } }),
         setLabelSpacingY: (v) => dispatch({ type: "SET", payload: { labelSpacingY: v } }),
-        setLabelBackgroundColor: (v) => dispatch({ type: "SET", payload: { labelBackgroundColor: v } }),
+        setLabelBackgroundColor: (v) =>
+            dispatch({ type: "SET", payload: { labelBackgroundColor: v } }),
         setPaperSize: (v) => dispatch({ type: "SET", payload: { paperSize: v } }),
         setCustomPaperWidth: (v) => dispatch({ type: "SET", payload: { customPaperWidth: v } }),
         setCustomPaperHeight: (v) => dispatch({ type: "SET", payload: { customPaperHeight: v } }),
         setPaperMarginTop: (v) => dispatch({ type: "SET", payload: { paperMarginTop: v } }),
         setPaperMarginLeft: (v) => dispatch({ type: "SET", payload: { paperMarginLeft: v } }),
-        setPaperLabelImageBleed: (v) => dispatch({ type: "SET", payload: { paperLabelImageBleed: v } }),
+        setPaperLabelImageBleed: (v) =>
+            dispatch({ type: "SET", payload: { paperLabelImageBleed: v } }),
         setTextFontSize: (v) => dispatch({ type: "SET", payload: { textFontSize: v } }),
         setFontFamily: (v) => dispatch({ type: "SET", payload: { fontFamily: v } }),
         setImagePosition: (v) => dispatch({ type: "SET", payload: { imagePosition: v } }),
@@ -300,14 +302,16 @@ export const useSettings = (): SettingsHook => {
         setContentPadding: (v) => dispatch({ type: "SET", payload: { contentPadding: v } }),
         setShowLanguageFlag: (v) => dispatch({ type: "SET", payload: { showLanguageFlag: v } }),
         setShowModelNo: (v) => dispatch({ type: "SET", payload: { showModelNo: v } }),
-        setShowSeriesOnImageLabel: (v) => dispatch({ type: "SET", payload: { showSeriesOnImageLabel: v } }),
+        setShowSeriesOnImageLabel: (v) =>
+            dispatch({ type: "SET", payload: { showSeriesOnImageLabel: v } }),
         setSeriesOnImageLabelRotationDeg(v) {
             dispatch({ type: "SET", payload: { seriesOnImageLabelRotationDeg: v } });
         },
         setSeriesOnImageLabelFontSize(v) {
             dispatch({ type: "SET", payload: { seriesOnImageLabelFontSize: v } });
         },
-        setPrintTrackListInsteadTitle: (v) => dispatch({ type: "SET", payload: { printTrackListInsteadTitle: v } }),
+        setPrintTrackListInsteadTitle: (v) =>
+            dispatch({ type: "SET", payload: { printTrackListInsteadTitle: v } }),
         setShowLabelBorder: (v) => dispatch({ type: "SET", payload: { showLabelBorder: v } }),
         setSelectedPaper: (v) => dispatch({ type: "SET", payload: { selectedPaper: v } }),
         save,

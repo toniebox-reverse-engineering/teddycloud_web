@@ -19,7 +19,9 @@ export const SettingsSwitchField: React.FC<SwitchFieldProps> = (props) => {
     const [field, meta] = useField(name!);
     const [overlayed, setOverlayed] = useState<boolean | undefined>(initialOverlayed); // State to track overlayed boolean
 
-    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    const [fieldValue, setFieldValue] = useState(
+        SettingsDataHandler.getInstance().getSetting(name)?.value,
+    );
 
     const hasFeedback = !!(meta.touched && meta.error);
     const help = meta.touched && meta.error && t(meta.error);
@@ -27,7 +29,9 @@ export const SettingsSwitchField: React.FC<SwitchFieldProps> = (props) => {
     const idListener = () => {
         setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
         setOverlayed(
-            overlayed !== undefined ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed : undefined
+            overlayed !== undefined
+                ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed
+                : undefined,
         );
     };
 
@@ -60,7 +64,7 @@ export const SettingsSwitchField: React.FC<SwitchFieldProps> = (props) => {
                     onChange={(changeEventHandler) => {
                         SettingsDataHandler.getInstance().changeSettingOverlayed(
                             name,
-                            changeEventHandler.target.checked
+                            changeEventHandler.target.checked,
                         );
                         setOverlayed(SettingsDataHandler.getInstance().getSetting(name)?.overlayed);
                     }}

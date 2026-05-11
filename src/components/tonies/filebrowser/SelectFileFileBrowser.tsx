@@ -150,14 +150,17 @@ const SelectFileFileBrowserComponent: React.FC<{
                     const file = files.find((f: any) => f.name === key) as any;
                     return (
                         (file && file.tafHeader !== undefined) ||
-                        (file && filetypeFilter.some((ext) => file.name.toLowerCase().endsWith(ext)))
+                        (file &&
+                            filetypeFilter.some((ext) => file.name.toLowerCase().endsWith(ext)))
                     );
                 });
                 if (rowCount !== newSelectedRowKeys.length) {
                     addNotification(
                         NotificationTypeEnum.Warning,
                         t("fileBrowser.fileTypesWarning"),
-                        t("fileBrowser.selectAllowedFileTypesOnly", { fileTypes: filetypeFilter.join(", ") }),
+                        t("fileBrowser.selectAllowedFileTypesOnly", {
+                            fileTypes: filetypeFilter.join(", "),
+                        }),
                         t("fileBrowser.title"),
                     );
                 }
@@ -177,7 +180,8 @@ const SelectFileFileBrowserComponent: React.FC<{
         } else {
             setSelectedRowKeys(newSelectedRowKeys);
         }
-        const selectedFiles = files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
+        const selectedFiles =
+            files?.filter((file: any) => newSelectedRowKeys.includes(file.name)) || [];
         if (onFileSelectChange !== undefined) onFileSelectChange(selectedFiles, path, special);
     };
 
@@ -328,7 +332,10 @@ const SelectFileFileBrowserComponent: React.FC<{
                                                     filterInputText.length === 0
                                                         ? token.colorTextDisabled
                                                         : token.colorText,
-                                                cursor: filterInputText.length === 0 ? "default" : "pointer",
+                                                cursor:
+                                                    filterInputText.length === 0
+                                                        ? "default"
+                                                        : "pointer",
                                             }}
                                         />
                                     }
@@ -376,7 +383,9 @@ const SelectFileFileBrowserComponent: React.FC<{
             rowKey={(record) => record.name}
             pagination={false}
             virtual={typeof effectiveTableScrollY === "number"}
-            scroll={typeof effectiveTableScrollY === "number" ? { y: effectiveTableScrollY } : undefined}
+            scroll={
+                typeof effectiveTableScrollY === "number" ? { y: effectiveTableScrollY } : undefined
+            }
             onRow={(record) => ({
                 onClick: () => {
                     handleRowClick(record);
@@ -426,7 +435,9 @@ const SelectFileFileBrowserComponent: React.FC<{
                               }),
                               onSelectAll: (selected: boolean, selectedRows: any[]) => {
                                   const selectedKeys = selected
-                                      ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                      ? selectedRows
+                                            .filter((row) => row.name !== "..")
+                                            .map((row) => row.name)
                                       : [];
                                   setSelectedRowKeys(selectedKeys);
                               },
@@ -464,7 +475,15 @@ const SelectFileFileBrowserComponent: React.FC<{
                     overlay={overlay}
                 />
             )}
-            <div style={{ display: "flex", flexDirection: "column", width: "100%", flex: 1, minHeight: 0 }}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                    flex: 1,
+                    minHeight: 0,
+                }}
+            >
                 <div
                     style={{
                         display: "flex",
@@ -519,14 +538,24 @@ const SelectFileFileBrowserComponent: React.FC<{
                                         <CloseOutlined
                                             onMouseDown={(e) => e.preventDefault()}
                                             onClick={clearFilterField}
-                                            style={{ cursor: "pointer", color: token.colorTextSecondary }}
+                                            style={{
+                                                cursor: "pointer",
+                                                color: token.colorTextSecondary,
+                                            }}
                                         />
                                     ) : null
                                 }
                             />
-                            <div style={{ position: "relative", flex: 1, minHeight: 0 }} ref={compactTableViewportRef}>
+                            <div
+                                style={{ position: "relative", flex: 1, minHeight: 0 }}
+                                ref={compactTableViewportRef}
+                            >
                                 <div style={{ position: "relative" }} ref={parentRef}>
-                                    {loading ? <LoadingSpinnerAsOverlay parentRef={parentRef} /> : ""}
+                                    {loading ? (
+                                        <LoadingSpinnerAsOverlay parentRef={parentRef} />
+                                    ) : (
+                                        ""
+                                    )}
                                     {tableElement}
                                 </div>
                             </div>

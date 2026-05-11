@@ -40,14 +40,21 @@ export interface DirectoryTreeApi {
     isNodeExpanded: (nodeId: string) => boolean;
 
     // commands
-    addDirectory: (params: { parentPath: string; directoryName: string; selectNewNode?: boolean }) => void;
+    addDirectory: (params: {
+        parentPath: string;
+        directoryName: string;
+        selectNewNode?: boolean;
+    }) => void;
     selectNodeByFullPath: (fullPath: string) => Promise<void>;
 
     // lazy loading (TreeSelect.loadData)
     onLoadTreeData: (params: { id: string }) => Promise<void>;
 }
 
-export const useDirectoryTree = (special = "library", options?: { skipPreload?: boolean }): DirectoryTreeApi => {
+export const useDirectoryTree = (
+    special = "library",
+    options?: { skipPreload?: boolean },
+): DirectoryTreeApi => {
     const skipPreload = options?.skipPreload ?? false;
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<DirectoryTreeNode[]>([rootTreeNode]);
@@ -120,7 +127,7 @@ export const useDirectoryTree = (special = "library", options?: { skipPreload?: 
                 const newPath = getPathFromNodeId(rootTreeNode.id); // usually ""
 
                 const response = await api.apiGetTeddyCloudApiRaw(
-                    `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=${encodeURIComponent(special)}`
+                    `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=${encodeURIComponent(special)}`,
                 );
                 const data = await response.json();
 
@@ -168,7 +175,7 @@ export const useDirectoryTree = (special = "library", options?: { skipPreload?: 
                     const newPath = getPathFromNodeId(parentId);
 
                     const response = await api.apiGetTeddyCloudApiRaw(
-                        `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=${encodeURIComponent(special)}`
+                        `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=${encodeURIComponent(special)}`,
                     );
                     const data = await response.json();
 
@@ -200,7 +207,7 @@ export const useDirectoryTree = (special = "library", options?: { skipPreload?: 
                 }
             });
         },
-        [getPathFromNodeId, special]
+        [getPathFromNodeId, special],
     );
 
     // ---- commands ----
@@ -229,7 +236,7 @@ export const useDirectoryTree = (special = "library", options?: { skipPreload?: 
 
             setTreeData((prev) => {
                 const merged = mergeTreeData(prev, [newDir]).sort((a, b) =>
-                    String(a.title).toLowerCase().localeCompare(String(b.title).toLowerCase())
+                    String(a.title).toLowerCase().localeCompare(String(b.title).toLowerCase()),
                 );
                 treeDataRef.current = merged;
                 return merged;
@@ -237,10 +244,12 @@ export const useDirectoryTree = (special = "library", options?: { skipPreload?: 
 
             if (selectNewNode) {
                 setTreeNodeId(newNodeId);
-                setExpandedKeys((prev) => (prev.includes(parentNodeId) ? prev : [...prev, parentNodeId]));
+                setExpandedKeys((prev) =>
+                    prev.includes(parentNodeId) ? prev : [...prev, parentNodeId],
+                );
             }
         },
-        [findNodeIdByFullPath]
+        [findNodeIdByFullPath],
     );
 
     const selectNodeByFullPath = useCallback(
@@ -267,14 +276,18 @@ export const useDirectoryTree = (special = "library", options?: { skipPreload?: 
                 if (!childId) {
                     return;
                 }
-                setExpandedKeys((prev) => (prev.includes(currentNodeId) ? prev : [...prev, currentNodeId]));
+                setExpandedKeys((prev) =>
+                    prev.includes(currentNodeId) ? prev : [...prev, currentNodeId],
+                );
                 currentNodeId = childId;
             }
 
             setTreeNodeId(currentNodeId);
-            setExpandedKeys((prev) => (prev.includes(currentNodeId) ? prev : [...prev, currentNodeId]));
+            setExpandedKeys((prev) =>
+                prev.includes(currentNodeId) ? prev : [...prev, currentNodeId],
+            );
         },
-        [findNodeIdByFullPath, onLoadTreeData, rootTreeNode.id, normalizeFullPath]
+        [findNodeIdByFullPath, onLoadTreeData, rootTreeNode.id, normalizeFullPath],
     );
 
     return {

@@ -9,7 +9,11 @@ interface QuestionMarkSVGProps {
     className?: string;
 }
 
-const QuestionMarkSVG: React.FC<QuestionMarkSVGProps> = ({ size = "100%", strokeWidth = 15, className }) => {
+const QuestionMarkSVG: React.FC<QuestionMarkSVGProps> = ({
+    size = "100%",
+    strokeWidth = 15,
+    className,
+}) => {
     const { token } = useToken();
 
     return (

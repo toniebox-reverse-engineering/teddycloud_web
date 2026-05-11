@@ -3,7 +3,14 @@
  */
 
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
-import type { AudioPair, CustomEntry, FormValues, SortColumnKey, FilterFieldKey, TrackRow } from "../types/customModelEditorTypes";
+import type {
+    AudioPair,
+    CustomEntry,
+    FormValues,
+    SortColumnKey,
+    FilterFieldKey,
+    TrackRow,
+} from "../types/customModelEditorTypes";
 import { toModelKey } from "../../utils/modelKey";
 import { toLanguageCode } from "../../../common/icons/LanguageFlagIcon";
 
@@ -17,7 +24,10 @@ export const normalizeAudioPairs = (entry: CustomEntry): string[] => {
     const audioIds = entry.audio_id || [];
     const hashes = entry.hash || [];
     return audioIds
-        .map((audioId, index) => `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`)
+        .map(
+            (audioId, index) =>
+                `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`,
+        )
         .filter((pair) => pair !== "::");
 };
 
@@ -80,10 +90,13 @@ export const toEntry = (values: FormValues): CustomEntry => {
         .filter((track) => track.length > 0);
 
     const releaseRaw =
-        values.release === undefined || values.release === null ? "" : String(values.release).trim();
+        values.release === undefined || values.release === null
+            ? ""
+            : String(values.release).trim();
     const releaseNormalized = releaseRaw.length > 0 ? releaseRaw : undefined;
     const languageRaw = String(values.language ?? "").trim();
-    const languageNormalized = languageRaw.length > 0 ? toLanguageCode(languageRaw) || undefined : undefined;
+    const languageNormalized =
+        languageRaw.length > 0 ? toLanguageCode(languageRaw) || undefined : undefined;
 
     return {
         no: (values.no || "").trim() || undefined,

@@ -13,7 +13,10 @@ export const useMacVendorLookup = () => {
     const [vendor, setVendor] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    const sanitizeMac = useCallback((input: string) => input.replace(/[^a-zA-Z0-9-:]/g, "").trim(), []);
+    const sanitizeMac = useCallback(
+        (input: string) => input.replace(/[^a-zA-Z0-9-:]/g, "").trim(),
+        [],
+    );
 
     const handleMacChange = useCallback(
         (rawValue: string) => {
@@ -25,7 +28,7 @@ export const useMacVendorLookup = () => {
             setBoxMac(value);
             setWarningTextMac(warningText);
         },
-        [sanitizeMac, t]
+        [sanitizeMac, t],
     );
 
     const handleClear = useCallback(() => {
@@ -40,7 +43,7 @@ export const useMacVendorLookup = () => {
         setError(null);
         try {
             const response = await api.apiGetTeddyCloudApiRaw(
-                `/reverseGeneric/macvendor/${encodeURIComponent(boxMac)}`
+                `/reverseGeneric/macvendor/${encodeURIComponent(boxMac)}`,
             );
             if (!response.ok) {
                 throw new Error("MAC address not found or invalid");

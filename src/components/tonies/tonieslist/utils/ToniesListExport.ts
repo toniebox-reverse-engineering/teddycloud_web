@@ -39,7 +39,7 @@ export async function exportToHTML(
     tonieCards: any[],
     selectedTonies: string[],
     inlineImages: boolean,
-    t: (key: string) => string
+    t: (key: string) => string,
 ) {
     const items = await Promise.all(
         selectedTonies.map(async (ruid) => {
@@ -57,7 +57,7 @@ export async function exportToHTML(
                 model: card.tonieInfo.model,
                 img: imgSrc,
             };
-        })
+        }),
     );
 
     const filtered = items.filter(Boolean) as {
@@ -89,7 +89,7 @@ export async function exportToHTML(
             <span class="uid">(${escapeHtml(item.model)})</span>
           </div>
         </li>
-      `
+      `,
         )
         .join("");
 
@@ -114,7 +114,11 @@ export async function exportToHTML(
     downloadBlob(html, "selected_tonies.html", "text/html");
 }
 
-export function exportToJSON(tonieCards: any[], markedTonies: string[], t: (key: string) => string) {
+export function exportToJSON(
+    tonieCards: any[],
+    markedTonies: string[],
+    t: (key: string) => string,
+) {
     const rows = tonieCards
         .filter((card) => markedTonies.includes(card.ruid))
         .map((card) => ({

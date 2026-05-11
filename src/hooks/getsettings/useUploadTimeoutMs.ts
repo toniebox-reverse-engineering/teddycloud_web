@@ -13,7 +13,9 @@ export const useUploadTimeoutMs = () => {
 
         const fetchSetting = async () => {
             try {
-                const response = await api.apiGetTeddyCloudSettingRaw("core.file_upload_timeout_ms");
+                const response = await api.apiGetTeddyCloudSettingRaw(
+                    "core.file_upload_timeout_ms",
+                );
                 if (!response.ok) {
                     if (isMounted) setValue(DEFAULT_UPLOAD_TIMEOUT_MS);
                     return;

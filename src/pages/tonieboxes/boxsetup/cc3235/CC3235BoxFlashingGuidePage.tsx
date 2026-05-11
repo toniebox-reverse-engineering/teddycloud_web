@@ -22,7 +22,13 @@ export const CC3235BoxFlashingGuidePage: React.FC = () => {
                     items={[
                         { title: <Link to="/">{t("home.navigationTitle")}</Link> },
                         { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
-                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
+                        {
+                            title: (
+                                <Link to="/tonieboxes/boxsetup">
+                                    {t("tonieboxes.boxSetup.navigationTitle")}
+                                </Link>
+                            ),
+                        },
                         { title: t("tonieboxes.cc3235BoxFlashing.navigationTitle") },
                     ]}
                 />

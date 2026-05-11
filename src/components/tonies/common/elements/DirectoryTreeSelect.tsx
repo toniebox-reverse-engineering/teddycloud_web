@@ -18,9 +18,11 @@ export const DirectoryTreeSelect: React.FC<Props> = ({
     className,
     style,
 }) => {
-    const { treeData, treeNodeId, setTreeNodeId, expandedKeys, setExpandedKeys, onLoadTreeData } = directoryTree;
+    const { treeData, treeNodeId, setTreeNodeId, expandedKeys, setExpandedKeys, onLoadTreeData } =
+        directoryTree;
 
-    const handleLoadTreeData: TreeSelectProps["loadData"] = ({ id }) => onLoadTreeData({ id: String(id) });
+    const handleLoadTreeData: TreeSelectProps["loadData"] = ({ id }) =>
+        onLoadTreeData({ id: String(id) });
 
     return (
         <TreeSelect

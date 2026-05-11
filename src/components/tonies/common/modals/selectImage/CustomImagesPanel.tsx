@@ -12,7 +12,10 @@ import { toCustomImgWebPath } from "../../utils/imagePathUtils";
 type UploadDraggerHandle = React.ComponentRef<typeof Upload.Dragger>;
 
 function clickUploadFileInput(draggerRef: React.RefObject<UploadDraggerHandle | null>) {
-    const root = draggerRef.current && "upload" in draggerRef.current ? (draggerRef.current as { upload?: unknown }).upload : undefined;
+    const root =
+        draggerRef.current && "upload" in draggerRef.current
+            ? (draggerRef.current as { upload?: unknown }).upload
+            : undefined;
     const ajax =
         root && typeof root === "object" && root !== null && "uploader" in root
             ? (root as { uploader?: { fileInput?: HTMLInputElement | null } }).uploader
@@ -121,7 +124,9 @@ export const CustomImagesPanel: React.FC<CustomImagesPanelProps> = ({
                     }
                     showColumns={["picture", "name", "size", "date", "controls"]}
                     onFileSelectChange={(files, path) => {
-                        const paths = files.filter((f) => !f.isDir).map((f) => toCustomImgWebPath(path, f.name));
+                        const paths = files
+                            .filter((f) => !f.isDir)
+                            .map((f) => toCustomImgWebPath(path, f.name));
                         onCustomSelect(paths, path);
                     }}
                     onFileDoubleClick={(file, path) => {

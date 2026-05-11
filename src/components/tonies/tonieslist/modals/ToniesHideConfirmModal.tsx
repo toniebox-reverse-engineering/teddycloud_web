@@ -29,10 +29,12 @@ export function showHideTonieConfirm(t: any, tonieLabel: string): Promise<boolea
                 open={true}
                 okText={t("tonies.confirmHideModal.hide")}
                 cancelText={t("tonies.confirmHideModal.cancel")}
-                content={t("tonies.confirmHideModal.confirmHideDialog", { tonieToHide: tonieLabel })}
+                content={t("tonies.confirmHideModal.confirmHideDialog", {
+                    tonieToHide: tonieLabel,
+                })}
                 handleOk={handleOk}
                 handleCancel={handleCancel}
-            />
+            />,
         );
     });
 }

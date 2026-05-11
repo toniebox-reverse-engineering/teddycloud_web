@@ -24,7 +24,11 @@ import { EditTonieModal } from "./modals/EditTonieModal";
 import { SelectAudioModal } from "../common/modals/SelectAudioModal";
 import { useAudioContext } from "../../../provider/AudioProvider";
 import { CustomModelEditor } from "../custommodel/CustomModelEditor";
-import { toModelKey, useCustomModelKeys, useToniesJsonModelKeys } from "../hooks/useCustomModelKeys";
+import {
+    toModelKey,
+    useCustomModelKeys,
+    useToniesJsonModelKeys,
+} from "../hooks/useCustomModelKeys";
 import { toImageSrc } from "../common/utils/imagePathUtils";
 import { useTonieCardActions } from "./hooks/useTonieCardActions";
 import { useResolvedModelAudio } from "./hooks/useResolvedModelAudio";
@@ -111,7 +115,9 @@ export const TonieCard: React.FC<{
         setSelectedModel(model);
         if (model && tonieCard.tonieInfo.series) {
             const episode = tonieCard.tonieInfo.episode || "";
-            setSelectedModelDisplayText(`[${model}] ${tonieCard.tonieInfo.series}${episode ? ` - ${episode}` : ""}`);
+            setSelectedModelDisplayText(
+                `[${model}] ${tonieCard.tonieInfo.series}${episode ? ` - ${episode}` : ""}`,
+            );
         } else {
             setSelectedModelDisplayText("");
         }
@@ -143,7 +149,8 @@ export const TonieCard: React.FC<{
     // ------------------------
 
     const modelTitle =
-        `${tonieCard.tonieInfo.series}` + (tonieCard.tonieInfo.episode ? ` - ${tonieCard.tonieInfo.episode}` : "");
+        `${tonieCard.tonieInfo.series}` +
+        (tonieCard.tonieInfo.episode ? ` - ${tonieCard.tonieInfo.episode}` : "");
 
     const sourceTitle =
         "sourceInfo" in tonieCard
@@ -154,8 +161,10 @@ export const TonieCard: React.FC<{
     const showSourceInfoPicture =
         showSourceInfo &&
         "sourceInfo" in tonieCard &&
-        ((tonieCard.sourceInfo.picture !== tonieCard.tonieInfo.picture && modelTitle !== sourceTitle) ||
-            (tonieCard.sourceInfo.picture === tonieCard.tonieInfo.picture && modelTitle !== sourceTitle));
+        ((tonieCard.sourceInfo.picture !== tonieCard.tonieInfo.picture &&
+            modelTitle !== sourceTitle) ||
+            (tonieCard.sourceInfo.picture === tonieCard.tonieInfo.picture &&
+                modelTitle !== sourceTitle));
 
     const toniePlayedOn = lastRUIDs
         .filter(([ruid]) => ruid === tonieCard.ruid)
@@ -168,7 +177,8 @@ export const TonieCard: React.FC<{
     const pictureLooksUnknown = picture.endsWith("img_unknown.png");
 
     const hasPendingChanges =
-        selectedSource !== (tonieCard.source || "") || selectedModel !== (tonieCard.tonieInfo.model || "");
+        selectedSource !== (tonieCard.source || "") ||
+        selectedModel !== (tonieCard.tonieInfo.model || "");
 
     // ------------------------
     // API helper
@@ -220,7 +230,11 @@ export const TonieCard: React.FC<{
     // ------------------------
 
     const handlePlayPauseClick = (url: string) => {
-        playAudio(url, showSourceInfoPicture ? tonieCard.sourceInfo : tonieCard.tonieInfo, tonieCard);
+        playAudio(
+            url,
+            showSourceInfoPicture ? tonieCard.sourceInfo : tonieCard.tonieInfo,
+            tonieCard,
+        );
     };
 
     const { handleSaveChanges } = useTonieCardSaveFlow({
@@ -285,7 +299,9 @@ export const TonieCard: React.FC<{
         setTempSelectedSource(tonieCard.source || "");
         if (model && tonieCard.tonieInfo.series) {
             const episode = tonieCard.tonieInfo.episode || "";
-            setSelectedModelDisplayText(`[${model}] ${tonieCard.tonieInfo.series}${episode ? ` - ${episode}` : ""}`);
+            setSelectedModelDisplayText(
+                `[${model}] ${tonieCard.tonieInfo.series}${episode ? ` - ${episode}` : ""}`,
+            );
         } else {
             setSelectedModelDisplayText("");
         }
@@ -309,21 +325,44 @@ export const TonieCard: React.FC<{
             modelInfoFromTonie,
             audioInfoFromSource,
         });
-        const headingKey = kind === "audio" ? "tonies.editModal.audioInfoHeading" : "tonies.editModal.modelInfoHeading";
+        const headingKey =
+            kind === "audio"
+                ? "tonies.editModal.audioInfoHeading"
+                : "tonies.editModal.modelInfoHeading";
         const headingDefault = kind === "audio" ? "Audio Info" : "Model Info";
         const audioPath = (overrideAudioPath || selectedSource || tonieCard.source || "").trim();
         const rows = [
-            { label: t("tonies.editModal.modelInfoSeries", { defaultValue: "Series" }), value: info?.series },
-            { label: t("tonies.editModal.modelInfoEpisode", { defaultValue: "Episode" }), value: info?.episode },
+            {
+                label: t("tonies.editModal.modelInfoSeries", { defaultValue: "Series" }),
+                value: info?.series,
+            },
+            {
+                label: t("tonies.editModal.modelInfoEpisode", { defaultValue: "Episode" }),
+                value: info?.episode,
+            },
             { label: t("tonies.editModal.modelInfoNo", { defaultValue: "No" }), value: info?.no },
-            { label: t("tonies.editModal.modelInfoTitle", { defaultValue: "Title" }), value: info?.title },
-            { label: t("tonies.editModal.modelInfoRelease", { defaultValue: "Release" }), value: info?.release },
-            { label: t("tonies.editModal.modelInfoLanguage", { defaultValue: "Language" }), value: info?.language },
-            { label: t("tonies.editModal.modelInfoCategory", { defaultValue: "Category" }), value: info?.category },
+            {
+                label: t("tonies.editModal.modelInfoTitle", { defaultValue: "Title" }),
+                value: info?.title,
+            },
+            {
+                label: t("tonies.editModal.modelInfoRelease", { defaultValue: "Release" }),
+                value: info?.release,
+            },
+            {
+                label: t("tonies.editModal.modelInfoLanguage", { defaultValue: "Language" }),
+                value: info?.language,
+            },
+            {
+                label: t("tonies.editModal.modelInfoCategory", { defaultValue: "Category" }),
+                value: info?.category,
+            },
             ...(includeAudioPath
                 ? [
                       {
-                          label: t("tonies.editModal.modelInfoAudioPath", { defaultValue: "Audio Path" }),
+                          label: t("tonies.editModal.modelInfoAudioPath", {
+                              defaultValue: "Audio Path",
+                          }),
                           value: audioPath,
                       },
                   ]
@@ -335,7 +374,9 @@ export const TonieCard: React.FC<{
                     {t(headingKey, { defaultValue: headingDefault })}
                 </div>
                 <div style={{ marginBottom: 4 }}>
-                    <strong>{t("tonies.editModal.modelInfoModel", { defaultValue: "Model" })}:</strong>{" "}
+                    <strong>
+                        {t("tonies.editModal.modelInfoModel", { defaultValue: "Model" })}:
+                    </strong>{" "}
                     {modelName || t("tonies.unsetTonie")}
                 </div>
                 {rows.length === 0 ? (
@@ -410,7 +451,10 @@ export const TonieCard: React.FC<{
             )
         ) : (
             <Tooltip placement="top" title={t("tonies.noPlayableContentHint")}>
-                <PlayCircleOutlined key="playpause" style={{ cursor: "default", color: token.colorTextDisabled }} />
+                <PlayCircleOutlined
+                    key="playpause"
+                    style={{ cursor: "default", color: token.colorTextDisabled }}
+                />
             </Tooltip>
         );
 
@@ -438,7 +482,10 @@ export const TonieCard: React.FC<{
             className={tonieCard.live ? "live" : "not-live"}
             style={
                 readOnly
-                    ? { cursor: "default", color: tonieCard.live ? token.colorError : token.colorTextDisabled }
+                    ? {
+                          cursor: "default",
+                          color: tonieCard.live ? token.colorError : token.colorTextDisabled,
+                      }
                     : { color: tonieCard.live ? token.colorError : token.colorTextDescription }
             }
             onClick={readOnly ? undefined : handleLiveClick}
@@ -451,7 +498,13 @@ export const TonieCard: React.FC<{
     const languageTooltipKey = languageCode;
     const actions = readOnly
         ? [infoAction, playAction, cloudAction, liveAction]
-        : [infoAction, <EditOutlined key="edit" onClick={showModelModal} />, playAction, cloudAction, liveAction];
+        : [
+              infoAction,
+              <EditOutlined key="edit" onClick={showModelModal} />,
+              playAction,
+              cloudAction,
+              liveAction,
+          ];
 
     // ------------------------
     // Render
@@ -465,7 +518,8 @@ export const TonieCard: React.FC<{
                 size="small"
                 style={{
                     background: selected ? token.colorBgTextHover : token.colorBgContainerDisabled,
-                    borderTop: toniePlayedOn && toniePlayedOn.length > 0 ? "3px #1677ff inset" : "reset",
+                    borderTop:
+                        toniePlayedOn && toniePlayedOn.length > 0 ? "3px #1677ff inset" : "reset",
                     paddingTop: toniePlayedOn && toniePlayedOn.length > 0 ? "unset" : 2,
                     height: "100%",
                     display: "flex",
@@ -482,16 +536,25 @@ export const TonieCard: React.FC<{
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
                             {languageCode && languageCode !== defaultLanguageCode ? (
-                                <Tooltip placement="top" zIndex={2} title={t("languageUtil." + languageTooltipKey)}>
+                                <Tooltip
+                                    placement="top"
+                                    zIndex={2}
+                                    title={t("languageUtil." + languageTooltipKey)}
+                                >
                                     <Text style={{ height: 20, width: "auto" }}>
-                                        <LanguageFlagIcon name={languageCode.split("-")[1].toUpperCase()} height={20} />
+                                        <LanguageFlagIcon
+                                            name={languageCode.split("-")[1].toUpperCase()}
+                                            height={20}
+                                        />
                                     </Text>
                                 </Tooltip>
                             ) : null}
                             {readOnly ? null : selectionMode ? (
                                 <Checkbox
                                     checked={selected}
-                                    onChange={() => onToggleSelect && onToggleSelect(tonieCard.ruid)}
+                                    onChange={() =>
+                                        onToggleSelect && onToggleSelect(tonieCard.ruid)
+                                    }
                                 />
                             ) : null}
                         </div>
@@ -591,7 +654,9 @@ export const TonieCard: React.FC<{
                         const m = tonieCard.tonieInfo.model || "";
                         const s = tonieCard.tonieInfo.series || "";
                         const e = tonieCard.tonieInfo.episode || "";
-                        setSelectedModelDisplayText(m && s ? `[${m}] ${s}${e ? ` - ${e}` : ""}` : "");
+                        setSelectedModelDisplayText(
+                            m && s ? `[${m}] ${s}${e ? ` - ${e}` : ""}` : "",
+                        );
                     }
                 }}
                 originalModel={tonieCard.tonieInfo.model || ""}
@@ -623,7 +688,9 @@ export const TonieCard: React.FC<{
                         : undefined
                 }
                 audioInfoTooltip={
-                    currentAudioModelForSet ? renderInfoTooltip("audio", currentAudioModelForSet, true) : undefined
+                    currentAudioModelForSet
+                        ? renderInfoTooltip("audio", currentAudioModelForSet, true)
+                        : undefined
                 }
                 audioModelForSet={currentAudioModelForSet}
                 onSetModelFromAudio={() => {

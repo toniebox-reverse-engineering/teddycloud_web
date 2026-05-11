@@ -21,7 +21,8 @@ const { Paragraph } = Typography;
 export const Home = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { newVersionAvailable, isDevelopVersion, latestDevelopSHA, latestReleaseVersion } = useTeddyCloudVersion();
+    const { newVersionAvailable, isDevelopVersion, latestDevelopSHA, latestReleaseVersion } =
+        useTeddyCloudVersion();
 
     const {
         tonies,
@@ -87,7 +88,11 @@ export const Home = () => {
                                 : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
                         }
                         target="_blank"
-                        style={{ display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            whiteSpace: "nowrap",
+                        }}
                     >
                         {t("teddycloud.openNewVersionInGithub")}
                     </Link>
@@ -105,7 +110,9 @@ export const Home = () => {
                 <LoadingSpinner />
             ) : (
                 <ToniesList
-                    tonieCards={tonies.filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series).slice(0, 6)}
+                    tonieCards={tonies
+                        .filter((tonie) => tonie.type === "tag" && tonie.tonieInfo.series)
+                        .slice(0, 6)}
                     overlay=""
                     showFilter={false}
                     showPagination={false}
@@ -115,7 +122,8 @@ export const Home = () => {
             )}
             <Paragraph style={{ marginTop: 16 }}>
                 <Button onClick={() => navigate("/tonies")}>
-                    {t("home.toAllYourTonies")} ({tonies.filter((tonie) => tonie.type === "tag").length})
+                    {t("home.toAllYourTonies")} (
+                    {tonies.filter((tonie) => tonie.type === "tag").length})
                 </Button>
             </Paragraph>
         </>
@@ -123,7 +131,11 @@ export const Home = () => {
 
     const tonieboxesTab = (
         <>
-            {loading ? <LoadingSpinner /> : <TonieboxesList tonieboxCards={tonieboxes.slice(0, 4)} readOnly={true} />}
+            {loading ? (
+                <LoadingSpinner />
+            ) : (
+                <TonieboxesList tonieboxCards={tonieboxes.slice(0, 4)} readOnly={true} />
+            )}
             <Paragraph style={{ marginTop: 16 }}>
                 <Button onClick={() => navigate("/tonieboxes")}>
                     {t("home.toAllYourTonieboxes")} ({tonieboxes.length})

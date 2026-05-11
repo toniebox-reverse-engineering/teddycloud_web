@@ -123,7 +123,8 @@ function App() {
     const themeSwitchIcon = useMemo(() => {
         if (themeMode === "dark") return <MoonOutlined onClick={toggleTheme} />;
         if (themeMode === "light") return <SunOutlined onClick={toggleTheme} />;
-        if (themeMode === "matrix") return <CodeOutlined style={{ marginTop: "-2px" }} onClick={toggleTheme} />;
+        if (themeMode === "matrix")
+            return <CodeOutlined style={{ marginTop: "-2px" }} onClick={toggleTheme} />;
         return <BulbOutlined onClick={toggleTheme} />;
     }, [themeMode]);
 
@@ -163,31 +164,80 @@ function App() {
                                         <Routes>
                                             <Route path="/" element={<HomePage />} />
                                             <Route path="/home/stats" element={<StatsPage />} />
-                                            <Route path="/home/features" element={<FeaturesPage />} />
-                                            <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
-                                            <Route path="/home/plugin/:pluginId" element={<PluginPage />} />
+                                            <Route
+                                                path="/home/features"
+                                                element={<FeaturesPage />}
+                                            />
+                                            <Route
+                                                path="/home/toniemeeting"
+                                                element={<TonieMeetingPage />}
+                                            />
+                                            <Route
+                                                path="/home/plugin/:pluginId"
+                                                element={<PluginPage />}
+                                            />
 
                                             <Route path="/tonies" element={<ToniesPage />} />
                                             <Route
                                                 path="/tonies/audioplayer"
-                                                element={<TeddyAudioPlayerPage standalone={false} />}
+                                                element={
+                                                    <TeddyAudioPlayerPage standalone={false} />
+                                                }
                                             />
-                                            <Route path="/audioplayer" element={<TeddyAudioPlayerPage standalone />} />
-                                            <Route path="/tonies/system-sounds" element={<SystemSoundsPage />} />
-                                            <Route path="/tonies/content" element={<ContentPage />} />
-                                            <Route path="/tonies/library" element={<LibraryPage />} />
+                                            <Route
+                                                path="/audioplayer"
+                                                element={<TeddyAudioPlayerPage standalone />}
+                                            />
+                                            <Route
+                                                path="/tonies/system-sounds"
+                                                element={<SystemSoundsPage />}
+                                            />
+                                            <Route
+                                                path="/tonies/content"
+                                                element={<ContentPage />}
+                                            />
+                                            <Route
+                                                path="/tonies/library"
+                                                element={<LibraryPage />}
+                                            />
                                             <Route
                                                 path="/tonies/customimages"
-                                                element={<Navigate to="/tonies/library?view=custom_img" replace />}
+                                                element={
+                                                    <Navigate
+                                                        to="/tonies/library?view=custom_img"
+                                                        replace
+                                                    />
+                                                }
                                             />
-                                            <Route path="/tonies/encoder" element={<EncoderPage />} />
-                                            <Route path="/tonies/tap" element={<TeddyAudioPlaylistsPage />} />
-                                            <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
-                                            <Route path="/tonies/customeditor" element={<CustomTonieCreatorPage />} />
-                                            <Route path="/tonies/plugin/:pluginId" element={<PluginPage />} />
+                                            <Route
+                                                path="/tonies/encoder"
+                                                element={<EncoderPage />}
+                                            />
+                                            <Route
+                                                path="/tonies/tap"
+                                                element={<TeddyAudioPlaylistsPage />}
+                                            />
+                                            <Route
+                                                path="/tonies/teddystudio"
+                                                element={<TeddyStudioPage />}
+                                            />
+                                            <Route
+                                                path="/tonies/customeditor"
+                                                element={<CustomTonieCreatorPage />}
+                                            />
+                                            <Route
+                                                path="/tonies/plugin/:pluginId"
+                                                element={<PluginPage />}
+                                            />
 
-                                            <Route path="/tonieboxes" element={<TonieboxesPage />} />
-                                            <Route path="/tonieboxes/boxsetup" element={<BoxSetupPage />} />
+                                            <Route
+                                                path="/tonieboxes"
+                                                element={<TonieboxesPage />}
+                                            />
+                                            <Route
+                                                path="/tonieboxes/boxsetup"
+                                                element={<BoxSetupPage />}
+                                            />
                                             <Route
                                                 path="/tonieboxes/boxsetup/identifyboxversion"
                                                 element={<IdentifyBoxVersionPage />}
@@ -220,25 +270,52 @@ function App() {
                                                 path="/tonieboxes/boxsetup/cc3235/flashing"
                                                 element={<CC3235BoxFlashingGuidePage />}
                                             />
-                                            <Route path="/tonieboxes/plugin/:pluginId" element={<PluginPage />} />
+                                            <Route
+                                                path="/tonieboxes/plugin/:pluginId"
+                                                element={<PluginPage />}
+                                            />
 
                                             <Route path="/settings" element={<SettingsPage />} />
-                                            <Route path="/settings/guisettings" element={<GUISettingsPage />} />
-                                            <Route path="/settings/certificates" element={<CertificatesPage />} />
+                                            <Route
+                                                path="/settings/guisettings"
+                                                element={<GUISettingsPage />}
+                                            />
+                                            <Route
+                                                path="/settings/certificates"
+                                                element={<CertificatesPage />}
+                                            />
                                             <Route path="/settings/rtnl" element={<RtnlPage />} />
-                                            <Route path="/settings/notifications" element={<NotificationsListPage />} />
-                                            <Route path="/settings/plugin/:pluginId" element={<PluginPage />} />
+                                            <Route
+                                                path="/settings/notifications"
+                                                element={<NotificationsListPage />}
+                                            />
+                                            <Route
+                                                path="/settings/plugin/:pluginId"
+                                                element={<PluginPage />}
+                                            />
 
                                             <Route path="/community" element={<CommunityPage />} />
-                                            <Route path="/community/tcplugins" element={<PluginListPage />} />
-                                            <Route path="/community/tcplugins/:pluginId" element={<PluginPage />} />
-                                            <Route path="/community/plugin/:pluginId" element={<PluginPage />} />
+                                            <Route
+                                                path="/community/tcplugins"
+                                                element={<PluginListPage />}
+                                            />
+                                            <Route
+                                                path="/community/tcplugins/:pluginId"
+                                                element={<PluginPage />}
+                                            />
+                                            <Route
+                                                path="/community/plugin/:pluginId"
+                                                element={<PluginPage />}
+                                            />
                                             <Route path="/community/faq" element={<FAQPage />} />
                                             <Route
                                                 path="/community/supportrequestguide"
                                                 element={<HowToGetSupportPage />}
                                             />
-                                            <Route path="/community/contribution" element={<ContributionPage />} />
+                                            <Route
+                                                path="/community/contribution"
+                                                element={<ContributionPage />}
+                                            />
                                             <Route
                                                 path="/community/contribution/tonies-json"
                                                 element={<ContributionToniesJsonPage />}
@@ -247,10 +324,22 @@ function App() {
                                                 path="/community/contribution/translations"
                                                 element={<TranslationsPage />}
                                             />
-                                            <Route path="/community/contributors" element={<ContributorsPage />} />
-                                            <Route path="/community/attribution" element={<AttributionPage />} />
-                                            <Route path="/community/changelog" element={<ChangelogPage />} />
-                                            <Route path="/plugin/:pluginId" element={<PluginPage standalone />} />
+                                            <Route
+                                                path="/community/contributors"
+                                                element={<ContributorsPage />}
+                                            />
+                                            <Route
+                                                path="/community/attribution"
+                                                element={<AttributionPage />}
+                                            />
+                                            <Route
+                                                path="/community/changelog"
+                                                element={<ChangelogPage />}
+                                            />
+                                            <Route
+                                                path="/plugin/:pluginId"
+                                                element={<PluginPage standalone />}
+                                            />
                                             <Route path="/*" element={<Error404Page />} />
                                         </Routes>
                                     </Layout>

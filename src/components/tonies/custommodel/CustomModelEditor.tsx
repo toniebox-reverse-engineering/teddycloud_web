@@ -192,7 +192,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 const pair = `${audioIds[j]}::${hashes[j].toLowerCase()}`;
                 if (pairMap.has(pair)) {
                     return {
-                        error: t("tonies.customEditor.errors.duplicateAudioHash", { audioId: audioIds[j] }),
+                        error: t("tonies.customEditor.errors.duplicateAudioHash", {
+                            audioId: audioIds[j],
+                        }),
                         baseWarning: "",
                     };
                 }
@@ -285,7 +287,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         }
         const currentEntry = customEntries[editIndex];
         const isNewEntry =
-            currentEntry && !persistedEntries.some((e) => toModelKey(e.model) === toModelKey(currentEntry.model));
+            currentEntry &&
+            !persistedEntries.some((e) => toModelKey(e.model) === toModelKey(currentEntry.model));
         if (isNewEntry) {
             setCustomEntries(customEntries.filter((_, i) => i !== editIndex));
         } else {
@@ -300,9 +303,15 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     };
 
     const postJson = async (path: string, payload: unknown) => {
-        const response = await api.apiPostTeddyCloudRaw(path, JSON.stringify(payload), undefined, undefined, {
-            "Content-Type": "application/json",
-        });
+        const response = await api.apiPostTeddyCloudRaw(
+            path,
+            JSON.stringify(payload),
+            undefined,
+            undefined,
+            {
+                "Content-Type": "application/json",
+            },
+        );
         const responseText = await response.text();
         if (!response.ok) {
             throw new Error(responseText || `HTTP ${response.status}`);
@@ -319,19 +328,30 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         const values = form.getFieldsValue(true) as FormValues;
         const draft = toEntry(values);
 
-        const validation = validateEntryList(customEntries.map((e, i) => (i === editIndex ? draft : e)));
+        const validation = validateEntryList(
+            customEntries.map((e, i) => (i === editIndex ? draft : e)),
+        );
         if (validation.error) {
             setValidationMessages([validation.error]);
             return;
         }
 
         const originalEntry = customEntries[editIndex];
-        const isNewEntry = !persistedEntries.some((e) => toModelKey(e.model) === toModelKey(originalEntry.model));
+        const isNewEntry = !persistedEntries.some(
+            (e) => toModelKey(e.model) === toModelKey(originalEntry.model),
+        );
         const isRename =
-            !isNewEntry && originalEntry && normalizeText(originalEntry.model) !== normalizeText(draft.model);
+            !isNewEntry &&
+            originalEntry &&
+            normalizeText(originalEntry.model) !== normalizeText(draft.model);
 
         if (isRename && originalEntry) {
-            setPendingRenameSave({ fromModel: originalEntry.model, toModel: draft.model, draft, silent });
+            setPendingRenameSave({
+                fromModel: originalEntry.model,
+                toModel: draft.model,
+                draft,
+                silent,
+            });
             setRenameConfirmOpen(true);
             setRenameConfirmSkipUpdate(false);
             return;
@@ -361,8 +381,12 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             if (!silent) {
                 addNotification(
                     NotificationTypeEnum.Success,
-                    t("tonies.customEditor.modelSavedSuccessful", { title: draft.series || draft.model }),
-                    t("tonies.customEditor.modelSavedSuccessful", { title: draft.series || draft.model }),
+                    t("tonies.customEditor.modelSavedSuccessful", {
+                        title: draft.series || draft.model,
+                    }),
+                    t("tonies.customEditor.modelSavedSuccessful", {
+                        title: draft.series || draft.model,
+                    }),
                     t("tonies.customEditor.title"),
                     undefined,
                     false,
@@ -458,7 +482,10 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 api.apiGetTeddyCloudApiRaw("/api/toniesJson"),
             ]);
 
-            const [customData, baseData] = await Promise.all([customResponse.json(), baseResponse.json()]);
+            const [customData, baseData] = await Promise.all([
+                customResponse.json(),
+                baseResponse.json(),
+            ]);
             const normalizedCustom = Array.isArray(customData) ? customData : [];
             const normalizedBase = Array.isArray(baseData) ? baseData : [];
             setCustomEntries(normalizedCustom);
@@ -472,7 +499,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
             const initialModelKey = toModelKey(initialModel);
             if (normalizedCustom.length > 0 && initialModelKey) {
-                const selectedIdx = normalizedCustom.findIndex((entry) => toModelKey(entry.model) === initialModelKey);
+                const selectedIdx = normalizedCustom.findIndex(
+                    (entry) => toModelKey(entry.model) === initialModelKey,
+                );
                 if (selectedIdx >= 0) {
                     setEditIndex(selectedIdx);
                     form.setFieldsValue(toFormValues(normalizedCustom[selectedIdx]));
@@ -488,9 +517,13 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             // When just loading the page (no initialModel): keep editIndex null so the list
             // shows correct data without any draft merge. User opens edit via card click.
         } catch (error) {
-            const maybeErrorFields = (error as any)?.errorFields as Array<{ errors?: string[] }> | undefined;
+            const maybeErrorFields = (error as any)?.errorFields as
+                | Array<{ errors?: string[] }>
+                | undefined;
             if (Array.isArray(maybeErrorFields) && maybeErrorFields.length > 0) {
-                const issues = maybeErrorFields.flatMap((item) => item.errors || []).filter(Boolean);
+                const issues = maybeErrorFields
+                    .flatMap((item) => item.errors || [])
+                    .filter(Boolean);
                 if (issues.length > 0) {
                     setValidationMessages(Array.from(new Set(issues)));
                 }
@@ -588,8 +621,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 setTableSortOrder(parsed.tableSortOrder);
             }
             if (Array.isArray(parsed.filterFields)) {
-                const nextFilterFields = parsed.filterFields.filter((value): value is FilterFieldKey =>
-                    ALLOWED_FILTER_FIELDS.includes(value as FilterFieldKey),
+                const nextFilterFields = parsed.filterFields.filter(
+                    (value): value is FilterFieldKey =>
+                        ALLOWED_FILTER_FIELDS.includes(value as FilterFieldKey),
                 );
                 if (nextFilterFields.length > 0) {
                     setFilterFields(nextFilterFields);
@@ -623,16 +657,26 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
     const selectedIsDeleted = false;
 
-    const currentDraft = useMemo(() => toEntry((watchedValues || {}) as FormValues), [watchedValues]);
+    const currentDraft = useMemo(
+        () => toEntry((watchedValues || {}) as FormValues),
+        [watchedValues],
+    );
 
     const persistedByModel = useMemo(
-        () => new Map(persistedEntries.map((entry) => [toModelKey(entry.model), cloneEntry(entry)] as const)),
+        () =>
+            new Map(
+                persistedEntries.map(
+                    (entry) => [toModelKey(entry.model), cloneEntry(entry)] as const,
+                ),
+            ),
         [persistedEntries],
     );
 
     const currentBaselineEntry = useMemo(() => {
         const originalEntry =
-            editIndex !== null && editIndex >= 0 && editIndex < customEntries.length ? customEntries[editIndex] : null;
+            editIndex !== null && editIndex >= 0 && editIndex < customEntries.length
+                ? customEntries[editIndex]
+                : null;
         const lookupModel = originalEntry ? originalEntry.model : currentDraft.model;
         const modelKey = toModelKey(lookupModel);
         return persistedByModel.get(modelKey) || null;
@@ -672,7 +716,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         const status = new Map<number, "clean" | "changed" | "new" | "deleted">();
         customEntries.forEach((entry, index) => {
             const effectiveEntry =
-                editIndex !== null && index === editIndex ? ({ ...entry, ...currentDraft } as CustomEntry) : entry;
+                editIndex !== null && index === editIndex
+                    ? ({ ...entry, ...currentDraft } as CustomEntry)
+                    : entry;
             const lookupModel = entry.model;
             const modelKey = toModelKey(lookupModel);
             const persisted = persistedByModel.get(modelKey);
@@ -690,7 +736,10 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 normalizeText(effectiveEntry.language) !== normalizeText(persisted.language) ||
                 normalizeText(effectiveEntry.category) !== normalizeText(persisted.category) ||
                 normalizeText(effectiveEntry.pic) !== normalizeText(persisted.pic) ||
-                !areStringArraysEqual(normalizeAudioPairs(effectiveEntry), normalizeAudioPairs(persisted)) ||
+                !areStringArraysEqual(
+                    normalizeAudioPairs(effectiveEntry),
+                    normalizeAudioPairs(persisted),
+                ) ||
                 !areStringArraysEqual(normalizeTracks(effectiveEntry), normalizeTracks(persisted));
             status.set(index, entryChanged ? "changed" : "clean");
         });
@@ -799,7 +848,17 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     } as const;
 
     const screens = Grid.useBreakpoint();
-    const gridColumns = screens.xxl ? 6 : screens.xl ? 4 : screens.lg ? 3 : screens.md ? 2 : screens.sm ? 2 : 1;
+    const gridColumns = screens.xxl
+        ? 6
+        : screens.xl
+          ? 4
+          : screens.lg
+            ? 3
+            : screens.md
+              ? 2
+              : screens.sm
+                ? 2
+                : 1;
 
     const singleFormMode = mode === "create-single" || mode === "edit-single";
     const inlineMode = mode === "full" || singleFormMode;
@@ -897,7 +956,10 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                                 const newSize = size || modelListPageSize;
                                 if (newSize !== modelListPageSize) {
                                     setModelListPageSize(newSize);
-                                    localStorage.setItem(CUSTOM_EDITOR_PAGE_SIZE_KEY, String(newSize));
+                                    localStorage.setItem(
+                                        CUSTOM_EDITOR_PAGE_SIZE_KEY,
+                                        String(newSize),
+                                    );
                                     setModelListPage(1);
                                 }
                             }}
@@ -916,13 +978,22 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                                             </Typography.Text>
                                         ))}
                                         <Space>
-                                            <Button size="small" onClick={() => form.scrollToField("series")}>
+                                            <Button
+                                                size="small"
+                                                onClick={() => form.scrollToField("series")}
+                                            >
                                                 {t("tonies.addNewCustomTonieModal.series")}
                                             </Button>
-                                            <Button size="small" onClick={() => form.scrollToField("model")}>
+                                            <Button
+                                                size="small"
+                                                onClick={() => form.scrollToField("model")}
+                                            >
                                                 {t("tonies.addNewCustomTonieModal.model")}
                                             </Button>
-                                            <Button size="small" onClick={() => form.scrollToField("audioPairs")}>
+                                            <Button
+                                                size="small"
+                                                onClick={() => form.scrollToField("audioPairs")}
+                                            >
                                                 {t("tonies.addNewCustomTonieModal.audioId")}
                                             </Button>
                                         </Space>
@@ -941,7 +1012,11 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     onPrev={handlePrevInModal}
                     onNext={handleNextInModal}
                     canGoPrev={!singleFormMode && editIndex !== null && editIndex > 0}
-                    canGoNext={!singleFormMode && editIndex !== null && editIndex < customEntries.length - 1}
+                    canGoNext={
+                        !singleFormMode &&
+                        editIndex !== null &&
+                        editIndex < customEntries.length - 1
+                    }
                     currentIndex={editIndex ?? 0}
                     totalItems={singleFormMode ? 1 : customEntries.length}
                     title={
@@ -1003,10 +1078,23 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     setTargetAudioPairIndex(null);
                 }}
                 onSelect={(result) => {
-                    if (targetAudioPairIndex !== null && result.audioId != null && result.hash != null) {
-                        form.setFieldValue(["audioPairs", targetAudioPairIndex, "audio_id"], result.audioId);
-                        form.setFieldValue(["audioPairs", targetAudioPairIndex, "hash"], result.hash);
-                        form.setFieldValue(["audioPairs", targetAudioPairIndex, "path"], result.path);
+                    if (
+                        targetAudioPairIndex !== null &&
+                        result.audioId != null &&
+                        result.hash != null
+                    ) {
+                        form.setFieldValue(
+                            ["audioPairs", targetAudioPairIndex, "audio_id"],
+                            result.audioId,
+                        );
+                        form.setFieldValue(
+                            ["audioPairs", targetAudioPairIndex, "hash"],
+                            result.hash,
+                        );
+                        form.setFieldValue(
+                            ["audioPairs", targetAudioPairIndex, "path"],
+                            result.path,
+                        );
                     }
                     setSelectAudioModalOpen(false);
                     setTargetAudioPairIndex(null);
@@ -1022,7 +1110,12 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 footer={null}
             >
                 {previewUrl ? (
-                    <img src={previewUrl} alt="preview" referrerPolicy="no-referrer" style={{ width: "100%" }} />
+                    <img
+                        src={previewUrl}
+                        alt="preview"
+                        referrerPolicy="no-referrer"
+                        style={{ width: "100%" }}
+                    />
                 ) : null}
             </Modal>
             <Modal

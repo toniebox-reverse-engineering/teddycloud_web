@@ -44,7 +44,10 @@ export const useSettingsData = () => {
                 const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
                 if (optionsRequest?.options?.length && optionsRequest.options.length > 0) {
                     setOptions(optionsRequest);
-                    SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options, undefined);
+                    SettingsDataHandler.getInstance().initializeSettings(
+                        optionsRequest.options,
+                        undefined,
+                    );
                 }
             } finally {
                 setLoading(false);

@@ -33,14 +33,19 @@ export const OpenBoxGuide: React.FC = () => {
             content: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step1")}</h3>
-                    <Image src={showFirstImage ? openTBStep1_1 : openTBStep1_2} style={{ maxWidth: 350 }} alt="" />
+                    <Image
+                        src={showFirstImage ? openTBStep1_1 : openTBStep1_2}
+                        style={{ maxWidth: 350 }}
+                        alt=""
+                    />
                     <Paragraph style={{ marginTop: 16 }}>
                         <ul>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step1Text1")}</li>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step1Text2")}</li>
                         </ul>
                         <Paragraph>
-                            <InfoCircleOutlined /> {t("tonieboxes.boxSetup.openBoxGuide.step1Text3")}
+                            <InfoCircleOutlined />{" "}
+                            {t("tonieboxes.boxSetup.openBoxGuide.step1Text3")}
                         </Paragraph>
                     </Paragraph>
                 </>
@@ -123,7 +128,9 @@ export const OpenBoxGuide: React.FC = () => {
                     iFixit[2] {<ExportOutlined />}
                 </Link>
                 . {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart3")}{" "}
-                <Link to="https://www.ifixit.com/User/828031/Tobias+Isakeit">Tobias Isakeit {<ExportOutlined />}</Link>{" "}
+                <Link to="https://www.ifixit.com/User/828031/Tobias+Isakeit">
+                    Tobias Isakeit {<ExportOutlined />}
+                </Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart4")}{" "}
                 <Link to="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
                     {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")} {<ExportOutlined />}

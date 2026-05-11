@@ -4,7 +4,11 @@ import { Typography } from "antd";
 
 import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants/urls";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { ExportOutlined } from "@ant-design/icons";
 

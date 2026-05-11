@@ -57,7 +57,11 @@ const ensureFileUids = (files: any[]): FileItem[] =>
         name: (f?.name ?? "").toString(),
     }));
 
-const normalizeSelectedBrowserFiles = (files: any[], path: string, special: string): Omit<FileItem, "uid">[] => {
+const normalizeSelectedBrowserFiles = (
+    files: any[],
+    path: string,
+    special: string,
+): Omit<FileItem, "uid">[] => {
     const normalizedPath = path === "" || path.endsWith("/") ? path : path + "/";
     const prefix = special === "library" ? "lib://" : "content://";
     return (files ?? []).map((file) => ({
@@ -109,7 +113,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: { distance: 6 },
-        })
+        }),
     );
 
     const stripLibPrefix = (p?: string) => {
@@ -236,7 +240,7 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                     files: ensureFileUids((initialValues.files as any) ?? []),
                 } as TAPFormValues);
 
-                const base = fp ? fp.split("/").pop() ?? "" : "";
+                const base = fp ? (fp.split("/").pop() ?? "") : "";
                 setTafBaseName(stripTafExt(base));
 
                 const dirFromJson = getDirFromFilepath(fp);
@@ -364,7 +368,9 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                 destroyOnHidden
                 title={
                     isEditMode
-                        ? t("tonies.tapEditor.titleEdit", { name: form.getFieldValue("name") + ".tap" })
+                        ? t("tonies.tapEditor.titleEdit", {
+                              name: form.getFieldValue("name") + ".tap",
+                          })
                         : t("tonies.tapEditor.titleCreate", {
                               path: currentPath.startsWith("/") ? currentPath : `/${currentPath}`,
                           })
@@ -381,7 +387,9 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                     if (isInitializing) return;
 
                     if (!tafBaseName.trim()) {
-                        form.setFields([{ name: "filepath", errors: [t("tonies.tapEditor.filePathRequired")] }]);
+                        form.setFields([
+                            { name: "filepath", errors: [t("tonies.tapEditor.filePathRequired")] },
+                        ]);
                         return;
                     }
 
@@ -418,7 +426,8 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                                 {
                                     validator: async (_, value) => {
                                         const fp = (value ?? "").toString().trim();
-                                        if (!fp) throw new Error(t("tonies.tapEditor.filePathRequired"));
+                                        if (!fp)
+                                            throw new Error(t("tonies.tapEditor.filePathRequired"));
                                         if (!fp.toLowerCase().endsWith(".taf"))
                                             throw new Error(t("tonies.tapEditor.filePathRequired"));
                                     },
@@ -451,7 +460,11 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                                     </Tooltip>
                                 </div>
                             }
-                            help={!tafBaseName.trim() ? t("tonies.tapEditor.filePathRequired") : undefined}
+                            help={
+                                !tafBaseName.trim()
+                                    ? t("tonies.tapEditor.filePathRequired")
+                                    : undefined
+                            }
                             validateStatus={!tafBaseName.trim() ? "error" : undefined}
                             required
                         >
@@ -497,7 +510,9 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                                     validator: (_, value) =>
                                         value && value.trim()
                                             ? Promise.resolve()
-                                            : Promise.reject(new Error(t("tonies.tapEditor.nameRequired"))),
+                                            : Promise.reject(
+                                                  new Error(t("tonies.tapEditor.nameRequired")),
+                                              ),
                                 },
                             ]}
                         >
@@ -506,7 +521,9 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
 
                         <Form.List name="files">
                             {(fields, { remove }) => {
-                                const currentFiles = ensureFileUids((form.getFieldValue("files") ?? []) as any[]);
+                                const currentFiles = ensureFileUids(
+                                    (form.getFieldValue("files") ?? []) as any[],
+                                );
                                 const items = currentFiles.map((f) => f.uid);
 
                                 return (
@@ -517,11 +534,17 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
                                             onDragEnd={({ active, over }) => {
                                                 if (!over || active.id === over.id) return;
 
-                                                const from = currentFiles.findIndex((f) => f.uid === String(active.id));
-                                                const to = currentFiles.findIndex((f) => f.uid === String(over.id));
+                                                const from = currentFiles.findIndex(
+                                                    (f) => f.uid === String(active.id),
+                                                );
+                                                const to = currentFiles.findIndex(
+                                                    (f) => f.uid === String(over.id),
+                                                );
                                                 if (from < 0 || to < 0) return;
 
-                                                form.setFieldsValue({ files: arrayMove(currentFiles, from, to) });
+                                                form.setFieldsValue({
+                                                    files: arrayMove(currentFiles, from, to),
+                                                });
                                             }}
                                         >
                                             <SortableContext

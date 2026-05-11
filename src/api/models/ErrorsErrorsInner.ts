@@ -52,7 +52,10 @@ export function ErrorsErrorsInnerFromJSON(json: any): ErrorsErrorsInner {
     return ErrorsErrorsInnerFromJSONTyped(json, false);
 }
 
-export function ErrorsErrorsInnerFromJSONTyped(json: any, ignoreDiscriminator: boolean): ErrorsErrorsInner {
+export function ErrorsErrorsInnerFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): ErrorsErrorsInner {
     if (json === undefined || json === null) {
         return json;
     }

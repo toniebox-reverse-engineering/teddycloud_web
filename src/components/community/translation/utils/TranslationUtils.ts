@@ -32,7 +32,11 @@ export const collectAllKeys = (obj: Translations, parentKey = ""): string[] => {
     return keys;
 };
 
-export const findMissingKeys = (baseObj: Translations, otherObj: Translations, parentKey = ""): string[] => {
+export const findMissingKeys = (
+    baseObj: Translations,
+    otherObj: Translations,
+    parentKey = "",
+): string[] => {
     const missingKeys: string[] = [];
 
     Object.keys(baseObj).forEach((key) => {
@@ -61,7 +65,11 @@ export const findMissingKeys = (baseObj: Translations, otherObj: Translations, p
                 missingKeys.push(...collectAllKeys(baseObj[key] as Translations, fullKey));
             } else {
                 missingKeys.push(
-                    ...findMissingKeys(baseObj[key] as Translations, otherObj[key] as Translations, fullKey)
+                    ...findMissingKeys(
+                        baseObj[key] as Translations,
+                        otherObj[key] as Translations,
+                        fullKey,
+                    ),
                 );
             }
         } else if (!(key in otherObj)) {
@@ -72,7 +80,11 @@ export const findMissingKeys = (baseObj: Translations, otherObj: Translations, p
     return missingKeys;
 };
 
-export const findExtraKeys = (baseObj: Translations, otherObj: Translations, parentKey = ""): string[] => {
+export const findExtraKeys = (
+    baseObj: Translations,
+    otherObj: Translations,
+    parentKey = "",
+): string[] => {
     const extraKeys: string[] = [];
 
     Object.keys(otherObj).forEach((key) => {
@@ -100,7 +112,13 @@ export const findExtraKeys = (baseObj: Translations, otherObj: Translations, par
             if (!(key in baseObj) || typeof baseObj[key] !== "object") {
                 extraKeys.push(...collectAllKeys(otherObj[key] as Translations, fullKey));
             } else {
-                extraKeys.push(...findExtraKeys(baseObj[key] as Translations, otherObj[key] as Translations, fullKey));
+                extraKeys.push(
+                    ...findExtraKeys(
+                        baseObj[key] as Translations,
+                        otherObj[key] as Translations,
+                        fullKey,
+                    ),
+                );
             }
         } else if (!(key in baseObj)) {
             extraKeys.push(fullKey);
@@ -110,7 +128,9 @@ export const findExtraKeys = (baseObj: Translations, otherObj: Translations, par
     return extraKeys;
 };
 
-export async function fetchTranslations(languages: readonly LanguageCode[]): Promise<Record<string, Translations>> {
+export async function fetchTranslations(
+    languages: readonly LanguageCode[],
+): Promise<Record<string, Translations>> {
     const fetchedTranslations: Record<string, Translations> = {};
 
     for (const lang of languages) {

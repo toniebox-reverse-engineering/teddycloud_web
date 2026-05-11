@@ -58,7 +58,9 @@ function parsePartitionTable(buf: Uint8Array, tableOffset = 0x9000): Part[] {
 
         const labelBytes = entry.subarray(12, 28);
         const zero = labelBytes.indexOf(0);
-        const label = new TextDecoder().decode(zero >= 0 ? labelBytes.subarray(0, zero) : labelBytes);
+        const label = new TextDecoder().decode(
+            zero >= 0 ? labelBytes.subarray(0, zero) : labelBytes,
+        );
 
         const flags = u32le(entry, 28);
 
@@ -211,7 +213,11 @@ function parseWearLeveling(part: Uint8Array) {
     // totalRecords = Anzahl nicht-leerer Records hinter Header (wie in deinem Parser)
     let totalRecords = 0;
     let recordOffset = stateOffset + 64;
-    for (let i = 0; i < wlStateSize && recordOffset + WL_STATE_RECORD_SIZE <= length; i += WL_STATE_RECORD_SIZE) {
+    for (
+        let i = 0;
+        i < wlStateSize && recordOffset + WL_STATE_RECORD_SIZE <= length;
+        i += WL_STATE_RECORD_SIZE
+    ) {
         let empty = true;
         for (let j = 0; j < WL_STATE_RECORD_SIZE; j++) {
             if (part[recordOffset + j] !== 0xff) {
@@ -237,7 +243,7 @@ function parseWearLeveling(part: Uint8Array) {
 
 function wlTranslateSector(
     wl: ReturnType<typeof parseWearLeveling> extends infer T ? (T extends null ? never : T) : never,
-    sector: number
+    sector: number,
 ) {
     // exakt wie in deinem Parser
     let translated = (sector + wl.moveCount) % wl.fatSectors;
@@ -306,7 +312,8 @@ function fatFindCertFiles(fatPartRaw: Uint8Array) {
         return entries;
     };
 
-    const clusterToSector = (cluster: number) => firstDataSector + (cluster - 2) * sectorsPerCluster;
+    const clusterToSector = (cluster: number) =>
+        firstDataSector + (cluster - 2) * sectorsPerCluster;
 
     const readFAT12Entry = (cluster: number) => {
         // FAT12: 12-bit, Offset = floor(cluster*1.5)
@@ -413,7 +420,7 @@ function fatFindCertFiles(fatPartRaw: Uint8Array) {
 
 export function checkAssetsCertPartition(
     flash: Uint8Array,
-    opts?: { partitionTableOffset?: number; assetsLabel?: string }
+    opts?: { partitionTableOffset?: number; assetsLabel?: string },
 ): AssetCertCheckResult {
     const ptOff = opts?.partitionTableOffset ?? 0x9000;
     const assetsLabel = opts?.assetsLabel ?? "assets";
@@ -435,7 +442,7 @@ export function checkAssetsCertPartition(
         return {
             ok: false,
             reason: `Assets partition (${assets.label}) exceeds dump size (needs 0x${end.toString(
-                16
+                16,
             )}, have 0x${flash.length.toString(16)}).`,
             partitionsFound: parts.length,
             assetsPartition: assets,
@@ -455,7 +462,9 @@ export function checkAssetsCertPartition(
 
         return {
             ok,
-            reason: ok ? undefined : "FAT detected (plain or WL), but CERT directory/files not all present.",
+            reason: ok
+                ? undefined
+                : "FAT detected (plain or WL), but CERT directory/files not all present.",
             partitionsFound: parts.length,
             assetsPartition: assets,
             fsType: "fat",

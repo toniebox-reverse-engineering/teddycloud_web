@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { resolveAudioSourceToModel, resolveModelAudioTarget } from "../../../../utils/teddycloud/modelAudioResolution";
+import {
+    resolveAudioSourceToModel,
+    resolveModelAudioTarget,
+} from "../../../../utils/teddycloud/modelAudioResolution";
 
 type UseResolvedModelAudioParams = {
     isEditModalOpen: boolean;

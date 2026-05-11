@@ -2,7 +2,13 @@ import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { MenuProps } from "antd";
-import { ContainerOutlined, ExportOutlined, HeartOutlined, HomeOutlined, WifiOutlined } from "@ant-design/icons";
+import {
+    ContainerOutlined,
+    ExportOutlined,
+    HeartOutlined,
+    HomeOutlined,
+    WifiOutlined,
+} from "@ant-design/icons";
 
 import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { StyledSubMenu } from "../common/StyledComponents";
@@ -24,7 +30,11 @@ export const HomeSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/home/plugin/${plugin.pluginId}`}
+                    to={
+                        plugin.standalone
+                            ? `/plugin/${plugin.pluginId}`
+                            : `/home/plugin/${plugin.pluginId}`
+                    }
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -33,7 +43,9 @@ export const HomeSubNav = () => {
                 >
                     {plugin.pluginName}
                     {plugin.standalone ? (
-                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                        <ExportOutlined
+                            style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }}
+                        />
                     ) : (
                         ""
                     )}
@@ -124,5 +136,7 @@ export const HomeSubNav = () => {
         },
     ];
 
-    return <StyledSubMenu mode="inline" selectedKeys={[]} defaultOpenKeys={["sub"]} items={subnav} />;
+    return (
+        <StyledSubMenu mode="inline" selectedKeys={[]} defaultOpenKeys={["sub"]} items={subnav} />
+    );
 };

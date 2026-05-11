@@ -116,9 +116,14 @@ export const useOriginalImagesData = ({
         if (sourceRef.current === "original") {
             void fetchOriginalPicsRef.current();
         } else if (typeof window.requestIdleCallback === "function") {
-            idleId = window.requestIdleCallback(() => void fetchOriginalPicsRef.current(), { timeout: 2500 });
+            idleId = window.requestIdleCallback(() => void fetchOriginalPicsRef.current(), {
+                timeout: 2500,
+            });
         } else {
-            timeoutId = window.setTimeout(() => void fetchOriginalPicsRef.current(), SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS);
+            timeoutId = window.setTimeout(
+                () => void fetchOriginalPicsRef.current(),
+                SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS,
+            );
         }
 
         return () => {

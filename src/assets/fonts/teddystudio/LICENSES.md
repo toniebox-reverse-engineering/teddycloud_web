@@ -10,18 +10,18 @@ All bundled families are licensed under the **SIL Open Font License v1.1**
 (OFL-1.1, https://openfontlicense.org/). Full per-family license text is
 distributed with the upstream font projects on Google Fonts:
 
-| Font family | Subsets bundled | Upstream | License |
-|---|---|---|---|
-| Inter | latin, latin-ext | Rasmus Andersson | OFL-1.1 |
-| Roboto | latin, latin-ext | Christian Robertson / Google | OFL-1.1 |
-| Open Sans | latin, latin-ext | Steve Matteson / Google | OFL-1.1 |
-| Merriweather | latin, latin-ext | Sorkin Type | OFL-1.1 |
-| Atkinson Hyperlegible | latin, latin-ext | Braille Institute of America | OFL-1.1 |
-| Fredoka | latin, latin-ext | Milena Brandao / Hafontia | OFL-1.1 |
-| Bubblegum Sans | latin, latin-ext | Angelina Maria Castro / Sudtipos | OFL-1.1 |
-| Patrick Hand | latin, latin-ext | Patrick Wagesreiter | OFL-1.1 |
-| Indie Flower | latin, latin-ext | Kimberly Geswein | OFL-1.1 |
-| Schoolbell | latin | Font Diner / Sideshow | OFL-1.1 |
+| Font family           | Subsets bundled  | Upstream                         | License |
+| --------------------- | ---------------- | -------------------------------- | ------- |
+| Inter                 | latin, latin-ext | Rasmus Andersson                 | OFL-1.1 |
+| Roboto                | latin, latin-ext | Christian Robertson / Google     | OFL-1.1 |
+| Open Sans             | latin, latin-ext | Steve Matteson / Google          | OFL-1.1 |
+| Merriweather          | latin, latin-ext | Sorkin Type                      | OFL-1.1 |
+| Atkinson Hyperlegible | latin, latin-ext | Braille Institute of America     | OFL-1.1 |
+| Fredoka               | latin, latin-ext | Milena Brandao / Hafontia        | OFL-1.1 |
+| Bubblegum Sans        | latin, latin-ext | Angelina Maria Castro / Sudtipos | OFL-1.1 |
+| Patrick Hand          | latin, latin-ext | Patrick Wagesreiter              | OFL-1.1 |
+| Indie Flower          | latin, latin-ext | Kimberly Geswein                 | OFL-1.1 |
+| Schoolbell            | latin            | Font Diner / Sideshow            | OFL-1.1 |
 
 Files are weight 400, normal style, fetched from Google Fonts'
 `fonts.gstatic.com` CDN as woff2. We did not modify the binaries.

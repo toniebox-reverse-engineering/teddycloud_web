@@ -60,7 +60,11 @@ export interface BulkAddToniesModalProps {
  * On confirm, the right-pane datasets are batch-added to the print sheet via
  * the parent's onConfirm callback (wired to useCustomItems.addResults).
  */
-export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, onClose, onConfirm }) => {
+export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
+    open,
+    onClose,
+    onConfirm,
+}) => {
     const { t } = useTranslation();
 
     const [catalog, setCatalog] = useState<CatalogEntry[]>([]);
@@ -120,7 +124,9 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
                     if (model) titleParts.push(`[${model}]`);
                     if (series) titleParts.push(series);
                     const titleHead = titleParts.join(" ");
-                    const title = episodes ? `${titleHead} - ${episodes}`.trim() : titleHead || episodes || key;
+                    const title = episodes
+                        ? `${titleHead} - ${episodes}`.trim()
+                        : titleHead || episodes || key;
 
                     // Match post-#297 dataset shape (gh-296 fix): `text` is just
                     // the series, and `series` is a separate field. Renderer
@@ -215,7 +221,10 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({ open, on
         setTargetKeys(nextTargetKeys.map((k) => String(k)));
     };
 
-    const handleSelectChange: TransferProps["onSelectChange"] = (sourceSelected, targetSelected) => {
+    const handleSelectChange: TransferProps["onSelectChange"] = (
+        sourceSelected,
+        targetSelected,
+    ) => {
         setSelectedKeys([...sourceSelected, ...targetSelected].map((k) => String(k)));
     };
 

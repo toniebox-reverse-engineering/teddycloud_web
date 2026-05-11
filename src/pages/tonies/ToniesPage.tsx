@@ -4,7 +4,11 @@ import { useTranslation } from "react-i18next";
 import { TonieCardProps } from "../../types/tonieTypes";
 import { naturalCompare } from "../../utils/helper";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { ToniesList } from "../../components/tonies/tonieslist/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/common/elements/LoadingSpinner";
@@ -31,7 +35,9 @@ export const ToniesPage = () => {
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
         setTonies((prevTonies) =>
-            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+            prevTonies.map((tonie) =>
+                tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie,
+            ),
         );
     };
 

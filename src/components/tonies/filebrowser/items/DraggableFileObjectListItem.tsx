@@ -77,7 +77,9 @@ export const DraggableFileObjectListItem = ({
                     </span>
                     <div>
                         <div>{file.name}</div>
-                        <div style={{ fontSize: "smaller", color: `${token.colorTextSecondary}` }}>in {file.path}/</div>
+                        <div style={{ fontSize: "smaller", color: `${token.colorTextSecondary}` }}>
+                            in {file.path}/
+                        </div>
                     </div>
                 </div>
                 <Button

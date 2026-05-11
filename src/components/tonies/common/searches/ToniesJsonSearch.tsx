@@ -140,7 +140,10 @@ export const ToniesJsonSearch: React.FC<ToniesJsonSearchProps> = ({
             />
 
             {showAddCustomTonieButton && (
-                <Tooltip open={!canHover ? false : undefined} title={t("tonies.addNewCustomTonieHint")}>
+                <Tooltip
+                    open={!canHover ? false : undefined}
+                    title={t("tonies.addNewCustomTonieHint")}
+                >
                     <Button
                         onClick={() => {
                             if (onOpenCustomModelEditor) {

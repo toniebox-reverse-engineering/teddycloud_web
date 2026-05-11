@@ -34,10 +34,10 @@ export const LogViewer: React.FC<{
                 lvl === "error"
                     ? token.colorError
                     : lvl === "warn"
-                    ? token.colorWarning
-                    : lvl === "debug"
-                    ? token.colorTextSecondary
-                    : token.colorText;
+                      ? token.colorWarning
+                      : lvl === "debug"
+                        ? token.colorTextSecondary
+                        : token.colorText;
             return (
                 <div key={i} style={{ color }}>
                     {line}

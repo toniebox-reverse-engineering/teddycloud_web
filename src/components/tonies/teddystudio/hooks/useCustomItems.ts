@@ -18,7 +18,13 @@ export interface CustomItemsHook {
     addCustomImage: (file: File) => boolean;
     addCustomImageByPath: (path: string) => void;
     removeByMergedIndex: (indexToRemove: number) => void;
-    editByMergedIndex: (indexToEdit: number, titles: string[], episodes: string, text: string, picture: string) => void;
+    editByMergedIndex: (
+        indexToEdit: number,
+        titles: string[],
+        episodes: string,
+        text: string,
+        picture: string,
+    ) => void;
     clearAll: () => void;
 }
 
@@ -80,7 +86,10 @@ export const useCustomItems = (): CustomItemsHook => {
 
     const addCustomImage = (file: File) => {
         const url = URL.createObjectURL(file);
-        setCustomItems((prev) => [...prev, { id: generateUUID(), pic: url, text: "", episodes: "", trackTitles: [] }]);
+        setCustomItems((prev) => [
+            ...prev,
+            { id: generateUUID(), pic: url, text: "", episodes: "", trackTitles: [] },
+        ]);
         return false;
     };
 

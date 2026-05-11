@@ -18,11 +18,19 @@ const sanitizeHostname = (input: string) => {
     return input.replace(/[^a-zA-Z0-9-.]/g, "").trim();
 };
 
-export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupHint, contentProgress }) => {
+export const Step2PatchFlash: React.FC<Step2Props> = ({
+    state,
+    setState,
+    backupHint,
+    contentProgress,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const stepStatusText = state.showStatus && (
-        <div className="status" style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}>
+        <div
+            className="status"
+            style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}
+        >
             <i>{state.state}</i>
         </div>
     );
@@ -33,7 +41,12 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
             <div>
                 {!state.actionInProgress && (
                     <Paragraph>
-                        <Alert type="info" description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash")} />
+                        <Alert
+                            type="info"
+                            description={t(
+                                "tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchFlash",
+                            )}
+                        />
                     </Paragraph>
                 )}
                 {stepStatusText}
@@ -43,8 +56,12 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                     ""
                 )}
                 <Form>
-                    <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameSettings")}</Divider>
-                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchHost")}</Paragraph>
+                    <Divider>
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameSettings")}
+                    </Divider>
+                    <Paragraph>
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchHost")}
+                    </Paragraph>
                     <Form.Item>
                         <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
                             <Col>
@@ -57,7 +74,9 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                                         }));
                                     }}
                                 >
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.flagPreviousHostname")}
+                                    {t(
+                                        "tonieboxes.esp32BoxFlashing.esp32flasher.flagPreviousHostname",
+                                    )}
                                 </Checkbox>
                             </Col>
                         </Row>
@@ -66,7 +85,11 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                         <Form.Item>
                             <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
                                 <Col style={{ flex: "0 0 200px" }}>
-                                    <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.previousHostname")}</label>
+                                    <label>
+                                        {t(
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.previousHostname",
+                                        )}
+                                    </label>
                                 </Col>
                                 <Col style={{ flex: "1 1 auto" }}>
                                     <Input
@@ -95,10 +118,14 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                             <Col
                                 style={{
                                     flex: "0 0 200px",
-                                    color: state.warningTextHostname ? token.colorErrorText : "unset",
+                                    color: state.warningTextHostname
+                                        ? token.colorErrorText
+                                        : "unset",
                                 }}
                             >
-                                <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hostname")}</label>
+                                <label>
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.hostname")}
+                                </label>
                             </Col>
                             <Col style={{ flex: "1 1 auto" }}>
                                 <Input
@@ -108,7 +135,9 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                                         const value = sanitizeHostname(e.target.value);
                                         let warningText = "";
                                         if (value.length > 12) {
-                                            warningText = t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameTooLong");
+                                            warningText = t(
+                                                "tonieboxes.esp32BoxFlashing.esp32flasher.hostnameTooLong",
+                                            );
                                         }
                                         setState((prev) => ({
                                             ...prev,
@@ -127,7 +156,9 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                     </Form.Item>
 
                     <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiSettings")}</Divider>
-                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchWifi")}</Paragraph>
+                    <Paragraph>
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchWifi")}
+                    </Paragraph>
                     <Form.Item>
                         <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
                             <Col
@@ -136,7 +167,9 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                                     color: state.warningTextWifi ? token.colorErrorText : "unset",
                                 }}
                             >
-                                <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiSSID")}</label>
+                                <label>
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiSSID")}
+                                </label>
                             </Col>
                             <Col style={{ flex: "1 1 auto" }}>
                                 <Input
@@ -155,7 +188,7 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                                                 (!e.target.value && !state.wifi_pass)
                                                     ? ""
                                                     : t(
-                                                          "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"
+                                                          "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete",
                                                       ),
                                         }));
                                     }}
@@ -171,7 +204,9 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                                     color: state.warningTextWifi ? token.colorErrorText : "unset",
                                 }}
                             >
-                                <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiPassword")}</label>
+                                <label>
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiPassword")}
+                                </label>
                             </Col>
                             <Col style={{ flex: "1 1 auto" }}>
                                 <Input.Password
@@ -189,7 +224,7 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                                                 (!e.target.value && !state.wifi_ssid)
                                                     ? ""
                                                     : t(
-                                                          "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"
+                                                          "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete",
                                                       ),
                                         }));
                                     }}
@@ -198,7 +233,9 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({ state, setState, backupH
                         </Row>
                         {state.warningTextWifi && (
                             <p style={{ color: token.colorErrorText }}>
-                                {t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete")}
+                                {t(
+                                    "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete",
+                                )}
                             </p>
                         )}
                     </Form.Item>

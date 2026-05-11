@@ -10,7 +10,8 @@ const { Title, Text } = Typography;
 export const GuiLocalStorageSettings = () => {
     const { t } = useTranslation();
 
-    const { localSettings, settingKeys, exportLocalStorage, importFromJsonString } = useGuiLocalSettings();
+    const { localSettings, settingKeys, exportLocalStorage, importFromJsonString } =
+        useGuiLocalSettings();
 
     const beforeUpload: UploadProps["beforeUpload"] = (file) => {
         const reader = new FileReader();
@@ -53,7 +54,9 @@ export const GuiLocalStorageSettings = () => {
                 )}
 
                 <Upload beforeUpload={beforeUpload} showUploadList={false} accept=".json">
-                    <Button icon={<UploadOutlined />}>{t("settings.guiSettings.importSettings")}</Button>
+                    <Button icon={<UploadOutlined />}>
+                        {t("settings.guiSettings.importSettings")}
+                    </Button>
                 </Upload>
             </div>
 

@@ -93,7 +93,11 @@ export const useGuiLocalSettings = () => {
             try {
                 const importedData = JSON.parse(jsonString);
 
-                if (!importedData || typeof importedData !== "object" || !("teddycloudExport" in importedData)) {
+                if (
+                    !importedData ||
+                    typeof importedData !== "object" ||
+                    !("teddycloudExport" in importedData)
+                ) {
                     throw new Error("Invalid Teddycloud JSON file");
                 }
 

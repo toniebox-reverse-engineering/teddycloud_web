@@ -53,7 +53,9 @@ export const BoxSetupContent: React.FC = () => {
         {
             content: (
                 <>
-                    <h5 style={{ marginTop: 8 }}>{t("tonieboxes.boxSetup.identifyTonieboxVersion")}</h5>
+                    <h5 style={{ marginTop: 8 }}>
+                        {t("tonieboxes.boxSetup.identifyTonieboxVersion")}
+                    </h5>
                     <Paragraph>{t("tonieboxes.boxSetup.identifyTonieboxVersionText")}</Paragraph>
 
                     <ul>
@@ -86,7 +88,9 @@ export const BoxSetupContent: React.FC = () => {
 
                     <ul>
                         <li>
-                            <Link to="/tonieboxes/boxsetup/tb2/flashing">TB2 (Under development)</Link>
+                            <Link to="/tonieboxes/boxsetup/tb2/flashing">
+                                TB2 (Under development)
+                            </Link>
                         </li>
                         <li>
                             <Link to="/tonieboxes/boxsetup/esp32/flashing">ESP32</Link>

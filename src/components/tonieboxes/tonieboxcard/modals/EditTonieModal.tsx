@@ -41,7 +41,9 @@ export const EditBoxModal: React.FC<EditBoxModalProps> = ({
     const { token } = useToken();
     const { boxModelImages } = useTeddyCloud();
 
-    const boxModelOptions = [{ label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" }].concat(
+    const boxModelOptions = [
+        { label: t("tonieboxes.editModelModal.unsetBoxName"), value: "-1" },
+    ].concat(
         boxModelImages.map((v) => {
             return { label: v.name, value: v.id };
         }),
@@ -62,7 +64,9 @@ export const EditBoxModal: React.FC<EditBoxModalProps> = ({
                     })}
                     <br />
                     <Text type="secondary">
-                        {(tonieboxVersion !== "UNKNOWN" ? tonieboxVersion : "MAC") + ": " + tonieboxIdFormatted}
+                        {(tonieboxVersion !== "UNKNOWN" ? tonieboxVersion : "MAC") +
+                            ": " +
+                            tonieboxIdFormatted}
                     </Text>
                 </h3>
             }
@@ -85,11 +89,18 @@ export const EditBoxModal: React.FC<EditBoxModalProps> = ({
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => onBoxNameChange(originalBoxName)}
                             style={{
-                                color: boxName === originalBoxName ? token.colorTextDisabled : token.colorText,
+                                color:
+                                    boxName === originalBoxName
+                                        ? token.colorTextDisabled
+                                        : token.colorText,
                                 cursor: boxName === originalBoxName ? "default" : "pointer",
                             }}
                         />,
-                        <Divider key="divider-source" orientation="vertical" style={{ marginLeft: 2 }} />,
+                        <Divider
+                            key="divider-source"
+                            orientation="vertical"
+                            style={{ marginLeft: 2 }}
+                        />,
                     ]}
                 />
             </Paragraph>

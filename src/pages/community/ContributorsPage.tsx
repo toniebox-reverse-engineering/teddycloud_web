@@ -9,7 +9,11 @@ import {
     gitHubTCwebContributorsUrl,
 } from "../../constants/urls";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { TonieMeetingElement } from "../../components/common/elements/TonieMeeting";
 import { ExportOutlined } from "@ant-design/icons";
@@ -58,7 +62,9 @@ export const ContributorsPage = () => {
                         </Paragraph>
                     </Paragraph>
                     <Paragraph>
-                        <div style={{ marginBottom: 24 }}>{t("community.contributors.bigRoundOfApplause")}</div>
+                        <div style={{ marginBottom: 24 }}>
+                            {t("community.contributors.bigRoundOfApplause")}
+                        </div>
                         <TonieMeetingElement
                             maxNoOfGuests={50}
                             toniesSize={150}

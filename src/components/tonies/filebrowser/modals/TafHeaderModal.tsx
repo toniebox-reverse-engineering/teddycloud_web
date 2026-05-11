@@ -26,7 +26,12 @@ const transformTafHeaderToYaml = (jsonData: RecordTafHeader) => {
     return yaml.dump(transformedData).trim();
 };
 
-const TafHeaderModal: React.FC<TafHeaderModalProps> = ({ open, onClose, fileName, recordTafHeader }) => {
+const TafHeaderModal: React.FC<TafHeaderModalProps> = ({
+    open,
+    onClose,
+    fileName,
+    recordTafHeader,
+}) => {
     const { t } = useTranslation();
 
     let content: string | null = null;
@@ -58,7 +63,11 @@ const TafHeaderModal: React.FC<TafHeaderModalProps> = ({ open, onClose, fileName
                     <Alert
                         showIcon
                         type="warning"
-                        title={<div style={{ fontSize: "small" }}>{t("tonies.tafHeaderToniesJsonHint")}</div>}
+                        title={
+                            <div style={{ fontSize: "small" }}>
+                                {t("tonies.tafHeaderToniesJsonHint")}
+                            </div>
+                        }
                     />
                 </>
             ) : (

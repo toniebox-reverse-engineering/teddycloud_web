@@ -24,7 +24,11 @@ export const IdentifyBoxVersionPage: React.FC = () => {
                         { title: <Link to="/">{t("home.navigationTitle")}</Link> },
                         { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
                         {
-                            title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link>,
+                            title: (
+                                <Link to="/tonieboxes/boxsetup">
+                                    {t("tonieboxes.boxSetup.navigationTitle")}
+                                </Link>
+                            ),
                         },
                         { title: t("tonieboxes.boxSetup.identifyVersion.navigationTitle") },
                     ]}

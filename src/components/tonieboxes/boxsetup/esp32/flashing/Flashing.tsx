@@ -141,10 +141,16 @@ export const Flashing: React.FC = () => {
             title={t("tonieboxes.esp32BoxFlashing.esp32flasher.backupFlash")}
             description={
                 <>
-                    <Paragraph>{t("tonieboxes.esp32BoxFlashing.esp32flasher.importanceBackup")}</Paragraph>
+                    <Paragraph>
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.importanceBackup")}
+                    </Paragraph>
                     <Paragraph style={{ marginTop: 8 }}>
                         <b>
-                            <a href={state.downloadLink} download={state.filename} title={state.filename}>
+                            <a
+                                href={state.downloadLink}
+                                download={state.filename}
+                                title={state.filename}
+                            >
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
                             </a>
                         </b>
@@ -167,7 +173,13 @@ export const Flashing: React.FC = () => {
     const contentLog = hasAnyLog ? (
         <>
             <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.extendedFlashingLog")}</Divider>
-            <Paragraph style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                }}
+            >
                 <Paragraph style={{ fontStyle: "italic" }}>
                     {t("tonieboxes.esp32BoxFlashing.esp32flasher.hintSaveLog")}
                 </Paragraph>
@@ -302,7 +314,9 @@ export const Flashing: React.FC = () => {
                 return (
                     <Step0Preparations
                         acknowledgements={step0Ack}
-                        onAcknowledgeChange={(patch) => setStep0Ack((prev) => ({ ...prev, ...patch }))}
+                        onAcknowledgeChange={(patch) =>
+                            setStep0Ack((prev) => ({ ...prev, ...patch }))
+                        }
                     />
                 );
             case 1:
@@ -396,8 +410,13 @@ export const Flashing: React.FC = () => {
                                 </Option>
                             ))}
                         </Select>
-                        <Tooltip title={t("tonieboxes.esp32BoxFlashing.baudRateInfo")} placement="top">
-                            <QuestionCircleOutlined style={{ fontSize: "18px", cursor: "pointer" }} />
+                        <Tooltip
+                            title={t("tonieboxes.esp32BoxFlashing.baudRateInfo")}
+                            placement="top"
+                        >
+                            <QuestionCircleOutlined
+                                style={{ fontSize: "18px", cursor: "pointer" }}
+                            />
                         </Tooltip>
                     </Paragraph>
                 )}
@@ -421,7 +440,9 @@ export const Flashing: React.FC = () => {
                         showIcon
                     />
                     <Paragraph style={{ marginTop: 16 }}>
-                        <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.followLegacyApproach")}</Paragraph>
+                        <Paragraph>
+                            {t("tonieboxes.esp32BoxFlashing.legacy.followLegacyApproach")}
+                        </Paragraph>
                         <Paragraph>
                             <Button onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}>
                                 {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
@@ -449,7 +470,9 @@ export const Flashing: React.FC = () => {
                                         ? "finish"
                                         : "wait",
                             className:
-                                index === currentStep && state.actionInProgress ? "ant-steps-item-in-progress" : "",
+                                index === currentStep && state.actionInProgress
+                                    ? "ant-steps-item-in-progress"
+                                    : "",
                         }))}
                     />
 
@@ -457,14 +480,25 @@ export const Flashing: React.FC = () => {
 
                     <div style={{ marginTop: 24, marginBottom: 24 }}>
                         {currentStep === 0 && (
-                            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
                                 <div>
                                     <Paragraph>
                                         <Button
                                             disabled={disableButtons}
-                                            onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}
+                                            onClick={() =>
+                                                navigate("/tonieboxes/boxsetup/esp32/legacy")
+                                            }
                                         >
-                                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                            {t(
+                                                "tonieboxes.esp32BoxFlashing.legacy.navigationTitle",
+                                            )}
                                         </Button>
                                     </Paragraph>
                                 </div>
@@ -485,29 +519,44 @@ export const Flashing: React.FC = () => {
                             </div>
                         )}
                         {currentStep === 1 && (
-                            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
                                 {previousButton}
                                 <div>
                                     <Paragraph>
                                         <Button
                                             disabled={disableButtons}
-                                            onClick={() => navigate("/tonieboxes/boxsetup/esp32/legacy")}
+                                            onClick={() =>
+                                                navigate("/tonieboxes/boxsetup/esp32/legacy")
+                                            }
                                         >
-                                            {t("tonieboxes.esp32BoxFlashing.legacy.navigationTitle")}
+                                            {t(
+                                                "tonieboxes.esp32BoxFlashing.legacy.navigationTitle",
+                                            )}
                                         </Button>
                                     </Paragraph>
                                 </div>
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                                     <Tooltip
                                         open={!canHover ? false : undefined}
-                                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip")}
+                                        title={t(
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxineTooltip",
+                                        )}
                                     >
                                         <Button
                                             icon={<RollbackOutlined />}
                                             disabled={disableButtons}
                                             onClick={doResetBox}
                                         >
-                                            {t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine")}
+                                            {t(
+                                                "tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine",
+                                            )}
                                         </Button>
                                     </Tooltip>
                                     <Button
@@ -538,7 +587,14 @@ export const Flashing: React.FC = () => {
                         )}
 
                         {currentStep === 2 && (
-                            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
                                 {previousButton}
                                 <div style={{ display: "flex", gap: 8 }}>
                                     <Button
@@ -546,7 +602,8 @@ export const Flashing: React.FC = () => {
                                         disabled={
                                             disableButtons ||
                                             state.hostname === "" ||
-                                            (state.flagPreviousHostname && state.previousHostname === "")
+                                            (state.flagPreviousHostname &&
+                                                state.previousHostname === "")
                                         }
                                         type="primary"
                                         onClick={patchImage}
@@ -566,14 +623,25 @@ export const Flashing: React.FC = () => {
                         )}
 
                         {currentStep === 3 && (
-                            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
                                 {previousButton}
                                 <div style={{ display: "flex", gap: 8 }}>
                                     <Button
                                         icon={<UploadOutlined />}
                                         disabled={disableButtons}
                                         type="primary"
-                                        onClick={state.resetBox ? resetFlash : () => setIsConfirmFlashModalOpen(true)}
+                                        onClick={
+                                            state.resetBox
+                                                ? resetFlash
+                                                : () => setIsConfirmFlashModalOpen(true)
+                                        }
                                     >
                                         {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
                                     </Button>
@@ -583,13 +651,24 @@ export const Flashing: React.FC = () => {
                         )}
 
                         {currentStep === 4 && (
-                            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                    gap: 8,
+                                }}
+                            >
                                 {previousButton}
                                 <div>
                                     {state.resetBox ? (
                                         ""
                                     ) : (
-                                        <Button icon={<EyeOutlined />} type="primary" onClick={checkBoxes}>
+                                        <Button
+                                            icon={<EyeOutlined />}
+                                            type="primary"
+                                            onClick={checkBoxes}
+                                        >
                                             {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
                                         </Button>
                                     )}
@@ -610,7 +689,9 @@ export const Flashing: React.FC = () => {
                         okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
                         cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
                         content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
-                        contentHint={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint")}
+                        contentHint={t(
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint",
+                        )}
                         handleOk={handleConfirmFlash}
                         handleCancel={handleCancelFlash}
                     />

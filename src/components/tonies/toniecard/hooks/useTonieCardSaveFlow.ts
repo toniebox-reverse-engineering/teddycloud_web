@@ -22,7 +22,12 @@ type UseTonieCardSaveFlowParams = {
     setInputValidationModel: (value: ValidationState) => void;
     setInputValidationSource: (value: ValidationState) => void;
     t: (key: string, options?: Record<string, unknown>) => string;
-    addNotification: (type: NotificationTypeEnum, title: string, description: string, context?: string) => void;
+    addNotification: (
+        type: NotificationTypeEnum,
+        title: string,
+        description: string,
+        context?: string,
+    ) => void;
     handleNoCloudClick: () => Promise<void>;
     handleLiveClick: () => Promise<void>;
 };
@@ -31,7 +36,7 @@ const notifySuccess = (
     addNotification: UseTonieCardSaveFlowParams["addNotification"],
     t: UseTonieCardSaveFlowParams["t"],
     message: string,
-    description: string
+    description: string,
 ) => {
     addNotification(NotificationTypeEnum.Success, message, description, t("tonies.title"));
 };
@@ -41,12 +46,20 @@ const notifyError = (
     t: UseTonieCardSaveFlowParams["t"],
     message: string,
     description: string,
-    error?: unknown
+    error?: unknown,
 ) => {
-    addNotification(NotificationTypeEnum.Error, message, `${description}${error ?? ""}`, t("tonies.title"));
+    addNotification(
+        NotificationTypeEnum.Error,
+        message,
+        `${description}${error ?? ""}`,
+        t("tonies.title"),
+    );
 };
 
-const validateSelectedModelExists = async (modelValue: string, overlay: string): Promise<boolean> => {
+const validateSelectedModelExists = async (
+    modelValue: string,
+    overlay: string,
+): Promise<boolean> => {
     const trimmedModel = modelValue.trim();
     if (!trimmedModel) {
         return true;
@@ -56,11 +69,13 @@ const validateSelectedModelExists = async (modelValue: string, overlay: string):
         const searchValue = encodeURIComponent(trimmedModel);
         const response = await api.apiGetTeddyCloudApiRaw(
             `/api/toniesJsonSearch?searchModel=${searchValue}&searchSeries=&searchEpisode=`,
-            overlay
+            overlay,
         );
         const data = await response.json();
         const entries = Array.isArray(data) ? data : [];
-        return entries.some((entry: { model?: string }) => toModelKey(entry?.model) === toModelKey(trimmedModel));
+        return entries.some(
+            (entry: { model?: string }) => toModelKey(entry?.model) === toModelKey(trimmedModel),
+        );
     } catch {
         return false;
     }
@@ -110,18 +125,26 @@ export const useTonieCardSaveFlow = ({
 }: UseTonieCardSaveFlowParams) => {
     const handleModelSave = async () => {
         try {
-            await api.apiPostTeddyCloudContentJson(tonieCard.ruid, "tonie_model=" + encodeURIComponent(selectedModel), overlay);
+            await api.apiPostTeddyCloudContentJson(
+                tonieCard.ruid,
+                "tonie_model=" + encodeURIComponent(selectedModel),
+                overlay,
+            );
 
             notifySuccess(
                 addNotification,
                 t,
                 t("tonies.messages.setTonieToModelSuccessful", {
-                    selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
+                    selectedModel: selectedModel
+                        ? selectedModel
+                        : t("tonies.messages.setToEmptyValue"),
                 }),
                 t("tonies.messages.setTonieToModelSuccessfulDetails", {
                     ruid: tonieCard.ruid,
-                    selectedModel: selectedModel ? selectedModel : t("tonies.messages.setToEmptyValue"),
-                })
+                    selectedModel: selectedModel
+                        ? selectedModel
+                        : t("tonies.messages.setToEmptyValue"),
+                }),
             );
             setInputValidationModel({ validateStatus: "", help: "" });
         } catch (error) {
@@ -132,7 +155,7 @@ export const useTonieCardSaveFlow = ({
                 t("tonies.messages.setTonieToModelFailedDetails", {
                     ruid: tonieCard.ruid,
                 }),
-                error
+                error,
             );
             setInputValidationModel({
                 validateStatus: "error",
@@ -144,7 +167,11 @@ export const useTonieCardSaveFlow = ({
 
     const handleSourceSave = async () => {
         try {
-            await api.apiPostTeddyCloudContentJson(tonieCard.ruid, "source=" + encodeURIComponent(selectedSource), overlay);
+            await api.apiPostTeddyCloudContentJson(
+                tonieCard.ruid,
+                "source=" + encodeURIComponent(selectedSource),
+                overlay,
+            );
 
             notifySuccess(
                 addNotification,
@@ -152,8 +179,10 @@ export const useTonieCardSaveFlow = ({
                 t("tonies.messages.setTonieToSourceSuccessful"),
                 t("tonies.messages.setTonieToSourceSuccessfulDetails", {
                     ruid: tonieCard.ruid,
-                    selectedSource: selectedSource ? selectedSource : t("tonies.messages.setToEmptyValue"),
-                })
+                    selectedSource: selectedSource
+                        ? selectedSource
+                        : t("tonies.messages.setToEmptyValue"),
+                }),
             );
             setInputValidationSource({ validateStatus: "", help: "" });
         } catch (error) {
@@ -164,7 +193,7 @@ export const useTonieCardSaveFlow = ({
                 t("tonies.messages.setTonieToSourceFailedDetails", {
                     ruid: tonieCard.ruid,
                 }),
-                error
+                error,
             );
             setInputValidationSource({
                 validateStatus: "error",
@@ -207,7 +236,7 @@ export const useTonieCardSaveFlow = ({
         if (shouldWarnAutoModelReset) {
             const confirmed = await showAudioModelMismatchConfirm(
                 t,
-                audioModel || t("tonies.confirmAudioModelMismatchModal.unknownModel")
+                audioModel || t("tonies.confirmAudioModelMismatchModal.unknownModel"),
             );
             if (!confirmed) {
                 return;

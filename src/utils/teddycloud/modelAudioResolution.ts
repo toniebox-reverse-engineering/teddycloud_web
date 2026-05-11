@@ -25,7 +25,9 @@ function normalizeAudioId(value: unknown): string {
 }
 
 function normalizeHash(value: unknown): string {
-    return String(value ?? "").trim().toLowerCase();
+    return String(value ?? "")
+        .trim()
+        .toLowerCase();
 }
 
 function normalizeLibPath(input?: string): string {
@@ -56,7 +58,7 @@ function getEntryFirstAudioHashPair(entry: ToniesJsonEntry): AudioHashPair | nul
 function tafMatchesAudioHash(
     record: { isDir: boolean; name: string; tafHeader?: { audioId?: unknown; sha1Hash?: unknown } },
     audioId: string,
-    hash: string
+    hash: string,
 ): boolean {
     if (!isTafFile(record)) return false;
     const header = record.tafHeader;
@@ -83,7 +85,7 @@ async function fetchToniesEntries(overlay?: string): Promise<ToniesJsonEntry[]> 
  */
 export async function resolveModelAudioToLibraryPath(
     model: string,
-    overlay?: string
+    overlay?: string,
 ): Promise<string | null> {
     const result = await resolveModelAudioTarget(model, overlay);
     return result.path;
@@ -91,7 +93,7 @@ export async function resolveModelAudioToLibraryPath(
 
 export async function resolveModelAudioTarget(
     model: string,
-    overlay?: string
+    overlay?: string,
 ): Promise<{ hasMapping: boolean; path: string | null }> {
     const modelKey = normalizeModelKey(model);
     if (!modelKey) return { hasMapping: false, path: null };
@@ -106,7 +108,7 @@ export async function resolveModelAudioTarget(
         try {
             const allTAFs = await fetchAllTAFsInLibrary({ overlay });
             let match = allTAFs.find((r) =>
-                tafMatchesAudioHash(r, firstPair.audioId, firstPair.hash)
+                tafMatchesAudioHash(r, firstPair.audioId, firstPair.hash),
             );
 
             if (!match) {
@@ -114,9 +116,7 @@ export async function resolveModelAudioTarget(
                 if (customMatch) {
                     const num = customMatch[1].padStart(3, "0");
                     const pathMatch = allTAFs.find(
-                        (r) =>
-                            !r.isDir &&
-                            r.name.toLowerCase() === `audio_${num}.taf`
+                        (r) => !r.isDir && r.name.toLowerCase() === `audio_${num}.taf`,
                     );
                     if (pathMatch) return { hasMapping: true, path: `lib://${pathMatch.fullPath}` };
                 }
@@ -140,7 +140,7 @@ export async function resolveModelAudioTarget(
 export async function resolveAudioIdHashToLibraryPath(
     audioId: string,
     hash: string,
-    overlay?: string
+    overlay?: string,
 ): Promise<string | null> {
     const aid = normalizeAudioId(audioId);
     const h = normalizeHash(hash);
@@ -160,7 +160,7 @@ export async function resolveAudioIdHashToLibraryPath(
  */
 export async function resolveAudioSourceToModel(
     source: string,
-    overlay?: string
+    overlay?: string,
 ): Promise<string | null> {
     const sourceKey = normalizeLibPath(source);
     if (!sourceKey) return null;

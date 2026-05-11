@@ -14,7 +14,8 @@ export const StyledLanguageSwitcher = () => {
     ];
 
     const currentLanguage = i18n.language;
-    const currentLabel = LANGS.find((l) => l.key === currentLanguage.substring(0, 2))?.label ?? currentLanguage;
+    const currentLabel =
+        LANGS.find((l) => l.key === currentLanguage.substring(0, 2))?.label ?? currentLanguage;
 
     return (
         <div style={{ marginRight: 8 }}>
@@ -29,7 +30,14 @@ export const StyledLanguageSwitcher = () => {
                     }}
                 >
                     <Link to="/" onClick={(e) => e.preventDefault()} title={t("language.change")}>
-                        <Tag style={{ fontSize: "unset", backgroundColor: "transparent", border: 0, color: "white" }}>
+                        <Tag
+                            style={{
+                                fontSize: "unset",
+                                backgroundColor: "transparent",
+                                border: 0,
+                                color: "white",
+                            }}
+                        >
                             <GlobalOutlined /> {currentLabel}
                         </Tag>
                     </Link>

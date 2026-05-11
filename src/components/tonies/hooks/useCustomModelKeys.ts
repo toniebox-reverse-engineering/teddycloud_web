@@ -22,7 +22,7 @@ export function useCustomModelKeys(enabled: boolean): Set<string> {
                 const set = new Set(
                     arr
                         .map((e: { model?: string }) => toModelKey(e?.model))
-                        .filter((k): k is string => k.length > 0)
+                        .filter((k): k is string => k.length > 0),
                 );
                 // Set enables fast O(1) membership checks in TonieCard (custom vs original model).
                 setKeys(set);
@@ -52,7 +52,7 @@ export function useToniesJsonModelKeys(enabled: boolean): Set<string> {
                 const set = new Set(
                     arr
                         .map((e: { model?: string }) => toModelKey(e?.model))
-                        .filter((k): k is string => k.length > 0)
+                        .filter((k): k is string => k.length > 0),
                 );
                 setKeys(set);
             })

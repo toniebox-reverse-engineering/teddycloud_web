@@ -24,7 +24,7 @@ export class BoxineApi extends runtime.BaseAPI {
      * Get unix timestamp.
      */
     async v1TimeGetRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
@@ -37,7 +37,7 @@ export class BoxineApi extends runtime.BaseAPI {
                 headers: headerParameters,
                 query: queryParameters,
             },
-            initOverrides
+            initOverrides,
         );
 
         if (this.isJsonMime(response.headers.get("content-type"))) {

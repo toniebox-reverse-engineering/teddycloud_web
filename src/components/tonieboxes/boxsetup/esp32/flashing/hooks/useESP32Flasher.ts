@@ -11,7 +11,10 @@ import { scrollToTop } from "../../../../../../utils/browser/browserUtils";
 import { useGetSettingLogLevel } from "../../../../../../hooks/getsettings/useGetSettingLogLevel";
 import { checkAssetsCertPartition } from "../helper/checkAssetsCertPartition";
 import { TFunction } from "i18next";
-import { installConsoleLogCapture, uninstallConsoleLogCapture } from "../../../../../../utils/logging/log";
+import {
+    installConsoleLogCapture,
+    uninstallConsoleLogCapture,
+} from "../../../../../../utils/logging/log";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -95,7 +98,12 @@ export const useESP32Flasher = (
     setLogEntries: React.Dispatch<React.SetStateAction<string[]>>,
 ): UseESP32FlasherResult => {
     const { t } = useTranslation();
-    const { setFetchCloudStatus, addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const {
+        setFetchCloudStatus,
+        addNotification,
+        addLoadingNotification,
+        closeLoadingNotification,
+    } = useTeddyCloud();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -103,7 +111,8 @@ export const useESP32Flasher = (
     const [httpsUrl, setHttpsUrl] = useState<string>("");
 
     const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState(false);
-    const [isOverwriteForceConfirmationModalOpen, setIsOverwriteForceConfirmationModalOpen] = useState(false);
+    const [isOverwriteForceConfirmationModalOpen, setIsOverwriteForceConfirmationModalOpen] =
+        useState(false);
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState("");
     const [certDir, setCertDir] = useState<string>("certs/client");
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
@@ -150,7 +159,9 @@ export const useESP32Flasher = (
 
     const [isSupported, setIsSupported] = useState(false);
     const [baudRate, setBaudRate] = useState(921600);
-    const baudRates = [300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600];
+    const baudRates = [
+        300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600,
+    ];
     const romBaudRate = 115200;
 
     const logLevel = useGetSettingLogLevel();
@@ -208,7 +219,10 @@ export const useESP32Flasher = (
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const hasAnyLog = fullLogRef.current.length > 0 || pendingRef.current.length > 0 || (logEntries?.length ?? 0) > 0;
+    const hasAnyLog =
+        fullLogRef.current.length > 0 ||
+        pendingRef.current.length > 0 ||
+        (logEntries?.length ?? 0) > 0;
 
     const getAllLogLines = () => {
         return fullLogRef.current.slice();
@@ -341,7 +355,8 @@ export const useESP32Flasher = (
         }
 
         const fetchHttpsPort = async (): Promise<string | undefined> => {
-            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS) return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS;
+            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS)
+                return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS;
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_web_port");
                 return await response.text();
@@ -351,7 +366,8 @@ export const useESP32Flasher = (
         };
 
         const fetchHttpPort = async (): Promise<string | undefined> => {
-            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP) return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP;
+            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP)
+                return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP;
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("core.server.http_port");
                 return await response.text();
@@ -427,7 +443,8 @@ export const useESP32Flasher = (
         if (!result.ok) {
             console.error("[ESP32] integrity: certificates missing", result);
             throw new Error(
-                t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashDataCertificatesMissing") + result.reason,
+                t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashDataCertificatesMissing") +
+                    result.reason,
             );
         } else {
             console.info("[ESP32] integrity: certs found", result);
@@ -548,7 +565,10 @@ export const useESP32Flasher = (
 
                     console.info("[ESP32][Revvox] loadFlashFile: readMac");
                     mac = (await flasher.readMac()) || "";
-                    console.info("[ESP32][Revvox] loadFlashFile: MAC read", { mac, chip: flasher.current_chip });
+                    console.info("[ESP32][Revvox] loadFlashFile: MAC read", {
+                        mac,
+                        chip: flasher.current_chip,
+                    });
 
                     setState((prev) => ({
                         ...prev,
@@ -578,7 +598,9 @@ export const useESP32Flasher = (
                 const blob = new Blob([flashData], { type: "application/octet-stream" });
                 const url = URL.createObjectURL(blob);
 
-                console.info("[ESP32] loadFlashFile: uploading file to server", { name: sanitizedName });
+                console.info("[ESP32] loadFlashFile: uploading file to server", {
+                    name: sanitizedName,
+                });
                 await uploadFlashData(flashData, sanitizedName);
 
                 console.info("[ESP32] loadFlashFile: done (revvox)", { downloadLinkCreated: true });
@@ -635,7 +657,11 @@ export const useESP32Flasher = (
                 flashSize: "" + flashSizeKb,
             }));
 
-            if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
+            if (
+                !flasher.current_chip
+                    .toUpperCase()
+                    .startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))
+            ) {
                 console.error("[ESP32][Revvox] readFlash: chip type mismatch", {
                     actual: flasher.current_chip,
                     expected: ESP32_CHIPNAME,
@@ -685,7 +711,9 @@ export const useESP32Flasher = (
 
             // FIX: url must be created BEFORE setState using it
             const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
-            const blob = new Blob([flashData.buffer as ArrayBuffer], { type: "application/octet-stream" });
+            const blob = new Blob([flashData.buffer as ArrayBuffer], {
+                type: "application/octet-stream",
+            });
             const url = URL.createObjectURL(blob);
 
             console.info("[ESP32][Revvox] readFlash: download link created");
@@ -696,7 +724,9 @@ export const useESP32Flasher = (
                 downloadLink: url,
             }));
 
-            console.info("[ESP32][Revvox] readFlash: uploading to server...", { name: sanitizedName });
+            console.info("[ESP32][Revvox] readFlash: uploading to server...", {
+                name: sanitizedName,
+            });
             await uploadFlashData(flashData, sanitizedName);
             console.info("[ESP32][Revvox] readFlash: upload finished");
         } catch (err: any) {
@@ -719,7 +749,10 @@ export const useESP32Flasher = (
     };
 
     const uploadFlashData = async (flashData: Uint8Array, sanitizedName: string) => {
-        console.info("[ESP32] uploadFlashData: start", { name: sanitizedName, bytes: flashData.length });
+        console.info("[ESP32] uploadFlashData: start", {
+            name: sanitizedName,
+            bytes: flashData.length,
+        });
 
         try {
             setState((prev) => ({
@@ -729,11 +762,20 @@ export const useESP32Flasher = (
             }));
 
             const formData = new FormData();
-            formData.append(sanitizedName, new Blob([(flashData as Uint8Array).buffer as ArrayBuffer]), sanitizedName);
+            formData.append(
+                sanitizedName,
+                new Blob([(flashData as Uint8Array).buffer as ArrayBuffer]),
+                sanitizedName,
+            );
 
-            console.info("[ESP32] uploadFlashData: POST /api/esp32/uploadFirmware", { name: sanitizedName });
+            console.info("[ESP32] uploadFlashData: POST /api/esp32/uploadFirmware", {
+                name: sanitizedName,
+            });
 
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/esp32/uploadFirmware`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/esp32/uploadFirmware`,
+                formData,
+            );
 
             if (response.ok && response.status === 200) {
                 const filename = await response.text();
@@ -752,7 +794,10 @@ export const useESP32Flasher = (
                 }));
             } else {
                 const body = await response.text().catch(() => "");
-                console.error("[ESP32] uploadFlashData: server error", { status: response.status, body });
+                console.error("[ESP32] uploadFlashData: server error", {
+                    status: response.status,
+                    body,
+                });
 
                 setState((prev) => ({
                     ...prev,
@@ -806,7 +851,9 @@ export const useESP32Flasher = (
                 ...prev,
                 state: t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
                 showStatus: true,
-                warningTextWifi: t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                warningTextWifi: t(
+                    "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete",
+                ),
                 error: true,
             }));
             return;
@@ -850,12 +897,17 @@ export const useESP32Flasher = (
             }));
 
             if (response.ok && response.status === 200) {
-                console.info("[ESP32] patchFlash: patching successful, downloading patched image...");
+                console.info(
+                    "[ESP32] patchFlash: patching successful, downloading patched image...",
+                );
 
                 const arrayBuffer = await response.arrayBuffer();
                 const sizeMb = arrayBuffer.byteLength / 1024 / 1024;
 
-                console.info("[ESP32] patchFlash: patched image received", { bytes: arrayBuffer.byteLength, sizeMb });
+                console.info("[ESP32] patchFlash: patched image received", {
+                    bytes: arrayBuffer.byteLength,
+                    sizeMb,
+                });
 
                 setState((prev) => ({
                     ...prev,
@@ -881,7 +933,10 @@ export const useESP32Flasher = (
                 next();
             } else {
                 const body = await response.text().catch(() => "");
-                console.error("[ESP32] patchFlash: patching failed", { status: response.status, body });
+                console.error("[ESP32] patchFlash: patching failed", {
+                    status: response.status,
+                    body,
+                });
 
                 setState((prev) => ({
                     ...prev,
@@ -941,7 +996,10 @@ export const useESP32Flasher = (
             setCurrentStep(2);
 
             const mac = await flasher.readMac();
-            console.info("[ESP32][Revvox] resetFlash: MAC read", { mac, chip: flasher.current_chip });
+            console.info("[ESP32][Revvox] resetFlash: MAC read", {
+                mac,
+                chip: flasher.current_chip,
+            });
 
             if (mac) {
                 setState((prev) => ({
@@ -951,7 +1009,11 @@ export const useESP32Flasher = (
                 }));
             }
 
-            if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
+            if (
+                !flasher.current_chip
+                    .toUpperCase()
+                    .startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))
+            ) {
                 console.error("[ESP32][Revvox] resetFlash: chip type mismatch", {
                     actual: flasher.current_chip,
                     expected: ESP32_CHIPNAME,
@@ -1059,7 +1121,10 @@ export const useESP32Flasher = (
             const flasher = await prepareRevvoxFlasher();
 
             const mac = await flasher.readMac();
-            console.info("[ESP32][Revvox] writeFlash: MAC read", { mac, chip: flasher.current_chip });
+            console.info("[ESP32][Revvox] writeFlash: MAC read", {
+                mac,
+                chip: flasher.current_chip,
+            });
 
             if (mac) {
                 setState((prev) => ({
@@ -1069,7 +1134,11 @@ export const useESP32Flasher = (
                 }));
             }
 
-            if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
+            if (
+                !flasher.current_chip
+                    .toUpperCase()
+                    .startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))
+            ) {
                 console.error("[ESP32][Revvox] writeFlash: chip type mismatch", {
                     actual: flasher.current_chip,
                     expected: ESP32_CHIPNAME,
@@ -1148,7 +1217,10 @@ export const useESP32Flasher = (
     };
 
     const extractAndStoreCertsFromFlash = async (force?: boolean) => {
-        console.info("[ESP32] extractAndStoreCertsFromFlash: start", { force, filename: state.filename });
+        console.info("[ESP32] extractAndStoreCertsFromFlash: start", {
+            force,
+            filename: state.filename,
+        });
 
         const key = "extractStoreCerts";
         addLoadingNotification(
@@ -1174,22 +1246,30 @@ export const useESP32Flasher = (
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessful"),
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessfulDetails", {
-                        file: state.filename,
-                    }),
+                    t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessfulDetails",
+                        {
+                            file: state.filename,
+                        },
+                    ),
                     t("tonieboxes.esp32BoxFlashing.title"),
                 );
                 setFetchCloudStatus((prev) => !prev);
             } else if (!response.ok && response.status === 409) {
                 const errorMessage = await response.text();
-                console.error("[ESP32] extractAndStoreCertsFromFlash: conflict (409)", { errorMessage });
+                console.error("[ESP32] extractAndStoreCertsFromFlash: conflict (409)", {
+                    errorMessage,
+                });
 
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed"),
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails", {
-                        file: state.filename,
-                    }) +
+                    t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails",
+                        {
+                            file: state.filename,
+                        },
+                    ) +
                         ": " +
                         errorMessage,
                     t("tonieboxes.esp32BoxFlashing.title"),
@@ -1198,14 +1278,20 @@ export const useESP32Flasher = (
                 setIsOverwriteForceConfirmationModalOpen(true);
             } else {
                 const body = await response.text().catch(() => "");
-                console.error("[ESP32] extractAndStoreCertsFromFlash: failed", { status: response.status, body });
+                console.error("[ESP32] extractAndStoreCertsFromFlash: failed", {
+                    status: response.status,
+                    body,
+                });
 
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed"),
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails", {
-                        file: state.filename,
-                    }) +
+                    t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails",
+                        {
+                            file: state.filename,
+                        },
+                    ) +
                         ": " +
                         body,
                     t("tonieboxes.esp32BoxFlashing.title"),

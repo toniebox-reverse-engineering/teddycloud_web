@@ -25,7 +25,11 @@ export function useMigrateContent2Lib({ setRebuildList }: UseMigrateContent2LibP
         );
 
         try {
-            const response = await api.apiPostTeddyCloudRaw("/api/migrateContent2Lib", body, overlay);
+            const response = await api.apiPostTeddyCloudRaw(
+                "/api/migrateContent2Lib",
+                body,
+                overlay,
+            );
             const data = await response.text();
 
             closeLoadingNotification(key);

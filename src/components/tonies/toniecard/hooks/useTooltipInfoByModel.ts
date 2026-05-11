@@ -23,7 +23,9 @@ export const useTooltipInfoByModel = ({
 
     useEffect(() => {
         if (!isEditModalOpen) return;
-        const candidates = [toModelKey(selectedModel), toModelKey(resolvedAudioModel)].filter(Boolean);
+        const candidates = [toModelKey(selectedModel), toModelKey(resolvedAudioModel)].filter(
+            Boolean,
+        );
         const pending = Array.from(new Set(candidates)).filter((key) => !tooltipInfoByModel[key]);
         if (pending.length === 0) return;
 
@@ -34,11 +36,13 @@ export const useTooltipInfoByModel = ({
                     try {
                         const response = await api.apiGetTeddyCloudApiRaw(
                             `/api/toniesJsonSearch?searchModel=${encodeURIComponent(key)}&searchSeries=&searchEpisode=`,
-                            overlay
+                            overlay,
                         );
                         const data = await response.json();
                         const entries = Array.isArray(data) ? data : [];
-                        const exact = entries.find((entry: { model?: string }) => toModelKey(entry?.model) === key);
+                        const exact = entries.find(
+                            (entry: { model?: string }) => toModelKey(entry?.model) === key,
+                        );
                         if (!exact) return [key, undefined] as const;
                         const info: TooltipInfo = {
                             model: String(exact.model || "").trim(),
@@ -54,7 +58,7 @@ export const useTooltipInfoByModel = ({
                     } catch {
                         return [key, undefined] as const;
                     }
-                })
+                }),
             );
             if (cancelled) return;
             setTooltipInfoByModel((prev) => {

@@ -15,7 +15,7 @@ export const useReachableBackUpUrls = () => {
                 title: "ESP32 viewer by g3gg0",
             },
         ],
-        []
+        [],
     );
 
     return useUrlsReachable(urls);

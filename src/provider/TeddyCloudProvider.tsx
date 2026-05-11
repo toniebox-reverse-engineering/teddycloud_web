@@ -14,7 +14,11 @@ import { notification as antdNotification } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import * as AntIcons from "@ant-design/icons";
 
-import { NotificationRecord, NotificationType, NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
+import {
+    NotificationRecord,
+    NotificationType,
+    NotificationTypeEnum,
+} from "../types/teddyCloudNotificationTypes";
 import { PluginMeta, TeddyCloudSection } from "../types/pluginsMetaTypes";
 import { TeddyCloudApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
@@ -56,7 +60,7 @@ interface TeddyCloudContextType {
         description: string,
         context?: string,
         confirmed?: boolean,
-        persist?: boolean
+        persist?: boolean,
     ) => void;
     addLoadingNotification: (key: string, message: string, description?: string) => void;
     closeLoadingNotification: (key: string) => Promise<void>;
@@ -86,30 +90,30 @@ interface TeddyCloudContextType {
 
 const TeddyCloudContext = createContext<TeddyCloudContextType>({
     fetchCloudStatus: false,
-    setFetchCloudStatus: () => { },
+    setFetchCloudStatus: () => {},
     toniesCloudAvailable: false,
-    setToniesCloudAvailable: () => { },
+    setToniesCloudAvailable: () => {},
     notifications: [],
-    addNotification: () => { },
-    addLoadingNotification: () => { },
-    closeLoadingNotification: async () => { },
-    confirmNotification: () => { },
+    addNotification: () => {},
+    addLoadingNotification: () => {},
+    closeLoadingNotification: async () => {},
+    confirmNotification: () => {},
     unconfirmedCount: 0,
-    clearAllNotifications: () => { },
-    removeNotifications: () => { },
+    clearAllNotifications: () => {},
+    removeNotifications: () => {},
     navOpen: false,
-    setNavOpen: () => { },
+    setNavOpen: () => {},
     subNavOpen: false,
-    setSubNavOpen: () => { },
+    setSubNavOpen: () => {},
     currentTCSection: "",
-    setCurrentTCSection: () => { },
+    setCurrentTCSection: () => {},
     plugins: [],
     getPluginMeta: () => undefined,
-    fetchPlugins: async () => { },
+    fetchPlugins: async () => {},
     boxModelImages: [],
     boxModelImagesLoading: false,
     toniesRefreshTrigger: 0,
-    invalidateTonies: () => { },
+    invalidateTonies: () => {},
 });
 
 interface TeddyCloudProviderProps {
@@ -146,7 +150,8 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             const stored = localStorage.getItem("notifications");
             if (!stored) return;
 
-            const parsed: (Omit<NotificationRecord, "date"> & { date: string })[] = JSON.parse(stored);
+            const parsed: (Omit<NotificationRecord, "date"> & { date: string })[] =
+                JSON.parse(stored);
             const chunk = 200;
             let idx = 0;
 
@@ -185,7 +190,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             description: string,
             context?: string,
             confirmed?: boolean,
-            persist?: boolean
+            persist?: boolean,
         ) => {
             if (persist === undefined || persist) {
                 const newNotification: NotificationRecord = {
@@ -195,7 +200,8 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                     title,
                     description,
                     context: context || "",
-                    flagConfirmed: confirmed !== undefined ? confirmed : type === "success" || type === "info",
+                    flagConfirmed:
+                        confirmed !== undefined ? confirmed : type === "success" || type === "info",
                 };
 
                 setNotifications((prev) => {
@@ -218,21 +224,24 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                 });
             }, 0);
         },
-        []
+        [],
     );
 
-    const addLoadingNotification = useCallback((key: string, title: string, description?: string) => {
-        setTimeout(() => {
-            antdNotification.open({
-                key,
-                title,
-                description,
-                icon: <LoadingOutlined />,
-                duration: 0,
-                placement: "topRight",
-            });
-        }, 0);
-    }, []);
+    const addLoadingNotification = useCallback(
+        (key: string, title: string, description?: string) => {
+            setTimeout(() => {
+                antdNotification.open({
+                    key,
+                    title,
+                    description,
+                    icon: <LoadingOutlined />,
+                    duration: 0,
+                    placement: "topRight",
+                });
+            }, 0);
+        },
+        [],
+    );
 
     const closeLoadingNotification = useCallback(async (key: string) => {
         setTimeout(() => antdNotification.destroy(key), 300);
@@ -260,7 +269,10 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         localStorage.removeItem("notifications");
     }, []);
 
-    const unconfirmedCount = useMemo(() => notifications.filter((n) => !n.flagConfirmed).length, [notifications]);
+    const unconfirmedCount = useMemo(
+        () => notifications.filter((n) => !n.flagConfirmed).length,
+        [notifications],
+    );
 
     // =====================================
     // Plugin Handling
@@ -288,7 +300,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                         const meta = await res.json();
                         return { folder, meta };
                     })
-                    .catch(() => ({ folder, meta: null }))
+                    .catch(() => ({ folder, meta: null })),
             );
 
             const results = await Promise.all(requests);
@@ -315,7 +327,9 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                     description: meta.description || "",
                     standalone: meta.standalone || false,
                     pluginHomepage: meta.pluginHomepage,
-                    teddyCloudSection: Object.values(TeddyCloudSection).includes(meta.teddyCloudSection)
+                    teddyCloudSection: Object.values(TeddyCloudSection).includes(
+                        meta.teddyCloudSection,
+                    )
                         ? meta.teddyCloudSection
                         : null,
                     icon: (meta.icon && meta.icon in AntIcons
@@ -332,7 +346,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                     "Some plugins missing pluginName",
                     invalid.join(", "),
                     "TeddyCloudContext",
-                    true
+                    true,
                 );
             }
 
@@ -342,7 +356,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                     "Some plugins failed to load",
                     failed.join(", "),
                     "TeddyCloudContext",
-                    false
+                    false,
                 );
             }
         } catch (error) {
@@ -351,7 +365,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                 "Loading plugins failed",
                 String(error),
                 "TeddyCloudContext",
-                false
+                false,
             );
             console.error(error);
         }
@@ -361,7 +375,10 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
         fetchPlugins();
     }, [fetchPlugins]);
 
-    const getPluginMeta = useCallback((pluginId: string) => plugins.find((p) => p.pluginId === pluginId), [plugins]);
+    const getPluginMeta = useCallback(
+        (pluginId: string) => plugins.find((p) => p.pluginId === pluginId),
+        [plugins],
+    );
 
     // =====================================
     // Context Value memoizen
@@ -416,7 +433,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
             boxModelImagesLoading,
             toniesRefreshTrigger,
             invalidateTonies,
-        ]
+        ],
     );
 
     return <TeddyCloudContext.Provider value={contextValue}>{children}</TeddyCloudContext.Provider>;

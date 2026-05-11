@@ -49,7 +49,14 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
         if (saveOnNavigate && hasChanges()) (onSaveForNavigate ?? onSave)?.();
         onPrev?.();
     };
-    const resolvedTitle = title || (totalItems > 0 ? t("tonies.customEditor.editModalTitle", { current: currentIndex + 1, total: totalItems }) : t("tonies.customEditor.actions.newModel"));
+    const resolvedTitle =
+        title ||
+        (totalItems > 0
+            ? t("tonies.customEditor.editModalTitle", {
+                  current: currentIndex + 1,
+                  total: totalItems,
+              })
+            : t("tonies.customEditor.actions.newModel"));
     return (
         <Modal
             open={open}
@@ -58,19 +65,61 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
             title={resolvedTitle}
             onCancel={onCancel}
             zIndex={zIndex}
-            footer={<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-                {!hideNavigationControls && totalItems > 1 ? (
-                    <Checkbox checked={saveOnNavigate} onChange={(e) => setSaveOnNavigate(e.target.checked)} style={{ marginRight: "auto" }}>
-                        {t("tonies.teddystudio.saveOnNavigate")}
-                    </Checkbox>
-                ) : <div style={{ marginRight: "auto" }} />}
-                <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: 8 }}>
-                    {!hideNavigationControls && totalItems > 1 && <Button key="prev" onClick={handlePrev} disabled={!canGoPrev}><ArrowLeftOutlined /></Button>}
-                    <Button key="cancel" onClick={onCancel}>{t("tonies.teddystudio.cancel")}</Button>
-                    {onSave && <Button key="save" type="primary" onClick={onSave} disabled={!hasChanges()}>{t("tonies.teddystudio.save")}</Button>}
-                    {!hideNavigationControls && totalItems > 1 && <Button key="next" onClick={handleNext} disabled={!canGoNext}><ArrowRightOutlined /></Button>}
+            footer={
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        gap: 8,
+                    }}
+                >
+                    {!hideNavigationControls && totalItems > 1 ? (
+                        <Checkbox
+                            checked={saveOnNavigate}
+                            onChange={(e) => setSaveOnNavigate(e.target.checked)}
+                            style={{ marginRight: "auto" }}
+                        >
+                            {t("tonies.teddystudio.saveOnNavigate")}
+                        </Checkbox>
+                    ) : (
+                        <div style={{ marginRight: "auto" }} />
+                    )}
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            flexWrap: "wrap",
+                            gap: 8,
+                        }}
+                    >
+                        {!hideNavigationControls && totalItems > 1 && (
+                            <Button key="prev" onClick={handlePrev} disabled={!canGoPrev}>
+                                <ArrowLeftOutlined />
+                            </Button>
+                        )}
+                        <Button key="cancel" onClick={onCancel}>
+                            {t("tonies.teddystudio.cancel")}
+                        </Button>
+                        {onSave && (
+                            <Button
+                                key="save"
+                                type="primary"
+                                onClick={onSave}
+                                disabled={!hasChanges()}
+                            >
+                                {t("tonies.teddystudio.save")}
+                            </Button>
+                        )}
+                        {!hideNavigationControls && totalItems > 1 && (
+                            <Button key="next" onClick={handleNext} disabled={!canGoNext}>
+                                <ArrowRightOutlined />
+                            </Button>
+                        )}
+                    </div>
                 </div>
-            </div>}
+            }
         >
             {children}
         </Modal>

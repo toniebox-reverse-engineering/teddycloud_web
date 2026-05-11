@@ -94,7 +94,8 @@ export const useDirectoryCreate = ({
     };
 
     const createDirectory = () => {
-        const inputValueCreateDirectory = inputCreateDirectoryRef.current?.input?.value?.trim() || "";
+        const inputValueCreateDirectory =
+            inputCreateDirectoryRef.current?.input?.value?.trim() || "";
         if (!inputValueCreateDirectory) {
             return;
         }
@@ -102,7 +103,10 @@ export const useDirectoryCreate = ({
         const dirFullPath = `${decodeURIComponent(createDirectoryPath)}/${inputValueCreateDirectory}`;
 
         try {
-            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=${encodeURIComponent(special)}`, dirFullPath)
+            api.apiPostTeddyCloudRaw(
+                `/api/dirCreate?special=${encodeURIComponent(special)}`,
+                dirFullPath,
+            )
                 .then((response) => response.text())
                 .then((text) => {
                     if (text !== "OK") {

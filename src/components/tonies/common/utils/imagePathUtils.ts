@@ -16,7 +16,9 @@ export const toImageSrc = (url?: string): string => {
     if (!raw) return "";
     if (/^(https?:\/\/|data:|blob:)/i.test(raw)) return raw;
     const base =
-        (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) || "";
+        (typeof import.meta !== "undefined" &&
+            (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
+        "";
     return raw.startsWith("/") ? `${base.replace(/\/$/, "")}${raw}` : raw;
 };
 

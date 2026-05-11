@@ -13,7 +13,11 @@ import { useTranslation } from "react-i18next";
 import { languageOptions } from "../../../common/icons/LanguageFlagIcon";
 import CustomFilterHelpModal from "../modals/ToniesCustomFilterHelpModal";
 import HelpModal from "../modals/ToniesHelpModal";
-import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";
+import type {
+    ToniesFilterActions,
+    ToniesFilterSettings,
+    ToniesFilterState,
+} from "../../../../types/toniesFilterTypes";
 import { SearchDropdownOption, SearchDropdown } from "../../../common/elements/SearchDropdown";
 
 const { useToken } = theme;
@@ -136,10 +140,12 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
         setCustomFilter(updatedFilter);
         validateCustomFilter(updatedFilter);
 
-        const options = getCustomFilterCompletions(updatedFilter).map<SearchDropdownOption>((v) => ({
-            value: v,
-            label: v,
-        }));
+        const options = getCustomFilterCompletions(updatedFilter).map<SearchDropdownOption>(
+            (v) => ({
+                value: v,
+                label: v,
+            }),
+        );
         setCustomFilterOptions(options);
     };
 
@@ -244,7 +250,9 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                 <h3 style={{ margin: 0 }}>{t("tonies.tonies.filterBar.title")}</h3>
 
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                    <div
+                        style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}
+                    >
                         <Dropdown
                             open={filterMenuOpen}
                             onOpenChange={(open) => setFilterMenuOpen(open)}
@@ -277,13 +285,22 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                 </div>
             </div>
 
-            <Card size="small" title={t("tonies.tonies.filterBar.basicFilters")} style={{ marginBottom: 8 }}>
+            <Card
+                size="small"
+                title={t("tonies.tonies.filterBar.basicFilters")}
+                style={{ marginBottom: 8 }}
+            >
                 <Input
                     id="search-field"
                     placeholder={t("tonies.tonies.filterBar.searchPlaceholder")}
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    suffix={<SearchOutlined onMouseDown={(e) => e.preventDefault()} onClick={() => applyFilters()} />}
+                    suffix={
+                        <SearchOutlined
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => applyFilters()}
+                        />
+                    }
                     style={{ marginBottom: 8 }}
                 />
 
@@ -316,7 +333,11 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                 </Select>
             </Card>
 
-            <Card size="small" title={t("tonies.tonies.filterBar.statusFilters")} style={{ marginBottom: 8 }}>
+            <Card
+                size="small"
+                title={t("tonies.tonies.filterBar.statusFilters")}
+                style={{ marginBottom: 8 }}
+            >
                 <div
                     style={{
                         display: "grid",
@@ -335,11 +356,18 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                             [nocloudFilter, setNocloudFilter, "noCloud"],
                             [unsetNocloudFilter, setUnsetNocloudFilter, "unsetNoCloud"],
                             [hasCloudAuthFilter, setHasCloudAuthFilter, "hasCloudAuth"],
-                            [unsetHasCloudAuthFilter, setUnsetHasCloudAuthFilter, "unsetHasCloudAuth"],
+                            [
+                                unsetHasCloudAuthFilter,
+                                setUnsetHasCloudAuthFilter,
+                                "unsetHasCloudAuth",
+                            ],
                             [filterLastTonieboxRUIDs, setFilterLastTonieboxRUIDs, "lastPlayed"],
                         ] as [boolean, (value: boolean) => void, string][]
                     ).map(([checked, setter, labelKey]) => (
-                        <div key={labelKey} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div
+                            key={labelKey}
+                            style={{ display: "flex", alignItems: "center", gap: 8 }}
+                        >
                             <Switch checked={checked} onChange={(val) => setter(val)} />
                             {t(`tonies.tonies.filterBar.${labelKey}`)}
                         </div>
@@ -347,7 +375,11 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                 </div>
             </Card>
 
-            <Card size="small" title={t("tonies.tonies.filterBar.customFilter.label")} style={{ marginBottom: 8 }}>
+            <Card
+                size="small"
+                title={t("tonies.tonies.filterBar.customFilter.label")}
+                style={{ marginBottom: 8 }}
+            >
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     {!customFilterValid && (
                         <Tooltip title={customFilterError} placement="right">
@@ -386,7 +418,9 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                     flexWrap: "wrap",
                 }}
             >
-                <Button onClick={() => resetFilters()}>{t("tonies.tonies.filterBar.resetFilters")}</Button>
+                <Button onClick={() => resetFilters()}>
+                    {t("tonies.tonies.filterBar.resetFilters")}
+                </Button>
                 <Button type="primary" onClick={() => applyFilters()}>
                     {t("tonies.tonies.filterBar.applyFilters")}
                 </Button>
@@ -397,7 +431,9 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
     const filterPanelContentItem = [
         {
             key: "search-filter",
-            label: collapsed ? t("tonies.tonies.filterBar.showFilters") : t("tonies.tonies.filterBar.hideFilters"),
+            label: collapsed
+                ? t("tonies.tonies.filterBar.showFilters")
+                : t("tonies.tonies.filterBar.hideFilters"),
             children: filterPanelContent,
         },
     ];
@@ -419,12 +455,19 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                         marginBottom: 8,
                     }}
                 >
-                    <Button size="small" icon={<QuestionCircleOutlined />} onClick={() => setIsHelpModalOpen(true)}>
+                    <Button
+                        size="small"
+                        icon={<QuestionCircleOutlined />}
+                        onClick={() => setIsHelpModalOpen(true)}
+                    >
                         {t("fileBrowser.help.showHelp")}
                     </Button>
                 </div>
                 {isHelpModalOpen && (
-                    <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+                    <HelpModal
+                        isHelpModalOpen={isHelpModalOpen}
+                        onClose={() => setIsHelpModalOpen(false)}
+                    />
                 )}
             </>
         );
@@ -446,16 +489,26 @@ export const ToniesFilterPanel: React.FC<ToniesFilterPanelProps> = ({
                     marginBottom: 8,
                 }}
             >
-                <Button size="small" icon={<QuestionCircleOutlined />} onClick={() => setIsHelpModalOpen(true)}>
+                <Button
+                    size="small"
+                    icon={<QuestionCircleOutlined />}
+                    onClick={() => setIsHelpModalOpen(true)}
+                >
                     {t("fileBrowser.help.showHelp")}
                 </Button>
             </div>
 
             {isHelpModalOpen && (
-                <HelpModal isHelpModalOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+                <HelpModal
+                    isHelpModalOpen={isHelpModalOpen}
+                    onClose={() => setIsHelpModalOpen(false)}
+                />
             )}
             {isCustomFilterHelpOpen && (
-                <CustomFilterHelpModal open={isCustomFilterHelpOpen} onClose={() => setIsCustomFilterHelpOpen(false)} />
+                <CustomFilterHelpModal
+                    open={isCustomFilterHelpOpen}
+                    onClose={() => setIsCustomFilterHelpOpen(false)}
+                />
             )}
 
             <Collapse

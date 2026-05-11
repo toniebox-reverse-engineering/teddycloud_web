@@ -52,7 +52,9 @@ export function ErrorsFromJSONTyped(json: any, ignoreDiscriminator: boolean): Er
         return json;
     }
     return {
-        errors: !exists(json, "errors") ? undefined : (json["errors"] as Array<any>).map(ErrorsErrorsInnerFromJSON),
+        errors: !exists(json, "errors")
+            ? undefined
+            : (json["errors"] as Array<any>).map(ErrorsErrorsInnerFromJSON),
     };
 }
 
@@ -64,6 +66,9 @@ export function ErrorsToJSON(value?: Errors | null): any {
         return null;
     }
     return {
-        errors: value.errors === undefined ? undefined : (value.errors as Array<any>).map(ErrorsErrorsInnerToJSON),
+        errors:
+            value.errors === undefined
+                ? undefined
+                : (value.errors as Array<any>).map(ErrorsErrorsInnerToJSON),
     };
 }

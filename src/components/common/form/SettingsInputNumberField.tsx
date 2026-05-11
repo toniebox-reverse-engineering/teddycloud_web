@@ -19,11 +19,15 @@ export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props)
     const [field, meta] = useField<number | undefined>(name!);
     const [overlayed, setOverlayed] = useState<boolean | undefined>(initialOverlayed); // State to track overlayed boolean
 
-    const [fieldValue, setFieldValue] = useState(SettingsDataHandler.getInstance().getSetting(name)?.value);
+    const [fieldValue, setFieldValue] = useState(
+        SettingsDataHandler.getInstance().getSetting(name)?.value,
+    );
     const idListener = () => {
         setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
         setOverlayed(
-            overlayed !== undefined ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed : undefined
+            overlayed !== undefined
+                ? SettingsDataHandler.getInstance().getSetting(name)?.overlayed
+                : undefined,
         );
     };
 
@@ -40,7 +44,10 @@ export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props)
             <Checkbox
                 checked={overlayed}
                 onChange={(changeEventHandler) => {
-                    SettingsDataHandler.getInstance().changeSettingOverlayed(name, changeEventHandler.target.checked);
+                    SettingsDataHandler.getInstance().changeSettingOverlayed(
+                        name,
+                        changeEventHandler.target.checked,
+                    );
                     setOverlayed(SettingsDataHandler.getInstance().getSetting(name)?.overlayed);
                 }}
                 key="overlayCheckBox"
@@ -63,7 +70,11 @@ export const SettingsInputNumberField: React.FC<InputNumberFieldProps> = (props)
                     {...field}
                     value={value}
                     onChange={(value) => {
-                        SettingsDataHandler.getInstance().changeSetting(name, value ?? 0, overlayed);
+                        SettingsDataHandler.getInstance().changeSetting(
+                            name,
+                            value ?? 0,
+                            overlayed,
+                        );
                         setFieldValue(SettingsDataHandler.getInstance().getSetting(name)?.value);
                     }}
                     disabled={!overlayed && overlayed !== undefined}

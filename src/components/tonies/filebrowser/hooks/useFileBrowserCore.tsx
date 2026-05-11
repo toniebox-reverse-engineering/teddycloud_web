@@ -164,7 +164,8 @@ export const useFileBrowserCore = ({
         }
 
         api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${apiPathParam}&special=${special}` + (overlay ? `&overlay=${overlay}` : ""),
+            `/api/fileIndexV2?path=${apiPathParam}&special=${special}` +
+                (overlay ? `&overlay=${overlay}` : ""),
         )
             .then(async (response: Response) => {
                 // IMPORTANT: make non-2xx fail deterministically (so we can fallback)
@@ -185,7 +186,9 @@ export const useFileBrowserCore = ({
 
                     if (filetypeFilter.length > 0 && !entry.isDir) {
                         const lowerName = entry.name.toLowerCase();
-                        return filetypeFilter.some((suffix) => lowerName.endsWith(suffix.toLowerCase()));
+                        return filetypeFilter.some((suffix) =>
+                            lowerName.endsWith(suffix.toLowerCase()),
+                        );
                     }
                     return true;
                 });
@@ -218,7 +221,9 @@ export const useFileBrowserCore = ({
                     addNotification(
                         NotificationTypeEnum.Warning,
                         t("fileBrowser.messages.errorFetchingDirContent"),
-                        t("fileBrowser.messages.errorFetchingDirContentDetails", { path: path || "/" }) + error,
+                        t("fileBrowser.messages.errorFetchingDirContentDetails", {
+                            path: path || "/",
+                        }) + error,
                         t("fileBrowser.title"),
                     );
 
@@ -239,14 +244,20 @@ export const useFileBrowserCore = ({
     }, [active, path, special, showDirOnly, rebuildList]);
 
     useEffect(() => {
-        const timer = window.setTimeout(() => setFilterText(filterInputText), UI_SEARCH_DEBOUNCE_MS);
+        const timer = window.setTimeout(
+            () => setFilterText(filterInputText),
+            UI_SEARCH_DEBOUNCE_MS,
+        );
         return () => window.clearTimeout(timer);
     }, [filterInputText]);
 
     // restore caret position in filter field
     useEffect(() => {
         if (cursorPositionFilterRef.current !== null && inputFilterRef.current) {
-            inputFilterRef.current.setSelectionRange(cursorPositionFilterRef.current, cursorPositionFilterRef.current);
+            inputFilterRef.current.setSelectionRange(
+                cursorPositionFilterRef.current,
+                cursorPositionFilterRef.current,
+            );
         }
     }, [filterInputText]);
 
@@ -305,7 +316,10 @@ export const useFileBrowserCore = ({
 
             breadcrumbItems.push({
                 title: (
-                    <span style={{ cursor: "pointer" }} onClick={() => handleBreadcrumbClick(segmentPath)}>
+                    <span
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleBreadcrumbClick(segmentPath)}
+                    >
                         {decodeURIComponent(segment)}
                     </span>
                 ),
@@ -337,7 +351,8 @@ export const useFileBrowserCore = ({
         if (fieldA === undefined) return 1;
         if (fieldB === undefined) return -1;
 
-        if (typeof fieldA === "string" && typeof fieldB === "string") return fieldA.localeCompare(fieldB);
+        if (typeof fieldA === "string" && typeof fieldB === "string")
+            return fieldA.localeCompare(fieldB);
         if (typeof fieldA === "number" && typeof fieldB === "number") return fieldA - fieldB;
 
         // eslint-disable-next-line no-console
@@ -356,7 +371,12 @@ export const useFileBrowserCore = ({
         if (dirPath === "..") {
             if (!path) return "";
             if (mode === "fileBrowser") {
-                return path.split("/").map(decodeURIComponent).slice(0, -1).map(encodeURIComponent).join("/");
+                return path
+                    .split("/")
+                    .map(decodeURIComponent)
+                    .slice(0, -1)
+                    .map(encodeURIComponent)
+                    .join("/");
             }
             return path.split("/").slice(0, -1).join("/");
         }
@@ -384,7 +404,9 @@ export const useFileBrowserCore = ({
         const encodedName = encodeURIComponent(fileName);
 
         if (special === "custom_img") {
-            return encodedPath ? `/custom_img/${encodedPath}/${encodedName}` : `/custom_img/${encodedName}`;
+            return encodedPath
+                ? `/custom_img/${encodedPath}/${encodedName}`
+                : `/custom_img/${encodedName}`;
         }
 
         let url = `/content/${encodedPath ? encodedPath + "/" : "/"}${encodedName}`;
@@ -398,7 +420,8 @@ export const useFileBrowserCore = ({
         return url;
     };
 
-    const noData = files.length === 0 && !loading ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : null;
+    const noData =
+        files.length === 0 && !loading ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : null;
 
     return {
         path,
