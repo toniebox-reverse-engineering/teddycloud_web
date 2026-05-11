@@ -14,6 +14,7 @@
 - gui: added selection for custom and original images for TeddyStudio and Custom-Model-Editor
 - gui: added option in tonie edit modal to set audio from model in case they differ
 - gui: Fixed double episode content in TeddyStudio [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296)
+- gui: added formatting (internal)
 
 ### Commits
 
