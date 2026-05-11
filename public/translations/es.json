@@ -2330,7 +2330,22 @@
             "title": "TeddyStudio",
             "trackTitles": "Títulos (uno por línea)",
             "fontFamily": "Fuente de etiqueta",
-            "fontFamilyPlaceholder": "Elegir una fuente"
+            "fontFamilyPlaceholder": "Elegir una fuente",
+            "bulkAdd": {
+                "button": "Añadir varios tonies",
+                "modal": {
+                    "title": "Añadir varios tonies a la hoja de impresión",
+                    "leftTitle": "tonies.json",
+                    "rightTitle": "En cola para añadir",
+                    "searchPlaceholder": "Buscar",
+                    "searchPrompt": "Buscar en tonies.json…",
+                    "searchHint": "Escribe al menos 2 caracteres para buscar en tonies.json.",
+                    "itemUnit": "tonie",
+                    "itemsUnit": "tonies",
+                    "notFound": "Ningún tonie coincide",
+                    "confirm": "Añadir {{count}} a la hoja"
+                }
+            }
         },
         "title": "Tonies",
         "tonies": {

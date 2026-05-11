@@ -2330,7 +2330,22 @@
             "title": "TeddyStudio",
             "trackTitles": "Titel (jeweils eine Zeile)",
             "fontFamily": "Schriftart",
-            "fontFamilyPlaceholder": "Schriftart wählen"
+            "fontFamilyPlaceholder": "Schriftart wählen",
+            "bulkAdd": {
+                "button": "Mehrere Tonies hinzufügen",
+                "modal": {
+                    "title": "Mehrere Tonies zum Druckbogen hinzufügen",
+                    "leftTitle": "tonies.json",
+                    "rightTitle": "Zum Hinzufügen vorgemerkt",
+                    "searchPlaceholder": "Suchen",
+                    "searchPrompt": "tonies.json durchsuchen…",
+                    "searchHint": "Bitte mindestens 2 Zeichen eingeben, um tonies.json zu durchsuchen.",
+                    "itemUnit": "Tonie",
+                    "itemsUnit": "Tonies",
+                    "notFound": "Keine passenden Tonies",
+                    "confirm": "{{count}} hinzufügen"
+                }
+            }
         },
         "title": "Tonies",
         "tonies": {

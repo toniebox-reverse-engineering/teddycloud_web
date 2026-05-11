@@ -2330,7 +2330,22 @@
             "title": "TeddyStudio",
             "trackTitles": "Track titles (one per line)",
             "fontFamily": "Label font",
-            "fontFamilyPlaceholder": "Choose a font"
+            "fontFamilyPlaceholder": "Choose a font",
+            "bulkAdd": {
+                "button": "Bulk add tonies",
+                "modal": {
+                    "title": "Bulk add tonies to print sheet",
+                    "leftTitle": "tonies.json",
+                    "rightTitle": "Queued to add",
+                    "searchPlaceholder": "Search",
+                    "searchPrompt": "Search tonies.json…",
+                    "searchHint": "Type at least 2 characters to search tonies.json.",
+                    "itemUnit": "tonie",
+                    "itemsUnit": "tonies",
+                    "notFound": "No matching tonies",
+                    "confirm": "Add {{count}} to sheet"
+                }
+            }
         },
         "title": "Tonies",
         "tonies": {
