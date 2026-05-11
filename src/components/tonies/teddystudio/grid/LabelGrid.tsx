@@ -116,6 +116,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
 
                 const effectiveTextColor = getContrastTextColor(labelBackgroundColor || "#ffffff");
 
+                const circleText = `${dataset.text} ${dataset.episodes ? `- ${dataset.episodes}` : ""}`;
+
                 return (
                     <div
                         key={id}
@@ -177,7 +179,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                         <div className="labelOverlay">
                                             {labelShape == "round" ? (
                                                 <CircleText
-                                                    text={dataset.text}
+                                                    text={circleText}
                                                     size={150}
                                                     fontSize={parseFloat(
                                                         seriesOnImageLabelFontSize || textFontSize,
@@ -205,7 +207,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                         padding: 4,
                                                     }}
                                                 >
-                                                    {dataset.text}
+                                                    {circleText}
                                                 </div>
                                             )}
                                         </div>
@@ -256,6 +258,11 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                 height: "100%",
                                                 boxSizing: "border-box",
                                                 textAlign: "center",
+                                                display: "grid",
+                                                gridTemplateRows: "auto 1fr auto",
+                                                alignItems: "center",
+                                                justifyItems: "center",
+                                                gap: 4,
                                             }}
                                         >
                                             <div
@@ -306,7 +313,9 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                 style={{
                                                     fontSize: "smaller",
                                                     height: 12,
-                                                    marginBottom: 4,
+                                                    marginBottom:
+                                                        2 +
+                                                        mmToPx(parseFloat(paperLabelImageBleed)),
                                                 }}
                                             >
                                                 {showModelNo ? dataset.model : "   "}
