@@ -417,7 +417,7 @@ npm run format
 
 Then commit the changed files.
 
-GitHub Actions also runs the same formatting check on pull requests. A pull request will fail if files do not match the configured Prettier rules.
+The CI workflow runs the same formatting check (and additionally a production build) on pull requests, as well as on pushes to `master` and `develop`.
 
 ### Install dotenv
 
