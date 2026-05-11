@@ -9,6 +9,7 @@ on:
 
 jobs:
     prettier:
+        name: Formatting Check
         runs-on: ubuntu-latest
 
         steps:
@@ -23,6 +24,7 @@ jobs:
             - run: npm run format:check
 
     build:
+        name: Production Build
         runs-on: ubuntu-latest
 
         steps:
