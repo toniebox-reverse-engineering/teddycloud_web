@@ -283,7 +283,7 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
             okButtonProps={{ disabled: targetKeys.length === 0 }}
             cancelText={t("tonies.teddystudio.cancel")}
             width={900}
-            destroyOnClose
+            destroyOnHidden
         >
             <Input.Search
                 placeholder={t("tonies.teddystudio.bulkAdd.modal.searchPrompt")}

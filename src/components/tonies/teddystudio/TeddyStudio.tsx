@@ -152,14 +152,31 @@ export const TeddyStudio: React.FC = () => {
             <h1>{t("tonies.teddystudio.title")}</h1>
             <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
 
-            <ToniesJsonSearchWrapper onSelectDataset={addResult} />
-
-            <div style={{ marginTop: 8 }}>
-                <Button icon={<UnorderedListOutlined />} onClick={() => setBulkAddOpen(true)}>
-                    {t("tonies.teddystudio.bulkAdd.button")}
-                </Button>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    width: "100%",
+                    alignItems: "flex-start",
+                }}
+            >
+                <div
+                    style={{
+                        flex: 1,
+                        minWidth: 300,
+                        maxWidth: 600,
+                    }}
+                >
+                    <ToniesJsonSearchWrapper onSelectDataset={addResult} />
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    <Button icon={<UnorderedListOutlined />} onClick={() => setBulkAddOpen(true)}>
+                        {t("tonies.teddystudio.bulkAdd.button")}
+                    </Button>
+                </div>
             </div>
-
             <BulkAddToniesModal
                 open={bulkAddOpen}
                 onClose={() => setBulkAddOpen(false)}
