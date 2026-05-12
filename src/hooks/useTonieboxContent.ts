@@ -27,7 +27,7 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
                 tonieboxData.map(async (toniebox) => {
                     const contentDir = await api.apiGetTonieboxContentDir(toniebox.ID);
                     return [contentDir, toniebox.boxName, toniebox.ID] as [string, string, string];
-                })
+                }),
             );
 
             const groupedContentDirs: TonieBoxContentDir[] = tonieboxContentDirsRaw.reduce(
@@ -44,18 +44,21 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
                     }
                     return acc;
                 },
-                []
+                [],
             );
 
             const defaultContentDir = await api.apiGetTonieboxContentDir("");
-            const hasDefaultDir = groupedContentDirs.some((group) => group[0] === defaultContentDir);
+            const hasDefaultDir = groupedContentDirs.some(
+                (group) => group[0] === defaultContentDir,
+            );
 
             if (!hasDefaultDir) {
                 groupedContentDirs.push(["", ["TeddyCloud Default Content Dir"], ""]);
             }
 
             if (!overlay) {
-                const firstBoxId: string = groupedContentDirs.length > 0 ? groupedContentDirs[0][2] : "";
+                const firstBoxId: string =
+                    groupedContentDirs.length > 0 ? groupedContentDirs[0][2] : "";
                 setOverlay(firstBoxId);
                 localStorage.setItem("contentOverlay", firstBoxId);
             }

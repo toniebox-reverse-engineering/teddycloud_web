@@ -61,7 +61,8 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
     }, [open, currentFile]);
 
     const moveRenameFile = async (source: string, target: string) => {
-        const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
+        const body =
+            "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
         const key = "rename-file";
 
         addLoadingNotification(
@@ -105,7 +106,8 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
     };
 
     const handleOk = async () => {
-        const newFileName = inputRef.current && inputRef.current.input ? inputRef.current.input.value : currentFile;
+        const newFileName =
+            inputRef.current && inputRef.current.input ? inputRef.current.input.value : currentFile;
 
         if (!currentFile || !newFileName) {
             onClose();
@@ -149,12 +151,21 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
                 showIcon
                 style={{ marginBottom: 16 }}
             />
-            <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
+                    justifyContent: "space-between",
+                }}
+            >
                 <Form.Item
                     validateStatus={hasInvalidChars ? "error" : ""}
                     help={
                         hasInvalidChars
-                            ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
+                            ? t("inputValidator.invalidCharactersDetected", {
+                                  invalidChar: invalidCharactersAsString,
+                              })
                             : ""
                     }
                     required

@@ -136,7 +136,13 @@ export const ServerStatus = () => {
                 </Tag>
             </Tooltip>
 
-            <Tooltip title={teddyStatus ? t("server.teddycloudStatusOnline") : t("server.teddycloudStatusOffline")}>
+            <Tooltip
+                title={
+                    teddyStatus
+                        ? t("server.teddycloudStatusOnline")
+                        : t("server.teddycloudStatusOffline")
+                }
+            >
                 <Tag
                     icon={teddyStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
                     style={{

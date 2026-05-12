@@ -10,7 +10,12 @@ interface DeleteModalProps {
     onCancel: () => void;
 }
 
-export const DeleteModal: React.FC<DeleteModalProps> = ({ open, tonieboxName, onConfirm, onCancel }) => {
+export const DeleteModal: React.FC<DeleteModalProps> = ({
+    open,
+    tonieboxName,
+    onConfirm,
+    onCancel,
+}) => {
     const { t } = useTranslation();
 
     return (

@@ -494,7 +494,11 @@ const downloadPluginTemplate = (): void => {
 const PluginTemplateDownloadButton: React.FC = () => {
     const { t } = useTranslation();
 
-    return <Button onClick={downloadPluginTemplate}>{t("community.plugins.downloadPluginTemplate")}</Button>;
+    return (
+        <Button onClick={downloadPluginTemplate}>
+            {t("community.plugins.downloadPluginTemplate")}
+        </Button>
+    );
 };
 
 export default PluginTemplateDownloadButton;

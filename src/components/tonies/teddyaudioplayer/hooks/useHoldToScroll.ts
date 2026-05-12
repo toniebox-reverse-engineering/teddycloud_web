@@ -2,7 +2,7 @@ import { RefObject, useEffect, useRef } from "react";
 
 export function useHoldToScroll(
     containerRef: RefObject<HTMLDivElement | null>,
-    scrollSpeed: number
+    scrollSpeed: number,
 ): {
     startScrollLeft: () => void;
     startScrollRight: () => void;

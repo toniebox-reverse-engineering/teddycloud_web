@@ -13,24 +13,60 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ open, onC
     const { t } = useTranslation();
 
     const fields = [
-        { field: "series", description: t("tonies.tonies.filterBar.customFilterHelp.fields.series") },
-        { field: "episode", description: t("tonies.tonies.filterBar.customFilterHelp.fields.episode") },
+        {
+            field: "series",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.series"),
+        },
+        {
+            field: "episode",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.episode"),
+        },
         { field: "model", description: t("tonies.tonies.filterBar.customFilterHelp.fields.model") },
-        { field: "language", description: t("tonies.tonies.filterBar.customFilterHelp.fields.language") },
-        { field: "picture", description: t("tonies.tonies.filterBar.customFilterHelp.fields.picture") },
+        {
+            field: "language",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.language"),
+        },
+        {
+            field: "picture",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.picture"),
+        },
         { field: "uid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.uid") },
         { field: "ruid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.ruid") },
-        { field: "source", description: t("tonies.tonies.filterBar.customFilterHelp.fields.source") },
-        { field: "exists", description: t("tonies.tonies.filterBar.customFilterHelp.fields.exists") },
-        { field: "claimed", description: t("tonies.tonies.filterBar.customFilterHelp.fields.claimed") },
+        {
+            field: "source",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.source"),
+        },
+        {
+            field: "exists",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.exists"),
+        },
+        {
+            field: "claimed",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.claimed"),
+        },
         { field: "valid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.valid") },
         { field: "live", description: t("tonies.tonies.filterBar.customFilterHelp.fields.live") },
-        { field: "nocloud", description: t("tonies.tonies.filterBar.customFilterHelp.fields.nocloud") },
-        { field: "hasCloudAuth", description: t("tonies.tonies.filterBar.customFilterHelp.fields.hasCloudAuth") },
-        { field: "tracks", description: t("tonies.tonies.filterBar.customFilterHelp.fields.tracks") },
+        {
+            field: "nocloud",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.nocloud"),
+        },
+        {
+            field: "hasCloudAuth",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.hasCloudAuth"),
+        },
+        {
+            field: "tracks",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.tracks"),
+        },
         { field: "track", description: t("tonies.tonies.filterBar.customFilterHelp.fields.track") },
-        { field: "trackcount", description: t("tonies.tonies.filterBar.customFilterHelp.fields.trackcount") },
-        { field: "trackseconds", description: t("tonies.tonies.filterBar.customFilterHelp.fields.trackseconds") },
+        {
+            field: "trackcount",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.trackcount"),
+        },
+        {
+            field: "trackseconds",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.trackseconds"),
+        },
         {
             field: "tracksecondscount",
             description: t("tonies.tonies.filterBar.customFilterHelp.fields.tracksecondscount"),
@@ -68,10 +104,13 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ open, onC
             />
 
             <Paragraph>
-                <Text strong>{t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.title")}</Text>
+                <Text strong>
+                    {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.title")}
+                </Text>
             </Paragraph>
             <Paragraph>
-                <Text code>series=Pixi</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.series")}
+                <Text code>series=Pixi</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.series")}
             </Paragraph>
             <Paragraph>
                 <Text code>series=Pixi AND valid</Text> -{" "}
@@ -82,10 +121,12 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ open, onC
                 {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.or")}
             </Paragraph>
             <Paragraph>
-                <Text code>!nocloud</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.negation")}
+                <Text code>!nocloud</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.negation")}
             </Paragraph>
             <Paragraph>
-                <Text code>unique(series)</Text> - {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.unique")}
+                <Text code>unique(series)</Text> -{" "}
+                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.unique")}
             </Paragraph>
             <Paragraph>
                 <Text code>series is empty</Text> -{" "}
@@ -117,7 +158,9 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ open, onC
                 {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.combined")}
             </Paragraph>
             <Paragraph>
-                <Text strong>{t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.tracksTitle")}</Text>
+                <Text strong>
+                    {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.tracksTitle")}
+                </Text>
             </Paragraph>
             <Paragraph>
                 <Text code>tracks~"Pixi part 1"</Text> -{" "}
@@ -133,15 +176,21 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ open, onC
             </Paragraph>
             <Paragraph>
                 <Text code>tracksecondscount{">"}=3</Text> -{" "}
-                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountCompare")}
+                {t(
+                    "tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountCompare",
+                )}
             </Paragraph>
             <Paragraph>
                 <Text code>tracksecondscount=trackcount</Text> -{" "}
-                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountEqualsTrackCount")}
+                {t(
+                    "tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountEqualsTrackCount",
+                )}
             </Paragraph>
             <Paragraph>
                 <Text code>tracksecondscount!=trackcount</Text> -{" "}
-                {t("tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountNotEqualsTrackCount")}
+                {t(
+                    "tonies.tonies.filterBar.customFilterHelp.syntaxExamples.trackSecondsCountNotEqualsTrackCount",
+                )}
             </Paragraph>
 
             <Paragraph>

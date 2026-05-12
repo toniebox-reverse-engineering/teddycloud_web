@@ -34,10 +34,17 @@ export const SettingsButton: FunctionComponent<SettingsButtonProps> = ({ onClose
                 justifyContent: "flex-end",
             }}
         >
-            <Button disabled={isDisabled} onClick={() => SettingsDataHandler.getInstance().resetAll()}>
+            <Button
+                disabled={isDisabled}
+                onClick={() => SettingsDataHandler.getInstance().resetAll()}
+            >
                 {t("settings.discard")}
             </Button>
-            <Button disabled={isDisabled} type="primary" onClick={() => SettingsDataHandler.getInstance().saveAll()}>
+            <Button
+                disabled={isDisabled}
+                type="primary"
+                onClick={() => SettingsDataHandler.getInstance().saveAll()}
+            >
                 {t("settings.save")}
             </Button>
             {onClose ? (

@@ -20,10 +20,10 @@ export function useOverlayFromLocation() {
                     pathname: location.pathname,
                     search: params.toString(),
                 },
-                { replace: true }
+                { replace: true },
             );
         },
-        [location.pathname, location.search, navigate]
+        [location.pathname, location.search, navigate],
     );
 
     return { updateUrl };

@@ -1,6 +1,22 @@
 import React, { useMemo, useState } from "react";
-import { Table, Select, theme, Button, DatePicker, Input, Collapse, CollapseProps, Typography, Tooltip } from "antd";
-import { ExclamationCircleFilled, CheckCircleFilled, CloseCircleFilled, InfoCircleFilled } from "@ant-design/icons";
+import {
+    Table,
+    Select,
+    theme,
+    Button,
+    DatePicker,
+    Input,
+    Collapse,
+    CollapseProps,
+    Typography,
+    Tooltip,
+} from "antd";
+import {
+    ExclamationCircleFilled,
+    CheckCircleFilled,
+    CloseCircleFilled,
+    InfoCircleFilled,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import type { TableRowSelection, ColumnsType } from "antd/es/table/interface";
 import { NotificationRecord, NotificationType } from "../../../types/teddyCloudNotificationTypes";
@@ -54,7 +70,7 @@ const NotificationsList: React.FC = () => {
                 ...n,
                 _rowId: `${n.uuid}-${index}`,
             })),
-        [filteredNotifications]
+        [filteredNotifications],
     );
 
     const columns: ColumnsType<NotificationRow> = [
@@ -185,7 +201,9 @@ const NotificationsList: React.FC = () => {
         >
             <Select
                 mode="multiple"
-                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colType")}
+                placeholder={
+                    t("settings.notifications.filterBy") + " " + t("settings.notifications.colType")
+                }
                 onChange={setTypeFilter}
             >
                 <Option value="success">{t("settings.notifications.success")}</Option>
@@ -195,7 +213,11 @@ const NotificationsList: React.FC = () => {
             </Select>
             <Select
                 mode="multiple"
-                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colContext")}
+                placeholder={
+                    t("settings.notifications.filterBy") +
+                    " " +
+                    t("settings.notifications.colContext")
+                }
                 onChange={setContextFilter}
             >
                 {uniqueContexts.map((context) => (
@@ -206,7 +228,11 @@ const NotificationsList: React.FC = () => {
             </Select>
             <Select
                 mode="multiple"
-                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colStatus")}
+                placeholder={
+                    t("settings.notifications.filterBy") +
+                    " " +
+                    t("settings.notifications.colStatus")
+                }
                 onChange={setStatusFilter}
             >
                 <Option value="Confirmed">{t("settings.notifications.confirmed")}</Option>
@@ -220,15 +246,30 @@ const NotificationsList: React.FC = () => {
                         setDateRange([null, null]);
                     }
                 }}
-                value={dateRange[0] && dateRange[1] ? [dateRange[0] as any, dateRange[1] as any] : undefined}
-                placeholder={[t("settings.notifications.startDate"), t("settings.notifications.endDate")]}
+                value={
+                    dateRange[0] && dateRange[1]
+                        ? [dateRange[0] as any, dateRange[1] as any]
+                        : undefined
+                }
+                placeholder={[
+                    t("settings.notifications.startDate"),
+                    t("settings.notifications.endDate"),
+                ]}
             />
             <Input
-                placeholder={t("settings.notifications.searchIn") + " " + t("settings.notifications.colTitle")}
+                placeholder={
+                    t("settings.notifications.searchIn") +
+                    " " +
+                    t("settings.notifications.colTitle")
+                }
                 onChange={(e) => setTitleFilter(e.target.value)}
             />
             <Input
-                placeholder={t("settings.notifications.searchIn") + " " + t("settings.notifications.colDetails")}
+                placeholder={
+                    t("settings.notifications.searchIn") +
+                    " " +
+                    t("settings.notifications.colDetails")
+                }
                 onChange={(e) => setDescriptionFilter(e.target.value)}
             />
         </div>
@@ -237,7 +278,9 @@ const NotificationsList: React.FC = () => {
     const filterPanelContentItem: CollapseProps["items"] = [
         {
             key: "search-filter",
-            label: collapsed ? t("tonies.tonies.filterBar.showFilters") : t("tonies.tonies.filterBar.hideFilters"),
+            label: collapsed
+                ? t("tonies.tonies.filterBar.showFilters")
+                : t("tonies.tonies.filterBar.hideFilters"),
             children: filterPanelContent,
         },
     ];
@@ -274,7 +317,9 @@ const NotificationsList: React.FC = () => {
                     <Paragraph />
                 )}
                 <Paragraph>
-                    <Button onClick={clearAllNotifications}>{t("settings.notifications.removeAll")}</Button>
+                    <Button onClick={clearAllNotifications}>
+                        {t("settings.notifications.removeAll")}
+                    </Button>
                 </Paragraph>
             </Paragraph>
 
@@ -302,11 +347,14 @@ const NotificationsList: React.FC = () => {
                         ? {
                               expandedRowRender: (record) => (
                                   <div>
-                                      <strong>{t("settings.notifications.colDetails")}:</strong> {record.description}
+                                      <strong>{t("settings.notifications.colDetails")}:</strong>{" "}
+                                      {record.description}
                                       {record.context ? (
                                           <div>
                                               <br />
-                                              <strong>{t("settings.notifications.colContext")}:</strong>{" "}
+                                              <strong>
+                                                  {t("settings.notifications.colContext")}:
+                                              </strong>{" "}
                                               {record.context}
                                           </div>
                                       ) : null}
@@ -314,13 +362,17 @@ const NotificationsList: React.FC = () => {
                                       {isMobile ? (
                                           <div>
                                               <div>
-                                                  <strong>{t("settings.notifications.colStatus")}:</strong>{" "}
+                                                  <strong>
+                                                      {t("settings.notifications.colStatus")}:
+                                                  </strong>{" "}
                                                   {record.flagConfirmed ? (
                                                       t("settings.notifications.confirmed")
                                                   ) : (
                                                       <Tooltip
                                                           open={!canHover ? false : undefined}
-                                                          title={t("settings.notifications.clickToConfirm")}
+                                                          title={t(
+                                                              "settings.notifications.clickToConfirm",
+                                                          )}
                                                       >
                                                           {t("settings.notifications.unconfirmed")}
                                                       </Tooltip>
@@ -328,7 +380,9 @@ const NotificationsList: React.FC = () => {
                                               </div>
                                               <br />
                                               <div>
-                                                  <strong>{t("settings.notifications.colDate")}:</strong>{" "}
+                                                  <strong>
+                                                      {t("settings.notifications.colDate")}:
+                                                  </strong>{" "}
                                                   {record.date
                                                       .toLocaleString("en-US", {
                                                           year: "numeric",

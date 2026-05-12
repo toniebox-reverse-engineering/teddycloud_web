@@ -31,7 +31,12 @@ const VersionCards: React.FC<VersionCardsProps> = ({ versions }) => {
         <Row gutter={16} justify="start">
             {versions.map((version, index) => (
                 <Col key={index} xs={24} md={12} xl={8}>
-                    <Card title={version.name} size="small" variant="outlined" style={{ marginBottom: 8 }}>
+                    <Card
+                        title={version.name}
+                        size="small"
+                        variant="outlined"
+                        style={{ marginBottom: 8 }}
+                    >
                         <Title level={5} style={{ marginTop: 0 }}>
                             {t("tonieboxes.boxSetup.boxVersion.pros")}
                         </Title>
@@ -161,7 +166,10 @@ export const BoxVersionInformationPage: React.FC = () => {
                 t("tonieboxes.boxSetup.boxVersion.esp32pro2"),
                 t("tonieboxes.boxSetup.boxVersion.esp32pro3"),
             ],
-            cons: [t("tonieboxes.boxSetup.boxVersion.esp32con1"), t("tonieboxes.boxSetup.boxVersion.esp32con2")],
+            cons: [
+                t("tonieboxes.boxSetup.boxVersion.esp32con1"),
+                t("tonieboxes.boxSetup.boxVersion.esp32con2"),
+            ],
         },
     ];
 
@@ -176,7 +184,11 @@ export const BoxVersionInformationPage: React.FC = () => {
                         { title: <Link to="/">{t("home.navigationTitle")}</Link> },
                         { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
                         {
-                            title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link>,
+                            title: (
+                                <Link to="/tonieboxes/boxsetup">
+                                    {t("tonieboxes.boxSetup.navigationTitle")}
+                                </Link>
+                            ),
                         },
                         { title: t("tonieboxes.boxSetup.boxVersion.navigationTitle") },
                     ]}
@@ -187,7 +199,8 @@ export const BoxVersionInformationPage: React.FC = () => {
                         {t("tonieboxes.boxSetup.boxVersion.intro")}
                         <ul>
                             <li>
-                                <b>TB1 V1/V2</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} TI CC3200
+                                <b>TB1 V1/V2</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} TI
+                                CC3200
                             </li>
                             <li>
                                 <b>TB1 V3</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} TI CC3235
@@ -196,7 +209,8 @@ export const BoxVersionInformationPage: React.FC = () => {
                                 <b>TB1 V4</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} ESP32
                             </li>
                             <li>
-                                <b>TB2</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} NXP MIMXRT1061DVL6A
+                                <b>TB2</b>: {t("tonieboxes.boxSetup.boxVersion.uses")} NXP
+                                MIMXRT1061DVL6A
                             </li>
                         </ul>
                     </Paragraph>
@@ -204,7 +218,9 @@ export const BoxVersionInformationPage: React.FC = () => {
                     <Paragraph>{t("tonieboxes.boxSetup.boxVersion.whatVersionIntro")}</Paragraph>
                     <VersionCards versions={versionsData} />
                     <h4>{t("tonieboxes.boxSetup.boxVersion.whatVersionConclusionHeader")}</h4>
-                    <Paragraph>{t("tonieboxes.boxSetup.boxVersion.whatVersionConclusion")}</Paragraph>
+                    <Paragraph>
+                        {t("tonieboxes.boxSetup.boxVersion.whatVersionConclusion")}
+                    </Paragraph>
                     <h3>{t("tonieboxes.boxSetup.boxVersion.howToIdentify")}</h3>
                     <Paragraph>
                         {t("tonieboxes.boxSetup.boxVersion.howToIdentifyIntro")}

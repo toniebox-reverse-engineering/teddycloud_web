@@ -59,7 +59,8 @@ export const Settings: React.FC = () => {
                 title={t("settings.information")}
                 description={
                     <div>
-                        {t("settings.hint")} <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.
+                        {t("settings.hint")}{" "}
+                        <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.
                     </div>
                 }
                 type="info"

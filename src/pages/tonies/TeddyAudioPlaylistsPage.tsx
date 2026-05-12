@@ -1,7 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { Alert } from "antd";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { FileBrowser } from "../../components/tonies/filebrowser/FileBrowser";
 import { Link } from "react-router-dom";
@@ -27,7 +31,9 @@ export const TeddyAudioPlaylistsPage = () => {
 
                     <Alert
                         title={t("settings.information")}
-                        description=<div>Development still in progress - Feature is still unstable!</div>
+                        description=<div>
+                            Development still in progress - Feature is still unstable!
+                        </div>
                         type="info"
                         showIcon
                         style={{ marginBottom: 8 }}

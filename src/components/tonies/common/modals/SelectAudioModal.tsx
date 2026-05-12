@@ -75,7 +75,9 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
         setSelectedFile(resolveSelectedFile(files, path));
     };
 
-    const canConfirm = selectedFile && (!requireTafHeader || (selectedFile.audioId != null && selectedFile.hash != null));
+    const canConfirm =
+        selectedFile &&
+        (!requireTafHeader || (selectedFile.audioId != null && selectedFile.hash != null));
 
     const handleConfirm = () => {
         if (selectedFile && canConfirm) {
@@ -115,7 +117,9 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
                 background: token.colorBgElevated,
             }}
         >
-            <Button htmlType="button" onClick={handleCancel}>{t("tonies.selectFileModal.cancel")}</Button>
+            <Button htmlType="button" onClick={handleCancel}>
+                {t("tonies.selectFileModal.cancel")}
+            </Button>
             <Button htmlType="button" type="primary" onClick={handleConfirm} disabled={!canConfirm}>
                 {t("tonies.selectFileModal.ok")}
             </Button>

@@ -13,7 +13,7 @@ export const restartServer = async (
     redirectToBase: boolean,
     addNotification: Function,
     addLoadingNotification: Function,
-    closeLoadingNotification: Function
+    closeLoadingNotification: Function,
 ) => {
     const key = "restart-tc";
     addLoadingNotification(key, t("settings.restartTC"), t("settings.tryToRestartTC"));
@@ -28,7 +28,7 @@ export const restartServer = async (
                 NotificationTypeEnum.Error,
                 t("settings.restartFailed"),
                 `${t("settings.restartFailed")}: ${data.toString()}`,
-                t("settings.navigationTitle")
+                t("settings.navigationTitle"),
             );
             return;
         }
@@ -38,7 +38,7 @@ export const restartServer = async (
             NotificationTypeEnum.Error,
             t("settings.restartFailed"),
             `${t("settings.restartFailed")}: ${error}`,
-            t("settings.navigationTitle")
+            t("settings.navigationTitle"),
         );
         return;
     }
@@ -60,7 +60,7 @@ export const restartServer = async (
                     NotificationTypeEnum.Success,
                     t("settings.restartComplete"),
                     t("settings.restartComplete"),
-                    t("settings.navigationTitle")
+                    t("settings.navigationTitle"),
                 );
 
                 if (redirectToBase) {
@@ -79,6 +79,6 @@ export const restartServer = async (
         NotificationTypeEnum.Error,
         t("settings.restartFailed"),
         t("settings.restartFailed"),
-        t("settings.navigationTitle")
+        t("settings.navigationTitle"),
     );
 };

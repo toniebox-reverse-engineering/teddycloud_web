@@ -189,7 +189,9 @@ export const Encoder: React.FC = () => {
                                         className="encoder-save-dir"
                                         directoryTree={directoryTree}
                                         disabled={processing || uploading}
-                                        placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
+                                        placeholder={t(
+                                            "fileBrowser.moveFile.destinationPlaceholder",
+                                        )}
                                     />
 
                                     <Tooltip
@@ -202,7 +204,7 @@ export const Encoder: React.FC = () => {
                                             icon={<FolderAddOutlined />}
                                             onClick={() => {
                                                 const basePath = directoryTree.getPathFromNodeId(
-                                                    directoryTree.treeNodeId
+                                                    directoryTree.treeNodeId,
                                                 );
                                                 openCreateDirectoryModal(basePath);
                                             }}
@@ -217,7 +219,8 @@ export const Encoder: React.FC = () => {
                                         value={tafFilename}
                                         style={{ maxWidth: 300 }}
                                         status={
-                                            (fileList.length > 0 && tafFilename === "") || hasInvalidChars
+                                            (fileList.length > 0 && tafFilename === "") ||
+                                            hasInvalidChars
                                                 ? "error"
                                                 : ""
                                         }
@@ -252,8 +255,14 @@ export const Encoder: React.FC = () => {
                                     />
                                     <Button
                                         type="primary"
-                                        onClick={useFrontendEncoding ? handleWasmUpload : handleUpload}
-                                        disabled={fileList.length === 0 || tafFilename === "" || hasInvalidChars}
+                                        onClick={
+                                            useFrontendEncoding ? handleWasmUpload : handleUpload
+                                        }
+                                        disabled={
+                                            fileList.length === 0 ||
+                                            tafFilename === "" ||
+                                            hasInvalidChars
+                                        }
                                         loading={uploading || processing}
                                     >
                                         {uploading

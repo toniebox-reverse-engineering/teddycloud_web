@@ -21,7 +21,14 @@ interface UseToniesOptions {
 }
 
 export const useTonies = (options: UseToniesOptions = {}) => {
-    const { overlay = "", merged = true, shuffle = false, sort, includeHidden = false, filter = undefined } = options;
+    const {
+        overlay = "",
+        merged = true,
+        shuffle = false,
+        sort,
+        includeHidden = false,
+        filter = undefined,
+    } = options;
 
     const { t } = useTranslation();
     const { addNotification, toniesRefreshTrigger } = useTeddyCloud();

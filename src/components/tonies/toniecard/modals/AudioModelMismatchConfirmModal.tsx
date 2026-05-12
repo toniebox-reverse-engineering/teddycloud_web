@@ -33,7 +33,7 @@ export function showAudioModelMismatchConfirm(t: any, audioModel: string): Promi
                 content={t("tonies.confirmAudioModelMismatchModal.content", { audioModel })}
                 handleOk={handleOk}
                 handleCancel={handleCancel}
-            />
+            />,
         );
     });
 }

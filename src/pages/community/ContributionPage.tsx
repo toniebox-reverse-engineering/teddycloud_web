@@ -1,7 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { Link } from "react-router-dom";
 
@@ -48,8 +52,12 @@ export const ContributionPage = () => {
                         <Paragraph>{t("community.contribution.contributionIntro")}</Paragraph>
                         <Paragraph>
                             <h2>{t("community.contribution.communityValues")}</h2>
-                            <Paragraph>{t("community.contribution.communityValuesIntro")}</Paragraph>
-                            <Paragraph>{t("community.contribution.communityValuesExamples")}</Paragraph>
+                            <Paragraph>
+                                {t("community.contribution.communityValuesIntro")}
+                            </Paragraph>
+                            <Paragraph>
+                                {t("community.contribution.communityValuesExamples")}
+                            </Paragraph>
                             <ul>
                                 {communityValues.map((value, index) => (
                                     <li key={index}>{value}</li>
@@ -58,7 +66,9 @@ export const ContributionPage = () => {
                         </Paragraph>
                         <Paragraph>
                             <h2>{t("community.contribution.makeFirstContribution")}</h2>
-                            <Paragraph>{t("community.contribution.makeFirstContributionIntro")}</Paragraph>
+                            <Paragraph>
+                                {t("community.contribution.makeFirstContributionIntro")}
+                            </Paragraph>
                             <ul>
                                 {makeFirstContribution.map((value, index) => (
                                     <li key={index}>{value}</li>

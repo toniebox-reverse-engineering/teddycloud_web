@@ -176,7 +176,10 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                 {t("tonies.editModal.source")}
             </Divider>
             <div>
-                <Form.Item validateStatus={inputValidationSource.validateStatus} help={inputValidationSource.help}>
+                <Form.Item
+                    validateStatus={inputValidationSource.validateStatus}
+                    help={inputValidationSource.help}
+                >
                     <Input
                         key="source"
                         value={selectedSource}
@@ -188,29 +191,51 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleClearSource}
                             />,
-                            <Divider key="divider-source-1" orientation="vertical" style={{ marginLeft: 2 }} />,
+                            <Divider
+                                key="divider-source-1"
+                                orientation="vertical"
+                                style={{ marginLeft: 2 }}
+                            />,
                             <RollbackOutlined
                                 key="rollback-source"
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleRollbackSource}
                                 style={{
-                                    color: isSourceUnchanged ? token.colorTextDisabled : token.colorText,
+                                    color: isSourceUnchanged
+                                        ? token.colorTextDisabled
+                                        : token.colorText,
                                     cursor: isSourceUnchanged ? "default" : "pointer",
                                 }}
                                 className={isSourceUnchanged ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-source-2" orientation="vertical" style={{ marginLeft: 2 }} />,
+                            <Divider
+                                key="divider-source-2"
+                                orientation="vertical"
+                                style={{ marginLeft: 2 }}
+                            />,
                         ]}
                         suffix={[
                             audioInfoTooltip ? (
-                                <Tooltip key="audio-info" trigger={["hover", "click"]} title={audioInfoTooltip}>
+                                <Tooltip
+                                    key="audio-info"
+                                    trigger={["hover", "click"]}
+                                    title={audioInfoTooltip}
+                                >
                                     <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} />
                                 </Tooltip>
                             ) : null,
                             audioInfoTooltip ? (
-                                <Divider key="divider-source-info" orientation="vertical" style={{ marginLeft: 2 }} />
+                                <Divider
+                                    key="divider-source-info"
+                                    orientation="vertical"
+                                    style={{ marginLeft: 2 }}
+                                />
                             ) : null,
-                            <Divider key="divider-source-3" orientation="vertical" style={{ marginLeft: 2 }} />,
+                            <Divider
+                                key="divider-source-3"
+                                orientation="vertical"
+                                style={{ marginLeft: 2 }}
+                            />,
                             <FolderOpenOutlined
                                 key="select-file"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -258,17 +283,25 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             suffix={
                                 modelInfoTooltip ? (
                                     <Tooltip trigger={["hover", "click"]} title={modelInfoTooltip}>
-                                        <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} />
+                                        <InfoCircleOutlined
+                                            onMouseDown={(e) => e.preventDefault()}
+                                        />
                                     </Tooltip>
                                 ) : null
                             }
                         />
-                        <Text type="secondary" style={{ fontSize: 12, display: "block", marginTop: 4 }}>
+                        <Text
+                            type="secondary"
+                            style={{ fontSize: 12, display: "block", marginTop: 4 }}
+                        >
                             {t("tonies.editModal.modelReadOnlyHint")}
                         </Text>
                     </Form.Item>
                 ) : (
-                    <Form.Item validateStatus={inputValidationModel.validateStatus} help={inputValidationModel.help}>
+                    <Form.Item
+                        validateStatus={inputValidationModel.validateStatus}
+                        help={inputValidationModel.help}
+                    >
                         <Input
                             value={selectedModel}
                             onChange={(e) => onSelectedModelChange(e.target.value)}
@@ -284,7 +317,9 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                         onMouseDown={(e) => e.preventDefault()}
                                         onClick={handleRollbackModel}
                                         style={{
-                                            color: isModelUnchanged ? token.colorTextDisabled : token.colorText,
+                                            color: isModelUnchanged
+                                                ? token.colorTextDisabled
+                                                : token.colorText,
                                             cursor: isModelUnchanged ? "default" : "pointer",
                                         }}
                                     />
@@ -295,10 +330,18 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                 <>
                                     {modelInfoTooltip ? (
                                         <>
-                                            <Tooltip trigger={["hover", "click"]} title={modelInfoTooltip}>
-                                                <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} />
+                                            <Tooltip
+                                                trigger={["hover", "click"]}
+                                                title={modelInfoTooltip}
+                                            >
+                                                <InfoCircleOutlined
+                                                    onMouseDown={(e) => e.preventDefault()}
+                                                />
                                             </Tooltip>
-                                            <Divider orientation="vertical" style={{ marginLeft: 2, marginRight: 2 }} />
+                                            <Divider
+                                                orientation="vertical"
+                                                style={{ marginLeft: 2, marginRight: 2 }}
+                                            />
                                         </>
                                     ) : null}
                                     {selectedModel && onEditModel && isSelectedModelCustom ? (
@@ -319,7 +362,9 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                         </>
                                     ) : null}
                                     {onCreateNewModel ? (
-                                        <Tooltip title={t("tonies.editModal.createNewModelTooltip")}>
+                                        <Tooltip
+                                            title={t("tonies.editModal.createNewModelTooltip")}
+                                        >
                                             <PlusOutlined
                                                 onMouseDown={(e) => e.preventDefault()}
                                                 onClick={onCreateNewModel}
@@ -335,7 +380,10 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             clearInputAfterSelection={true}
                             onChange={onSearchModelChange}
                             onSelectResult={(result) => {
-                                onModelSelectResult?.({ value: result.value, selectionText: result.selectionText });
+                                onModelSelectResult?.({
+                                    value: result.value,
+                                    selectionText: result.selectionText,
+                                });
                             }}
                             key={keyTonieArticleSearch}
                             showAddCustomTonieButton={false}

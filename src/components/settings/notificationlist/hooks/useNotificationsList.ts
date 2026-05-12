@@ -5,7 +5,8 @@ import { NotificationRecord } from "../../../../types/teddyCloudNotificationType
 type NotificationStatusFilter = "Confirmed" | "Unconfirmed";
 
 export const useNotificationsList = () => {
-    const { notifications, confirmNotification, clearAllNotifications, removeNotifications } = useTeddyCloud();
+    const { notifications, confirmNotification, clearAllNotifications, removeNotifications } =
+        useTeddyCloud();
 
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
@@ -33,24 +34,37 @@ export const useNotificationsList = () => {
     }, []);
 
     const filteredNotifications: NotificationRecord[] = notifications.filter((notification) => {
-        const notificationDate = notification.date instanceof Date ? notification.date : new Date(notification.date);
+        const notificationDate =
+            notification.date instanceof Date ? notification.date : new Date(notification.date);
 
         const matchesDate =
-            (!dateRange[0] || notificationDate >= dateRange[0]) && (!dateRange[1] || notificationDate <= dateRange[1]);
+            (!dateRange[0] || notificationDate >= dateRange[0]) &&
+            (!dateRange[1] || notificationDate <= dateRange[1]);
 
         const title = notification.title || "";
         const description = notification.description || "";
         const context = notification.context || "";
 
         const matchesTitle = title.toLowerCase().includes(titleFilter.toLowerCase());
-        const matchesDescription = description.toLowerCase().includes(descriptionFilter.toLowerCase());
+        const matchesDescription = description
+            .toLowerCase()
+            .includes(descriptionFilter.toLowerCase());
         const matchesType = typeFilter.length === 0 || typeFilter.includes(notification.type);
         const matchesContext = contextFilter.length === 0 || contextFilter.includes(context);
 
-        const status: NotificationStatusFilter = notification.flagConfirmed ? "Confirmed" : "Unconfirmed";
+        const status: NotificationStatusFilter = notification.flagConfirmed
+            ? "Confirmed"
+            : "Unconfirmed";
         const matchesStatus = statusFilter.length === 0 || statusFilter.includes(status);
 
-        return matchesDate && matchesTitle && matchesDescription && matchesType && matchesContext && matchesStatus;
+        return (
+            matchesDate &&
+            matchesTitle &&
+            matchesDescription &&
+            matchesType &&
+            matchesContext &&
+            matchesStatus
+        );
     });
 
     const uniqueContexts = useMemo(

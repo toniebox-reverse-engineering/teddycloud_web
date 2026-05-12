@@ -6,7 +6,11 @@ import { Typography, Skeleton } from "antd";
 
 import readmeRaw from "../../../README.md?raw";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { ExportOutlined } from "@ant-design/icons";
 
@@ -46,7 +50,13 @@ export const AttributionPage = () => {
                 <BreadcrumbWrapper
                     items={[
                         { title: <RouterLink to="/">{t("home.navigationTitle")}</RouterLink> },
-                        { title: <RouterLink to="/community">{t("community.navigationTitle")}</RouterLink> },
+                        {
+                            title: (
+                                <RouterLink to="/community">
+                                    {t("community.navigationTitle")}
+                                </RouterLink>
+                            ),
+                        },
                         { title: t("community.attribution.navigationTitle") },
                     ]}
                 />

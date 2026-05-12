@@ -14,7 +14,11 @@ interface LanguageFlagIconProps extends React.ImgHTMLAttributes<HTMLImageElement
     height?: number | string;
 }
 
-export const LanguageFlagIcon: React.FC<LanguageFlagIconProps> = ({ name, height = 24, ...imgProps }) => {
+export const LanguageFlagIcon: React.FC<LanguageFlagIconProps> = ({
+    name,
+    height = 24,
+    ...imgProps
+}) => {
     const [flagUrl, setFlagUrl] = useState<string | null>(null);
 
     useEffect(() => {

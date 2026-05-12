@@ -2,7 +2,10 @@
 export const INVALID_NAME_CHARS = /[<>:"/\\|?*]/;
 
 // Space-separated string representation, useful for tooltips or error messages.
-export const INVALID_NAME_CHARS_DISPLAY = INVALID_NAME_CHARS.source.slice(1, -1).split("").join(" ");
+export const INVALID_NAME_CHARS_DISPLAY = INVALID_NAME_CHARS.source
+    .slice(1, -1)
+    .split("")
+    .join(" ");
 
 /**
  * Returns true if the given input contains at least one invalid character.

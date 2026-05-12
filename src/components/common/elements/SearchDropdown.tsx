@@ -196,7 +196,10 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
                                     padding: "4px 8px",
                                     display: "flex",
                                     alignItems: "center",
-                                    background: index === highlightedIndex ? token.controlItemBgActive : "transparent",
+                                    background:
+                                        index === highlightedIndex
+                                            ? token.controlItemBgActive
+                                            : "transparent",
                                 }}
                                 onMouseEnter={() => setHighlightedIndex(index)}
                                 onMouseDown={(e) => e.preventDefault()}

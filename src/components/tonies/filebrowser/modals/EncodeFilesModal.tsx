@@ -167,11 +167,15 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
         const target = basePath + "/" + newTafFilename + ".taf";
 
         const body =
-            encodeFileList.map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`).join("&") +
-            `&target=${encodeURIComponent(target)}`;
+            encodeFileList
+                .map((file) => `source=${encodeURIComponent(file.path + "/" + file.name)}`)
+                .join("&") + `&target=${encodeURIComponent(target)}`;
 
         try {
-            const response = await api.apiPostTeddyCloudRaw(`/api/fileEncode?special=${special}`, body);
+            const response = await api.apiPostTeddyCloudRaw(
+                `/api/fileEncode?special=${special}`,
+                body,
+            );
             if (response.ok) {
                 closeLoadingNotification(key);
                 addNotification(
@@ -189,7 +193,10 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("fileBrowser.encodeFiles.encodingFailed"),
-                    t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }).replace(": ", ""),
+                    t("fileBrowser.encodeFiles.encodingFailedDetails", { file: target }).replace(
+                        ": ",
+                        "",
+                    ),
                     t("fileBrowser.title"),
                 );
             }
@@ -217,7 +224,8 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
             zIndex={1000}
             width="auto"
             okButtonProps={{
-                disabled: processing || hasError || isUnchangedOrEmpty || encodeFileList.length === 0,
+                disabled:
+                    processing || hasError || isUnchangedOrEmpty || encodeFileList.length === 0,
             }}
         >
             <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
@@ -252,7 +260,11 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                 alignItems: "flex-start",
                             }}
                         >
-                            <Button type="default" disabled={processing} onClick={sortFileListAlphabetically}>
+                            <Button
+                                type="default"
+                                disabled={processing}
+                                onClick={sortFileListAlphabetically}
+                            >
                                 {t("tonies.encoder.sortAlphabetically")}
                             </Button>
                         </Space>
@@ -285,7 +297,9 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                         className="encoder-save-dir"
                                         directoryTree={directoryTree}
                                         disabled={processing}
-                                        placeholder={t("fileBrowser.moveFile.destinationPlaceholder")}
+                                        placeholder={t(
+                                            "fileBrowser.moveFile.destinationPlaceholder",
+                                        )}
                                     />
                                     <Tooltip
                                         open={!canHover ? false : undefined}

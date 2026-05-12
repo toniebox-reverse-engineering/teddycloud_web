@@ -18,7 +18,8 @@ interface PieChartWithLegendProps {
 export const PieChartWithLegend: React.FC<PieChartWithLegendProps> = ({ data, title }) => {
     const { token } = useToken();
     const total = data.reduce((sum, entry) => sum + entry.value, 0);
-    const percent = (value: number, total: number) => (total > 0 ? Math.round((value / total) * 100) : 0);
+    const percent = (value: number, total: number) =>
+        total > 0 ? Math.round((value / total) * 100) : 0;
 
     return (
         <div style={{ width: "100%", textAlign: "center" }}>
@@ -56,7 +57,7 @@ export const PieChartWithLegend: React.FC<PieChartWithLegendProps> = ({ data, ti
                             title: string;
                             value: string | number;
                         },
-                        idx: Key | null | undefined
+                        idx: Key | null | undefined,
                     ) => (
                         <div
                             key={idx}
@@ -77,10 +78,11 @@ export const PieChartWithLegend: React.FC<PieChartWithLegendProps> = ({ data, ti
                                 }}
                             />
                             <span style={{ fontSize: 12 }}>
-                                {entry.title}: {entry.value} ({percent(Number(entry.value), Number(total))}%)
+                                {entry.title}: {entry.value} (
+                                {percent(Number(entry.value), Number(total))}%)
                             </span>
                         </div>
-                    )
+                    ),
                 )}
             </div>
         </div>

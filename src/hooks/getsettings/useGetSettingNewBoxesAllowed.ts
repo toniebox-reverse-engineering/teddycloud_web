@@ -24,7 +24,8 @@ export const useNewBoxesAllowed = () => {
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("settings.errorFetchingSetting"),
-                    t("settings.errorFetchingSettingDetails", { setting: "core.allowNewBox" }) + error,
+                    t("settings.errorFetchingSettingDetails", { setting: "core.allowNewBox" }) +
+                        error,
                     t("tonieboxes.navigationTitle"),
                 );
             } finally {

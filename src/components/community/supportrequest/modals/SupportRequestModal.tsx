@@ -14,7 +14,11 @@ export interface SupportRequestModalProps {
     onSubmit: (values: SupportRequestFormValues) => void;
 }
 
-export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, onCancel, onSubmit }) => {
+export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({
+    open,
+    onCancel,
+    onSubmit,
+}) => {
     const { t } = useTranslation();
     const { version } = useTeddyCloudVersion();
     const [form] = Form.useForm<SupportRequestFormValues>();
@@ -37,7 +41,9 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
         form.resetFields();
     };
 
-    const formItemRequiredRule = [{ required: true, message: t("community.supportRequestGuide.requiredField") }];
+    const formItemRequiredRule = [
+        { required: true, message: t("community.supportRequestGuide.requiredField") },
+    ];
 
     return (
         <Modal
@@ -71,7 +77,10 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                     label={t("community.supportRequestGuide.description.label")}
                     rules={formItemRequiredRule}
                 >
-                    <TextArea rows={3} placeholder={t("community.supportRequestGuide.step1.content")} />
+                    <TextArea
+                        rows={3}
+                        placeholder={t("community.supportRequestGuide.step1.content")}
+                    />
                 </Form.Item>
 
                 <Form.Item
@@ -79,7 +88,10 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                     label={t("community.supportRequestGuide.actions.label")}
                     rules={formItemRequiredRule}
                 >
-                    <TextArea rows={4} placeholder={t("community.supportRequestGuide.step2.list.0")} />
+                    <TextArea
+                        rows={4}
+                        placeholder={t("community.supportRequestGuide.step2.list.0")}
+                    />
                 </Form.Item>
 
                 <Form.Item
@@ -87,7 +99,10 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                     label={t("community.supportRequestGuide.expected.label")}
                     rules={formItemRequiredRule}
                 >
-                    <TextArea rows={2} placeholder={t("community.supportRequestGuide.step2.list.1")} />
+                    <TextArea
+                        rows={2}
+                        placeholder={t("community.supportRequestGuide.step2.list.1")}
+                    />
                 </Form.Item>
 
                 <Form.Item
@@ -95,10 +110,17 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                     label={t("community.supportRequestGuide.actual.label")}
                     rules={formItemRequiredRule}
                 >
-                    <TextArea rows={2} placeholder={t("community.supportRequestGuide.step2.list.2")} />
+                    <TextArea
+                        rows={2}
+                        placeholder={t("community.supportRequestGuide.step2.list.2")}
+                    />
                 </Form.Item>
 
-                <Form.Item name="os" label={t("community.supportRequestGuide.os.label")} rules={formItemRequiredRule}>
+                <Form.Item
+                    name="os"
+                    label={t("community.supportRequestGuide.os.label")}
+                    rules={formItemRequiredRule}
+                >
                     <Input placeholder={t("community.supportRequestGuide.step3.list.0")} />
                 </Form.Item>
 
@@ -106,12 +128,21 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                     <Input placeholder={t("community.supportRequestGuide.step3.list.1")} />
                 </Form.Item>
 
-                <Form.Item name="teddycloudVersion" label={t("community.supportRequestGuide.version.label")}>
+                <Form.Item
+                    name="teddycloudVersion"
+                    label={t("community.supportRequestGuide.version.label")}
+                >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="stepsTaken" label={t("community.supportRequestGuide.stepsTaken.label")}>
-                    <TextArea rows={3} placeholder={t("community.supportRequestGuide.step6.content")} />
+                <Form.Item
+                    name="stepsTaken"
+                    label={t("community.supportRequestGuide.stepsTaken.label")}
+                >
+                    <TextArea
+                        rows={3}
+                        placeholder={t("community.supportRequestGuide.step6.content")}
+                    />
                 </Form.Item>
 
                 <Form.Item label={t("community.supportRequestGuide.logs.label")}>
@@ -119,7 +150,10 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                     <ul>
                         <li>
                             {t("community.supportRequestGuide.step4.listFirstEntry")}
-                            <CodeSnippet language="shell" code={`docker logs -f teddycloud > teddycloud_logs.txt`} />
+                            <CodeSnippet
+                                language="shell"
+                                code={`docker logs -f teddycloud > teddycloud_logs.txt`}
+                            />
                         </li>
                         {(
                             t("community.supportRequestGuide.step4.list", {
@@ -131,8 +165,14 @@ export const SupportRequestModal: React.FC<SupportRequestModalProps> = ({ open, 
                     </ul>
                 </Form.Item>
 
-                <Form.Item name="additionalInfo" label={t("community.supportRequestGuide.additionalInfo.label")}>
-                    <TextArea rows={2} placeholder={t("community.supportRequestGuide.step5.content")} />
+                <Form.Item
+                    name="additionalInfo"
+                    label={t("community.supportRequestGuide.additionalInfo.label")}
+                >
+                    <TextArea
+                        rows={2}
+                        placeholder={t("community.supportRequestGuide.step5.content")}
+                    />
                 </Form.Item>
             </Form>
 

@@ -13,7 +13,11 @@ type Uart3v3HintProps = {
     checkboxLabel?: React.ReactNode;
 };
 
-export const Uart3v3Hint: React.FC<Uart3v3HintProps> = ({ checked, onCheckedChange, checkboxLabel }) => {
+export const Uart3v3Hint: React.FC<Uart3v3HintProps> = ({
+    checked,
+    onCheckedChange,
+    checkboxLabel,
+}) => {
     const { t } = useTranslation();
 
     return (
@@ -29,15 +33,25 @@ export const Uart3v3Hint: React.FC<Uart3v3HintProps> = ({ checked, onCheckedChan
 
                         <ol style={{ paddingLeft: 20 }}>
                             <li>
-                                <Space orientation="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
-                                    <Text strong>{t("tonieboxes.boxSetup.UARTHint.voltageCompatibility")}</Text>
+                                <Space
+                                    orientation="vertical"
+                                    size="small"
+                                    style={{ display: "flex", marginTop: 8 }}
+                                >
+                                    <Text strong>
+                                        {t("tonieboxes.boxSetup.UARTHint.voltageCompatibility")}
+                                    </Text>
 
                                     <Paragraph>
                                         <Paragraph>
-                                            {t("tonieboxes.boxSetup.UARTHint.voltageCompatibilityText1")}
+                                            {t(
+                                                "tonieboxes.boxSetup.UARTHint.voltageCompatibilityText1",
+                                            )}
                                         </Paragraph>
                                         <Paragraph>
-                                            {t("tonieboxes.boxSetup.UARTHint.voltageCompatibilityText2")}
+                                            {t(
+                                                "tonieboxes.boxSetup.UARTHint.voltageCompatibilityText2",
+                                            )}
                                         </Paragraph>
                                     </Paragraph>
 
@@ -71,14 +85,25 @@ export const Uart3v3Hint: React.FC<Uart3v3HintProps> = ({ checked, onCheckedChan
                             </li>
 
                             <li>
-                                <Space orientation="vertical" size="small" style={{ display: "flex", marginTop: 8 }}>
-                                    <Text strong>{t("tonieboxes.boxSetup.UARTHint.uartDriver")}</Text>
-                                    <Paragraph>{t("tonieboxes.boxSetup.UARTHint.updateDriver")}</Paragraph>
+                                <Space
+                                    orientation="vertical"
+                                    size="small"
+                                    style={{ display: "flex", marginTop: 8 }}
+                                >
+                                    <Text strong>
+                                        {t("tonieboxes.boxSetup.UARTHint.uartDriver")}
+                                    </Text>
+                                    <Paragraph>
+                                        {t("tonieboxes.boxSetup.UARTHint.updateDriver")}
+                                    </Paragraph>
                                 </Space>
                             </li>
                         </ol>
                         {typeof checked === "boolean" && onCheckedChange && (
-                            <Checkbox checked={checked} onChange={(e) => onCheckedChange(e.target.checked)}>
+                            <Checkbox
+                                checked={checked}
+                                onChange={(e) => onCheckedChange(e.target.checked)}
+                            >
                                 {checkboxLabel ?? t("tonieboxes.boxSetup.UARTHint.ack")}
                             </Checkbox>
                         )}

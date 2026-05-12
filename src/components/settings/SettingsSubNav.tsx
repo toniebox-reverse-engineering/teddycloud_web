@@ -52,7 +52,11 @@ export const SettingsSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/settings/plugin/${plugin.pluginId}`}
+                    to={
+                        plugin.standalone
+                            ? `/plugin/${plugin.pluginId}`
+                            : `/settings/plugin/${plugin.pluginId}`
+                    }
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -61,7 +65,9 @@ export const SettingsSubNav = () => {
                 >
                     {plugin.pluginName}
                     {plugin.standalone ? (
-                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                        <ExportOutlined
+                            style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }}
+                        />
                     ) : (
                         ""
                     )}
@@ -79,12 +85,22 @@ export const SettingsSubNav = () => {
     };
 
     const handleRestartServer = async () => {
-        await restartServer(t, true, addNotification, addLoadingNotification, closeLoadingNotification);
+        await restartServer(
+            t,
+            true,
+            addNotification,
+            addLoadingNotification,
+            closeLoadingNotification,
+        );
     };
 
     const handleReloadToniesJson = async () => {
         const key = "reloadToniesJson";
-        addLoadingNotification(key, t("settings.toniesJsonUpdate"), t("settings.toniesJsonUpdateInProgress"));
+        addLoadingNotification(
+            key,
+            t("settings.toniesJsonUpdate"),
+            t("settings.toniesJsonUpdateInProgress"),
+        );
 
         try {
             const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonUpdate");

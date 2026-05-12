@@ -4,784 +4,768 @@
 
 openapi: 3.0.3
 info:
-  title: TeddyCloud API
-  description: OpenAPI specification for TeddyCloud Backend API
-  version: 1.0.1
+    title: TeddyCloud API
+    description: OpenAPI specification for TeddyCloud Backend API
+    version: 1.0.1
 
 # -----------------------------------
 servers:
-  - url: http://localhost:8080/
-    description: Local development server. Adjust the port as needed.
-  
+    - url: http://localhost:8080/
+      description: Local development server. Adjust the port as needed.
+
 # -----------------------------------
 tags:
-  - name: Generic
-    description: Generic endpoints
-  - name: TeddyCloud
-    description: TeddyCloud endpoints
-  - name: Boxine
-    description: Boxine endpoints but mostly responded by teddycloud server
-  - name: BoxineForced
-    description: Boxine endpoints forced to not be answered by TeddyCloud. Mostly the same as the Boxine-Endpoints but with /reversed
+    - name: Generic
+      description: Generic endpoints
+    - name: TeddyCloud
+      description: TeddyCloud endpoints
+    - name: Boxine
+      description: Boxine endpoints but mostly responded by teddycloud server
+    - name: BoxineForced
+      description: Boxine endpoints forced to not be answered by TeddyCloud. Mostly the same as the Boxine-Endpoints but with /reversed
 
 # -----------------------------------
 paths:
-  #
-  # Lib
-  #
-  /:
-    options:
-      tags:
-        - Generic
-      description: CORS preflight request
-      responses:
-        '200':
-          description: OPTIONS request
-          headers:
-            Content-Type:
-              schema:
-                type: string
-              description: "application/vnd.api+json"
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-              description: "*"
-            Access-Control-Allow-Methods:
-              schema:
-                type: string
-              description: "POST, GET, OPTIONS, DELETE, PUT"
-            Access-Control-Max-Age:
-              schema:
-                type: string
-              description: "1000"
-            Access-Control-Allow-Headers:
-              schema:
-                type: string
-              description: "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
-
-  #
-  # TeddyCloud
-  #
-  /api/stats:
-    get:
-      tags:
-        - TeddyCloud
-      description: Load all available stats.
-      responses:
-        '200':
-          description: Stats items
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StatsList'
-          
-  /api/settings/getIndex:
-    get:
-      tags:
-        - TeddyCloud
-      description: get all options
-      responses:
-        '200':
-          description: all options recieved as array
-          content:
-            "text/plain":
-              schema:
-                $ref: '#/components/schemas/OptionsList'
-  
-  /api/uploadCert:
-    post:
-      tags:
-        - TeddyCloud
-      description: upload certificates
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                filename:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-      responses:
-        '200':
-          description: 'just 200 for success, no response content'
-          content:
-            "text/plain":
-              schema:
-                type: string
-  
-  
-  /api/triggerWriteConfig:
-    get:
-      tags:
-        - TeddyCloud
-      description: tell server to write to config file
-      responses:
-        '200':
-          description: trigger successful
-          content:
-            "text/plain":
-              schema:
-                type: string
-          
-  /api/settings/set/cloud.cacheContent:
-    post:
-      tags:
-        - TeddyCloud
-      description: Cache cloud content on local server
-      requestBody:
-        required: true
-        content:
-          "text/plain":
-            schema:
-              type: boolean
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/fileDelete:
-    post:
-      summary: Deletes a specified file from the server.
-      operationId: fileDelete
-      parameters:
-        - name: overlay
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Settings overlay ID.
-        - name: special
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Special folder source, only 'library' supported yet
-      requestBody:
-        required: true
-        content:
-          text/plain:
-            schema:
-              type: string
-              description: Path of the file to be deleted.
-      responses:
-        '200':
-          description: File successfully deleted.
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "OK"
-        '500':
-          description: Error during file deletion.
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "Error deleting file '{path}', error {error_code}"
-
-  /api/dirDelete:
-    post:
-      summary: Deletes a specified directory from the server.
-      operationId: dirDelete
-      parameters:
-        - name: overlay
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Settings overlay ID.
-        - name: special
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Special folder source, only 'library' supported yet
-      requestBody:
-        required: true
-        content:
-          text/plain:
-            schema:
-              type: string
-              description: Path of the directory to be deleted.
-      responses:
-        '200':
-          description: File successfully deleted.
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "OK"
-        '500':
-          description: Error during file deletion.
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "Error deleting file '{path}', error {error_code}"
-
-  /api/dirCreate:
-    post:
-      summary: Creates a specified directory on the server.
-      operationId: dirCreate
-      parameters:
-        - name: overlay
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Settings overlay ID.
-        - name: special
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Special folder source, only 'library' supported yet
-      requestBody:
-        required: true
-        content:
-          text/plain:
-            schema:
-              type: string
-              description: Path of the directory to be created.
-      responses:
-        '200':
-          description: Directory successfully created.
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "OK"
-        '500':
-          description: Error during creation.
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "Error creating directory '{path}', error {error_code}"
-
-  /api/uploadFirmware:
-    post:
-      summary: Creates a specified directory on the server.
-      operationId: uploadFirmware
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              description: ESP32 firmware image
-              properties:
-                firmwareImage:
-                  type: string
-                  format: binary
-      responses:
-        '200':
-          description: File uploaded, filename follows
-          content:
-            text/plain:
-              schema:
-                type: string
-                example: "ESP32_aabbccddeeff_23.bin"
-        '500':
-          description: Error
-          content:
-            text/plain:
-              schema:
-                type: string
-
-
-  /api/patchFirmware:
-    get:
-      summary: Patch firmware.
-      operationId: patchFirmware
-      parameters:
-        - name: filename
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Firmware image name received from /api/uploadFirmware.
-        - name: hostname
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Hostname of TeddyCloud to set within image.
-      responses:
-        '200':
-          description: 'OK'
-          content:
-            binary/octet-stream:
-              schema:
-                type: object
-                description: Patched firmware image
-        '404':
-          description: 'Something went wrong'
-
-  /api/fileUpload:
-    post:
-      summary: Upload a file.
-      parameters:
-        - name: overlay
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Settings overlay ID.
-        - name: special
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Special folder source, only 'library' supported yet
-        - name: path
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Path where to write the file to. Max 256 characters.
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              description: File to write including filename
-              properties:
-                file:
-                  type: string
-                  format: binary
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/pcmUpload:
-    post:
-      summary: Upload PCM data.
-      parameters:
-        - name: overlay
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Settings overlay ID.
-        - name: special
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Special folder source, only 'library' supported yet
-        - name: name
-          in: query
-          schema:
-            type: string
-          required: true
-          description: Name of the TAF to create.
-        - name: uid
-          in: query
-          schema:
-            type: string
-          required: true
-          description: UID of the TAF to create.
-        - name: audioId
-          in: query
-          schema:
-            type: string
-          required: true
-          description: Audio-ID of the TAF to create as integer.
-        - name: path
-          in: query
-          schema:
-            type: string
-          required: false
-          description: Path where to write the file to. Max 256 characters.
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              description: PCM data to encode to TAF
-              properties:
-                file:
-                  type: string
-                  format: binary
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/fileIndexV2:
-    get:
-      summary: Get file index version 2.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/fileIndex:
-    get:
-      summary: Get file index.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/toniesJsonSearch:
-    get:
-      summary: Search Tonies JSON.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/toniesJsonUpdate:
-    get:
-      summary: Update Tonies JSON.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/toniesJson:
-    get:
-      summary: Retrieve Tonies JSON.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/toniesCustomJson:
-    get:
-      summary: Retrieve custom Tonies JSON.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/tonieboxesJson:
-    get:
-      summary: Retrieve Tonieboxes JSON.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/tonieboxesCustomJson:
-    get:
-      summary: Retrieve custom Tonieboxes JSON.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/getTagIndex:
-    get:
-      summary: Get tag index.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/getBoxes:
-    get:
-      summary: Get boxes.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/assignUnknown:
-    post:
-      summary: Assign unknown entity.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/settings/reset/:
-    post:
-      summary: Reset settings.
-      responses:
-        '200':
-          description: 'OK'
-
-  /api/migrateContent2Lib:
-    post:
-      summary: Migrate content to library.
-      responses:
-        '200':
-          description: 'OK'
-
-
-  #
-  # Boxine
-  #
-  /v1/time:
-    get:
-      tags:
-        - Boxine
-      description: Get unix timestamp.
-      responses:
-        '200':
-          description: Unix timestamp
-          content:
-            text/plain:
-              schema:
-                type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '406':
-          $ref: '#/components/responses/Unacceptable'
-        '5XX':
-          $ref: '#/components/responses/InternalServerError'
-  #
-  # Boxine Forced
-  #
-  /reverse/v1/time:
-    get:
-      tags:
-        - BoxineForced
-      description: Get unix timestamp.
-      responses:
-        '200':
-          description: Unix timestamp
-          content:
-            text/plain:
-              schema:
-                type: string
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '406':
-          $ref: '#/components/responses/Unacceptable'
-        '5XX':
-          $ref: '#/components/responses/InternalServerError'
-          
-
-
-# -----------------------------------
-components:
-  schemas:
     #
     # Lib
     #
-    Errors:
-      type: object
-      description: Error message container.
-      properties:
-        errors:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: integer
-                description: HTTP error code
-              status:
-                type: string
-                description: HTTP error status
-              title:
-                type: string
-                description: Error string
+    /:
+        options:
+            tags:
+                - Generic
+            description: CORS preflight request
+            responses:
+                "200":
+                    description: OPTIONS request
+                    headers:
+                        Content-Type:
+                            schema:
+                                type: string
+                            description: "application/vnd.api+json"
+                        Access-Control-Allow-Origin:
+                            schema:
+                                type: string
+                            description: "*"
+                        Access-Control-Allow-Methods:
+                            schema:
+                                type: string
+                            description: "POST, GET, OPTIONS, DELETE, PUT"
+                        Access-Control-Max-Age:
+                            schema:
+                                type: string
+                            description: "1000"
+                        Access-Control-Allow-Headers:
+                            schema:
+                                type: string
+                            description: "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
 
     #
     # TeddyCloud
     #
+    /api/stats:
+        get:
+            tags:
+                - TeddyCloud
+            description: Load all available stats.
+            responses:
+                "200":
+                    description: Stats items
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StatsList"
 
-    StatsList:
-      type: object
-      description: List of Stats Items.
-      required:
-        - meta
-        - data
-      properties:
-        stats:
-          type: array
-          items:
-            $ref: '#/components/schemas/StatsItem'
+    /api/settings/getIndex:
+        get:
+            tags:
+                - TeddyCloud
+            description: get all options
+            responses:
+                "200":
+                    description: all options recieved as array
+                    content:
+                        "text/plain":
+                            schema:
+                                $ref: "#/components/schemas/OptionsList"
 
-    StatsItem:
-      type: object
-      description: Stats item.
-      required:
-        - ID
-        - description
-        - value
-      properties:
-        ID:
-          type: string
-          description: 'Object title'
-        description:
-          type: string
-          description: 'Object description'
-        value:
-          type: string
-          description: "Object value"
+    /api/uploadCert:
+        post:
+            tags:
+                - TeddyCloud
+            description: upload certificates
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                filename:
+                                    type: array
+                                    items:
+                                        type: string
+                                        format: binary
+            responses:
+                "200":
+                    description: "just 200 for success, no response content"
+                    content:
+                        "text/plain":
+                            schema:
+                                type: string
 
+    /api/triggerWriteConfig:
+        get:
+            tags:
+                - TeddyCloud
+            description: tell server to write to config file
+            responses:
+                "200":
+                    description: trigger successful
+                    content:
+                        "text/plain":
+                            schema:
+                                type: string
 
-    OptionsList:
-      type: object
-      description: List of Options.
-      required:
-        - meta
-        - data
-      properties:
-        options:
-          type: array
-          items:
-            $ref: '#/components/schemas/OptionsItem'
+    /api/settings/set/cloud.cacheContent:
+        post:
+            tags:
+                - TeddyCloud
+            description: Cache cloud content on local server
+            requestBody:
+                required: true
+                content:
+                    "text/plain":
+                        schema:
+                            type: boolean
+            responses:
+                "200":
+                    description: "OK"
 
-    OptionsItem:
-      type: object
-      description: Option item.
-      required:
-        - ID
-        - shortname
-        - description
-        - label
-        - type
-        - value
-        - overlayed
-      properties:
-        ID:
-          type: string
-          description: 'Object title'
-        shortname:
-          type: string
-          description: 'Object shortname'
-        description:
-          type: string
-          description: "Object description"
-        label:
-          type: string
-          description: "Object label"
-        type:
-          type: string
-          description: "Object type"
-        value:
-          type: string
-          description: "Object value"
-        overlayed:
-          type: string
-          description: "Object overlayed"
+    /api/fileDelete:
+        post:
+            summary: Deletes a specified file from the server.
+            operationId: fileDelete
+            parameters:
+                - name: overlay
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Settings overlay ID.
+                - name: special
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Special folder source, only 'library' supported yet
+            requestBody:
+                required: true
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+                            description: Path of the file to be deleted.
+            responses:
+                "200":
+                    description: File successfully deleted.
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "OK"
+                "500":
+                    description: Error during file deletion.
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "Error deleting file '{path}', error {error_code}"
 
-  responses:
-    BadRequest:
-      description: "HTTP 400 Error: Bad Request"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 400
-                status: "HTTP/1.1 400 Bad Request"
-                title: Invalid API request
-    Unauthorized:
-      description: "HTTP 401 Error: Unauthorized"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 401
-                status: "HTTP/1.1 401 Unauthorized"
-                title: Unauthorized
-    Forbidden:
-      description: "HTTP 403 Error: Forbidden"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 403
-                status: "HTTP/1.1 403 Forbidden"
-                title: Forbidden
-    NotFound:
-      description: "HTTP 404 Error: Not Found"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 404
-                status: "HTTP/1.1 403 Not Found"
-                title: Not Found
-    MethodNotAllowed:
-      description: "HTTP 405 Error: Method not allowed"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 405
-                status: "HTTP/1.1 405 Method Not Allowed"
-                title: Method not allowed
-    Unacceptable:
-      description: "HTTP 406 Error: Unacceptable"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 406
-                status: "HTTP/1.1 406 Unacceptable"
-                title: Invalid accept header or content type header
-    Conflict:
-      description: "HTTP 409 Error: Conflict. (e.g. Reservation closed or capacity exceeded, Ticketing closed or capacity exceeded)"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 409
-                status: "HTTP/1.1 409 Conflict"
-                title: Conflict
-    UnsupportedMediaType:
-      description: "HTTP 415 Error: Unsupported Media Type."
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 415
-                status: "HTTP/1.1 415 Unsupported Media Type"
-                title: Unsupported Media Type
-    UnprocessableEntity:
-      description: "HTTP 422 Error: Unprocessable Entity."
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 422
-                status: "HTTP/1.1 422 Unprocessable Entity"
-                title: Unprocessable Entity
-    InternalServerError:
-      description: "HTTP 500 Error: Internal Server Error."
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Errors'
-          example:
-            errors:
-              -
-                id: 500
-                status: "HTTP/1.1 500 Internal Server Error"
-                title: Internal Server Error
+    /api/dirDelete:
+        post:
+            summary: Deletes a specified directory from the server.
+            operationId: dirDelete
+            parameters:
+                - name: overlay
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Settings overlay ID.
+                - name: special
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Special folder source, only 'library' supported yet
+            requestBody:
+                required: true
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+                            description: Path of the directory to be deleted.
+            responses:
+                "200":
+                    description: File successfully deleted.
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "OK"
+                "500":
+                    description: Error during file deletion.
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "Error deleting file '{path}', error {error_code}"
+
+    /api/dirCreate:
+        post:
+            summary: Creates a specified directory on the server.
+            operationId: dirCreate
+            parameters:
+                - name: overlay
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Settings overlay ID.
+                - name: special
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Special folder source, only 'library' supported yet
+            requestBody:
+                required: true
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+                            description: Path of the directory to be created.
+            responses:
+                "200":
+                    description: Directory successfully created.
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "OK"
+                "500":
+                    description: Error during creation.
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "Error creating directory '{path}', error {error_code}"
+
+    /api/uploadFirmware:
+        post:
+            summary: Creates a specified directory on the server.
+            operationId: uploadFirmware
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            description: ESP32 firmware image
+                            properties:
+                                firmwareImage:
+                                    type: string
+                                    format: binary
+            responses:
+                "200":
+                    description: File uploaded, filename follows
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                                example: "ESP32_aabbccddeeff_23.bin"
+                "500":
+                    description: Error
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+
+    /api/patchFirmware:
+        get:
+            summary: Patch firmware.
+            operationId: patchFirmware
+            parameters:
+                - name: filename
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Firmware image name received from /api/uploadFirmware.
+                - name: hostname
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Hostname of TeddyCloud to set within image.
+            responses:
+                "200":
+                    description: "OK"
+                    content:
+                        binary/octet-stream:
+                            schema:
+                                type: object
+                                description: Patched firmware image
+                "404":
+                    description: "Something went wrong"
+
+    /api/fileUpload:
+        post:
+            summary: Upload a file.
+            parameters:
+                - name: overlay
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Settings overlay ID.
+                - name: special
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Special folder source, only 'library' supported yet
+                - name: path
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Path where to write the file to. Max 256 characters.
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            description: File to write including filename
+                            properties:
+                                file:
+                                    type: string
+                                    format: binary
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/pcmUpload:
+        post:
+            summary: Upload PCM data.
+            parameters:
+                - name: overlay
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Settings overlay ID.
+                - name: special
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Special folder source, only 'library' supported yet
+                - name: name
+                  in: query
+                  schema:
+                      type: string
+                  required: true
+                  description: Name of the TAF to create.
+                - name: uid
+                  in: query
+                  schema:
+                      type: string
+                  required: true
+                  description: UID of the TAF to create.
+                - name: audioId
+                  in: query
+                  schema:
+                      type: string
+                  required: true
+                  description: Audio-ID of the TAF to create as integer.
+                - name: path
+                  in: query
+                  schema:
+                      type: string
+                  required: false
+                  description: Path where to write the file to. Max 256 characters.
+            requestBody:
+                required: true
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            description: PCM data to encode to TAF
+                            properties:
+                                file:
+                                    type: string
+                                    format: binary
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/fileIndexV2:
+        get:
+            summary: Get file index version 2.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/fileIndex:
+        get:
+            summary: Get file index.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/toniesJsonSearch:
+        get:
+            summary: Search Tonies JSON.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/toniesJsonUpdate:
+        get:
+            summary: Update Tonies JSON.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/toniesJson:
+        get:
+            summary: Retrieve Tonies JSON.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/toniesCustomJson:
+        get:
+            summary: Retrieve custom Tonies JSON.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/tonieboxesJson:
+        get:
+            summary: Retrieve Tonieboxes JSON.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/tonieboxesCustomJson:
+        get:
+            summary: Retrieve custom Tonieboxes JSON.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/getTagIndex:
+        get:
+            summary: Get tag index.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/getBoxes:
+        get:
+            summary: Get boxes.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/assignUnknown:
+        post:
+            summary: Assign unknown entity.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/settings/reset/:
+        post:
+            summary: Reset settings.
+            responses:
+                "200":
+                    description: "OK"
+
+    /api/migrateContent2Lib:
+        post:
+            summary: Migrate content to library.
+            responses:
+                "200":
+                    description: "OK"
+
+    #
+    # Boxine
+    #
+    /v1/time:
+        get:
+            tags:
+                - Boxine
+            description: Get unix timestamp.
+            responses:
+                "200":
+                    description: Unix timestamp
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "403":
+                    $ref: "#/components/responses/Forbidden"
+                "406":
+                    $ref: "#/components/responses/Unacceptable"
+                "5XX":
+                    $ref: "#/components/responses/InternalServerError"
+    #
+    # Boxine Forced
+    #
+    /reverse/v1/time:
+        get:
+            tags:
+                - BoxineForced
+            description: Get unix timestamp.
+            responses:
+                "200":
+                    description: Unix timestamp
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                "400":
+                    $ref: "#/components/responses/BadRequest"
+                "401":
+                    $ref: "#/components/responses/Unauthorized"
+                "403":
+                    $ref: "#/components/responses/Forbidden"
+                "406":
+                    $ref: "#/components/responses/Unacceptable"
+                "5XX":
+                    $ref: "#/components/responses/InternalServerError"
+
+# -----------------------------------
+components:
+    schemas:
+        #
+        # Lib
+        #
+        Errors:
+            type: object
+            description: Error message container.
+            properties:
+                errors:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            id:
+                                type: integer
+                                description: HTTP error code
+                            status:
+                                type: string
+                                description: HTTP error status
+                            title:
+                                type: string
+                                description: Error string
+
+        #
+        # TeddyCloud
+        #
+
+        StatsList:
+            type: object
+            description: List of Stats Items.
+            required:
+                - meta
+                - data
+            properties:
+                stats:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/StatsItem"
+
+        StatsItem:
+            type: object
+            description: Stats item.
+            required:
+                - ID
+                - description
+                - value
+            properties:
+                ID:
+                    type: string
+                    description: "Object title"
+                description:
+                    type: string
+                    description: "Object description"
+                value:
+                    type: string
+                    description: "Object value"
+
+        OptionsList:
+            type: object
+            description: List of Options.
+            required:
+                - meta
+                - data
+            properties:
+                options:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/OptionsItem"
+
+        OptionsItem:
+            type: object
+            description: Option item.
+            required:
+                - ID
+                - shortname
+                - description
+                - label
+                - type
+                - value
+                - overlayed
+            properties:
+                ID:
+                    type: string
+                    description: "Object title"
+                shortname:
+                    type: string
+                    description: "Object shortname"
+                description:
+                    type: string
+                    description: "Object description"
+                label:
+                    type: string
+                    description: "Object label"
+                type:
+                    type: string
+                    description: "Object type"
+                value:
+                    type: string
+                    description: "Object value"
+                overlayed:
+                    type: string
+                    description: "Object overlayed"
+
+    responses:
+        BadRequest:
+            description: "HTTP 400 Error: Bad Request"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 400
+                              status: "HTTP/1.1 400 Bad Request"
+                              title: Invalid API request
+        Unauthorized:
+            description: "HTTP 401 Error: Unauthorized"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 401
+                              status: "HTTP/1.1 401 Unauthorized"
+                              title: Unauthorized
+        Forbidden:
+            description: "HTTP 403 Error: Forbidden"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 403
+                              status: "HTTP/1.1 403 Forbidden"
+                              title: Forbidden
+        NotFound:
+            description: "HTTP 404 Error: Not Found"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 404
+                              status: "HTTP/1.1 403 Not Found"
+                              title: Not Found
+        MethodNotAllowed:
+            description: "HTTP 405 Error: Method not allowed"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 405
+                              status: "HTTP/1.1 405 Method Not Allowed"
+                              title: Method not allowed
+        Unacceptable:
+            description: "HTTP 406 Error: Unacceptable"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 406
+                              status: "HTTP/1.1 406 Unacceptable"
+                              title: Invalid accept header or content type header
+        Conflict:
+            description: "HTTP 409 Error: Conflict. (e.g. Reservation closed or capacity exceeded, Ticketing closed or capacity exceeded)"
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 409
+                              status: "HTTP/1.1 409 Conflict"
+                              title: Conflict
+        UnsupportedMediaType:
+            description: "HTTP 415 Error: Unsupported Media Type."
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 415
+                              status: "HTTP/1.1 415 Unsupported Media Type"
+                              title: Unsupported Media Type
+        UnprocessableEntity:
+            description: "HTTP 422 Error: Unprocessable Entity."
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 422
+                              status: "HTTP/1.1 422 Unprocessable Entity"
+                              title: Unprocessable Entity
+        InternalServerError:
+            description: "HTTP 500 Error: Internal Server Error."
+            content:
+                application/json:
+                    schema:
+                        $ref: "#/components/schemas/Errors"
+                    example:
+                        errors:
+                            - id: 500
+                              status: "HTTP/1.1 500 Internal Server Error"
+                              title: Internal Server Error

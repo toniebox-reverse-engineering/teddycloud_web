@@ -191,7 +191,8 @@ export function useFullscreen<T extends HTMLElement>(elementRef: RefObject<T | n
 export function scrollToTop(anchor?: HTMLElement | null) {
     if (!isBrowser) return;
 
-    const startY = window.pageYOffset ?? document.documentElement.scrollTop ?? document.body.scrollTop ?? 0;
+    const startY =
+        window.pageYOffset ?? document.documentElement.scrollTop ?? document.body.scrollTop ?? 0;
 
     let targetY = 0;
 

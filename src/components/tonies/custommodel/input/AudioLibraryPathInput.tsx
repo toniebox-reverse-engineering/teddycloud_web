@@ -49,7 +49,10 @@ export const AudioLibraryPathInput: React.FC<{
         };
     }, [audioId, hash, storedPath, overlay]);
 
-    const displayValue = storedPath || resolvedPath || (audioId && hash ? `${audioId} / ${hash.slice(0, 8)}...` : "");
+    const displayValue =
+        storedPath ||
+        resolvedPath ||
+        (audioId && hash ? `${audioId} / ${hash.slice(0, 8)}...` : "");
 
     return (
         <Input

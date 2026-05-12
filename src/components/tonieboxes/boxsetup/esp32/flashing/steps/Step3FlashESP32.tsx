@@ -30,7 +30,10 @@ export const Step3FlashESP32: React.FC<Step3Props> = ({ state, contentProgress }
     const { token } = useToken();
 
     const stepStatusText = state.showStatus && (
-        <div className="status" style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}>
+        <div
+            className="status"
+            style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}
+        >
             <i>{renderStateWithAnimation(state.state)}</i>
         </div>
     );
@@ -42,7 +45,9 @@ export const Step3FlashESP32: React.FC<Step3Props> = ({ state, contentProgress }
                 <Paragraph>
                     <Alert
                         type="info"
-                        description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32RevvoxFlasher")}
+                        description={t(
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.hintFlashESP32RevvoxFlasher",
+                        )}
                     />
                 </Paragraph>
             )}

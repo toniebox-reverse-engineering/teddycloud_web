@@ -97,12 +97,16 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
         },
     ];
 
-    const renderSubItems = (items: typeof modelImageItems | typeof infoIconActions | typeof editIconActions) => (
+    const renderSubItems = (
+        items: typeof modelImageItems | typeof infoIconActions | typeof editIconActions,
+    ) => (
         <Flex vertical>
             {items.map((item, index) => (
                 <div key={item.key}>
                     <Flex gap={8} align="flex-start" style={{ marginTop: 8 }}>
-                        {"icon" in item && item.icon && <span style={{ marginTop: 4 }}>{item.icon}</span>}
+                        {"icon" in item && item.icon && (
+                            <span style={{ marginTop: 4 }}>{item.icon}</span>
+                        )}
                         <div>
                             <Text strong>{item.title}</Text>
                             <div>{item.text}</div>
@@ -139,7 +143,9 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
             title: t("tonies.help.actionItems.infoIcon.title"),
             content: (
                 <>
-                    <div style={{ marginBottom: 4 }}>{t("tonies.help.actionItems.infoIcon.text")}</div>
+                    <div style={{ marginBottom: 4 }}>
+                        {t("tonies.help.actionItems.infoIcon.text")}
+                    </div>
                     {renderSubItems(infoIconActions)}
                 </>
             ),
@@ -150,7 +156,9 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
             title: t("tonies.help.actionItems.editIcon.title"),
             content: (
                 <>
-                    <div style={{ marginBottom: 4 }}>{t("tonies.help.actionItems.editIcon.text")}</div>
+                    <div style={{ marginBottom: 4 }}>
+                        {t("tonies.help.actionItems.editIcon.text")}
+                    </div>
                     {renderSubItems(editIconActions)}
                 </>
             ),

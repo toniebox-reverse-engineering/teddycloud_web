@@ -48,9 +48,7 @@ export const CustomModelList: React.FC<CustomModelListProps> = ({
         tableRows.length > 0 ? (
             <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
                 {!paginationEnabled ? (
-                    <Button onClick={onShowPagination}>
-                        {t("tonies.tonies.showPagination")}
-                    </Button>
+                    <Button onClick={onShowPagination}>{t("tonies.tonies.showPagination")}</Button>
                 ) : (
                     <>
                         <Pagination

@@ -51,9 +51,23 @@ export const PluginList = () => {
                 style={{ margin: 32 }}
             />
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}>
+            <div
+                style={{
+                    display: "flex",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                }}
+            >
                 <Paragraph>{t("community.plugins.intro")}</Paragraph>
-                <Paragraph style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}>
+                <Paragraph
+                    style={{
+                        display: "flex",
+                        gap: 8,
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                    }}
+                >
                     <Button disabled icon={<AppstoreAddOutlined />} onClick={openUpload}>
                         {t("community.plugins.addButton")}
                     </Button>
@@ -81,7 +95,9 @@ export const PluginList = () => {
                                     checked={isChecked}
                                     onChange={(checked) => toggleSectionFilter(section, checked)}
                                 >
-                                    <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
+                                    <span>
+                                        {section.charAt(0).toUpperCase() + section.slice(1)}
+                                    </span>
                                 </Tag.CheckableTag>
                             </Badge>
                         );
@@ -92,7 +108,15 @@ export const PluginList = () => {
                 ) : (
                     <Row gutter={8}>
                         {filteredPlugins.map((plugin) => (
-                            <Col key={plugin.pluginId} xs={24} sm={12} md={12} lg={8} xl={8} xxl={6}>
+                            <Col
+                                key={plugin.pluginId}
+                                xs={24}
+                                sm={12}
+                                md={12}
+                                lg={8}
+                                xl={8}
+                                xxl={6}
+                            >
                                 <div
                                     style={{
                                         height: "100%",
@@ -101,7 +125,9 @@ export const PluginList = () => {
                                 >
                                     <PluginCard
                                         plugin={plugin}
-                                        onOpen={(pluginId) => navigate(`/community/tcplugins/${pluginId}`)}
+                                        onOpen={(pluginId) =>
+                                            navigate(`/community/tcplugins/${pluginId}`)
+                                        }
                                         onOpenHomepage={(url) => window.open(url, "_blank")}
                                         onDelete={requestDelete}
                                     />

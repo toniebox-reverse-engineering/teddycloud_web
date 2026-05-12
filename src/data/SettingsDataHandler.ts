@@ -25,16 +25,26 @@ export default class SettingsDataHandler {
     private unsavedChanges: boolean = false;
     private listeners: (() => void)[] = [];
     private idListeners: { iD: string; listener: () => {} }[] = [];
-    private addNotification!: (type: NotificationTypeEnum, message: string, description: string, title: string) => void;
+    private addNotification!: (
+        type: NotificationTypeEnum,
+        message: string,
+        description: string,
+        title: string,
+    ) => void;
     private t!: TFunction;
     private setFetchCloudStatus!: Dispatch<SetStateAction<boolean>> | undefined;
 
     private constructor() {}
 
     public static initialize(
-        addNotification: (type: NotificationTypeEnum, message: string, description: string, title: string) => void,
+        addNotification: (
+            type: NotificationTypeEnum,
+            message: string,
+            description: string,
+            title: string,
+        ) => void,
         t: TFunction,
-        setFetchCloudStatus?: Dispatch<SetStateAction<boolean>>
+        setFetchCloudStatus?: Dispatch<SetStateAction<boolean>>,
     ) {
         if (!SettingsDataHandler.instance) {
             SettingsDataHandler.instance = new SettingsDataHandler();
@@ -60,7 +70,8 @@ export default class SettingsDataHandler {
     public initializeSettings(data: Setting[], overlayId: string | undefined) {
         data.forEach((setting) => {
             setting.initialValue = setting.value;
-            setting.initialOverlayed = setting.overlayed !== undefined ? setting.overlayed : undefined;
+            setting.initialOverlayed =
+                setting.overlayed !== undefined ? setting.overlayed : undefined;
             setting.overlayId = overlayId;
         });
         this.settings = data;
@@ -96,7 +107,10 @@ export default class SettingsDataHandler {
         };
 
         const savePromises = this.settings.map(async (setting) => {
-            if (setting.initialValue !== setting.value || setting.initialOverlayed !== setting.overlayed) {
+            if (
+                setting.initialValue !== setting.value ||
+                setting.initialOverlayed !== setting.overlayed
+            ) {
                 return this.saveSingleSetting(setting);
             }
         });
@@ -106,7 +120,8 @@ export default class SettingsDataHandler {
             await triggerWriteConfig();
             this.settings.forEach((setting) => {
                 setting.initialValue = setting.value;
-                setting.initialOverlayed = setting.overlayed !== undefined ? setting.overlayed : undefined;
+                setting.initialOverlayed =
+                    setting.overlayed !== undefined ? setting.overlayed : undefined;
             });
             this.unsavedChanges = false;
             this.callAllListeners();
@@ -115,14 +130,15 @@ export default class SettingsDataHandler {
                 NotificationTypeEnum.Error,
                 t("settings.errorWhileSavingConfig"),
                 t("settings.errorWhileSavingConfigDetails") + e,
-                t("settings.navigationTitle")
+                t("settings.navigationTitle"),
             );
         }
     }
 
     private saveSingleSetting(setting: Setting) {
         try {
-            const reset = setting.overlayId !== undefined && setting.overlayed === false ? true : false;
+            const reset =
+                setting.overlayId !== undefined && setting.overlayed === false ? true : false;
 
             return api
                 .apiPostTeddyCloudSetting(setting.iD, setting.value, setting.overlayId, reset)
@@ -133,15 +149,21 @@ export default class SettingsDataHandler {
                         reset
                             ? t("settings.resetToTCDetails", {
                                   setting: setting.label,
-                                  overlay: setting.overlayId !== undefined ? ` [${setting.overlayId}]` : "",
+                                  overlay:
+                                      setting.overlayId !== undefined
+                                          ? ` [${setting.overlayId}]`
+                                          : "",
                               })
                             : t("settings.saveDetails", {
                                   setting: setting.label,
-                                  overlay: setting.overlayId !== undefined ? ` [${setting.overlayId}]` : "",
+                                  overlay:
+                                      setting.overlayId !== undefined
+                                          ? ` [${setting.overlayId}]`
+                                          : "",
                               }),
                         setting.overlayId === undefined
                             ? t("settings.navigationTitle")
-                            : t("tonieboxes.navigationTitle")
+                            : t("tonieboxes.navigationTitle"),
                     );
                 })
                 .then(() => {
@@ -156,7 +178,7 @@ export default class SettingsDataHandler {
                         t("settings.errorWhileSavingConfigDetails") + e,
                         setting.overlayId === undefined
                             ? t("settings.navigationTitle")
-                            : t("tonieboxes.navigationTitle")
+                            : t("tonieboxes.navigationTitle"),
                     );
                 });
         } catch (e) {
@@ -164,7 +186,9 @@ export default class SettingsDataHandler {
                 NotificationTypeEnum.Error,
                 t("settings.errorWhileSavingConfig") + setting.label,
                 t("settings.errorWhileSavingConfigDetails") + e,
-                setting.overlayId === undefined ? t("settings.navigationTitle") : t("tonieboxes.navigationTitle")
+                setting.overlayId === undefined
+                    ? t("settings.navigationTitle")
+                    : t("tonieboxes.navigationTitle"),
             );
             return Promise<null>;
         }
@@ -173,7 +197,8 @@ export default class SettingsDataHandler {
     public resetAll() {
         this.settings.forEach((setting) => {
             setting.value = setting.initialValue ?? "";
-            setting.overlayed = setting.initialOverlayed !== undefined ? setting.initialOverlayed : undefined;
+            setting.overlayed =
+                setting.initialOverlayed !== undefined ? setting.initialOverlayed : undefined;
         });
 
         this.unsavedChanges = false;
@@ -185,7 +210,11 @@ export default class SettingsDataHandler {
         return this.settings.find((setting) => setting.iD === iD);
     }
 
-    public changeSetting(iD: string, newValue: boolean | string | number, overlayed: boolean | undefined) {
+    public changeSetting(
+        iD: string,
+        newValue: boolean | string | number,
+        overlayed: boolean | undefined,
+    ) {
         const settingToChange = this.settings.find((setting) => setting.iD === iD);
         if (settingToChange) {
             if (typeof settingToChange.initialValue === typeof newValue) {
@@ -210,7 +239,11 @@ export default class SettingsDataHandler {
                     });
                 this.callAllListeners();
             } else {
-                console.warn("The type of newValue and initialValue for '" + iD + "' do not match! Omitting.");
+                console.warn(
+                    "The type of newValue and initialValue for '" +
+                        iD +
+                        "' do not match! Omitting.",
+                );
             }
         } else {
             console.warn("Unknown setting '" + iD + "' to be changed. Omitting.");
@@ -235,7 +268,7 @@ export default class SettingsDataHandler {
                                     typedFieldValue = parseInt(fieldValue, 10);
                                     if (isNaN(typedFieldValue)) {
                                         console.warn(
-                                            `Expected a number for setting type "uint", but got "${fieldValue}". Defaulting to 0.`
+                                            `Expected a number for setting type "uint", but got "${fieldValue}". Defaulting to 0.`,
                                         );
                                         typedFieldValue = 0;
                                     }
@@ -258,7 +291,7 @@ export default class SettingsDataHandler {
                                     }) + error,
                                     settingToChange.overlayId === undefined
                                         ? t("settings.navigationTitle")
-                                        : t("tonieboxes.navigationTitle")
+                                        : t("tonieboxes.navigationTitle"),
                                 );
                             });
                     } catch (error) {
@@ -268,11 +301,13 @@ export default class SettingsDataHandler {
                             t("setting.errorFetchingFieldValueDetails", {
                                 setting: settingToChange.label,
                                 overlay:
-                                    settingToChange.overlayId !== undefined ? ` [${settingToChange.overlayId}]` : "",
+                                    settingToChange.overlayId !== undefined
+                                        ? ` [${settingToChange.overlayId}]`
+                                        : "",
                             }) + error,
                             settingToChange.overlayId === undefined
                                 ? t("settings.navigationTitle")
-                                : t("tonieboxes.navigationTitle")
+                                : t("tonieboxes.navigationTitle"),
                         );
                     }
                 };

@@ -17,7 +17,9 @@ export interface ToniesJsonSearchWrapperProps {
     }) => void;
 }
 
-export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = ({ onSelectDataset }) => {
+export const ToniesJsonSearchWrapper: React.FC<ToniesJsonSearchWrapperProps> = ({
+    onSelectDataset,
+}) => {
     const { t } = useTranslation();
 
     const [lastAddedTitle, setLastAddedTitle] = useState<string | null>(null);

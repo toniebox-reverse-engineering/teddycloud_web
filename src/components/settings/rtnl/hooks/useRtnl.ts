@@ -134,7 +134,9 @@ export const useRtnl = () => {
             try {
                 const data = JSON.parse(event.data);
                 const entryData = data.data;
-                appendLog("Raw3 | Datetime: " + entryData.datetime + " Unknown: " + entryData.field2);
+                appendLog(
+                    "Raw3 | Datetime: " + entryData.datetime + " Unknown: " + entryData.field2,
+                );
             } catch (err) {
                 console.error("Error parsing 'rtnl-raw-log3' event:", err);
             }

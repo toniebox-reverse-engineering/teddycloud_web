@@ -7,7 +7,11 @@ import { ExportOutlined, ImportOutlined } from "@ant-design/icons";
 import { TonieCardProps } from "../../types/tonieTypes";
 import { naturalCompare } from "../../utils/helper";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { useTonieboxContent } from "../../hooks/useTonieboxContent";
 import { TeddyAudioPlayer } from "../../components/tonies/teddyaudioplayer/TeddyAudioPlayer";
@@ -19,7 +23,9 @@ type TeddyAudioPlayerPageProps = {
     standalone?: boolean;
 };
 
-export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({ standalone = false }) => {
+export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({
+    standalone = false,
+}) => {
     const location = useLocation();
     const navigate = useNavigate();
     const searchParams = new URLSearchParams(location.search);

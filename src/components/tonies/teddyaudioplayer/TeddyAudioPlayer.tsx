@@ -35,7 +35,9 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
     const { token } = useToken();
     const containerRef = useRef<HTMLDivElement | null>(null);
 
-    const [currentTonie, setCurrentTonie] = useState<TonieCardProps | undefined>(preselectedTonieCard);
+    const [currentTonie, setCurrentTonie] = useState<TonieCardProps | undefined>(
+        preselectedTonieCard,
+    );
     const [playPosition, setPlayPosition] = useState<number>(preselectedPlayPosition ?? 0);
     const [hoveredTonieRUID, setHoveredTonieRUID] = useState<string | null>(null);
 
@@ -44,7 +46,10 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
 
     useHorizontalDragScroll(containerRef);
     useWheelHorizontalScroll(containerRef);
-    const { startScrollLeft, startScrollRight, stopScrolling } = useHoldToScroll(containerRef, scrollSpeed);
+    const { startScrollLeft, startScrollRight, stopScrolling } = useHoldToScroll(
+        containerRef,
+        scrollSpeed,
+    );
 
     useEffect(() => {
         if (!preselectedTonieCard) {
@@ -80,12 +85,18 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
     const [searchText, setSearchText] = useState("");
     const [searchDraft, setSearchDraft] = useState("");
 
-    const setSearchTextDebounced = useDebouncedCallback((value: string) => setSearchText(value), 250);
+    const setSearchTextDebounced = useDebouncedCallback(
+        (value: string) => setSearchText(value),
+        250,
+    );
 
     const q = searchText.trim().toLowerCase();
 
     const filteredTonieCards = tonieCards.filter((tonie) => {
-        const series = tonie.sourceInfo?.series ?? tonie.tonieInfo?.series ?? t("tonies.teddyaudioplayer.unknown");
+        const series =
+            tonie.sourceInfo?.series ??
+            tonie.tonieInfo?.series ??
+            t("tonies.teddyaudioplayer.unknown");
 
         const episode = tonie.sourceInfo?.episode ?? tonie.tonieInfo?.episode ?? ""; // keep as string
 
@@ -194,8 +205,12 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
                                 tonie.sourceInfo?.series ||
                                 tonie.tonieInfo.series ||
                                 t("tonies.teddyaudioplayer.unknown");
-                            const episode = tonie.sourceInfo?.episode || tonie.tonieInfo.episode || "";
-                            const picture = tonie.sourceInfo?.picture || tonie.tonieInfo.picture || "/img_unknown.png";
+                            const episode =
+                                tonie.sourceInfo?.episode || tonie.tonieInfo.episode || "";
+                            const picture =
+                                tonie.sourceInfo?.picture ||
+                                tonie.tonieInfo.picture ||
+                                "/img_unknown.png";
 
                             return (
                                 <div key={tonie.ruid} style={{ flex: "0 0 auto", width: 150 }}>
@@ -204,7 +219,11 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
                                         size="small"
                                         cover={
                                             <div
-                                                style={{ position: "relative", height: 100, width: "100%" }}
+                                                style={{
+                                                    position: "relative",
+                                                    height: 100,
+                                                    width: "100%",
+                                                }}
                                                 onMouseEnter={() => setHoveredTonieRUID(tonie.ruid)}
                                                 onMouseLeave={() => setHoveredTonieRUID(null)}
                                             >
@@ -234,7 +253,10 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
                                                             left: "50%",
                                                             transform: "translate(-50%, -50%)",
                                                             borderRadius: "50%",
-                                                            opacity: hoveredTonieRUID === tonie.ruid ? 0.8 : 0,
+                                                            opacity:
+                                                                hoveredTonieRUID === tonie.ruid
+                                                                    ? 0.8
+                                                                    : 0,
                                                             transition: "opacity 0.3s",
                                                         }}
                                                         onClick={() => handlePlay(tonie)}
@@ -268,7 +290,10 @@ export const TeddyAudioPlayer: React.FC<TeddyAudioPlayerProps> = ({
                         })
                     ) : (
                         <div style={{ padding: 24, width: "100%" }}>
-                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t("tonies.noData")} />
+                            <Empty
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                description={t("tonies.noData")}
+                            />
                         </div>
                     )}
                 </div>

@@ -233,7 +233,9 @@ export class WasmTafEncoder {
         if (audioBuffer.sampleRate !== targetSampleRate) {
             const offlineContext = new OfflineAudioContext({
                 numberOfChannels: 2,
-                length: Math.round((audioBuffer.length * targetSampleRate) / audioBuffer.sampleRate),
+                length: Math.round(
+                    (audioBuffer.length * targetSampleRate) / audioBuffer.sampleRate,
+                ),
                 sampleRate: targetSampleRate,
             });
 
@@ -247,13 +249,17 @@ export class WasmTafEncoder {
 
         // Convert to interleaved int16 PCM (stereo)
         const leftChannel = resampledBuffer.getChannelData(0);
-        const rightChannel = resampledBuffer.numberOfChannels > 1 ? resampledBuffer.getChannelData(1) : leftChannel; // Duplicate mono to stereo
+        const rightChannel =
+            resampledBuffer.numberOfChannels > 1 ? resampledBuffer.getChannelData(1) : leftChannel; // Duplicate mono to stereo
 
         const pcmData = new Int16Array(leftChannel.length * 2);
         for (let i = 0; i < leftChannel.length; i++) {
             // Clamp to int16 range
             pcmData[i * 2] = Math.max(-32768, Math.min(32767, Math.round(leftChannel[i] * 32767)));
-            pcmData[i * 2 + 1] = Math.max(-32768, Math.min(32767, Math.round(rightChannel[i] * 32767)));
+            pcmData[i * 2 + 1] = Math.max(
+                -32768,
+                Math.min(32767, Math.round(rightChannel[i] * 32767)),
+            );
         }
 
         return pcmData;
@@ -271,7 +277,7 @@ export class WasmTafEncoder {
         files: MyUploadFile[],
         audioId: number,
         bitrate: number,
-        onProgress?: (current: number, total: number, currentFile: string) => void
+        onProgress?: (current: number, total: number, currentFile: string) => void,
     ): Promise<Blob> {
         // Ensure WASM is loaded
         await loadWasmEncoder();

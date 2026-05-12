@@ -1,6 +1,10 @@
 import { useTranslation } from "react-i18next";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import CodeSnippet from "../../components/common/elements/CodeSnippet";
 import { Alert, Divider, theme, Typography } from "antd";
@@ -31,7 +35,10 @@ export const HowToGetSupportPage = () => {
                     <h1>{t("community.supportRequestGuide.title")}</h1>
                     <Paragraph>{t("community.supportRequestGuide.intro")}</Paragraph>
                     <Paragraph>
-                        <Alert type="info" description={t("community.supportRequestGuide.englishHint")} />
+                        <Alert
+                            type="info"
+                            description={t("community.supportRequestGuide.englishHint")}
+                        />
                     </Paragraph>
                     <Paragraph>
                         <SupportRequestGenerator />
@@ -43,21 +50,25 @@ export const HowToGetSupportPage = () => {
                     <h2>{t("community.supportRequestGuide.step2.title")}</h2>
                     <Paragraph>{t("community.supportRequestGuide.step2.intro")}</Paragraph>
                     <ul>
-                        {(t("community.supportRequestGuide.step2.list", { returnObjects: true }) as string[]).map(
-                            (item, index) => (
-                                <li key={index}>{item}</li>
-                            )
-                        )}
+                        {(
+                            t("community.supportRequestGuide.step2.list", {
+                                returnObjects: true,
+                            }) as string[]
+                        ).map((item, index) => (
+                            <li key={index}>{item}</li>
+                        ))}
                     </ul>
                     <Divider />
 
                     <h2>{t("community.supportRequestGuide.step3.title")}</h2>
                     <ul>
-                        {(t("community.supportRequestGuide.step3.list", { returnObjects: true }) as string[]).map(
-                            (item, index) => (
-                                <li key={index}>{item}</li>
-                            )
-                        )}
+                        {(
+                            t("community.supportRequestGuide.step3.list", {
+                                returnObjects: true,
+                            }) as string[]
+                        ).map((item, index) => (
+                            <li key={index}>{item}</li>
+                        ))}
                     </ul>
                     <Divider />
 
@@ -66,13 +77,18 @@ export const HowToGetSupportPage = () => {
                     <ul>
                         <li>
                             {t("community.supportRequestGuide.step4.listFirstEntry")}
-                            <CodeSnippet language="shell" code={`docker logs -f teddycloud > teddycloud_logs.txt`} />
+                            <CodeSnippet
+                                language="shell"
+                                code={`docker logs -f teddycloud > teddycloud_logs.txt`}
+                            />
                         </li>
-                        {(t("community.supportRequestGuide.step4.list", { returnObjects: true }) as string[]).map(
-                            (item, index) => (
-                                <li key={index}>{item}</li>
-                            )
-                        )}
+                        {(
+                            t("community.supportRequestGuide.step4.list", {
+                                returnObjects: true,
+                            }) as string[]
+                        ).map((item, index) => (
+                            <li key={index}>{item}</li>
+                        ))}
                     </ul>
                     <Divider />
 
@@ -95,7 +111,9 @@ export const HowToGetSupportPage = () => {
                         }}
                     >
                         <span
-                            dangerouslySetInnerHTML={{ __html: t("community.supportRequestGuide.example.details") }}
+                            dangerouslySetInnerHTML={{
+                                __html: t("community.supportRequestGuide.example.details"),
+                            }}
                         />
                     </blockquote>
                     <Divider />

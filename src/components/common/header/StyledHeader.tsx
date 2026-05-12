@@ -51,13 +51,26 @@ const NoHoverButton = styled(Button)`
     }
 `;
 
-export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.ReactNode; themeMode: string }) => {
+export const StyledHeader = ({
+    themeSwitch,
+    themeMode,
+}: {
+    themeSwitch: React.ReactNode;
+    themeMode: string;
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const location = useLocation();
 
-    const { unconfirmedCount, navOpen, setNavOpen, subNavOpen, setSubNavOpen, currentTCSection, setCurrentTCSection } =
-        useTeddyCloud();
+    const {
+        unconfirmedCount,
+        navOpen,
+        setNavOpen,
+        subNavOpen,
+        setSubNavOpen,
+        currentTCSection,
+        setCurrentTCSection,
+    } = useTeddyCloud();
 
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -143,9 +156,18 @@ export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.Re
         () => [
             { key: "/", label: <NavItem title={t("home.navigationTitle")} to="/" /> },
             { key: "tonies", label: <NavItem title={t("tonies.navigationTitle")} to="/tonies" /> },
-            { key: "tonieboxes", label: <NavItem title={t("tonieboxes.navigationTitle")} to="/tonieboxes" /> },
-            { key: "settings", label: <NavItem title={t("settings.navigationTitle")} to="/settings" /> },
-            { key: "community", label: <NavItem title={t("community.navigationTitle")} to="/community" /> },
+            {
+                key: "tonieboxes",
+                label: <NavItem title={t("tonieboxes.navigationTitle")} to="/tonieboxes" />,
+            },
+            {
+                key: "settings",
+                label: <NavItem title={t("settings.navigationTitle")} to="/settings" />,
+            },
+            {
+                key: "community",
+                label: <NavItem title={t("community.navigationTitle")} to="/community" />,
+            },
         ],
         [NavItem, t],
     );
@@ -174,7 +196,10 @@ export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.Re
 
     return (
         <StyledHeaderComponent id="teddycloud-header">
-            <Link to="/" style={{ color: "white", display: "flex", alignItems: "center", marginRight: 16 }}>
+            <Link
+                to="/"
+                style={{ color: "white", display: "flex", alignItems: "center", marginRight: 16 }}
+            >
                 <StyledLogo className="teddycloud-logo" src={logoImg} />
                 <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud</HiddenMobile>
             </Link>
@@ -196,9 +221,18 @@ export const StyledHeader = ({ themeSwitch, themeMode }: { themeSwitch: React.Re
                 <NotificationButton notificationCount={unconfirmedCount} />
 
                 <HiddenDesktop style={{ marginLeft: 8 }}>
-                    <Button type="primary" icon={<MenuOutlined />} onClick={() => setNavOpen(true)} />
+                    <Button
+                        type="primary"
+                        icon={<MenuOutlined />}
+                        onClick={() => setNavOpen(true)}
+                    />
 
-                    <Drawer placement="right" open={navOpen} onClose={() => setNavOpen(false)} title="TeddyCloud">
+                    <Drawer
+                        placement="right"
+                        open={navOpen}
+                        onClose={() => setNavOpen(false)}
+                        title="TeddyCloud"
+                    >
                         <StyledMenu
                             mode="vertical"
                             items={mainNav}

@@ -34,7 +34,9 @@ export async function fetchAllTAFsInLibrary(args?: {
     const overlay = args?.overlay;
 
     const apiPathParam = encodeURIComponent(path);
-    const url = `/api/fileIndexV2?path=${apiPathParam}&special=${special}` + (overlay ? `&overlay=${overlay}` : "");
+    const url =
+        `/api/fileIndexV2?path=${apiPathParam}&special=${special}` +
+        (overlay ? `&overlay=${overlay}` : "");
 
     const res = await api.apiGetTeddyCloudApiRaw(url);
     if (!res.ok) return [];
@@ -67,9 +69,14 @@ export async function fetchUnusedTAFsInLibrary(
     args?: { path?: string; special?: string; overlay?: string },
 ): Promise<RecordWithPath[]> {
     const all = await fetchAllTAFsInLibrary(args);
-    const usedPaths = new Set((tonies ?? []).map((t) => normalizeLibPath(t?.source)).filter(Boolean));
+    const usedPaths = new Set(
+        (tonies ?? []).map((t) => normalizeLibPath(t?.source)).filter(Boolean),
+    );
     const unused = all.filter(
-        (r) => !r.isDir && r.name.toLowerCase().endsWith(".taf") && !usedPaths.has(normalizeLibPath(r.fullPath)),
+        (r) =>
+            !r.isDir &&
+            r.name.toLowerCase().endsWith(".taf") &&
+            !usedPaths.has(normalizeLibPath(r.fullPath)),
     );
     return unused;
 }

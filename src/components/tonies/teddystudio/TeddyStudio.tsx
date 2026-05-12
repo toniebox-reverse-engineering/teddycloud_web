@@ -112,7 +112,13 @@ export const TeddyStudio: React.FC = () => {
         picture: string;
     }) => {
         if (editIndex === null) return;
-        editByMergedIndex(editIndex, values.trackTitles, values.episodes, values.text, values.picture);
+        editByMergedIndex(
+            editIndex,
+            values.trackTitles,
+            values.episodes,
+            values.text,
+            values.picture,
+        );
 
         addNotification(
             NotificationTypeEnum.Success,
@@ -146,14 +152,31 @@ export const TeddyStudio: React.FC = () => {
             <h1>{t("tonies.teddystudio.title")}</h1>
             <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
 
-            <ToniesJsonSearchWrapper onSelectDataset={addResult} />
-
-            <div style={{ marginTop: 8 }}>
-                <Button icon={<UnorderedListOutlined />} onClick={() => setBulkAddOpen(true)}>
-                    {t("tonies.teddystudio.bulkAdd.button")}
-                </Button>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    width: "100%",
+                    alignItems: "flex-start",
+                }}
+            >
+                <div
+                    style={{
+                        flex: 1,
+                        minWidth: 300,
+                        maxWidth: 600,
+                    }}
+                >
+                    <ToniesJsonSearchWrapper onSelectDataset={addResult} />
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    <Button icon={<UnorderedListOutlined />} onClick={() => setBulkAddOpen(true)}>
+                        {t("tonies.teddystudio.bulkAdd.button")}
+                    </Button>
+                </div>
             </div>
-
             <BulkAddToniesModal
                 open={bulkAddOpen}
                 onClose={() => setBulkAddOpen(false)}
@@ -210,7 +233,14 @@ export const TeddyStudio: React.FC = () => {
                     }}
                 >
                     <div>{t("tonies.teddystudio.adaptLabelsHint")}</div>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: 8,
+                            flexWrap: "wrap",
+                            justifyContent: "flex-end",
+                        }}
+                    >
                         <Button
                             icon={<ClearOutlined />}
                             onClick={() => {
@@ -219,7 +249,11 @@ export const TeddyStudio: React.FC = () => {
                         >
                             {t("tonies.teddystudio.clear")}
                         </Button>
-                        <Button type="primary" icon={<PrinterOutlined />} onClick={() => window.print()}>
+                        <Button
+                            type="primary"
+                            icon={<PrinterOutlined />}
+                            onClick={() => window.print()}
+                        >
                             {t("tonies.teddystudio.printPage")}
                         </Button>
                     </div>

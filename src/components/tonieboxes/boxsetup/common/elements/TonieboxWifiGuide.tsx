@@ -20,7 +20,9 @@ export const TonieboxWifiGuide: React.FC = () => {
 
     return (
         <>
-            <Paragraph>{t("tonieboxes.boxFlashingCommon.connectTBToWifi.preparationText")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.boxFlashingCommon.connectTBToWifi.preparationText")}
+            </Paragraph>
             <Collapse
                 size="small"
                 items={[

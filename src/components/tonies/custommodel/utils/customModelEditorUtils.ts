@@ -3,7 +3,14 @@
  */
 
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
-import type { AudioPair, CustomEntry, FormValues, SortColumnKey, FilterFieldKey, TrackRow } from "../types/customModelEditorTypes";
+import type {
+    AudioPair,
+    CustomEntry,
+    FormValues,
+    SortColumnKey,
+    FilterFieldKey,
+    TrackRow,
+} from "../types/customModelEditorTypes";
 import { toModelKey } from "../../utils/modelKey";
 import { toLanguageCode } from "../../../common/icons/LanguageFlagIcon";
 
@@ -14,11 +21,18 @@ export { toModelKey };
 export const normalizeAudioPairs = (entry: CustomEntry): string[] => {
     const audioIds = entry.audio_id || [];
     const hashes = entry.hash || [];
-    return audioIds.map((audioId, index) => `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`).filter((pair) => pair !== "::");
+    return audioIds
+        .map(
+            (audioId, index) =>
+                `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`,
+        )
+        .filter((pair) => pair !== "::");
 };
 
-export const normalizeTracks = (entry: CustomEntry): string[] => (entry.tracks || []).map((track) => normalizeText(track)).filter(Boolean);
-export const areStringArraysEqual = (left: string[], right: string[]): boolean => left.length === right.length && left.every((value, index) => value === right[index]);
+export const normalizeTracks = (entry: CustomEntry): string[] =>
+    (entry.tracks || []).map((track) => normalizeText(track)).filter(Boolean);
+export const areStringArraysEqual = (left: string[], right: string[]): boolean =>
+    left.length === right.length && left.every((value, index) => value === right[index]);
 
 /** At least one row; empty `audio_id`/`hash` arrays are truthy, so length must be used. */
 const audioPairsForForm = (entry: CustomEntry): FormValues["audioPairs"] => {
@@ -46,7 +60,10 @@ export const toFormValues = (entry: CustomEntry): FormValues => ({
     category: entry.category ?? "",
     pic: entry.pic ?? "",
     audioPairs: audioPairsForForm(entry),
-    tracks: entry.tracks && entry.tracks.length > 0 ? entry.tracks.map((track) => ({ track })) : [{ track: "" }],
+    tracks:
+        entry.tracks && entry.tracks.length > 0
+            ? entry.tracks.map((track) => ({ track }))
+            : [{ track: "" }],
 });
 
 const parseModelId = (model: string): number | null => {
@@ -64,12 +81,22 @@ export const buildSuggestedModel = (entries: CustomEntry[]): string => {
 };
 
 export const toEntry = (values: FormValues): CustomEntry => {
-    const pairs = (values.audioPairs || []).filter((pair): pair is AudioPair => pair != null && typeof pair === "object").map((pair) => ({ audio_id: (pair.audio_id || "").trim(), hash: (pair.hash || "").trim() })).filter((pair) => pair.audio_id && pair.hash);
-    const tracks = (values.tracks || []).filter((track): track is TrackRow => track != null && typeof track === "object").map((track) => (track.track || "").trim()).filter((track) => track.length > 0);
-    const releaseRaw = values.release === undefined || values.release === null ? "" : String(values.release).trim();
+    const pairs = (values.audioPairs || [])
+        .filter((pair): pair is AudioPair => pair != null && typeof pair === "object")
+        .map((pair) => ({ audio_id: (pair.audio_id || "").trim(), hash: (pair.hash || "").trim() }))
+        .filter((pair) => pair.audio_id && pair.hash);
+    const tracks = (values.tracks || [])
+        .filter((track): track is TrackRow => track != null && typeof track === "object")
+        .map((track) => (track.track || "").trim())
+        .filter((track) => track.length > 0);
+    const releaseRaw =
+        values.release === undefined || values.release === null
+            ? ""
+            : String(values.release).trim();
     const releaseNormalized = releaseRaw.length > 0 ? releaseRaw : undefined;
     const languageRaw = String(values.language ?? "").trim();
-    const languageNormalized = languageRaw.length > 0 ? toLanguageCode(languageRaw) || undefined : undefined;
+    const languageNormalized =
+        languageRaw.length > 0 ? toLanguageCode(languageRaw) || undefined : undefined;
     return {
         no: (values.no || "").trim() || undefined,
         model: (values.model || "").trim(),
@@ -86,7 +113,8 @@ export const toEntry = (values: FormValues): CustomEntry => {
     };
 };
 
-export const isImageFile = (name: string): boolean => IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));
+export const isImageFile = (name: string): boolean =>
+    IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));
 export const sortValueForEntry = (entry: CustomEntry, column: SortColumnKey): string => {
     if (column === "title") return normalizeText(entry.title).toLowerCase();
     if (column === "episodes") return normalizeText(entry.episodes).toLowerCase();

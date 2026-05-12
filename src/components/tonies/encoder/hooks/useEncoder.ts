@@ -16,7 +16,11 @@ import {
 } from "../../../../utils/validation/fieldInputValidator";
 import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
 import { createQueryString } from "../../../../utils/browser/queryParams";
-import { loadWasmEncoder, isWasmEncoderAvailable, WasmTafEncoder } from "../../../../utils/audio/wasmEncoder";
+import {
+    loadWasmEncoder,
+    isWasmEncoderAvailable,
+    WasmTafEncoder,
+} from "../../../../utils/audio/wasmEncoder";
 import { useDirectoryTree } from "../../common/hooks/useDirectoryTree";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -51,7 +55,9 @@ export const useEncoder = () => {
     useEffect(() => {
         const fetchDebugPCM = async () => {
             try {
-                const response = await api.apiGetTeddyCloudSettingRaw("debug.web.pcm_encode_console_url");
+                const response = await api.apiGetTeddyCloudSettingRaw(
+                    "debug.web.pcm_encode_console_url",
+                );
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 setDebugPCMObjects(data.toString() === "true");
@@ -196,7 +202,9 @@ export const useEncoder = () => {
 
     const sortFileListAlphabeticallyNatural = () => {
         setFileList((prev) =>
-            [...prev].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" })),
+            [...prev].sort((a, b) =>
+                a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }),
+            ),
         );
     };
 
@@ -247,7 +255,14 @@ export const useEncoder = () => {
             );
             try {
                 await new Promise<void>((resolve, reject) =>
-                    (encoderUpload as any)(resolve, reject, formData, fileList, file, debugPCMObjects),
+                    (encoderUpload as any)(
+                        resolve,
+                        reject,
+                        formData,
+                        fileList,
+                        file,
+                        debugPCMObjects,
+                    ),
                 );
             } catch (error) {
                 addNotification(
@@ -279,7 +294,10 @@ export const useEncoder = () => {
                 t("tonies.encoder.processing"),
                 t("tonies.encoder.processingDetails", { file: tafFilename + ".taf" }),
             );
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/pcmUpload?${queryString}`,
+                formData,
+            );
             closeLoadingNotification(key);
             if (response.ok) {
                 addNotification(
@@ -323,7 +341,11 @@ export const useEncoder = () => {
 
         try {
             if (!isWasmEncoderAvailable()) {
-                addLoadingNotification(key, t("tonies.encoder.loading"), t("tonies.encoder.loadingWasmEncoder"));
+                addLoadingNotification(
+                    key,
+                    t("tonies.encoder.loading"),
+                    t("tonies.encoder.loadingWasmEncoder"),
+                );
                 await loadWasmEncoder();
                 setWasmLoaded(true);
             }
@@ -331,7 +353,11 @@ export const useEncoder = () => {
             const currentUnixTime = Math.floor(Date.now() / 1000);
             const audioId = currentUnixTime - 0x50000000;
 
-            addLoadingNotification(key, t("tonies.encoder.processing"), t("tonies.encoder.browserEncodingInProgress"));
+            addLoadingNotification(
+                key,
+                t("tonies.encoder.processing"),
+                t("tonies.encoder.browserEncodingInProgress"),
+            );
 
             const tafBlob = await WasmTafEncoder.encodeMultipleFiles(
                 fileList,
@@ -364,7 +390,10 @@ export const useEncoder = () => {
             const formData = new FormData();
             formData.append("file", tafBlob, tafFilename + ".taf");
 
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/tafUpload?${queryString}`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/tafUpload?${queryString}`,
+                formData,
+            );
             closeLoadingNotification(key);
             if (response.ok) {
                 addNotification(

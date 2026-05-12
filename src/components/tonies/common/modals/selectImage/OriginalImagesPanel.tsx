@@ -114,7 +114,7 @@ export const OriginalImagesPanel: React.FC<OriginalImagesPanelProps> = ({
                 ),
             },
         ],
-        [t, allowMultiple, onImagePreview]
+        [t, allowMultiple, onImagePreview],
     );
 
     return (
@@ -130,11 +130,21 @@ export const OriginalImagesPanel: React.FC<OriginalImagesPanelProps> = ({
             }}
         >
             {originalImagesLoading ? (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 200 }}>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        minHeight: 200,
+                    }}
+                >
                     <Spin tip={t("tonies.imageManager.originalImagesLoading")} />
                 </div>
             ) : originalImages.length === 0 ? (
-                <Empty style={{ margin: "40px 0" }} description={t("tonies.imageManager.noOriginalImages")} />
+                <Empty
+                    style={{ margin: "40px 0" }}
+                    description={t("tonies.imageManager.noOriginalImages")}
+                />
             ) : (
                 <>
                     <Input
@@ -154,7 +164,10 @@ export const OriginalImagesPanel: React.FC<OriginalImagesPanelProps> = ({
                         }
                     />
                     {originalTableData.length === 0 ? (
-                        <Empty style={{ margin: "24px 0" }} description={t("tonies.imageManager.noOriginalSearchResults")} />
+                        <Empty
+                            style={{ margin: "24px 0" }}
+                            description={t("tonies.imageManager.noOriginalSearchResults")}
+                        />
                     ) : (
                         <div ref={tableViewportRef} style={{ flex: 1, minHeight: 0 }}>
                             <Table<OriginalTableRow>
@@ -170,29 +183,40 @@ export const OriginalImagesPanel: React.FC<OriginalImagesPanelProps> = ({
                                     allowMultiple
                                         ? {
                                               selectedRowKeys: originalSelections,
-                                              onChange: (keys) => setOriginalSelections(keys.map(String)),
+                                              onChange: (keys) =>
+                                                  setOriginalSelections(keys.map(String)),
                                               columnWidth: SELECT_IMAGE_CHECKBOX_COL_WIDTH,
                                               align: "center",
-                                              renderCell: (_: boolean, __: OriginalTableRow, ___: number, originNode: React.ReactNode) =>
-                                                  renderSelectImageSelectionCell(originNode),
+                                              renderCell: (
+                                                  _: boolean,
+                                                  __: OriginalTableRow,
+                                                  ___: number,
+                                                  originNode: React.ReactNode,
+                                              ) => renderSelectImageSelectionCell(originNode),
                                           }
                                         : undefined
                                 }
                                 onRow={(record) => ({
                                     onClick: () =>
                                         setOriginalSelections((prev) =>
-                                            nextSelectionForMode(prev, record.url, allowMultiple)
+                                            nextSelectionForMode(prev, record.url, allowMultiple),
                                         ),
                                     onDoubleClick: () => {
                                         if (allowMultiple) {
-                                            setOriginalSelections((prev) => nextSelectionForMode(prev, record.url, true));
+                                            setOriginalSelections((prev) =>
+                                                nextSelectionForMode(prev, record.url, true),
+                                            );
                                             return;
                                         }
                                         onConfirmSingle(record.url);
                                     },
                                     style: { cursor: "pointer" },
                                 })}
-                                rowClassName={(record) => (originalSelections.includes(record.url) ? "ant-table-row-selected" : "")}
+                                rowClassName={(record) =>
+                                    originalSelections.includes(record.url)
+                                        ? "ant-table-row-selected"
+                                        : ""
+                                }
                             />
                         </div>
                     )}

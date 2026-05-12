@@ -17,7 +17,10 @@ interface Step0Props {
     onAcknowledgeChange: (patch: Partial<Step0Props["acknowledgements"]>) => void;
 }
 
-export const Step0Preparations: React.FC<Step0Props> = ({ acknowledgements, onAcknowledgeChange }) => {
+export const Step0Preparations: React.FC<Step0Props> = ({
+    acknowledgements,
+    onAcknowledgeChange,
+}) => {
     const { t } = useTranslation();
 
     const reachableBackUpUrls = useReachableBackUpUrls();
@@ -35,7 +38,9 @@ export const Step0Preparations: React.FC<Step0Props> = ({ acknowledgements, onAc
                         <Paragraph>{t("tonieboxes.warningUseAtYourOwnRiskText")}</Paragraph>
                         <Checkbox
                             checked={acknowledgements.riskAccepted}
-                            onChange={(e) => onAcknowledgeChange({ riskAccepted: e.target.checked })}
+                            onChange={(e) =>
+                                onAcknowledgeChange({ riskAccepted: e.target.checked })
+                            }
                         >
                             <b>{t("tonieboxes.esp32BoxFlashing.esp32flasher.ackRisk")}</b>
                         </Checkbox>
@@ -49,12 +54,20 @@ export const Step0Preparations: React.FC<Step0Props> = ({ acknowledgements, onAc
                     description={
                         <>
                             <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
-                            <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}</Paragraph>
+                            <Paragraph>
+                                {t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}
+                            </Paragraph>
                             <Checkbox
                                 checked={acknowledgements.latestFirmwareRead}
-                                onChange={(e) => onAcknowledgeChange({ latestFirmwareRead: e.target.checked })}
+                                onChange={(e) =>
+                                    onAcknowledgeChange({ latestFirmwareRead: e.target.checked })
+                                }
                             >
-                                <b>{t("tonieboxes.esp32BoxFlashing.esp32flasher.ackLatestFirmware")}</b>
+                                <b>
+                                    {t(
+                                        "tonieboxes.esp32BoxFlashing.esp32flasher.ackLatestFirmware",
+                                    )}
+                                </b>
                             </Checkbox>
                         </>
                     }
@@ -64,19 +77,25 @@ export const Step0Preparations: React.FC<Step0Props> = ({ acknowledgements, onAc
                 <Uart3v3Hint
                     checked={acknowledgements.uartHintRead}
                     onCheckedChange={(checked) => onAcknowledgeChange({ uartHintRead: checked })}
-                    checkboxLabel={<b>{t("tonieboxes.esp32BoxFlashing.esp32flasher.ackUARTHint")}</b>}
+                    checkboxLabel={
+                        <b>{t("tonieboxes.esp32BoxFlashing.esp32flasher.ackUARTHint")}</b>
+                    }
                 />
 
                 <Alert
                     type="info"
                     showIcon
-                    title={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintUseOtherToolForAdditionalBackup")}
+                    title={t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.hintUseOtherToolForAdditionalBackup",
+                    )}
                     description={
                         <>
                             {reachableBackUpUrls.length > 0 ? (
                                 <Paragraph style={{ marginTop: 16 }}>
                                     <Paragraph>
-                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.alternativeTools")}
+                                        {t(
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.alternativeTools",
+                                        )}
                                     </Paragraph>
                                     <ul>
                                         {reachableBackUpUrls.map(({ id, url, title }) => (
@@ -90,15 +109,25 @@ export const Step0Preparations: React.FC<Step0Props> = ({ acknowledgements, onAc
                                 </Paragraph>
                             ) : (
                                 <Paragraph>
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.alternativeToolsNoLinks")}
+                                    {t(
+                                        "tonieboxes.esp32BoxFlashing.esp32flasher.alternativeToolsNoLinks",
+                                    )}
                                 </Paragraph>
                             )}
 
                             <Checkbox
                                 checked={acknowledgements.backupWithOtherToolTaken}
-                                onChange={(e) => onAcknowledgeChange({ backupWithOtherToolTaken: e.target.checked })}
+                                onChange={(e) =>
+                                    onAcknowledgeChange({
+                                        backupWithOtherToolTaken: e.target.checked,
+                                    })
+                                }
                             >
-                                <b>{t("tonieboxes.esp32BoxFlashing.esp32flasher.ackBackUpWithOtherTool")}</b>
+                                <b>
+                                    {t(
+                                        "tonieboxes.esp32BoxFlashing.esp32flasher.ackBackUpWithOtherTool",
+                                    )}
+                                </b>
                             </Checkbox>
                         </>
                     }

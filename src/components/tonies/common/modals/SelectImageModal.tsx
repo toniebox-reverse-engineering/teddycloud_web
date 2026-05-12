@@ -6,14 +6,20 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
-import { SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS, UI_SEARCH_DEBOUNCE_MS } from "../../../../constants/numbers";
+import {
+    SELECT_IMAGE_JSON_PREFETCH_FALLBACK_MS,
+    UI_SEARCH_DEBOUNCE_MS,
+} from "../../../../constants/numbers";
 import { useUploadTimeoutMs } from "../../../../hooks/getsettings/useUploadTimeoutMs";
 import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useDirectoryTree } from "../hooks/useDirectoryTree";
 import { useDirectoryCreate } from "../hooks/useCreateDirectory";
 import { toCustomImgWebPath } from "../utils/imagePathUtils";
-import { originalImageUrlMatchesTokens, tokenizeOriginalImageSearch } from "../utils/originalImageUrlSearch";
+import {
+    originalImageUrlMatchesTokens,
+    tokenizeOriginalImageSearch,
+} from "../utils/originalImageUrlSearch";
 import CustomImagesPanel from "./selectImage/CustomImagesPanel";
 import OriginalImagesPanel from "./selectImage/OriginalImagesPanel";
 import { useOriginalImagesData } from "./selectImage/useOriginalImagesData";
@@ -126,7 +132,10 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     });
 
     useEffect(() => {
-        const timer = window.setTimeout(() => setDebouncedOriginalSearch(originalSearchInput), UI_SEARCH_DEBOUNCE_MS);
+        const timer = window.setTimeout(
+            () => setDebouncedOriginalSearch(originalSearchInput),
+            UI_SEARCH_DEBOUNCE_MS,
+        );
         return () => window.clearTimeout(timer);
     }, [originalSearchInput]);
 
@@ -147,21 +156,33 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
         setCustomPath(initialIsCustom ? deriveCustomImgDirectory(initialSelection) : "");
     }, [initialSelection, open]);
 
-    const searchTokens = useMemo(() => tokenizeOriginalImageSearch(debouncedOriginalSearch), [debouncedOriginalSearch]);
+    const searchTokens = useMemo(
+        () => tokenizeOriginalImageSearch(debouncedOriginalSearch),
+        [debouncedOriginalSearch],
+    );
 
     const filteredOriginalUrls = useMemo(
         () => originalImages.filter((url) => originalImageUrlMatchesTokens(url, searchTokens)),
         [originalImages, searchTokens],
     );
-    const originalTableData = useMemo(() => filteredOriginalUrls.map((url) => ({ url })), [filteredOriginalUrls]);
+    const originalTableData = useMemo(
+        () => filteredOriginalUrls.map((url) => ({ url })),
+        [filteredOriginalUrls],
+    );
 
     const selectedImages = source === "custom" ? customSelections : originalSelections;
     const selectedImagesForConfirm = useMemo(
-        () => (allowMultiple ? Array.from(new Set([...customSelections, ...originalSelections])) : selectedImages),
+        () =>
+            allowMultiple
+                ? Array.from(new Set([...customSelections, ...originalSelections]))
+                : selectedImages,
         [allowMultiple, customSelections, originalSelections, selectedImages],
     );
 
-    const canConfirm = useMemo(() => selectedImagesForConfirm.length > 0, [selectedImagesForConfirm]);
+    const canConfirm = useMemo(
+        () => selectedImagesForConfirm.length > 0,
+        [selectedImagesForConfirm],
+    );
 
     const confirmSelection = (paths: string[]) => {
         if (paths.length === 0) return;
@@ -183,8 +204,13 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
         const timeoutMsg = t("fileBrowser.upload.uploadTimeout", { ms: uploadTimeoutMs });
         try {
             const response = await Promise.race<Response>([
-                api.apiPostTeddyCloudFormDataRaw(`/api/fileUpload?path=${encodedPath}&special=custom_img`, formData),
-                new Promise<Response>((_, reject) => setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs)),
+                api.apiPostTeddyCloudFormDataRaw(
+                    `/api/fileUpload?path=${encodedPath}&special=custom_img`,
+                    formData,
+                ),
+                new Promise<Response>((_, reject) =>
+                    setTimeout(() => reject(new Error(timeoutMsg)), uploadTimeoutMs),
+                ),
             ]);
             await closeLoadingNotification(key);
             if (response.ok) {
@@ -287,7 +313,12 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                 zIndex={zIndex !== undefined ? zIndex + 1 : undefined}
             >
                 {imagePreviewUrl ? (
-                    <img src={imagePreviewUrl} alt="" referrerPolicy="no-referrer" style={{ width: "100%" }} />
+                    <img
+                        src={imagePreviewUrl}
+                        alt=""
+                        referrerPolicy="no-referrer"
+                        style={{ width: "100%" }}
+                    />
                 ) : null}
             </Modal>
             <Modal
@@ -309,20 +340,38 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                     },
                 }}
             >
-                <div style={{ width: "100%", display: "flex", flexDirection: "column", minHeight: 0, flex: 1 }}>
+                <div
+                    style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        minHeight: 0,
+                        flex: 1,
+                    }}
+                >
                     <Space style={{ marginBottom: 8 }}>
                         <Segmented<ImageSource>
                             value={source}
                             options={[
                                 { label: t("tonies.imageManager.sourceCustom"), value: "custom" },
-                                { label: t("tonies.imageManager.sourceOriginal"), value: "original" },
+                                {
+                                    label: t("tonies.imageManager.sourceOriginal"),
+                                    value: "original",
+                                },
                             ]}
                             onChange={(value) => setSource(value)}
                         />
                     </Space>
 
                     {source === "custom" ? (
-                        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                flex: 1,
+                                minHeight: 0,
+                            }}
+                        >
                             <CustomImagesPanel
                                 allowMultiple={allowMultiple}
                                 customPath={customPath}
@@ -344,7 +393,11 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                                 onCustomDoubleClick={handleCustomFileDoubleClick}
                                 onCustomImgDropFiles={(files) => {
                                     Array.from(files).forEach((file) => {
-                                        if (!IMAGE_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
+                                        if (
+                                            !IMAGE_EXTENSIONS.some((ext) =>
+                                                file.name.toLowerCase().endsWith(ext),
+                                            )
+                                        ) {
                                             return;
                                         }
                                         void handleUploadRequest({
@@ -359,7 +412,14 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
                     ) : null}
 
                     {source === "original" ? (
-                        <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                flex: 1,
+                                minHeight: 0,
+                            }}
+                        >
                             <OriginalImagesPanel
                                 allowMultiple={allowMultiple}
                                 originalImagesLoading={originalImagesLoading}

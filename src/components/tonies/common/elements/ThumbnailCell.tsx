@@ -43,7 +43,7 @@ export const ThumbnailCell: React.FC<ThumbnailCellProps> = ({
                     observer.disconnect();
                 }
             },
-            { rootMargin: loadingMargin }
+            { rootMargin: loadingMargin },
         );
 
         observer.observe(node);

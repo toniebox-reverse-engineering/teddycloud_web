@@ -48,7 +48,9 @@ export function OptionsListFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        options: !exists(json, "options") ? undefined : (json["options"] as Array<any>).map(OptionsItemFromJSON),
+        options: !exists(json, "options")
+            ? undefined
+            : (json["options"] as Array<any>).map(OptionsItemFromJSON),
     };
 }
 
@@ -60,6 +62,9 @@ export function OptionsListToJSON(value?: OptionsList | null): any {
         return null;
     }
     return {
-        options: value.options === undefined ? undefined : (value.options as Array<any>).map(OptionsItemToJSON),
+        options:
+            value.options === undefined
+                ? undefined
+                : (value.options as Array<any>).map(OptionsItemToJSON),
     };
 }

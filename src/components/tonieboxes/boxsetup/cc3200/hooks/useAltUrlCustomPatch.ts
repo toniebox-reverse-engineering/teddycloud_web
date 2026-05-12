@@ -77,7 +77,10 @@ const stringToHex = (str: string, totalLength: number): string[] => {
     const hexArray = str.split("").map((char) => char.charCodeAt(0).toString(16).padStart(2, "0"));
     hexArray.push("00");
     const paddingNeeded = totalLength - hexArray.length;
-    const paddedHex = paddingNeeded > 0 ? hexArray.concat(Array.from({ length: paddingNeeded }, () => "??")) : hexArray;
+    const paddedHex =
+        paddingNeeded > 0
+            ? hexArray.concat(Array.from({ length: paddingNeeded }, () => "??"))
+            : hexArray;
     return paddedHex;
 };
 
@@ -112,7 +115,7 @@ const formatConfig = (config: AltUrlCustom305): string => {
         "_desc": "${item._desc}",
         "search":  ["${item.search.join('", "')}"],
         "replace": ["${item.replace.join('", "')}"]
-    }`
+    }`,
         )
         .join(", ")}]
 }`;

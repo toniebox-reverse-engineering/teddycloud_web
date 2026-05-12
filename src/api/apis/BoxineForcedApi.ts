@@ -24,7 +24,7 @@ export class BoxineForcedApi extends runtime.BaseAPI {
      * Get unix timestamp.
      */
     async reverseV1TimeGetRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
@@ -37,7 +37,7 @@ export class BoxineForcedApi extends runtime.BaseAPI {
                 headers: headerParameters,
                 query: queryParameters,
             },
-            initOverrides
+            initOverrides,
         );
 
         if (this.isJsonMime(response.headers.get("content-type"))) {
@@ -50,7 +50,9 @@ export class BoxineForcedApi extends runtime.BaseAPI {
     /**
      * Get unix timestamp.
      */
-    async reverseV1TimeGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+    async reverseV1TimeGet(
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<string> {
         const response = await this.reverseV1TimeGetRaw(initOverrides);
         return await response.value();
     }

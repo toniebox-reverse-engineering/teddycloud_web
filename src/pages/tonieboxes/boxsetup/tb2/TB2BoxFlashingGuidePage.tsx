@@ -24,7 +24,13 @@ export const TB2BoxFlashingGuidePage: React.FC = () => {
                     items={[
                         { title: <Link to="/">{t("home.navigationTitle")}</Link> },
                         { title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> },
-                        { title: <Link to="/tonieboxes/boxsetup">{t("tonieboxes.boxSetup.navigationTitle")}</Link> },
+                        {
+                            title: (
+                                <Link to="/tonieboxes/boxsetup">
+                                    {t("tonieboxes.boxSetup.navigationTitle")}
+                                </Link>
+                            ),
+                        },
                         { title: t("tonieboxes.tb2BoxFlashing.navigationTitle") },
                     ]}
                 />
@@ -35,7 +41,11 @@ export const TB2BoxFlashingGuidePage: React.FC = () => {
                         closable={{ closeIcon: true, "aria-label": "close" }}
                         showIcon
                         title={t("tonieboxes.tb2BoxFlashing.underDevelopment")}
-                        description={<Paragraph>{t("tonieboxes.tb2BoxFlashing.underDevelopmentBePatient")}</Paragraph>}
+                        description={
+                            <Paragraph>
+                                {t("tonieboxes.tb2BoxFlashing.underDevelopmentBePatient")}
+                            </Paragraph>
+                        }
                     />
                 </StyledContent>
             </StyledLayout>

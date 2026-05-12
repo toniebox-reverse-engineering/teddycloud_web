@@ -1,6 +1,16 @@
 import { useMemo } from "react";
-import type { CustomEntry, FilterFieldKey, SortColumnKey, SortOrder, TableRow } from "../types/customModelEditorTypes";
-import { filterValueForEntry, normalizeText, sortValueForEntry } from "../utils/customModelEditorUtils";
+import type {
+    CustomEntry,
+    FilterFieldKey,
+    SortColumnKey,
+    SortOrder,
+    TableRow,
+} from "../types/customModelEditorTypes";
+import {
+    filterValueForEntry,
+    normalizeText,
+    sortValueForEntry,
+} from "../utils/customModelEditorUtils";
 
 type Params = {
     persistedEntries: CustomEntry[];
@@ -35,7 +45,10 @@ export const useCustomModelEditorTable = ({
         const filterNeedle = filterText.trim().toLowerCase();
         const seriesNeedle = seriesFilter.trim().toLowerCase();
         const episodeNeedle = episodeFilter.trim().toLowerCase();
-        const langSet = selectedLanguages.length > 0 ? new Set(selectedLanguages.map((l) => l.toLowerCase())) : null;
+        const langSet =
+            selectedLanguages.length > 0
+                ? new Set(selectedLanguages.map((l) => l.toLowerCase()))
+                : null;
 
         const rows: TableRow[] = persistedEntries.map((entry, idx) => ({
             idx,
@@ -48,18 +61,20 @@ export const useCustomModelEditorTable = ({
         if (filterNeedle.length > 0) {
             filtered = filtered.filter((row) =>
                 filterFields.some((field) =>
-                    String(filterValueForEntry(row.entry, field)).toLowerCase().includes(filterNeedle)
-                )
+                    String(filterValueForEntry(row.entry, field))
+                        .toLowerCase()
+                        .includes(filterNeedle),
+                ),
             );
         }
         if (seriesNeedle.length > 0) {
             filtered = filtered.filter((row) =>
-                normalizeText(row.entry.series).toLowerCase().includes(seriesNeedle)
+                normalizeText(row.entry.series).toLowerCase().includes(seriesNeedle),
             );
         }
         if (episodeNeedle.length > 0) {
             filtered = filtered.filter((row) =>
-                normalizeText(row.entry.episodes).toLowerCase().includes(episodeNeedle)
+                normalizeText(row.entry.episodes).toLowerCase().includes(episodeNeedle),
             );
         }
         if (langSet) {
@@ -74,9 +89,13 @@ export const useCustomModelEditorTable = ({
             const leftSort = sortValueForEntry(left.entry, tableSortColumn);
             const rightSort = sortValueForEntry(right.entry, tableSortColumn);
             const bySort =
-                String(leftSort).localeCompare(String(rightSort), undefined, { numeric: true }) * direction;
+                String(leftSort).localeCompare(String(rightSort), undefined, { numeric: true }) *
+                direction;
             if (bySort !== 0) return bySort;
-            return left.entry.model.localeCompare(right.entry.model, undefined, { numeric: true }) * direction;
+            return (
+                left.entry.model.localeCompare(right.entry.model, undefined, { numeric: true }) *
+                direction
+            );
         });
     }, [
         episodeFilter,

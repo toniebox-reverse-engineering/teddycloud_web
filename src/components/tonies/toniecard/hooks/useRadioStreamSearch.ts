@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { RadioBrowserFallBackUrl, RadioBrowserServerAPIUrlListUrl } from "../../../../constants/urls";
+import {
+    RadioBrowserFallBackUrl,
+    RadioBrowserServerAPIUrlListUrl,
+} from "../../../../constants/urls";
 
 export interface RadioStreamOption {
     value: string;
@@ -21,7 +24,9 @@ export function useRadioStreamSearch(onError?: (error: unknown) => void) {
     const [options, setOptions] = useState<RadioStreamOption[]>([]);
     const [value, setValue] = useState<string | undefined>();
 
-    const [radioBrowserAPIBaseJsonUrl, setRadioBrowserAPIBaseJsonUrl] = useState<string | null>(null);
+    const [radioBrowserAPIBaseJsonUrl, setRadioBrowserAPIBaseJsonUrl] = useState<string | null>(
+        null,
+    );
     const [isRadioBrowserApiAvailable, setApiAvailable] = useState(false);
 
     // Serverliste laden
@@ -106,7 +111,10 @@ export function useRadioStreamSearch(onError?: (error: unknown) => void) {
 
             const searchEncode = encodeURIComponent(searchText);
             const url =
-                radioBrowserAPIBaseJsonUrl + "/stations/search?name=" + searchEncode + "&is_https=true&hidebroken=true";
+                radioBrowserAPIBaseJsonUrl +
+                "/stations/search?name=" +
+                searchEncode +
+                "&is_https=true&hidebroken=true";
 
             try {
                 const response = await fetch(url, {});
@@ -138,7 +146,7 @@ export function useRadioStreamSearch(onError?: (error: unknown) => void) {
                 }
             }
         },
-        [radioBrowserAPIBaseJsonUrl, onError]
+        [radioBrowserAPIBaseJsonUrl, onError],
     );
 
     const select = useCallback((newValue: string) => {

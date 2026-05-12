@@ -45,7 +45,9 @@ export const useTeddyCloudVersion = () => {
         const develop = versionShort.endsWith("X.X.X");
         setIsDevelopVersion(develop);
 
-        const endpoint = develop ? "/reverseGeneric/teddycloud_develop" : "/reverseGeneric/teddycloud_release";
+        const endpoint = develop
+            ? "/reverseGeneric/teddycloud_develop"
+            : "/reverseGeneric/teddycloud_release";
 
         api.apiGetTeddyCloudApiRaw(endpoint)
             .then((response) => response.json())

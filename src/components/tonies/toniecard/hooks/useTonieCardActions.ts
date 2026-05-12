@@ -10,7 +10,12 @@ type UseTonieCardActionsParams = {
     overlay: string;
     modelTitle: string;
     t: (key: string, options?: Record<string, unknown>) => string;
-    addNotification: (type: NotificationTypeEnum, title: string, description: string, context?: string) => void;
+    addNotification: (
+        type: NotificationTypeEnum,
+        title: string,
+        description: string,
+        context?: string,
+    ) => void;
     addLoadingNotification: (key: string, title: string, description?: string) => void;
     closeLoadingNotification: (key: string) => void;
     fetchUpdatedTonieCard: () => Promise<void>;
@@ -31,7 +36,12 @@ export const useTonieCardActions = ({
     };
 
     const notifyError = (message: string, description: string, error?: unknown) => {
-        addNotification(NotificationTypeEnum.Error, message, `${description}${error ?? ""}`, t("tonies.title"));
+        addNotification(
+            NotificationTypeEnum.Error,
+            message,
+            `${description}${error ?? ""}`,
+            t("tonies.title"),
+        );
     };
 
     const handleLiveClick = async () => {
@@ -42,18 +52,18 @@ export const useTonieCardActions = ({
             if (nextLive) {
                 notifySuccess(
                     t("tonies.messages.liveEnabled"),
-                    t("tonies.messages.liveEnabledDetails", { model: modelTitle, ruid: tonieCard.ruid }).replace(
-                        ' "" ',
-                        " "
-                    )
+                    t("tonies.messages.liveEnabledDetails", {
+                        model: modelTitle,
+                        ruid: tonieCard.ruid,
+                    }).replace(' "" ', " "),
                 );
             } else {
                 notifySuccess(
                     t("tonies.messages.liveDisabled"),
-                    t("tonies.messages.liveDisabledDetails", { model: modelTitle, ruid: tonieCard.ruid }).replace(
-                        ' "" ',
-                        " "
-                    )
+                    t("tonies.messages.liveDisabledDetails", {
+                        model: modelTitle,
+                        ruid: tonieCard.ruid,
+                    }).replace(' "" ', " "),
                 );
             }
 
@@ -65,7 +75,7 @@ export const useTonieCardActions = ({
                     model: modelTitle,
                     ruid: tonieCard.ruid,
                 }).replace(' "" ', ""),
-                error
+                error,
             );
         }
     };
@@ -73,7 +83,11 @@ export const useTonieCardActions = ({
     const handleNoCloudClick = async () => {
         try {
             const nextNoCloud = !tonieCard.nocloud;
-            await api.apiPostTeddyCloudContentJson(tonieCard.ruid, "nocloud=" + nextNoCloud, overlay);
+            await api.apiPostTeddyCloudContentJson(
+                tonieCard.ruid,
+                "nocloud=" + nextNoCloud,
+                overlay,
+            );
 
             if (nextNoCloud) {
                 notifySuccess(
@@ -81,7 +95,7 @@ export const useTonieCardActions = ({
                     t("tonies.messages.cloudAccessBlockedDetails", {
                         model: modelTitle,
                         ruid: tonieCard.ruid,
-                    }).replace(' "" ', " ")
+                    }).replace(' "" ', " "),
                 );
             } else {
                 notifySuccess(
@@ -89,7 +103,7 @@ export const useTonieCardActions = ({
                     t("tonies.messages.cloudAccessEnabledDetails", {
                         model: modelTitle,
                         ruid: tonieCard.ruid,
-                    }).replace(' "" ', " ")
+                    }).replace(' "" ', " "),
                 );
             }
 
@@ -101,7 +115,7 @@ export const useTonieCardActions = ({
                     model: modelTitle,
                     ruid: tonieCard.ruid,
                 }).replace(' "" ', ""),
-                error
+                error,
             );
         }
     };
@@ -119,7 +133,7 @@ export const useTonieCardActions = ({
                 t("tonies.messages.downloadingDetails", {
                     model: modelTitle,
                     ruid: tonieCard.ruid,
-                }).replace(' "" ', " ")
+                }).replace(' "" ', " "),
             );
 
             const response = await api.apiGetTeddyCloudApiRaw(path);
@@ -129,10 +143,10 @@ export const useTonieCardActions = ({
 
             notifySuccess(
                 t("tonies.messages.downloadedFile"),
-                t("tonies.messages.downloadedFileDetails", { model: modelTitle, ruid: tonieCard.ruid }).replace(
-                    ' "" ',
-                    " "
-                )
+                t("tonies.messages.downloadedFileDetails", {
+                    model: modelTitle,
+                    ruid: tonieCard.ruid,
+                }).replace(' "" ', " "),
             );
             await fetchUpdatedTonieCard();
         } catch (error) {
@@ -143,7 +157,7 @@ export const useTonieCardActions = ({
                     model: modelTitle,
                     ruid: tonieCard.ruid,
                 }).replace(' "" ', ""),
-                error
+                error,
             );
         }
     };

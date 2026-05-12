@@ -6,7 +6,11 @@ import { Typography, Skeleton } from "antd";
 
 import changelogRaw from "../../../CHANGELOG.md?raw";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { ExportOutlined } from "@ant-design/icons";
 
@@ -34,7 +38,13 @@ export const ChangelogPage = () => {
                 <BreadcrumbWrapper
                     items={[
                         { title: <RouterLink to="/">{t("home.navigationTitle")}</RouterLink> },
-                        { title: <RouterLink to="/community">{t("community.navigationTitle")}</RouterLink> },
+                        {
+                            title: (
+                                <RouterLink to="/community">
+                                    {t("community.navigationTitle")}
+                                </RouterLink>
+                            ),
+                        },
                         { title: t("community.changelog.navigationTitle") },
                     ]}
                 />

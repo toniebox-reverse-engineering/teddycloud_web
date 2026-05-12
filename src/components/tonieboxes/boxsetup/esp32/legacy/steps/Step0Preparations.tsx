@@ -30,7 +30,9 @@ export const Step0Preparations: React.FC = () => {
                 description={
                     <>
                         <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
-                        <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}</Paragraph>
+                        <Paragraph>
+                            {t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}
+                        </Paragraph>
                     </>
                 }
                 style={{ marginBottom: 16 }}
@@ -43,7 +45,8 @@ export const Step0Preparations: React.FC = () => {
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.installESPToolText")}</Paragraph>
             <Paragraph>
                 <Link to="https://github.com/espressif/esptool" target="_blank">
-                    {t("tonieboxes.esp32BoxFlashing.legacy.installESPToolLink")} {<ExportOutlined />}
+                    {t("tonieboxes.esp32BoxFlashing.legacy.installESPToolLink")}{" "}
+                    {<ExportOutlined />}
                 </Link>
             </Paragraph>
 

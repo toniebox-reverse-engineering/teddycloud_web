@@ -18,7 +18,10 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
-export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({ overlay, onClose }) => {
+export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({
+    overlay,
+    onClose,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const { addNotification } = useTeddyCloud();
@@ -69,7 +72,10 @@ export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({ 
             const optionsRequest = (await api.apiGetIndexGet(overlay)) as OptionsList;
             if (optionsRequest?.options?.length && optionsRequest?.options?.length > 0) {
                 setOptions(optionsRequest);
-                SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options, overlay);
+                SettingsDataHandler.getInstance().initializeSettings(
+                    optionsRequest.options,
+                    overlay,
+                );
             }
             setLoading(false);
         };
@@ -191,7 +197,9 @@ export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({ 
                                 }
 
                                 const parts = option.iD.split(".");
-                                const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
+                                const lastParts = array[index - 1]
+                                    ? array[index - 1].iD.split(".")
+                                    : [];
                                 return (
                                     <React.Fragment key={index}>
                                         {parts.slice(0, -1).map((part, partIndex) => {
@@ -236,7 +244,9 @@ export const Settings: React.FC<{ overlay: string; onClose?: () => void }> = ({ 
                         value={settingsLevel}
                         onChange={(e) => handleChange(e.target.value)}
                         style={{ display: "flex", justifyContent: "center", marginTop: 8 }}
-                        disabled={loading || SettingsDataHandler.getInstance().hasUnchangedChanges()}
+                        disabled={
+                            loading || SettingsDataHandler.getInstance().hasUnchangedChanges()
+                        }
                     >
                         <Radio.Button value="1">Basic</Radio.Button>
                         <Radio.Button value="2">Detail</Radio.Button>

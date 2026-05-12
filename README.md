@@ -6,13 +6,13 @@ If you are using this repository for the first time, please refer to the **Gener
 
 ## TeddyCloud configuration
 
-You'll need to allow CORS for your teddyCloud instance used for development. The easisiest variant is to set `CORS Allow-Originⓘ` to `*`.
+You'll need to allow CORS for your teddyCloud instance used for development. The easiest variant is to set `CORS Allow-Originⓘ` to `*`.
 
-## NPM Enviroment file '.env'
+## NPM Environment file '.env'
 
-Please place an enviroment file '.env.development.local' in the teddycloud_web directory.
+Please place an environment file '.env.development.local' in the teddycloud_web directory.
 
-```
+```env
 VITE_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
 VITE_APP_TEDDYCLOUD_WEB_BASE=/web
 VITE_APP_TEDDYCLOUD_PORT_HTTPS=3443
@@ -67,9 +67,9 @@ If you just need the http variant, simply call `dotenv -e .env.development.local
 
 ## Project Structure & Architecture (Frontend)
 
-The TeddyCloud frontend follows a **topic-based architecture**.  
-Pages and components are organized by feature domains (e.g. `tonies`, `tonieboxes`,`settings`, `community`).  
-Each feature contains its own components, hooks, and modals.  
+The TeddyCloud frontend follows a **topic-based architecture**.
+Pages and components are organized by feature domains (e.g. `tonies`, `tonieboxes`,`settings`, `community`).
+Each feature contains its own components, hooks, and modals.
 This keeps all relevant code physically close, reduces duplication, and maintains clarity.
 
 This architecture represents the intended structure of the frontend; however, due to legacy code and ongoing migration efforts, not all parts of the project fully adhere to it yet.
@@ -82,27 +82,27 @@ If you encounter areas that are not yet aligned with this architecture or appear
 
 #### Pages
 
-**Location:**  
+**Location:**
 `src/pages/<topic>/...`
 
 **Purpose:**
 
--   Represent application routes.
--   Provide layout and structure (`StyledLayout`, `StyledSider`, breadcrumbs).
--   Compose topic-specific components.
--   Contain minimal logic.
+- Represent application routes.
+- Provide layout and structure (`StyledLayout`, `StyledSider`, breadcrumbs).
+- Compose topic-specific components.
+- Contain minimal logic.
 
 **Guidelines:**
 
--   Pages should stay thin.
--   Do not embed business logic in a Page.
--   Let the page assemble layout + feature components + navigation.
+- Pages should stay thin.
+- Do not embed business logic in a Page.
+- Let the page assemble layout + feature components + navigation.
 
 ---
 
 #### Components
 
-**Location:**  
+**Location:**
 `src/components/<topic>/...`
 
 Feature areas (e.g. tonies, settings) contain sub-folders for specific features:
@@ -115,14 +115,14 @@ src/components/tonieboxes/tonieboxeslist/...
 
 **Purpose:**
 
--   Implement UI behavior for a domain-specific feature.
--   Organize related components, hooks, and modals within the same feature folder.
--   Keep JSX + view logic here, push non-view logic into hooks.
+- Implement UI behavior for a domain-specific feature.
+- Organize related components, hooks, and modals within the same feature folder.
+- Keep JSX + view logic here, push non-view logic into hooks.
 
 **When to split into a hook?**
 
--   When a component grows beyond UI concerns.
--   When API logic, state machines, or repeated side effects appear.
+- When a component grows beyond UI concerns.
+- When API logic, state machines, or repeated side effects appear.
 
 ---
 
@@ -141,9 +141,9 @@ src/components/settings/notificationlist/hooks/useNotificationsList.ts
 
 **Rules:**
 
--   Hooks that belong to one feature stay inside that feature’s folder.
--   They encapsulate its behavior: API calls, state transitions, validation, etc.
--   They are not shared across unrelated domains.
+- Hooks that belong to one feature stay inside that feature’s folder.
+- They encapsulate its behavior: API calls, state transitions, validation, etc.
+- They are not shared across unrelated domains.
 
 This avoids a global “hooks graveyard”.
 
@@ -172,9 +172,9 @@ src/components/tonies/filebrowser/modals/CreateDirectoryModal.tsx
 
 **Guidelines:**
 
--   State (open/close, selected path, etc.) is controlled in the parent component/hook.
--   Modal components receive all required data via props.
--   Modals should not contain business logic (fetch, validation) unless tightly coupled to the feature.
+- State (open/close, selected path, etc.) is controlled in the parent component/hook.
+- Modal components receive all required data via props.
+- Modals should not contain business logic (fetch, validation) unless tightly coupled to the feature.
 
 ---
 
@@ -188,30 +188,30 @@ src/utils/
 
 **Allowed:**
 
--   Validators
--   Formatter functions
--   Encoding helpers
--   URL builders
--   Type utilities
+- Validators
+- Formatter functions
+- Encoding helpers
+- URL builders
+- Type utilities
 
 **Not allowed:**
 
--   React logic
--   State management
--   Component-specific utilities
+- React logic
+- State management
+- Component-specific utilities
 
 ---
 
 ### Coding Guidelines
 
-There are no complete guidelines defined currently, only some fragments which you shall read and follow.  
+There are no complete guidelines defined currently, only some fragments which you shall read and follow.
 The following rules complement the project structure described above.
 
 #### Keep changelog up to date
 
-All changes must be added to the central `CHANGELOG.md` file.  
-Whenever you implement a change, add a new entry under the correct version.  
-If the next version does not yet exist in the changelog, create a new version block and append your changes there.  
+All changes must be added to the central `CHANGELOG.md` file.
+Whenever you implement a change, add a new entry under the correct version.
+If the next version does not yet exist in the changelog, create a new version block and append your changes there.
 Reference related GitHub issues or pull requests whenever possible.
 
 ---
@@ -222,9 +222,9 @@ We are using the AntD framework. If you add anything new, try to use AntD compon
 
 More details can be found here:
 
--   [AntD](https://ant.design/)
--   [AntD Components](https://ant.design/components/overview)
--   [AntD Icons](https://ant.design/components/icon)
+- [AntD](https://ant.design/)
+- [AntD Components](https://ant.design/components/overview)
+- [AntD Icons](https://ant.design/components/icon)
 
 When building components, prefer AntD components and patterns over custom HTML whenever possible, to keep the UI consistent.
 
@@ -232,7 +232,7 @@ When building components, prefer AntD components and patterns over custom HTML w
 
 #### Usage of colors
 
-As we support dark and light themes, do **not** use hard-coded colors like `#000000`.  
+As we support dark and light themes, do **not** use hard-coded colors like `#000000`.
 Instead, always use the AntD theme tokens.
 
 If not already added, extend your file like this:
@@ -266,9 +266,24 @@ This ensures that your component respects both light and dark themes.
 
 Always use `t("...")` instead of hard-coded text.
 
--   Add new strings to the English, German, French and Spanish translation JSON files.
--   Use meaningful, structured keys (e.g. `settings.notifications.title`, `tonies.encoder.uploadHint`).
--   Avoid inline strings in JSX, especially in pages and reusable components.
+- Add new strings to the English, German, French and Spanish translation JSON files.
+- Use meaningful, structured keys (e.g. `settings.notifications.title`, `tonies.encoder.uploadHint`).
+- Avoid inline strings in JSX, especially in pages and reusable components.
+
+---
+
+#### Generated and minified files
+
+Generated, bundled or minified files should not be formatted with Prettier.
+
+Examples:
+
+- wasm glue code
+- generated API clients
+- third-party vendor bundles
+- minified JavaScript assets
+
+These files should be excluded via `.prettierignore`.
 
 ---
 
@@ -276,13 +291,13 @@ Always use `t("...")` instead of hard-coded text.
 
 If you need to add a new API request to the TeddyCloud API, please use one of the existing helper methods in `src/api/apis/TeddyCloudApi.ts`:
 
--   `apiPostTeddyCloudRaw`
--   `apiPostTeddyCloudFormDataRaw`
--   `apiGetTeddyCloudApiRaw`
--   or any other already existing method in `TeddyCloudApi.ts`
+- `apiPostTeddyCloudRaw`
+- `apiPostTeddyCloudFormDataRaw`
+- `apiGetTeddyCloudApiRaw`
+- or any other already existing method in `TeddyCloudApi.ts`
 
-If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`.  
-We prefer to have all API requests centralized in this file.  
+If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`.
+We prefer to have all API requests centralized in this file.
 One reason is the upcoming authentication for accessing the API and the possibility to reintroduce generated clients later.
 
 ---
@@ -291,30 +306,30 @@ One reason is the upcoming authentication for accessing the API and the possibil
 
 If you need to link to another source, element, or URL, please check if it is already defined in `src/constants/urls.ts`.
 
--   If it is, use the existing variable instead of hardcoding the URL.
--   If it isn’t, consider adding it as a variable in `src/constants/urls.ts`.
+- If it is, use the existing variable instead of hardcoding the URL.
+- If it isn’t, consider adding it as a variable in `src/constants/urls.ts`.
 
 You may need the same URL more than once; defining it in one place ensures that updates are centralized.
 
 Some URLs already defined (partial list):
 
--   `tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png"`
--   `telegramGroupUrl = "https://t.me/toniebox_reverse_engineering"`
--   `forumUrl = "https://forum.revvox.de/"`
--   `gitHubUrl = "https://github.com/toniebox-reverse-engineering"`
--   `wikiUrl = "https://tonies-wiki.revvox.de/docs/tools/teddycloud/"`
+- `tonieboxDefaultImageUrl = "https://cdn.tonies.de/thumbnails/03-0009-i.png"`
+- `telegramGroupUrl = "https://t.me/toniebox_reverse_engineering"`
+- `forumUrl = "https://forum.revvox.de/"`
+- `gitHubUrl = "https://github.com/toniebox-reverse-engineering"`
+- `wikiUrl = "https://tonies-wiki.revvox.de/docs/tools/teddycloud/"`
 
 ---
 
 ### Summary
 
--   **Pages**: routing and layout per topic, minimal logic.
--   **Components**: topic-specific UI and behavior; move heavy logic into hooks.
--   **Feature hooks**: live next to the components they serve (`src/components/<topic>/<feature>/hooks/`).
--   **Shared hooks**: only for generic, cross-feature helpers in `src/hooks/`.
--   **Modals**: in the topic’s component tree, with parent-controlled state.
--   **Utils**: pure helpers without React or domain-specific dependencies.
--   **Changelog, translations, and design tokens**: keep them consistent and up to date.
+- **Pages**: routing and layout per topic, minimal logic.
+- **Components**: topic-specific UI and behavior; move heavy logic into hooks.
+- **Feature hooks**: live next to the components they serve (`src/components/<topic>/<feature>/hooks/`).
+- **Shared hooks**: only for generic, cross-feature helpers in `src/hooks/`.
+- **Modals**: in the topic’s component tree, with parent-controlled state.
+- **Utils**: pure helpers without React or domain-specific dependencies.
+- **Changelog, translations, and design tokens**: keep them consistent and up to date.
 
 This combined structure and guideline set should be followed for all new code and refactorings.
 
@@ -328,11 +343,33 @@ As the `img_unknown.png` is part of the teddycloud server, normally it's not sho
 
 2. Restart the dev environment.
 
-After these steps, the _img_unknown.png_ should be shown. The file is already part of the file `.gitignore` so you do not have to care about accidentially committing this file.
+After these steps, the _img_unknown.png_ should be shown. The file is already part of the file `.gitignore` so you do not have to care about accidentally committing this file.
 
 ### Crashing Dev Environment
 
-Sometimes it happens, that the dev environment unexpected crashes. Even after a new start it can crash immediatly. To solve that problem, you can delete the `node_modules` folder and call `npm install` again. Then the `node_modules` will be reloaded and you should be able to restart the dev environment.
+Sometimes it happens, that the dev environment unexpectedly crashes. Even after a new start it can crash immediately. To solve that problem, you can delete the `node_modules` folder and call `npm install` again. Then the `node_modules` will be reloaded and you should be able to restart the dev environment.
+
+### GitHub Actions `npm ci` lockfile errors
+
+The GitHub Actions workflow uses `npm ci` instead of `npm install`.
+
+This is intentional: `npm ci` performs a clean, reproducible install and fails if `package.json` and `package-lock.json` are not in sync.
+
+If CI fails with an error like:
+
+```text
+npm ci can only install packages when your package.json and package-lock.json are in sync
+```
+
+regenerate the lockfile locally:
+
+```shell
+rm -rf node_modules package-lock.json
+npm install
+npm ci
+```
+
+If `npm ci` succeeds locally, commit the regenerated `package-lock.json`.
 
 ## Known Weaknesses
 
@@ -356,11 +393,31 @@ Due to security reasons we removed "@openapitools/openapi-generator-cli" from th
 
 This project was bootstrapped with [Vite](https://vitejs.dev/).
 
-## Typicale development workflow:
+## Typical development workflow:
 
 ### Preconditions
 
 You have `node.js` and `python` installed.
+
+### Formatting check
+
+This project uses Prettier to keep TypeScript, TSX, JavaScript, JSON, CSS and Markdown formatting consistent.
+
+Before opening a pull request, run:
+
+```shell
+npm run format:check
+```
+
+If formatting issues are reported, fix them with:
+
+```shell
+npm run format
+```
+
+Then commit the changed files.
+
+The CI workflow runs the same formatting check (and additionally a production build) on pull requests, as well as on pushes to `master` and `develop`.
 
 ### Install dotenv
 
@@ -370,8 +427,10 @@ You have `node.js` and `python` installed.
 
 #### Windows
 
-`pip install python-dotenv` \
-followed by \
+`pip install python-dotenv`
+
+followed by
+
 `pip install "python-dotenv[cli]"`
 
 ### Install additional packages
@@ -384,23 +443,51 @@ You need to install cross-env:
 
 In the project directory, you can run:
 
+### `npm run format`
+
+Formats the project using Prettier.
+
+```shell
+npm run format
+```
+
+Use this before committing if files were changed.
+
+### `npm run format:check`
+
+Checks whether all files match the configured Prettier formatting rules.
+
+```shell
+npm run format:check
+```
+
+This command does not modify files. It is also used by GitHub Actions to verify formatting in pull requests.
+
+If the check fails locally, run:
+
+```shell
+npm run format
+```
+
+Then commit the formatted files.
+
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the app in the development mode.
 Open [http://localhost:3000](http://localhost:3000) to view the http variant in the browser.
 Open [https://localhost:3443](https://localhost:3443) to view the https variant in the browser.
 
-The page will reload if you make edits.\
+The page will reload if you make edits.
 You will also see any lint errors in the console.
 
 If you changed the default ports, adapt the links above accordingly.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
+Builds the app for production to the `build` folder.
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
+The build is minified and the filenames include the hashes.
 Your app is ready to be deployed!
 
 See the section about [deployment](https://vitejs.dev/guide/static-deploy.html) for more information.
@@ -412,9 +499,25 @@ Unlike React’s development mode, which enables features such as hot reloading,
 
 This means:
 
--   API calls are executed only once (no double-invocation from React Strict Mode)
--   Performance reflects the real-world production setup
--   You can verify that your build works correctly before deployment
+- API calls are executed only once (no double-invocation from React Strict Mode)
+- Performance reflects the real-world production setup
+- You can verify that your build works correctly before deployment
+
+## GitHub Actions Runtime
+
+The workflow opts GitHub Actions into the Node.js 24 action runtime via:
+
+```yaml
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+```
+
+This avoids Node.js 20 deprecation warnings for JavaScript-based actions such as:
+
+- `actions/checkout@v4`
+- `actions/setup-node@v4`
+
+while keeping the project runtime pinned separately through `setup-node`.
 
 ## Learn More
 
@@ -426,8 +529,8 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 The **Open Toniebox Guide** (`[teddycloud]/tonieboxes/boxsetup/openboxguide` / `src\pages\tonieboxes\boxsetup\OpenBoxGuidePage.tsx`) is based on the following two excellent guides from iFixIt.com:
 
--   [iFixIt[1]] [Toniebox Opening Procedure](https://www.ifixit.com/Guide/Toniebox+Opening+Procedure/124139)
--   [iFixIt[2]] [Toniebox Teardown](https://www.ifixit.com/Teardown/Toniebox+Teardown/106148)
+- [iFixIt[1]] [Toniebox Opening Procedure](https://www.ifixit.com/Guide/Toniebox+Opening+Procedure/124139)
+- [iFixIt[2]] [Toniebox Teardown](https://www.ifixit.com/Teardown/Toniebox+Teardown/106148)
 
 Both guides were originally written and illustrated by [Tobias Isakeit](https://www.ifixit.com/User/828031/Tobias+Isakeit), who also created all the images used here.
 
@@ -435,12 +538,12 @@ Special thanks to Tobias for providing such clear and detailed instructions!
 
 The icons used are from here:
 
--   logo.png: [https://www.flaticon.com/free-icon/dog_2829818](https://www.flaticon.com/free-icon/dog_2829818)
+- logo.png: [https://www.flaticon.com/free-icon/dog_2829818](https://www.flaticon.com/free-icon/dog_2829818)
 
 Thanks for the original authors for these great icons.
 
 The country flags are derived from here:
 
--   [https://gitlab.com/catamphetamine/country-flag-icons](https://gitlab.com/catamphetamine/country-flag-icons) v1.5.18.
+- [https://gitlab.com/catamphetamine/country-flag-icons](https://gitlab.com/catamphetamine/country-flag-icons) v1.5.18.
 
 Thanks to Nikolay Kuchumov for creating this flag collection!

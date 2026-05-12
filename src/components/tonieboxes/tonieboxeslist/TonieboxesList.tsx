@@ -18,7 +18,17 @@ export const TonieboxesList: React.FC<{
     const { addNotification, boxModelImages, boxModelImagesLoading } = useTeddyCloud();
     const screens = Grid.useBreakpoint();
 
-    const columns = screens.xxl ? 4 : screens.xl ? 3 : screens.lg ? 3 : screens.md ? 2 : screens.sm ? 2 : 1;
+    const columns = screens.xxl
+        ? 4
+        : screens.xl
+          ? 3
+          : screens.lg
+            ? 3
+            : screens.md
+              ? 2
+              : screens.sm
+                ? 2
+                : 1;
 
     const checkCC3200CFW = useGetSettingCheckCC3200CFW();
 

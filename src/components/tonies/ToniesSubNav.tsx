@@ -38,7 +38,11 @@ export const ToniesSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/tonies/plugin/${plugin.pluginId}`}
+                    to={
+                        plugin.standalone
+                            ? `/plugin/${plugin.pluginId}`
+                            : `/tonies/plugin/${plugin.pluginId}`
+                    }
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -47,7 +51,9 @@ export const ToniesSubNav = () => {
                 >
                     {plugin.pluginName}
                     {plugin.standalone ? (
-                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                        <ExportOutlined
+                            style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }}
+                        />
                     ) : (
                         ""
                     )}
@@ -216,5 +222,12 @@ export const ToniesSubNav = () => {
         ...pluginItems,
     ];
 
-    return <StyledSubMenu mode="inline" selectedKeys={[selectedKey]} defaultOpenKeys={["sub"]} items={subnav} />;
+    return (
+        <StyledSubMenu
+            mode="inline"
+            selectedKeys={[selectedKey]}
+            defaultOpenKeys={["sub"]}
+            items={subnav}
+        />
+    );
 };

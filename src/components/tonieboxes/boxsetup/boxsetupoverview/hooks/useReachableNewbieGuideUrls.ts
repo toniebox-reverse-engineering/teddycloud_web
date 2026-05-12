@@ -20,7 +20,7 @@ export const useReachableNewbieGuideUrls = () => {
                 title: "TeddyCloud ESP32 Newbie HowTo",
             },
         ],
-        []
+        [],
     );
 
     return useUrlsReachable(urls);

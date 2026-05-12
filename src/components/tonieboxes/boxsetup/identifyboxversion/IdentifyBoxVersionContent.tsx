@@ -1,7 +1,20 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
-import { Alert, Button, Col, Form, Input, Row, Typography, Image, Tabs, TabsProps, theme, Tooltip } from "antd";
+import {
+    Alert,
+    Button,
+    Col,
+    Form,
+    Input,
+    Row,
+    Typography,
+    Image,
+    Tabs,
+    TabsProps,
+    theme,
+    Tooltip,
+} from "antd";
 import { CloseOutlined, CodeOutlined, ExportOutlined } from "@ant-design/icons";
 
 import pcb3235Image from "../../../../assets/boxSetup/3235_pcb.png";
@@ -27,7 +40,8 @@ export const IdentifyBoxVersionContent: React.FC = () => {
     const { token } = useToken();
     const navigate = useNavigate();
 
-    const { boxMac, warningTextMac, vendor, error, handleMacChange, handleClear, checkMac } = useMacVendorLookup();
+    const { boxMac, warningTextMac, vendor, error, handleMacChange, handleClear, checkMac } =
+        useMacVendorLookup();
 
     const { activeKey, setActiveKey } = useBoxVersionActiveKey(vendor);
 
@@ -39,7 +53,9 @@ export const IdentifyBoxVersionContent: React.FC = () => {
                 closable={{ closeIcon: true, "aria-label": "close" }}
                 showIcon
                 title={t("tonieboxes.boxSetup.identifyVersion.tb2")}
-                description={<Paragraph>{t("tonieboxes.boxSetup.identifyVersion.tb2Details")}</Paragraph>}
+                description={
+                    <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.tb2Details")}</Paragraph>
+                }
                 style={{ marginBottom: 16 }}
             />
             <MacIdentifyForm
@@ -64,18 +80,21 @@ export const IdentifyBoxVersionContent: React.FC = () => {
                                 {t("tonieboxes.boxSetup.identifyVersion.boxVersion")}
                                 {vendor.includes("Espressif") ? (
                                     <>
-                                        <b> ESP32</b> {t("tonieboxes.boxSetup.identifyVersion.version")}
+                                        <b> ESP32</b>{" "}
+                                        {t("tonieboxes.boxSetup.identifyVersion.version")}
                                     </>
                                 ) : vendor.includes("Texas Instruments") ? (
                                     <>
                                         <b> CC3200</b> {t("tonieboxes.boxSetup.identifyVersion.or")}
-                                        <b> CC3235</b> {t("tonieboxes.boxSetup.identifyVersion.version")}
+                                        <b> CC3235</b>{" "}
+                                        {t("tonieboxes.boxSetup.identifyVersion.version")}
                                     </>
                                 ) : vendor.includes("tonies GmbH") ? (
                                     <b> TonieBox 2</b>
                                 ) : (
                                     <>
-                                        <b> Unknown</b> {t("tonieboxes.boxSetup.identifyVersion.version")}
+                                        <b> Unknown</b>{" "}
+                                        {t("tonieboxes.boxSetup.identifyVersion.version")}
                                     </>
                                 )}
                                 .
@@ -195,7 +214,12 @@ interface BoxVersionTabsProps {
     onProceed: (key: string) => void;
 }
 
-const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onActiveKeyChange, onProceed }) => {
+const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({
+    vendor,
+    activeKey,
+    onActiveKeyChange,
+    onProceed,
+}) => {
     const { t } = useTranslation();
 
     const cc3200Tab = (
@@ -219,7 +243,11 @@ const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onAc
                         />
                     </Paragraph>
                     <Paragraph style={{ maxWidth: "100%" }}>
-                        <Image src={chip3200Image} style={{ height: 300, width: "auto" }} alt="Chip CC3200" />
+                        <Image
+                            src={chip3200Image}
+                            style={{ height: 300, width: "auto" }}
+                            alt="Chip CC3200"
+                        />
                     </Paragraph>
                 </Image.PreviewGroup>
             </Paragraph>
@@ -247,7 +275,11 @@ const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onAc
                         />
                     </Paragraph>
                     <Paragraph style={{ maxWidth: "100%" }}>
-                        <Image src={chip3235Image} style={{ height: 300, width: "auto" }} alt="Chip CC3235" />
+                        <Image
+                            src={chip3235Image}
+                            style={{ height: 300, width: "auto" }}
+                            alt="Chip CC3235"
+                        />
                     </Paragraph>
                 </Image.PreviewGroup>
             </Paragraph>
@@ -275,7 +307,11 @@ const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onAc
                         />
                     </Paragraph>
                     <Paragraph style={{ maxWidth: "100%" }}>
-                        <Image src={chipesp32Image} style={{ height: 300, width: "auto" }} alt="Chip ESP32" />
+                        <Image
+                            src={chipesp32Image}
+                            style={{ height: 300, width: "auto" }}
+                            alt="Chip ESP32"
+                        />
                     </Paragraph>
                 </Image.PreviewGroup>
             </Paragraph>
@@ -341,9 +377,14 @@ const BoxVersionTabs: React.FC<BoxVersionTabsProps> = ({ vendor, activeKey, onAc
                 vendor?.toLowerCase().includes("espressif") ||
                 vendor?.toLowerCase().includes("tonies gmbh") ||
                 vendor?.toLowerCase().includes("texas")) &&
-                (activeKey === "tb2" || activeKey === "cc3200" || activeKey === "cc3235" || activeKey === "esp32") && (
+                (activeKey === "tb2" ||
+                    activeKey === "cc3200" ||
+                    activeKey === "cc3235" ||
+                    activeKey === "esp32") && (
                     <>
-                        <Paragraph>{t("tonieboxes.boxSetup.identifyVersion.proceedToFlash1")} </Paragraph>
+                        <Paragraph>
+                            {t("tonieboxes.boxSetup.identifyVersion.proceedToFlash1")}{" "}
+                        </Paragraph>
                         <Paragraph style={{ marginTop: 16 }}>
                             <Button type="primary" onClick={() => onProceed(activeKey)}>
                                 {`${activeKey.toUpperCase()} ${t("tonieboxes.boxSetup.identifyVersion.proceedToFlashLinkText")}`}

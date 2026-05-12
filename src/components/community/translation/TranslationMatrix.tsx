@@ -2,7 +2,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { Translations, fetchTranslations, LANGUAGES, BASE_LANG, collectAllKeys } from "./utils/TranslationUtils";
+import {
+    Translations,
+    fetchTranslations,
+    LANGUAGES,
+    BASE_LANG,
+    collectAllKeys,
+} from "./utils/TranslationUtils";
 
 interface DataType {
     key: string;
@@ -28,7 +34,7 @@ const TranslationTable: React.FC = () => {
 
     const allKeys = useMemo(
         () => (translations[BASE_LANG] ? collectAllKeys(translations[BASE_LANG]) : []),
-        [translations]
+        [translations],
     );
 
     const columns: ColumnsType<DataType> = useMemo(
@@ -39,7 +45,9 @@ const TranslationTable: React.FC = () => {
                 key: "key",
                 width: "30%",
                 fixed: "left",
-                render: (text: string) => <div style={{ wordWrap: "break-word", wordBreak: "break-all" }}>{text}</div>,
+                render: (text: string) => (
+                    <div style={{ wordWrap: "break-word", wordBreak: "break-all" }}>{text}</div>
+                ),
             },
             ...LANGUAGES.map((lang) => ({
                 title: lang.toUpperCase(),
@@ -47,7 +55,7 @@ const TranslationTable: React.FC = () => {
                 key: lang,
             })),
         ],
-        [t]
+        [t],
     );
 
     const dataSource = useMemo(
@@ -60,7 +68,7 @@ const TranslationTable: React.FC = () => {
                 });
                 return row;
             }),
-        [allKeys, translations, t]
+        [allKeys, translations, t],
     );
 
     if (loading) return <p>Loading translations...</p>;

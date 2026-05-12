@@ -40,7 +40,7 @@ export const useHomeData = () => {
                 tonieboxes.map(async (box) => {
                     const enabled = await api.apiGetTonieboxApiAccess(box.ID);
                     return [box.boxName, enabled] as [string, boolean];
-                })
+                }),
             );
             setAccessApiEnabled(result);
         })();

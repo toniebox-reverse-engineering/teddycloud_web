@@ -24,7 +24,10 @@ export const useData = (): DataHook => {
                     api.apiGetTeddyCloudApiRaw(`/api/toniesCustomJson`),
                 ]);
 
-                const [defaultData, customData] = await Promise.all([defaultResponse.json(), customResponse.json()]);
+                const [defaultData, customData] = await Promise.all([
+                    defaultResponse.json(),
+                    customResponse.json(),
+                ]);
                 const mergedData = [...defaultData, ...customData];
                 setJsonData(mergedData);
             } catch (err) {
@@ -45,7 +48,9 @@ export const useData = (): DataHook => {
         }
 
         const filtered = jsonData.filter(
-            (item: any) => item.title?.toLowerCase().includes(query) || item.series?.toLowerCase().includes(query)
+            (item: any) =>
+                item.title?.toLowerCase().includes(query) ||
+                item.series?.toLowerCase().includes(query),
         );
         setAutocompleteList(filtered);
     };

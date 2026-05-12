@@ -42,7 +42,9 @@ export const PluginContainer: React.FC<PluginContainerProps> = ({ pluginId }) =>
                         addNotification(
                             NotificationTypeEnum.Error,
                             t("community.plugins.error.notification.title"),
-                            t("community.plugins.error.notification.missingPluginIndexHtml", { pluginId }),
+                            t("community.plugins.error.notification.missingPluginIndexHtml", {
+                                pluginId,
+                            }),
                             t("community.plugins.title"),
                         );
                     }

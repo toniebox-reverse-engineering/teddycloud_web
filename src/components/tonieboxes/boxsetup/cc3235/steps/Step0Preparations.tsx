@@ -25,7 +25,10 @@ interface Step0PreparationsProps {
     onHwToolChange: (tool: HwTool) => void;
 }
 
-export const CC3235Step0Preparations: React.FC<Step0PreparationsProps> = ({ hwTool, onHwToolChange }) => {
+export const CC3235Step0Preparations: React.FC<Step0PreparationsProps> = ({
+    hwTool,
+    onHwToolChange,
+}) => {
     const { t } = useTranslation();
 
     const picoPrepTab = (
@@ -59,7 +62,9 @@ export const CC3235Step0Preparations: React.FC<Step0PreparationsProps> = ({ hwTo
                         <Image
                             src={cc3235CH341AProgrammer1}
                             style={{ maxHeight: 200, width: "auto" }}
-                            alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammer")}
+                            alt={t(
+                                "tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammer",
+                            )}
                         />
                     </div>
                 </li>
@@ -97,7 +102,9 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                     />
                 </li>
             </ul>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions1")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions1")}
+            </Paragraph>
             <Paragraph>
                 {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions2")}
                 <div
@@ -112,11 +119,15 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                     <Image
                         src={cc3235CH341AProgrammer2}
                         style={{ maxHeight: 100, width: "auto" }}
-                        alt={t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammerClampConnection")}
+                        alt={t(
+                            "tonieboxes.cc3235BoxFlashing.CH341AProgrammer.CH341AProgrammerClampConnection",
+                        )}
                     />
                 </div>
             </Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions3")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.prepConclusions3")}
+            </Paragraph>
         </>
     );
 
@@ -154,7 +165,9 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                 description={
                     <>
                         <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
-                        <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}</Paragraph>
+                        <Paragraph>
+                            {t("tonieboxes.hintLatestFirmwareFactoryResetESP32CC3235")}
+                        </Paragraph>
                     </>
                 }
                 style={{ marginBottom: 16 }}
@@ -192,10 +205,14 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                                                 maxHeight: 200,
                                                 width: "auto",
                                             }}
-                                            alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
+                                            alt={t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash",
+                                            )}
                                         />
                                         <p style={{ marginTop: 8 }}>
-                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash")}
+                                            {t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flash",
+                                            )}
                                         </p>
                                     </div>
                                     <div style={{ maxWidth: 200, justifyItems: "center" }}>
@@ -206,11 +223,13 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                                                 width: "auto",
                                             }}
                                             alt={t(
-                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers"
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers",
                                             )}
                                         />
                                         <p style={{ marginTop: 8 }}>
-                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers")}
+                                            {t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.cc3235flashWithSMDGrippers",
+                                            )}
                                         </p>
                                     </div>
                                     <div style={{ maxWidth: 200, justifyItems: "center" }}>
@@ -221,10 +240,14 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                                                 width: "auto",
                                                 maxWidth: 200,
                                             }}
-                                            alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp")}
+                                            alt={t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp",
+                                            )}
                                         />
                                         <p style={{ marginTop: 8 }}>
-                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp")}
+                                            {t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp",
+                                            )}
                                         </p>
                                     </div>
                                     <div style={{ maxWidth: 200, justifyItems: "center" }}>
@@ -235,10 +258,14 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                                                 width: "auto",
                                                 maxWidth: 200,
                                             }}
-                                            alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp")}
+                                            alt={t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp",
+                                            )}
                                         />
                                         <p style={{ marginTop: 8 }}>
-                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp")}
+                                            {t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp",
+                                            )}
                                         </p>
                                     </div>
                                     <div style={{ maxWidth: 200, justifyItems: "center" }}>
@@ -249,10 +276,14 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
                                                 width: "auto",
                                                 maxWidth: 200,
                                             }}
-                                            alt={t("tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp")}
+                                            alt={t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp",
+                                            )}
                                         />
                                         <p style={{ marginTop: 8 }}>
-                                            {t("tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp")}
+                                            {t(
+                                                "tonieboxes.cc3235BoxFlashing.flashCollapse.sop8Clamp",
+                                            )}
                                         </p>
                                     </div>
                                 </Image.PreviewGroup>

@@ -3,7 +3,13 @@ import { Button, Card, ColorPicker, Input, Radio, Select, Switch, Tooltip, Typog
 import { ClearOutlined, CloseOutlined, SaveOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-import { LabelShape, PaperSize, PrintMode, SettingsActions, SettingsState } from "../hooks/useSettings";
+import {
+    LabelShape,
+    PaperSize,
+    PrintMode,
+    SettingsActions,
+    SettingsState,
+} from "../hooks/useSettings";
 import { canHover } from "../../../../utils/browser/browserUtils";
 import { stripUnit } from "../../../../utils/helper";
 import { LABEL_FONT_OPTIONS } from "./fontCatalog";
@@ -100,18 +106,19 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
         actions.setSelectedPaper(undefined);
     };
 
-    const handleSpacingChange = (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
-        const rawValue = stripUnit(e.target.value, "mm");
-        if (!isNaN(Number(rawValue)) && Number(rawValue) >= 0) {
-            setter(`${rawValue}mm`);
-            (parseFloat(paperLabelImageBleed) || 0) * 2 > Number(rawValue) &&
-                actions.setPaperLabelImageBleed(`${Number(rawValue) / 2}mm`);
-        } else {
-            setter("");
-        }
+    const handleSpacingChange =
+        (setter: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+            const rawValue = stripUnit(e.target.value, "mm");
+            if (!isNaN(Number(rawValue)) && Number(rawValue) >= 0) {
+                setter(`${rawValue}mm`);
+                (parseFloat(paperLabelImageBleed) || 0) * 2 > Number(rawValue) &&
+                    actions.setPaperLabelImageBleed(`${Number(rawValue) / 2}mm`);
+            } else {
+                setter("");
+            }
 
-        actions.setSelectedPaper(undefined);
-    };
+            actions.setSelectedPaper(undefined);
+        };
 
     const handlePaperSizeChange = (e: any) => {
         actions.setPaperSize(e.target.value as PaperSize);
@@ -189,7 +196,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                 />
             </div>
 
-            <Card size="small" title={t("tonies.teddystudio.labelSettings")} style={{ marginBottom: 8 }}>
+            <Card
+                size="small"
+                title={t("tonies.teddystudio.labelSettings")}
+                style={{ marginBottom: 8 }}
+            >
                 <div
                     style={{
                         display: "grid",
@@ -199,8 +210,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         alignItems: "end",
                     }}
                 >
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.labelShape")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.labelShape")}
+                        </label>
                         <Radio.Group
                             size="small"
                             optionType="button"
@@ -208,14 +228,27 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             value={labelShape}
                             onChange={handleLabelShapeChange}
                         >
-                            <Radio.Button value="round">{t("tonies.teddystudio.round")}</Radio.Button>
-                            <Radio.Button value="square">{t("tonies.teddystudio.square")}</Radio.Button>
+                            <Radio.Button value="round">
+                                {t("tonies.teddystudio.round")}
+                            </Radio.Button>
+                            <Radio.Button value="square">
+                                {t("tonies.teddystudio.square")}
+                            </Radio.Button>
                         </Radio.Group>
                     </div>
 
                     {labelShape === "round" ? (
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.diameter")}</label>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 4,
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.diameter")}
+                            </label>
                             <Input
                                 size="small"
                                 type="number"
@@ -229,11 +262,25 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             />
                         </div>
                     ) : (
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 4,
+                            }}
+                        >
                             <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
                                 {t("tonies.teddystudio.labelSize")}
                             </label>
-                            <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "baseline",
+                                    gap: 8,
+                                    flexWrap: "wrap",
+                                }}
+                            >
                                 <Input
                                     size="small"
                                     type="number"
@@ -260,11 +307,25 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </div>
                     )}
 
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
                         <label style={{ marginRight: 8, wordBreak: "keep-all" }}>
                             {t("tonies.teddystudio.labelSpacing")} X/Y
                         </label>
-                        <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "baseline",
+                                gap: 8,
+                                flexWrap: "wrap",
+                            }}
+                        >
                             <Input
                                 size="small"
                                 type="number"
@@ -290,8 +351,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.labelBackgroundColor")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.labelBackgroundColor")}
+                        </label>
                         <ColorPicker
                             size="small"
                             value={labelBackgroundColor}
@@ -313,8 +383,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         marginBottom: 8,
                     }}
                 >
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.printMode")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.printMode")}
+                        </label>
                         <Radio.Group
                             size="small"
                             value={printMode}
@@ -349,8 +428,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </Radio.Group>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 6 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.showLabelBorder")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 6,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.showLabelBorder")}
+                        </label>
                         <Switch
                             checked={showLabelBorder}
                             onChange={(checked) => {
@@ -371,8 +459,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             marginBottom: 8,
                         }}
                     >
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.imagePosition")}</label>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 4,
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.imagePosition")}
+                            </label>
                             <Select
                                 size="small"
                                 value={imagePosition || "center"}
@@ -392,8 +489,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 ]}
                             />
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.imageScale")}</label>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 4,
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.imageScale")}
+                            </label>
                             <Input
                                 size="small"
                                 type="number"
@@ -424,9 +530,25 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 placeholder={t("tonies.teddystudio.imageScale")}
                             />
                         </div>
-                        <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.imageBottomLeft")}</label>
-                            <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "baseline",
+                                gap: 8,
+                                flexWrap: "wrap",
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.imageBottomLeft")}
+                            </label>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "baseline",
+                                    gap: 8,
+                                    flexWrap: "wrap",
+                                }}
+                            >
                                 <Input
                                     size="small"
                                     type="number"
@@ -449,8 +571,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                 />
                             </div>
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 6 }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.showSeriesOnImageLabel")}</label>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 6,
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.showSeriesOnImageLabel")}
+                            </label>
                             <Switch
                                 checked={showSeriesOnImageLabel}
                                 onChange={(checked) => actions.setShowSeriesOnImageLabel(checked)}
@@ -458,7 +589,14 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </div>
 
                         {showSeriesOnImageLabel && labelShape == "round" && (
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "baseline",
+                                    gap: 4,
+                                }}
+                            >
                                 <label style={{ marginRight: 8 }}>
                                     {t("tonies.teddystudio.seriesOnImageLabelRotationDeg")}
                                 </label>
@@ -466,19 +604,32 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                     size="small"
                                     type="number"
                                     value={seriesOnImageLabelRotationDeg}
-                                    onChange={(e) => actions.setSeriesOnImageLabelRotationDeg(Number(e.target.value))}
+                                    onChange={(e) =>
+                                        actions.setSeriesOnImageLabelRotationDeg(
+                                            Number(e.target.value),
+                                        )
+                                    }
                                     min={0}
                                     max={360}
                                     step={15}
                                     style={{ width: 100 }}
                                     suffix="°"
-                                    placeholder={t("tonies.teddystudio.seriesOnImageLabelRotationDeg")}
+                                    placeholder={t(
+                                        "tonies.teddystudio.seriesOnImageLabelRotationDeg",
+                                    )}
                                 />
                             </div>
                         )}
 
                         {showSeriesOnImageLabel && (
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "baseline",
+                                    gap: 4,
+                                }}
+                            >
                                 <label style={{ marginRight: 8 }}>
                                     {t("tonies.teddystudio.seriesOnImageLabelFontSize")}
                                 </label>
@@ -486,7 +637,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                                     size="small"
                                     type="number"
                                     value={parseFloat(seriesOnImageLabelFontSize)}
-                                    onChange={(e) => actions.setSeriesOnImageLabelFontSize(`${e.target.value}px`)}
+                                    onChange={(e) =>
+                                        actions.setSeriesOnImageLabelFontSize(`${e.target.value}px`)
+                                    }
                                     min={1}
                                     max={90}
                                     style={{ width: 100 }}
@@ -508,8 +661,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             marginBottom: 8,
                         }}
                     >
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.textFontSize")}</label>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 4,
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.textFontSize")}
+                            </label>
                             <Input
                                 size="small"
                                 type="number"
@@ -523,8 +685,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             />
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.fontFamily")}</label>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 4,
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.fontFamily")}
+                            </label>
                             <Select
                                 size="small"
                                 value={fontFamily}
@@ -538,19 +709,37 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             />
                         </div>
 
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 6 }}>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 6,
+                            }}
+                        >
                             <label style={{ marginRight: 8 }}>
                                 {t("tonies.teddystudio.printTrackListInsteadTitle")}
                             </label>
                             <Switch
                                 checked={printTrackListInsteadTitle}
-                                onChange={(checked) => actions.setPrintTrackListInsteadTitle(checked)}
+                                onChange={(checked) =>
+                                    actions.setPrintTrackListInsteadTitle(checked)
+                                }
                             />
                         </div>
 
                         {!printTrackListInsteadTitle && (
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 6 }}>
-                                <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.showLanguageFlag")}</label>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "baseline",
+                                    gap: 6,
+                                }}
+                            >
+                                <label style={{ marginRight: 8 }}>
+                                    {t("tonies.teddystudio.showLanguageFlag")}
+                                </label>
                                 <Switch
                                     checked={showLanguageFlag}
                                     onChange={(checked) => actions.setShowLanguageFlag(checked)}
@@ -559,16 +748,32 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         )}
 
                         {!printTrackListInsteadTitle && (
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 6 }}>
-                                <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.showModelNo")}</label>
-                                <Switch checked={showModelNo} onChange={(checked) => actions.setShowModelNo(checked)} />
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "baseline",
+                                    gap: 6,
+                                }}
+                            >
+                                <label style={{ marginRight: 8 }}>
+                                    {t("tonies.teddystudio.showModelNo")}
+                                </label>
+                                <Switch
+                                    checked={showModelNo}
+                                    onChange={(checked) => actions.setShowModelNo(checked)}
+                                />
                             </div>
                         )}
                     </div>
                 )}
             </Card>
 
-            <Card size="small" title={t("tonies.teddystudio.paperSettings")} style={{ marginBottom: 8 }}>
+            <Card
+                size="small"
+                title={t("tonies.teddystudio.paperSettings")}
+                style={{ marginBottom: 8 }}
+            >
                 <div
                     style={{
                         display: "grid",
@@ -577,8 +782,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         marginBottom: 8,
                     }}
                 >
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.paperSize")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.paperSize")}
+                        </label>
                         <Radio.Group
                             size="small"
                             value={paperSize}
@@ -589,13 +803,24 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                             <Radio.Button value="A4">A4</Radio.Button>
                             <Radio.Button value="A5">A5</Radio.Button>
                             <Radio.Button value="Letter">Letter</Radio.Button>
-                            <Radio.Button value="Custom">{t("tonies.teddystudio.custom")}</Radio.Button>
+                            <Radio.Button value="Custom">
+                                {t("tonies.teddystudio.custom")}
+                            </Radio.Button>
                         </Radio.Group>
                     </div>
 
                     {paperSize === "Custom" && (
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                            <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.paperCustomSize")}</label>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "baseline",
+                                gap: 4,
+                            }}
+                        >
+                            <label style={{ marginRight: 8 }}>
+                                {t("tonies.teddystudio.paperCustomSize")}
+                            </label>
                             <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
                                 <Input
                                     size="small"
@@ -621,8 +846,17 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </div>
                     )}
 
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.paperMargin")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.paperMargin")}
+                        </label>
                         <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
                             <Input
                                 size="small"
@@ -647,31 +881,57 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
                         </div>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.paperLabelImageBleed")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.paperLabelImageBleed")}
+                        </label>
                         <Input
                             size="small"
                             type="number"
                             value={parseFloat(paperLabelImageBleed)}
                             onChange={handlePaperLabelImageBleedChange}
                             min={0}
-                            max={Math.min(parseFloat(labelSpacingX) / 2 || 0, parseFloat(labelSpacingY) / 2 || 0)}
+                            max={Math.min(
+                                parseFloat(labelSpacingX) / 2 || 0,
+                                parseFloat(labelSpacingY) / 2 || 0,
+                            )}
                             style={{ width: 100 }}
                             suffix="mm"
                         />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "baseline", gap: 4 }}>
-                        <label style={{ marginRight: 8 }}>{t("tonies.teddystudio.contentPadding")}</label>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "baseline",
+                            gap: 4,
+                        }}
+                    >
+                        <label style={{ marginRight: 8 }}>
+                            {t("tonies.teddystudio.contentPadding")}
+                        </label>
                         <Input
                             size="small"
                             type="number"
                             value={parseFloat(contentPadding)}
                             onChange={(e) => {
                                 const val = stripUnit(e.target.value, "mm");
-                                if (!isNaN(Number(val)) && Number(val) >= 0) actions.setContentPadding(`${val}mm`);
+                                if (!isNaN(Number(val)) && Number(val) >= 0)
+                                    actions.setContentPadding(`${val}mm`);
                             }}
                             min={0}
-                            max={width && height ? Math.min(parseFloat(width), parseFloat(height)) : 100}
+                            max={
+                                width && height
+                                    ? Math.min(parseFloat(width), parseFloat(height))
+                                    : 100
+                            }
                             style={{ width: 100 }}
                             suffix="mm"
                         />

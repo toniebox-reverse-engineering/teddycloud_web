@@ -61,7 +61,9 @@ export const Step0Preparations: React.FC = () => {
                 description={
                     <>
                         <Paragraph>{t("tonieboxes.hintLatestFirmware")}</Paragraph>
-                        <Paragraph>{t("tonieboxes.hintLatestFirmwareFactoryResetCC3200")}</Paragraph>
+                        <Paragraph>
+                            {t("tonieboxes.hintLatestFirmwareFactoryResetCC3200")}
+                        </Paragraph>
                     </>
                 }
                 style={{ marginBottom: 16 }}
@@ -84,9 +86,13 @@ export const Step0Preparations: React.FC = () => {
                     />
                 </Paragraph>
                 <Uart3v3Hint />
-                <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableIntro")}</Paragraph>
+                <Paragraph>
+                    {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableIntro")}
+                </Paragraph>
                 <TonieboxUARTTable />
-                <Paragraph>{t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableExplanation")}</Paragraph>
+                <Paragraph>
+                    {t("tonieboxes.cc3200BoxFlashing.connectToTonieboxConnectTableExplanation")}
+                </Paragraph>
             </Paragraph>
 
             <Paragraph>
@@ -116,7 +122,9 @@ export const Step0Preparations: React.FC = () => {
                             style={{ maxWidth: 200, height: "auto" }}
                             alt={t("tonieboxes.cc3200BoxFlashing.tagConnector")}
                         />
-                        <p style={{ marginTop: 8 }}>{t("tonieboxes.cc3200BoxFlashing.tagConnector")}</p>
+                        <p style={{ marginTop: 8 }}>
+                            {t("tonieboxes.cc3200BoxFlashing.tagConnector")}
+                        </p>
                     </div>
                     <div style={{ maxHeight: 200, justifyItems: "center" }}>
                         <Image
@@ -124,7 +132,9 @@ export const Step0Preparations: React.FC = () => {
                             style={{ maxWidth: 200, height: "auto" }}
                             alt={t("tonieboxes.cc3200BoxFlashing.usingThinWiresAsTagConnector")}
                         />
-                        <p style={{ marginTop: 8 }}>{t("tonieboxes.cc3200BoxFlashing.usingThinWiresAsTagConnector")}</p>
+                        <p style={{ marginTop: 8 }}>
+                            {t("tonieboxes.cc3200BoxFlashing.usingThinWiresAsTagConnector")}
+                        </p>
                     </div>
                 </Image.PreviewGroup>
             </Paragraph>

@@ -8,7 +8,12 @@ interface PluginDeleteDialogProps {
     onCancel: () => void;
 }
 
-export const PluginDeleteDialog: React.FC<PluginDeleteDialogProps> = ({ open, pluginId, onConfirm, onCancel }) => {
+export const PluginDeleteDialog: React.FC<PluginDeleteDialogProps> = ({
+    open,
+    pluginId,
+    onConfirm,
+    onCancel,
+}) => {
     const { t } = useTranslation();
 
     return (
