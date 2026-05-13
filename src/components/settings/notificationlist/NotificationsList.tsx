@@ -300,9 +300,18 @@ const NotificationsList: React.FC = () => {
                     style={{ width: "100%" }}
                 />
             </Paragraph>
-            <Paragraph style={{ display: "flex", gap: 8, justifyContent: "space-between" }}>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    gap: 8,
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                }}
+            >
                 {selectedRowKeys.length > 0 ? (
-                    <Paragraph style={{ display: "flex", gap: 8 }}>
+                    <Paragraph
+                        style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 0 }}
+                    >
                         <Button onClick={removeSelectedNotifications}>
                             {t("settings.notifications.removeSelectedNotifications")}
                         </Button>
