@@ -105,11 +105,11 @@
             "empty": "Kein Plugin verfügbar",
             "error": {
                 "notification": {
-                    "message": "Fehlende Beschreibung json – Element \"pluginName\" im Plugin \"{{pluginId}}\", wird übersprungen.",
+                    "message": "Fehlende Beschreibung json - Element \"pluginName\" im Plugin \"{{pluginId}}\", wird übersprungen.",
                     "missingPluginIndexHtml": "Fehlende index.html im Plugin \"{{pluginId}}\"!",
                     "title": "Fehler beim Laden des Plugins"
                 },
-                "pluginNotFound": "Plugin index.html nicht gefunden – bitte überprüfe das Plugin!",
+                "pluginNotFound": "Plugin index.html nicht gefunden - bitte überprüfe das Plugin!",
                 "title": "Fehler beim Laden des Plugins"
             },
             "errorLoadingPlugin": "Fehler beim Laden der Metadaten für Plugin {{pluginname}}",
@@ -191,7 +191,7 @@
             },
             "formattedRequest": "Formatierte Anfrage",
             "generate": "Generieren",
-            "hintSendingSupportRequest": "Kopiere den folgenden Inhalt in die Telegram-Gruppe oder in einen neuen Foren-Thread. Bitte vergiss nicht, die gesammelten Logs und – falls vorhanden - zusätzliche Screenshots oder Bildschirmaufnahmen anzuhängen.",
+            "hintSendingSupportRequest": "Kopiere den folgenden Inhalt in die Telegram-Gruppe oder in einen neuen Foren-Thread. Bitte vergiss nicht, die gesammelten Logs und - falls vorhanden - zusätzliche Screenshots oder Bildschirmaufnahmen anzuhängen.",
             "intro": "Wenn du Unterstützung anforderst, hilft es der Community, dein Problem schneller zu diagnostizieren und zu lösen, wenn du detaillierte und klare Informationen bereitstellst. Folge diesen Schritten, um sicherzustellen, dass deine Support-Anfrage alle notwendigen Details enthält.",
             "logs": {
                 "label": "Relevante Log-Auszüge"
@@ -1581,7 +1581,7 @@
                 "ackLatestFirmware": "Ich bestätige, dass die Box mit der originalen Cloud verbunden war, die aktuelle Firmware erhalten hat und ein Tonie erfolgreich abgespielt wurde.",
                 "ackRisk": "Ich habe diesen Hinweis gelesen, verstanden und bin mir der damit verbundenen Risiken bewusst.",
                 "ackUARTHint": "Ich habe die korrekte Spannung (3,3 V) eingestellt und den erforderlichen Treiber in der aktuellen Version installiert.",
-                "alternativeTools": "Unten findest du einige alternative Tools für ein Backup. Es gibt weitere Möglichkeiten – verwende gerne das Tool, mit dem du vertraut bist.",
+                "alternativeTools": "Unten findest du einige alternative Tools für ein Backup. Es gibt weitere Möglichkeiten - verwende gerne das Tool, mit dem du vertraut bist.",
                 "alternativeToolsNoLinks": "Verwende einen ESP32-Reader, mit dem du vertraut bist, oder suche nach einem anderen geeigneten ESP32-Reader.",
                 "automatically": "Automatisch",
                 "backupFlash": "Wichtig: Sichere deine originale, ungepatchte Firmware",
@@ -1599,7 +1599,7 @@
                 "connectingTo": "Verbinde zu",
                 "connectingToESP": "Verbinde zum ESP...",
                 "connectingWriteFlash": "Verbinde zum Schreiben des Flash...",
-                "downloadFlashFilesHint": "Die Firmware-Images werden im Datenverzeichnis deines Servers gespeichert, falls du sie erneut flashen möchtest. Falls du das noch nicht getan hast, lade jetzt unbedingt eine Kopie der Original-Firmware herunter und speichere sie sicher! So kannst du deine Toniebox im Notfall jederzeit in den Werkszustand zurückversetzen. Sichere die Firmware an mehreren Orten – zum Beispiel auf deinem Hauptrechner oder Laptop, einem externen Laufwerk oder USB-Stick und/oder in einem vertrauenswürdigen Cloud-Dienst (z. B. Google Drive, Dropbox, OneDrive). Verlasse dich niemals nur auf die Kopie auf dem TeddyCloud-Server.",
+                "downloadFlashFilesHint": "Die Firmware-Images werden im Datenverzeichnis deines Servers gespeichert, falls du sie erneut flashen möchtest. Falls du das noch nicht getan hast, lade jetzt unbedingt eine Kopie der Original-Firmware herunter und speichere sie sicher! So kannst du deine Toniebox im Notfall jederzeit in den Werkszustand zurückversetzen. Sichere die Firmware an mehreren Orten - zum Beispiel auf deinem Hauptrechner oder Laptop, einem externen Laufwerk oder USB-Stick und/oder in einem vertrauenswürdigen Cloud-Dienst (z. B. Google Drive, Dropbox, OneDrive). Verlasse dich niemals nur auf die Kopie auf dem TeddyCloud-Server.",
                 "downloadLink": "Download ungepachte Firmware",
                 "downloadLinkPatched": "Download gepachte Firmware",
                 "downloadStubFailed": "Download des Stubs auf den ESP32 fehlgeschlagen! Bitte überprüfe die Verbindung und versuche es erneut!",
@@ -1842,7 +1842,7 @@
                 "title": "Batch-Bearbeitung aktiv"
             },
             "coinHint": {
-                "description": "Optional – nur für Metadaten (Titel, Tracks). Custom Coins funktionieren auch ohne Modell. Nur Custom-Audio – offizielle IDs überschreiben echte Tonies. Verknüpft keine NFC-Tags mit Audio.",
+                "description": "Optional - nur für Metadaten (Titel, Tracks). Custom Tags funktionieren auch ohne Modell. Nur Custom-Audio - offizielle IDs überschreiben echte Tonies. Verknüpft keine NFC-Tags mit Audio.",
                 "title": "Hinweis: Audio-Zuordnung"
             },
             "columns": {
@@ -1977,7 +1977,7 @@
             "source": "Quelle",
             "createNewModelTooltip": "Neues Modell erstellen",
             "editModelTooltip": "Modell bearbeiten",
-            "title": "Tonie/Coin bearbeiten"
+            "title": "Tonie/Tag bearbeiten"
         },
         "encoder": {
             "browserEncodingInProgress": "Audio-Dateien werden im Browser encodiert...",
@@ -2267,7 +2267,7 @@
             "currentLabel": "Aktuelles Label",
             "custom": "Benutzerdefiniert",
             "customImage": "Eigene Bilder",
-            "customImageHint": "Du kannst temporär eigene Bilder hinzufügen – sie werden NICHT in die Library übernommen und nur für dieses Druckblatt verwendet.",
+            "customImageHint": "Du kannst temporär eigene Bilder hinzufügen - sie werden NICHT in die Library übernommen und nur für dieses Druckblatt verwendet.",
             "customImageTitle": "Gib einen Titel ein, der gedruckt werden soll",
             "customImageUpload": "Temporäres Bild hinzufügen (ohne Library)",
             "diameter": "Innendurchmesser",
@@ -2276,7 +2276,7 @@
             "imagePosition": "Bildausrichtung",
             "imageScale": "Bildskalierung",
             "imageBottomLeft": "Bildabstand unten/links",
-            "intro": "Durchsuche alle Tonies und Tags - sowohl offizielle als auch deine eigenen - um dein druckbares Traveltonies (Münze) Blatt zu erstellen.",
+            "intro": "Durchsuche alle Tonies und Tags - sowohl offizielle als auch deine eigenen - um dein druckbares Traveltonies Blatt zu erstellen.",
             "labelBackgroundColor": "Hintergrund",
             "labelEditTitle": "Label-Elemente bearbeiten",
             "labelImage": "Labelbild",
@@ -2301,7 +2301,7 @@
             "preview": "Vorschau Label",
             "printMode": "Druckmodus",
             "printModeImageAndText": "Bild + Text",
-            "printModeImageAndTextTooltip": "Beide Seiten deiner Traveltonie-Münze drucken: Bild auf der einen Seite, Titel und Episodeninfos auf der anderen",
+            "printModeImageAndTextTooltip": "Beide Seiten deiner Traveltonie drucken: Bild auf der einen Seite, Titel und Episodeninfos auf der anderen",
             "printModeOnlyImage": "Bild",
             "printModeOnlyImageTooltip": "Nur eine Seite mit dem Bild der Tags drucken",
             "printModeOnlyText": "Text",
