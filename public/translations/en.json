@@ -1842,7 +1842,7 @@
                 "title": "Batch editing active"
             },
             "coinHint": {
-                "description": "Optional – only for metadata (title, tracks). Custom coins work without a model. Use only custom audio – official IDs overwrite real Tonies. Does not link NFC tags to audio.",
+                "description": "Optional - only for metadata (title, tracks). Custom tags work without a model. Use only custom audio - official IDs overwrite real Tonies. Does not link NFC tags to audio.",
                 "title": "Hint: Audio assignment"
             },
             "columns": {
@@ -1977,7 +1977,7 @@
             "source": "Source",
             "createNewModelTooltip": "Create new model",
             "editModelTooltip": "Edit model",
-            "title": "Edit Tonie/Coin"
+            "title": "Edit Tonie/Tag"
         },
         "encoder": {
             "browserEncodingInProgress": "Encoding audio files in browser...",
@@ -2267,7 +2267,7 @@
             "currentLabel": "Current label",
             "custom": "Custom",
             "customImage": "Custom Images",
-            "customImageHint": "You can add images temporarily – they will NOT be added to the library and are only used for this print sheet.",
+            "customImageHint": "You can add images temporarily - they will NOT be added to the library and are only used for this print sheet.",
             "customImageTitle": "Enter a title to be printed",
             "customImageUpload": "Add temporary image (without Library)",
             "diameter": "Inner diameter",
@@ -2276,7 +2276,7 @@
             "imagePosition": "Image position",
             "imageScale": "Image scale",
             "imageBottomLeft": "Image margin bottom/left",
-            "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies (coin) sheet.",
+            "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies sheet.",
             "labelBackgroundColor": "Background",
             "labelEditTitle": "Edit Label elements",
             "labelImage": "Label image",
@@ -2301,7 +2301,7 @@
             "preview": "Preview Label",
             "printMode": "Print mode",
             "printModeImageAndText": "Image + Text",
-            "printModeImageAndTextTooltip": "Print both sides of your Traveltonie coin with the tags image for one side and the title and episode information for the other",
+            "printModeImageAndTextTooltip": "Print both sides of your Traveltonie with the tags image for one side and the title and episode information for the other",
             "printModeOnlyImage": "Image",
             "printModeOnlyImageTooltip": "Print only one side with the tags image",
             "printModeOnlyText": "Text",

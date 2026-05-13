@@ -1977,7 +1977,7 @@
             "source": "Source",
             "createNewModelTooltip": "Créer un nouveau modèle",
             "editModelTooltip": "Modifier le modèle",
-            "title": "Modifier Tonie/Coin"
+            "title": "Modifier Tonie/Tag"
         },
         "encoder": {
             "browserEncodingInProgress": "Encodage des fichiers audio dans le navigateur...",
@@ -2029,12 +2029,12 @@
                 "editIcon": {
                     "createNewModel": {
                         "description": "Ouvre une fenêtre pour saisir les détails du nouveau modèle. Cette fonction est encore en développement.",
-                        "text": "Crée un modèle personnalisé pour ton Tonie/Étiquette.",
+                        "text": "Crée un modèle personnalisé pour ton Tonie/Tag.",
                         "title": "Créer un nouveau modèle (en cours)"
                     },
                     "model": {
                         "description": "Recherche et assigne un modèle. L'image sera affichée dans l'aperçu.",
-                        "text": "Affiche le modèle visuel assigné au Tonie/Étiquette.",
+                        "text": "Affiche le modèle visuel assigné au Tonie/Tag.",
                         "title": "Modèle"
                     },
                     "radioStreamSearch": {
@@ -2048,7 +2048,7 @@
                         "title": "Source"
                     },
                     "text": "Ouvre la fenêtre de modification avec les options suivantes :",
-                    "title": "Modifier Tonie/Étiquette"
+                    "title": "Modifier Tonie/Tag"
                 },
                 "infoIcon": {
                     "download": {
@@ -2058,19 +2058,19 @@
                     },
                     "exists": {
                         "description": "Le statut 'existe' est défini sur 'oui' si le fichier source assigné est présent.",
-                        "text": "Indique si la source assignée au Tonie/Étiquette existe dans le système.",
+                        "text": "Indique si la source assignée au Tonie/Tag existe dans le système.",
                         "title": "Existe"
                     },
                     "hide": {
-                        "description": "Utilise cette option pour masquer un Tonie/Étiquette. Pour le faire réapparaître, place-le sur une de tes Tonieboxes.",
-                        "text": "Retire le Tonie/Étiquette de l'aperçu.",
-                        "title": "Masquer le Tonie/Étiquette"
+                        "description": "Utilise cette option pour masquer un Tonie/Tag. Pour le faire réapparaître, place-le sur une de tes Tonieboxes.",
+                        "text": "Retire le Tonie/Tag de l'aperçu.",
+                        "title": "Masquer le Tonie/Tag"
                     },
-                    "text": "Ouvre une fenêtre avec les détails principaux du Tonie/Étiquette, y compris le titre, l'image, l'UID, la liste des pistes et divers indicateurs d'état :",
-                    "title": "Informations Tonie/Étiquette",
+                    "text": "Ouvre une fenêtre avec les détails principaux du Tonie/Tag, y compris le titre, l'image, l'UID, la liste des pistes et divers indicateurs d'état :",
+                    "title": "Informations Tonie/Tag",
                     "valid": {
-                        "description": "Un Tonie/Étiquette est considéré comme valide si sa source est un fichier TAF valide.",
-                        "text": "Indique si la source assignée au Tonie/Étiquette est valide.",
+                        "description": "Un Tonie/Tag est considéré comme valide si sa source est un fichier TAF valide.",
+                        "text": "Indique si la source assignée au Tonie/Tag est valide.",
                         "title": "Valide"
                     }
                 },
@@ -2079,19 +2079,19 @@
                     "title": "Statut en direct"
                 },
                 "playIcon": {
-                    "text": "Joue le contenu assigné au Tonie/Étiquette. Si l'icône est grise claire, aucun contenu n'est assigné.",
+                    "text": "Joue le contenu assigné au Tonie/Tag. Si l'icône est grise claire, aucun contenu n'est assigné.",
                     "title": "Lire le contenu"
                 }
             },
             "blueTopBorder": {
-                "text": "Indique que ce Tonie/Étiquette a été le dernier joué sur au moins une de tes Tonieboxes.",
+                "text": "Indique que ce Tonie/Tag a été le dernier joué sur au moins une de tes Tonieboxes.",
                 "title": "Bord supérieur bleu"
             },
             "closeButton": "Fermer",
             "modelImage": {
                 "bigImage": {
-                    "description": "Cette image reflète le modèle sélectionné assigné au Tonie/Étiquette. Pour le modifier, tu dois assigner un autre modèle.",
-                    "text": "Représente l'apparence visuelle du Tonie/Étiquette.",
+                    "description": "Cette image reflète le modèle sélectionné assigné au Tonie/Tag. Pour le modifier, tu dois assigner un autre modèle.",
+                    "text": "Représente l'apparence visuelle du Tonie/Tag.",
                     "title": "Grande image"
                 },
                 "smallImage": {
@@ -2099,8 +2099,8 @@
                     "text": "Indique la source réelle si elle diffère du modèle assigné.",
                     "title": "Petite image"
                 },
-                "text": "Affiche la représentation visuelle du Tonie/Étiquette s'il est reconnu. Les Tonies/Étiquettes inconnus affichent un point d'interrogation. Si tu actives le paramètre 'Frontend' → 'Split content / model', deux images peuvent apparaître :",
-                "title": "Image du modèle Tonie/Étiquette"
+                "text": "Affiche la représentation visuelle du Tonie/Tag s'il est reconnu. Les Tonies/Étiquettes inconnus affichent un point d'interrogation. Si tu actives le paramètre 'Frontend' → 'Split content / model', deux images peuvent apparaître :",
+                "title": "Image du modèle Tonie/Tag"
             },
             "title": "Aide"
         },
@@ -2249,7 +2249,7 @@
             "noTracks": "Aucune piste disponible",
             "openInTonieAudioPlayer": "Ouvrir dans le lecteur audio",
             "openStandalone": "Ouvrir le lecteur en mode autonome",
-            "selectTonieToPlay": "Sélectionne un Tonie/étiquette à lire",
+            "selectTonieToPlay": "Sélectionne un Tonie/Tag à lire",
             "shrink": "Réduire le lecteur audio",
             "standaloneTitle": "Lecteur Audio",
             "title": "Lecteur Audio",

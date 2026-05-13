@@ -358,7 +358,7 @@
         "help": {
             "actionItems": {
                 "deleteFileFolder": {
-                    "text": "Elimina el archivo o carpeta (solo si la carpeta está vacía). Nota: Si este archivo está asignado a un Tonie/Etiqueta, la referencia no se actualizará.",
+                    "text": "Elimina el archivo o carpeta (solo si la carpeta está vacía). Nota: Si este archivo está asignado a un Tonie/Tag, la referencia no se actualizará.",
                     "title": "Eliminar archivo/carpeta"
                 },
                 "duplicateTAPFile": {
@@ -382,7 +382,7 @@
                     "title": "Migrar archivo TAF a la raíz de la biblioteca"
                 },
                 "moveFile": {
-                    "text": "Mueve el archivo a una nueva ubicación. Nota: Si este archivo está asignado a un Tonie/Etiqueta, la referencia no se actualizará.",
+                    "text": "Mueve el archivo a una nueva ubicación. Nota: Si este archivo está asignado a un Tonie/Tag, la referencia no se actualizará.",
                     "title": "Mover archivo"
                 },
                 "playAudioFile": {
@@ -390,21 +390,21 @@
                     "title": "Reproducir archivo de audio"
                 },
                 "renameFile": {
-                    "text": "Renombra el archivo. Nota: Si este archivo está asignado a un Tonie/Etiqueta, la referencia no se actualizará automáticamente.",
+                    "text": "Renombra el archivo. Nota: Si este archivo está asignado a un Tonie/Tag, la referencia no se actualizará automáticamente.",
                     "title": "Renombrar archivo"
                 }
             },
             "actionItemsMulti": {
                 "deleteSelectedFiles": {
-                    "text": "Elimina los archivos o carpetas seleccionados (solo si están vacíos). Nota: Las referencias a archivos eliminados en cualquier Tonie/Etiqueta no se actualizarán.",
+                    "text": "Elimina los archivos o carpetas seleccionados (solo si están vacíos). Nota: Las referencias a archivos eliminados en cualquier Tonie/Tag no se actualizarán.",
                     "title": "Eliminar archivos/carpetas seleccionados"
                 },
                 "encodeFilesToTAF": {
-                    "text": "Agrega archivos compatibles a una cola de codificación. Puedes seleccionar varios archivos para codificarlos en un archivo TAF, que luego puede asignarse a un Tonie/Etiqueta.",
+                    "text": "Agrega archivos compatibles a una cola de codificación. Puedes seleccionar varios archivos para codificarlos en un archivo TAF, que luego puede asignarse a un Tonie/Tag.",
                     "title": "Codificar archivos a TAF"
                 },
                 "moveSelectedFiles": {
-                    "text": "Mueve los archivos seleccionados a una nueva ubicación. Nota: Las referencias a estos archivos en cualquier Tonie/Etiqueta no se actualizarán. Las carpetas seleccionadas se omitirán.",
+                    "text": "Mueve los archivos seleccionados a una nueva ubicación. Nota: Las referencias a estos archivos en cualquier Tonie/Tag no se actualizarán. Las carpetas seleccionadas se omitirán.",
                     "title": "Mover archivos seleccionados"
                 }
             },
@@ -430,7 +430,7 @@
                     "title": "Abrir visor de TAP/JSON"
                 },
                 "viewTonieInfoModal": {
-                    "text": "Haz clic en la imagen de un Tonie/Etiqueta en la fila para abrir el modal de TonieInfo. Esto muestra información detallada, incluida una imagen más grande y lista de pistas (si está disponible).",
+                    "text": "Haz clic en la imagen de un Tonie/Tag en la fila para abrir el modal de TonieInfo. Esto muestra información detallada, incluida una imagen más grande y lista de pistas (si está disponible).",
                     "title": "Ver modal de TonieInfo"
                 }
             },
@@ -1803,7 +1803,7 @@
             "seriesRequired": "La serie debe ser completada.",
             "successfullyCreated": "¡Modelo creado con éxito!",
             "successfullyCreatedDetails": "¡Modelo {{series}} [{{model}}] creado con éxito!",
-            "title": "Crear nuevo Tonie/Etiqueta personalizado",
+            "title": "Crear nuevo Tonie/Tag personalizado",
             "track": "Pista"
         },
         "customToniesEditorJsonEntry": "Modelos personalizados",
@@ -1935,9 +1935,9 @@
         "closeAudioPlayerPopover": "¡Cerrar detiene la reproducción!",
         "confirmHideModal": {
             "cancel": "Cancelar",
-            "confirmHideDialog": "¿Realmente quieres ocultar el Tonie/Etiqueta \"{{tonieToHide}}\" en la vista general de Tonies? Para volver a hacerlo visible, debes colocar el Tonie/Etiqueta en una de tus Tonieboxes.",
+            "confirmHideDialog": "¿Realmente quieres ocultar el Tonie/Tag \"{{tonieToHide}}\" en la vista general de Tonies? Para volver a hacerlo visible, debes colocar el Tonie/Tag en una de tus Tonieboxes.",
             "hide": "Ocultar",
-            "title": "Ocultar Tonie/Etiqueta"
+            "title": "Ocultar Tonie/Tag"
         },
         "confirmAudioModelMismatchModal": {
             "cancel": "Cancelar",
@@ -2029,12 +2029,12 @@
                 "editIcon": {
                     "createNewModel": {
                         "description": "Abre una ventana para introducir los detalles del nuevo modelo. Esta función aún está en desarrollo.",
-                        "text": "Crea un modelo personalizado para tu Tonie/Etiqueta.",
+                        "text": "Crea un modelo personalizado para tu Tonie/Tag.",
                         "title": "Crear nuevo modelo (en desarrollo)"
                     },
                     "model": {
                         "description": "Busca y asigna un modelo. La imagen se mostrará en la vista general.",
-                        "text": "Representa el modelo visual asignado al Tonie/Etiqueta.",
+                        "text": "Representa el modelo visual asignado al Tonie/Tag.",
                         "title": "Modelo"
                     },
                     "radioStreamSearch": {
@@ -2048,7 +2048,7 @@
                         "title": "Fuente"
                     },
                     "text": "Abre la ventana de edición con las siguientes opciones:",
-                    "title": "Editar Tonie/Etiqueta"
+                    "title": "Editar Tonie/Tag"
                 },
                 "infoIcon": {
                     "download": {
@@ -2058,19 +2058,19 @@
                     },
                     "exists": {
                         "description": "El estado 'existe' se muestra como 'sí' si el archivo fuente asignado está presente.",
-                        "text": "Muestra si la fuente asignada del Tonie/Etiqueta existe en el sistema.",
+                        "text": "Muestra si la fuente asignada del Tonie/Tag existe en el sistema.",
                         "title": "Existe"
                     },
                     "hide": {
-                        "description": "Usa esta opción para ocultar un Tonie/Etiqueta. Para volver a mostrarlo, colócalo en una de tus Tonieboxes.",
-                        "text": "Elimina el Tonie/Etiqueta de la vista general.",
-                        "title": "Ocultar Tonie/Etiqueta"
+                        "description": "Usa esta opción para ocultar un Tonie/Tag. Para volver a mostrarlo, colócalo en una de tus Tonieboxes.",
+                        "text": "Elimina el Tonie/Tag de la vista general.",
+                        "title": "Ocultar Tonie/Tag"
                     },
-                    "text": "Abre una ventana con los detalles clave del Tonie/Etiqueta, incluyendo título, imagen, UID, lista de pistas y varios indicadores de estado:",
-                    "title": "Información de Tonie/Etiqueta",
+                    "text": "Abre una ventana con los detalles clave del Tonie/Tag, incluyendo título, imagen, UID, lista de pistas y varios indicadores de estado:",
+                    "title": "Información de Tonie/Tag",
                     "valid": {
-                        "description": "Un Tonie/Etiqueta se considera válido si su fuente asignada es un archivo TAF válido.",
-                        "text": "Muestra si la fuente asignada del Tonie/Etiqueta es válida.",
+                        "description": "Un Tonie/Tag se considera válido si su fuente asignada es un archivo TAF válido.",
+                        "text": "Muestra si la fuente asignada del Tonie/Tag es válida.",
                         "title": "Válido"
                     }
                 },
@@ -2079,19 +2079,19 @@
                     "title": "Estado en vivo"
                 },
                 "playIcon": {
-                    "text": "Reproduce el contenido asignado al Tonie/Etiqueta. Si el icono aparece en gris claro, no hay contenido asignado.",
+                    "text": "Reproduce el contenido asignado al Tonie/Tag. Si el icono aparece en gris claro, no hay contenido asignado.",
                     "title": "Reproducir contenido"
                 }
             },
             "blueTopBorder": {
-                "text": "Indica que este Tonie/Etiqueta fue el último reproducido en al menos una de tus Tonieboxes.",
+                "text": "Indica que este Tonie/Tag fue el último reproducido en al menos una de tus Tonieboxes.",
                 "title": "Borde superior azul"
             },
             "closeButton": "Cerrar",
             "modelImage": {
                 "bigImage": {
-                    "description": "Esta imagen refleja el modelo seleccionado asignado al Tonie/Etiqueta. Para cambiarlo, debes asignar otro modelo.",
-                    "text": "Representa el aspecto visual del Tonie/Etiqueta.",
+                    "description": "Esta imagen refleja el modelo seleccionado asignado al Tonie/Tag. Para cambiarlo, debes asignar otro modelo.",
+                    "text": "Representa el aspecto visual del Tonie/Tag.",
                     "title": "Imagen grande"
                 },
                 "smallImage": {
@@ -2099,8 +2099,8 @@
                     "text": "Muestra la fuente real si es diferente del modelo asignado.",
                     "title": "Imagen pequeña"
                 },
-                "text": "Muestra la representación visual del Tonie/Etiqueta si es reconocido. Los Tonies/Etiquetas desconocidos mostrarán un signo de interrogación. Si tienes activada la opción 'Frontend' → 'Split content / model', pueden aparecer dos imágenes:",
-                "title": "Imagen de modelo del Tonie/Etiqueta"
+                "text": "Muestra la representación visual del Tonie/Tag si es reconocido. Los Tonies/Etiquetas desconocidos mostrarán un signo de interrogación. Si tienes activada la opción 'Frontend' → 'Split content / model', pueden aparecer dos imágenes:",
+                "title": "Imagen de modelo del Tonie/Tag"
             },
             "title": "Ayuda"
         },
@@ -2114,7 +2114,7 @@
             "yes": "Sí"
         },
         "informationModal": {
-            "hideTag": "Ocultar Tonie/Etiqueta",
+            "hideTag": "Ocultar Tonie/Tag",
             "ok": "OK",
             "unknownModel": "Modelo desconocido"
         },
@@ -2159,10 +2159,10 @@
             "filterLoadedDetails": "¡El filtro {{name}} se cargó correctamente!",
             "filterSaved": "Filtro guardado",
             "filterSavedDetails": "¡El filtro {{name}} se guardó correctamente!",
-            "hideTonieFailed": "¡No se pudo ocultar el Tonie/Etiqueta!",
-            "hideTonieFailedDetails": "No se pudo ocultar Tonie/Etiqueta [{{ruid}}]: ",
-            "hideTonieSuccessful": "¡Tonie/Etiqueta ocultado con éxito!",
-            "hideTonieSuccessfulDetails": "Tonie/Etiqueta [{{ruid}}] se ha marcado como oculto con éxito",
+            "hideTonieFailed": "¡No se pudo ocultar el Tonie/Tag!",
+            "hideTonieFailedDetails": "No se pudo ocultar Tonie/Tag [{{ruid}}]: ",
+            "hideTonieSuccessful": "¡Tonie/Tag ocultado con éxito!",
+            "hideTonieSuccessfulDetails": "Tonie/Tag [{{ruid}}] se ha marcado como oculto con éxito",
             "liveDisabled": "En vivo deshabilitado.",
             "liveDisabledDetails": "Indicador en vivo deshabilitado para \"{{model}}\" [{{ruid}}]",
             "liveEnabled": "En vivo habilitado.",
@@ -2249,7 +2249,7 @@
             "noTracks": "No hay pistas disponibles",
             "openInTonieAudioPlayer": "Abrir en Audio Player",
             "openStandalone": "Abrir el reproductor en modo independiente",
-            "selectTonieToPlay": "Selecciona un Tonie/etiqueta para reproducir",
+            "selectTonieToPlay": "Selecciona un Tonie/Tag para reproducir",
             "shrink": "Minimizar el reproductor de audio",
             "standaloneTitle": "Reproductor de Audio",
             "title": "Reproductor de Audio",
