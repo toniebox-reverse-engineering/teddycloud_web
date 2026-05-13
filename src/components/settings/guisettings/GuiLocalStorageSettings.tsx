@@ -4,7 +4,6 @@ import { UploadOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useGuiLocalSettings } from "./hooks/useGUILocalSettings";
 
-const { Panel } = Collapse;
 const { Title, Text } = Typography;
 
 export const GuiLocalStorageSettings = () => {

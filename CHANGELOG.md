@@ -16,6 +16,7 @@
 - gui: Fixed double episode content in TeddyStudio [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296)
 - gui: Added formatting (internal)
 - gui: Fixed some display issues in TeddyStudio labels
+- gui: Fixed bug deleting only marked notifications
 
 ### Commits
 

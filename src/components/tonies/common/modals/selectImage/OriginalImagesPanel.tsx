@@ -6,12 +6,12 @@ import { useTranslation } from "react-i18next";
 import ThumbnailCell from "../../elements/ThumbnailCell";
 import { toImageSrc } from "../../utils/imagePathUtils";
 import { nextSelectionForMode } from "./selectionUtils";
+import { renderSelectImageSelectionCell } from "../../../../../utils/formatting/renderSelectImageTableLayout";
 import {
+    SELECT_IMAGE_THUMB_COL_WIDTH,
     SELECT_IMAGE_CELL_GAP_HALF,
     SELECT_IMAGE_CHECKBOX_COL_WIDTH,
-    SELECT_IMAGE_THUMB_COL_WIDTH,
-    renderSelectImageSelectionCell,
-} from "../../../../../constants/selectImageTableLayout";
+} from "../../../../../constants/selectImageTableLayoutSizes";
 
 type OriginalTableRow = { url: string };
 

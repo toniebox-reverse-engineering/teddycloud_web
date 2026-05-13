@@ -81,8 +81,7 @@ export const useNotificationsList = () => {
 
     const confirmSelectedNotifications = () => {
         selectedRowKeys.forEach((key) => {
-            const uuid = String(key);
-            confirmNotification(uuid);
+            confirmNotification(String(key));
         });
         setSelectedRowKeys([]);
     };

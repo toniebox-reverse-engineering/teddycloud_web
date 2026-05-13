@@ -15,10 +15,8 @@ import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { createColumns } from "./helper/Columns";
 import { useAudioContext } from "../../../provider/AudioProvider";
-import {
-    SELECT_IMAGE_CHECKBOX_COL_WIDTH,
-    renderSelectImageSelectionCell,
-} from "../../../constants/selectImageTableLayout";
+import { renderSelectImageSelectionCell } from "../../../utils/formatting/renderSelectImageTableLayout";
+import { SELECT_IMAGE_CHECKBOX_COL_WIDTH } from "../../../constants/selectImageTableLayoutSizes";
 
 const { useToken } = theme;
 
