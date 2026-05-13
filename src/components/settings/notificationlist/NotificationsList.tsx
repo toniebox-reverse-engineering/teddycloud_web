@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
+import dayjs from "dayjs";
 import {
     Table,
     Select,
@@ -23,11 +24,10 @@ import { NotificationRecord, NotificationType } from "../../../types/teddyCloudN
 import { useNotificationsList } from "./hooks/useNotificationsList";
 import { canHover } from "../../../utils/browser/browserUtils";
 
-const { Option } = Select;
 const { Paragraph } = Typography;
 const { useToken } = theme;
 
-type NotificationRow = NotificationRecord & { _rowId: string };
+type NotificationRow = NotificationRecord;
 
 const NotificationsList: React.FC = () => {
     const { t } = useTranslation();
@@ -64,14 +64,7 @@ const NotificationsList: React.FC = () => {
         warning: <ExclamationCircleFilled style={{ color: token.colorWarning }} />,
     };
 
-    const tableData: NotificationRow[] = useMemo(
-        () =>
-            filteredNotifications.map((n, index) => ({
-                ...n,
-                _rowId: `${n.uuid}-${index}`,
-            })),
-        [filteredNotifications],
-    );
+    const tableData: NotificationRow[] = filteredNotifications;
 
     const columns: ColumnsType<NotificationRow> = [
         {
@@ -201,54 +194,58 @@ const NotificationsList: React.FC = () => {
         >
             <Select
                 mode="multiple"
-                placeholder={
-                    t("settings.notifications.filterBy") + " " + t("settings.notifications.colType")
-                }
+                placeholder={`${t("settings.notifications.filterBy")} ${t(
+                    "settings.notifications.colType",
+                )}`}
                 onChange={setTypeFilter}
-            >
-                <Option value="success">{t("settings.notifications.success")}</Option>
-                <Option value="info">{t("settings.notifications.info")}</Option>
-                <Option value="warning">{t("settings.notifications.warning")}</Option>
-                <Option value="error">{t("settings.notifications.error")}</Option>
-            </Select>
+                options={[
+                    { value: "success", label: t("settings.notifications.success") },
+                    { value: "info", label: t("settings.notifications.info") },
+                    { value: "warning", label: t("settings.notifications.warning") },
+                    { value: "error", label: t("settings.notifications.error") },
+                ]}
+            />
+
             <Select
                 mode="multiple"
-                placeholder={
-                    t("settings.notifications.filterBy") +
-                    " " +
-                    t("settings.notifications.colContext")
-                }
+                placeholder={`${t("settings.notifications.filterBy")} ${t(
+                    "settings.notifications.colContext",
+                )}`}
                 onChange={setContextFilter}
-            >
-                {uniqueContexts.map((context) => (
-                    <Option key={context} value={context}>
-                        {context}
-                    </Option>
-                ))}
-            </Select>
+                options={uniqueContexts.map((context) => ({
+                    value: context,
+                    label: context,
+                }))}
+            />
+
             <Select
                 mode="multiple"
-                placeholder={
-                    t("settings.notifications.filterBy") +
-                    " " +
-                    t("settings.notifications.colStatus")
-                }
+                placeholder={`${t("settings.notifications.filterBy")} ${t(
+                    "settings.notifications.colStatus",
+                )}`}
                 onChange={setStatusFilter}
-            >
-                <Option value="Confirmed">{t("settings.notifications.confirmed")}</Option>
-                <Option value="Unconfirmed">{t("settings.notifications.unconfirmed")}</Option>
-            </Select>
+                options={[
+                    { value: "Confirmed", label: t("settings.notifications.confirmed") },
+                    {
+                        value: "Unconfirmed",
+                        label: t("settings.notifications.unconfirmed"),
+                    },
+                ]}
+            />
             <DatePicker.RangePicker
                 onChange={(dates) => {
                     if (dates && dates[0] && dates[1]) {
-                        setDateRange([dates[0].toDate(), dates[1].toDate()]);
+                        setDateRange([
+                            dates[0].startOf("day").toDate(),
+                            dates[1].endOf("day").toDate(),
+                        ]);
                     } else {
                         setDateRange([null, null]);
                     }
                 }}
                 value={
                     dateRange[0] && dateRange[1]
-                        ? [dateRange[0] as any, dateRange[1] as any]
+                        ? [dayjs(dateRange[0]), dayjs(dateRange[1])]
                         : undefined
                 }
                 placeholder={[
@@ -329,7 +326,7 @@ const NotificationsList: React.FC = () => {
                 rowSelection={rowSelection}
                 dataSource={tableData}
                 columns={columns}
-                rowKey="_rowId"
+                rowKey="uuid"
                 pagination={{
                     current: currentPage,
                     pageSize,
@@ -383,16 +380,24 @@ const NotificationsList: React.FC = () => {
                                                   <strong>
                                                       {t("settings.notifications.colDate")}:
                                                   </strong>{" "}
-                                                  {record.date
-                                                      .toLocaleString("en-US", {
-                                                          year: "numeric",
-                                                          month: "2-digit",
-                                                          day: "2-digit",
-                                                          hour: "2-digit",
-                                                          minute: "2-digit",
-                                                          hour12: false,
-                                                      })
-                                                      .replace(",", "")}
+                                                  {(() => {
+                                                      const d =
+                                                          record.date instanceof Date
+                                                              ? record.date
+                                                              : new Date(record.date);
+                                                      if (Number.isNaN(d.getTime())) return "";
+
+                                                      return d
+                                                          .toLocaleString("en-US", {
+                                                              year: "numeric",
+                                                              month: "2-digit",
+                                                              day: "2-digit",
+                                                              hour: "2-digit",
+                                                              minute: "2-digit",
+                                                              hour12: false,
+                                                          })
+                                                          .replace(",", "");
+                                                  })()}
                                               </div>
                                           </div>
                                       ) : null}

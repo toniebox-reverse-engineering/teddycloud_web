@@ -25,10 +25,9 @@ import { toImageSrc } from "../../common/utils/imagePathUtils";
 import ThumbnailCell from "../../common/elements/ThumbnailCell";
 import { toModelKey } from "../../utils/modelKey";
 import {
-    SELECT_IMAGE_CELL_GAP,
-    SELECT_IMAGE_CELL_GAP_HALF,
     SELECT_IMAGE_THUMB_COL_WIDTH,
-} from "../../../../constants/selectImageTableLayout";
+    SELECT_IMAGE_CELL_GAP_HALF,
+} from "../../../../constants/selectImageTableLayoutSizes";
 
 const { useToken } = theme;
 

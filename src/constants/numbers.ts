@@ -1,4 +1,5 @@
 export const MAX_FILES = 99;
+export const MAX_STORED_NOTIFICATIONS = 500;
 export const DEFAULT_UPLOAD_TIMEOUT_MS = 120000;
 
 /** Debounce for search/filter inputs (file browser table filter, image manager original URLs). */

@@ -503,22 +503,6 @@ This means:
 - Performance reflects the real-world production setup
 - You can verify that your build works correctly before deployment
 
-## GitHub Actions Runtime
-
-The workflow opts GitHub Actions into the Node.js 24 action runtime via:
-
-```yaml
-env:
-    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-```
-
-This avoids Node.js 20 deprecation warnings for JavaScript-based actions such as:
-
-- `actions/checkout@v4`
-- `actions/setup-node@v4`
-
-while keeping the project runtime pinned separately through `setup-node`.
-
 ## Learn More
 
 You can learn more in the [Vite documentation](https://vitejs.dev/guide/).
