@@ -1531,7 +1531,8 @@
         "confirmDeleteModal": "Bestätige Löschvorgang",
         "connectESP32Modal": {
             "beware": "Achtung!",
-            "connectESP32Text1": "Bitte verbinde den Jumper J100 (Boot) und setze die Box zurück, um sie in den erforderlichen UART-Modus zu versetzen. Verbinde dein 3,3 V UART mit J103 (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND).",
+            "connectESP32Text1.1": "Bitte verbinde den Jumper J100 (Boot) und setze die Box zurück, um sie in den erforderlichen UART-Modus zu versetzen.",
+            "connectESP32Text1.2": "Verbinde dein 3,3 V UART mit J103:",
             "connectESP32Text2": "Wenn du dir nicht sicher bist, in welchem Modus der ESP32 startet, überprüfe Folgendes.",
             "downloadMode": "Download-Modus",
             "downloadModeText": "LED ist aus, kein Ton, Serieller Output:",

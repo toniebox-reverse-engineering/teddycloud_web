@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { Alert, Image, Typography } from "antd";
+import { Alert, Image, Table, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 
 import tbEsp32UartClamp from "../../../../../assets/boxSetup/tb-esp32-uart-clamp.png";
@@ -14,26 +14,79 @@ const { Paragraph } = Typography;
 export function connectESP32Explanation(): JSX.Element {
     const { t } = useTranslation();
 
+    const columns = [
+        {
+            title: "Toniebox J103",
+            dataIndex: "toniebox",
+            key: "toniebox",
+        },
+        {
+            title: "UART",
+            dataIndex: "uart",
+            key: "uart",
+        },
+    ];
+
+    const data = [
+        {
+            key: "1",
+            toniebox: "TxD",
+            uart: "RxD",
+        },
+        {
+            key: "2",
+            toniebox: "RxD",
+            uart: "TxD",
+        },
+        {
+            key: "3",
+            toniebox: "GND",
+            uart: "GND",
+        },
+    ];
+
     return (
         <>
             <Uart3v3Hint />
-            <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1")}</Paragraph>
+            <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1.1")}</Paragraph>
             <Paragraph
                 style={{
                     display: "flex",
-                    alignItems: "flex-start",
+                    alignItems: "center",
                     justifyContent: "center",
+                    flexWrap: "wrap",
+                    gap: 16,
                 }}
             >
                 <Image
                     src={tbEsp32J100}
-                    style={{ height: 200, width: "auto" }}
+                    style={{ height: "auto", width: 400, maxWidth: "min(400px, 90%)" }}
                     preview={false}
                     alt={t("tonieboxes.connectESP32Modal.esp32UartJ100")}
                 />
+            </Paragraph>
+            <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1.2")}</Paragraph>
+
+            <Paragraph
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexWrap: "wrap",
+                    gap: 16,
+                }}
+            >
+                <Table
+                    columns={columns}
+                    dataSource={data}
+                    size="small"
+                    pagination={false}
+                    style={{ width: 250, marginBottom: 16 }}
+                />
+
                 <Image
                     src={tbEsp32Uart}
-                    style={{ height: 200, width: "auto" }}
+                    style={{ height: "auto", width: 240, maxWidth: "min(240px, 90%)" }}
                     preview={false}
                     alt={t("tonieboxes.connectESP32Modal.esp32UartJ103")}
                 />
