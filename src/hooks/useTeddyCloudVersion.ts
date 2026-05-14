@@ -54,7 +54,9 @@ export const useTeddyCloudVersion = () => {
             .then((versionInfo) => {
                 if (develop) {
                     const latestDevelopSHA = versionInfo.sha;
-                    setNewVersionAvailable(commitGitSha !== latestDevelopSHA);
+                    setNewVersionAvailable(
+                        !commitGitSha.includes("unknown") && commitGitSha !== latestDevelopSHA,
+                    );
                     setLatestDevelopSHA(latestDevelopSHA);
                 } else {
                     const tagName = versionInfo.tag_name;
