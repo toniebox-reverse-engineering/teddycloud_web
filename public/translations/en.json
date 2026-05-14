@@ -1531,7 +1531,8 @@
         "confirmDeleteModal": "Confirm delete",
         "connectESP32Modal": {
             "beware": "Beware!",
-            "connectESP32Text1": "Please connect the jumper J100 (Boot) and reset the box to put it into the required UARTmode. Connect your 3.3V UART to J103 (Toniebox J103 [TxD | RxD | GND] -> UART: TxD -> RxD, RxD -> TxD, GND -> GND).",
+            "connectESP32Text1.1": "Please connect the jumper J100 (Boot) and reset the box to put it into the required UARTmode.",
+            "connectESP32Text1.2": "Connect your 3.3V UART to J103:",
             "connectESP32Text2": "If you`re unsure in which mode the ESP32 is starting, check the following.",
             "downloadMode": "Download mode",
             "downloadModeText": "LED is off, no sound, Serial output:",
