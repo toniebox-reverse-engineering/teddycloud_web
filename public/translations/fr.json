@@ -530,7 +530,7 @@
             "uploadedFileFailed": "Échec du téléchargement du fichier!",
             "uploadFailed": "Certains fichiers n'ont pas pu être téléversés. Veuillez réessayer.",
             "uploadFailedForFile": "Échec du téléversement de \"{{file}}\".",
-            "uploadHint": "Cliquez ou glissez les fichiers dans la zone d’envoi / sur la liste de fichiers pour les téléverser",
+            "uploadHint": "Cliquez ou glissez les fichiers dans la zone d'envoi / sur la liste de fichiers pour les téléverser",
             "uploading": "Téléversement en cours...",
             "uploadInProgress": "Téléversement de \"{{file}}\"...",
             "uploadSuccessful": "Fichiers téléversés avec succès.",
@@ -1227,7 +1227,7 @@
                 "proceedToFlash1": "Accédez à la page de flashage pour la version sélectionnée :",
                 "proceedToFlashLinkText": "Flashage de la boîte",
                 "tb2": "Concernant la Toniebox 2",
-                "tb2Details": "Une seule version de la dernière Toniebox 2 est connue, donc l’identification est simple. Si votre box est une Toniebox 2, vous pouvez aller directement aux instructions de flash pour la Toniebox 2.",
+                "tb2Details": "Une seule version de la dernière Toniebox 2 est connue, donc l'identification est simple. Si votre box est une Toniebox 2, vous pouvez aller directement aux instructions de flash pour la Toniebox 2.",
                 "tb2text": "Cette version est unique et a TB-MAIN_2.0.P imprimé sur le pcb comme montré dans l'image suivante.",
                 "tiInstruction": "Pour connaître la version spécifique, tu dois ouvrir ta Toniebox et utiliser la puce principale de la carte PCB pour l'identifier.",
                 "title": "Identifie ta version de Toniebox 1",
@@ -1351,7 +1351,7 @@
             "certificates": {
                 "alreadyAvailable": "Les certificats ca.der, client.der et private.der devraient déjà être disponibles ici :",
                 "extractAgain": "Si ce n'est pas le cas, assure-toi d'avoir correctement suivi l'étape 2. Tu peux également extraire à nouveau les fichiers de la box en utilisant l'outil cc3200 (ton PC devrait toujours être connecté à la Toniebox via le port UART/ESP32-C3 et le port de débogage).",
-                "uploadCertificates": "Téléversez ces certificats dans TeddyCloud à l’aide du bouton suivant."
+                "uploadCertificates": "Téléversez ces certificats dans TeddyCloud à l'aide du bouton suivant."
             },
             "certificatesDumpedCAreplacementFlashed": "Certificats extraits et remplacement CA flashé",
             "checkBoxes": "Afficher les boîtes disponibles",
@@ -1375,9 +1375,9 @@
                 "intro": "Vous pouvez utiliser un ESP32-C3 comme passerelle UART.",
                 "new": "Nouveau",
                 "prepareStep1": "Connectez votre ESP32-C3 à votre PC.",
-                "prepareStep2": "Ouvrez le site web suivant :",
-                "prepareStep3": "Ouvrez l'onglet « Flasher », cliquez sur « Connect & Flash ».",
-                "prepareStep4": "Ouvrez l'onglet « Config », cliquez sur « Connect » et appliquez les paramètres suivants et cliquez sur « Send Config » :",
+                "prepareStep2": "Ouvrez l'outil web suivant de g3gg0, membre de Team Revvox :",
+                "prepareStep3": "Ouvrez l'onglet « Flasher », cliquez sur « Connect & Flash » et attendez la fin du processus.",
+                "prepareStep4": "Ouvrez l'onglet « Config », cliquez sur « Connect » et appliquez les paramètres suivants. Cliquez ensuite sur « Send Config » et attendez de nouveau la fin du processus :",
                 "prepareStep5": "Connectez maintenant votre Toniebox à l'ESP32-C3 préparé comme suit :",
                 "title": "Passerelle UART ESP32-C3"
             },
@@ -2116,7 +2116,7 @@
             "okText": "Appliquer",
             "originalImagesLoading": "Chargement des images originales …",
             "originalUrlColumn": "URL",
-            "originalUrlSearchPlaceholder": "Mots à trouver dans l’URL (tous requis, ordre libre) …",
+            "originalUrlSearchPlaceholder": "Mots à trouver dans l'URL (tous requis, ordre libre) …",
             "sourceCustom": "Personnalisé",
             "sourceOriginal": "Original",
             "title": "Bibliothèque : Sélectionner et télécharger des images",
