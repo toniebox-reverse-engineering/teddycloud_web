@@ -22,6 +22,8 @@ import { scrollToTop } from "../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 
+export type HwTool = "uart" | "esp32c3";
+
 export const CC3200BoxFlashingGuide: React.FC = () => {
     const { t } = useTranslation();
     const scrollToTopAnchor = useRef<HTMLDivElement | null>(null);
@@ -29,6 +31,8 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [hostname, setHostname] = useState<string>("");
     const [warningTextHostname, setWarningTextHostname] = useState<string>("");
+
+    const [hwTool, setHwTool] = useState<HwTool>("uart");
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
@@ -99,11 +103,11 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:
-                return <Step0Preparations />;
+                return <Step0Preparations hwTool={hwTool} onHwToolChange={setHwTool} />;
             case 1:
-                return <Step1Bootloader />;
+                return <Step1Bootloader hwTool={hwTool} />;
             case 2:
-                return <Step2Certificates />;
+                return <Step2Certificates hwTool={hwTool} />;
             case 3:
                 return (
                     <Step3Patches

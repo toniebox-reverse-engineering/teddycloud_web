@@ -911,6 +911,7 @@
         "no-bv": "Norvégien (Île Bouvet)",
         "no-no": "Norvégien (Norvège)",
         "no-sj": "Norvégien (Svalbard et Jan Mayen)",
+        "other": "Autre",
         "pl-pl": "Polonais (Pologne)",
         "pt-ao": "Portugais (Angola)",
         "pt-br": "Portugais (Brésil)",
@@ -943,7 +944,6 @@
         "tl-ph": "Tagalog (Philippines)",
         "tr-tr": "Turc (Turquie)",
         "uk-ua": "Ukrainien (Ukraine)",
-        "other": "Autre",
         "undefined": "Autre/indéfini",
         "unknownLanguageCode": "Code de langue inconnu : ",
         "ur-pk": "Ourdou (Pakistan)",
@@ -1350,7 +1350,8 @@
             "bootloaderInstalled": "Bootloader installé avec succès",
             "certificates": {
                 "alreadyAvailable": "Les certificats ca.der, client.der et private.der devraient déjà être disponibles ici :",
-                "extractAgain": "Si ce n'est pas le cas, assure-toi d'avoir correctement suivi l'étape 2. Tu peux également extraire à nouveau les fichiers de la box en utilisant l'outil cc3200 (ton PC devrait toujours être connecté à la Toniebox via le port UART et le port de débogage)."
+                "extractAgain": "Si ce n'est pas le cas, assure-toi d'avoir correctement suivi l'étape 2. Tu peux également extraire à nouveau les fichiers de la box en utilisant l'outil cc3200 (ton PC devrait toujours être connecté à la Toniebox via le port UART/ESP32-C3 et le port de débogage).",
+                "uploadCertificates": "Téléversez ces certificats dans TeddyCloud à l’aide du bouton suivant."
             },
             "certificatesDumpedCAreplacementFlashed": "Certificats extraits et remplacement CA flashé",
             "checkBoxes": "Afficher les boîtes disponibles",
@@ -1359,15 +1360,27 @@
             "connectToTonieboxConnectDebugPortText2": " ou, alternativement, des fils fins pour la connexion.",
             "connectToTonieboxConnectTableExplanation": "*La broche SOP2 de la Toniebox doit être pontée avec le VCC de la Toniebox.",
             "connectToTonieboxConnectTableIntro": "Ensuite, connecte le port de débogage de la Toniebox au UART comme décrit dans le tableau suivant :",
-            "connectToTonieboxIntro": "Tu dois connecter ton UART au port de débogage. Commence par localiser le port de débogage sur la face non assemblée de la carte PCB, située en bas. Le schéma du port de débogage est montré dans l'image suivante.",
+            "connectToTonieboxIntro": "Tu dois connecter ton UART/ESP32-C3 au port de débogage. Commence par localiser le port de débogage sur la face non assemblée de la carte PCB, située en bas. Le schéma du port de débogage est montré dans l'image suivante.",
             "connectToTonieboxLink": "Trouve les instructions de connexion ici",
             "connectToTonieboxProceed": "Tu es maintenant prêt à continuer !",
-            "connectToTonieboxText": "Assure-toi que l'UART est configuré à 3,3V avant de connecter le programmeur UART à ton ordinateur via USB. La LED verte de la carte principale de la Toniebox doit rester allumée en continu (sans clignoter). Si ce n'est pas le cas, tes connexions pourraient être mal fixées ou incorrectes. Déconnecte le programmeur, vérifie toutes les connexions et essaie à nouveau. Si tu travailles avec des fils fins, pense à utiliser de la colle chaude pour les fixer et éviter qu'ils ne bougent. De plus, assure-toi que la Toniebox est alimentée via son chargeur.",
+            "connectToTonieboxText": "La LED verte de la carte principale de la Toniebox doit rester allumée en continu (sans clignoter). Si ce n'est pas le cas, tes connexions pourraient être mal fixées ou incorrectes. Déconnecte le programmeur, vérifie toutes les connexions et essaie à nouveau. Si tu travailles avec des fils fins, pense à utiliser de la colle chaude pour les fixer et éviter qu'ils ne bougent. De plus, assure-toi que la Toniebox est alimentée via son chargeur.",
+            "connectToTonieboxTextUart": "Assure-toi que l'UART est configuré à 3,3V avant de connecter le programmeur UART à ton ordinateur via USB.",
             "createPatch": "Créer altUrl.custom.305.patch",
             "customUrlPatch": "Créer un patch URL personnalisé (altUrl.custom.305.json)",
             "customUrlPatchHint": "Veuillez créer ce patch uniquement si les patches prédéfinis altUrl.tc.fritz.box.json et altUrl.305.json ne fonctionnent pas avec votre configuration actuelle de TeddyCloud. S'ils répondent à vos besoins, vous pouvez continuer en cliquant sur 'Suivant'.",
+            "dedicatedUart": "UART dédié",
             "dumpCertificates": "Extraire les certificats pour TeddyCloud",
             "dumpCertificatesLink": "Trouve les instructions pour extraire les certificats ici",
+            "esp32C3UartGateway": {
+                "intro": "Vous pouvez utiliser un ESP32-C3 comme passerelle UART.",
+                "new": "Nouveau",
+                "prepareStep1": "Connectez votre ESP32-C3 à votre PC.",
+                "prepareStep2": "Ouvrez le site web suivant :",
+                "prepareStep3": "Ouvrez l'onglet « Flasher », cliquez sur « Connect & Flash ».",
+                "prepareStep4": "Ouvrez l'onglet « Config », cliquez sur « Connect » et appliquez les paramètres suivants et cliquez sur « Send Config » :",
+                "prepareStep5": "Connectez maintenant votre Toniebox à l'ESP32-C3 préparé comme suit :",
+                "title": "Passerelle UART ESP32-C3"
+            },
             "flashCAreplacement": "Flasher le remplacement CA pour TeddyCloud",
             "flashCAreplacementIntro": "Il est recommandé de flasher le certificat CA de remplacement dans /cert/c2.der et d'utiliser le bootloader Hackiebox-NG avec le patch altCA.305 (plus de détails dans les étapes suivantes). Cela te permettra de basculer facilement entre le certificat original et ton certificat de remplacement.",
             "flashCAreplacementOutro": "Assure-toi d'avoir sélectionné le bon chemin vers le fichier c2.der.",
@@ -1807,19 +1820,32 @@
             "title": "Créer un nouveau Tonie/Tag personnalisé",
             "track": "Piste"
         },
-        "customToniesEditorJsonEntry": "Modèles personnalisés",
-        "imageManager": {
-            "title": "Bibliothèque : Sélectionner et télécharger des images",
-            "titleSelect": "Sélectionner une image",
-            "okText": "Appliquer",
-            "sourceCustom": "Personnalisé",
-            "sourceOriginal": "Original",
-            "noOriginalImages": "Aucune image originale trouvée",
-            "originalImagesLoading": "Chargement des images originales …",
-            "originalUrlSearchPlaceholder": "Mots à trouver dans l’URL (tous requis, ordre libre) …",
-            "noOriginalSearchResults": "Aucune URL ne correspond à la recherche",
-            "originalUrlColumn": "URL"
+        "alternativeSource": "Cette Tonie {{originalTonie}} est assignée à un contenu {{assignedContent}} !",
+        "alternativeSourceUnknown": "Cette Tonie {{originalTonie}} est assignée à un contenu alternatif  !",
+        "cancel": "Annuler",
+        "closeAudioPlayer": "Fermer le lecteur audio",
+        "closeAudioPlayerPopover": "Fermer arrête la lecture!",
+        "confirmAudioModelMismatchModal": {
+            "cancel": "Annuler",
+            "confirm": "Continuer",
+            "content": "L'audio assigné a le modèle \"{{audioModel}}\". L'affichage sur la boîte provient de l'audio_id du TAF. Le modèle vide sera réinitialisé à \"{{audioModel}}\". Continuer?",
+            "title": "Modèle vs. Audio",
+            "unknownModel": "inconnu"
         },
+        "confirmHideModal": {
+            "cancel": "Annuler",
+            "confirmHideDialog": "Voulez-vous vraiment masquer le Tonie/Tag \"{{tonieToHide}}\" dans la vue d'ensemble des Tonies? Pour le rendre visible à nouveau, vous devez placer le Tonie/Tag sur l'une de vos Tonieboxes.",
+            "hide": "Masquer",
+            "title": "Masquer le Tonie/Tag"
+        },
+        "connectionToBoxineNotAvailable": "Impossible de se connecter à Boxine/Toniecloud. Veuillez activer l'accès pour permettre le téléchargement.",
+        "content": {
+            "navigationTitle": "Contenu",
+            "showToniesOfBoxes": "Contenu des Tonieboxes suivants",
+            "title": "Contenu",
+            "toniePicture": "Image du Tonie"
+        },
+        "currentPath": "Chemin actuel : ",
         "customEditor": {
             "actions": {
                 "browse": "Parcourir",
@@ -1834,9 +1860,9 @@
             },
             "audio": {
                 "libraryLabel": "Audio personnalisé ({{library}})",
-                "selectFromLibrary": "Sélectionner l'audio dans {{library}}",
                 "notInIndex": "Pas dans l'index audio personnalisé : {{audioId}}/{{hash}}",
-                "placeholder": "Sélectionner l'audio personnalisé dans {{library}}"
+                "placeholder": "Sélectionner l'audio personnalisé dans {{library}}",
+                "selectFromLibrary": "Sélectionner l'audio dans {{library}}"
             },
             "batch": {
                 "description": "Les modifications s'appliquent à tous les modèles sélectionnés.",
@@ -1850,25 +1876,38 @@
                 "actions": "Actions",
                 "image": "Image"
             },
-            "errors": {
-                "emptyResult": "Au moins un modèle doit rester.",
-                "invalidSelectedIndex": "Index sélectionné invalide",
-                "releaseNumeric": "Release doit être numérique",
-                "duplicateModel": "Doublon : {{model}}",
-                "duplicateAudioHash": "Combinaison audio_id+hash en double : {{audioId}}",
-                "modelExistsInBase": "Le modèle existe dans base tonies.json : {{models}}",
-                "invalidLanguageCode": "Code de langue invalide. Veuillez utiliser un code comme {{example}}."
+            "deleteConfirm": {
+                "abort": "Annuler",
+                "confirm": "Supprimer",
+                "deleted": "Le modèle \"{{model}}\" a été supprimé.",
+                "description": "Voulez-vous vraiment supprimer \"{{model}}\" ? Cette action est irréversible.",
+                "title": "Supprimer le modèle"
             },
             "duplicateTitleSuffix": "Copie",
             "editModalTitle": "Modifier le modèle {{current}} sur {{total}}",
             "editModalTitleCreate": "Nouveau modèle",
             "editModalTitleEdit": "Modifier le modèle",
+            "emptyState": "Aucun modèle personnalisé",
+            "emptyStateHint": "tonies.custom.json est vide. Ajoutez votre premier modèle.",
+            "errors": {
+                "duplicateAudioHash": "Combinaison audio_id+hash en double : {{audioId}}",
+                "duplicateModel": "Doublon : {{model}}",
+                "emptyResult": "Au moins un modèle doit rester.",
+                "invalidLanguageCode": "Code de langue invalide. Veuillez utiliser un code comme {{example}}.",
+                "invalidSelectedIndex": "Index sélectionné invalide",
+                "modelExistsInBase": "Le modèle existe dans base tonies.json : {{models}}",
+                "releaseNumeric": "Release doit être numérique"
+            },
             "filterFieldsPlaceholder": "Rechercher dans les champs",
             "filterPlaceholder": "Filtrer les modèles...",
+            "modelSavedSuccessful": "Modèle {{title}} enregistré avec succès",
             "modelsTitle": "Modèles",
             "noChangesBody": "Il n'y a rien à enregistrer pour le moment.",
             "noChangesTitle": "Aucune modification détectée",
             "optionalColumns": "Colonnes optionnelles",
+            "pagination": {
+                "modelsPerPage": "modèles/page"
+            },
             "picHint": "Sélectionner une image depuis custom_img ou les tonies originaux",
             "preflight": {
                 "confirm": "Enregistrer maintenant",
@@ -1879,9 +1918,16 @@
                 "upserts": "Mises à jour/nouvelles entrées : {{count}}"
             },
             "previewTitle": "Aperçu de l'image",
-            "saveSuccessWithCount": "tonies.custom.json enregistré ({{count}} entrées). Sauvegarde et rechargement déclenchés.",
+            "renameConfirm": {
+                "abort": "Annuler",
+                "confirm": "Confirmer",
+                "description": "L'ID du modèle passera de \"{{from}}\" à \"{{to}}\". Les Tonies liés seront mis à jour automatiquement.",
+                "skipUpdate": "Retirer l'assignation du modèle des Tonies liés (l'audio reste)",
+                "title": "Renommer le modèle"
+            },
+            "renameFailed": "Échec du renommage",
             "savedState": "Toutes les modifications enregistrées",
-            "modelSavedSuccessful": "Modèle {{title}} enregistré avec succès",
+            "saveSuccessWithCount": "tonies.custom.json enregistré ({{count}} entrées). Sauvegarde et rechargement déclenchés.",
             "sections": {
                 "audio": "Assignation audio",
                 "audioAssignment": "Assignation audio",
@@ -1900,74 +1946,35 @@
             "unsaved": "{{count}} modification(s) non enregistrée(s)",
             "validation": {
                 "title": "Veuillez d'abord corriger ces problèmes"
-            },
-            "renameFailed": "Échec du renommage",
-            "renameConfirm": {
-                "title": "Renommer le modèle",
-                "description": "L'ID du modèle passera de \"{{from}}\" à \"{{to}}\". Les Tonies liés seront mis à jour automatiquement.",
-                "skipUpdate": "Retirer l'assignation du modèle des Tonies liés (l'audio reste)",
-                "confirm": "Confirmer",
-                "abort": "Annuler"
-            },
-            "deleteConfirm": {
-                "title": "Supprimer le modèle",
-                "description": "Voulez-vous vraiment supprimer \"{{model}}\" ? Cette action est irréversible.",
-                "deleted": "Le modèle \"{{model}}\" a été supprimé.",
-                "confirm": "Supprimer",
-                "abort": "Annuler"
-            },
-            "emptyState": "Aucun modèle personnalisé",
-            "emptyStateHint": "tonies.custom.json est vide. Ajoutez votre premier modèle.",
-            "pagination": {
-                "modelsPerPage": "modèles/page"
             }
         },
+        "customImages": {
+            "navigationTitle": "Images",
+            "title": "Gérer les images personnalisées"
+        },
         "customModelPicker": {
-            "title": "Sélectionner un modèle personnalisé",
-            "searchPlaceholder": "Rechercher modèle, série...",
             "addNew": "Ajouter",
             "loading": "Chargement...",
-            "noModels": "Aucun modèle personnalisé trouvé"
+            "noModels": "Aucun modèle personnalisé trouvé",
+            "searchPlaceholder": "Rechercher modèle, série...",
+            "title": "Sélectionner un modèle personnalisé"
         },
-        "alternativeSource": "Cette Tonie {{originalTonie}} est assignée à un contenu {{assignedContent}} !",
-        "alternativeSourceUnknown": "Cette Tonie {{originalTonie}} est assignée à un contenu alternatif  !",
-        "cancel": "Annuler",
-        "closeAudioPlayer": "Fermer le lecteur audio",
-        "closeAudioPlayerPopover": "Fermer arrête la lecture!",
-        "confirmHideModal": {
-            "cancel": "Annuler",
-            "confirmHideDialog": "Voulez-vous vraiment masquer le Tonie/Tag \"{{tonieToHide}}\" dans la vue d'ensemble des Tonies? Pour le rendre visible à nouveau, vous devez placer le Tonie/Tag sur l'une de vos Tonieboxes.",
-            "hide": "Masquer",
-            "title": "Masquer le Tonie/Tag"
-        },
-        "confirmAudioModelMismatchModal": {
-            "cancel": "Annuler",
-            "confirm": "Continuer",
-            "title": "Modèle vs. Audio",
-            "content": "L'audio assigné a le modèle \"{{audioModel}}\". L'affichage sur la boîte provient de l'audio_id du TAF. Le modèle vide sera réinitialisé à \"{{audioModel}}\". Continuer?",
-            "unknownModel": "inconnu"
-        },
-        "connectionToBoxineNotAvailable": "Impossible de se connecter à Boxine/Toniecloud. Veuillez activer l'accès pour permettre le téléchargement.",
-        "content": {
-            "navigationTitle": "Contenu",
-            "showToniesOfBoxes": "Contenu des Tonieboxes suivants",
-            "title": "Contenu",
-            "toniePicture": "Image du Tonie"
-        },
-        "currentPath": "Chemin actuel : ",
+        "customToniesEditorJsonEntry": "Modèles personnalisés",
         "editModal": {
+            "audioInfoHeading": "Infos audio",
+            "createNewModelTooltip": "Créer un nouveau modèle",
+            "editModelTooltip": "Modifier le modèle",
             "editSelectedCustomModel": "Continuer l'édition du modèle",
             "invalidModelError": "Le modèle \"{{model}}\" est invalide. Veuillez sélectionner un modèle existant dans la recherche.",
+            "model": "Modèle",
+            "modelInfoAudioPath": "Chemin audio",
+            "modelInfoCategory": "Catégorie",
+            "modelInfoEpisode": "Épisode",
             "modelInfoHeading": "Infos du modèle",
-            "audioInfoHeading": "Infos audio",
+            "modelInfoLanguage": "Langue",
             "modelInfoModel": "Modèle",
             "modelInfoSeries": "Série",
-            "modelInfoEpisode": "Épisode",
             "modelInfoTitle": "Titre",
-            "modelInfoLanguage": "Langue",
-            "modelInfoCategory": "Catégorie",
-            "modelInfoAudioPath": "Chemin audio",
-            "model": "Modèle",
             "modelReadOnlyHint": "Tonie original : le modèle ne peut pas être modifié. Vous pouvez uniquement assigner un audio personnalisé.",
             "placeholderSearchForAModel": "Rechercher un modèle",
             "placeholderSearchForARadioStream": "Rechercher un flux radio",
@@ -1976,8 +1983,6 @@
             "setAudioFromModelUnavailableInLibrary": "L'audio du modèle n'est pas encore disponible dans la bibliothèque.",
             "setModelFromAudio": "Définir le modèle depuis l'audio",
             "source": "Source",
-            "createNewModelTooltip": "Créer un nouveau modèle",
-            "editModelTooltip": "Modifier le modèle",
             "title": "Modifier Tonie/Tag"
         },
         "encoder": {
@@ -2105,6 +2110,18 @@
             },
             "title": "Aide"
         },
+        "imageManager": {
+            "noOriginalImages": "Aucune image originale trouvée",
+            "noOriginalSearchResults": "Aucune URL ne correspond à la recherche",
+            "okText": "Appliquer",
+            "originalImagesLoading": "Chargement des images originales …",
+            "originalUrlColumn": "URL",
+            "originalUrlSearchPlaceholder": "Mots à trouver dans l’URL (tous requis, ordre libre) …",
+            "sourceCustom": "Personnalisé",
+            "sourceOriginal": "Original",
+            "title": "Bibliothèque : Sélectionner et télécharger des images",
+            "titleSelect": "Sélectionner une image"
+        },
         "infoModal": {
             "download": "Télécharger TAF en *.ogg",
             "exists": "Existe:",
@@ -2127,10 +2144,6 @@
         "library": {
             "navigationTitle": "Bibliothèque",
             "title": "Bibliothèque"
-        },
-        "customImages": {
-            "navigationTitle": "Images",
-            "title": "Gérer les images personnalisées"
         },
         "libraryAudio": {
             "navigationTitle": "Audio"
@@ -2260,6 +2273,21 @@
             "adaptLabelsHint": "Tu peux adapter les textes et images des étiquettes en cliquant sur le bouton d'édition de chaque groupe d'étiquettes.",
             "addedCustomImageHint": "L'image personnalisée a été ajoutée.",
             "addedHint": "« {{title}} » a été ajouté.",
+            "bulkAdd": {
+                "button": "Ajouter plusieurs tonies",
+                "modal": {
+                    "confirm": "Ajouter {{count}} à la feuille",
+                    "itemsUnit": "tonies",
+                    "itemUnit": "tonie",
+                    "leftTitle": "tonies.json",
+                    "notFound": "Aucun tonie correspondant",
+                    "rightTitle": "À ajouter",
+                    "searchHint": "Tapez au moins 2 caractères pour rechercher dans tonies.json.",
+                    "searchPlaceholder": "Rechercher",
+                    "searchPrompt": "Rechercher dans tonies.json…",
+                    "title": "Ajouter plusieurs tonies à la feuille d'impression"
+                }
+            },
             "cancel": "Annuler",
             "clear": "Effacer la feuille",
             "clearSettings": "Restaurer",
@@ -2274,9 +2302,11 @@
             "diameter": "Diamètre intérieur",
             "empty": "Vide - Sélectionne d'abord des Tonies ou Tags ou ajoute une image personnalisée !",
             "episodes": "Épisodes",
+            "fontFamily": "Police de l'étiquette",
+            "fontFamilyPlaceholder": "Choisir une police",
+            "imageBottomLeft": "Marge de l'image en bas / à gauche",
             "imagePosition": "Position de l'image",
             "imageScale": "Échelle de l'image",
-            "imageBottomLeft": "Marge de l'image en bas / à gauche",
             "intro": "Recherche tous les Tonies et Tags, officiels et tes propres, pour créer ta feuille imprimable de Traveltonies (pièce).",
             "labelBackgroundColor": "Fond",
             "labelEditTitle": "Modifier les éléments de l'étiquette",
@@ -2329,24 +2359,7 @@
             "square": "Carrée",
             "textFontSize": "Taille du texte",
             "title": "TeddyStudio",
-            "trackTitles": "Titres (un par ligne)",
-            "fontFamily": "Police de l'étiquette",
-            "fontFamilyPlaceholder": "Choisir une police",
-            "bulkAdd": {
-                "button": "Ajouter plusieurs tonies",
-                "modal": {
-                    "title": "Ajouter plusieurs tonies à la feuille d'impression",
-                    "leftTitle": "tonies.json",
-                    "rightTitle": "À ajouter",
-                    "searchPlaceholder": "Rechercher",
-                    "searchPrompt": "Rechercher dans tonies.json…",
-                    "searchHint": "Tapez au moins 2 caractères pour rechercher dans tonies.json.",
-                    "itemUnit": "tonie",
-                    "itemsUnit": "tonies",
-                    "notFound": "Aucun tonie correspondant",
-                    "confirm": "Ajouter {{count}} à la feuille"
-                }
-            }
+            "trackTitles": "Titres (un par ligne)"
         },
         "title": "Tonies",
         "tonies": {

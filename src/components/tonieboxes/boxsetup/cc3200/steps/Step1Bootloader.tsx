@@ -6,10 +6,15 @@ import { Link } from "react-router-dom";
 import cc3200cfwUpdate from "../../../../../assets/boxSetup/cc3200_installCfwFlashUpload.png";
 import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { ExportOutlined } from "@ant-design/icons";
+import { HwTool } from "../CC3200FlashingGuide";
 
 const { Paragraph } = Typography;
 
-export const Step1Bootloader: React.FC = () => {
+interface Step1PreparationsProps {
+    hwTool: HwTool;
+}
+
+export const Step1Bootloader: React.FC<Step1PreparationsProps> = ({ hwTool }) => {
     const { t } = useTranslation();
 
     const importantTBFilesData = [
@@ -104,7 +109,7 @@ export const Step1Bootloader: React.FC = () => {
                 )}
                 <CodeSnippet
                     language="shell"
-                    code={`cc3200tool -p COM3 write_file ExtractedFromBox/sys/mcuimg.bin /sys/pre-img.bin`}
+                    code={`cc3200tool -p COM3 ${hwTool === "esp32c3" ? "--gateway " : ""}write_file ExtractedFromBox/sys/mcuimg.bin /sys/pre-img.bin`}
                 />
             </Paragraph>
 
@@ -120,7 +125,7 @@ export const Step1Bootloader: React.FC = () => {
             </Paragraph>
             <CodeSnippet
                 language="shell"
-                code={`cc3200tool -p COM3 write_file flash/sys/mcuimg.bin /sys/mcuimg.bin`}
+                code={`cc3200tool -p COM3 ${hwTool === "esp32c3" ? "--gateway " : ""}write_file flash/sys/mcuimg.bin /sys/mcuimg.bin`}
             />
             <Paragraph>
                 {t(
@@ -227,24 +232,29 @@ export const Step1Bootloader: React.FC = () => {
             <Paragraph>
                 <CodeSnippet
                     language="shell"
-                    code={`cc3200tool -p COM3 read_all_files ExtractedFromBox/ read_flash backup.bin`}
+                    code={`cc3200tool -p COM3 ${hwTool === "esp32c3" ? "--gateway " : ""}read_all_files ExtractedFromBox/ read_flash backup.bin`}
                 />
             </Paragraph>
 
-            <Paragraph>
-                {t("tonieboxes.cc3200BoxFlashing.installingBootloader.resetCommand")}
-            </Paragraph>
+            {hwTool === "uart" && (
+                <Paragraph>
+                    {t("tonieboxes.cc3200BoxFlashing.installingBootloader.resetCommand")}
+                </Paragraph>
+            )}
             <Paragraph>
                 {t("tonieboxes.cc3200BoxFlashing.installingBootloader.inCaseText")}
             </Paragraph>
             <Paragraph>
                 <CodeSnippet
                     language="shell"
-                    code={`cc3200tool -p COM3 read_all_files ExtractedFromBox/ `}
+                    code={`cc3200tool -p COM3 ${hwTool === "esp32c3" ? "--gateway " : ""}read_all_files ExtractedFromBox/ `}
                 />
             </Paragraph>
             <Paragraph>
-                <CodeSnippet language="shell" code={`cc3200tool -p COM3 read_flash backup.bin`} />
+                <CodeSnippet
+                    language="shell"
+                    code={`cc3200tool -p COM3 ${hwTool === "esp32c3" ? "--gateway " : ""}read_flash backup.bin`}
+                />
             </Paragraph>
 
             <Paragraph>
