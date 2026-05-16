@@ -17,6 +17,7 @@
 - gui: Added formatting (internal)
 - gui: Fixed some display issues in TeddyStudio labels
 - gui: Fixed bug deleting only marked notifications
+- gui: Added ESP32-C3 UART Gateway to cc3200 Box flashing guide [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/292](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/292)
 
 ### Commits
 
