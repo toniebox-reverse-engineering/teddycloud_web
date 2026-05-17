@@ -1375,9 +1375,9 @@
                 "intro": "You can use an ESP32-C3 as a UART gateway.",
                 "new": "New",
                 "prepareStep1": "Connect your ESP32-C3 to your PC.",
-                "prepareStep2": "Open the following webtool from g3gg0, a member of Team Revvox:",
-                "prepareStep3": "Open the \"Flasher\" tab, click \"Connect & Flash\". Wait till its finished.",
-                "prepareStep4": "Open the \"Config\" tab, click \"Connect\", and apply the following settings, then click \"Send Config\" and wait again till its done:",
+                "prepareStep2": "Open the following web tool from g3gg0, a member of Team Revvox:",
+                "prepareStep3": "Open the \"Flasher\" tab, click \"Connect & Flash\", and wait until the process is finished.",
+                "prepareStep4": "Open the \"Config\" tab, click \"Connect\", apply the following settings, then click \"Send Config\" and wait until the process is finished again:",
                 "prepareStep5": "Now connect your Toniebox to the prepared ESP32-C3 as follows:",
                 "title": "ESP32-C3 UART Gateway"
             },
