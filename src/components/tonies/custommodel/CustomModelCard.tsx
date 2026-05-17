@@ -99,7 +99,16 @@ export const CustomModelCard: React.FC<CustomModelCardProps> = ({
                     >
                         <CopyOutlined />
                     </span>,
-                    <Popconfirm key="del" title={t("tonies.customEditor.deleteConfirm.title")} description={t("tonies.customEditor.deleteConfirm.description", { model: entry.model })} onConfirm={() => void onDelete(idx)} okText={t("tonies.customEditor.deleteConfirm.confirm")} cancelText={t("tonies.customEditor.deleteConfirm.abort")}>
+                    <Popconfirm
+                        key="del"
+                        title={t("tonies.customEditor.deleteConfirm.title")}
+                        description={t("tonies.customEditor.deleteConfirm.description", {
+                            model: entry.model,
+                        })}
+                        onConfirm={() => void onDelete(idx)}
+                        okText={t("tonies.customEditor.deleteConfirm.confirm")}
+                        cancelText={t("tonies.customEditor.deleteConfirm.abort")}
+                    >
                         <span
                             style={{ cursor: "pointer", color: token.colorError }}
                             role="button"

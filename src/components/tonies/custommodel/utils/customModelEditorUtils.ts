@@ -15,7 +15,8 @@ import { toModelKey } from "../../utils/modelKey";
 import { toLanguageCode } from "../../../common/icons/LanguageFlagIcon";
 
 export const cloneEntry = (entry: CustomEntry): CustomEntry => JSON.parse(JSON.stringify(entry));
-export const normalizeText = (value?: unknown) => (value === null || value === undefined ? "" : String(value)).trim();
+export const normalizeText = (value?: unknown) =>
+    (value === null || value === undefined ? "" : String(value)).trim();
 export { toModelKey };
 
 const toOptionalText = (value: unknown): string | undefined => {
@@ -34,11 +35,17 @@ const toStringArray = (value: unknown): string[] => {
 export const normalizeAudioPairs = (entry: CustomEntry): string[] => {
     const audioIds = toStringArray(entry.audio_id);
     const hashes = toStringArray(entry.hash);
-    return audioIds.map((audioId, index) => `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`).filter((pair) => pair !== "::");
+    return audioIds
+        .map(
+            (audioId, index) =>
+                `${normalizeText(audioId)}::${normalizeText(hashes[index]).toLowerCase()}`,
+        )
+        .filter((pair) => pair !== "::");
 };
 
 export const normalizeTracks = (entry: CustomEntry): string[] => toStringArray(entry.tracks);
-export const areStringArraysEqual = (left: string[], right: string[]): boolean => left.length === right.length && left.every((value, index) => value === right[index]);
+export const areStringArraysEqual = (left: string[], right: string[]): boolean =>
+    left.length === right.length && left.every((value, index) => value === right[index]);
 
 /** At least one row; empty `audio_id`/`hash` arrays are truthy, so length must be used. */
 const audioPairsForForm = (entry: CustomEntry): FormValues["audioPairs"] => {
@@ -117,7 +124,10 @@ export const toEntry = (values: FormValues): CustomEntry => {
         .filter((track): track is TrackRow => track != null && typeof track === "object")
         .map((track) => normalizeText(track.track))
         .filter((track) => track.length > 0);
-    const releaseRaw = values.release === undefined || values.release === null ? "" : String(values.release).trim();
+    const releaseRaw =
+        values.release === undefined || values.release === null
+            ? ""
+            : String(values.release).trim();
     const releaseNormalized = releaseRaw.length > 0 ? releaseRaw : undefined;
     const languageRaw = String(values.language ?? "").trim();
     const languageNormalized =

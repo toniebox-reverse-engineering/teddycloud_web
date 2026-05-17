@@ -66,8 +66,12 @@ export const TonieCard: React.FC<{
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const { addNotification, addLoadingNotification, closeLoadingNotification, toniesCloudAvailable } =
-        useTeddyCloud();
+    const {
+        addNotification,
+        addLoadingNotification,
+        closeLoadingNotification,
+        toniesCloudAvailable,
+    } = useTeddyCloud();
     const { playAudio } = useAudioContext();
 
     const [isCreateModelModalOpen, setIsCreateModelModalOpen] = useState(false);

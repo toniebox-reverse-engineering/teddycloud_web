@@ -484,9 +484,16 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 api.apiGetTeddyCloudApiRaw("/api/toniesJson"),
             ]);
 
-            const [customData, baseData] = await Promise.all([customResponse.json(), baseResponse.json()]);
-            const normalizedCustom = Array.isArray(customData) ? customData.map((entry) => normalizeEntryFromApi(entry)) : [];
-            const normalizedBase = Array.isArray(baseData) ? baseData.map((entry) => normalizeEntryFromApi(entry)) : [];
+            const [customData, baseData] = await Promise.all([
+                customResponse.json(),
+                baseResponse.json(),
+            ]);
+            const normalizedCustom = Array.isArray(customData)
+                ? customData.map((entry) => normalizeEntryFromApi(entry))
+                : [];
+            const normalizedBase = Array.isArray(baseData)
+                ? baseData.map((entry) => normalizeEntryFromApi(entry))
+                : [];
             setCustomEntries(normalizedCustom);
             setPersistedEntries(normalizedCustom);
             setBaseEntries(normalizedBase);

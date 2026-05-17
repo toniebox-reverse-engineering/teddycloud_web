@@ -91,7 +91,7 @@ export const useCustomModelEditorTable = ({
                     String(sortValueForEntry(left.entry, "series")).localeCompare(
                         String(sortValueForEntry(right.entry, "series")),
                         undefined,
-                        { numeric: true }
+                        { numeric: true },
                     ) * direction;
                 if (bySeries !== 0) return bySeries;
 
@@ -99,20 +99,28 @@ export const useCustomModelEditorTable = ({
                     String(sortValueForEntry(left.entry, "episodes")).localeCompare(
                         String(sortValueForEntry(right.entry, "episodes")),
                         undefined,
-                        { numeric: true }
+                        { numeric: true },
                     ) * direction;
                 if (byEpisode !== 0) return byEpisode;
             } else {
                 const leftSort = sortValueForEntry(left.entry, tableSortColumn);
                 const rightSort = sortValueForEntry(right.entry, tableSortColumn);
                 const bySort =
-                    String(leftSort).localeCompare(String(rightSort), undefined, { numeric: true }) * direction;
+                    String(leftSort).localeCompare(String(rightSort), undefined, {
+                        numeric: true,
+                    }) * direction;
                 if (bySort !== 0) return bySort;
             }
 
-            return String(left.entry.model || "").localeCompare(String(right.entry.model || ""), undefined, {
-                numeric: true,
-            }) * direction;
+            return (
+                String(left.entry.model || "").localeCompare(
+                    String(right.entry.model || ""),
+                    undefined,
+                    {
+                        numeric: true,
+                    },
+                ) * direction
+            );
         });
     }, [
         episodeFilter,

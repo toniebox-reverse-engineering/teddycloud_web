@@ -93,12 +93,35 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                 <Row gutter={[12, 0]}>
                     <Col span={24}>
                         <Form.Item label={t("tonies.addNewCustomTonieModal.pic")} name="pic">
-                            <Input disabled={disablePerFieldInMultiSelect.pic} list="custom-image-options" style={changedInputStyle(isFieldChanged("pic"))} onFocus={runCollectImagePathsWhenNeeded} />
+                            <Input
+                                disabled={disablePerFieldInMultiSelect.pic}
+                                list="custom-image-options"
+                                style={changedInputStyle(isFieldChanged("pic"))}
+                                onFocus={runCollectImagePathsWhenNeeded}
+                            />
                         </Form.Item>
-                        <datalist id="custom-image-options">{imagePathOptions.map((path) => <option key={path} value={path} />)}</datalist>
+                        <datalist id="custom-image-options">
+                            {imagePathOptions.map((path) => (
+                                <option key={path} value={path} />
+                            ))}
+                        </datalist>
                         <Space style={{ marginBottom: 12 }}>
-                            <Button disabled={disablePerFieldInMultiSelect.pic} onClick={() => setImageManagerOpen(true)}>{t("tonies.imageManager.titleSelect")}</Button>
-                            <Button icon={<EyeOutlined />} onClick={() => { const pic = form.getFieldValue("pic"); if (!pic) return; setPreviewUrl(toPreviewableImageUrl(pic)); setPreviewOpen(true); }} disabled={!selectedPic} />
+                            <Button
+                                disabled={disablePerFieldInMultiSelect.pic}
+                                onClick={() => setImageManagerOpen(true)}
+                            >
+                                {t("tonies.imageManager.titleSelect")}
+                            </Button>
+                            <Button
+                                icon={<EyeOutlined />}
+                                onClick={() => {
+                                    const pic = form.getFieldValue("pic");
+                                    if (!pic) return;
+                                    setPreviewUrl(toPreviewableImageUrl(pic));
+                                    setPreviewOpen(true);
+                                }}
+                                disabled={!selectedPic}
+                            />
                         </Space>
                     </Col>
                 </Row>
@@ -110,23 +133,104 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
             children: (
                 <>
                     <Row gutter={[12, 0]}>
-                        <Col xs={24} md={8}><Form.Item label={t("tonies.addNewCustomTonieModal.no")} name="no"><Input disabled={disablePerFieldInMultiSelect.no} style={changedInputStyle(isFieldChanged("no"))} /></Form.Item></Col>
-                        <Col xs={24} md={16}><Form.Item label={t("tonies.addNewCustomTonieModal.formfieldTitle")} name="title"><Input disabled={disablePerFieldInMultiSelect.title} style={changedInputStyle(isFieldChanged("title"))} /></Form.Item></Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item label={t("tonies.addNewCustomTonieModal.no")} name="no">
+                                <Input
+                                    disabled={disablePerFieldInMultiSelect.no}
+                                    style={changedInputStyle(isFieldChanged("no"))}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={16}>
+                            <Form.Item
+                                label={t("tonies.addNewCustomTonieModal.formfieldTitle")}
+                                name="title"
+                            >
+                                <Input
+                                    disabled={disablePerFieldInMultiSelect.title}
+                                    style={changedInputStyle(isFieldChanged("title"))}
+                                />
+                            </Form.Item>
+                        </Col>
                     </Row>
                     <Row gutter={[12, 0]}>
                         <Col xs={24} md={8}>
-                            <Form.Item label={t("tonies.addNewCustomTonieModal.release")} name="release" rules={[{ validator: (_, value) => { const asString = value === undefined || value === null ? "" : String(value).trim(); if (asString.length === 0 || /^[0-9]+$/.test(asString)) return Promise.resolve(); return Promise.reject(new Error(t("tonies.customEditor.errors.releaseNumeric"))); } }]}>
-                                <Input disabled={disablePerFieldInMultiSelect.release} style={changedInputStyle(isFieldChanged("release"))} />
+                            <Form.Item
+                                label={t("tonies.addNewCustomTonieModal.release")}
+                                name="release"
+                                rules={[
+                                    {
+                                        validator: (_, value) => {
+                                            const asString =
+                                                value === undefined || value === null
+                                                    ? ""
+                                                    : String(value).trim();
+                                            if (asString.length === 0 || /^[0-9]+$/.test(asString))
+                                                return Promise.resolve();
+                                            return Promise.reject(
+                                                new Error(
+                                                    t("tonies.customEditor.errors.releaseNumeric"),
+                                                ),
+                                            );
+                                        },
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    disabled={disablePerFieldInMultiSelect.release}
+                                    style={changedInputStyle(isFieldChanged("release"))}
+                                />
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={8}>
-                            <Form.Item label={t("tonies.addNewCustomTonieModal.language")} name="language" rules={[{ validator: (_, value) => { const candidate = String(value ?? "").trim(); if (candidate.length === 0 || toLanguageCode(candidate)) return Promise.resolve(); return Promise.reject(new Error(t("tonies.customEditor.errors.invalidLanguageCode", { example: "de-de, en-us" }))); } }]}>
-                                <AutoComplete disabled={disablePerFieldInMultiSelect.language} style={changedInputStyle(isFieldChanged("language"))} options={languageOptions.map((code) => ({ value: code }))} filterOption={(inputValue, option) => (option?.value ?? "").toLowerCase().includes(inputValue.toLowerCase())} />
+                            <Form.Item
+                                label={t("tonies.addNewCustomTonieModal.language")}
+                                name="language"
+                                rules={[
+                                    {
+                                        validator: (_, value) => {
+                                            const candidate = String(value ?? "").trim();
+                                            if (candidate.length === 0 || toLanguageCode(candidate))
+                                                return Promise.resolve();
+                                            return Promise.reject(
+                                                new Error(
+                                                    t(
+                                                        "tonies.customEditor.errors.invalidLanguageCode",
+                                                        { example: "de-de, en-us" },
+                                                    ),
+                                                ),
+                                            );
+                                        },
+                                    },
+                                ]}
+                            >
+                                <AutoComplete
+                                    disabled={disablePerFieldInMultiSelect.language}
+                                    style={changedInputStyle(isFieldChanged("language"))}
+                                    options={languageOptions.map((code) => ({ value: code }))}
+                                    filterOption={(inputValue, option) =>
+                                        (option?.value ?? "")
+                                            .toLowerCase()
+                                            .includes(inputValue.toLowerCase())
+                                    }
+                                />
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={8}>
-                            <Form.Item label={t("tonies.addNewCustomTonieModal.category")} name="category">
-                                <AutoComplete disabled={disablePerFieldInMultiSelect.category} style={changedInputStyle(isFieldChanged("category"))} options={categoryOptions.map((value) => ({ value }))} filterOption={(inputValue, option) => (option?.value ?? "").toLowerCase().includes(inputValue.toLowerCase())} />
+                            <Form.Item
+                                label={t("tonies.addNewCustomTonieModal.category")}
+                                name="category"
+                            >
+                                <AutoComplete
+                                    disabled={disablePerFieldInMultiSelect.category}
+                                    style={changedInputStyle(isFieldChanged("category"))}
+                                    options={categoryOptions.map((value) => ({ value }))}
+                                    filterOption={(inputValue, option) =>
+                                        (option?.value ?? "")
+                                            .toLowerCase()
+                                            .includes(inputValue.toLowerCase())
+                                    }
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -141,7 +245,9 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                     {(fields, { remove }) => (
                         <div
                             style={{
-                                border: areAudioPairsChanged ? `1px solid ${warningBorderColor}` : "1px solid transparent",
+                                border: areAudioPairsChanged
+                                    ? `1px solid ${warningBorderColor}`
+                                    : "1px solid transparent",
                                 borderRadius: 8,
                                 padding: areAudioPairsChanged ? 8 : 0,
                                 marginBottom: 8,
@@ -155,31 +261,120 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                 description={t("tonies.customEditor.coinHint.description")}
                             />
                             {fields.map(({ key, name, ...restField }, idx) => {
-                                const baselineAudioId = String(currentBaselineEntry?.audio_id?.[idx] ?? "");
-                                const baselineHash = String(currentBaselineEntry?.hash?.[idx] ?? "");
+                                const baselineAudioId = String(
+                                    currentBaselineEntry?.audio_id?.[idx] ?? "",
+                                );
+                                const baselineHash = String(
+                                    currentBaselineEntry?.hash?.[idx] ?? "",
+                                );
                                 return (
                                     <Row key={key} gutter={[12, 0]} style={{ marginTop: 8 }}>
                                         <Col xs={24} md={10}>
-                                            <Form.Item label={idx === 0 ? t("tonies.customEditor.audio.libraryLabel", { library: t("tonies.library.title") }) : ""} shouldUpdate={(prev, next) => prev?.audioPairs?.[name] !== next?.audioPairs?.[name]}>
+                                            <Form.Item
+                                                label={
+                                                    idx === 0
+                                                        ? t(
+                                                              "tonies.customEditor.audio.libraryLabel",
+                                                              {
+                                                                  library:
+                                                                      t("tonies.library.title"),
+                                                              },
+                                                          )
+                                                        : ""
+                                                }
+                                                shouldUpdate={(prev, next) =>
+                                                    prev?.audioPairs?.[name] !==
+                                                    next?.audioPairs?.[name]
+                                                }
+                                            >
                                                 {() => {
-                                                    const audioId = String(form.getFieldValue(["audioPairs", name, "audio_id"]) ?? "").trim();
-                                                    const hashValue = String(form.getFieldValue(["audioPairs", name, "hash"]) ?? "").trim();
-                                                    const pathValue = form.getFieldValue(["audioPairs", name, "path"]) || "";
-                                                    const isUnchanged = audioId === baselineAudioId && hashValue === baselineHash;
+                                                    const audioId = String(
+                                                        form.getFieldValue([
+                                                            "audioPairs",
+                                                            name,
+                                                            "audio_id",
+                                                        ]) ?? "",
+                                                    ).trim();
+                                                    const hashValue = String(
+                                                        form.getFieldValue([
+                                                            "audioPairs",
+                                                            name,
+                                                            "hash",
+                                                        ]) ?? "",
+                                                    ).trim();
+                                                    const pathValue =
+                                                        form.getFieldValue([
+                                                            "audioPairs",
+                                                            name,
+                                                            "path",
+                                                        ]) || "";
+                                                    const isUnchanged =
+                                                        audioId === baselineAudioId &&
+                                                        hashValue === baselineHash;
                                                     return (
                                                         <AudioLibraryPathInputComponent
                                                             audioId={audioId}
                                                             hash={hashValue}
                                                             storedPath={pathValue}
                                                             overlay={overlay}
-                                                            placeholder={t("tonies.customEditor.audio.placeholder", { library: t("tonies.library.title") })}
-                                                            disabled={disablePerFieldInMultiSelect.audioPairs}
+                                                            placeholder={t(
+                                                                "tonies.customEditor.audio.placeholder",
+                                                                {
+                                                                    library:
+                                                                        t("tonies.library.title"),
+                                                                },
+                                                            )}
+                                                            disabled={
+                                                                disablePerFieldInMultiSelect.audioPairs
+                                                            }
                                                             changedInputStyle={changedInputStyle}
-                                                            areAudioPairsChanged={areAudioPairsChanged}
+                                                            areAudioPairsChanged={
+                                                                areAudioPairsChanged
+                                                            }
                                                             isUnchanged={isUnchanged}
-                                                            onClear={() => { form.setFieldValue(["audioPairs", name, "audio_id"], ""); form.setFieldValue(["audioPairs", name, "hash"], ""); form.setFieldValue(["audioPairs", name, "path"], ""); }}
-                                                            onUndo={() => { form.setFieldValue(["audioPairs", name, "audio_id"], baselineAudioId); form.setFieldValue(["audioPairs", name, "hash"], baselineHash); form.setFieldValue(["audioPairs", name, "path"], ""); }}
-                                                            onBrowse={() => { setTargetAudioPairIndex(name); setKeySelectAudioFileBrowser((k) => k + 1); setSelectAudioModalOpen(true); }}
+                                                            onClear={() => {
+                                                                form.setFieldValue(
+                                                                    [
+                                                                        "audioPairs",
+                                                                        name,
+                                                                        "audio_id",
+                                                                    ],
+                                                                    "",
+                                                                );
+                                                                form.setFieldValue(
+                                                                    ["audioPairs", name, "hash"],
+                                                                    "",
+                                                                );
+                                                                form.setFieldValue(
+                                                                    ["audioPairs", name, "path"],
+                                                                    "",
+                                                                );
+                                                            }}
+                                                            onUndo={() => {
+                                                                form.setFieldValue(
+                                                                    [
+                                                                        "audioPairs",
+                                                                        name,
+                                                                        "audio_id",
+                                                                    ],
+                                                                    baselineAudioId,
+                                                                );
+                                                                form.setFieldValue(
+                                                                    ["audioPairs", name, "hash"],
+                                                                    baselineHash,
+                                                                );
+                                                                form.setFieldValue(
+                                                                    ["audioPairs", name, "path"],
+                                                                    "",
+                                                                );
+                                                            }}
+                                                            onBrowse={() => {
+                                                                setTargetAudioPairIndex(name);
+                                                                setKeySelectAudioFileBrowser(
+                                                                    (k) => k + 1,
+                                                                );
+                                                                setSelectAudioModalOpen(true);
+                                                            }}
                                                         />
                                                     );
                                                 }}
@@ -189,10 +384,16 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                             <Form.Item
                                                 {...restField}
                                                 name={[name, "audio_id"]}
-                                                label={idx === 0 ? t("tonies.addNewCustomTonieModal.audioId") : ""}
+                                                label={
+                                                    idx === 0
+                                                        ? t("tonies.addNewCustomTonieModal.audioId")
+                                                        : ""
+                                                }
                                             >
                                                 <Input
-                                                    disabled={disablePerFieldInMultiSelect.audioPairs}
+                                                    disabled={
+                                                        disablePerFieldInMultiSelect.audioPairs
+                                                    }
                                                     placeholder="audio_id"
                                                     style={changedInputStyle(areAudioPairsChanged)}
                                                 />
@@ -202,10 +403,16 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                             <Form.Item
                                                 {...restField}
                                                 name={[name, "hash"]}
-                                                label={idx === 0 ? t("tonies.addNewCustomTonieModal.hash") : ""}
+                                                label={
+                                                    idx === 0
+                                                        ? t("tonies.addNewCustomTonieModal.hash")
+                                                        : ""
+                                                }
                                             >
                                                 <Input
-                                                    disabled={disablePerFieldInMultiSelect.audioPairs}
+                                                    disabled={
+                                                        disablePerFieldInMultiSelect.audioPairs
+                                                    }
                                                     placeholder="hash"
                                                     style={changedInputStyle(areAudioPairsChanged)}
                                                 />
@@ -215,7 +422,9 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                             <Col xs={24} md={2}>
                                                 <Form.Item label={idx === 0 ? " " : ""}>
                                                     <Button
-                                                        disabled={disablePerFieldInMultiSelect.audioPairs}
+                                                        disabled={
+                                                            disablePerFieldInMultiSelect.audioPairs
+                                                        }
                                                         onClick={() => remove(name)}
                                                     >
                                                         -
@@ -239,7 +448,9 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                     {(fields, { add, remove }) => (
                         <div
                             style={{
-                                border: areTracksChanged ? `1px solid ${warningBorderColor}` : "1px solid transparent",
+                                border: areTracksChanged
+                                    ? `1px solid ${warningBorderColor}`
+                                    : "1px solid transparent",
                                 borderRadius: 8,
                                 padding: areTracksChanged ? 8 : 0,
                                 marginBottom: 8,
@@ -251,7 +462,11 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                         <Form.Item
                                             {...restField}
                                             name={[name, "track"]}
-                                            label={idx === 0 ? t("tonies.addNewCustomTonieModal.track") : ""}
+                                            label={
+                                                idx === 0
+                                                    ? t("tonies.addNewCustomTonieModal.track")
+                                                    : ""
+                                            }
                                         >
                                             <Input
                                                 disabled={disablePerFieldInMultiSelect.tracks}
@@ -286,25 +501,62 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
     ];
 
     return (
-        <Form<FormValues> form={form} layout="vertical" style={{ marginTop: 12 }} disabled={selectedIsDeleted}>
+        <Form<FormValues>
+            form={form}
+            layout="vertical"
+            style={{ marginTop: 12 }}
+            disabled={selectedIsDeleted}
+        >
             <Row gutter={[12, 0]}>
                 <Col xs={24} md={8}>
-                    <Form.Item label={t("tonies.addNewCustomTonieModal.model")} name="model" rules={[{ required: true, message: t("tonies.addNewCustomTonieModal.modelRequired") }]}>
-                        <Input disabled={disablePerFieldInMultiSelect.model} style={changedInputStyle(isFieldChanged("model"))} />
+                    <Form.Item
+                        label={t("tonies.addNewCustomTonieModal.model")}
+                        name="model"
+                        rules={[
+                            {
+                                required: true,
+                                message: t("tonies.addNewCustomTonieModal.modelRequired"),
+                            },
+                        ]}
+                    >
+                        <Input
+                            disabled={disablePerFieldInMultiSelect.model}
+                            style={changedInputStyle(isFieldChanged("model"))}
+                        />
                     </Form.Item>
                 </Col>
                 <Col xs={24} md={8}>
-                    <Form.Item label={t("tonies.addNewCustomTonieModal.series")} name="series" rules={[{ required: true, message: t("tonies.addNewCustomTonieModal.seriesRequired") }]}>
-                        <Input disabled={disablePerFieldInMultiSelect.series} style={changedInputStyle(isFieldChanged("series"))} />
+                    <Form.Item
+                        label={t("tonies.addNewCustomTonieModal.series")}
+                        name="series"
+                        rules={[
+                            {
+                                required: true,
+                                message: t("tonies.addNewCustomTonieModal.seriesRequired"),
+                            },
+                        ]}
+                    >
+                        <Input
+                            disabled={disablePerFieldInMultiSelect.series}
+                            style={changedInputStyle(isFieldChanged("series"))}
+                        />
                     </Form.Item>
                 </Col>
                 <Col xs={24} md={8}>
                     <Form.Item label={t("tonies.addNewCustomTonieModal.episode")} name="episodes">
-                        <Input disabled={disablePerFieldInMultiSelect.episodes} style={changedInputStyle(isFieldChanged("episodes"))} />
+                        <Input
+                            disabled={disablePerFieldInMultiSelect.episodes}
+                            style={changedInputStyle(isFieldChanged("episodes"))}
+                        />
                     </Form.Item>
                 </Col>
             </Row>
-            <Collapse defaultActiveKey={["media"]} size="small" style={{ marginBottom: 8 }} items={collapseItems} />
+            <Collapse
+                defaultActiveKey={["media"]}
+                size="small"
+                style={{ marginBottom: 8 }}
+                items={collapseItems}
+            />
         </Form>
     );
 };

@@ -195,7 +195,11 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={handleClearSource}
                             />,
-                            <Divider key="divider-source-1" orientation="vertical" style={{ margin: "0 4px" }} />,
+                            <Divider
+                                key="divider-source-1"
+                                orientation="vertical"
+                                style={{ margin: "0 4px" }}
+                            />,
                             <RollbackOutlined
                                 key="rollback-source"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -208,11 +212,26 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                 }}
                                 className={isSourceUnchanged ? "disabled" : "enabled"}
                             />,
-                            <Divider key="divider-source-2" orientation="vertical" style={{ margin: "0 4px" }} />,
+                            <Divider
+                                key="divider-source-2"
+                                orientation="vertical"
+                                style={{ margin: "0 4px" }}
+                            />,
                         ]}
                         suffix={[
-                            audioInfoTooltip ? <InfoCircleOutlined key="audio-info" onMouseDown={(e) => e.preventDefault()} /> : null,
-                            audioInfoTooltip ? <Divider key="divider-source-info" orientation="vertical" style={{ margin: "0 4px" }} /> : null,
+                            audioInfoTooltip ? (
+                                <InfoCircleOutlined
+                                    key="audio-info"
+                                    onMouseDown={(e) => e.preventDefault()}
+                                />
+                            ) : null,
+                            audioInfoTooltip ? (
+                                <Divider
+                                    key="divider-source-info"
+                                    orientation="vertical"
+                                    style={{ margin: "0 4px" }}
+                                />
+                            ) : null,
                             <FolderOpenOutlined
                                 key="select-file"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -258,7 +277,11 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             readOnly
                             disabled
                             style={{ color: token.colorText, cursor: "default" }}
-                            suffix={modelInfoTooltip ? <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} /> : null}
+                            suffix={
+                                modelInfoTooltip ? (
+                                    <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} />
+                                ) : null
+                            }
                         />
                         <Text
                             type="secondary"
@@ -301,8 +324,13 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                 <>
                                     {modelInfoTooltip ? (
                                         <>
-                                            <InfoCircleOutlined onMouseDown={(e) => e.preventDefault()} />
-                                            <Divider orientation="vertical" style={{ margin: "0 4px" }} />
+                                            <InfoCircleOutlined
+                                                onMouseDown={(e) => e.preventDefault()}
+                                            />
+                                            <Divider
+                                                orientation="vertical"
+                                                style={{ margin: "0 4px" }}
+                                            />
                                         </>
                                     ) : null}
                                     {selectedModel && onEditModel && isSelectedModelCustom ? (
@@ -313,7 +341,10 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                                 style={{ cursor: "pointer", marginLeft: 2 }}
                                             />
                                             {onCreateNewModel ? (
-                                                <Divider orientation="vertical" style={{ margin: "0 4px" }} />
+                                                <Divider
+                                                    orientation="vertical"
+                                                    style={{ margin: "0 4px" }}
+                                                />
                                             ) : null}
                                         </>
                                     ) : null}
