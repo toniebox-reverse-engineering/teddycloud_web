@@ -120,11 +120,11 @@ export const OpenBoxGuide: React.FC = () => {
         <>
             <Paragraph style={{ fontSize: "small" }}>
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart1")}{" "}
-                <Link to={t("tonieboxes.boxSetup.openBoxGuide.link1")} target="_blank" rel="noopener noreferrer">
+                <Link to={t("tonieboxes.boxSetup.openBoxGuide.link1")} target="_blank">
                     iFixit[1] {<ExportOutlined />}
                 </Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart2")}{" "}
-                <Link to={t("tonieboxes.boxSetup.openBoxGuide.link2")} target="_blank" rel="noopener noreferrer">
+                <Link to={t("tonieboxes.boxSetup.openBoxGuide.link2")} target="_blank">
                     iFixit[2] {<ExportOutlined />}
                 </Link>
                 . {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart3")}{" "}
@@ -132,7 +132,7 @@ export const OpenBoxGuide: React.FC = () => {
                     Tobias Isakeit {<ExportOutlined />}
                 </Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart4")}{" "}
-                <Link to="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank" rel="noopener noreferrer">
+                <Link to="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
                     {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")} {<ExportOutlined />}
                 </Link>
             </Paragraph>
@@ -143,7 +143,7 @@ export const OpenBoxGuide: React.FC = () => {
 
             <Paragraph>
                 {t("tonieboxes.boxSetup.openBoxGuide.alternativeGuidelineVideo")}{" "}
-                <Link to="https://www.youtube.com/watch?v=Cv9ID4-P6_A" target="_blank" rel="noopener noreferrer">
+                <Link to="https://www.youtube.com/watch?v=Cv9ID4-P6_A" target="_blank">
                     https://www.youtube.com/watch?v=Cv9ID4-P6_A {<ExportOutlined />}
                 </Link>
             </Paragraph>

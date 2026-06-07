@@ -39,7 +39,7 @@ export const CommunityPage = () => {
                         <Paragraph>{t("community.community.getInvolvedText2")}</Paragraph>
                         <ul>
                             <li>
-                                <Link to={gitHubUrl} target="_blank" rel="noopener noreferrer">
+                                <Link to={gitHubUrl} target="_blank">
                                     GitHub {<ExportOutlined />}
                                 </Link>
                                 <ul>
@@ -47,7 +47,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to={telegramGroupUrl} target="_blank" rel="noopener noreferrer">
+                                <Link to={telegramGroupUrl} target="_blank">
                                     Telegram Chat {<ExportOutlined />}
                                 </Link>
                                 <ul>
@@ -55,7 +55,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to={forumUrl} target="_blank" rel="noopener noreferrer">
+                                <Link to={forumUrl} target="_blank">
                                     Discourse Forum {<ExportOutlined />}
                                 </Link>
                                 <ul>
@@ -63,7 +63,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to={wikiUrl} target="_blank" rel="noopener noreferrer">
+                                <Link to={wikiUrl} target="_blank">
                                     TeddyCloud Wiki {<ExportOutlined />}
                                 </Link>
                                 <ul>

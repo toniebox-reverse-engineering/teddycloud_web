@@ -281,7 +281,7 @@ export const SettingsSubNav = () => {
             label: (
                 <Link
                     to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`}
-                    target="_blank" rel="noopener noreferrer"
+                    target="_blank"
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

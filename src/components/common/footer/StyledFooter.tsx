@@ -89,7 +89,7 @@ export const StyledFooter = () => {
                                     ? gitHubTCCommitTreeBaseUrl + commitGitSha
                                     : gitHubTCReleasesUrl + "tag/tc_" + versionShort
                             }
-                            target="_blank" rel="noopener noreferrer"
+                            target="_blank"
                         >
                             <HiddenDesktop>
                                 {versionShort} ({commitGitShaShort})
@@ -112,7 +112,7 @@ export const StyledFooter = () => {
                                             ? gitHubTCCommitTreeBaseUrl + latestDevelopSHA
                                             : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
                                     }
-                                    target="_blank" rel="noopener noreferrer"
+                                    target="_blank"
                                     style={{
                                         display: "inline-flex",
                                         alignItems: "center",
@@ -136,7 +136,7 @@ export const StyledFooter = () => {
                         <b>
                             <Link
                                 to={gitHubSponsoringUrl}
-                                target="_blank" rel="noopener noreferrer"
+                                target="_blank"
                                 style={{ paddingLeft: 8 }}
                             >
                                 {t("footer.sponsor")}

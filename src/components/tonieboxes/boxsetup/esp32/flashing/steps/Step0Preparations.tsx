@@ -100,7 +100,7 @@ export const Step0Preparations: React.FC<Step0Props> = ({
                                     <ul>
                                         {reachableBackUpUrls.map(({ id, url, title }) => (
                                             <li key={id}>
-                                                <a href={url} target="_blank" rel="noopener noreferrer">
+                                                <a href={url} target="_blank">
                                                     {title} {<ExportOutlined />}
                                                 </a>
                                             </li>

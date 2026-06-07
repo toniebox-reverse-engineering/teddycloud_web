@@ -52,7 +52,7 @@ uci commit dhcp
                     <ul style={{ marginBottom: 0 }}>
                         <li>
                             {t("tonieboxes.boxFlashingCommon.adguard.moreInformation")}{" "}
-                            <Link to="https://adguard.com/" target="_blank" rel="noopener noreferrer">
+                            <Link to="https://adguard.com/" target="_blank">
                                 https://adguard.com/ {<ExportOutlined />}
                             </Link>
                         </li>

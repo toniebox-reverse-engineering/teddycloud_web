@@ -43,20 +43,20 @@ export const ContributorsPage = () => {
                         <Paragraph>
                             <h3>teddycloud</h3>
                             <div>{t("community.contributors.teddyCloud")}</div>
-                            <Link to={gitHubTCContributorsUrl} target="_blank" rel="noopener noreferrer">
+                            <Link to={gitHubTCContributorsUrl} target="_blank">
                                 {gitHubTCContributorsUrl} {<ExportOutlined />}
                             </Link>
                         </Paragraph>
                         <Paragraph>
                             <h3>teddycloud_web</h3>
                             <div>{t("community.contributors.teddyCloudWeb")}</div>
-                            <Link to={gitHubTCwebContributorsUrl} target="_blank" rel="noopener noreferrer">
+                            <Link to={gitHubTCwebContributorsUrl} target="_blank">
                                 {gitHubTCwebContributorsUrl} {<ExportOutlined />}
                             </Link>
                         </Paragraph>
                         <Paragraph>
                             {t("community.contributors.others")}{" "}
-                            <Link to={gitHubRepositoriesUrl} target="_blank" rel="noopener noreferrer">
+                            <Link to={gitHubRepositoriesUrl} target="_blank">
                                 {gitHubRepositoriesUrl} {<ExportOutlined />}
                             </Link>
                         </Paragraph>
@@ -76,7 +76,7 @@ export const ContributorsPage = () => {
                     <Paragraph>
                         <h3>{t("community.contributors.supportTeam")}</h3>
                         <Paragraph>{t("community.contributors.supportTeamText")}</Paragraph>
-                        <Link to={gitHubSponsoringUrl} target="_blank" rel="noopener noreferrer">
+                        <Link to={gitHubSponsoringUrl} target="_blank">
                             {t("community.contributors.supportTeamLink")} {<ExportOutlined />}
                         </Link>
                     </Paragraph>
