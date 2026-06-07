@@ -32,7 +32,7 @@ export const Features = () => {
                             ? gitHubTCCommitTreeBaseUrl + commitGitSha
                             : gitHubTCReleasesUrl + "tag/tc_" + versionShort
                     }
-                    target="_blank"
+                    target="_blank" rel="noopener noreferrer"
                 >
                     {version.replace(versionShort, "")} {<ExportOutlined />}
                 </Link>

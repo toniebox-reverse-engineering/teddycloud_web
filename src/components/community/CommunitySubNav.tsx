@@ -300,7 +300,7 @@ export const CommunitySubNav = () => {
             label: (
                 <Link
                     to={forumUrl}
-                    target="_blank"
+                    target="_blank" rel="noopener noreferrer"
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

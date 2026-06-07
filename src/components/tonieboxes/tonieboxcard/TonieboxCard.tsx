@@ -697,7 +697,7 @@ export const TonieboxCard: React.FC<{
                                 key="box-mac-cfw-link"
                                 title={t("tonieboxes.linkToBoxCFW")}
                             >
-                                <Link to={"http://" + lastIp} target="_blank">
+                                <Link to={"http://" + lastIp} target="_blank" rel="noopener noreferrer">
                                     {getTonieboxIdFormatted()} <LinkOutlined />
                                 </Link>
                             </Tooltip>

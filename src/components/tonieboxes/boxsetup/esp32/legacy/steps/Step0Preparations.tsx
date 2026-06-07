@@ -44,7 +44,7 @@ export const Step0Preparations: React.FC = () => {
             <h4>{t("tonieboxes.esp32BoxFlashing.legacy.installESPTool")}</h4>
             <Paragraph>{t("tonieboxes.esp32BoxFlashing.legacy.installESPToolText")}</Paragraph>
             <Paragraph>
-                <Link to="https://github.com/espressif/esptool" target="_blank">
+                <Link to="https://github.com/espressif/esptool" target="_blank" rel="noopener noreferrer">
                     {t("tonieboxes.esp32BoxFlashing.legacy.installESPToolLink")}{" "}
                     {<ExportOutlined />}
                 </Link>
