@@ -54,7 +54,7 @@ export const Step1Certificates: React.FC<CC3235Step1CertificatesProps> = ({
                         {t("tonieboxes.cc3235BoxFlashing.flashCAReplacementDescription1")}{" "}
                         <Link
                             to="https://raw.githubusercontent.com/toniebox-reverse-engineering/teddycloud/master/contrib/gencerts.sh"
-                            target="_blank"
+                            target="_blank" rel="noopener noreferrer"
                         >
                             {t("tonieboxes.cc3235BoxFlashing.gencertLinkText")} {<ExportOutlined />}
                         </Link>{" "}
