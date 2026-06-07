@@ -109,7 +109,7 @@ export const HomeSubNav = () => {
             label: (
                 <Link
                     to={gitHubSponsoringUrl}
-                    target="_blank" rel="noopener noreferrer"
+                    target="_blank"
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

@@ -116,7 +116,7 @@ export const BoxSetupContent: React.FC = () => {
                             <ul>
                                 {reachableNewbieGuideUrls.map(({ id, url, title }) => (
                                     <li key={id}>
-                                        <a href={url} target="_blank" rel="noopener noreferrer">
+                                        <a href={url} target="_blank">
                                             {title} {<ExportOutlined />}
                                         </a>
                                     </li>
@@ -174,11 +174,11 @@ export const BoxSetupContent: React.FC = () => {
 
             <Paragraph style={{ marginTop: 16 }}>
                 {t("tonieboxes.boxSetup.boxSetupIntro1")}{" "}
-                <Link to={forumUrl} target="_blank" rel="noopener noreferrer">
+                <Link to={forumUrl} target="_blank">
                     {t("tonieboxes.boxSetup.boxSetupIntroForum")}
                 </Link>{" "}
                 {t("tonieboxes.boxSetup.boxSetupIntro2")}{" "}
-                <Link to={telegramGroupUrl} target="_blank" rel="noopener noreferrer">
+                <Link to={telegramGroupUrl} target="_blank">
                     {t("tonieboxes.boxSetup.boxSetupIntroTelegram")}
                 </Link>{" "}
                 {t("tonieboxes.boxSetup.boxSetupIntro3")}

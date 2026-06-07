@@ -17,7 +17,7 @@ export function installCC3200Tool(): JSX.Element {
             <ul>
                 <li>
                     {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pythonText1")}
-                    <Link to="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer">
+                    <Link to="https://www.python.org/downloads/" target="_blank">
                         {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pythonTextLink")}{" "}
                         {<ExportOutlined />}
                     </Link>
@@ -27,7 +27,7 @@ export function installCC3200Tool(): JSX.Element {
                     {t("tonieboxes.boxFlashingCommon.installCC3200Tool.gitText1")}
                     <Link
                         to="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git"
-                        target="_blank" rel="noopener noreferrer"
+                        target="_blank"
                     >
                         {t("tonieboxes.boxFlashingCommon.installCC3200Tool.gitTextLink")}{" "}
                         {<ExportOutlined />}
@@ -36,7 +36,7 @@ export function installCC3200Tool(): JSX.Element {
                 </li>
                 <li>
                     {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pipText1")}
-                    <Link to="https://pip.pypa.io/en/stable/installation/" target="_blank" rel="noopener noreferrer">
+                    <Link to="https://pip.pypa.io/en/stable/installation/" target="_blank">
                         {t("tonieboxes.boxFlashingCommon.installCC3200Tool.pipTextLink")}{" "}
                         {<ExportOutlined />}
                     </Link>
@@ -63,7 +63,7 @@ export function installCC3200Tool(): JSX.Element {
             <Paragraph>
                 {t("tonieboxes.boxFlashingCommon.installCC3200Tool.moreInformation")}
             </Paragraph>
-            <Link to="https://github.com/toniebox-reverse-engineering/cc3200tool" target="_blank" rel="noopener noreferrer">
+            <Link to="https://github.com/toniebox-reverse-engineering/cc3200tool" target="_blank">
                 {t("tonieboxes.boxFlashingCommon.installCC3200Tool.link")} {<ExportOutlined />}
             </Link>
         </>

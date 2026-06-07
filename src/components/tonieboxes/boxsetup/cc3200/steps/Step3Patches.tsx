@@ -24,7 +24,8 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
             <h3>{t("tonieboxes.cc3200BoxFlashing.patches")}</h3>
             <a
                 href="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/ofw-patches/"
-                target="_blank" rel="noopener noreferrer"
+                target="_blank"
+                rel="noreferrer"
             >
                 {t("tonieboxes.cc3200BoxFlashing.patchesMoreInformationLink")} {<ExportOutlined />}
             </a>

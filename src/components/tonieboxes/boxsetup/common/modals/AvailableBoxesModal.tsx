@@ -140,7 +140,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({
                 </Paragraph>
                 <Link
                     to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/test-troubleshooting/"
-                    target="_blank" rel="noopener noreferrer"
+                    target="_blank"
                 >
                     {t("tonieboxes.availableBoxModal.troubleShooting")}
                 </Link>
