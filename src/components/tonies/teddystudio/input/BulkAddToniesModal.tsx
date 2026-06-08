@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Input, Modal, Transfer } from "antd";
+import { Input, Modal, Transfer, theme, Grid } from "antd";
 import type { TransferProps } from "antd";
 import { useTranslation } from "react-i18next";
 
@@ -66,6 +66,8 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
     onConfirm,
 }) => {
     const { t } = useTranslation();
+    const { token } = theme.useToken();
+    const screens = Grid.useBreakpoint();
 
     const [catalog, setCatalog] = useState<CatalogEntry[]>([]);
     const [targetKeys, setTargetKeys] = useState<string[]>([]);
@@ -270,6 +272,13 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
         onClose();
     };
 
+    // Responsive sizing: keep the modal within the viewport on phones and shrink
+    // the two Transfer panes so they fit side-by-side instead of overflowing.
+    // `screens.md` is antd's 768px breakpoint (the repo's standard mobile check).
+    const isMobile = !screens.md;
+    const modalWidth = Math.min(window.innerWidth - 32, 900);
+    const sectionWidth = isMobile ? Math.max(Math.floor((modalWidth - 90) / 2), 120) : 400;
+
     return (
         <Modal
             open={open}
@@ -282,7 +291,7 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
             })}
             okButtonProps={{ disabled: targetKeys.length === 0 }}
             cancelText={t("tonies.teddystudio.cancel")}
-            width={900}
+            width={modalWidth}
             destroyOnHidden
         >
             <Input.Search
@@ -297,7 +306,7 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
                     style={{
                         textAlign: "center",
                         padding: "48px 16px",
-                        color: "rgba(0, 0, 0, 0.45)",
+                        color: token.colorTextDescription,
                     }}
                 >
                     {t("tonies.teddystudio.bulkAdd.modal.searchHint")}
@@ -322,7 +331,7 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
                             : t("tonies.teddystudio.bulkAdd.modal.notFound"),
                     }}
                     render={renderItem}
-                    styles={{ section: { width: 400, height: 480 } }}
+                    styles={{ section: { width: sectionWidth, height: 480 } }}
                     disabled={loading}
                 />
             )}
