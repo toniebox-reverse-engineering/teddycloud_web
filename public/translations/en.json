@@ -1810,7 +1810,6 @@
             "no": "No",
             "pic": "Url to picture",
             "release": "Release",
-            "remove": "remove",
             "save": "Save",
             "series": "Series",
             "seriesHint": "Will be displayed as the title of the Toniecard",
@@ -2213,7 +2212,6 @@
             "exportToJson": "Export to JSON",
             "hideSelectedTags": "Hide tags",
             "select": "Select",
-            "selectAll": "Select all",
             "selectButtonTooltip": "Enable selection mode",
             "selected": "Tags/Tonies selected",
             "setLive": "Enable live",
@@ -2285,6 +2283,10 @@
                     "searchHint": "Type at least 2 characters to search tonies.json.",
                     "searchPlaceholder": "Search",
                     "searchPrompt": "Search tonies.json…",
+                    "selectedCount": "{{count}} queued to add",
+                    "selectAll": "Select all",
+                    "clearSelection": "Clear all",
+                    "resultsTruncated": "Showing first {{shown}} of {{total}} — keep typing to narrow",
                     "title": "Bulk add tonies to print sheet"
                 }
             },
