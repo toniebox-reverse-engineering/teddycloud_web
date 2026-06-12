@@ -209,6 +209,7 @@ export const Step4ApplyingPatches: React.FC = () => {
                     <Link
                         to="https://github.com/toniebox-reverse-engineering/hackiebox_cfw_ng/tree/master/sd-bootloader-ng/bootmanager/sd/revvox/boot/patch"
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         {t(
                             "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchDirectory",
@@ -219,6 +220,7 @@ export const Step4ApplyingPatches: React.FC = () => {
                     <Link
                         to="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/ofw-patches/"
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         {t(
                             "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchWiki",
@@ -350,6 +352,7 @@ export const Step4ApplyingPatches: React.FC = () => {
                                     <Link
                                         to="https://github.com/toniebox-reverse-engineering/hackiebox_cfw_ng/blob/master/sd-bootloader-ng/bootmanager/sd/revvox/boot/ngCfg.json"
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                     >
                                         {t(
                                             "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_link",

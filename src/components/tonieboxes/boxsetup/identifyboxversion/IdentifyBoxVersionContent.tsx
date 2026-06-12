@@ -199,7 +199,7 @@ const MacIdentifyForm: React.FC<MacIdentifyFormProps> = ({
             </Button>
             <Paragraph style={{ fontSize: "small", marginTop: 16 }}>
                 {t("tonieboxes.boxSetup.identifyVersion.macvendors")}{" "}
-                <Link to="https://macvendors.com/" target="_blank">
+                <Link to="https://macvendors.com/" target="_blank" rel="noopener noreferrer">
                     {t("tonieboxes.boxSetup.identifyVersion.macvendorsLink")} {<ExportOutlined />}
                 </Link>
             </Paragraph>

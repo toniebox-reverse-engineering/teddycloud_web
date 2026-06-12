@@ -272,6 +272,7 @@ export const Step1Bootloader: React.FC<Step1PreparationsProps> = ({ hwTool }) =>
                 <Link
                     to="https://github.com/toniebox-reverse-engineering/hackiebox_cfw_ng/releases"
                     target="_blank"
+                    rel="noopener noreferrer"
                 >
                     {t("tonieboxes.cc3200BoxFlashing.installingBootloader.downloadLink")}{" "}
                     {<ExportOutlined />}
@@ -330,6 +331,7 @@ export const Step1Bootloader: React.FC<Step1PreparationsProps> = ({ hwTool }) =>
                 <Link
                     to="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/bootloader/"
                     target="_blank"
+                    rel="noopener noreferrer"
                 >
                     {t(
                         "tonieboxes.cc3200BoxFlashing.installingBootloader.installingBootloaderStage2.here",

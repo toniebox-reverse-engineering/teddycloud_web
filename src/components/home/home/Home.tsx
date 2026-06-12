@@ -88,6 +88,7 @@ export const Home = () => {
                                 : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
                         }
                         target="_blank"
+                        rel="noopener noreferrer"
                         style={{
                             display: "inline-flex",
                             alignItems: "center",
@@ -178,7 +179,7 @@ export const Home = () => {
 
             <Paragraph>
                 {t("home.forumIntroPart1")}
-                <Link to={forumUrl} target="_blank">
+                <Link to={forumUrl} target="_blank" rel="noopener noreferrer">
                     {forumUrl} {<ExportOutlined />}
                 </Link>
                 {t("home.forumIntroPart2")}
@@ -200,22 +201,26 @@ export const Home = () => {
                         <Link to="/community/faq">FAQ</Link>
                     </li>
                     <li>
-                        <Link to={gitHubUrl} target="_blank">
+                        <Link
+                            to={gitHubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer                  >    "
+                        >
                             GitHub {<ExportOutlined />}
                         </Link>
                     </li>
                     <li>
-                        <Link to={telegramGroupUrl} target="_blank">
+                        <Link to={telegramGroupUrl} target="_blank" rel="noopener noreferrer">
                             Telegram Chat {<ExportOutlined />}
                         </Link>
                     </li>
                     <li>
-                        <Link to={forumUrl} target="_blank">
+                        <Link to={forumUrl} target="_blank" rel="noopener noreferrer">
                             Discourse Forum {<ExportOutlined />}
                         </Link>
                     </li>
                     <li>
-                        <Link to={wikiUrl} target="_blank">
+                        <Link to={wikiUrl} target="_blank" rel="noopener noreferrer">
                             TeddyCloud Wiki {<ExportOutlined />}
                         </Link>
                     </li>

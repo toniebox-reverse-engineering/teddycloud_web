@@ -36,7 +36,11 @@ export const CC3235Step0Preparations: React.FC<Step0PreparationsProps> = ({
             <h4>{t("tonieboxes.cc3235BoxFlashing.installSerprogFirmware")}</h4>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.pico.preparation")}</Paragraph>
             <Paragraph>
-                <Link to="https://github.com/stacksmashing/pico-serprog" target="_blank">
+                <Link
+                    to="https://github.com/stacksmashing/pico-serprog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     {t("tonieboxes.cc3235BoxFlashing.serprogFirmwareLink")} {<ExportOutlined />}
                 </Link>
             </Paragraph>
@@ -296,7 +300,7 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub`}
             <h4>{t("tonieboxes.cc3235BoxFlashing.installflashromtool")}</h4>
             {t("tonieboxes.cc3235BoxFlashing.installflashromtoolText")}
             <CodeSnippet language="shell" code={`sudo apt-get install flashrom`} />
-            <Link to="https://www.flashrom.org/" target="_blank">
+            <Link to="https://www.flashrom.org/" target="_blank" rel="noopener noreferrer">
                 {t("tonieboxes.cc3235BoxFlashing.installflashromtoolLink")} {<ExportOutlined />}
             </Link>
 
