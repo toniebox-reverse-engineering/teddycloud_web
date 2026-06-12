@@ -2,7 +2,9 @@
 
 ## 0.7.0
 
+- First TB2 support (not for daily use! Search for beta testers open: [https://t.me/toniebox_reverse_engineering/74847](https://t.me/toniebox_reverse_engineering/74847))
 - Added custom tonies API
+- Enhanced condition for valid tonieInfo check
 - Added contribution.md [https://github.com/toniebox-reverse-engineering/teddycloud/issues/59](https://github.com/toniebox-reverse-engineering/teddycloud/issues/59)
 - Fixed broken web radio streaming in alpine version [https://github.com/toniebox-reverse-engineering/teddycloud/issues/160](https://github.com/toniebox-reverse-engineering/teddycloud/issues/160)
 - Added api to extend and fetch custom models entries in tonies.custom.json [https://github.com/toniebox-reverse-engineering/teddycloud/issues/176](https://github.com/toniebox-reverse-engineering/teddycloud/issues/176) & [https://github.com/toniebox-reverse-engineering/teddycloud/issues/178](https://github.com/toniebox-reverse-engineering/teddycloud/issues/178)
