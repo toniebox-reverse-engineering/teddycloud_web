@@ -449,28 +449,31 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         }
     };
 
-    const handlePrevInModal = () => {
-        if (editIndex === null || editIndex <= 0) return;
+    const handleMoveInModal = (direction: -1 | 1) => {
+        if (editIndex === null) return;
+
+        const currentRowIndex = tableRows.findIndex((row) => row.idx === editIndex);
+        if (currentRowIndex < 0) return;
+
+        const targetRow = tableRows[currentRowIndex + direction];
+        if (!targetRow) return;
+
         const values = form.getFieldsValue(true) as FormValues;
         const draft = toEntry(values);
         const next = customEntries.map((entry) => cloneEntry(entry));
         next[editIndex] = draft;
+
         setCustomEntries(next);
-        const newIdx = editIndex - 1;
-        setEditIndex(newIdx);
-        form.setFieldsValue(toFormValues(next[newIdx]));
+        setEditIndex(targetRow.idx);
+        form.setFieldsValue(toFormValues(next[targetRow.idx]));
+    };
+
+    const handlePrevInModal = () => {
+        handleMoveInModal(-1);
     };
 
     const handleNextInModal = () => {
-        if (editIndex === null || editIndex >= customEntries.length - 1) return;
-        const values = form.getFieldsValue(true) as FormValues;
-        const draft = toEntry(values);
-        const next = customEntries.map((entry) => cloneEntry(entry));
-        next[editIndex] = draft;
-        setCustomEntries(next);
-        const newIdx = editIndex + 1;
-        setEditIndex(newIdx);
-        form.setFieldsValue(toFormValues(next[newIdx]));
+        handleMoveInModal(1);
     };
 
     const loadJsonData = async () => {
@@ -866,6 +869,13 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 : 1;
 
     const singleFormMode = mode === "create-single" || mode === "edit-single";
+
+    const currentTableRowIndex =
+        editIndex === null ? -1 : tableRows.findIndex((row) => row.idx === editIndex);
+    const canGoPrev = !singleFormMode && currentTableRowIndex > 0;
+    const canGoNext =
+        !singleFormMode && currentTableRowIndex >= 0 && currentTableRowIndex < tableRows.length - 1;
+
     const inlineMode = mode === "full" || singleFormMode;
     const editModalVisible = singleFormMode ? open : editModalOpen;
     const hasEditChanges = () => {
@@ -1017,14 +1027,10 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     onSaveForNavigate={() => handleSaveFromModal(true)}
                     onPrev={handlePrevInModal}
                     onNext={handleNextInModal}
-                    canGoPrev={!singleFormMode && editIndex !== null && editIndex > 0}
-                    canGoNext={
-                        !singleFormMode &&
-                        editIndex !== null &&
-                        editIndex < customEntries.length - 1
-                    }
-                    currentIndex={editIndex ?? 0}
-                    totalItems={singleFormMode ? 1 : customEntries.length}
+                    canGoPrev={canGoPrev}
+                    canGoNext={canGoNext}
+                    currentIndex={currentTableRowIndex >= 0 ? currentTableRowIndex : 0}
+                    totalItems={singleFormMode ? 1 : tableRows.length}
                     title={
                         singleFormMode
                             ? mode === "create-single" || modalMode === "create"
@@ -1137,7 +1143,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 cancelText={t("tonies.customEditor.renameConfirm.abort")}
                 confirmLoading={saving}
             >
-                <Space direction="vertical" style={{ width: "100%" }}>
+                <Space orientation="vertical" style={{ width: "100%" }}>
                     <Typography.Text>
                         {t("tonies.customEditor.renameConfirm.description", {
                             from: pendingRenameSave?.fromModel ?? "",
