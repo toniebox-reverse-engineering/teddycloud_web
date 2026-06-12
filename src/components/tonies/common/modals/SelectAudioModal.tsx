@@ -27,6 +27,7 @@ interface SelectAudioModalProps {
     initialPath?: string;
     /** Optional title override */
     title?: string;
+    zIndex?: number;
 }
 
 export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
@@ -37,6 +38,7 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
     requireTafHeader = false,
     initialPath = "",
     title: titleProp,
+    zIndex = undefined,
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
@@ -140,6 +142,7 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
             onOk={handleConfirm}
             width="auto"
             footer={footer}
+            zIndex={zIndex}
         >
             <SelectFileFileBrowser
                 key={keySelectFileFileBrowser}

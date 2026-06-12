@@ -3,11 +3,13 @@ import { useTranslation } from "react-i18next";
 import { Button, Flex, Pagination, theme, Typography } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { CustomModelCard } from "./CustomModelCard";
-import type { CustomEntry, TableRow } from "./types/customModelEditorTypes";
+import type { TableRow } from "./types/customModelEditorTypes";
+import LoadingSpinner from "../../common/elements/LoadingSpinner";
 
 export type CustomModelListProps = {
     tableRows: TableRow[];
     paginatedRows: TableRow[];
+    loading: boolean;
     paginationEnabled: boolean;
     modelListPage: number;
     modelListPageSize: number;
@@ -27,6 +29,7 @@ export type CustomModelListProps = {
 export const CustomModelList: React.FC<CustomModelListProps> = ({
     tableRows,
     paginatedRows,
+    loading,
     paginationEnabled,
     modelListPage,
     modelListPageSize,
@@ -96,7 +99,9 @@ export const CustomModelList: React.FC<CustomModelListProps> = ({
             </div>
 
             <Flex vertical gap={16}>
-                {tableRows.length === 0 ? (
+                {loading ? (
+                    <LoadingSpinner />
+                ) : tableRows.length === 0 ? (
                     <div
                         style={{
                             width: "100%",

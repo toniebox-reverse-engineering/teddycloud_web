@@ -1,3 +1,4 @@
-export const toModelKey = (model?: string) => {
-    return (model || "").trim().toLowerCase();
+export const toModelKey = (model?: unknown) => {
+    if (model === null || model === undefined) return "";
+    return String(model).trim().toLowerCase();
 };

@@ -314,13 +314,6 @@
         }
     ],
     "fileBrowser": {
-        "customJsonSnippetModal": {
-            "title": "Extrait tonies.custom.json",
-            "ok": "OK",
-            "selectedFiles": "Affiche uniquement l’extrait des fichiers TAF sélectionnés.",
-            "allFiles": "Affiche l’extrait de tous les fichiers TAF avec des données d’en-tête valides.",
-            "noValidHeaders": "Aucun en-tête TAF valide trouvé."
-        },
         "actions": "Actions",
         "attention": "Veuillez noter !",
         "cancel": "Annuler",
@@ -339,6 +332,13 @@
             "modalTitle": "Créer un nouveau dossier",
             "parentPath": "Répertoire parent:",
             "placeholder": "Entrez le nom du dossier"
+        },
+        "customJsonSnippetModal": {
+            "allFiles": "Affiche l’extrait de tous les fichiers TAF avec des données d’en-tête valides.",
+            "noValidHeaders": "Aucun en-tête TAF valide trouvé.",
+            "ok": "OK",
+            "selectedFiles": "Affiche uniquement l’extrait des fichiers TAF sélectionnés.",
+            "title": "Extrait tonies.custom.json"
         },
         "date": "Date",
         "delete": "Supprimer",
@@ -2281,19 +2281,19 @@
             "bulkAdd": {
                 "button": "Ajouter plusieurs tonies",
                 "modal": {
+                    "clearSelection": "Tout retirer",
                     "confirm": "Ajouter {{count}} à la feuille",
                     "itemsUnit": "tonies",
                     "itemUnit": "tonie",
                     "leftTitle": "tonies.json",
                     "notFound": "Aucun tonie correspondant",
+                    "resultsTruncated": "Affichage des {{shown}} premiers sur {{total}} — continuez à taper pour affiner",
                     "rightTitle": "À ajouter",
                     "searchHint": "Tapez au moins 2 caractères pour rechercher dans tonies.json.",
                     "searchPlaceholder": "Rechercher",
                     "searchPrompt": "Rechercher dans tonies.json…",
-                    "selectedCount": "{{count}} à ajouter",
                     "selectAll": "Tout sélectionner",
-                    "clearSelection": "Tout retirer",
-                    "resultsTruncated": "Affichage des {{shown}} premiers sur {{total}} — continuez à taper pour affiner",
+                    "selectedCount": "{{count}} à ajouter",
                     "title": "Ajouter plusieurs tonies à la feuille d'impression"
                 }
             },
