@@ -90,6 +90,7 @@ export const StyledFooter = () => {
                                     : gitHubTCReleasesUrl + "tag/tc_" + versionShort
                             }
                             target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <HiddenDesktop>
                                 {versionShort} ({commitGitShaShort})
@@ -113,6 +114,7 @@ export const StyledFooter = () => {
                                             : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
                                     }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     style={{
                                         display: "inline-flex",
                                         alignItems: "center",
@@ -137,6 +139,7 @@ export const StyledFooter = () => {
                             <Link
                                 to={gitHubSponsoringUrl}
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 style={{ paddingLeft: 8 }}
                             >
                                 {t("footer.sponsor")}

@@ -136,6 +136,7 @@ export const Step0Preparations: React.FC<Step0PreparationsProps> = ({ hwTool, on
                     <Link
                         to="https://g3gg0.github.io/ESP32-UART-Gateway/flasher.html"
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         Flashing ESP32-C3 {<ExportOutlined />}
                     </Link>
@@ -236,6 +237,7 @@ export const Step0Preparations: React.FC<Step0PreparationsProps> = ({ hwTool, on
                 <Link
                     to="https://www.tag-connect.com/product/tc2050-idc-nl-10-pin-no-legs-cable-with-ribbon-connector"
                     target="_blank"
+                    rel="noopener noreferrer"
                 >
                     TC2050-IDC-NL TagConnector {<ExportOutlined />}
                 </Link>
