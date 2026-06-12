@@ -227,7 +227,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     <span
                         role="button"
                         tabIndex={0}
-                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                        style={{ cursor: "pointer" }}
                         onClick={(e) => {
                             e.stopPropagation();
                             onRowSelect(record);
@@ -245,7 +245,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     <span
                         role="button"
                         tabIndex={0}
-                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                        style={{ cursor: "pointer" }}
                         onClick={(e) => {
                             e.stopPropagation();
                             const src = getPictureSrc(record);
