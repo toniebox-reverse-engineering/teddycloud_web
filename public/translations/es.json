@@ -314,6 +314,13 @@
         }
     ],
     "fileBrowser": {
+        "customJsonSnippetModal": {
+            "title": "Fragmento de tonies.custom.json",
+            "ok": "OK",
+            "selectedFiles": "Muestra el fragmento solo para los archivos TAF seleccionados.",
+            "allFiles": "Muestra el fragmento para todos los archivos TAF con datos de cabecera válidos.",
+            "noValidHeaders": "No se encontraron cabeceras TAF válidas."
+        },
         "actions": "Acciones",
         "attention": "¡Atención!",
         "cancel": "Cancelar",

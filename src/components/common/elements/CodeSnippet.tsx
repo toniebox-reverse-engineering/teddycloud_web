@@ -12,6 +12,7 @@ interface CodeSnippetProps {
     code: string;
     language?: string;
     showLineNumbers?: boolean;
+    wrapLines?: boolean;
 }
 
 function isDarkColor(hex: string): boolean {
@@ -37,7 +38,12 @@ function isDarkColor(hex: string): boolean {
     return brightness < 0.5;
 }
 
-const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbers = true }) => {
+const CodeSnippet: React.FC<CodeSnippetProps> = ({
+    language,
+    code,
+    showLineNumbers = true,
+    wrapLines = true,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
 
@@ -98,10 +104,13 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
                 style={syntaxStyle}
                 customStyle={{
                     padding: "0.5rem",
+                    paddingRight: 32,
                     borderRadius: 8,
                     margin: "0.5rem 0",
                     border: "1px solid",
                     borderColor: token.colorBorderSecondary,
+                    maxHeight: "60vh",
+                    overflow: "auto",
                 }}
                 showLineNumbers={showLineNumbers}
                 lineNumberStyle={{
@@ -109,8 +118,8 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
                     textAlign: "right",
                     paddingRight: "1rem",
                 }}
-                wrapLines
-                lineProps={{ style: { whiteSpace: "pre-wrap" } }}
+                wrapLines={wrapLines}
+                lineProps={wrapLines ? { style: { whiteSpace: "pre-wrap" } } : undefined}
             >
                 {code}
             </SyntaxHighlighter>
@@ -141,9 +150,10 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
                             position: "absolute",
                             top: 8,
                             right: 8,
-                            padding: 4,
+                            padding: 2,
                             height: "auto",
                             minWidth: "auto",
+                            background: token.colorBgLayout,
                         }}
                     />
                 </Tooltip>
@@ -153,13 +163,16 @@ const CodeSnippet: React.FC<CodeSnippetProps> = ({ language, code, showLineNumbe
                 <span
                     style={{
                         position: "absolute",
-                        top: 10,
-                        right: 12,
+                        top: 8,
+                        right: 8,
+                        padding: 4,
+                        borderRadius: 8,
                         display: "flex",
                         alignItems: "center",
                         gap: 4,
                         color: token.colorSuccess,
                         fontSize: "small",
+                        background: token.colorBgLayout,
                     }}
                 >
                     <CheckOutlined /> {copyStatus}
