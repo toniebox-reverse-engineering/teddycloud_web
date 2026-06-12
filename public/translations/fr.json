@@ -314,6 +314,13 @@
         }
     ],
     "fileBrowser": {
+        "customJsonSnippetModal": {
+            "title": "Extrait tonies.custom.json",
+            "ok": "OK",
+            "selectedFiles": "Affiche uniquement l’extrait des fichiers TAF sélectionnés.",
+            "allFiles": "Affiche l’extrait de tous les fichiers TAF avec des données d’en-tête valides.",
+            "noValidHeaders": "Aucun en-tête TAF valide trouvé."
+        },
         "actions": "Actions",
         "attention": "Veuillez noter !",
         "cancel": "Annuler",

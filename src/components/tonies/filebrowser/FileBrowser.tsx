@@ -1,6 +1,7 @@
 import {
     CloseOutlined,
     CloudSyncOutlined,
+    CodeOutlined,
     DeleteOutlined,
     FolderAddOutlined,
     NodeExpandOutlined,
@@ -45,6 +46,7 @@ import UploadFilesModal from "./modals/UploadFilesModal";
 import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
+import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
 
 const { Paragraph } = Typography;
 
@@ -88,6 +90,8 @@ export const FileBrowser: React.FC<{
 
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
     const [tafHeaderRecord, setTafHeaderRecord] = useState<RecordTafHeader | null>(null);
+
+    const [isCustomJsonSnippetModalOpen, setIsCustomJsonSnippetModalOpen] = useState(false);
 
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [isConfirmMultipleDeleteModalOpen, setIsConfirmMultipleDeleteModalOpen] = useState(false);
@@ -399,6 +403,14 @@ export const FileBrowser: React.FC<{
                 multipleOpen={isConfirmMultipleDeleteModalOpen}
                 onCloseMultiple={closeMultipleDeleteModal}
             />
+            {isCustomJsonSnippetModalOpen && (
+                <CustomJsonSnippetModal
+                    open={isCustomJsonSnippetModalOpen}
+                    onClose={() => setIsCustomJsonSnippetModalOpen(false)}
+                    files={files as Record[]}
+                    selectedRowKeys={selectedRowKeys}
+                />
+            )}
             {isUnusedTAFsModalOpen && (
                 <UnusedTAFsModal
                     open={isUnusedTAFsModalOpen}
@@ -668,6 +680,23 @@ export const FileBrowser: React.FC<{
                                         onClick={openUnusedTAFsModal}
                                     >
                                         {t("fileBrowser.unusedTafsModal.title")}
+                                    </Button>
+                                )}
+                                {special === "library" && (
+                                    <Button
+                                        size="small"
+                                        icon={<CodeOutlined />}
+                                        onClick={() => setIsCustomJsonSnippetModalOpen(true)}
+                                        disabled={
+                                            files.filter(
+                                                (file) =>
+                                                    !file.isDir &&
+                                                    file.tafHeader?.audioId &&
+                                                    file.tafHeader?.sha1Hash,
+                                            ).length === 0
+                                        }
+                                    >
+                                        {t("fileBrowser.customJsonSnippetModal.title")}
                                     </Button>
                                 )}
                             </div>

@@ -314,6 +314,13 @@
         }
     ],
     "fileBrowser": {
+        "customJsonSnippetModal": {
+            "title": "Snippet für tonies.custom.json",
+            "ok": "OK",
+            "selectedFiles": "Zeigt das Snippet nur für die ausgewählten TAF-Dateien.",
+            "allFiles": "Zeigt das Snippet für alle TAF-Dateien mit gültigen Header-Daten.",
+            "noValidHeaders": "Keine gültigen TAF-Header gefunden."
+        },
         "actions": "Aktionen",
         "attention": "Bitte beachte!",
         "cancel": "Cancel",
