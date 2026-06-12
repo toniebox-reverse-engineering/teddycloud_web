@@ -314,13 +314,6 @@
         }
     ],
     "fileBrowser": {
-        "customJsonSnippetModal": {
-            "title": "Fragmento de tonies.custom.json",
-            "ok": "OK",
-            "selectedFiles": "Muestra el fragmento solo para los archivos TAF seleccionados.",
-            "allFiles": "Muestra el fragmento para todos los archivos TAF con datos de cabecera válidos.",
-            "noValidHeaders": "No se encontraron cabeceras TAF válidas."
-        },
         "actions": "Acciones",
         "attention": "¡Atención!",
         "cancel": "Cancelar",
@@ -339,6 +332,13 @@
             "modalTitle": "Crear nuevo directorio",
             "parentPath": "Directorio principal:",
             "placeholder": "Introduce el nombre de la carpeta"
+        },
+        "customJsonSnippetModal": {
+            "allFiles": "Muestra el fragmento para todos los archivos TAF con datos de cabecera válidos.",
+            "noValidHeaders": "No se encontraron cabeceras TAF válidas.",
+            "ok": "OK",
+            "selectedFiles": "Muestra el fragmento solo para los archivos TAF seleccionados.",
+            "title": "Fragmento de tonies.custom.json"
         },
         "date": "Fecha",
         "delete": "Eliminar",
@@ -2281,19 +2281,19 @@
             "bulkAdd": {
                 "button": "Añadir varios tonies",
                 "modal": {
+                    "clearSelection": "Quitar todo",
                     "confirm": "Añadir {{count}} a la hoja",
                     "itemsUnit": "tonies",
                     "itemUnit": "tonie",
                     "leftTitle": "tonies.json",
                     "notFound": "Ningún tonie coincide",
+                    "resultsTruncated": "Mostrando los primeros {{shown}} de {{total}} — sigue escribiendo para acotar",
                     "rightTitle": "En cola para añadir",
                     "searchHint": "Escribe al menos 2 caracteres para buscar en tonies.json.",
                     "searchPlaceholder": "Buscar",
                     "searchPrompt": "Buscar en tonies.json…",
-                    "selectedCount": "{{count}} en cola para añadir",
                     "selectAll": "Seleccionar todo",
-                    "clearSelection": "Quitar todo",
-                    "resultsTruncated": "Mostrando los primeros {{shown}} de {{total}} — sigue escribiendo para acotar",
+                    "selectedCount": "{{count}} en cola para añadir",
                     "title": "Añadir varios tonies a la hoja de impresión"
                 }
             },

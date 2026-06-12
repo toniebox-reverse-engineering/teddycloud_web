@@ -24,11 +24,7 @@ import { EditTonieModal } from "./modals/EditTonieModal";
 import { SelectAudioModal } from "../common/modals/SelectAudioModal";
 import { useAudioContext } from "../../../provider/AudioProvider";
 import { CustomModelEditor } from "../custommodel/CustomModelEditor";
-import {
-    toModelKey,
-    useCustomModelKeys,
-    useToniesJsonModelKeys,
-} from "../hooks/useCustomModelKeys";
+import { toModelKey, useCustomModelKeys } from "../hooks/useCustomModelKeys";
 import { toImageSrc } from "../common/utils/imagePathUtils";
 import { useTonieCardActions } from "./hooks/useTonieCardActions";
 import { useResolvedModelAudio } from "./hooks/useResolvedModelAudio";
@@ -75,7 +71,6 @@ export const TonieCard: React.FC<{
         addLoadingNotification,
         closeLoadingNotification,
         toniesCloudAvailable,
-        invalidateTonies,
     } = useTeddyCloud();
     const { playAudio } = useAudioContext();
 
@@ -105,10 +100,7 @@ export const TonieCard: React.FC<{
     const [tempSelectedSource, setTempSelectedSource] = useState<string>(tonieCard.source || "");
 
     const customModelKeys = useCustomModelKeys(isEditModalOpen);
-    const toniesJsonModelKeys = useToniesJsonModelKeys(isEditModalOpen);
     const isSelectedModelCustom = customModelKeys.has(toModelKey(selectedModel));
-    const currentModelKey = toModelKey(tonieCard.tonieInfo.model);
-    const isOriginalModel = Boolean(currentModelKey) && toniesJsonModelKeys.has(currentModelKey);
 
     useEffect(() => {
         const model = tonieCard.tonieInfo.model || "";
@@ -246,7 +238,6 @@ export const TonieCard: React.FC<{
         resolvedAudioModel,
         modelAudioPath,
         fetchUpdatedTonieCard,
-        invalidateTonies,
         setIsEditModalOpen,
         setInputValidationModel,
         setInputValidationSource,
@@ -310,8 +301,8 @@ export const TonieCard: React.FC<{
         setIsEditModalOpen(true);
     };
 
-    const modelInfoFromTonie = tonieCard.tonieInfo as unknown as TooltipInfo;
-    const audioInfoFromSource = tonieCard.sourceInfo as unknown as TooltipInfo;
+    const modelInfoFromTonie = selectedModel as unknown as TooltipInfo;
+    const audioInfoFromSource = selectedSource as unknown as TooltipInfo;
     const renderInfoTooltip = (
         kind: "model" | "audio",
         modelName: string,
@@ -492,7 +483,6 @@ export const TonieCard: React.FC<{
         />
     );
 
-    const hasModel = Boolean(tonieCard.tonieInfo.model?.trim());
     const languageCode = toLanguageCode(tonieCard.tonieInfo.language);
     const defaultLanguageCode = toLanguageCode(defaultLanguage);
     const languageTooltipKey = languageCode;
@@ -672,7 +662,7 @@ export const TonieCard: React.FC<{
                 onCreateNewModel={() => setIsCreateModelModalOpen(true)}
                 onEditModel={() => setIsEditModelModalOpen(true)}
                 isSelectedModelCustom={isSelectedModelCustom}
-                modelReadOnly={hasModel && isOriginalModel}
+                modelReadOnly={false}
                 onModelSelectResult={(result) => {
                     setSelectedModel(result.value);
                     setSelectedModelDisplayText(result.selectionText);
