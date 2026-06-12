@@ -40,7 +40,7 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
     children,
 }) => {
     const { t } = useTranslation();
-    const [saveOnNavigate, setSaveOnNavigate] = useState<boolean>(true);
+    const [saveOnNavigate, setSaveOnNavigate] = useState<boolean>(false); // disabled save on navigate by default since it's seems to be not working
     const handleNext = () => {
         if (saveOnNavigate && hasChanges()) (onSaveForNavigate ?? onSave)?.();
         onNext?.();
@@ -75,7 +75,9 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
                         gap: 8,
                     }}
                 >
-                    {!hideNavigationControls && totalItems > 1 ? (
+                    {/* // disabled as it seems to be not working
+
+                    !hideNavigationControls && totalItems > 1 ? (
                         <Checkbox
                             checked={saveOnNavigate}
                             onChange={(e) => setSaveOnNavigate(e.target.checked)}
@@ -85,7 +87,9 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
                         </Checkbox>
                     ) : (
                         <div style={{ marginRight: "auto" }} />
-                    )}
+                    )
+                    
+                    */}
                     <div
                         style={{
                             display: "flex",
