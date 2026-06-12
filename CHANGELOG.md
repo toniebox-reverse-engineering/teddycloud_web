@@ -33,6 +33,7 @@
 - gui: Fixed bug in browser side taf encoding [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/281](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/281)
 - gui: Fixed bug malformed library post request [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/171](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/171)
 - gui: Added noopener noreferrer to external links [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308)
+- gui: Added tonies.custom.json snippet modal for getting skeleton of tonies.custom.json for all or selected tafs in current folder
 
 ### Commits
 
