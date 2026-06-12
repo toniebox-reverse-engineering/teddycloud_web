@@ -44,7 +44,9 @@ If you don't need the ESP32 Box flashing section working, you can adapt the `pac
         "start-https": "cross-env HTTPS=true PORT=3443 vite",
         "start": "concurrently \"npm run start-http\" \"npm run start-https\"",
         "build": "tsc && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "format": "prettier . --write",
+        "format:check": "prettier . --check"
     },
 ```
 
@@ -54,7 +56,9 @@ to
 "scripts": {
         "start": "npm run start",
         "build": "tsc && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "format": "prettier . --write",
+        "format:check": "prettier . --check"
      },
 ```
 

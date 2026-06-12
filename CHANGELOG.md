@@ -3,6 +3,15 @@
 ## 0.7.0
 
 - Added custom tonies API
+- Added contribution.md [https://github.com/toniebox-reverse-engineering/teddycloud/issues/59](https://github.com/toniebox-reverse-engineering/teddycloud/issues/59)
+- Fixed broken web radio streaming in alpine version [https://github.com/toniebox-reverse-engineering/teddycloud/issues/160](https://github.com/toniebox-reverse-engineering/teddycloud/issues/160)
+- Added api to extend and fetch custom models entries in tonies.custom.json [https://github.com/toniebox-reverse-engineering/teddycloud/issues/176](https://github.com/toniebox-reverse-engineering/teddycloud/issues/176) & [https://github.com/toniebox-reverse-engineering/teddycloud/issues/178](https://github.com/toniebox-reverse-engineering/teddycloud/issues/178)
+- Fixed bug unremoved cache on deinit [https://github.com/toniebox-reverse-engineering/teddycloud/issues/304](https://github.com/toniebox-reverse-engineering/teddycloud/issues/304)
+- Increased max length of path/filename to 255 [https://github.com/toniebox-reverse-engineering/teddycloud/issues/374](https://github.com/toniebox-reverse-engineering/teddycloud/issues/374)
+- Support running teddycloud as non-root in Docker (PUID/PGID env vars) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/441](https://github.com/toniebox-reverse-engineering/teddycloud/issues/441)
+- Fixed Runtime error during loading settings [https://github.com/toniebox-reverse-engineering/teddycloud/issues/447](https://github.com/toniebox-reverse-engineering/teddycloud/issues/447)
+- Fixed docker-entrypoint: in-place restart loop never triggers (set -e + exit-code -2 vs 254) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/448](https://github.com/toniebox-reverse-engineering/teddycloud/issues/448)
+- Fixed bug config file loader bypasses the min/max bounds enforced by the settings setters [https://github.com/toniebox-reverse-engineering/teddycloud/issues/451](https://github.com/toniebox-reverse-engineering/teddycloud/issues/451)
 - gui: Updated packages
 - gui: Removed legacy ESP32 flasher
 - gui: Fixed decimal input on ios [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289)
@@ -18,6 +27,10 @@
 - gui: Fixed some display issues in TeddyStudio labels
 - gui: Fixed bug deleting only marked notifications
 - gui: Added ESP32-C3 UART Gateway to cc3200 Box flashing guide [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/292](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/292)
+- gui: Add mobile version of bulk-add tonies model [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/305](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/305)
+- gui: Fixed bug in browser side taf encoding [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/281](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/281)
+- gui: Fixed bug malformed library post request [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/171](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/171)
+- gui: Added noopener noreferrer to external links [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308)
 
 ### Commits
 
