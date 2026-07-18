@@ -145,9 +145,9 @@ const TeddyAudioPlaylistEditor: React.FC<TeddyAudioPlaylistEditorProps> = ({
     };
 
     const buildFilepath = (dir?: string, filenameBase?: string) => {
-        const d = normalizeDir(dir);
+        const d = normalizeDir(dir).replace(/^\/+/, "");
         const f = ensureTafExt(filenameBase).replace(/^\/+/, "");
-        return `lib:/${d}${f}`;
+        return `lib://${d}${f}`;
     };
 
     const getCurrentDir = () => directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
