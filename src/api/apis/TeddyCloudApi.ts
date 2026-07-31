@@ -593,6 +593,35 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * @description Set/unset the "listened" flag for an arbitrary library (or other special-root) file
+     *
+     * @param path path of the file, relative to the special root (optional)
+     * @param special special root the path is relative to, e.g. "library" (optional)
+     * @param listened target value of the "listened" flag
+     * @param overlay overlay (optional)
+     * @param initOverrides initOverrides (optional)
+     * @returns
+     */
+    async apiPostFileSetListened(
+        path: string,
+        special: string,
+        listened: boolean,
+        overlay?: String,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Response> {
+        const response = await this.apiPostTeddyCloudRaw(
+            `/api/fileSetListened?path=${path}&special=${special}${overlay ? "&overlay=" + overlay : ""}`,
+            "listened=" + listened,
+            undefined,
+            initOverrides,
+        );
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response;
+    }
+
+    /**
      * @description Post simple data to endpoint path of TeddyCloud api
      *
      * @param apiPath endpoint path of API

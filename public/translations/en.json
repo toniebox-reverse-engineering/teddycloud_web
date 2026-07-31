@@ -446,6 +446,7 @@
         },
         "hidden": "Hidden",
         "image": "Image",
+        "markAsListened": "Mark as listened",
         "maxSelectedRows": "You can only select up to {{maxSelectedRows}} files",
         "maxSelectedRowsWarning": "Too many files selected!",
         "messages": {
@@ -477,7 +478,9 @@
             "renamingFailed": "Renaming failed",
             "renamingFailedDetails": "Renaming of file \"{{fileSource}}\" to \"{{fileTarget}}\" failed: ",
             "renamingSuccessful": "Renamed file successfully!",
-            "renamingSuccessfulDetails": "Renamed file \"{{fileSource}}\" to \"{{fileTarget}}\" successfully!"
+            "renamingSuccessfulDetails": "Renamed file \"{{fileSource}}\" to \"{{fileTarget}}\" successfully!",
+            "toggleListenedFailed": "Could not change listened flag",
+            "toggleListenedFailedDetails": "Could not change listened flag for file \"{{file}}\": "
         },
         "migrateContentToLib": "Migrate TAF to library (by/audioId/)",
         "migrateContentToLibRoot": "Migrate TAF to library (root)",
@@ -519,6 +522,7 @@
             }
         },
         "title": "Filebrowser",
+        "unmarkAsListened": "Mark as not listened",
         "unusedTafsModal": {
             "actions": "Actions",
             "fullPath": "Full path",
@@ -1828,6 +1832,14 @@
         },
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
+        "assignNextEpisode": {
+            "action": "Assign next episode",
+            "failedDetails": "Could not assign \"{{episode}}\": ",
+            "failedMessage": "Assigning next episode failed!",
+            "noneLeft": "No unlistened episodes left in this folder",
+            "successDetails": "Assigned \"{{episode}}\" as next episode!",
+            "successMessage": "Next episode assigned!"
+        },
         "cancel": "Cancel",
         "closeAudioPlayer": "Close player",
         "closeAudioPlayerPopover": "Close stops playback!",

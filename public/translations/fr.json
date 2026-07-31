@@ -446,6 +446,7 @@
         },
         "hidden": "Caché",
         "image": "Image",
+        "markAsListened": "Marquer comme écouté",
         "maxSelectedRows": "Vous ne pouvez sélectionner que jusqu'à {{maxSelectedRows}} fichiers",
         "maxSelectedRowsWarning": "Trop de fichiers sélectionnés !",
         "messages": {
@@ -477,7 +478,9 @@
             "renamingFailed": "Échec du renommage",
             "renamingFailedDetails": "Échec du renommage du fichier \"{{fileSource}}\" en \"{{fileTarget}}\" : ",
             "renamingSuccessful": "Fichier renommé avec succès!",
-            "renamingSuccessfulDetails": "Fichier \"{{fileSource}}\" renommé en \"{{fileTarget}}\" avec succès!"
+            "renamingSuccessfulDetails": "Fichier \"{{fileSource}}\" renommé en \"{{fileTarget}}\" avec succès!",
+            "toggleListenedFailed": "Impossible de modifier le statut écouté",
+            "toggleListenedFailedDetails": "Impossible de modifier le statut écouté du fichier \"{{file}}\" : "
         },
         "migrateContentToLib": "Migrer TAF vers la bibliothèque (par/audioId/)",
         "migrateContentToLibRoot": "Migrer TAF vers la bibliothèque (racine)",
@@ -519,6 +522,7 @@
             }
         },
         "title": "Navigateur de fichiers",
+        "unmarkAsListened": "Marquer comme non écouté",
         "unusedTafsModal": {
             "actions": "Actions",
             "fullPath": "Chemin complet",
@@ -1828,6 +1832,14 @@
         },
         "alternativeSource": "Cette Tonie {{originalTonie}} est assignée à un contenu {{assignedContent}} !",
         "alternativeSourceUnknown": "Cette Tonie {{originalTonie}} est assignée à un contenu alternatif  !",
+        "assignNextEpisode": {
+            "action": "Assigner l'épisode suivant",
+            "failedDetails": "Impossible d'assigner \"{{episode}}\" : ",
+            "failedMessage": "Échec de l'assignation de l'épisode suivant !",
+            "noneLeft": "Aucun épisode non écouté restant dans ce dossier",
+            "successDetails": "\"{{episode}}\" assigné comme épisode suivant !",
+            "successMessage": "Épisode suivant assigné !"
+        },
         "cancel": "Annuler",
         "closeAudioPlayer": "Fermer le lecteur audio",
         "closeAudioPlayerPopover": "Fermer arrête la lecture!",

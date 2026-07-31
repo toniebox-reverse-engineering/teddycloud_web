@@ -36,6 +36,7 @@ import { createColumns } from "./helper/Columns";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
+import { useToggleListened } from "./hooks/useToggleListened";
 import DeleteFilesModal from "./modals/DeleteFilesModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
 import JsonViewerModal from "./modals/JsonViewerModal";
@@ -325,6 +326,13 @@ export const FileBrowser: React.FC<{
         setDownloading,
     });
 
+    const { toggleListened } = useToggleListened({
+        path,
+        special,
+        overlay,
+        setRebuildList,
+    });
+
     // table selection / classes
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
@@ -375,6 +383,7 @@ export const FileBrowser: React.FC<{
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        toggleListened,
         buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
         onImagePreviewClick:
             special === "custom_img"

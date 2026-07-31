@@ -8,6 +8,7 @@ import {
     InfoCircleOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
+    StepForwardOutlined,
     StopOutlined,
 } from "@ant-design/icons";
 
@@ -31,6 +32,7 @@ import { useResolvedModelAudio } from "./hooks/useResolvedModelAudio";
 import { useTooltipInfoByModel } from "./hooks/useTooltipInfoByModel";
 import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
+import { useAssignNextEpisode } from "./hooks/useAssignNextEpisode";
 import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -214,6 +216,13 @@ export const TonieCard: React.FC<{
         addNotification,
         addLoadingNotification,
         closeLoadingNotification,
+        fetchUpdatedTonieCard,
+    });
+
+    const { nextEpisodeAvailable, handleAssignNextEpisode } = useAssignNextEpisode({
+        tonieCard,
+        overlay,
+        enabled: !readOnly,
         fetchUpdatedTonieCard,
     });
 
@@ -483,6 +492,26 @@ export const TonieCard: React.FC<{
         />
     );
 
+    const assignNextEpisodeAction = (
+        <Tooltip
+            title={
+                nextEpisodeAvailable
+                    ? t("tonies.assignNextEpisode.action")
+                    : t("tonies.assignNextEpisode.noneLeft")
+            }
+        >
+            <StepForwardOutlined
+                key="assignNextEpisode"
+                style={
+                    nextEpisodeAvailable
+                        ? undefined
+                        : { cursor: "default", color: token.colorTextDisabled }
+                }
+                onClick={nextEpisodeAvailable ? handleAssignNextEpisode : undefined}
+            />
+        </Tooltip>
+    );
+
     const languageCode = toLanguageCode(tonieCard.tonieInfo.language);
     const defaultLanguageCode = toLanguageCode(defaultLanguage);
     const languageTooltipKey = languageCode;
@@ -494,6 +523,7 @@ export const TonieCard: React.FC<{
               playAction,
               cloudAction,
               liveAction,
+              assignNextEpisodeAction,
           ];
 
     // ------------------------

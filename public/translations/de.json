@@ -446,6 +446,7 @@
         },
         "hidden": "Versteckt",
         "image": "Bild",
+        "markAsListened": "Als gehört markieren",
         "maxSelectedRows": "Du kannst nur maximal {{maxSelectedRows}} Dateien auswählen",
         "maxSelectedRowsWarning": "Zu viele Dateien ausgewählt!",
         "messages": {
@@ -477,7 +478,9 @@
             "renamingFailed": "Umbenennen fehlgeschlagen",
             "renamingFailedDetails": "Umbenennen der Datei \"{{fileSource}}\" in \"{{fileTarget}}\" fehlgeschlagen: ",
             "renamingSuccessful": "Datei erfolgreich umbenannt!",
-            "renamingSuccessfulDetails": "Datei \"{{fileSource}}\" erfolgreich in \"{{fileTarget}}\" umbenannt!"
+            "renamingSuccessfulDetails": "Datei \"{{fileSource}}\" erfolgreich in \"{{fileTarget}}\" umbenannt!",
+            "toggleListenedFailed": "Gehört-Status konnte nicht geändert werden",
+            "toggleListenedFailedDetails": "Gehört-Status für Datei \"{{file}}\" konnte nicht geändert werden: "
         },
         "migrateContentToLib": "TAF-Datei in Library (by/audioId/) migrieren",
         "migrateContentToLibRoot": "TAF-Datei in Library (root) migrieren",
@@ -519,6 +522,7 @@
             }
         },
         "title": "Dateibrowser",
+        "unmarkAsListened": "Als nicht gehört markieren",
         "unusedTafsModal": {
             "actions": "Aktionen",
             "fullPath": "Vollständiger Pfad",
@@ -1828,6 +1832,14 @@
         },
         "alternativeSource": "Der Toniefigur {{originalTonie}} ist der Inhalt {{assignedContent}} zugewiesen!",
         "alternativeSourceUnknown": "Der Toniefigur {{originalTonie}} ist alternativer Inhalt zugewiesen!",
+        "assignNextEpisode": {
+            "action": "Nächste Folge zuweisen",
+            "failedDetails": "\"{{episode}}\" konnte nicht zugewiesen werden: ",
+            "failedMessage": "Zuweisen der nächsten Folge fehlgeschlagen!",
+            "noneLeft": "Keine ungehörten Folgen mehr in diesem Ordner",
+            "successDetails": "\"{{episode}}\" als nächste Folge zugewiesen!",
+            "successMessage": "Nächste Folge zugewiesen!"
+        },
         "cancel": "Abbrechen",
         "closeAudioPlayer": "Player schließen",
         "closeAudioPlayerPopover": "Schließen stoppt die Wiedergabe!",
