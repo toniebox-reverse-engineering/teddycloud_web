@@ -315,6 +315,15 @@
     ],
     "fileBrowser": {
         "actions": "Actions",
+        "assignToTonie": {
+            "action": "Assign to Tonie",
+            "failedDetails": "Could not assign \"{{series}}\" as content: ",
+            "failedMessage": "Assigning to Tonie failed!",
+            "searchPlaceholder": "Search Tonies...",
+            "successDetails": "File assigned to \"{{series}}\" successfully!",
+            "successMessage": "Tonie assigned!",
+            "title": "Assign to Tonie"
+        },
         "attention": "Please note!",
         "cancel": "Cancel",
         "confirmDeleteDialog": "Are you sure you want to delete {{fileToDelete}}?",

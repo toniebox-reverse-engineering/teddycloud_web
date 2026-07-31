@@ -12,6 +12,7 @@ import {
     NodeExpandOutlined,
     DeleteOutlined,
     LoadingOutlined,
+    SwapOutlined,
 } from "@ant-design/icons";
 
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
@@ -76,6 +77,7 @@ export interface CreateColumnsOptions {
     showRenameDialog?: (fileName: string) => void;
     showMoveDialog?: (fileName: string) => void;
     showDeleteConfirmDialog?: (fileName: string, fullPath: string, query: string) => void;
+    showAssignTonieDialog?: (record: Record) => void;
     buildContentUrl?: (fileName: string, options?: { ogg?: boolean }) => string;
     onImagePreviewClick?: (imageUrl: string) => void;
     onRowSelect?: (record: Record) => void;
@@ -111,6 +113,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        showAssignTonieDialog,
         buildContentUrl,
         onImagePreviewClick,
         onRowSelect,
@@ -657,6 +660,23 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 }
 
                 if ((special === "library" || special === "custom_img") && record.name !== "..") {
+                    if (!record.isDir && special === "library" && showAssignTonieDialog) {
+                        actions.push(
+                            <Tooltip
+                                open={!canHover ? false : undefined}
+                                key={`action-assign-${record.name}`}
+                                title={t("fileBrowser.assignToTonie.action")}
+                            >
+                                <SwapOutlined
+                                    onClick={() => showAssignTonieDialog(record)}
+                                    style={{
+                                        margin: "4px 8px 4px 0",
+                                        padding: 4,
+                                    }}
+                                />
+                            </Tooltip>,
+                        );
+                    }
                     if (!record.isDir && showRenameDialog) {
                         actions.push(
                             <Tooltip

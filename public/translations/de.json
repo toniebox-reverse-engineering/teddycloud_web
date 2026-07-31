@@ -315,6 +315,15 @@
     ],
     "fileBrowser": {
         "actions": "Aktionen",
+        "assignToTonie": {
+            "action": "Tonie zuweisen",
+            "failedDetails": "Zuweisung an \"{{series}}\" fehlgeschlagen: ",
+            "failedMessage": "Zuweisung fehlgeschlagen!",
+            "searchPlaceholder": "Tonies durchsuchen...",
+            "successDetails": "Datei erfolgreich \"{{series}}\" zugewiesen!",
+            "successMessage": "Tonie zugewiesen!",
+            "title": "Tonie zuweisen"
+        },
         "attention": "Bitte beachte!",
         "cancel": "Cancel",
         "confirmDeleteDialog": "Möchtest du die Datei {{fileToDelete}} wirklich löschen?",

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 import TeddyAudioPlaylistEditor from "./modals/TeddyAudioPlaylistEditorModal";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
+import { AssignTonieModal } from "../common/modals/AssignTonieModal";
 
 import { IMAGE_EXTENSIONS } from "../../../constants/fileTypes";
 import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
@@ -101,6 +102,9 @@ export const FileBrowser: React.FC<{
 
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
+
+    const [isAssignTonieModalOpen, setIsAssignTonieModalOpen] = useState<boolean>(false);
+    const [assignTonieSourcePath, setAssignTonieSourcePath] = useState<string>("");
 
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] =
         useState<boolean>(false);
@@ -269,6 +273,17 @@ export const FileBrowser: React.FC<{
         setIsRenameFileModalOpen(false);
     };
 
+    // assign to tonie
+    const showAssignTonieDialog = (record: Record) => {
+        const normalizedPath = path === "" || path.endsWith("/") ? path : `${path}/`;
+        setAssignTonieSourcePath(`lib://${normalizedPath}${record.name}`);
+        setIsAssignTonieModalOpen(true);
+    };
+
+    const closeAssignTonieModal = () => {
+        setIsAssignTonieModalOpen(false);
+    };
+
     // encode files
     const showFileEncodeModal = () => {
         setTreeNodeId(rootTreeNode.id);
@@ -375,6 +390,7 @@ export const FileBrowser: React.FC<{
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        showAssignTonieDialog,
         buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
         onImagePreviewClick:
             special === "custom_img"
@@ -485,6 +501,14 @@ export const FileBrowser: React.FC<{
                     path={path}
                     currentFile={currentFile || null}
                     setRebuildList={setRebuildList}
+                />
+            )}
+            {isAssignTonieModalOpen && (
+                <AssignTonieModal
+                    open={isAssignTonieModalOpen}
+                    onClose={closeAssignTonieModal}
+                    sourcePath={assignTonieSourcePath}
+                    onAssigned={() => setRebuildList((prev) => !prev)}
                 />
             )}
             {isEncodeFilesModalOpen && (

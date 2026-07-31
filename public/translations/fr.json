@@ -315,6 +315,15 @@
     ],
     "fileBrowser": {
         "actions": "Actions",
+        "assignToTonie": {
+            "action": "Assigner à une Tonie",
+            "failedDetails": "Impossible d'assigner à \"{{series}}\" : ",
+            "failedMessage": "Échec de l'assignation !",
+            "searchPlaceholder": "Rechercher des Tonies...",
+            "successDetails": "Fichier assigné à \"{{series}}\" avec succès !",
+            "successMessage": "Tonie assignée !",
+            "title": "Assigner à une Tonie"
+        },
         "attention": "Veuillez noter !",
         "cancel": "Annuler",
         "confirmDeleteDialog": "Êtes-vous sûr de vouloir supprimer {{fileToDelete}}?",
