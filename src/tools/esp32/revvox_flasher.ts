@@ -233,10 +233,14 @@ export class RevvoxFlasher {
         for (const line of lines) this.logDebug(line);
     }
 
-    async openPort(baudRate = 921600): Promise<void> {
+    async openPort(serialport: SerialPort | null = null, baudRate = 921600): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                this.port = await navigator.serial.requestPort();
+                if (serialport) {
+                    this.port = serialport;
+                } else {
+                    this.port = await navigator.serial.requestPort();
+                }
                 await this.port.open({ baudRate: baudRate });
             } catch (error) {
                 reject(error);

@@ -26,9 +26,9 @@ import { Step4AfterFlash } from "./steps/Step4AfterFlash";
 import { canHover, scrollToTop } from "../../../../../utils/browser/browserUtils";
 import { LogViewer } from "../elements/LogViewer";
 import { Step0Preparations } from "./steps/Step0Preparations";
+import { ESP32_FLASH_STEPS } from "../../../../../constants/esp32";
 
 const { Paragraph } = Typography;
-const { Option } = Select;
 const { useToken } = theme;
 
 export const Flashing: React.FC = () => {
@@ -63,6 +63,7 @@ export const Flashing: React.FC = () => {
         isOpenAvailableBoxesModal,
         setIsOpenAvailableBoxesModal,
         fileInputRef,
+        startLoadFlash,
         loadFlashFile,
         readFlash,
         patchFlash,
@@ -84,7 +85,9 @@ export const Flashing: React.FC = () => {
     const steps = [
         { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePreparations") },
         { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleReadESP32ImportFlash") },
-        { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash") },
+        ...(state.resetBox
+            ? []
+            : [{ title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titlePatchFlash") }]),
         { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleFlashESP32") },
         { title: t("tonieboxes.esp32BoxFlashing.esp32flasher.titleESP32FirmwareFlashed") },
     ];
@@ -271,14 +274,14 @@ export const Flashing: React.FC = () => {
         readFlash();
     };
 
-    const loadFileClick = () => {
-        setState((prev) => ({ ...prev, resetBox: false }));
-        fileInputRef.current?.click();
+    const loadFileClick = async () => {
+        setState((prev) => ({ ...prev, actionInProgress: true, resetBox: false }));
+        await startLoadFlash();
     };
 
-    const doResetBox = () => {
-        setState((prev) => ({ ...prev, resetBox: true }));
-        fileInputRef.current?.click();
+    const doResetBox = async () => {
+        setState((prev) => ({ ...prev, actionInProgress: true, resetBox: true }));
+        await startLoadFlash();
     };
 
     const patchImage = () => patchFlash();
@@ -310,7 +313,7 @@ export const Flashing: React.FC = () => {
 
     const renderStepContent = () => {
         switch (currentStep) {
-            case 0:
+            case ESP32_FLASH_STEPS.PREP:
                 return (
                     <Step0Preparations
                         acknowledgements={step0Ack}
@@ -319,7 +322,7 @@ export const Flashing: React.FC = () => {
                         }
                     />
                 );
-            case 1:
+            case ESP32_FLASH_STEPS.READ:
                 return (
                     <Step1ReadImport
                         state={state}
@@ -328,7 +331,7 @@ export const Flashing: React.FC = () => {
                         contentProgress={contentProgress}
                     />
                 );
-            case 2:
+            case ESP32_FLASH_STEPS.PATCH:
                 return (
                     <Step2PatchFlash
                         state={state}
@@ -337,9 +340,9 @@ export const Flashing: React.FC = () => {
                         contentProgress={contentProgress}
                     />
                 );
-            case 3:
+            case ESP32_FLASH_STEPS.WRITE:
                 return <Step3FlashESP32 state={state} contentProgress={contentProgress} />;
-            case 4:
+            case ESP32_FLASH_STEPS.FINISH:
                 return (
                     <Step4AfterFlash
                         state={state}
@@ -377,6 +380,11 @@ export const Flashing: React.FC = () => {
         );
     }
 
+    const currentStepIndex =
+        state.resetBox === true && currentStep > ESP32_FLASH_STEPS.PATCH
+            ? currentStep - 1
+            : currentStep;
+
     return (
         <>
             <div
@@ -403,13 +411,14 @@ export const Flashing: React.FC = () => {
                         <div style={{ textAlign: "end", textWrap: "nowrap" }}>
                             {t("tonieboxes.esp32BoxFlashing.baudRate")}
                         </div>
-                        <Select defaultValue={baudRate} onChange={handleBaudrateChange}>
-                            {baudRates.map((rate) => (
-                                <Option key={rate} value={rate}>
-                                    {rate}
-                                </Option>
-                            ))}
-                        </Select>
+                        <Select
+                            defaultValue={baudRate}
+                            onChange={handleBaudrateChange}
+                            options={baudRates.map((rate) => ({
+                                value: rate,
+                                label: rate,
+                            }))}
+                        />
                         <Tooltip
                             title={t("tonieboxes.esp32BoxFlashing.baudRateInfo")}
                             placement="top"
@@ -455,7 +464,7 @@ export const Flashing: React.FC = () => {
                     <Divider>{t("tonieboxes.esp32BoxFlashing.title")}</Divider>
 
                     <Steps
-                        current={currentStep}
+                        current={currentStepIndex}
                         items={steps.map((step, index) => ({
                             key: index,
                             title: step.title,
@@ -479,7 +488,7 @@ export const Flashing: React.FC = () => {
                     <div style={{ marginTop: 24 }}>{renderStepContent()}</div>
 
                     <div style={{ marginTop: 24, marginBottom: 24 }}>
-                        {currentStep === 0 && (
+                        {currentStep === ESP32_FLASH_STEPS.PREP && (
                             <div
                                 style={{
                                     display: "flex",
@@ -518,7 +527,7 @@ export const Flashing: React.FC = () => {
                                 </Button>
                             </div>
                         )}
-                        {currentStep === 1 && (
+                        {currentStep === ESP32_FLASH_STEPS.READ && (
                             <div
                                 style={{
                                     display: "flex",
@@ -586,7 +595,7 @@ export const Flashing: React.FC = () => {
                             </div>
                         )}
 
-                        {currentStep === 2 && (
+                        {currentStep === ESP32_FLASH_STEPS.PATCH && (
                             <div
                                 style={{
                                     display: "flex",
@@ -622,7 +631,7 @@ export const Flashing: React.FC = () => {
                             </div>
                         )}
 
-                        {currentStep === 3 && (
+                        {currentStep === ESP32_FLASH_STEPS.WRITE && (
                             <div
                                 style={{
                                     display: "flex",
@@ -650,7 +659,7 @@ export const Flashing: React.FC = () => {
                             </div>
                         )}
 
-                        {currentStep === 4 && (
+                        {currentStep === ESP32_FLASH_STEPS.FINISH && (
                             <div
                                 style={{
                                     display: "flex",
