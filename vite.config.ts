@@ -6,17 +6,15 @@ import path from "path";
 export default defineConfig(({ command, mode }) => {
     const portHttp = parseInt(process.env.VITE_APP_TEDDYCLOUD_PORT_HTTP || "3000", 10);
     const portHttps = parseInt(process.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS || "3443", 10);
-    const baseApiUrl = process.env.VITE_APP_TEDDYCLOUD_API_URL || "http://localhost";
     const useHttps = process.env.HTTPS === "true";
 
     const httpsOptions = useHttps
         ? {
-              key: fs.readFileSync(path.resolve(__dirname, "./localhost-key.pem")),
-              cert: fs.readFileSync(path.resolve(__dirname, "./localhost.pem")),
+              key: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost-key.pem")),
+              cert: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost.pem")),
           }
         : undefined;
 
-    const targetUrl = useHttps ? `https://localhost:${portHttps}` : `http://localhost:${portHttp}`;
     const proxyUrl = process.env.VITE_APP_TEDDYCLOUD_API_URL
         ? process.env.VITE_APP_TEDDYCLOUD_API_URL.replace(/^https:/, "http:")
         : "http://teddycloud.local";
