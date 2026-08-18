@@ -3,7 +3,18 @@
 ## 0.7.0
 
 - First TB2 support (not for daily use! Search for beta testers open: [https://t.me/toniebox_reverse_engineering/74847](https://t.me/toniebox_reverse_engineering/74847))
+- First TB2 support (not for daily use! Search for beta testers open: [https://t.me/toniebox_reverse_engineering/74847](https://t.me/toniebox_reverse_engineering/74847))
 - Added custom tonies API
+- Enhanced condition for valid tonieInfo check
+- Added contribution.md [https://github.com/toniebox-reverse-engineering/teddycloud/issues/59](https://github.com/toniebox-reverse-engineering/teddycloud/issues/59)
+- Fixed broken web radio streaming in alpine version [https://github.com/toniebox-reverse-engineering/teddycloud/issues/160](https://github.com/toniebox-reverse-engineering/teddycloud/issues/160)
+- Added api to extend and fetch custom models entries in tonies.custom.json [https://github.com/toniebox-reverse-engineering/teddycloud/issues/176](https://github.com/toniebox-reverse-engineering/teddycloud/issues/176) & [https://github.com/toniebox-reverse-engineering/teddycloud/issues/178](https://github.com/toniebox-reverse-engineering/teddycloud/issues/178)
+- Fixed bug unremoved cache on deinit [https://github.com/toniebox-reverse-engineering/teddycloud/issues/304](https://github.com/toniebox-reverse-engineering/teddycloud/issues/304)
+- Increased max length of path/filename to 255 [https://github.com/toniebox-reverse-engineering/teddycloud/issues/374](https://github.com/toniebox-reverse-engineering/teddycloud/issues/374)
+- Support running teddycloud as non-root in Docker (PUID/PGID env vars) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/441](https://github.com/toniebox-reverse-engineering/teddycloud/issues/441)
+- Fixed Runtime error during loading settings [https://github.com/toniebox-reverse-engineering/teddycloud/issues/447](https://github.com/toniebox-reverse-engineering/teddycloud/issues/447)
+- Fixed docker-entrypoint: in-place restart loop never triggers (set -e + exit-code -2 vs 254) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/448](https://github.com/toniebox-reverse-engineering/teddycloud/issues/448)
+- Fixed bug config file loader bypasses the min/max bounds enforced by the settings setters [https://github.com/toniebox-reverse-engineering/teddycloud/issues/451](https://github.com/toniebox-reverse-engineering/teddycloud/issues/451)
 - Enhanced condition for valid tonieInfo check
 - Added contribution.md [https://github.com/toniebox-reverse-engineering/teddycloud/issues/59](https://github.com/toniebox-reverse-engineering/teddycloud/issues/59)
 - Fixed broken web radio streaming in alpine version [https://github.com/toniebox-reverse-engineering/teddycloud/issues/160](https://github.com/toniebox-reverse-engineering/teddycloud/issues/160)
