@@ -21,7 +21,11 @@ interface AvailableBoxesModalProps {
     onClose: () => void;
 }
 
-const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, isOpen, onClose }) => {
+const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({
+    boxVersion,
+    isOpen,
+    onClose,
+}) => {
     const { t } = useTranslation();
     const [tonieboxes, setTonieboxes] = useState<TonieboxPropsWithStatusAndVersion[]>([]);
     const [recheckTonieboxes, setRecheckTonieboxes] = useState<boolean>(false);
@@ -55,7 +59,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                         status: statusString,
                         version,
                     };
-                })
+                }),
             );
 
             setTonieboxes(updatedBoxes);
@@ -85,7 +89,9 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
     ];
 
     const availableBoxesFooter = (
-        <Paragraph style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
+        <Paragraph
+            style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}
+        >
             <Button
                 onClick={async () => {
                     setLoading(true);
@@ -127,12 +133,15 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
                 <Paragraph>
                     {t("tonieboxes.availableBoxModal.newBoxAvailable", {
                         cc3200Hint:
-                            boxVersion === BoxVersionsEnum.cc3200 ? t("tonieboxes.availableBoxModal.cc3200Hint") : "",
+                            boxVersion === BoxVersionsEnum.cc3200
+                                ? t("tonieboxes.availableBoxModal.cc3200Hint")
+                                : "",
                     })}
                 </Paragraph>
                 <Link
                     to="https://tonies-wiki.revvox.de/docs/tools/teddycloud/setup/test-troubleshooting/"
                     target="_blank"
+                    rel="noopener noreferrer"
                 >
                     {t("tonieboxes.availableBoxModal.troubleShooting")}
                 </Link>
@@ -141,7 +150,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({ boxVersion, i
             <h4>{t("tonieboxes.availableBoxModal.availableBoxes", { boxVersion })}</h4>
             {loading ? (
                 <div style={{ display: "flex", justifyContent: "center", padding: 20 }}>
-                    <Spin size="default" />
+                    <Spin size="medium" />
                 </div>
             ) : (
                 <Table

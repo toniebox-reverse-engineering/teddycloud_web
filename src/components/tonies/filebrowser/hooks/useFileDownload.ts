@@ -25,7 +25,7 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
         baseApiUrl: string,
         path: string,
         special: string,
-        overlay?: string
+        overlay?: string,
     ) => {
         const fileUrl =
             encodeURI(baseApiUrl + "/content/" + decodeURIComponent(path) + "/" + record.name) +

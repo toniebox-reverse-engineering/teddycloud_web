@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
@@ -39,7 +43,11 @@ export const PluginPage: React.FC<PluginPageProps> = ({ standalone = false }) =>
             items.push({ title: <Link to="/community">{t("community.navigationTitle")}</Link> });
             if (section2 === "tcplugins") {
                 items.push({
-                    title: <Link to="/community/tcplugins">{t("community.plugins.navigationTitle")}</Link>,
+                    title: (
+                        <Link to="/community/tcplugins">
+                            {t("community.plugins.navigationTitle")}
+                        </Link>
+                    ),
                 });
             }
         }

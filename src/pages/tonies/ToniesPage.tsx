@@ -2,8 +2,13 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { TonieCardProps } from "../../types/tonieTypes";
+import { naturalCompare } from "../../utils/helper";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { ToniesList } from "../../components/tonies/tonieslist/ToniesList";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import LoadingSpinner from "../../components/common/elements/LoadingSpinner";
@@ -16,13 +21,9 @@ export const ToniesPage = () => {
     const { overlay, tonieBoxContentDirs, changeOverlay } = useTonieboxContentOverlay();
 
     const sortTonies = (a: TonieCardProps, b: TonieCardProps) => {
-        if (a.tonieInfo.series < b.tonieInfo.series) return -1;
-        if (a.tonieInfo.series > b.tonieInfo.series) return 1;
-
-        if (a.tonieInfo.episode < b.tonieInfo.episode) return -1;
-        if (a.tonieInfo.episode > b.tonieInfo.episode) return 1;
-
-        return 0;
+        const bySeries = naturalCompare(a.tonieInfo.series || "", b.tonieInfo.series || "");
+        if (bySeries !== 0) return bySeries;
+        return naturalCompare(a.tonieInfo.episode || "", b.tonieInfo.episode || "");
     };
 
     const { tonies, defaultLanguage, loading, setTonies } = useTonies({
@@ -34,7 +35,9 @@ export const ToniesPage = () => {
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
         setTonies((prevTonies) =>
-            prevTonies.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+            prevTonies.map((tonie) =>
+                tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie,
+            ),
         );
     };
 

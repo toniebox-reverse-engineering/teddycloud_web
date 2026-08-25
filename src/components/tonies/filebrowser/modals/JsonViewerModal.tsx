@@ -58,7 +58,9 @@ const JsonViewerModal: React.FC<JsonViewerModalProps> = ({ open, onClose, specia
             }
         >
             {loading && "Loading..."}
-            {!loading && jsonData && <CodeSnippet language="json" code={JSON.stringify(jsonData, null, 2)} />}
+            {!loading && jsonData && (
+                <CodeSnippet language="json" code={JSON.stringify(jsonData, null, 2)} />
+            )}
         </Modal>
     );
 };

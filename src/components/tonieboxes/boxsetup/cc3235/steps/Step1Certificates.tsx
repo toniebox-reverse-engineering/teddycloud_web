@@ -17,7 +17,10 @@ interface CC3235Step1CertificatesProps {
     onHwToolChange: (tool: HwTool) => void;
 }
 
-export const Step1Certificates: React.FC<CC3235Step1CertificatesProps> = ({ hwTool, onHwToolChange }) => {
+export const Step1Certificates: React.FC<CC3235Step1CertificatesProps> = ({
+    hwTool,
+    onHwToolChange,
+}) => {
     const { t } = useTranslation();
 
     const [certModalOpen, setCertModalOpen] = useState(false);
@@ -52,6 +55,7 @@ export const Step1Certificates: React.FC<CC3235Step1CertificatesProps> = ({ hwTo
                         <Link
                             to="https://raw.githubusercontent.com/toniebox-reverse-engineering/teddycloud/master/contrib/gencerts.sh"
                             target="_blank"
+                            rel="noopener noreferrer"
                         >
                             {t("tonieboxes.cc3235BoxFlashing.gencertLinkText")} {<ExportOutlined />}
                         </Link>{" "}
@@ -116,17 +120,36 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
     const ch341aCertTab = (
         <>
             <h5>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.readingFlash")}</h5>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText1")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText2")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText3")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText4")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText1")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText2")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText3")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText4")}
+            </Paragraph>
             <CodeSnippet language="shell" code={`flashrom -p ch341a_spi -r backupCC3235-1.bin`} />
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText5")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText5")}
+            </Paragraph>
             <CodeSnippet language="shell" code={`flashrom -p ch341a_spi -r backupCC3235-2.bin`} />
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText6")}</Paragraph>
-            <CodeSnippet language="shell" code={`diff backupCC3235-1.bin backupCC3235-2.bin #no output = equal`} />
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText7")}</Paragraph>
-            <Paragraph>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText8")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText6")}
+            </Paragraph>
+            <CodeSnippet
+                language="shell"
+                code={`diff backupCC3235-1.bin backupCC3235-2.bin #no output = equal`}
+            />
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText7")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.flashMemoryDumpText8")}
+            </Paragraph>
 
             <h5>{t("tonieboxes.cc3235BoxFlashing.extractCertificates")}</h5>
             <Paragraph>{t("tonieboxes.cc3235BoxFlashing.useCC3200ToolToExtract")}</Paragraph>
@@ -149,7 +172,10 @@ diff cc32xx-flash.bin cc32xx-flash.2.bin #no output = equal`}
 
             <h5>{t("tonieboxes.cc3235BoxFlashing.CH341AProgrammer.writingFlash")}</h5>
             <Paragraph>
-                <CodeSnippet language="shell" code={`flashrom -p ch341a_spi -w cc32xx-flash.customca.bin --progress`} />
+                <CodeSnippet
+                    language="shell"
+                    code={`flashrom -p ch341a_spi -w cc32xx-flash.customca.bin --progress`}
+                />
             </Paragraph>
         </>
     );

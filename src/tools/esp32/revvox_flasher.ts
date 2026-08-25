@@ -141,7 +141,9 @@ class SlipLayer {
         if (this.logPackets) {
             for (let i = 0; i < outputPackets.length; i++) {
                 const label =
-                    outputPackets.length > 1 ? `Decoded packet ${i + 1}/${outputPackets.length}` : "Decoded packet";
+                    outputPackets.length > 1
+                        ? `Decoded packet ${i + 1}/${outputPackets.length}`
+                        : "Decoded packet";
                 this.logSlipData(outputPackets[i], "DECODE", label);
             }
         }
@@ -231,10 +233,14 @@ export class RevvoxFlasher {
         for (const line of lines) this.logDebug(line);
     }
 
-    async openPort(baudRate = 921600): Promise<void> {
+    async openPort(serialport: SerialPort | null = null, baudRate = 921600): Promise<void> {
         return new Promise(async (resolve, reject) => {
             try {
-                this.port = await navigator.serial.requestPort();
+                if (serialport) {
+                    this.port = serialport;
+                } else {
+                    this.port = await navigator.serial.requestPort();
+                }
                 await this.port.open({ baudRate: baudRate });
             } catch (error) {
                 reject(error);
@@ -291,7 +297,7 @@ export class RevvoxFlasher {
                 } else {
                     reject("Failed to read register");
                 }
-            }
+            },
         );
     }
 
@@ -310,24 +316,38 @@ export class RevvoxFlasher {
                 } else {
                     reject("Failed to read register");
                 }
-            }
+            },
         );
     }
 
     async executeCommand(
         packet: { command: number; payload: Uint8Array },
-        callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, responsePacket: any) => void,
-        default_callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, rawData: Uint8Array) => void,
+        callback?: (
+            resolve: (value: any) => void,
+            reject: (reason?: any) => void,
+            responsePacket: any,
+        ) => void,
+        default_callback?: (
+            resolve: (value: any) => void,
+            reject: (reason?: any) => void,
+            rawData: Uint8Array,
+        ) => void,
         timeout = 500,
-        hasTimeoutCbr: (() => boolean) | null = null
+        hasTimeoutCbr: (() => boolean) | null = null,
     ): Promise<any> {
         /* Create command promise first */
-        const commandPromise = this._executeCommandUnlocked(packet, callback, default_callback, timeout, hasTimeoutCbr);
+        const commandPromise = this._executeCommandUnlocked(
+            packet,
+            callback,
+            default_callback,
+            timeout,
+            hasTimeoutCbr,
+        );
 
         /* Chain it to the lock, ensuring lock always continues even on error */
         this._commandLock = this._commandLock.then(
             () => commandPromise,
-            () => commandPromise /* On previous error, still execute our command */
+            () => commandPromise /* On previous error, still execute our command */,
         );
 
         /* Return our command directly to propagate result/error to caller */
@@ -339,10 +359,18 @@ export class RevvoxFlasher {
      */
     private async _executeCommandUnlocked(
         packet: { command: number; payload: Uint8Array },
-        callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, responsePacket: any) => void,
-        default_callback?: (resolve: (value: any) => void, reject: (reason?: any) => void, rawData: Uint8Array) => void,
+        callback?: (
+            resolve: (value: any) => void,
+            reject: (reason?: any) => void,
+            responsePacket: any,
+        ) => void,
+        default_callback?: (
+            resolve: (value: any) => void,
+            reject: (reason?: any) => void,
+            rawData: Uint8Array,
+        ) => void,
         timeout = 500,
-        hasTimeoutCbr: (() => boolean) | null = null
+        hasTimeoutCbr: (() => boolean) | null = null,
     ): Promise<any> {
         if (!this.port || !this.port.writable) {
             throw new Error("Port is not writable.");
@@ -374,7 +402,11 @@ export class RevvoxFlasher {
             0xd3: "RUN_USER_CODE",
         };
         const cmdName = commandNames[packet.command] ?? `0x${packet.command.toString(16)}`;
-        this.logDebug(`[CMD] ${cmdName} (0x${packet.command.toString(16).padStart(2, "0")})`, "params:", pkt);
+        this.logDebug(
+            `[CMD] ${cmdName} (0x${packet.command.toString(16).padStart(2, "0")})`,
+            "params:",
+            pkt,
+        );
 
         this.dumpPacket(pkt);
 
@@ -420,7 +452,9 @@ export class RevvoxFlasher {
                     }
                 } else {
                     settleReject(
-                        new Error(`Timeout after ${timeout} ms waiting for response to command ${packet.command}`)
+                        new Error(
+                            `Timeout after ${timeout} ms waiting for response to command ${packet.command}`,
+                        ),
                     );
                 }
             }, timeout);
@@ -502,7 +536,7 @@ export class RevvoxFlasher {
             return true;
         } catch (error) {
             this.logError(
-                `Could not set signals for automatic reset: ${error}. Please ensure device is in bootloader mode manually.`
+                `Could not set signals for automatic reset: ${error}. Please ensure device is in bootloader mode manually.`,
             );
             return false;
         }
@@ -524,13 +558,13 @@ export class RevvoxFlasher {
             this.buildCommandPacketU32(MEM_BEGIN, binary.length, 1, binary.length, address),
             async (resolve) => {
                 resolve(undefined);
-            }
+            },
         );
         await this.executeCommand(
             this.buildCommandPacketU32(MEM_DATA, binary.length, 0, 0, 0, binary),
             async (resolve) => {
                 resolve(undefined);
-            }
+            },
         );
     }
 
@@ -554,7 +588,7 @@ export class RevvoxFlasher {
                         resolve(undefined);
                     },
                     undefined,
-                    syncTimeoutMs
+                    syncTimeoutMs,
                 );
 
                 this.logDebug(`Synchronized successfully on attempt ${attempt}.`);
@@ -564,7 +598,9 @@ export class RevvoxFlasher {
                 this.logDebug(`Sync attempt ${attempt} failed: ${error.message}`);
                 if (attempt === maxRetries) {
                     this.logError(`Failed to synchronize after ${maxRetries} attempts.`);
-                    throw new Error(`Failed to synchronize with device after ${maxRetries} attempts.`);
+                    throw new Error(
+                        `Failed to synchronize with device after ${maxRetries} attempts.`,
+                    );
                 }
                 await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
             }
@@ -580,7 +616,9 @@ export class RevvoxFlasher {
             currentValue = await this.readReg(this.chip_magic_addr);
         } catch (readError: any) {
             this.logError(`Failed to read magic value after sync: ${readError}`);
-            throw new Error(`Successfully synced, but failed to read chip magic value: ${readError.message}`);
+            throw new Error(
+                `Successfully synced, but failed to read chip magic value: ${readError.message}`,
+            );
         }
 
         const isMagicValue = (stub: any, value: number): boolean => {
@@ -606,7 +644,9 @@ export class RevvoxFlasher {
         }
 
         if (!chipDetected) {
-            this.logError(`Synced, but chip magic value 0x${currentValue.toString(16)} is unknown.`);
+            this.logError(
+                `Synced, but chip magic value 0x${currentValue.toString(16)} is unknown.`,
+            );
             this.current_chip = "unknown";
         }
     }
@@ -657,7 +697,7 @@ export class RevvoxFlasher {
                         this.logError("Test read failed");
                         reject("Test read failed");
                     }
-                }
+                },
             );
         } catch (error: any) {
             this.logError("Test read failed due to an error", `${error.message}`);
@@ -682,7 +722,7 @@ export class RevvoxFlasher {
                         } else {
                             reject("Test read failed");
                         }
-                    }
+                    },
                 );
 
                 const endTimeRead = Date.now();
@@ -699,7 +739,7 @@ export class RevvoxFlasher {
                     this.logError(
                         `Test read failed! Expected: 0x${reference.toString(16).padStart(8, "0")}, but got: 0x${testread
                             .toString(16)
-                            .padStart(8, "0")}`
+                            .padStart(8, "0")}`,
                     );
                     break;
                 }
@@ -711,7 +751,9 @@ export class RevvoxFlasher {
 
         if (totalReads > 0) {
             const averageTime = totalTime / totalReads;
-            this.logDebug(`Average read time: ${averageTime.toFixed(2)} ms over ${totalReads} reads.`);
+            this.logDebug(
+                `Average read time: ${averageTime.toFixed(2)} ms over ${totalReads} reads.`,
+            );
         }
 
         return true;
@@ -734,7 +776,9 @@ export class RevvoxFlasher {
                     const responseData = decoder.decode(rawData);
 
                     if (responseData === "OHAI") {
-                        this.logDebug(`Stub loader executed successfully (received ${responseData})`);
+                        this.logDebug(
+                            `Stub loader executed successfully (received ${responseData})`,
+                        );
                         this.stubLoaded = true;
                         resolve(undefined);
                     } else {
@@ -742,7 +786,7 @@ export class RevvoxFlasher {
                         reject(`Unexpected response from stub: ${responseData}`);
                     }
                 },
-                3000
+                3000,
             );
         } catch (error: any) {
             this.logError("Failed to execute stub", "Is the device locked?");
@@ -751,11 +795,19 @@ export class RevvoxFlasher {
 
         try {
             await this.executeCommand(
-                this.buildCommandPacketU32(SPI_SET_PARAMS, 0, 0x800000, 64 * 1024, 4 * 1024, 256, 0xffff),
+                this.buildCommandPacketU32(
+                    SPI_SET_PARAMS,
+                    0,
+                    0x800000,
+                    64 * 1024,
+                    4 * 1024,
+                    256,
+                    0xffff,
+                ),
                 async (resolve) => {
                     this.logDebug("SPI_SET_PARAMS configured");
                     resolve(undefined);
-                }
+                },
             );
         } catch (error: any) {
             this.logError("Failed to configure SPI parameters", error.message);
@@ -771,7 +823,7 @@ export class RevvoxFlasher {
     async writeFlashPlain(
         address: number,
         data: Uint8Array,
-        progressCallback?: (bytesWritten: number, totalBytes: number) => void
+        progressCallback?: (bytesWritten: number, totalBytes: number) => void,
     ): Promise<void> {
         const MAX_PACKET_SIZE = 0x1000;
         const packets = Math.ceil(data.length / MAX_PACKET_SIZE);
@@ -782,9 +834,9 @@ export class RevvoxFlasher {
                 data.length,
                 packets,
                 Math.min(MAX_PACKET_SIZE, data.length),
-                address
+                address,
             ),
-            async (resolve) => resolve(undefined)
+            async (resolve) => resolve(undefined),
         );
 
         let seq = 0;
@@ -795,7 +847,7 @@ export class RevvoxFlasher {
                 this.buildCommandPacketU32(FLASH_DATA, chunk.length, seq++, 0, 0, chunk),
                 async (resolve) => resolve(undefined),
                 undefined,
-                5000
+                5000,
             );
 
             progressCallback && progressCallback(offset + chunk.length, data.length);
@@ -809,9 +861,11 @@ export class RevvoxFlasher {
     async readFlashPlain(
         address: number,
         length = 0x1000,
-        progressCallback?: (bytesRead: number, totalBytes: number) => void
+        progressCallback?: (bytesRead: number, totalBytes: number) => void,
     ): Promise<Uint8Array> {
-        const performRead = async (cbr?: (bytesRead: number, totalBytes: number) => void): Promise<Uint8Array> => {
+        const performRead = async (
+            cbr?: (bytesRead: number, totalBytes: number) => void,
+        ): Promise<Uint8Array> => {
             let sectorSize = 0x1000;
             if (sectorSize > length) sectorSize = length;
 
@@ -850,21 +904,26 @@ export class RevvoxFlasher {
                                 const dataRate = totalBytesReceived / (totalTime / 1000);
                                 const avgLatency =
                                     packetLatencies.length > 0
-                                        ? packetLatencies.reduce((a, b) => a + b, 0) / packetLatencies.length
+                                        ? packetLatencies.reduce((a, b) => a + b, 0) /
+                                          packetLatencies.length
                                         : 0;
-                                const minLatency = packetLatencies.length > 0 ? Math.min(...packetLatencies) : 0;
-                                const maxLatency = packetLatencies.length > 0 ? Math.max(...packetLatencies) : 0;
+                                const minLatency =
+                                    packetLatencies.length > 0 ? Math.min(...packetLatencies) : 0;
+                                const maxLatency =
+                                    packetLatencies.length > 0 ? Math.max(...packetLatencies) : 0;
 
-                                this.logDebug(`ReadFlash timing: ${totalBytesReceived} bytes in ${totalTime}ms`);
+                                this.logDebug(
+                                    `ReadFlash timing: ${totalBytesReceived} bytes in ${totalTime}ms`,
+                                );
                                 this.logDebug(
                                     `  Data rate: ${(dataRate / 1024 / 1024).toFixed(2)} MB/s (${dataRate.toFixed(
-                                        0
-                                    )} B/s)`
+                                        0,
+                                    )} B/s)`,
                                 );
                                 this.logDebug(
                                     `  Packet latency: min=${minLatency}ms, max=${maxLatency}ms, avg=${avgLatency.toFixed(
-                                        1
-                                    )}ms`
+                                        1,
+                                    )}ms`,
                                 );
                                 this.logDebug(`  Packets received: ${packetLatencies.length}`);
 
@@ -874,7 +933,11 @@ export class RevvoxFlasher {
                                 reject(new Error(err));
                             }
                         } else {
-                            reject(new Error(`Unknown response length for MD5! Expected: 16, Got: ${rawData.length}`));
+                            reject(
+                                new Error(
+                                    `Unknown response length for MD5! Expected: 16, Got: ${rawData.length}`,
+                                ),
+                            );
                         }
                         return;
                     }
@@ -912,7 +975,7 @@ export class RevvoxFlasher {
                     packet++;
                 },
                 1000 * packets,
-                () => Date.now() - lastDataTime > 1000
+                () => Date.now() - lastDataTime > 1000,
             );
         };
 
@@ -939,7 +1002,7 @@ export class RevvoxFlasher {
                 const decoder = new TextDecoder("utf-8");
                 resolve(decoder.decode(rawData).trim());
             },
-            Math.max(500, Math.floor(length / 500))
+            Math.max(500, Math.floor(length / 500)),
         );
     }
 
@@ -958,7 +1021,7 @@ export class RevvoxFlasher {
     async readFlash(
         address: number,
         size: number,
-        progressCallback?: (read: number, total: number, stage: string) => void
+        progressCallback?: (read: number, total: number, stage: string) => void,
     ): Promise<Uint8Array> {
         const BLOCK_SIZE = 64 * 0x1000;
 
@@ -969,15 +1032,21 @@ export class RevvoxFlasher {
 
         while (offset < size) {
             const readSize = Math.min(BLOCK_SIZE, size - offset);
-            const blockData = await this.readFlashPlain(address + offset, readSize, (read, _total) => {
-                progressCallback && progressCallback(offset + read, size, "Reading");
-            });
+            const blockData = await this.readFlashPlain(
+                address + offset,
+                readSize,
+                (read, _total) => {
+                    progressCallback && progressCallback(offset + read, size, "Reading");
+                },
+            );
 
             allData.set(blockData.slice(0, readSize), offset);
             offset += readSize;
 
             progressCallback && progressCallback(offset, size, "Reading");
-            this.logDebug(`ReadFlashSafe: Read ${offset}/${size} bytes (${Math.round((offset / size) * 100)}%)`);
+            this.logDebug(
+                `ReadFlashSafe: Read ${offset}/${size} bytes (${Math.round((offset / size) * 100)}%)`,
+            );
         }
 
         this.logDebug(`ReadFlashSafe: Read complete`);
@@ -991,7 +1060,7 @@ export class RevvoxFlasher {
         // Step 3: Device MD5
         progressCallback && progressCallback(size, size, "Calculate MD5 onchip");
         this.logDebug(
-            `ReadFlashSafe: Calculating expected MD5 for ${size} bytes at 0x${address.toString(16).padStart(8, "0")}...`
+            `ReadFlashSafe: Calculating expected MD5 for ${size} bytes at 0x${address.toString(16).padStart(8, "0")}...`,
         );
         const expectedMD5 = await this.checksumFlash(address, size);
         this.logDebug(`Expected MD5: ${expectedMD5}`);
@@ -1014,9 +1083,11 @@ export class RevvoxFlasher {
     async writeFlash(
         address: number,
         data: Uint8Array,
-        progressCallback?: (written: number, total: number, stage: string) => void
+        progressCallback?: (written: number, total: number, stage: string) => void,
     ): Promise<{ success: boolean; md5: string }> {
-        this.logDebug(`WriteFlashSafe: Writing ${data.length} bytes to 0x${address.toString(16).padStart(8, "0")}...`);
+        this.logDebug(
+            `WriteFlashSafe: Writing ${data.length} bytes to 0x${address.toString(16).padStart(8, "0")}...`,
+        );
 
         // Step 1: Write
         await this.writeFlashPlain(address, data, (written, total) => {
@@ -1041,7 +1112,9 @@ export class RevvoxFlasher {
             this.logError(`WriteFlashSafe FAILED: MD5 mismatch!`);
             this.logError(`  Expected: ${expectedMD5}`);
             this.logError(`  Device:   ${deviceMD5}`);
-            throw new Error(`MD5 verification failed after write: expected ${expectedMD5}, got ${deviceMD5}`);
+            throw new Error(
+                `MD5 verification failed after write: expected ${expectedMD5}, got ${deviceMD5}`,
+            );
         }
 
         this.logDebug(`WriteFlashSafe: MD5 verification passed ✓`);
@@ -1062,8 +1135,8 @@ export class RevvoxFlasher {
             endAddress: number,
             blockSize: number,
             erasedBytes: number,
-            erasedBytesTotal: number
-        ) => void
+            erasedBytesTotal: number,
+        ) => void,
     ): Promise<void> {
         const blockSize = 0x1000;
 
@@ -1089,7 +1162,15 @@ export class RevvoxFlasher {
                 totalTime += readDuration;
                 totalReads++;
 
-                cbr && cbr(currentAddress, startAddress, endAddress, blockSize, erasedBytes, erasedBytesTotal);
+                cbr &&
+                    cbr(
+                        currentAddress,
+                        startAddress,
+                        endAddress,
+                        blockSize,
+                        erasedBytes,
+                        erasedBytesTotal,
+                    );
             } catch (error: any) {
                 this.logError("Read failed due to an error", `${error.message}`);
                 await this.disconnect();
@@ -1099,7 +1180,9 @@ export class RevvoxFlasher {
 
         if (totalReads > 0) {
             const averageTime = totalTime / totalReads;
-            this.logDebug(`Average read time: ${averageTime.toFixed(2)} ms over ${totalReads} reads.`);
+            this.logDebug(
+                `Average read time: ${averageTime.toFixed(2)} ms over ${totalReads} reads.`,
+            );
         }
     }
 
@@ -1109,10 +1192,18 @@ export class RevvoxFlasher {
     async writeReadTest(
         address: number,
         size: number,
-        cbr?: (stage: string, step: number, totalSteps: number, percent?: number, result?: any) => void
+        cbr?: (
+            stage: string,
+            step: number,
+            totalSteps: number,
+            percent?: number,
+            result?: any,
+        ) => void,
     ): Promise<any> {
         try {
-            this.logDebug(`Test: Reading original ${size} bytes from 0x${address.toString(16).padStart(8, "0")}...`);
+            this.logDebug(
+                `Test: Reading original ${size} bytes from 0x${address.toString(16).padStart(8, "0")}...`,
+            );
             cbr && cbr("reading_original", 0, 3);
             const originalData = await this.readFlashPlain(address, size);
             this.logDebug(`Original data read complete`);
@@ -1128,7 +1219,9 @@ export class RevvoxFlasher {
                 const ascii = Array.from(chunk)
                     .map((b) => (b >= 32 && b < 127 ? String.fromCharCode(b) : "."))
                     .join("");
-                this.logDebug(`  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`);
+                this.logDebug(
+                    `  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`,
+                );
             }
 
             this.logDebug(`Test: Generating ${size} bytes of random data...`);
@@ -1146,10 +1239,14 @@ export class RevvoxFlasher {
                 const ascii = Array.from(chunk)
                     .map((b) => (b >= 32 && b < 127 ? String.fromCharCode(b) : "."))
                     .join("");
-                this.logDebug(`  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`);
+                this.logDebug(
+                    `  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`,
+                );
             }
 
-            this.logDebug(`Test: Writing ${size} bytes to flash at 0x${address.toString(16).padStart(8, "0")}...`);
+            this.logDebug(
+                `Test: Writing ${size} bytes to flash at 0x${address.toString(16).padStart(8, "0")}...`,
+            );
             cbr && cbr("writing", 2, 3);
             await this.writeFlashPlain(address, randomData, (written, total) => {
                 const percent = Math.round((written / total) * 100);
@@ -1157,7 +1254,9 @@ export class RevvoxFlasher {
             });
             this.logDebug(`Write complete`);
 
-            this.logDebug(`Test: Reading back ${size} bytes from 0x${address.toString(16).padStart(8, "0")}...`);
+            this.logDebug(
+                `Test: Reading back ${size} bytes from 0x${address.toString(16).padStart(8, "0")}...`,
+            );
             cbr && cbr("reading_back", 3, 3);
             const readbackData = await this.readFlashPlain(address, size);
             this.logDebug(`Readback complete`);
@@ -1171,7 +1270,9 @@ export class RevvoxFlasher {
                 const ascii = Array.from(chunk)
                     .map((b) => (b >= 32 && b < 127 ? String.fromCharCode(b) : "."))
                     .join("");
-                this.logDebug(`  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`);
+                this.logDebug(
+                    `  ${(address + i).toString(16).padStart(8, "0")}: ${hex.padEnd(47, " ")} |${ascii}|`,
+                );
             }
 
             let errors = 0;
@@ -1199,14 +1300,14 @@ export class RevvoxFlasher {
             } else {
                 this.logError(`✗ Test FAILED: ${errors} byte(s) mismatch!`);
                 this.logError(
-                    `  First error at offset 0x${firstError.toString(16).padStart(4, "0")} (byte ${firstError})`
+                    `  First error at offset 0x${firstError.toString(16).padStart(4, "0")} (byte ${firstError})`,
                 );
                 this.logError(
                     `  Expected: 0x${randomData[firstError].toString(16).padStart(2, "0")}, Got: 0x${readbackData[
                         firstError
                     ]
                         .toString(16)
-                        .padStart(2, "0")}`
+                        .padStart(2, "0")}`,
                 );
             }
 
@@ -1252,7 +1353,10 @@ export class RevvoxFlasher {
         return this.buildCommandPacket(command, data);
     }
 
-    buildCommandPacket(command: number, data: Uint8Array): { command: number; payload: Uint8Array } {
+    buildCommandPacket(
+        command: number,
+        data: Uint8Array,
+    ): { command: number; payload: Uint8Array } {
         const direction = 0x00;
         const size = data.length;
         let checksum = 0;
@@ -1290,7 +1394,7 @@ export class RevvoxFlasher {
             this.logDebug(
                 `Command raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
-                    .join(" ")}`
+                    .join(" ")}`,
             );
         }
         if (pkt && pkt.dir === 1) {
@@ -1298,7 +1402,7 @@ export class RevvoxFlasher {
             this.logDebug(
                 `Response raw: ${Array.from(pkt.raw as Uint8Array)
                     .map((byte) => (byte as number).toString(16).padStart(2, "0"))
-                    .join(" ")}`
+                    .join(" ")}`,
             );
         }
     }
@@ -1515,7 +1619,9 @@ const Md5 = (() => {
             let i = 0;
             let code = 0;
 
-            const length = isString ? (msg as string).length : (msg as Uint8Array | number[]).length;
+            const length = isString
+                ? (msg as string).length
+                : (msg as Uint8Array | number[]).length;
 
             while (index < length) {
                 if (this.hashed) {
@@ -1557,7 +1663,9 @@ const Md5 = (() => {
                                 buffer8[i++] = 0x80 | ((code >>> 6) & 0x3f);
                                 buffer8[i++] = 0x80 | (code & 0x3f);
                             } else {
-                                code = 0x10000 + (((code & 0x3ff) << 10) | (s.charCodeAt(++index) & 0x3ff));
+                                code =
+                                    0x10000 +
+                                    (((code & 0x3ff) << 10) | (s.charCodeAt(++index) & 0x3ff));
                                 buffer8[i++] = 0xf0 | (code >>> 18);
                                 buffer8[i++] = 0x80 | ((code >>> 12) & 0x3f);
                                 buffer8[i++] = 0x80 | ((code >>> 6) & 0x3f);
@@ -1577,9 +1685,12 @@ const Md5 = (() => {
                                 blocks[i >>> 2] |= (0x80 | ((code >>> 6) & 0x3f)) << SHIFT[i++ & 3];
                                 blocks[i >>> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
                             } else {
-                                code = 0x10000 + (((code & 0x3ff) << 10) | (s.charCodeAt(++index) & 0x3ff));
+                                code =
+                                    0x10000 +
+                                    (((code & 0x3ff) << 10) | (s.charCodeAt(++index) & 0x3ff));
                                 blocks[i >>> 2] |= (0xf0 | (code >>> 18)) << SHIFT[i++ & 3];
-                                blocks[i >>> 2] |= (0x80 | ((code >>> 12) & 0x3f)) << SHIFT[i++ & 3];
+                                blocks[i >>> 2] |=
+                                    (0x80 | ((code >>> 12) & 0x3f)) << SHIFT[i++ & 3];
                                 blocks[i >>> 2] |= (0x80 | ((code >>> 6) & 0x3f)) << SHIFT[i++ & 3];
                                 blocks[i >>> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
                             }

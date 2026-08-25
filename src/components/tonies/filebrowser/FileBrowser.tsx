@@ -1,6 +1,7 @@
 import {
     CloseOutlined,
     CloudSyncOutlined,
+    CodeOutlined,
     DeleteOutlined,
     FolderAddOutlined,
     NodeExpandOutlined,
@@ -8,7 +9,7 @@ import {
     SearchOutlined,
     UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Flex, Input, Table, theme, Tooltip, Typography } from "antd";
+import { Button, Flex, Input, Modal, Table, theme, Tooltip, Typography } from "antd";
 import { Key } from "antd/es/table/interface";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import TeddyAudioPlaylistEditor from "./modals/TeddyAudioPlaylistEditorModal";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
 
+import { IMAGE_EXTENSIONS } from "../../../constants/fileTypes";
 import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
 
 import { FileObject, Record, RecordTafHeader } from "../../../types/fileBrowserTypes";
@@ -25,7 +27,7 @@ import { LoadingSpinnerAsOverlay } from "../../common/elements/LoadingSpinner";
 import HelpModal from "./modals/FileBrowserHelpModal";
 
 import { MAX_FILES } from "../../../constants/numbers";
-import { useAudioContext } from "../../../contexts/AudioContext";
+import { useAudioContext } from "../../../provider/AudioProvider";
 import { generateUUID } from "../../../utils/ids/generateUUID";
 import { useDirectoryCreate } from "../common/hooks/useCreateDirectory";
 import { useDirectoryTree } from "../common/hooks/useDirectoryTree";
@@ -44,6 +46,7 @@ import UploadFilesModal from "./modals/UploadFilesModal";
 import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
+import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
 
 const { Paragraph } = Typography;
 
@@ -88,6 +91,8 @@ export const FileBrowser: React.FC<{
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
     const [tafHeaderRecord, setTafHeaderRecord] = useState<RecordTafHeader | null>(null);
 
+    const [isCustomJsonSnippetModalOpen, setIsCustomJsonSnippetModalOpen] = useState(false);
+
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [isConfirmMultipleDeleteModalOpen, setIsConfirmMultipleDeleteModalOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState<string | null>(null);
@@ -97,7 +102,8 @@ export const FileBrowser: React.FC<{
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
 
-    const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] = useState<boolean>(false);
+    const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] =
+        useState<boolean>(false);
     const [uploadFileList, setUploadFileList] = useState<any[]>([]);
 
     const [isEncodeFilesModalOpen, setIsEncodeFilesModalOpen] = useState<boolean>(false);
@@ -105,9 +111,12 @@ export const FileBrowser: React.FC<{
 
     const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
+    const [imagePreviewOpen, setImagePreviewOpen] = useState(false);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
 
-    const directoryTree = useDirectoryTree();
+    const directoryTree = useDirectoryTree(special);
 
     const currentPath = new URLSearchParams(location.search).get("path") || "";
 
@@ -121,6 +130,7 @@ export const FileBrowser: React.FC<{
         rebuildList,
         loading,
         filterText,
+        filterInputText,
         filterFieldAutoFocus,
         setFilterFieldAutoFocus,
         handleFilterChange,
@@ -160,13 +170,20 @@ export const FileBrowser: React.FC<{
         directoryTree,
         selectNewNode: true,
         setRebuildList,
+        special,
     });
 
-    const { isTapEditorModalOpen, initialValuesPath, openCreateTap, openEditTap, closeTapEditor, onTapCreateOrSave } =
-        useTapEditor({
-            currentPath,
-            setRebuildList,
-        });
+    const {
+        isTapEditorModalOpen,
+        initialValuesPath,
+        openCreateTap,
+        openEditTap,
+        closeTapEditor,
+        onTapCreateOrSave,
+    } = useTapEditor({
+        currentPath,
+        setRebuildList,
+    });
 
     // information modal
     const showInformationModal = (record: any) => {
@@ -358,6 +375,14 @@ export const FileBrowser: React.FC<{
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
+        onImagePreviewClick:
+            special === "custom_img"
+                ? (url) => {
+                      setImagePreviewUrl(url);
+                      setImagePreviewOpen(true);
+                  }
+                : undefined,
     });
 
     return (
@@ -378,6 +403,14 @@ export const FileBrowser: React.FC<{
                 multipleOpen={isConfirmMultipleDeleteModalOpen}
                 onCloseMultiple={closeMultipleDeleteModal}
             />
+            {isCustomJsonSnippetModalOpen && (
+                <CustomJsonSnippetModal
+                    open={isCustomJsonSnippetModalOpen}
+                    onClose={() => setIsCustomJsonSnippetModalOpen(false)}
+                    files={files as Record[]}
+                    selectedRowKeys={selectedRowKeys}
+                />
+            )}
             {isUnusedTAFsModalOpen && (
                 <UnusedTAFsModal
                     open={isUnusedTAFsModalOpen}
@@ -477,7 +510,9 @@ export const FileBrowser: React.FC<{
                     onCancel={closeTapEditor}
                 />
             )}
-            {isHelpModalOpen && <HelpModal open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />}
+            {isHelpModalOpen && (
+                <HelpModal open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
+            )}
             {currentRecord ? (
                 <TonieInformationModal
                     open={isInformationModalOpen}
@@ -487,6 +522,23 @@ export const FileBrowser: React.FC<{
                 />
             ) : (
                 ""
+            )}
+            {special === "custom_img" && (
+                <Modal
+                    title={t("tonies.customEditor.previewTitle")}
+                    open={imagePreviewOpen}
+                    onCancel={() => setImagePreviewOpen(false)}
+                    footer={null}
+                >
+                    {imagePreviewUrl ? (
+                        <img
+                            src={imagePreviewUrl}
+                            alt="preview"
+                            referrerPolicy="no-referrer"
+                            style={{ width: "100%" }}
+                        />
+                    ) : null}
+                </Modal>
             )}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <div
@@ -499,10 +551,14 @@ export const FileBrowser: React.FC<{
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <div style={{ lineHeight: 1.5, marginRight: 16 }}>{t("tonies.currentPath")}</div>
+                        <div style={{ lineHeight: 1.5, marginRight: 16 }}>
+                            {t("tonies.currentPath")}
+                        </div>
                         {generateBreadcrumbs(path)}
                     </div>
-                    <div style={{ alignSelf: "flex-end" }}>({files.filter((x) => x.name != "..").length})</div>
+                    <div style={{ alignSelf: "flex-end" }}>
+                        ({files.filter((x) => x.name != "..").length})
+                    </div>
                 </div>
                 <div
                     style={{
@@ -513,14 +569,17 @@ export const FileBrowser: React.FC<{
                         minHeight: 32,
                     }}
                 >
-                    {special === "library" ? (
+                    {special === "library" || special === "custom_img" ? (
                         <div style={{ width: "100%" }}>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, minHeight: 32 }}>
+                            <div
+                                style={{ display: "flex", flexWrap: "wrap", gap: 8, minHeight: 32 }}
+                            >
                                 {selectedRowKeys.length > 0 ? (
                                     <>
-                                        {special === "library" &&
-                                        files.filter((item) => selectedRowKeys.includes(item.name) && !item.isDir)
-                                            .length > 0 ? (
+                                        {files.filter(
+                                            (item) =>
+                                                selectedRowKeys.includes(item.name) && !item.isDir,
+                                        ).length > 0 ? (
                                             <Tooltip
                                                 open={!canHover ? false : undefined}
                                                 key="moveMultiple"
@@ -614,9 +673,32 @@ export const FileBrowser: React.FC<{
                                         {t("fileBrowser.upload.showUploadFilesDragNDrop")}
                                     </div>
                                 </Button>
-                                <Button size="small" icon={<SearchOutlined />} onClick={openUnusedTAFsModal}>
-                                    {t("fileBrowser.unusedTafsModal.title")}
-                                </Button>
+                                {special === "library" && (
+                                    <Button
+                                        size="small"
+                                        icon={<SearchOutlined />}
+                                        onClick={openUnusedTAFsModal}
+                                    >
+                                        {t("fileBrowser.unusedTafsModal.title")}
+                                    </Button>
+                                )}
+                                {special === "library" && (
+                                    <Button
+                                        size="small"
+                                        icon={<CodeOutlined />}
+                                        onClick={() => setIsCustomJsonSnippetModalOpen(true)}
+                                        disabled={
+                                            files.filter(
+                                                (file) =>
+                                                    !file.isDir &&
+                                                    file.tafHeader?.audioId &&
+                                                    file.tafHeader?.sha1Hash,
+                                            ).length === 0
+                                        }
+                                    >
+                                        {t("fileBrowser.customJsonSnippetModal.title")}
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -650,11 +732,31 @@ export const FileBrowser: React.FC<{
                     columns={columns}
                     rowKey={(record) => record.name}
                     pagination={false}
+                    tableLayout={special === "custom_img" ? "fixed" : undefined}
                     onRow={(record) => ({
                         onDoubleClick: () => {
                             if (record.isDir) {
                                 handleDirClick(record.name);
-                            } else if (record.name.includes(".json") || record.name.includes(".tap")) {
+                            } else if (
+                                special === "custom_img" &&
+                                IMAGE_EXTENSIONS.some((ext) =>
+                                    record.name.toLowerCase().endsWith(ext),
+                                )
+                            ) {
+                                const contentPath = buildContentUrl(record.name);
+                                const baseApiUrl =
+                                    (typeof import.meta !== "undefined" &&
+                                        (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
+                                    "";
+                                const url = baseApiUrl
+                                    ? `${baseApiUrl.replace(/\/$/, "")}${contentPath.startsWith("/") ? contentPath : `/${contentPath}`}`
+                                    : contentPath;
+                                setImagePreviewUrl(url);
+                                setImagePreviewOpen(true);
+                            } else if (
+                                record.name.includes(".json") ||
+                                record.name.includes(".tap")
+                            ) {
                                 showJsonViewer(path + "/" + record.name);
                             } else if (record.tafHeader) {
                                 showTafHeader(record.name, record.tafHeader);
@@ -677,7 +779,9 @@ export const FileBrowser: React.FC<{
                         }),
                         onSelectAll: (selected: boolean, selectedRows: any[]) => {
                             const selectedKeys = selected
-                                ? selectedRows.filter((row) => row.name !== "..").map((row) => row.name)
+                                ? selectedRows
+                                      .filter((row) => row.name !== "..")
+                                      .map((row) => row.name)
                                 : [];
                             setSelectedRowKeys(selectedKeys);
                         },
@@ -692,10 +796,13 @@ export const FileBrowser: React.FC<{
                                     <>
                                         <tr {...props} />
                                         <tr>
-                                            <th style={{ padding: "10px 8px" }} colSpan={columns.length + 1}>
+                                            <th
+                                                style={{ padding: "10px 8px" }}
+                                                colSpan={columns.length + 1}
+                                            >
                                                 <Input
                                                     placeholder={t("fileBrowser.filter")}
-                                                    value={filterText}
+                                                    value={filterInputText}
                                                     onChange={handleFilterChange}
                                                     onFocus={handleFilterFieldInputFocus}
                                                     onBlur={handleFilterFieldInputBlur}
@@ -706,13 +813,16 @@ export const FileBrowser: React.FC<{
                                                         <CloseOutlined
                                                             onMouseDown={(e) => e.preventDefault()}
                                                             onClick={clearFilterField}
-                                                            disabled={filterText.length === 0}
+                                                            disabled={filterInputText.length === 0}
                                                             style={{
                                                                 color:
-                                                                    filterText.length === 0
+                                                                    filterInputText.length === 0
                                                                         ? token.colorTextDisabled
                                                                         : token.colorText,
-                                                                cursor: filterText.length === 0 ? "default" : "pointer",
+                                                                cursor:
+                                                                    filterInputText.length === 0
+                                                                        ? "default"
+                                                                        : "pointer",
                                                             }}
                                                         />
                                                     }
@@ -723,7 +833,12 @@ export const FileBrowser: React.FC<{
                                 );
                             },
                             cell: (props: any) => {
-                                return <th {...props} style={{ position: "sticky", top: 0, zIndex: 8 }} />;
+                                return (
+                                    <th
+                                        {...props}
+                                        style={{ position: "sticky", top: 0, zIndex: 8 }}
+                                    />
+                                );
                             },
                         },
                     }}

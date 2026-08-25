@@ -33,14 +33,19 @@ export const OpenBoxGuide: React.FC = () => {
             content: (
                 <>
                     <h3>{t("tonieboxes.boxSetup.openBoxGuide.step1")}</h3>
-                    <Image src={showFirstImage ? openTBStep1_1 : openTBStep1_2} style={{ maxWidth: 350 }} alt="" />
+                    <Image
+                        src={showFirstImage ? openTBStep1_1 : openTBStep1_2}
+                        style={{ maxWidth: 350 }}
+                        alt=""
+                    />
                     <Paragraph style={{ marginTop: 16 }}>
                         <ul>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step1Text1")}</li>
                             <li>{t("tonieboxes.boxSetup.openBoxGuide.step1Text2")}</li>
                         </ul>
                         <Paragraph>
-                            <InfoCircleOutlined /> {t("tonieboxes.boxSetup.openBoxGuide.step1Text3")}
+                            <InfoCircleOutlined />{" "}
+                            {t("tonieboxes.boxSetup.openBoxGuide.step1Text3")}
                         </Paragraph>
                     </Paragraph>
                 </>
@@ -115,17 +120,35 @@ export const OpenBoxGuide: React.FC = () => {
         <>
             <Paragraph style={{ fontSize: "small" }}>
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart1")}{" "}
-                <Link to={t("tonieboxes.boxSetup.openBoxGuide.link1")} target="_blank">
+                <Link
+                    to={t("tonieboxes.boxSetup.openBoxGuide.link1")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     iFixit[1] {<ExportOutlined />}
                 </Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart2")}{" "}
-                <Link to={t("tonieboxes.boxSetup.openBoxGuide.link2")} target="_blank">
+                <Link
+                    to={t("tonieboxes.boxSetup.openBoxGuide.link2")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     iFixit[2] {<ExportOutlined />}
                 </Link>
                 . {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart3")}{" "}
-                <Link to="https://www.ifixit.com/User/828031/Tobias+Isakeit">Tobias Isakeit {<ExportOutlined />}</Link>{" "}
+                <Link
+                    to="https://www.ifixit.com/User/828031/Tobias+Isakeit"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Tobias Isakeit {<ExportOutlined />}
+                </Link>{" "}
                 {t("tonieboxes.boxSetup.openBoxGuide.guideSourcePart4")}{" "}
-                <Link to="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">
+                <Link
+                    to="https://creativecommons.org/licenses/by-nc-sa/3.0/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     {t("tonieboxes.boxSetup.openBoxGuide.guideSourceLicense")} {<ExportOutlined />}
                 </Link>
             </Paragraph>
@@ -136,7 +159,11 @@ export const OpenBoxGuide: React.FC = () => {
 
             <Paragraph>
                 {t("tonieboxes.boxSetup.openBoxGuide.alternativeGuidelineVideo")}{" "}
-                <Link to="https://www.youtube.com/watch?v=Cv9ID4-P6_A" target="_blank">
+                <Link
+                    to="https://www.youtube.com/watch?v=Cv9ID4-P6_A"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     https://www.youtube.com/watch?v=Cv9ID4-P6_A {<ExportOutlined />}
                 </Link>
             </Paragraph>

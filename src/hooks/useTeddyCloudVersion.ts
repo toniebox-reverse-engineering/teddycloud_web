@@ -45,14 +45,18 @@ export const useTeddyCloudVersion = () => {
         const develop = versionShort.endsWith("X.X.X");
         setIsDevelopVersion(develop);
 
-        const endpoint = develop ? "/reverseGeneric/teddycloud_develop" : "/reverseGeneric/teddycloud_release";
+        const endpoint = develop
+            ? "/reverseGeneric/teddycloud_develop"
+            : "/reverseGeneric/teddycloud_release";
 
         api.apiGetTeddyCloudApiRaw(endpoint)
             .then((response) => response.json())
             .then((versionInfo) => {
                 if (develop) {
                     const latestDevelopSHA = versionInfo.sha;
-                    setNewVersionAvailable(commitGitSha !== latestDevelopSHA);
+                    setNewVersionAvailable(
+                        !commitGitSha.includes("unknown") && commitGitSha !== latestDevelopSHA,
+                    );
                     setLatestDevelopSHA(latestDevelopSHA);
                 } else {
                     const tagName = versionInfo.tag_name;

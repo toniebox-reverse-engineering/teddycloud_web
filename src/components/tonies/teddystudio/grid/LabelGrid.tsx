@@ -5,6 +5,7 @@ import { ClearOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { LanguageFlagIcon } from "../../../common/icons/LanguageFlagIcon";
 import type { SettingsState } from "../hooks/useSettings";
 import "./../styles/print.css";
+import "./../styles/fonts.css";
 import { useTranslation } from "react-i18next";
 import { CircleText } from "../elements/CircleText";
 import { buildEffectiveSettings, LabelOverridesById } from "../types/labelOverrides";
@@ -54,7 +55,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
 
     useEffect(() => {
         const root = document.documentElement;
-        const paperSizeValue = paperSize === "Custom" ? `${customPaperWidth} ${customPaperHeight}` : paperSize;
+        const paperSizeValue =
+            paperSize === "Custom" ? `${customPaperWidth} ${customPaperHeight}` : paperSize;
 
         root.style.setProperty("--paper-size", paperSizeValue);
         root.style.setProperty("--paper-margin-top", paperMarginTop);
@@ -70,9 +72,13 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                 gap: `${labelSpacingY} ${labelSpacingX}`,
 
                 ["--labelElement-width" as any]:
-                    labelShape === "square" ? `${parseFloat(width)}mm` : `${parseFloat(diameter)}mm`,
+                    labelShape === "square"
+                        ? `${parseFloat(width)}mm`
+                        : `${parseFloat(diameter)}mm`,
                 ["--labelElement-height" as any]:
-                    labelShape === "square" ? `${parseFloat(height)}mm` : `${parseFloat(diameter)}mm`,
+                    labelShape === "square"
+                        ? `${parseFloat(height)}mm`
+                        : `${parseFloat(diameter)}mm`,
                 ["--labelElement-radius" as any]: labelShape === "square" ? "0" : "50%",
 
                 ["--paper-label-image-bleed" as any]: paperLabelImageBleed,
@@ -92,8 +98,11 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                 const {
                     labelBackgroundColor,
                     textFontSize,
+                    fontFamily,
                     imagePosition,
                     imageScale,
+                    imageBottom,
+                    imageLeft,
                     showLanguageFlag,
                     showModelNo,
                     showSeriesOnImageLabel,
@@ -103,7 +112,11 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                     contentPadding,
                 } = effectiveSettings;
 
+                const effectiveFontFamily = fontFamily || "sans-serif";
+
                 const effectiveTextColor = getContrastTextColor(labelBackgroundColor || "#ffffff");
+
+                const circleText = `${dataset.text} ${dataset.episodes ? `- ${dataset.episodes}` : ""}`;
 
                 return (
                     <div
@@ -115,6 +128,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                             justifyContent: previewMode ? "center" : "unset",
                             flexDirection: "row",
                             padding: 10,
+                            fontFamily: effectiveFontFamily,
                             ["--label-border-color" as any]: effectiveTextColor,
                             ["--text-color" as any]: effectiveTextColor,
                         }}
@@ -122,7 +136,10 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                     >
                         <div style={{ display: "flex", flexDirection: "column" }}>
                             {previewMode && (
-                                <Paragraph type="secondary" style={{ marginBottom: 0, height: 40, width: "100%" }}>
+                                <Paragraph
+                                    type="secondary"
+                                    style={{ marginBottom: 0, height: 40, width: "100%" }}
+                                >
                                     {t("tonies.teddystudio.labelImagePreview")}:
                                 </Paragraph>
                             )}
@@ -131,10 +148,13 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                 className="labelElement imageLabel"
                                 style={{
                                     display:
-                                        printMode === "ImageAndText" || printMode === "OnlyImage" ? "flex" : "none",
+                                        printMode === "ImageAndText" || printMode === "OnlyImage"
+                                            ? "flex"
+                                            : "none",
                                     ["--label-background-color" as any]: labelBackgroundColor,
                                     ["--image-position" as any]: imagePosition,
-                                    ["--text-font-size" as any]: textFontSize !== "" ? textFontSize : "14px",
+                                    ["--text-font-size" as any]:
+                                        textFontSize !== "" ? textFontSize : "14px",
                                 }}
                             >
                                 <div className="labelBg" />
@@ -146,7 +166,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                         alt=""
                                         style={{
                                             position: "absolute",
-                                            inset: 0,
+                                            bottom: `${imageBottom}px`,
+                                            left: `${imageLeft}px`,
                                             transform: `scale(${imageScale})`,
                                             transformOrigin: "center center",
                                         }}
@@ -158,11 +179,14 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                         <div className="labelOverlay">
                                             {labelShape == "round" ? (
                                                 <CircleText
-                                                    text={dataset.text}
+                                                    text={circleText}
                                                     size={150}
-                                                    fontSize={parseFloat(seriesOnImageLabelFontSize || textFontSize)}
+                                                    fontSize={parseFloat(
+                                                        seriesOnImageLabelFontSize || textFontSize,
+                                                    )}
                                                     rotateDeg={seriesOnImageLabelRotationDeg || 0}
                                                     color={effectiveTextColor}
+                                                    fontFamily={effectiveFontFamily}
                                                 />
                                             ) : (
                                                 <div
@@ -172,7 +196,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                         overflow: "hidden",
                                                         whiteSpace: "nowrap",
                                                         fontSize: parseFloat(
-                                                            seriesOnImageLabelFontSize || textFontSize,
+                                                            seriesOnImageLabelFontSize ||
+                                                                textFontSize,
                                                         ),
                                                         minWidth: 0,
                                                         color: effectiveTextColor,
@@ -182,7 +207,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                         padding: 4,
                                                     }}
                                                 >
-                                                    {dataset.text}
+                                                    {circleText}
                                                 </div>
                                             )}
                                         </div>
@@ -194,7 +219,10 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                         {(!printTrackListInsteadTitle || previewMode) && (
                             <div style={{ display: "flex", flexDirection: "column" }}>
                                 {previewMode && (
-                                    <Paragraph type="secondary" style={{ marginBottom: 0, height: 40, width: "100%" }}>
+                                    <Paragraph
+                                        type="secondary"
+                                        style={{ marginBottom: 0, height: 40, width: "100%" }}
+                                    >
                                         {t("tonies.teddystudio.labelTitle")}:
                                     </Paragraph>
                                 )}
@@ -203,19 +231,25 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                     className={`labelElement ${labelShape === "round" ? "roundFade" : "squareFade"}`}
                                     style={{
                                         display:
-                                            printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
+                                            printMode === "ImageAndText" || printMode === "OnlyText"
+                                                ? "flex"
+                                                : "none",
                                         fontSize: textFontSize,
                                         color: effectiveTextColor,
                                         ["--label-background-color" as any]: labelBackgroundColor,
                                         ["--image-position" as any]: imagePosition,
-                                        ["--text-font-size" as any]: textFontSize !== "" ? textFontSize : "14px",
+                                        ["--text-font-size" as any]:
+                                            textFontSize !== "" ? textFontSize : "14px",
                                     }}
                                 >
                                     <div className="labelTintBleed" />
 
                                     <div className="labelClip" />
 
-                                    <div className="labelContentBleed" style={{ padding: contentPadding }}>
+                                    <div
+                                        className="labelContentBleed"
+                                        style={{ padding: contentPadding }}
+                                    >
                                         <div
                                             style={{
                                                 color: effectiveTextColor,
@@ -224,18 +258,29 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                 height: "100%",
                                                 boxSizing: "border-box",
                                                 textAlign: "center",
+                                                display: "grid",
+                                                gridTemplateRows: "auto 1fr auto",
+                                                alignItems: "center",
+                                                justifyItems: "center",
+                                                gap: 4,
                                             }}
                                         >
                                             <div
                                                 style={{
                                                     fontSize: "smaller",
                                                     height: 12,
-                                                    marginTop: 2 + mmToPx(parseFloat(paperLabelImageBleed)),
+                                                    marginTop:
+                                                        2 +
+                                                        mmToPx(parseFloat(paperLabelImageBleed)),
                                                 }}
                                             >
                                                 {showLanguageFlag && dataset.language ? (
                                                     <LanguageFlagIcon
-                                                        name={dataset.language.toUpperCase().split("-")[1]}
+                                                        name={
+                                                            dataset.language
+                                                                .toUpperCase()
+                                                                .split("-")[1]
+                                                        }
                                                         height={textFontSize}
                                                     />
                                                 ) : (
@@ -243,15 +288,19 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                 )}
                                             </div>
 
-                                            <div style={{ display: "flex", gap: 4, flexDirection: "column" }}>
-                                                {dataset.series && (
-                                                    <div style={{ fontWeight: "bold" }}>{dataset.series}</div>
-                                                )}
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    gap: 4,
+                                                    flexDirection: "column",
+                                                }}
+                                            >
                                                 {dataset.text && (
                                                     <div
                                                         style={{
                                                             whiteSpace: "pre-wrap",
                                                             wordBreak: "break-word",
+                                                            fontWeight: "bold",
                                                         }}
                                                     >
                                                         {dataset.text}
@@ -260,7 +309,15 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                 {dataset.episodes && <div>{dataset.episodes}</div>}
                                             </div>
 
-                                            <div style={{ fontSize: "smaller", height: 12, marginBottom: 4 }}>
+                                            <div
+                                                style={{
+                                                    fontSize: "smaller",
+                                                    height: 12,
+                                                    marginBottom:
+                                                        2 +
+                                                        mmToPx(parseFloat(paperLabelImageBleed)),
+                                                }}
+                                            >
                                                 {showModelNo ? dataset.model : "   "}
                                             </div>
                                         </div>
@@ -272,7 +329,10 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                         {(printTrackListInsteadTitle || previewMode) && (
                             <div style={{ display: "flex", flexDirection: "column" }}>
                                 {previewMode && (
-                                    <Paragraph type="secondary" style={{ marginBottom: 0, height: 40, width: "100%" }}>
+                                    <Paragraph
+                                        type="secondary"
+                                        style={{ marginBottom: 0, height: 40, width: "100%" }}
+                                    >
                                         {t("tonies.teddystudio.labelTracklist")}:
                                     </Paragraph>
                                 )}
@@ -281,20 +341,26 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                     className={`labelElement ${labelShape === "round" ? "roundFade" : "squareFade"}`}
                                     style={{
                                         display:
-                                            printMode === "ImageAndText" || printMode === "OnlyText" ? "flex" : "none",
+                                            printMode === "ImageAndText" || printMode === "OnlyText"
+                                                ? "flex"
+                                                : "none",
                                         fontSize: textFontSize,
                                         color: effectiveTextColor,
                                         textAlign: "center",
                                         ["--label-background-color" as any]: labelBackgroundColor,
                                         ["--image-position" as any]: imagePosition,
-                                        ["--text-font-size" as any]: textFontSize !== "" ? textFontSize : "14px",
+                                        ["--text-font-size" as any]:
+                                            textFontSize !== "" ? textFontSize : "14px",
                                     }}
                                 >
                                     <div className="labelTintBleed" />
 
                                     <div className="labelClip" />
 
-                                    <div className="labelContentBleed" style={{ padding: contentPadding }}>
+                                    <div
+                                        className="labelContentBleed"
+                                        style={{ padding: contentPadding }}
+                                    >
                                         <div
                                             style={{
                                                 color: effectiveTextColor,
@@ -308,7 +374,12 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                                 boxSizing: "border-box",
                                             }}
                                         >
-                                            <div style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                                            <div
+                                                style={{
+                                                    whiteSpace: "pre-wrap",
+                                                    wordBreak: "break-word",
+                                                }}
+                                            >
                                                 {dataset.trackTitles.join("\n")}
                                             </div>
                                         </div>
@@ -318,7 +389,10 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                         )}
 
                         {!previewMode && (onRemoveItem || onEditItem || onClearLocalOverrides) && (
-                            <div className="control" style={{ display: "flex", gap: 8, margin: "8px 8px 0 8px" }}>
+                            <div
+                                className="control"
+                                style={{ display: "flex", gap: 8, margin: "8px 8px 0 8px" }}
+                            >
                                 {onEditItem && (
                                     <Button
                                         className="editButton"

@@ -25,7 +25,11 @@ export const SupportRequestGenerator: React.FC = () => {
                 {t("community.supportRequestGuide.createSupportRequest")}
             </Button>
 
-            <SupportRequestModal open={modalOpen} onCancel={() => setModalOpen(false)} onSubmit={handleSubmit} />
+            <SupportRequestModal
+                open={modalOpen}
+                onCancel={() => setModalOpen(false)}
+                onSubmit={handleSubmit}
+            />
 
             <Modal
                 title={t("community.supportRequestGuide.formattedRequest")}
@@ -35,7 +39,10 @@ export const SupportRequestGenerator: React.FC = () => {
                 width="90%"
                 style={{ maxWidth: 900 }}
             >
-                <Alert type="info" description={t("community.supportRequestGuide.hintSendingSupportRequest")} />
+                <Alert
+                    type="info"
+                    description={t("community.supportRequestGuide.hintSendingSupportRequest")}
+                />
 
                 <CodeSnippet language="text" code={formattedText} showLineNumbers={false} />
             </Modal>

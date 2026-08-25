@@ -55,7 +55,9 @@ const TranslationDiff: React.FC = () => {
     if (loading) return <p>Loading translations...</p>;
 
     const hasNoDiscrepancies = LANGUAGES.every(
-        (lang) => lang === BASE_LANG || (missingKeys[lang]?.length === 0 && extraKeys[lang]?.length === 0)
+        (lang) =>
+            lang === BASE_LANG ||
+            (missingKeys[lang]?.length === 0 && extraKeys[lang]?.length === 0),
     );
 
     return (
@@ -95,7 +97,7 @@ const TranslationDiff: React.FC = () => {
                                         <p>{t("community.translations.noExtraKeys")}</p>
                                     )}
                                 </div>
-                            )
+                            ),
                     )}
                 </div>
             )}

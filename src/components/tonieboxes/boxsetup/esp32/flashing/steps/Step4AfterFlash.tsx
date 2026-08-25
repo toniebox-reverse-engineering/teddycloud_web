@@ -27,7 +27,10 @@ export const Step4AfterFlash: React.FC<Step4Props> = ({
     const { token } = useToken();
 
     const stepStatusText = state.showStatus && (
-        <div className="status" style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}>
+        <div
+            className="status"
+            style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}
+        >
             <i>{state.state}</i>
         </div>
     );
@@ -40,7 +43,9 @@ export const Step4AfterFlash: React.FC<Step4Props> = ({
             <Paragraph>
                 <Alert
                     type="success"
-                    description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareReseted")}
+                    description={t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareReseted",
+                    )}
                 />
             </Paragraph>
             {stepStatusText}
@@ -52,7 +57,9 @@ export const Step4AfterFlash: React.FC<Step4Props> = ({
             <Paragraph>
                 <Alert
                     type="success"
-                    description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareFlashed")}
+                    description={t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.hintESP32FirmwareFlashed",
+                    )}
                 />
             </Paragraph>
             {stepStatusText}
@@ -67,10 +74,14 @@ export const Step4AfterFlash: React.FC<Step4Props> = ({
                         description={
                             <div>
                                 <Typography>
-                                    <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.automatically")}</Divider>
+                                    <Divider>
+                                        {t(
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.automatically",
+                                        )}
+                                    </Divider>
                                     <Paragraph>
                                         {t(
-                                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesAutomaticallyHint"
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesAutomaticallyHint",
                                         )}
                                     </Paragraph>
                                     <Button
@@ -80,21 +91,29 @@ export const Step4AfterFlash: React.FC<Step4Props> = ({
                                         onClick={extractCertsFromFlash}
                                         style={{ marginBottom: 8 }}
                                     >
-                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificates")}
+                                        {t(
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificates",
+                                        )}
                                     </Button>
                                     <Paragraph>
                                         {t(
                                             "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesAutomaticallyHint2",
                                             {
                                                 certDir,
-                                                mac: state.chipMac.replaceAll(":", "").toLocaleLowerCase(),
-                                            }
+                                                mac: state.chipMac
+                                                    .replaceAll(":", "")
+                                                    .toLocaleLowerCase(),
+                                            },
                                         )}
                                     </Paragraph>
                                 </Typography>
-                                <Divider>{t("tonieboxes.esp32BoxFlashing.esp32flasher.manually")}</Divider>
+                                <Divider>
+                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.manually")}
+                                </Divider>
                                 <Typography style={{ marginBottom: 8 }}>
-                                    {t("tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHint")}
+                                    {t(
+                                        "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHint",
+                                    )}
                                 </Typography>
                                 <Typography>
                                     <Collapse
@@ -103,16 +122,17 @@ export const Step4AfterFlash: React.FC<Step4Props> = ({
                                             {
                                                 key: "1",
                                                 label: t(
-                                                    "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManually"
+                                                    "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManually",
                                                 ),
                                                 children: (
                                                     <Typography>
                                                         <Paragraph>
                                                             {t(
-                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP1"
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP1",
                                                             )}{" "}
                                                             <Text code>
-                                                                docker exec -it &lt;container-name&gt; bash
+                                                                docker exec -it
+                                                                &lt;container-name&gt; bash
                                                             </Text>
                                                             .
                                                         </Paragraph>
@@ -132,7 +152,7 @@ teddycloud --esp32-extract data/firmware/` +
                                                         </Paragraph>
                                                         <Paragraph>
                                                             {t(
-                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP2"
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP2",
                                                             )}
                                                         </Paragraph>
                                                         <Paragraph>
@@ -145,7 +165,7 @@ mv ${certDirWithMac}/CA.DER ${certDirWithMac}/ca.der`}
 
                                                         <Paragraph>
                                                             {t(
-                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP3"
+                                                                "tonieboxes.esp32BoxFlashing.esp32flasher.extractCertificatesManuallyHintP3",
                                                             )}
                                                         </Paragraph>
                                                         <Paragraph>
@@ -169,7 +189,11 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                         <ul style={{ marginTop: 8 }}>
                             {state.downloadLink && (
                                 <li>
-                                    <a href={state.downloadLink} download={state.filename} title={state.filename}>
+                                    <a
+                                        href={state.downloadLink}
+                                        download={state.filename}
+                                        title={state.filename}
+                                    >
                                         {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLink")}
                                     </a>
                                 </li>
@@ -181,7 +205,9 @@ cp ${certDirWithMac}/ca.der ${certDir}/ca.der`}
                                         download={"patched_" + state.filename}
                                         title={"patched_" + state.filename}
                                     >
-                                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched")}
+                                        {t(
+                                            "tonieboxes.esp32BoxFlashing.esp32flasher.downloadLinkPatched",
+                                        )}
                                     </a>
                                 </li>
                             )}

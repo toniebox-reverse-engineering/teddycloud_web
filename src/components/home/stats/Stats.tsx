@@ -30,11 +30,14 @@ export const Stats = () => {
         const claimed = usable.filter((t) => t.claimed).length;
         const unclaimed = total - claimed;
 
-        const languageCounts = usable.reduce((acc, t) => {
-            const lang = t.sourceInfo?.language || t.tonieInfo?.language || "unknown";
-            acc[lang] = (acc[lang] ?? 0) + 1;
-            return acc;
-        }, {} as Record<string, number>);
+        const languageCounts = usable.reduce(
+            (acc, t) => {
+                const lang = t.sourceInfo?.language || t.tonieInfo?.language || "unknown";
+                acc[lang] = (acc[lang] ?? 0) + 1;
+                return acc;
+            },
+            {} as Record<string, number>,
+        );
 
         return {
             total,
@@ -131,7 +134,10 @@ export const Stats = () => {
                     }}
                 >
                     <Card style={{ flex: 1 }}>
-                        <Statistic title={t("home.stats.totalTonieBoxes")} value={tonieboxes.length} />
+                        <Statistic
+                            title={t("home.stats.totalTonieBoxes")}
+                            value={tonieboxes.length}
+                        />
                     </Card>
                     <Card style={{ flex: 1, marginTop: 16 }}>
                         <Statistic title={t("home.stats.totalTonies")} value={tagStats.total} />
@@ -146,7 +152,10 @@ export const Stats = () => {
                     }}
                 >
                     <Card style={{ flex: 1 }}>
-                        <PieChartWithLegend title={t("home.stats.cloudTitle")} data={cloudChartData} />
+                        <PieChartWithLegend
+                            title={t("home.stats.cloudTitle")}
+                            data={cloudChartData}
+                        />
                     </Card>
                 </Col>
 
@@ -158,7 +167,10 @@ export const Stats = () => {
                     }}
                 >
                     <Card style={{ flex: 1 }}>
-                        <PieChartWithLegend title={t("home.stats.liveTitle")} data={liveChartData} />
+                        <PieChartWithLegend
+                            title={t("home.stats.liveTitle")}
+                            data={liveChartData}
+                        />
                     </Card>
                 </Col>
 
@@ -170,7 +182,10 @@ export const Stats = () => {
                     }}
                 >
                     <Card style={{ flex: 1 }}>
-                        <PieChartWithLegend title={t("home.stats.claimedTitle")} data={claimedChartData} />
+                        <PieChartWithLegend
+                            title={t("home.stats.claimedTitle")}
+                            data={claimedChartData}
+                        />
                     </Card>
                 </Col>
 
@@ -182,7 +197,10 @@ export const Stats = () => {
                     }}
                 >
                     <Card style={{ flex: 1 }}>
-                        <PieChartWithLegend title={t("home.stats.languageTitle")} data={languageChartData} />
+                        <PieChartWithLegend
+                            title={t("home.stats.languageTitle")}
+                            data={languageChartData}
+                        />
                     </Card>
                 </Col>
             </Row>

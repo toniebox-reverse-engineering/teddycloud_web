@@ -14,7 +14,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "1",
             keyName: "activeImg",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.activeImgDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.activeImgDesc",
             ),
             values: "ofw1, ofw2, ofw3, cfw1, cfw2, cfw3, add1, add2, add3",
             defaultValue: "ofw1",
@@ -23,7 +23,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "2",
             keyName: "waitForPress",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.waitForPressDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.waitForPressDesc",
             ),
             values: "true, false",
             defaultValue: "false",
@@ -32,7 +32,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "3",
             keyName: "waitForBoot",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.waitForBootDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.waitForBootDesc",
             ),
             values: "true, false",
             defaultValue: "false",
@@ -41,7 +41,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "4",
             keyName: "waitTimeoutInS",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.waitTimeoutInSDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.waitTimeoutInSDesc",
             ),
             values: "1-255",
             defaultValue: "60",
@@ -50,7 +50,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "5",
             keyName: "minBatteryLevel",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.minBatteryLevelDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.minBatteryLevelDesc",
             ),
             values: "",
             defaultValue: "8869",
@@ -59,7 +59,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "6",
             keyName: "ofwFixValue",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwFixValueDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwFixValueDesc",
             ),
             values: "hex array with 4 bytes",
             defaultValue: '["4C", "01", "10", "00"]',
@@ -68,7 +68,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "7",
             keyName: "ofwFixFlash",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwFixFlashDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwFixFlashDesc",
             ),
             values: "ex. /sys/pre-img.bin",
             defaultValue: "",
@@ -77,7 +77,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "8",
             keyName: "serialLog",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.serialLogDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.serialLogDesc",
             ),
             values: "true, false",
             defaultValue: "true",
@@ -85,14 +85,18 @@ export const Step4ApplyingPatches: React.FC = () => {
         {
             key: "9",
             keyName: "logLevel",
-            description: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.logLevelDesc"),
+            description: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.logLevelDesc",
+            ),
             values: "0-5",
             defaultValue: "DEBUG_LOG_LEVEL",
         },
         {
             key: "10",
             keyName: "logColor",
-            description: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.logColorDesc"),
+            description: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.logColorDesc",
+            ),
             values: "true, false",
             defaultValue: "false",
         },
@@ -100,23 +104,31 @@ export const Step4ApplyingPatches: React.FC = () => {
 
     const generalSectionColumns = [
         {
-            title: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.key"),
+            title: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.key",
+            ),
             dataIndex: "keyName",
             key: "keyName",
             width: 120,
         },
         {
-            title: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.description"),
+            title: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.description",
+            ),
             dataIndex: "description",
             key: "description",
         },
         {
-            title: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.values"),
+            title: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.values",
+            ),
             dataIndex: "values",
             key: "values",
         },
         {
-            title: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.default"),
+            title: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.default",
+            ),
             dataIndex: "defaultValue",
             key: "defaultValue",
         },
@@ -127,7 +139,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "1",
             keyName: "checkHash",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.checkHashDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.checkHashDesc",
             ),
             values: "true, false",
             defaultValue: "true",
@@ -135,28 +147,36 @@ export const Step4ApplyingPatches: React.FC = () => {
         {
             key: "2",
             keyName: "hashFile",
-            description: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.hashFileDesc"),
+            description: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.hashFileDesc",
+            ),
             values: "true, false",
             defaultValue: "false",
         },
         {
             key: "3",
             keyName: "watchdog",
-            description: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.watchdogDesc"),
+            description: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.watchdogDesc",
+            ),
             values: "true, false",
             defaultValue: "false",
         },
         {
             key: "4",
             keyName: "ofwFix",
-            description: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwFixDesc"),
+            description: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwFixDesc",
+            ),
             values: "true, false",
             defaultValue: "false",
         },
         {
             key: "5",
             keyName: "ofwSimBL",
-            description: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwSimBLDesc"),
+            description: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.ofwSimBLDesc",
+            ),
             values: "true, false",
             defaultValue: "false",
         },
@@ -164,7 +184,7 @@ export const Step4ApplyingPatches: React.FC = () => {
             key: "6",
             keyName: "bootFlashImg",
             description: t(
-                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.bootFlashImgDesc"
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.bootFlashImgDesc",
             ),
             values: "true, false",
             defaultValue: "false",
@@ -172,7 +192,9 @@ export const Step4ApplyingPatches: React.FC = () => {
         {
             key: "7",
             keyName: "flashImg",
-            description: t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.flashImgDesc"),
+            description: t(
+                "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.flashImgDesc",
+            ),
             values: "ex. /sys/pre-img.bin",
             defaultValue: "",
         },
@@ -181,13 +203,16 @@ export const Step4ApplyingPatches: React.FC = () => {
             keyName: "patches",
             description: (
                 <>
-                    {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchesDesc")}{" "}
+                    {t(
+                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchesDesc",
+                    )}{" "}
                     <Link
                         to="https://github.com/toniebox-reverse-engineering/hackiebox_cfw_ng/tree/master/sd-bootloader-ng/bootmanager/sd/revvox/boot/patch"
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
                         {t(
-                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchDirectory"
+                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchDirectory",
                         )}{" "}
                         {<ExportOutlined />}
                     </Link>
@@ -195,8 +220,11 @@ export const Step4ApplyingPatches: React.FC = () => {
                     <Link
                         to="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/ofw-patches/"
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
-                        {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchWiki")}{" "}
+                        {t(
+                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.patchWiki",
+                        )}{" "}
                         {<ExportOutlined />}
                     </Link>
                 </>
@@ -267,7 +295,13 @@ export const Step4ApplyingPatches: React.FC = () => {
             watchdog: true,
             ofwFix: true,
             ofwSimBL: false,
-            patches: ["blockCheck.310", "noCerts.305", "noPass3.310", "noPrivacy.305", "uidCheck.307"],
+            patches: [
+                "blockCheck.310",
+                "noCerts.305",
+                "noPass3.310",
+                "noPrivacy.305",
+                "uidCheck.307",
+            ],
         },
         add2: {
             checkHash: true,
@@ -292,7 +326,9 @@ export const Step4ApplyingPatches: React.FC = () => {
             <h3>{t("tonieboxes.cc3200BoxFlashing.applyingPatches")}</h3>
 
             <h4>{t("tonieboxes.cc3200BoxFlashing.applyingPatchesWithNgCfgJson")}</h4>
-            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.introduction")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.introduction")}
+            </Paragraph>
 
             <Collapse
                 size="small"
@@ -300,39 +336,40 @@ export const Step4ApplyingPatches: React.FC = () => {
                     {
                         key: "1",
                         label: t(
-                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.collapseTitle"
+                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.collapseTitle",
                         ),
                         children: (
                             <Paragraph>
                                 <h5>
                                     {t(
-                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.title"
+                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.title",
                                     )}
                                 </h5>
                                 <Paragraph>
                                     {t(
-                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_part1"
+                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_part1",
                                     )}{" "}
                                     <Link
                                         to="https://github.com/toniebox-reverse-engineering/hackiebox_cfw_ng/blob/master/sd-bootloader-ng/bootmanager/sd/revvox/boot/ngCfg.json"
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                     >
                                         {t(
-                                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_link"
+                                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_link",
                                         )}
                                     </Link>
                                     {t(
-                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_part2"
+                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_part2",
                                     )}
                                 </Paragraph>
                                 <Paragraph>
                                     {t(
-                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_part3"
+                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.section1_part3",
                                     )}
                                 </Paragraph>
                                 <h5>
                                     {t(
-                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.generalSection"
+                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.generalSection",
                                     )}
                                 </h5>
                                 <Table
@@ -343,11 +380,11 @@ export const Step4ApplyingPatches: React.FC = () => {
                                 />
                                 <h5>
                                     {t(
-                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.firmwareSection"
+                                        "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.firmwareSection",
                                     )}
                                 </h5>
                                 {t(
-                                    "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.firmwareSectionIntro"
+                                    "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.technicalDetailsCollapse.firmwareSectionIntro",
                                 )}
                                 <Table
                                     dataSource={firmwareSectionData}
@@ -362,7 +399,9 @@ export const Step4ApplyingPatches: React.FC = () => {
                 style={{ marginBottom: 16 }}
             />
 
-            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.section2_part1")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.section2_part1")}
+            </Paragraph>
             <CodeSnippet
                 language="json"
                 code={`{
@@ -370,7 +409,9 @@ export const Step4ApplyingPatches: React.FC = () => {
         "activeImg": "ofw2",
         ...`}
             />
-            <Paragraph>{t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.section2_part2")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.section2_part2")}
+            </Paragraph>
             <CodeSnippet
                 language="json"
                 code={`...
@@ -391,11 +432,14 @@ export const Step4ApplyingPatches: React.FC = () => {
                     {
                         key: "1",
                         label: t(
-                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.examplengCFGJsonCollapse.collapseTitle"
+                            "tonieboxes.cc3200BoxFlashing.applyingPatchesSection.examplengCFGJsonCollapse.collapseTitle",
                         ),
                         children: (
                             <Paragraph>
-                                <CodeSnippet language="shell" code={JSON.stringify(exampleNgCfgJson, null, 2)} />
+                                <CodeSnippet
+                                    language="shell"
+                                    code={JSON.stringify(exampleNgCfgJson, null, 2)}
+                                />
                             </Paragraph>
                         ),
                     },

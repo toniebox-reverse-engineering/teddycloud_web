@@ -41,7 +41,9 @@ uci commit dhcp
             </Paragraph>
 
             <h5>{t("tonieboxes.boxFlashingCommon.adguard.usingAdGuard")}</h5>
-            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.setupInstructionsTitle")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.boxFlashingCommon.adguard.setupInstructionsTitle")}
+            </Paragraph>
 
             <strong>{t("tonieboxes.boxFlashingCommon.adguard.prerequisitesTitle")}</strong>
             <ul>
@@ -50,7 +52,11 @@ uci commit dhcp
                     <ul style={{ marginBottom: 0 }}>
                         <li>
                             {t("tonieboxes.boxFlashingCommon.adguard.moreInformation")}{" "}
-                            <Link to="https://adguard.com/" target="_blank">
+                            <Link
+                                to="https://adguard.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 https://adguard.com/ {<ExportOutlined />}
                             </Link>
                         </li>
@@ -78,22 +84,28 @@ uci commit dhcp
 
             <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.explanationTitle")}</Paragraph>
             <Paragraph>
-                <strong>||prod.de.tbs.toys^</strong>: {t("tonieboxes.boxFlashingCommon.adguard.prodDomainExplanation")}
+                <strong>||prod.de.tbs.toys^</strong>:{" "}
+                {t("tonieboxes.boxFlashingCommon.adguard.prodDomainExplanation")}
             </Paragraph>
             <Paragraph>
                 <strong>$dnsrewrite=NOERROR;A;XXX.XXX.XXX.XXX</strong>:{" "}
                 {t("tonieboxes.boxFlashingCommon.adguard.dnsRewriteExplanation")}
             </Paragraph>
             <Paragraph>
-                <strong>client=YYY.YYY.YYY.YYY</strong>: {t("tonieboxes.boxFlashingCommon.adguard.clientExplanation")}
+                <strong>client=YYY.YYY.YYY.YYY</strong>:{" "}
+                {t("tonieboxes.boxFlashingCommon.adguard.clientExplanation")}
             </Paragraph>
 
             <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step3Title")}</Paragraph>
             <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step3Instructions")}</Paragraph>
 
             <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.step4Title")}</Paragraph>
-            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.ipReservationInstructions")}</Paragraph>
-            <Paragraph>{t("tonieboxes.boxFlashingCommon.adguard.loggingMonitoringInstructions")}</Paragraph>
+            <Paragraph>
+                {t("tonieboxes.boxFlashingCommon.adguard.ipReservationInstructions")}
+            </Paragraph>
+            <Paragraph>
+                {t("tonieboxes.boxFlashingCommon.adguard.loggingMonitoringInstructions")}
+            </Paragraph>
         </>
     );
 };

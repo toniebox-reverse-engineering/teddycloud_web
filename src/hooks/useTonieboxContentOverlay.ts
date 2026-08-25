@@ -12,7 +12,7 @@ export function useTonieboxContentOverlay() {
             handleContentOverlayChange(nextOverlay);
             updateUrl(nextOverlay);
         },
-        [handleContentOverlayChange, updateUrl]
+        [handleContentOverlayChange, updateUrl],
     );
 
     return {

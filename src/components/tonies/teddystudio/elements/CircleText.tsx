@@ -10,6 +10,7 @@ type CircleTextProps = {
     rotateDeg?: number;
     showCircle?: boolean;
     innerFactor?: number;
+    fontFamily?: string;
 };
 
 export function CircleText({
@@ -22,6 +23,7 @@ export function CircleText({
     rotateDeg = 0,
     showCircle = true,
     innerFactor = 0.75,
+    fontFamily,
 }: CircleTextProps) {
     const id = useId();
     const pathRef = useRef<SVGPathElement | null>(null);
@@ -32,14 +34,17 @@ export function CircleText({
     const cx = size / 2;
     const cy = size / 2;
 
-    const textR = useMemo(() => Math.max(1, outerR - fitFontSize * innerFactor), [outerR, fitFontSize, innerFactor]);
+    const textR = useMemo(
+        () => Math.max(1, outerR - fitFontSize * innerFactor),
+        [outerR, fitFontSize, innerFactor],
+    );
 
     const d = useMemo(
         () =>
             `M ${cx} ${cy + textR} A ${textR} ${textR} 0 1 1 ${cx} ${cy - textR} A ${textR} ${textR} 0 1 1 ${cx} ${
                 cy + textR
             }`,
-        [cx, cy, textR]
+        [cx, cy, textR],
     );
 
     useEffect(() => {
@@ -76,14 +81,19 @@ export function CircleText({
 
             setFitFontSize(best);
         });
-    }, [text, fontSize, minFontSize, outerR, innerFactor, cx, cy]);
+    }, [text, fontSize, minFontSize, outerR, innerFactor, cx, cy, fontFamily]);
 
     return (
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
+        <svg
+            width={size}
+            height={size}
+            viewBox={`0 0 ${size} ${size}`}
+            style={{ display: "block" }}
+        >
             <g transform={`rotate(${rotateDeg} ${cx} ${cy})`}>
                 {showCircle && <circle cx={cx} cy={cy} r={outerR} fill="none" />}
                 <path ref={pathRef} id={id} d={d} fill="none" />
-                <text ref={textRef} fontSize={fitFontSize} fill={color}>
+                <text ref={textRef} fontSize={fitFontSize} fill={color} fontFamily={fontFamily}>
                     <textPath href={`#${id}`} startOffset="50%" textAnchor="middle">
                         {text}
                     </textPath>

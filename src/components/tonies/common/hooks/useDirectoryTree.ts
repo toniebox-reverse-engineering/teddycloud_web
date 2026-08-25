@@ -40,14 +40,22 @@ export interface DirectoryTreeApi {
     isNodeExpanded: (nodeId: string) => boolean;
 
     // commands
-    addDirectory: (params: { parentPath: string; directoryName: string; selectNewNode?: boolean }) => void;
+    addDirectory: (params: {
+        parentPath: string;
+        directoryName: string;
+        selectNewNode?: boolean;
+    }) => void;
     selectNodeByFullPath: (fullPath: string) => Promise<void>;
 
     // lazy loading (TreeSelect.loadData)
     onLoadTreeData: (params: { id: string }) => Promise<void>;
 }
 
-export const useDirectoryTree = (): DirectoryTreeApi => {
+export const useDirectoryTree = (
+    special = "library",
+    options?: { skipPreload?: boolean },
+): DirectoryTreeApi => {
+    const skipPreload = options?.skipPreload ?? false;
     const [treeNodeId, setTreeNodeId] = useState<string>(rootTreeNode.id);
     const [treeData, setTreeData] = useState<DirectoryTreeNode[]>([rootTreeNode]);
     const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
@@ -108,8 +116,10 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
         return Array.from(map.values());
     };
 
-    // ---- preload root children ----
+    // ---- preload root children (skip when e.g. Image Manager - tree loads on demand when Move modal opens) ----
     useEffect(() => {
+        if (skipPreload) return;
+
         let cancelled = false;
 
         const preLoadTreeData = async () => {
@@ -117,7 +127,7 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
                 const newPath = getPathFromNodeId(rootTreeNode.id); // usually ""
 
                 const response = await api.apiGetTeddyCloudApiRaw(
-                    `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`
+                    `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=${encodeURIComponent(special)}`,
                 );
                 const data = await response.json();
 
@@ -152,7 +162,7 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
         return () => {
             cancelled = true;
         };
-    }, [getPathFromNodeId]);
+    }, [getPathFromNodeId, special, skipPreload]);
 
     // ---- lazy loading ----
     const onLoadTreeData = useCallback(
@@ -165,7 +175,7 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
                     const newPath = getPathFromNodeId(parentId);
 
                     const response = await api.apiGetTeddyCloudApiRaw(
-                        `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=library`
+                        `/api/fileIndexV2?path=${encodeURIComponent(newPath)}&special=${encodeURIComponent(special)}`,
                     );
                     const data = await response.json();
 
@@ -197,7 +207,7 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
                 }
             });
         },
-        [getPathFromNodeId]
+        [getPathFromNodeId, special],
     );
 
     // ---- commands ----
@@ -226,7 +236,7 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
 
             setTreeData((prev) => {
                 const merged = mergeTreeData(prev, [newDir]).sort((a, b) =>
-                    String(a.title).toLowerCase().localeCompare(String(b.title).toLowerCase())
+                    String(a.title).toLowerCase().localeCompare(String(b.title).toLowerCase()),
                 );
                 treeDataRef.current = merged;
                 return merged;
@@ -234,10 +244,12 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
 
             if (selectNewNode) {
                 setTreeNodeId(newNodeId);
-                setExpandedKeys((prev) => (prev.includes(parentNodeId) ? prev : [...prev, parentNodeId]));
+                setExpandedKeys((prev) =>
+                    prev.includes(parentNodeId) ? prev : [...prev, parentNodeId],
+                );
             }
         },
-        [findNodeIdByFullPath]
+        [findNodeIdByFullPath],
     );
 
     const selectNodeByFullPath = useCallback(
@@ -264,14 +276,18 @@ export const useDirectoryTree = (): DirectoryTreeApi => {
                 if (!childId) {
                     return;
                 }
-                setExpandedKeys((prev) => (prev.includes(currentNodeId) ? prev : [...prev, currentNodeId]));
+                setExpandedKeys((prev) =>
+                    prev.includes(currentNodeId) ? prev : [...prev, currentNodeId],
+                );
                 currentNodeId = childId;
             }
 
             setTreeNodeId(currentNodeId);
-            setExpandedKeys((prev) => (prev.includes(currentNodeId) ? prev : [...prev, currentNodeId]));
+            setExpandedKeys((prev) =>
+                prev.includes(currentNodeId) ? prev : [...prev, currentNodeId],
+            );
         },
-        [findNodeIdByFullPath, onLoadTreeData, rootTreeNode.id, normalizeFullPath]
+        [findNodeIdByFullPath, onLoadTreeData, rootTreeNode.id, normalizeFullPath],
     );
 
     return {

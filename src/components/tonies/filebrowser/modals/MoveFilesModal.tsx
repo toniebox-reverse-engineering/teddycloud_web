@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { DirectoryTreeApi } from "../../common/hooks/useDirectoryTree";
 import { DirectoryTreeSelect } from "../../common/elements/DirectoryTreeSelect";
@@ -77,8 +77,14 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
         setRebuildList,
     });
 
-    const moveRenameFile = async (source: string, target: string, moving: boolean, flagMultiple?: boolean) => {
-        const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
+    const moveRenameFile = async (
+        source: string,
+        target: string,
+        moving: boolean,
+        flagMultiple?: boolean,
+    ) => {
+        const body =
+            "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
         const key = moving ? "move-file" : "rename-file";
 
         addLoadingNotification(
@@ -86,7 +92,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
             moving ? t("fileBrowser.messages.moving") : t("fileBrowser.messages.renaming"),
             moving
                 ? t("fileBrowser.messages.movingDetails", { file: source.split("/").slice(-1) })
-                : t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) })
+                : t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) }),
         );
 
         try {
@@ -101,7 +107,9 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
             if (data === "OK") {
                 addNotification(
                     NotificationTypeEnum.Success,
-                    moving ? t("fileBrowser.messages.movingSuccessful") : t("fileBrowser.messages.renamingSuccessful"),
+                    moving
+                        ? t("fileBrowser.messages.movingSuccessful")
+                        : t("fileBrowser.messages.renamingSuccessful"),
                     moving
                         ? t("fileBrowser.messages.movingSuccessfulDetails", {
                               fileSource: source.split("/").slice(-1),
@@ -111,7 +119,7 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                               fileSource: source.split("/").slice(-1),
                               fileTarget: target.split("/").slice(-1),
                           }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             } else {
                 throw data;
@@ -122,12 +130,19 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
             }
             addNotification(
                 NotificationTypeEnum.Error,
-                moving ? t("fileBrowser.messages.movingFailed") : t("fileBrowser.messages.renamingFailed"),
+                moving
+                    ? t("fileBrowser.messages.movingFailed")
+                    : t("fileBrowser.messages.renamingFailed"),
                 (moving
-                    ? t("fileBrowser.messages.movingFailedDetails", { fileSource: source, fileTarget: target })
-                    : t("fileBrowser.messages.renamingFailedDetails", { fileSource: source, fileTarget: target })) +
-                    error,
-                t("fileBrowser.title")
+                    ? t("fileBrowser.messages.movingFailedDetails", {
+                          fileSource: source,
+                          fileTarget: target,
+                      })
+                    : t("fileBrowser.messages.renamingFailedDetails", {
+                          fileSource: source,
+                          fileTarget: target,
+                      })) + error,
+                t("fileBrowser.title"),
             );
         }
     };
@@ -151,13 +166,17 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                 NotificationTypeEnum.Warning,
                 t("tonies.messages.noRowsSelected"),
                 t("tonies.messages.noRowsSelectedForMoving"),
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
             return;
         }
 
         const key = "move-file";
-        addLoadingNotification(key, t("fileBrowser.messages.moving"), t("fileBrowser.messages.moving"));
+        addLoadingNotification(
+            key,
+            t("fileBrowser.messages.moving"),
+            t("fileBrowser.messages.moving"),
+        );
 
         const targetDir = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
 
@@ -179,7 +198,9 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
 
     const currentTargetDir = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
     const isMoveButtonDisabled =
-        !directoryTree.treeNodeId || currentTargetDir === path || (!currentFile && selectedRowKeys.length === 0);
+        !directoryTree.treeNodeId ||
+        currentTargetDir === path ||
+        (!currentFile && selectedRowKeys.length === 0);
 
     const handleOk = () => {
         if (currentFile) {
@@ -191,7 +212,11 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
 
     return (
         <Modal
-            title={currentFile ? t("fileBrowser.moveFile.modalTitle") : t("fileBrowser.moveFile.modalTitleMultiple")}
+            title={
+                currentFile
+                    ? t("fileBrowser.moveFile.modalTitle")
+                    : t("fileBrowser.moveFile.modalTitleMultiple")
+            }
             open={open}
             onCancel={onClose}
             onOk={handleOk}
@@ -206,13 +231,28 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                 showIcon
                 style={{ marginBottom: 16 }}
             />
-            <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
-                <div style={{ marginBottom: 24, padding: 8, background: token.colorBgContainerDisabled }}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
+                    justifyContent: "space-between",
+                }}
+            >
+                <div
+                    style={{
+                        marginBottom: 24,
+                        padding: 8,
+                        background: token.colorBgContainerDisabled,
+                    }}
+                >
                     <ul style={{ maxHeight: "calc(1.5em * 5)", overflowY: "auto" }}>
                         {currentFile ? (
                             <li key="movFile">{currentFile}</li>
                         ) : (
-                            selectedRowKeys.map((key, index) => <li key={index}>{key.toString()}</li>)
+                            selectedRowKeys.map((key, index) => (
+                                <li key={index}>{key.toString()}</li>
+                            ))
                         )}
                     </ul>
                 </div>
@@ -231,7 +271,9 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
                         <Button
                             icon={<FolderAddOutlined />}
                             onClick={() => {
-                                const basePath = directoryTree.getPathFromNodeId(directoryTree.treeNodeId);
+                                const basePath = directoryTree.getPathFromNodeId(
+                                    directoryTree.treeNodeId,
+                                );
                                 openCreateDirectoryModal(basePath);
                                 setFilterFieldAutoFocus(false);
                             }}

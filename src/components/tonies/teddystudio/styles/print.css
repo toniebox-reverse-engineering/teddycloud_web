@@ -91,9 +91,6 @@
     bottom: calc(-1 * var(--paper-label-image-bleed, 0mm));
     z-index: 3;
     pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
     border-radius: var(--labelElement-radius);
 }

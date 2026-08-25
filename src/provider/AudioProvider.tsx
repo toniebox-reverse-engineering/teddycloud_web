@@ -11,7 +11,12 @@ import { supportsOggOpus } from "../utils/browser/browserUtils";
 type TonieCardTAFRecord = TonieCardProps | Record;
 
 interface AudioContextType {
-    playAudio: (url: string, meta?: any, tonieCardOrTAFRecord?: TonieCardTAFRecord, startTime?: number) => void;
+    playAudio: (
+        url: string,
+        meta?: any,
+        tonieCardOrTAFRecord?: TonieCardTAFRecord,
+        startTime?: number,
+    ) => void;
     songImage: string;
     songArtist: string;
     songTitle: string;
@@ -20,7 +25,7 @@ interface AudioContextType {
 }
 
 interface AudioProviderProps {
-    children: React.ReactNode; // Define the children prop
+    children: React.ReactNode;
 }
 
 const AudioContext = React.createContext<AudioContextType | undefined>(undefined);
@@ -47,9 +52,16 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     const [songArtist, setSongArtist] = useState<string>("");
     const [songTitle, setSongTitle] = useState<string>("");
     const [songTracks, setSongTracks] = useState<number[]>([]);
-    const [tonieCardOrTAFRecord, setTonieCardOrTAFRecord] = useState<TonieCardTAFRecord | undefined>();
+    const [tonieCardOrTAFRecord, setTonieCardOrTAFRecord] = useState<
+        TonieCardTAFRecord | undefined
+    >();
 
-    const playAudio = (url: string, meta?: any, tonieCardOrTAFRecord?: TonieCardTAFRecord, startTime?: number) => {
+    const playAudio = (
+        url: string,
+        meta?: any,
+        tonieCardOrTAFRecord?: TonieCardTAFRecord,
+        startTime?: number,
+    ) => {
         console.log("Play audio: " + url);
 
         const pattern = /\/....04E0\?|(\?ogg)/;
@@ -84,7 +96,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 setSongArtist(
                     meta.series || meta.episode
                         ? meta.series
-                        : extractFilename(decodeURI(url).replace("500304E0", t("audio.unknownSource")))
+                        : extractFilename(
+                              decodeURI(url).replace("500304E0", t("audio.unknownSource")),
+                          ),
                 );
                 setSongTitle(meta.episode);
             } else {
@@ -99,9 +113,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 const trackSeconds =
                     "trackSeconds" in tonieCardOrTAFRecord
                         ? tonieCardOrTAFRecord.trackSeconds || [0]
-                        : "tafHeader" in tonieCardOrTAFRecord && tonieCardOrTAFRecord.tafHeader?.trackSeconds
-                        ? tonieCardOrTAFRecord.tafHeader.trackSeconds
-                        : [0];
+                        : "tafHeader" in tonieCardOrTAFRecord &&
+                            tonieCardOrTAFRecord.tafHeader?.trackSeconds
+                          ? tonieCardOrTAFRecord.tafHeader.trackSeconds
+                          : [0];
                 setSongTracks(trackSeconds);
             } else {
                 setSongTracks([]);

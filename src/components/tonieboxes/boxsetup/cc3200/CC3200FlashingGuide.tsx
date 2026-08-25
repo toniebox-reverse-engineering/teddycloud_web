@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Divider, Steps, Typography } from "antd";
-import { CheckSquareOutlined, CodeOutlined, EyeOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {
+    CheckSquareOutlined,
+    CodeOutlined,
+    EyeOutlined,
+    LeftOutlined,
+    RightOutlined,
+} from "@ant-design/icons";
 
 import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
 
@@ -16,6 +22,8 @@ import { scrollToTop } from "../../../../utils/browser/browserUtils";
 
 const { Paragraph } = Typography;
 
+export type HwTool = "uart" | "esp32c3";
+
 export const CC3200BoxFlashingGuide: React.FC = () => {
     const { t } = useTranslation();
     const scrollToTopAnchor = useRef<HTMLDivElement | null>(null);
@@ -23,6 +31,8 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [hostname, setHostname] = useState<string>("");
     const [warningTextHostname, setWarningTextHostname] = useState<string>("");
+
+    const [hwTool, setHwTool] = useState<HwTool>("uart");
 
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
@@ -43,12 +53,20 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
         disabled: boolean;
     }
 
-    const AltUrlCustomPatchButton: React.FC<AltUrlCustomPatchButtonProps> = ({ hostname, disabled }) => {
+    const AltUrlCustomPatchButton: React.FC<AltUrlCustomPatchButtonProps> = ({
+        hostname,
+        disabled,
+    }) => {
         const { t } = useTranslation();
         const { createPatch } = useAltUrlCustomPatch(hostname);
 
         return (
-            <Button icon={<CodeOutlined />} disabled={disabled} type="primary" onClick={createPatch}>
+            <Button
+                icon={<CodeOutlined />}
+                disabled={disabled}
+                type="primary"
+                onClick={createPatch}
+            >
                 {t("tonieboxes.cc3200BoxFlashing.createPatch")}
             </Button>
         );
@@ -85,11 +103,11 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
     const renderStepContent = () => {
         switch (currentStep) {
             case 0:
-                return <Step0Preparations />;
+                return <Step0Preparations hwTool={hwTool} onHwToolChange={setHwTool} />;
             case 1:
-                return <Step1Bootloader />;
+                return <Step1Bootloader hwTool={hwTool} />;
             case 2:
-                return <Step2Certificates />;
+                return <Step2Certificates hwTool={hwTool} />;
             case 3:
                 return (
                     <Step3Patches
@@ -127,7 +145,12 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                     items={steps.map((step, index) => ({
                         key: index,
                         title: step.title,
-                        status: index === currentStep ? "process" : index < currentStep ? "finish" : "wait",
+                        status:
+                            index === currentStep
+                                ? "process"
+                                : index < currentStep
+                                  ? "finish"
+                                  : "wait",
                     }))}
                 />
 
@@ -165,7 +188,11 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                             {previousButton}
                             <div />
                             <div>
-                                <Button icon={<CheckSquareOutlined />} type="primary" onClick={next}>
+                                <Button
+                                    icon={<CheckSquareOutlined />}
+                                    type="primary"
+                                    onClick={next}
+                                >
                                     {t("tonieboxes.cc3200BoxFlashing.bootloaderInstalled")}
                                 </Button>
                             </div>
@@ -184,8 +211,14 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                             {previousButton}
                             <div />
                             <div>
-                                <Button icon={<CheckSquareOutlined />} type="primary" onClick={next}>
-                                    {t("tonieboxes.cc3200BoxFlashing.certificatesDumpedCAreplacementFlashed")}
+                                <Button
+                                    icon={<CheckSquareOutlined />}
+                                    type="primary"
+                                    onClick={next}
+                                >
+                                    {t(
+                                        "tonieboxes.cc3200BoxFlashing.certificatesDumpedCAreplacementFlashed",
+                                    )}
                                 </Button>
                             </div>
                         </div>
@@ -202,7 +235,10 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                         >
                             {previousButton}
                             <div>
-                                <AltUrlCustomPatchButton hostname={hostname} disabled={isHostnameInvalid} />
+                                <AltUrlCustomPatchButton
+                                    hostname={hostname}
+                                    disabled={isHostnameInvalid}
+                                />
                             </div>
                             <div>
                                 <Button icon={<RightOutlined />} iconPlacement="end" onClick={next}>
@@ -223,7 +259,11 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                         >
                             {previousButton}
                             <div>
-                                <Button icon={<EyeOutlined />} type="primary" onClick={showAvailableBoxesModal}>
+                                <Button
+                                    icon={<EyeOutlined />}
+                                    type="primary"
+                                    onClick={showAvailableBoxesModal}
+                                >
                                     {t("tonieboxes.cc3200BoxFlashing.checkBoxes")}
                                 </Button>
                             </div>

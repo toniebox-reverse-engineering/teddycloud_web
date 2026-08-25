@@ -47,9 +47,13 @@ export function formatSupportRequest(values: SupportRequestFormValues): string {
         docker ? `- Docker version: ${docker}` : undefined,
         teddycloudVersion ? `- TeddyCloud version: ${teddycloudVersion}` : undefined,
         ``,
-        stepsTaken ? [`5. Steps already taken to resolve the issue:`, `${stepsTaken}`, ``].join("\n") : undefined,
+        stepsTaken
+            ? [`5. Steps already taken to resolve the issue:`, `${stepsTaken}`, ``].join("\n")
+            : undefined,
         logs ? [`6. Logs:`, `${logs}`, ``].join("\n") : undefined,
-        additionalInfo ? [`7. Additional information (notes):`, `${additionalInfo}`, ``].join("\n") : undefined,
+        additionalInfo
+            ? [`7. Additional information (notes):`, `${additionalInfo}`, ``].join("\n")
+            : undefined,
     ]
         .filter((line) => line !== undefined)
         .join("\n");

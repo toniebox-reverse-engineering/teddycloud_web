@@ -25,7 +25,7 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
             <a
                 href="https://tonies-wiki.revvox.de/docs/custom-firmware/cc3200/hackieboxng-bl/ofw-patches/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
             >
                 {t("tonieboxes.cc3200BoxFlashing.patchesMoreInformationLink")} {<ExportOutlined />}
             </a>
@@ -39,7 +39,11 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
                     {
                         key: "1",
                         label: t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.CollapseTitle"),
-                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.text")}</Paragraph>,
+                        children: (
+                            <Paragraph>
+                                {t("tonieboxes.cc3200BoxFlashing.altUrlFritzBoxPatch.text")}
+                            </Paragraph>
+                        ),
                     },
                 ]}
                 style={{ marginBottom: 16, marginTop: 16 }}
@@ -51,7 +55,11 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
                     {
                         key: "1",
                         label: t("tonieboxes.cc3200BoxFlashing.altUrlPatch.CollapseTitle"),
-                        children: <Paragraph>{t("tonieboxes.cc3200BoxFlashing.altUrlPatch.text")}</Paragraph>,
+                        children: (
+                            <Paragraph>
+                                {t("tonieboxes.cc3200BoxFlashing.altUrlPatch.text")}
+                            </Paragraph>
+                        ),
                     },
                 ]}
                 style={{ marginBottom: 16 }}
@@ -78,10 +86,16 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
                             <label>{t("tonieboxes.cc3200BoxFlashing.hostname")}</label>
                         </Col>
                         <Col style={{ flex: "1 1 auto" }}>
-                            <Input type="text" value={hostname} onChange={(e) => onHostnameChange(e.target.value)} />
+                            <Input
+                                type="text"
+                                value={hostname}
+                                onChange={(e) => onHostnameChange(e.target.value)}
+                            />
                         </Col>
                     </Row>
-                    {warningTextHostname && <p style={{ color: token.colorErrorText }}>{warningTextHostname}</p>}
+                    {warningTextHostname && (
+                        <p style={{ color: token.colorErrorText }}>{warningTextHostname}</p>
+                    )}
                 </Form.Item>
             </Form>
         </>

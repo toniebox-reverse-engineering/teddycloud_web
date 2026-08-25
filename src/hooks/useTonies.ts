@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { TonieCardProps } from "../types/tonieTypes";
-import { useTeddyCloud } from "../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -21,10 +21,17 @@ interface UseToniesOptions {
 }
 
 export const useTonies = (options: UseToniesOptions = {}) => {
-    const { overlay = "", merged = true, shuffle = false, sort, includeHidden = false, filter = undefined } = options;
+    const {
+        overlay = "",
+        merged = true,
+        shuffle = false,
+        sort,
+        includeHidden = false,
+        filter = undefined,
+    } = options;
 
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
+    const { addNotification, toniesRefreshTrigger } = useTeddyCloud();
 
     const [tonies, setTonies] = useState<TonieCardProps[]>([]);
     const [defaultLanguage, setDefaultLanguage] = useState<string>("");
@@ -42,6 +49,14 @@ export const useTonies = (options: UseToniesOptions = {}) => {
                 } else {
                     tonieData = await api.apiGetTagIndex(overlay ?? "", true);
                 }
+
+                const seen = new Set<string>();
+                tonieData = tonieData.filter((t) => {
+                    const r = (t?.ruid ?? "").trim();
+                    if (r && seen.has(r)) return false;
+                    if (r) seen.add(r);
+                    return true;
+                });
 
                 if (!includeHidden) {
                     tonieData = tonieData.filter((item) => !item.hide);
@@ -65,7 +80,7 @@ export const useTonies = (options: UseToniesOptions = {}) => {
                     NotificationTypeEnum.Error,
                     t("tonies.errorFetchingTonies"),
                     t("tonies.errorFetchingTonies") + ": " + error,
-                    t("tonies.navigationTitle")
+                    t("tonies.navigationTitle"),
                 );
             } finally {
                 setLoading(false);
@@ -73,7 +88,7 @@ export const useTonies = (options: UseToniesOptions = {}) => {
         };
 
         fetchTonies();
-    }, [overlay]);
+    }, [overlay, merged, toniesRefreshTrigger]);
 
     useEffect(() => {
         const counts: LanguageCounts = {};

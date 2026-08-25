@@ -2,16 +2,68 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { generateUUID } from "../../../../utils/ids/generateUUID";
 
 type LocalSettings = Record<string, unknown>;
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
+const NOTIFICATIONS_STORAGE_KEY = "notifications";
+const MAX_STORED_NOTIFICATIONS = 500;
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === "object" && value !== null && !Array.isArray(value);
+
+const parseMaybeJson = (value: unknown): unknown => {
+    if (typeof value !== "string") return value;
+
+    try {
+        return JSON.parse(value);
+    } catch {
+        return value;
+    }
+};
+
+const normalizeNotificationDate = (value: unknown): string => {
+    const parsedDate =
+        value instanceof Date
+            ? new Date(value.getTime())
+            : typeof value === "string" || typeof value === "number"
+              ? new Date(value)
+              : new Date();
+
+    return Number.isNaN(parsedDate.getTime()) ? new Date().toISOString() : parsedDate.toISOString();
+};
+
+const normalizeStoredNotifications = (value: unknown): unknown[] => {
+    const parsedValue = parseMaybeJson(value);
+    if (!Array.isArray(parsedValue)) return [];
+
+    const usedUuids = new Set<string>();
+
+    return parsedValue.slice(0, MAX_STORED_NOTIFICATIONS).map((notification) => {
+        const raw = isRecord(notification) ? notification : {};
+        const rawUuid = typeof raw.uuid === "string" ? raw.uuid : "";
+        const uuid = rawUuid && !usedUuids.has(rawUuid) ? rawUuid : generateUUID();
+        usedUuids.add(uuid);
+
+        return {
+            uuid,
+            date: normalizeNotificationDate(raw.date),
+            type: typeof raw.type === "string" ? raw.type : NotificationTypeEnum.Info,
+            title: typeof raw.title === "string" ? raw.title : "",
+            description: typeof raw.description === "string" ? raw.description : "",
+            context: typeof raw.context === "string" ? raw.context : "",
+            flagConfirmed: Boolean(raw.flagConfirmed),
+        };
+    });
+};
+
 export const useGuiLocalSettings = () => {
     const { t } = useTranslation();
-    const { addNotification } = useTeddyCloud();
+    const { addNotification, reloadNotifications } = useTeddyCloud();
 
     const [localSettings, setLocalSettings] = useState<LocalSettings>({});
 
@@ -93,28 +145,40 @@ export const useGuiLocalSettings = () => {
             try {
                 const importedData = JSON.parse(jsonString);
 
-                if (!importedData || typeof importedData !== "object" || !("teddycloudExport" in importedData)) {
+                if (
+                    !importedData ||
+                    typeof importedData !== "object" ||
+                    !("teddycloudExport" in importedData)
+                ) {
                     throw new Error("Invalid Teddycloud JSON file");
                 }
 
-                const data = importedData as Record<string, unknown>;
+                const data = { ...(importedData as Record<string, unknown>) };
                 delete data.teddycloudExport;
 
                 Object.entries(data).forEach(([key, value]) => {
-                    if (typeof value === "string") {
-                        localStorage.setItem(key, value);
+                    const valueToStore =
+                        key === NOTIFICATIONS_STORAGE_KEY
+                            ? normalizeStoredNotifications(value)
+                            : value;
+
+                    if (typeof valueToStore === "string") {
+                        localStorage.setItem(key, valueToStore);
                     } else {
-                        localStorage.setItem(key, JSON.stringify(value));
+                        localStorage.setItem(key, JSON.stringify(valueToStore));
                     }
                 });
 
+                reloadNotifications();
                 loadLocalSettings();
 
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("settings.guiSettings.jsonLoaded"),
                     t("settings.guiSettings.jsonLoadedDetails"),
-                    t("settings.title")
+                    t("settings.title"),
+                    true,
+                    false,
                 );
             } catch (err) {
                 console.error(err);
@@ -122,11 +186,11 @@ export const useGuiLocalSettings = () => {
                     NotificationTypeEnum.Error,
                     t("settings.guiSettings.jsonLoadFailed"),
                     t("settings.guiSettings.jsonLoadFailedDetails") + String(err),
-                    t("settings.title")
+                    t("settings.title"),
                 );
             }
         },
-        [addNotification, loadLocalSettings, t]
+        [addNotification, loadLocalSettings, reloadNotifications, t],
     );
 
     const settingKeys = useMemo(() => Object.keys(localSettings), [localSettings]);

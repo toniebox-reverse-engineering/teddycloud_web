@@ -5,10 +5,15 @@ import CodeSnippet from "../../../../common/elements/CodeSnippet";
 import { useState } from "react";
 import { CertificatesModal } from "../../../common/modals/CertificatesModal";
 import { CertificateIntro } from "../../common/elements/CertificateIntro";
+import { HwTool } from "../CC3200FlashingGuide";
 
 const { Paragraph } = Typography;
 
-export const Step2Certificates: React.FC = () => {
+interface Step2CertificatesProps {
+    hwTool: HwTool;
+}
+
+export const Step2Certificates: React.FC<Step2CertificatesProps> = ({ hwTool }) => {
     const { t } = useTranslation();
 
     const [certModalOpen, setCertModalOpen] = useState(false);
@@ -27,12 +32,14 @@ export const Step2Certificates: React.FC = () => {
             <Paragraph>
                 <CodeSnippet
                     language="shell"
-                    code={`cc3200tool -p COM3 read_file /cert/ca.der ExtractedFromBox/cert/ca.der read_file /cert/private.der ExtractedFromBox/cert/private.der read_file /cert/client.der ExtractedFromBox/cert/client.der`}
+                    code={`cc3200tool -p COM3 ${hwTool === "esp32c3" ? "--gateway " : ""}read_file /cert/ca.der ExtractedFromBox/cert/ca.der read_file /cert/private.der ExtractedFromBox/cert/private.der read_file /cert/client.der ExtractedFromBox/cert/client.der`}
                 />
             </Paragraph>
             <Paragraph>
                 <Paragraph>
-                    <Paragraph>{t("tonieboxes.cc3200BoxFlashing.certificates.extractAgain")}</Paragraph>
+                    <Paragraph>
+                        {t("tonieboxes.cc3200BoxFlashing.certificates.uploadCertificates")}
+                    </Paragraph>
                     <Paragraph>
                         <Button onClick={() => setCertModalOpen(true)}>
                             {t("tonieboxes.boxSetup.uploadCertificateButton")}
@@ -44,7 +51,10 @@ export const Step2Certificates: React.FC = () => {
             <h4>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacement")}</h4>
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementIntro")}</Paragraph>
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementText")}</Paragraph>
-            <CodeSnippet language="shell" code={`cc3200tool -p COM3 write_file c2.der /cert/c2.der`} />
+            <CodeSnippet
+                language="shell"
+                code={`cc3200tool -p COM3 ${hwTool === "esp32c3" ? "--gateway " : ""}write_file c2.der /cert/c2.der`}
+            />
             <Paragraph>{t("tonieboxes.cc3200BoxFlashing.flashCAreplacementOutro")}</Paragraph>
             <CertificatesModal
                 open={certModalOpen}

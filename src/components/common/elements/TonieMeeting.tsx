@@ -38,8 +38,10 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
     const parentHeight = height;
     const centerVertical = 50;
     const centerHorizontal = 50;
-    const centerWidth = (document.getElementById("central-text")?.clientWidth || 0) / (parentWidth < 450 ? 3 : 2);
-    const centerHeight = (document.getElementById("central-text")?.clientHeight || 0) / (parentHeight < 500 ? 3 : 2);
+    const centerWidth =
+        (document.getElementById("central-text")?.clientWidth || 0) / (parentWidth < 450 ? 3 : 2);
+    const centerHeight =
+        (document.getElementById("central-text")?.clientHeight || 0) / (parentHeight < 500 ? 3 : 2);
 
     const { tonies } = useTonies({
         merged: true,
@@ -55,7 +57,7 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                     item.tonieInfo.picture !== null &&
                     item.tonieInfo.picture !== undefined &&
                     item.tonieInfo.picture !== "" &&
-                    !item.nocloud
+                    !item.nocloud,
             )
             .slice(0, maxNoOfGuests);
     }, [tonies]);
@@ -70,11 +72,23 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                     top = Math.random() * (100 - (toniesSize / parentHeight) * 100);
                     left = Math.random() * (100 - (toniesSize / parentWidth) * 100);
                 } while (
-                    0 < centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
-                    0 < centerHorizontal - (centerWidth / parentWidth) * 100 - (toniesSize / parentWidth) * 100 &&
-                    top > centerVertical - (centerHeight / parentHeight) * 100 - (toniesSize / parentHeight) * 100 &&
+                    0 <
+                        centerVertical -
+                            (centerHeight / parentHeight) * 100 -
+                            (toniesSize / parentHeight) * 100 &&
+                    0 <
+                        centerHorizontal -
+                            (centerWidth / parentWidth) * 100 -
+                            (toniesSize / parentWidth) * 100 &&
+                    top >
+                        centerVertical -
+                            (centerHeight / parentHeight) * 100 -
+                            (toniesSize / parentHeight) * 100 &&
                     top < centerVertical + (centerHeight / parentHeight) * 100 &&
-                    left > centerHorizontal - (centerWidth / parentWidth) * 100 - (toniesSize / parentWidth) * 100 &&
+                    left >
+                        centerHorizontal -
+                            (centerWidth / parentWidth) * 100 -
+                            (toniesSize / parentWidth) * 100 &&
                     left < centerHorizontal + (centerWidth / parentWidth) * 100
                 );
                 return {

@@ -5,7 +5,11 @@ import { theme, Layout } from "antd";
 import { ExclamationCircleOutlined, HeartFilled } from "@ant-design/icons";
 import styled from "styled-components";
 
-import { gitHubSponsoringUrl, gitHubTCCommitTreeBaseUrl, gitHubTCReleasesUrl } from "../../../constants/urls";
+import {
+    gitHubSponsoringUrl,
+    gitHubTCCommitTreeBaseUrl,
+    gitHubTCReleasesUrl,
+} from "../../../constants/urls";
 
 import AudioPlayerFooter from "./AudioPlayerFooter";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
@@ -69,7 +73,11 @@ export const StyledFooter = () => {
     return (
         <>
             {isAudioPlayerVisible && <AdditionalFooterPadding height={footerHeight} />}
-            <StyledFooterComponent id="teddycloud-footer" ref={footerRef} $sticky={isAudioPlayerVisible}>
+            <StyledFooterComponent
+                id="teddycloud-footer"
+                ref={footerRef}
+                $sticky={isAudioPlayerVisible}
+            >
                 <StyledCenterPart>
                     <AudioPlayerFooter onVisibilityChange={handleAudioPlayerVisibilityChange} />
                 </StyledCenterPart>
@@ -82,6 +90,7 @@ export const StyledFooter = () => {
                                     : gitHubTCReleasesUrl + "tag/tc_" + versionShort
                             }
                             target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <HiddenDesktop>
                                 {versionShort} ({commitGitShaShort})
@@ -105,18 +114,34 @@ export const StyledFooter = () => {
                                             : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
                                     }
                                     target="_blank"
-                                    style={{ display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}
+                                    rel="noopener noreferrer"
+                                    style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        whiteSpace: "nowrap",
+                                    }}
                                 >
-                                    <ExclamationCircleOutlined style={{ color: token.colorWarningText }} />
-                                    <span style={{ paddingLeft: 8 }}>{t("teddycloud.newVersionShort")}</span>
+                                    <ExclamationCircleOutlined
+                                        style={{ color: token.colorWarningText }}
+                                    />
+                                    <span style={{ paddingLeft: 8 }}>
+                                        {t("teddycloud.newVersionShort")}
+                                    </span>
                                 </Link>
                             </span>
                         )}
                         <span style={{ paddingLeft: 8 }}>-</span>
                         <HeartFilled style={{ color: "#eb2f96", paddingLeft: 8 }} />
-                        <HiddenMobile style={{ paddingLeft: 8 }}>{t("footer.sponsorText")} </HiddenMobile>
+                        <HiddenMobile style={{ paddingLeft: 8 }}>
+                            {t("footer.sponsorText")}{" "}
+                        </HiddenMobile>
                         <b>
-                            <Link to={gitHubSponsoringUrl} target="_blank" style={{ paddingLeft: 8 }}>
+                            <Link
+                                to={gitHubSponsoringUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ paddingLeft: 8 }}
+                            >
                                 {t("footer.sponsor")}
                             </Link>
                         </b>

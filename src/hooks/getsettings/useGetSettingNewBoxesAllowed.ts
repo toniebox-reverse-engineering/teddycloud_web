@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { useTranslation } from "react-i18next";
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -24,8 +24,9 @@ export const useNewBoxesAllowed = () => {
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("settings.errorFetchingSetting"),
-                    t("settings.errorFetchingSettingDetails", { setting: "core.allowNewBox" }) + error,
-                    t("tonieboxes.navigationTitle")
+                    t("settings.errorFetchingSettingDetails", { setting: "core.allowNewBox" }) +
+                        error,
+                    t("tonieboxes.navigationTitle"),
                 );
             } finally {
                 setLoading(false);

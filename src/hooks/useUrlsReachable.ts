@@ -35,7 +35,7 @@ export const useUrlsReachable = (
          * strict=false: allow opaque no-cors probes to count as reachable (NOT 404-safe).
          */
         strict?: boolean;
-    }
+    },
 ) => {
     const [reachable, setReachable] = useState<UrlToTest[]>([]);
     const timeoutMs = opts?.timeoutMs ?? 6000;

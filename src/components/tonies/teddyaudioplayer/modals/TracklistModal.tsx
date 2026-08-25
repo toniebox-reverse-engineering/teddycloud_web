@@ -22,17 +22,30 @@ const getTrackStartTime = (tonieCard: TonieCardProps, index: number) => {
     return (trackSeconds && trackSeconds[index]) || 0;
 };
 
-const TracklistModal: React.FC<TracklistModalProps> = ({ open, tonieCard, onClose, onSelectTrack, getContainer }) => {
+const TracklistModal: React.FC<TracklistModalProps> = ({
+    open,
+    tonieCard,
+    onClose,
+    onSelectTrack,
+    getContainer,
+}) => {
     const { t } = useTranslation();
 
     const title =
-        tonieCard?.tonieInfo?.series + (tonieCard?.tonieInfo.episode && " - " + tonieCard?.tonieInfo.episode) ||
+        tonieCard?.tonieInfo?.series +
+            (tonieCard?.tonieInfo.episode && " - " + tonieCard?.tonieInfo.episode) ||
         t("tonies.teddyaudioplayer.unknown");
 
     const tracks = tonieCard?.tonieInfo?.tracks || [];
 
     return (
-        <Modal title={title} open={open} onCancel={onClose} footer={null} getContainer={getContainer}>
+        <Modal
+            title={title}
+            open={open}
+            onCancel={onClose}
+            footer={null}
+            getContainer={getContainer}
+        >
             {tracks.length ? (
                 <Flex vertical gap={4}>
                     {tracks.map((track: string, index: number) => (

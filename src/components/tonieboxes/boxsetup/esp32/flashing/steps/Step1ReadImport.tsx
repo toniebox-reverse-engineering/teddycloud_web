@@ -28,13 +28,21 @@ const renderStateWithAnimation = (text: string) => {
     return text;
 };
 
-export const Step1ReadImport: React.FC<Step1Props> = ({ state, fileInputRef, onFileChange, contentProgress }) => {
+export const Step1ReadImport: React.FC<Step1Props> = ({
+    state,
+    fileInputRef,
+    onFileChange,
+    contentProgress,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const conESP32Explanation = connectESP32Explanation();
 
     const stepStatusText = state.showStatus && (
-        <div className="status" style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}>
+        <div
+            className="status"
+            style={{ marginBottom: 16, color: state.error ? token.colorErrorText : "unset" }}
+        >
             <i>{renderStateWithAnimation(state.state)}</i>
         </div>
     );
@@ -50,13 +58,17 @@ export const Step1ReadImport: React.FC<Step1Props> = ({ state, fileInputRef, onF
                             closable={{ closeIcon: true, "aria-label": "close" }}
                             showIcon
                             title={t("tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblems")}
-                            description={t("tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblemsText")}
+                            description={t(
+                                "tonieboxes.esp32BoxFlashing.adaptBaudrateOnProblemsText",
+                            )}
                         />
                     </Paragraph>
                     <Paragraph style={{ marginTop: 16 }}>
                         <Alert
                             type="info"
-                            description={t("tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash")}
+                            description={t(
+                                "tonieboxes.esp32BoxFlashing.esp32flasher.hintReadESP32ImportFlash",
+                            )}
                         />
                     </Paragraph>
 
@@ -66,7 +78,9 @@ export const Step1ReadImport: React.FC<Step1Props> = ({ state, fileInputRef, onF
                         items={[
                             {
                                 key: "1",
-                                label: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectESPCollapseTitle"),
+                                label: t(
+                                    "tonieboxes.esp32BoxFlashing.esp32flasher.connectESPCollapseTitle",
+                                ),
                                 children: conESP32Explanation,
                             },
                         ]}
@@ -74,7 +88,12 @@ export const Step1ReadImport: React.FC<Step1Props> = ({ state, fileInputRef, onF
                 </>
             )}
             {stepStatusText}
-            <input type="file" style={{ display: "none" }} ref={fileInputRef} onChange={onFileChange} />
+            <input
+                type="file"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={onFileChange}
+            />
             {contentProgress}
         </>
     );

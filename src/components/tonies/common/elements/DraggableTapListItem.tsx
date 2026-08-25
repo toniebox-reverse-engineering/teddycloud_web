@@ -1,6 +1,11 @@
 import React from "react";
 import { Divider, Form, Input, Space, Tooltip, theme } from "antd";
-import { CloseOutlined, FolderOpenOutlined, InfoCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
+import {
+    CloseOutlined,
+    FolderOpenOutlined,
+    InfoCircleOutlined,
+    MinusCircleOutlined,
+} from "@ant-design/icons";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { FormInstance } from "antd/es/form";
@@ -108,7 +113,9 @@ export const DraggableTapListItem: React.FC<DraggableTapListItemProps> = ({
                                 key="clear"
                                 onMouseDown={(e) => e.preventDefault()}
                                 onClick={() => {
-                                    const newValues = [...((form.getFieldValue("files") ?? []) as FileItem[])];
+                                    const newValues = [
+                                        ...((form.getFieldValue("files") ?? []) as FileItem[]),
+                                    ];
                                     newValues[index] = { ...newValues[index], filepath: "" };
                                     form.setFieldsValue({ files: newValues });
                                 }}
@@ -120,7 +127,11 @@ export const DraggableTapListItem: React.FC<DraggableTapListItemProps> = ({
                             />,
                         ]}
                         suffix={[
-                            <Divider key="divider-source-3" orientation="vertical" style={{ marginRight: 4 }} />,
+                            <Divider
+                                key="divider-source-3"
+                                orientation="vertical"
+                                style={{ marginRight: 4 }}
+                            />,
                             <FolderOpenOutlined
                                 key="open"
                                 onMouseDown={(e) => e.preventDefault()}

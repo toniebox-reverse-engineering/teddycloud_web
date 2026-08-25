@@ -33,6 +33,7 @@ export const Features = () => {
                             : gitHubTCReleasesUrl + "tag/tc_" + versionShort
                     }
                     target="_blank"
+                    rel="noopener noreferrer"
                 >
                     {version.replace(versionShort, "")} {<ExportOutlined />}
                 </Link>

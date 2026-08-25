@@ -76,7 +76,12 @@ export const ESP32LegacyFlashingGuide: React.FC = () => {
                     items={steps.map((step, index) => ({
                         key: index,
                         title: step.title,
-                        status: index === currentStep ? "process" : index < currentStep ? "finish" : "wait",
+                        status:
+                            index === currentStep
+                                ? "process"
+                                : index < currentStep
+                                  ? "finish"
+                                  : "wait",
                     }))}
                 />
 
@@ -113,7 +118,11 @@ export const ESP32LegacyFlashingGuide: React.FC = () => {
                         >
                             {previousButton}
                             <div>
-                                <Button icon={<EyeOutlined />} type="primary" onClick={showAvailableBoxesModal}>
+                                <Button
+                                    icon={<EyeOutlined />}
+                                    type="primary"
+                                    onClick={showAvailableBoxesModal}
+                                >
                                     {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
                                 </Button>
                             </div>
@@ -136,7 +145,11 @@ export const ESP32LegacyFlashingGuide: React.FC = () => {
                         >
                             {previousButton}
                             <div>
-                                <Button icon={<EyeOutlined />} type="primary" onClick={showAvailableBoxesModal}>
+                                <Button
+                                    icon={<EyeOutlined />}
+                                    type="primary"
+                                    onClick={showAvailableBoxesModal}
+                                >
                                     {t("tonieboxes.esp32BoxFlashing.legacy.checkBoxes")}
                                 </Button>
                             </div>

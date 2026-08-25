@@ -80,7 +80,12 @@ export const CC3235BoxFlashingGuide: React.FC = () => {
                     items={steps.map((step, index) => ({
                         key: index,
                         title: step.title,
-                        status: index === currentStep ? "process" : index < currentStep ? "finish" : "wait",
+                        status:
+                            index === currentStep
+                                ? "process"
+                                : index < currentStep
+                                  ? "finish"
+                                  : "wait",
                     }))}
                 />
 
@@ -118,8 +123,14 @@ export const CC3235BoxFlashingGuide: React.FC = () => {
                             {previousButton}
                             <div />
                             <div>
-                                <Button icon={<CheckSquareOutlined />} type="primary" onClick={next}>
-                                    {t("tonieboxes.cc3235BoxFlashing.certificatesDumpedCAreplacementFlashed")}
+                                <Button
+                                    icon={<CheckSquareOutlined />}
+                                    type="primary"
+                                    onClick={next}
+                                >
+                                    {t(
+                                        "tonieboxes.cc3235BoxFlashing.certificatesDumpedCAreplacementFlashed",
+                                    )}
                                 </Button>
                             </div>
                         </div>
@@ -136,7 +147,11 @@ export const CC3235BoxFlashingGuide: React.FC = () => {
                         >
                             {previousButton}
                             <div>
-                                <Button icon={<EyeOutlined />} type="primary" onClick={showAvailableBoxesModal}>
+                                <Button
+                                    icon={<EyeOutlined />}
+                                    type="primary"
+                                    onClick={showAvailableBoxesModal}
+                                >
                                     {t("tonieboxes.cc3235BoxFlashing.checkBoxes")}
                                 </Button>
                             </div>

@@ -7,7 +7,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { MAX_FILES } from "../../../../constants/numbers";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { MyUploadFile, upload as encoderUpload } from "../../../../utils/audio/audioEncoder";
 import {
@@ -16,7 +16,11 @@ import {
 } from "../../../../utils/validation/fieldInputValidator";
 import { ffmpegSupportedExtensions } from "../../../../utils/files/ffmpegSupportedExtensions";
 import { createQueryString } from "../../../../utils/browser/queryParams";
-import { loadWasmEncoder, isWasmEncoderAvailable, WasmTafEncoder } from "../../../../utils/audio/wasmEncoder";
+import {
+    loadWasmEncoder,
+    isWasmEncoderAvailable,
+    WasmTafEncoder,
+} from "../../../../utils/audio/wasmEncoder";
 import { useDirectoryTree } from "../../common/hooks/useDirectoryTree";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -51,7 +55,9 @@ export const useEncoder = () => {
     useEffect(() => {
         const fetchDebugPCM = async () => {
             try {
-                const response = await api.apiGetTeddyCloudSettingRaw("debug.web.pcm_encode_console_url");
+                const response = await api.apiGetTeddyCloudSettingRaw(
+                    "debug.web.pcm_encode_console_url",
+                );
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 setDebugPCMObjects(data.toString() === "true");
@@ -143,7 +149,7 @@ export const useEncoder = () => {
                 NotificationTypeEnum.Error,
                 t("tonies.encoder.tooManyFilesError"),
                 t("tonies.encoder.maxFiles", { maxFiles: MAX_FILES }),
-                t("tonies.title")
+                t("tonies.title"),
             );
         }
 
@@ -168,7 +174,7 @@ export const useEncoder = () => {
         accept: ffmpegSupportedExtensions.join(","),
         beforeUpload: (file) => {
             const isAccepted = ffmpegSupportedExtensions.some((ext) =>
-                file.name.toLowerCase().endsWith(ext.toLowerCase())
+                file.name.toLowerCase().endsWith(ext.toLowerCase()),
             );
 
             if (!isAccepted) {
@@ -176,7 +182,7 @@ export const useEncoder = () => {
                     NotificationTypeEnum.Error,
                     t("tonies.encoder.unsupportedFileType"),
                     t("tonies.encoder.unsupportedFileTypeDetails", { file: file.name }),
-                    t("tonies.title")
+                    t("tonies.title"),
                 );
                 return Upload.LIST_IGNORE;
             }
@@ -196,7 +202,9 @@ export const useEncoder = () => {
 
     const sortFileListAlphabeticallyNatural = () => {
         setFileList((prev) =>
-            [...prev].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }))
+            [...prev].sort((a, b) =>
+                a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }),
+            ),
         );
     };
 
@@ -243,18 +251,25 @@ export const useEncoder = () => {
             addLoadingNotification(
                 key,
                 t("tonies.encoder.uploading"),
-                t("tonies.encoder.uploadingDetails", { file: file.name })
+                t("tonies.encoder.uploadingDetails", { file: file.name }),
             );
             try {
                 await new Promise<void>((resolve, reject) =>
-                    (encoderUpload as any)(resolve, reject, formData, fileList, file, debugPCMObjects)
+                    (encoderUpload as any)(
+                        resolve,
+                        reject,
+                        formData,
+                        fileList,
+                        file,
+                        debugPCMObjects,
+                    ),
                 );
             } catch (error) {
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("tonies.encoder.processingError"),
                     t("tonies.encoder.errorFileProcessing") + error,
-                    t("tonies.title")
+                    t("tonies.title"),
                 );
                 closeLoadingNotification(key);
                 setUploading(false);
@@ -277,16 +292,19 @@ export const useEncoder = () => {
             addLoadingNotification(
                 key,
                 t("tonies.encoder.processing"),
-                t("tonies.encoder.processingDetails", { file: tafFilename + ".taf" })
+                t("tonies.encoder.processingDetails", { file: tafFilename + ".taf" }),
             );
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/pcmUpload?${queryString}`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/pcmUpload?${queryString}`,
+                formData,
+            );
             closeLoadingNotification(key);
             if (response.ok) {
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("tonies.encoder.uploadSuccessful"),
                     t("tonies.encoder.uploadSuccessfulDetails", { file: tafFilename + ".taf" }),
-                    t("tonies.title")
+                    t("tonies.title"),
                 );
                 setFileList([]);
                 setTafFilename("");
@@ -295,7 +313,7 @@ export const useEncoder = () => {
                     NotificationTypeEnum.Error,
                     t("tonies.encoder.uploadFailed"),
                     t("tonies.encoder.uploadFailedDetails") + response.statusText,
-                    t("tonies.title")
+                    t("tonies.title"),
                 );
             }
         } catch (err) {
@@ -304,7 +322,7 @@ export const useEncoder = () => {
                 NotificationTypeEnum.Error,
                 t("tonies.encoder.uploadFailed"),
                 t("tonies.encoder.uploadFailedDetails") + err,
-                t("tonies.title")
+                t("tonies.title"),
             );
         } finally {
             setProcessing(false);
@@ -323,7 +341,11 @@ export const useEncoder = () => {
 
         try {
             if (!isWasmEncoderAvailable()) {
-                addLoadingNotification(key, t("tonies.encoder.loading"), t("tonies.encoder.loadingWasmEncoder"));
+                addLoadingNotification(
+                    key,
+                    t("tonies.encoder.loading"),
+                    t("tonies.encoder.loadingWasmEncoder"),
+                );
                 await loadWasmEncoder();
                 setWasmLoaded(true);
             }
@@ -331,7 +353,11 @@ export const useEncoder = () => {
             const currentUnixTime = Math.floor(Date.now() / 1000);
             const audioId = currentUnixTime - 0x50000000;
 
-            addLoadingNotification(key, t("tonies.encoder.processing"), t("tonies.encoder.browserEncodingInProgress"));
+            addLoadingNotification(
+                key,
+                t("tonies.encoder.processing"),
+                t("tonies.encoder.browserEncodingInProgress"),
+            );
 
             const tafBlob = await WasmTafEncoder.encodeMultipleFiles(
                 fileList,
@@ -341,9 +367,9 @@ export const useEncoder = () => {
                     addLoadingNotification(
                         key,
                         t("tonies.encoder.processing"),
-                        `${t("tonies.encoder.encoding")} ${current + 1}/${total}: ${currentFile}`
+                        `${t("tonies.encoder.encoding")} ${current + 1}/${total}: ${currentFile}`,
                     );
-                }
+                },
             );
 
             setProcessing(false);
@@ -352,7 +378,7 @@ export const useEncoder = () => {
             addLoadingNotification(
                 key,
                 t("tonies.encoder.uploading"),
-                t("tonies.encoder.uploadingDetails", { file: tafFilename + ".taf" })
+                t("tonies.encoder.uploadingDetails", { file: tafFilename + ".taf" }),
             );
 
             const queryParams = {
@@ -364,14 +390,17 @@ export const useEncoder = () => {
             const formData = new FormData();
             formData.append("file", tafBlob, tafFilename + ".taf");
 
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/tafUpload?${queryString}`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/tafUpload?${queryString}`,
+                formData,
+            );
             closeLoadingNotification(key);
             if (response.ok) {
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("tonies.encoder.uploadSuccessful"),
                     t("tonies.encoder.uploadSuccessfulDetails", { file: tafFilename + ".taf" }),
-                    t("tonies.title")
+                    t("tonies.title"),
                 );
                 setFileList([]);
                 setTafFilename("");
@@ -380,7 +409,7 @@ export const useEncoder = () => {
                     NotificationTypeEnum.Error,
                     t("tonies.encoder.uploadFailed"),
                     t("tonies.encoder.uploadFailedDetails") + response.statusText,
-                    t("tonies.title")
+                    t("tonies.title"),
                 );
             }
         } catch (err) {
@@ -389,7 +418,7 @@ export const useEncoder = () => {
                 NotificationTypeEnum.Error,
                 t("tonies.encoder.uploadFailed"),
                 t("tonies.encoder.uploadFailedDetails") + err,
-                t("tonies.title")
+                t("tonies.title"),
             );
             throw err;
         } finally {

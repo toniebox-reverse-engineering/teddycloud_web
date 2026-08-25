@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import SettingsDataHandler from "../../../data/SettingsDataHandler";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
 import SettingsButton from "../../common/buttons/SettingsButtons";
 import { SettingsOptionItem } from "../../common/form/SettingsOptionItem";
@@ -59,7 +59,8 @@ export const Settings: React.FC = () => {
                 title={t("settings.information")}
                 description={
                     <div>
-                        {t("settings.hint")} <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.
+                        {t("settings.hint")}{" "}
+                        <Link to="/tonieboxes">{t("settings.tonieboxes")}</Link>.
                     </div>
                 }
                 type="info"
@@ -88,15 +89,18 @@ export const Settings: React.FC = () => {
                 >
                     <Form labelCol={{ span: 8 }} wrapperCol={{ span: 14 }} layout="horizontal">
                         {settingsOptions.map((option, index, array) => {
-                            if (option.iD.includes("core.settings_level")) {
+                            const optionId = option.iD;
+
+                            if (optionId.includes("core.settings_level")) {
                                 return null;
                             }
 
-                            const parts = option.iD.split(".");
-                            const lastParts = array[index - 1] ? array[index - 1].iD.split(".") : [];
+                            const parts = optionId.split(".");
+                            const previousOptionId = array[index - 1] ? array[index - 1].iD : "";
+                            const lastParts = previousOptionId ? previousOptionId.split(".") : [];
 
                             return (
-                                <React.Fragment key={option.iD}>
+                                <React.Fragment key={optionId}>
                                     {parts.slice(0, -1).map((part, partIndex) => {
                                         if (lastParts[partIndex] !== part) {
                                             if (partIndex === 0) {
@@ -106,7 +110,7 @@ export const Settings: React.FC = () => {
                                                             marginLeft: `${partIndex * 20}px`,
                                                             marginBottom: "10px",
                                                         }}
-                                                        key={`category-${option.iD}-${partIndex}`}
+                                                        key={`category-${optionId}-${partIndex}`}
                                                     >
                                                         Category {part}
                                                     </h3>
@@ -119,7 +123,7 @@ export const Settings: React.FC = () => {
                                                             marginTop: "10px",
                                                             marginBottom: "10px",
                                                         }}
-                                                        key={`category-${option.iD}-${partIndex}`}
+                                                        key={`category-${optionId}-${partIndex}`}
                                                     >
                                                         .{part}
                                                     </h4>
@@ -128,7 +132,7 @@ export const Settings: React.FC = () => {
                                         }
                                         return null;
                                     })}
-                                    <SettingsOptionItem noOverlay={true} iD={option.iD} />
+                                    <SettingsOptionItem noOverlay={true} iD={optionId} />
                                 </React.Fragment>
                             );
                         })}

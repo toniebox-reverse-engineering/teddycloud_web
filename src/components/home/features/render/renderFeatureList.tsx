@@ -10,7 +10,11 @@ export interface FeatureItems {
     [key: string]: string | FeatureGroup;
 }
 
-export const renderFeatureList = (items: FeatureItems, prefix: string, t: TFunction): JSX.Element => {
+export const renderFeatureList = (
+    items: FeatureItems,
+    prefix: string,
+    t: TFunction,
+): JSX.Element => {
     return (
         <ul>
             {Object.keys(items).map((key) => {

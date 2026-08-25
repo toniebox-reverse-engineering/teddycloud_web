@@ -50,7 +50,9 @@ export const PluginUploadModal: React.FC<PluginUploadModalProps> = ({
         >
             <Paragraph>{t("community.plugins.upload.uploadModalHint")}</Paragraph>
             <Upload {...uploadProps}>
-                <Button icon={<UploadOutlined />}>{t("community.plugins.upload.selectPluginZip")}</Button>
+                <Button icon={<UploadOutlined />}>
+                    {t("community.plugins.upload.selectPluginZip")}
+                </Button>
             </Upload>
         </Modal>
     );

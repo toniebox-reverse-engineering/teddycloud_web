@@ -6,6 +6,8 @@ export type LocalLabelSettings = Pick<
     | "textFontSize"
     | "imagePosition"
     | "imageScale"
+    | "imageBottom"
+    | "imageLeft"
     | "showLanguageFlag"
     | "showModelNo"
     | "showSeriesOnImageLabel"
@@ -18,7 +20,10 @@ export type LocalLabelSettings = Pick<
 export type LabelOverrides = Partial<LocalLabelSettings>;
 export type LabelOverridesById = Record<string, LabelOverrides>;
 
-export const buildEffectiveSettings = (global: SettingsState, override?: LabelOverrides): SettingsState => {
+export const buildEffectiveSettings = (
+    global: SettingsState,
+    override?: LabelOverrides,
+): SettingsState => {
     if (!override) return global;
     return { ...global, ...override };
 };

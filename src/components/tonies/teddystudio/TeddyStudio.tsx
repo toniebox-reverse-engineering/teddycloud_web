@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, Collapse, Divider, Typography } from "antd";
-import { ClearOutlined, PrinterOutlined } from "@ant-design/icons";
+import { ClearOutlined, PrinterOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 import { useData } from "./hooks/useData";
@@ -12,9 +12,11 @@ import { useSettings } from "./hooks/useSettings";
 import { SettingsPanel } from "./settingspanel/SettingsPanel";
 import { LabelGrid } from "./grid/LabelGrid";
 import { ToniesJsonSearchWrapper } from "./input/ToniesJsonSearchWrapper";
+import { BulkAddToniesModal } from "./input/BulkAddToniesModal";
 import { CustomImages } from "./input/CustomImages";
 import { EditLabelModal } from "./modals/EditLabelModal";
 import { LabelOverridesById, LabelOverrides } from "./types/labelOverrides";
+import SelectImageModal from "../common/modals/SelectImageModal";
 
 const { Paragraph } = Typography;
 
@@ -25,8 +27,19 @@ export const TeddyStudio: React.FC = () => {
     const { handleSearch } = useData();
     const [editIndex, setEditIndex] = useState<number | null>(null);
 
-    const { customItems, mergedResults, addResult, addCustomImage, removeByMergedIndex, editByMergedIndex, clearAll } =
-        useCustomItems();
+    const {
+        customItems,
+        mergedResults,
+        addResult,
+        addResults,
+        addCustomImage,
+        addCustomImageByPath,
+        removeByMergedIndex,
+        editByMergedIndex,
+        clearAll,
+    } = useCustomItems();
+    const [imageManagerOpen, setImageManagerOpen] = useState(false);
+    const [bulkAddOpen, setBulkAddOpen] = useState(false);
 
     const settingsStore = useSettings();
 
@@ -72,7 +85,7 @@ export const TeddyStudio: React.FC = () => {
             NotificationTypeEnum.Success,
             t("tonies.teddystudio.settingsSavedSuccessful"),
             t("tonies.teddystudio.settingsSavedSuccessful"),
-            t("tonies.teddystudio.navigationTitle")
+            t("tonies.teddystudio.navigationTitle"),
         );
     };
 
@@ -99,7 +112,13 @@ export const TeddyStudio: React.FC = () => {
         picture: string;
     }) => {
         if (editIndex === null) return;
-        editByMergedIndex(editIndex, values.trackTitles, values.episodes, values.text, values.picture);
+        editByMergedIndex(
+            editIndex,
+            values.trackTitles,
+            values.episodes,
+            values.text,
+            values.picture,
+        );
 
         addNotification(
             NotificationTypeEnum.Success,
@@ -107,7 +126,7 @@ export const TeddyStudio: React.FC = () => {
             t("tonies.teddystudio.labelSavedSuccesfulDetails", { title: values.text }),
             t("tonies.teddystudio.navigationTitle"),
             undefined,
-            false
+            false,
         );
     };
 
@@ -120,7 +139,7 @@ export const TeddyStudio: React.FC = () => {
     }`;
 
     const printModeSummary = t(
-        `tonies.teddystudio.printMode${settings.printMode.charAt(0).toUpperCase() + settings.printMode.slice(1)}`
+        `tonies.teddystudio.printMode${settings.printMode.charAt(0).toUpperCase() + settings.printMode.slice(1)}`,
     );
 
     const paperSizeSummary =
@@ -133,9 +152,49 @@ export const TeddyStudio: React.FC = () => {
             <h1>{t("tonies.teddystudio.title")}</h1>
             <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
 
-            <ToniesJsonSearchWrapper onSelectDataset={addResult} />
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    width: "100%",
+                    alignItems: "flex-start",
+                }}
+            >
+                <div
+                    style={{
+                        flex: 1,
+                        minWidth: 300,
+                        maxWidth: 600,
+                    }}
+                >
+                    <ToniesJsonSearchWrapper onSelectDataset={addResult} />
+                </div>
+                <div style={{ marginTop: 8 }}>
+                    <Button icon={<UnorderedListOutlined />} onClick={() => setBulkAddOpen(true)}>
+                        {t("tonies.teddystudio.bulkAdd.button")}
+                    </Button>
+                </div>
+            </div>
+            <BulkAddToniesModal
+                open={bulkAddOpen}
+                onClose={() => setBulkAddOpen(false)}
+                onConfirm={(datasets) => addResults(datasets)}
+            />
 
-            <CustomImages customItems={customItems} onAddImage={addCustomImage} />
+            <CustomImages
+                customItems={customItems}
+                onAddImage={addCustomImage}
+                onOpenImageManager={() => setImageManagerOpen(true)}
+            />
+
+            <SelectImageModal
+                open={imageManagerOpen}
+                onClose={() => setImageManagerOpen(false)}
+                onSelectImage={(path) => addCustomImageByPath(path)}
+                allowMultiple
+            />
 
             <Collapse
                 className="settingsPanel"
@@ -144,10 +203,11 @@ export const TeddyStudio: React.FC = () => {
                     {
                         key: "1",
                         label: `${t("tonies.teddystudio.settings")}: ${labelSettingsSummary} | ${t(
-                            "tonies.teddystudio.printMode"
+                            "tonies.teddystudio.printMode",
                         )}: ${printModeSummary} | ${t("tonies.teddystudio.paperSize")}: ${paperSizeSummary}`,
                         children: [
                             <SettingsPanel
+                                key="settingsPanel"
                                 settings={settings}
                                 paperOptions={paperOptions}
                                 actions={actions}
@@ -173,7 +233,14 @@ export const TeddyStudio: React.FC = () => {
                     }}
                 >
                     <div>{t("tonies.teddystudio.adaptLabelsHint")}</div>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: 8,
+                            flexWrap: "wrap",
+                            justifyContent: "flex-end",
+                        }}
+                    >
                         <Button
                             icon={<ClearOutlined />}
                             onClick={() => {
@@ -182,7 +249,11 @@ export const TeddyStudio: React.FC = () => {
                         >
                             {t("tonies.teddystudio.clear")}
                         </Button>
-                        <Button type="primary" icon={<PrinterOutlined />} onClick={() => window.print()}>
+                        <Button
+                            type="primary"
+                            icon={<PrinterOutlined />}
+                            onClick={() => window.print()}
+                        >
                             {t("tonies.teddystudio.printPage")}
                         </Button>
                     </div>

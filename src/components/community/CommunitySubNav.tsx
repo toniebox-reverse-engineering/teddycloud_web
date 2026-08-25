@@ -18,7 +18,7 @@ import {
     CrownOutlined,
     ExportOutlined,
 } from "@ant-design/icons";
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 
 import { forumUrl } from "../../constants/urls";
 
@@ -71,7 +71,11 @@ export const CommunitySubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={plugin.standalone ? `/plugins/${plugin.pluginId}` : `/community/plugin/${plugin.pluginId}`}
+                    to={
+                        plugin.standalone
+                            ? `/plugins/${plugin.pluginId}`
+                            : `/community/plugin/${plugin.pluginId}`
+                    }
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -80,7 +84,9 @@ export const CommunitySubNav = () => {
                 >
                     {plugin.pluginName}
                     {plugin.standalone ? (
-                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                        <ExportOutlined
+                            style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }}
+                        />
                     ) : (
                         ""
                     )}
@@ -135,7 +141,12 @@ export const CommunitySubNav = () => {
             label: (
                 <Link
                     to="/community/tcplugins"
-                    style={{ color: "currentColor", display: "flex", alignItems: "center", padding: "0 50px 0 0" }}
+                    style={{
+                        color: "currentColor",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 50px 0 0",
+                    }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -185,7 +196,12 @@ export const CommunitySubNav = () => {
             label: (
                 <Link
                     to="/community/contribution"
-                    style={{ color: "currentColor", display: "flex", alignItems: "center", padding: "0 50px 0 0" }}
+                    style={{
+                        color: "currentColor",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 50px 0 0",
+                    }}
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -285,6 +301,7 @@ export const CommunitySubNav = () => {
                 <Link
                     to={forumUrl}
                     target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

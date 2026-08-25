@@ -9,9 +9,9 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 export interface ToniesJsonEntry {
     value: string;
     selectionText: string;
-    contentText: string;
     picture?: string;
     episodes?: string;
+    series?: string;
     model?: string;
     language?: string;
     trackTitles?: string[];
@@ -54,9 +54,7 @@ export function useToniesJsonSearch(onError?: (error: unknown) => void) {
                         selectionText: model
                             ? `[${model}] ${item.series ?? ""} - ${episodes}`
                             : `${item.series ?? ""} - ${episodes}`,
-                        contentText: model
-                            ? `${item.series ?? ""} - ${episodes}`
-                            : `${item.series ?? ""} - ${episodes}`,
+                        series: item.series ?? "",
                         picture: (item as any).picture,
                         episodes,
                         model,
@@ -75,7 +73,7 @@ export function useToniesJsonSearch(onError?: (error: unknown) => void) {
                 }
             }
         },
-        [onError]
+        [onError],
     );
 
     const select = useCallback((newValue: string) => {

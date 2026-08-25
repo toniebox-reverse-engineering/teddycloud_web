@@ -27,7 +27,11 @@ interface AudioPlayerProps {
     onPlayPositionChange?: (position: number) => void;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ tonieCard, playPosition, onPlayPositionChange }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({
+    tonieCard,
+    playPosition,
+    onPlayPositionChange,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -164,7 +168,12 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ tonieCard, playPosition, onPl
             title: currentTrackTitle || tonieCard.tonieInfo.episode || "",
             album: tonieCard.tonieInfo.episode || "",
             artist: tonieCard.tonieInfo.series || "",
-            artwork: [{ src: tonieCard.tonieInfo.picture, sizes: "96x96,128x128,192x192,256x256,384x384,512x512" }],
+            artwork: [
+                {
+                    src: tonieCard.tonieInfo.picture,
+                    sizes: "96x96,128x128,192x192,256x256,384x384,512x512",
+                },
+            ],
         });
 
         navigator.mediaSession.setActionHandler("play", () => audio.play());
@@ -194,9 +203,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ tonieCard, playPosition, onPl
             >
                 <Title level={4}>{t("tonies.teddyaudioplayer.selectTonieToPlay")}</Title>
                 <Space style={{ marginTop: 16 }} size="large" align="center">
-                    <Button type="text" icon={<StepBackwardOutlined style={{ fontSize: 30 }} />} disabled />
-                    <Button type="text" icon={<PlayCircleOutlined style={{ fontSize: 40 }} />} disabled />
-                    <Button type="text" icon={<StepForwardOutlined style={{ fontSize: 30 }} />} disabled />
+                    <Button
+                        type="text"
+                        icon={<StepBackwardOutlined style={{ fontSize: 30 }} />}
+                        disabled
+                    />
+                    <Button
+                        type="text"
+                        icon={<PlayCircleOutlined style={{ fontSize: 40 }} />}
+                        disabled
+                    />
+                    <Button
+                        type="text"
+                        icon={<StepForwardOutlined style={{ fontSize: 30 }} />}
+                        disabled
+                    />
                 </Space>
             </Card>
         );
@@ -365,12 +386,21 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ tonieCard, playPosition, onPl
                 </div>
             }
         >
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+            <div
+                style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-end",
+                }}
+            >
                 <div>
                     <Title level={4}>{tonieCard.tonieInfo.episode}</Title>
                     <Text type="secondary">{tonieCard.tonieInfo.series}</Text>
                     {currentTrackTitle && (
-                        <Text style={{ display: "block", marginTop: 8, fontWeight: 500 }}>{currentTrackTitle}</Text>
+                        <Text style={{ display: "block", marginTop: 8, fontWeight: 500 }}>
+                            {currentTrackTitle}
+                        </Text>
                     )}
                     <div style={{ marginTop: 16 }}>
                         <Slider
@@ -380,17 +410,19 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ tonieCard, playPosition, onPl
                             onChange={handleSeek}
                             tooltip={{
                                 formatter: (val) =>
-                                    `${Math.floor((val || 0) / 60)}:${String(Math.floor((val || 0) % 60)).padStart(
-                                        2,
-                                        "0"
-                                    )}`,
+                                    `${Math.floor((val || 0) / 60)}:${String(
+                                        Math.floor((val || 0) % 60),
+                                    ).padStart(2, "0")}`,
                             }}
                             marks={
                                 tonieCard.trackSeconds
-                                    ? tonieCard.trackSeconds.reduce((acc: Record<number, string>, sec: number) => {
-                                          acc[sec] = " ";
-                                          return acc;
-                                      }, {})
+                                    ? tonieCard.trackSeconds.reduce(
+                                          (acc: Record<number, string>, sec: number) => {
+                                              acc[sec] = " ";
+                                              return acc;
+                                          },
+                                          {},
+                                      )
                                     : undefined
                             }
                             style={{ marginBottom: 8 }}
@@ -398,24 +430,32 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ tonieCard, playPosition, onPl
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <Text>
-                            {Math.floor(progress / 60) ?? 0}:{String(Math.floor(progress % 60) ?? 0).padStart(2, "0")}
+                            {Math.floor(progress / 60) ?? 0}:
+                            {String(Math.floor(progress % 60) ?? 0).padStart(2, "0")}
                         </Text>
                         {currentTrackTitle ? (
                             <div>
                                 {currentTrackNo}
-                                {tonieCard.tonieInfo.tracks.length && <> / {tonieCard.tonieInfo.tracks.length}</>}
+                                {tonieCard.tonieInfo.tracks.length && (
+                                    <> / {tonieCard.tonieInfo.tracks.length}</>
+                                )}
                             </div>
                         ) : (
                             ""
                         )}
                         {Number.isFinite(duration) && !isNaN(duration) && (
                             <Text>
-                                {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}
+                                {Math.floor(duration / 60)}:
+                                {String(Math.floor(duration % 60)).padStart(2, "0")}
                             </Text>
                         )}
                     </div>
                 </div>
-                <Space style={{ marginTop: 16, justifyContent: "center" }} size="large" align="center">
+                <Space
+                    style={{ marginTop: 16, justifyContent: "center" }}
+                    size="large"
+                    align="center"
+                >
                     <Button
                         type="text"
                         icon={<UnorderedListOutlined style={{ fontSize: 30 }} />}

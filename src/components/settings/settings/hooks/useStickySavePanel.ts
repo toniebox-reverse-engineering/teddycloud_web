@@ -7,7 +7,7 @@ export const useStickySavePanel = () => {
 
     const footerHeight = useMemo(
         () => (isFooterVisible ? measuredFooterHeight : 0),
-        [isFooterVisible, measuredFooterHeight]
+        [isFooterVisible, measuredFooterHeight],
     );
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export const useStickySavePanel = () => {
             {
                 root: null,
                 threshold: 0,
-            }
+            },
         );
         intersectionObserver.observe(footerElement);
 

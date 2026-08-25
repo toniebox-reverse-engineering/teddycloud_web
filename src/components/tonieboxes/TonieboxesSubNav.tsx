@@ -12,7 +12,7 @@ import {
     PlusSquareOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { StyledSubMenu } from "../common/StyledComponents";
 import { TonieboxIcon } from "../common/icons/TonieboxIcon";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
@@ -33,7 +33,11 @@ export const TonieboxesSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/tonieboxes/plugin/${plugin.pluginId}`}
+                    to={
+                        plugin.standalone
+                            ? `/plugin/${plugin.pluginId}`
+                            : `/tonieboxes/plugin/${plugin.pluginId}`
+                    }
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -42,7 +46,9 @@ export const TonieboxesSubNav = () => {
                 >
                     {plugin.pluginName}
                     {plugin.standalone ? (
-                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                        <ExportOutlined
+                            style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }}
+                        />
                     ) : (
                         ""
                     )}

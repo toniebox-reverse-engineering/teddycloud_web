@@ -40,11 +40,14 @@ export const CertificatesModal: React.FC<CertificatesModalProps> = ({
             <Paragraph>
                 {certDirOption && (
                     <>
-                        {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")} <i>{certDirOption.value}</i>
+                        {t("tonieboxes.uploadTonieboxCertificatesModal.uploadPath")}{" "}
+                        <i>{certDirOption.value}</i>
                         <small>
                             {certDirOption.overlayed
                                 ? t("tonieboxes.uploadTonieboxCertificatesModal.boxSpecific")
-                                : t("tonieboxes.uploadTonieboxCertificatesModal.AttentionGeneralPath")}
+                                : t(
+                                      "tonieboxes.uploadTonieboxCertificatesModal.AttentionGeneralPath",
+                                  )}
                         </small>
                     </>
                 )}

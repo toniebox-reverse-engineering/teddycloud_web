@@ -4,7 +4,11 @@ import { Typography } from "antd";
 
 import { forumUrl, gitHubUrl, telegramGroupUrl, wikiUrl } from "../../constants/urls";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { ExportOutlined } from "@ant-design/icons";
 
@@ -35,7 +39,7 @@ export const CommunityPage = () => {
                         <Paragraph>{t("community.community.getInvolvedText2")}</Paragraph>
                         <ul>
                             <li>
-                                <Link to={gitHubUrl} target="_blank">
+                                <Link to={gitHubUrl} target="_blank" rel="noopener noreferrer">
                                     GitHub {<ExportOutlined />}
                                 </Link>
                                 <ul>
@@ -43,7 +47,11 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to={telegramGroupUrl} target="_blank">
+                                <Link
+                                    to={telegramGroupUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     Telegram Chat {<ExportOutlined />}
                                 </Link>
                                 <ul>
@@ -51,7 +59,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to={forumUrl} target="_blank">
+                                <Link to={forumUrl} target="_blank" rel="noopener noreferrer">
                                     Discourse Forum {<ExportOutlined />}
                                 </Link>
                                 <ul>
@@ -59,7 +67,7 @@ export const CommunityPage = () => {
                                 </ul>
                             </li>
                             <li>
-                                <Link to={wikiUrl} target="_blank">
+                                <Link to={wikiUrl} target="_blank" rel="noopener noreferrer">
                                     TeddyCloud Wiki {<ExportOutlined />}
                                 </Link>
                                 <ul>

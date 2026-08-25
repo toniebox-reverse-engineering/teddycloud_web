@@ -10,12 +10,17 @@ import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 import { TonieCard } from "../toniecard/TonieCard";
 import { useToniesFilter } from "./hooks/useToniesFilter";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import type { ToniesFilterSettings } from "../../../types/toniesFilterTypes";
 import { canHover, scrollToTop } from "../../../utils/browser/browserUtils";
 import { hideSelectedTonies, setLiveFlag, setNoCloud } from "./utils/ToniesListActions";
-import { exportCompleteInfoToJSON, exportToCSV, exportToHTML, exportToJSON } from "./utils/ToniesListExport";
+import {
+    exportCompleteInfoToJSON,
+    exportToCSV,
+    exportToHTML,
+    exportToJSON,
+} from "./utils/ToniesListExport";
 import { ToniesFilterPanel } from "./filterpanel/ToniesFilterPanel";
 import ToniesPagination from "./pagination/ToniesPagination";
 import { showHideTonieConfirm } from "./modals/ToniesHideConfirmModal";
@@ -72,20 +77,35 @@ export const ToniesList: React.FC<{
     const [collapsed, setCollapsed] = useState(true);
 
     const [filterName, setFilterName] = useState("");
-    const [existingFilters, setExistingFilters] = useState<Record<string, ToniesFilterSettings>>({});
+    const [existingFilters, setExistingFilters] = useState<Record<string, ToniesFilterSettings>>(
+        {},
+    );
 
     const [urlFilterPending, setUrlFilterPending] = useState(false);
 
     const toniesListRef = useRef<HTMLDivElement | null>(null);
 
-    const columns = screens.xxl ? 6 : screens.xl ? 4 : screens.lg ? 3 : screens.md ? 2 : screens.sm ? 2 : 1;
+    const columns = screens.xxl
+        ? 6
+        : screens.xl
+          ? 4
+          : screens.lg
+            ? 3
+            : screens.md
+              ? 2
+              : screens.sm
+                ? 2
+                : 1;
 
     // ------------------------
     // Effects – basic wiring
     // ------------------------
 
     useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<string, ToniesFilterSettings>;
+        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<
+            string,
+            ToniesFilterSettings
+        >;
         setExistingFilters(stored);
     }, []);
 
@@ -105,7 +125,8 @@ export const ToniesList: React.FC<{
             return Object.fromEntries(Object.entries(counts).map(([k, c]) => [k, c === 1]));
         }
 
-        const getEpisode = (t: TonieCardProps) => t.sourceInfo?.episode || t.tonieInfo.episode || "";
+        const getEpisode = (t: TonieCardProps) =>
+            t.sourceInfo?.episode || t.tonieInfo.episode || "";
         const getSeries = (t: TonieCardProps) => t.sourceInfo?.series || t.tonieInfo.series || "";
         const getModel = (t: TonieCardProps) => t.sourceInfo?.model || t.tonieInfo.model || "";
 
@@ -157,7 +178,8 @@ export const ToniesList: React.FC<{
         const storedState = localStorage.getItem(STORAGE_KEY);
         if (storedState) {
             try {
-                const { pageSize: storedPageSize, showAll: storedShowAll } = JSON.parse(storedState);
+                const { pageSize: storedPageSize, showAll: storedShowAll } =
+                    JSON.parse(storedState);
                 if (storedShowAll) {
                     setPageSize(storedPageSize);
                     handleShowAll(storedPageSize);
@@ -175,7 +197,8 @@ export const ToniesList: React.FC<{
     useEffect(() => {
         const fetchTonieboxes = async () => {
             const fetchTonieboxLastRUID = async (id: string) => api.apiGetTonieboxLastRUID(id);
-            const fetchTonieboxLastRUIDTime = async (id: string) => api.apiGetTonieboxLastRUIDTime(id);
+            const fetchTonieboxLastRUIDTime = async (id: string) =>
+                api.apiGetTonieboxLastRUIDTime(id);
 
             const tonieboxData = await api.apiGetTonieboxesIndex();
             const tonieboxLastRUIDs = await Promise.all(
@@ -183,7 +206,7 @@ export const ToniesList: React.FC<{
                     const lastRUID = await fetchTonieboxLastRUID(toniebox.ID);
                     const lastRUIDTime = await fetchTonieboxLastRUIDTime(toniebox.ID);
                     return [lastRUID, lastRUIDTime, toniebox.boxName] as [string, string, string];
-                })
+                }),
             );
             setLastTonieboxRUIDs(tonieboxLastRUIDs);
         };
@@ -257,7 +280,7 @@ export const ToniesList: React.FC<{
 
     const handleUpdate = (updatedTonieCard: TonieCardProps) => {
         setFilteredTonies((prev) =>
-            prev.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie))
+            prev.map((tonie) => (tonie.ruid === updatedTonieCard.ruid ? updatedTonieCard : tonie)),
         );
         onToniesCardUpdate?.(updatedTonieCard);
         setListKey((prevKey) => prevKey + 1);
@@ -299,7 +322,9 @@ export const ToniesList: React.FC<{
     // ------------------------
 
     const toggleSelectTonie = (ruid: string) => {
-        setSelectedTonies((prev) => (prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid]));
+        setSelectedTonies((prev) =>
+            prev.includes(ruid) ? prev.filter((id) => id !== ruid) : [...prev, ruid],
+        );
     };
 
     const handleApplyFilters = () => {
@@ -357,17 +382,44 @@ export const ToniesList: React.FC<{
         {
             key: "unset-no-cloud",
             label: t("tonies.selectMode.unsetNoCloud"),
-            onClick: () => setNoCloud(tonieCards, selectedTonies, t, overlay, addNotification, false, handleUpdate),
+            onClick: () =>
+                setNoCloud(
+                    tonieCards,
+                    selectedTonies,
+                    t,
+                    overlay,
+                    addNotification,
+                    false,
+                    handleUpdate,
+                ),
         },
         {
             key: "set-live",
             label: t("tonies.selectMode.setLive"),
-            onClick: () => setLiveFlag(tonieCards, selectedTonies, t, overlay, addNotification, true, handleUpdate),
+            onClick: () =>
+                setLiveFlag(
+                    tonieCards,
+                    selectedTonies,
+                    t,
+                    overlay,
+                    addNotification,
+                    true,
+                    handleUpdate,
+                ),
         },
         {
             key: "unset-live",
             label: t("tonies.selectMode.unsetLive"),
-            onClick: () => setLiveFlag(tonieCards, selectedTonies, t, overlay, addNotification, false, handleUpdate),
+            onClick: () =>
+                setLiveFlag(
+                    tonieCards,
+                    selectedTonies,
+                    t,
+                    overlay,
+                    addNotification,
+                    false,
+                    handleUpdate,
+                ),
         },
         {
             key: "hide",
@@ -380,7 +432,7 @@ export const ToniesList: React.FC<{
                     overlay,
                     addNotification,
                     handleHideTonieCard,
-                    (label) => showHideTonieConfirm(t, label)
+                    (label) => showHideTonieConfirm(t, label),
                 ),
         },
     ];
@@ -430,9 +482,12 @@ export const ToniesList: React.FC<{
             NotificationTypeEnum.Success,
             t("tonies.messages.filterSaved"),
             t("tonies.messages.filterSavedDetails", { name }),
-            t("tonies.title")
+            t("tonies.title"),
         );
-        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<string, ToniesFilterSettings>;
+        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<
+            string,
+            ToniesFilterSettings
+        >;
         setExistingFilters(stored);
     };
 
@@ -444,7 +499,7 @@ export const ToniesList: React.FC<{
                 NotificationTypeEnum.Error,
                 t("tonies.messages.noFilterFound"),
                 t("tonies.messages.noFilterFoundWithName", { name }),
-                t("tonies.title")
+                t("tonies.title"),
             );
             return;
         }
@@ -456,14 +511,17 @@ export const ToniesList: React.FC<{
         if (!name) return;
         const ok = deleteFilter(name);
         if (!ok) return;
-        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<string, ToniesFilterSettings>;
+        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<
+            string,
+            ToniesFilterSettings
+        >;
         setExistingFilters(stored);
         setFilterName("");
         addNotification(
             NotificationTypeEnum.Success,
             t("tonies.messages.filterDeleted"),
             t("tonies.messages.filterDeletedDetails", { name }),
-            t("tonies.title")
+            t("tonies.title"),
         );
     };
 
@@ -519,7 +577,11 @@ export const ToniesList: React.FC<{
                                     : t("tonies.selectMode.selectButtonTooltip")
                             }
                         >
-                            <Button size="small" type="default" onClick={() => setSelectionMode(!selectionMode)}>
+                            <Button
+                                size="small"
+                                type="default"
+                                onClick={() => setSelectionMode(!selectionMode)}
+                            >
                                 {selectionMode ? t("tonies.cancel") : t("tonies.selectMode.select")}
                             </Button>
                         </Tooltip>
@@ -561,7 +623,7 @@ export const ToniesList: React.FC<{
                                         overlay,
                                         addNotification,
                                         true,
-                                        handleUpdate
+                                        handleUpdate,
                                     )
                                 }
                                 disabled={selectedTonies.length === 0}
@@ -573,7 +635,11 @@ export const ToniesList: React.FC<{
                                 disabled={selectedTonies.length === 0}
                                 placement="bottomRight"
                             >
-                                <Button size="small" style={{ width: "unset" }} disabled={selectedTonies.length === 0}>
+                                <Button
+                                    size="small"
+                                    style={{ width: "unset" }}
+                                    disabled={selectedTonies.length === 0}
+                                >
                                     <EllipsisOutlined />
                                 </Button>
                             </Dropdown>
@@ -592,7 +658,11 @@ export const ToniesList: React.FC<{
                                 disabled={selectedTonies.length === 0}
                                 placement="bottomRight"
                             >
-                                <Button size="small" style={{ width: "unset" }} disabled={selectedTonies.length === 0}>
+                                <Button
+                                    size="small"
+                                    style={{ width: "unset" }}
+                                    disabled={selectedTonies.length === 0}
+                                >
                                     <EllipsisOutlined />
                                 </Button>
                             </Dropdown>

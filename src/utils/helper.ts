@@ -34,3 +34,8 @@ export function getContrastTextColor(bgColor: string): string {
 
 export const stripUnit = (value: string, unit: string) =>
     value.toLowerCase().endsWith(unit) ? value.slice(0, -unit.length) : value;
+
+/** Natural/numeric string comparison (e.g. "2" < "10" instead of "10" < "2") */
+export function naturalCompare(a: string, b: string): number {
+    return (a || "").localeCompare(b || "", undefined, { numeric: true });
+}

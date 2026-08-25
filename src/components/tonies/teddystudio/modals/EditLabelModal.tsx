@@ -5,7 +5,11 @@ import { MergedItem } from "../hooks/useCustomItems";
 import { useTranslation } from "react-i18next";
 import { LabelGrid } from "../grid/LabelGrid";
 import Checkbox from "antd/es/checkbox/Checkbox";
-import { LabelOverridesById, LabelOverrides, buildEffectiveSettings } from "../types/labelOverrides";
+import {
+    LabelOverridesById,
+    LabelOverrides,
+    buildEffectiveSettings,
+} from "../types/labelOverrides";
 import { LocalOverrideSettings } from "../settingspanel/LocalOverridesSettingsPanel";
 
 const { TextArea } = Input;
@@ -18,7 +22,12 @@ interface EditLabelModalProps {
     open: boolean;
     item: MergedItem | null;
     onCancel: () => void;
-    onSave: (values: { text: string; episodes: string; trackTitles: string[]; picture: string }) => void;
+    onSave: (values: {
+        text: string;
+        episodes: string;
+        trackTitles: string[];
+        picture: string;
+    }) => void;
     onPrev?: () => void;
     onNext?: () => void;
     canGoPrev?: boolean;
@@ -53,6 +62,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
     const { t } = useTranslation();
 
     const [text, setText] = useState("");
+    const [series, setSeries] = useState("");
     const [episodes, setEpisodes] = useState("");
     const [trackTitlesText, setTrackTitlesText] = useState("");
 
@@ -81,6 +91,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
         }
 
         setText(item.text ?? "");
+        setSeries(item.series ?? "");
         setEpisodes(item.episodes ?? "");
         setTrackTitlesText((item.trackTitles ?? []).join("\n"));
 
@@ -97,7 +108,9 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
             .map((l) => l.trim())
             .filter((l) => l.length > 0);
 
-        const originalTrackTitles = (item.trackTitles ?? []).map((l) => l.trim()).filter((l) => l.length > 0);
+        const originalTrackTitles = (item.trackTitles ?? [])
+            .map((l) => l.trim())
+            .filter((l) => l.length > 0);
 
         return (
             text !== (item.text ?? "") ||
@@ -135,6 +148,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
         ...item,
         id: item?.id, // wichtig: ID behalten
         text,
+        series: "",
         episodes,
         pic: picture,
         trackTitles: trackTitlesText
@@ -177,7 +191,14 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                         {t("tonies.teddystudio.saveOnNavigate")}
                     </Checkbox>
 
-                    <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", gap: 8 }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            flexWrap: "wrap",
+                            gap: 8,
+                        }}
+                    >
                         <Button key="prev" onClick={handlePrev} disabled={!canGoPrev}>
                             <ArrowLeftOutlined />
                         </Button>
@@ -187,7 +208,12 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                         <Button key="close" onClick={onCancel}>
                             {t("tonies.teddystudio.close")}
                         </Button>
-                        <Button key="save" type="primary" onClick={handleOk} disabled={!hasChanges()}>
+                        <Button
+                            key="save"
+                            type="primary"
+                            onClick={handleOk}
+                            disabled={!hasChanges()}
+                        >
                             {t("tonies.teddystudio.save")}
                         </Button>
                         <Button key="next" onClick={handleNext} disabled={!canGoNext}>
@@ -218,13 +244,19 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                                             <img
                                                 src={picture}
                                                 alt="preview"
-                                                style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 16 }}
+                                                style={{
+                                                    maxWidth: "100%",
+                                                    maxHeight: 200,
+                                                    borderRadius: 16,
+                                                }}
                                             />
                                         ) : (
                                             <InboxOutlined />
                                         )}
                                     </p>
-                                    <p className="ant-upload-text">{t("tonies.teddystudio.replaceLabelImage")}</p>
+                                    <p className="ant-upload-text">
+                                        {t("tonies.teddystudio.replaceLabelImage")}
+                                    </p>
                                 </Dragger>
                             </div>
                         </Form.Item>
@@ -264,7 +296,9 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                     style={{ overflowX: "auto" }}
                 >
                     <div className="resultcontainer">
-                        <Paragraph style={{ width: "100" }}>{t("tonies.teddystudio.preview")}:</Paragraph>
+                        <Paragraph style={{ width: "100" }}>
+                            {t("tonies.teddystudio.preview")}:
+                        </Paragraph>
 
                         <LabelGrid
                             mergedResults={[mergedPreviewItem]}

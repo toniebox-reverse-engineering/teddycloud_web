@@ -1,6 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { Typography } from "antd";
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { TonieMeetingElement } from "../../components/common/elements/TonieMeeting";
 import { Link } from "react-router-dom";

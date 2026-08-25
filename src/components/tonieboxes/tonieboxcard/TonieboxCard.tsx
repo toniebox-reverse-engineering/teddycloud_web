@@ -18,7 +18,7 @@ import { OptionsItem, OptionsList, TeddyCloudApi } from "../../../api";
 import { TonieCardProps } from "../../../types/tonieTypes";
 import { BoxVersionsEnum, TonieboxCardProps, TonieboxImage } from "../../../types/tonieboxTypes";
 
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 import defaultBoxImage from "../../../assets/unknown_box.png";
@@ -240,7 +240,9 @@ export const TonieboxCard: React.FC<{
                 return;
             }
 
-            const certIndex = optionsRequest.options.findIndex((option) => option.iD === "core.certdir");
+            const certIndex = optionsRequest.options.findIndex(
+                (option) => option.iD === "core.certdir",
+            );
 
             let updatedOptions = optionsRequest.options;
             // in case of set basic or default level, core.certdir is not fetched, so we need to fetch the value directly
@@ -253,7 +255,10 @@ export const TonieboxCard: React.FC<{
                         defaultCoreCertDir = await response.text();
                     }
 
-                    response = await api.apiGetTeddyCloudSettingRaw("core.certdir", tonieboxCard.ID);
+                    response = await api.apiGetTeddyCloudSettingRaw(
+                        "core.certdir",
+                        tonieboxCard.ID,
+                    );
                     if (response) {
                         const coreCertDir = await response.text();
 
@@ -351,7 +356,10 @@ export const TonieboxCard: React.FC<{
             addNotification(
                 NotificationTypeEnum.Error,
                 t("tonieboxes.editModelModal.errorOnModelChange"),
-                t("tonieboxes.editModelModal.errorOnModelChangeDetails", { mac: tonieboxCard.ID, error: error }),
+                t("tonieboxes.editModelModal.errorOnModelChangeDetails", {
+                    mac: tonieboxCard.ID,
+                    error: error,
+                }),
                 t("tonieboxes.navigationTitle"),
             );
         }
@@ -388,7 +396,10 @@ export const TonieboxCard: React.FC<{
             addNotification(
                 NotificationTypeEnum.Error,
                 t("tonieboxes.editModelModal.errorOnNameChange"),
-                t("tonieboxes.editModelModal.errorOnNameChangeDetails", { mac: tonieboxCard.ID, error: error }),
+                t("tonieboxes.editModelModal.errorOnNameChangeDetails", {
+                    mac: tonieboxCard.ID,
+                    error: error,
+                }),
                 t("tonieboxes.navigationTitle"),
             );
         }
@@ -542,7 +553,7 @@ export const TonieboxCard: React.FC<{
             <Card
                 key={tonieboxCard.ID}
                 hoverable={false}
-                size="default"
+                size="medium"
                 style={{ background: token.colorBgContainerDisabled, cursor: "default" }}
                 title={<span>{tonieboxName}</span>}
                 cover={
@@ -587,14 +598,22 @@ export const TonieboxCard: React.FC<{
                                       <Tooltip title={t("tonieboxes.online")}>
                                           <WifiOutlined
                                               className="online"
-                                              style={{ color: token.colorSuccess, cursor: "default" }}
+                                              style={{
+                                                  color: token.colorSuccess,
+                                                  cursor: "default",
+                                              }}
                                           />
                                       </Tooltip>
                                   ) : (
                                       <Tooltip
                                           title={
                                               t("tonieboxes.offline") +
-                                              (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
+                                              (lastOnline
+                                                  ? " - " +
+                                                    t("tonieboxes.lastOnline") +
+                                                    ": " +
+                                                    lastOnline
+                                                  : "")
                                           }
                                       >
                                           <WifiOutlined
@@ -628,7 +647,13 @@ export const TonieboxCard: React.FC<{
                 }
             >
                 <Meta
-                    styles={{ description: { overflowY: "clip", textWrap: "nowrap", textOverflow: "ellipsis" } }}
+                    styles={{
+                        description: {
+                            overflowY: "clip",
+                            textWrap: "nowrap",
+                            textOverflow: "ellipsis",
+                        },
+                    }}
                     description={[
                         readOnly ? (
                             tonieboxStatus ? (
@@ -643,7 +668,9 @@ export const TonieboxCard: React.FC<{
                                     key="box-status-offline"
                                     title={
                                         t("tonieboxes.offline") +
-                                        (lastOnline ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline : "")
+                                        (lastOnline
+                                            ? " - " + t("tonieboxes.lastOnline") + ": " + lastOnline
+                                            : "")
                                     }
                                 >
                                     <WifiOutlined
@@ -658,7 +685,9 @@ export const TonieboxCard: React.FC<{
                         ) : null,
                         <span key="box-version">
                             {" "}
-                            {(tonieboxVersion !== "UNKNOWN" && tonieboxVersion !== undefined && tonieboxVersion !== null
+                            {(tonieboxVersion !== "UNKNOWN" &&
+                            tonieboxVersion !== undefined &&
+                            tonieboxVersion !== null
                                 ? tonieboxVersion
                                 : "MAC") + " "}
                         </span>,

@@ -6,7 +6,7 @@ import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { Record } from "../../../../types/fileBrowserTypes";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { RecordWithPath } from "../../../../utils/teddycloud/fetchTAFsInLibrary";
 
@@ -133,11 +133,16 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
         }
 
         const key = "deletingFiles";
-        addLoadingNotification(key, t("fileBrowser.messages.deleting"), t("fileBrowser.messages.deleting"));
+        addLoadingNotification(
+            key,
+            t("fileBrowser.messages.deleting"),
+            t("fileBrowser.messages.deleting"),
+        );
 
         for (const rowName of selectedRowKeys) {
             const file =
-                files.find((f) => f.name === rowName) || files.find((f) => "fullPath" in f && f.fullPath === rowName);
+                files.find((f) => f.name === rowName) ||
+                files.find((f) => "fullPath" in f && f.fullPath === rowName);
             if (file) {
                 const filePath = path
                     ? decodeURIComponent(path) + "/" + file.name

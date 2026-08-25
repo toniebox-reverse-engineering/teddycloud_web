@@ -4,10 +4,14 @@ import type { ColumnsType, SortOrder } from "antd/es/table/interface";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
-import { RecordWithPath, fetchUnusedTAFsInLibrary } from "../../../../utils/teddycloud/fetchTAFsInLibrary";
+import {
+    RecordWithPath,
+    fetchUnusedTAFsInLibrary,
+} from "../../../../utils/teddycloud/fetchTAFsInLibrary";
 import { LoadingSpinnerAsOverlay } from "../../../common/elements/LoadingSpinner";
 import { useTonies } from "../../../../hooks/useTonies";
 import { canHover } from "../../../../utils/browser/browserUtils";
+import { toImageSrc } from "../../common/utils/imagePathUtils";
 import DeleteFilesModal from "./DeleteFilesModal";
 
 const { useToken } = theme;
@@ -65,7 +69,9 @@ export const UnusedTAFsModal: React.FC<UnusedTAFsModalProps> = ({
     }, [open, tonies, rebuildList]);
 
     const noData = useMemo(() => {
-        return records.length === 0 && !loading ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : null;
+        return records.length === 0 && !loading ? (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        ) : null;
     }, [records.length, loading]);
 
     const showDeleteConfirmDialog = (fileName: string, pathWithFile: string, apiCall: string) => {
@@ -84,7 +90,7 @@ export const UnusedTAFsModal: React.FC<UnusedTAFsModalProps> = ({
                 render: (_picture: string, record: RecordWithPath) =>
                     record?.tonieInfo?.picture ? (
                         <img
-                            src={record.tonieInfo.picture}
+                            src={toImageSrc(record.tonieInfo.picture)}
                             alt={t("tonies.content.toniePicture")}
                             style={{
                                 height: 40,
@@ -124,7 +130,11 @@ export const UnusedTAFsModal: React.FC<UnusedTAFsModalProps> = ({
                 render: (_: string, record: RecordWithPath) => {
                     const lastSlash = record.fullPath?.lastIndexOf("/") ?? -1;
                     const dir = lastSlash >= 0 ? record.fullPath.slice(0, lastSlash + 1) : "";
-                    return <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>lib://{dir}</div>;
+                    return (
+                        <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
+                            lib://{dir}
+                        </div>
+                    );
                 },
                 responsive: ["md", "lg", "xl", "xxl"],
             },
@@ -135,7 +145,11 @@ export const UnusedTAFsModal: React.FC<UnusedTAFsModalProps> = ({
                     <Tooltip open={!canHover ? false : undefined} title={t("fileBrowser.delete")}>
                         <DeleteOutlined
                             onClick={() =>
-                                showDeleteConfirmDialog(record.fullPath, record.fullPath, "?special=library")
+                                showDeleteConfirmDialog(
+                                    record.fullPath,
+                                    record.fullPath,
+                                    "?special=library",
+                                )
                             }
                             style={{ margin: "4px 8px 4px 0", padding: 4 }}
                         />
@@ -158,7 +172,10 @@ export const UnusedTAFsModal: React.FC<UnusedTAFsModalProps> = ({
             }}
         >
             {selectedRowKeys.length > 0 && (
-                <Button icon={<DeleteOutlined />} onClick={() => setIsConfirmMultipleDeleteModalOpen(true)}>
+                <Button
+                    icon={<DeleteOutlined />}
+                    onClick={() => setIsConfirmMultipleDeleteModalOpen(true)}
+                >
                     {t("fileBrowser.delete")}
                 </Button>
             )}
@@ -212,10 +229,16 @@ export const UnusedTAFsModal: React.FC<UnusedTAFsModalProps> = ({
                         ),
                         selectedRowKeys,
                         onChange: (keys: Key[]) => setSelectedRowKeys(keys),
-                        getCheckboxProps: (record: RecordWithPath) => ({ disabled: record.name === ".." }),
+                        getCheckboxProps: (record: RecordWithPath) => ({
+                            disabled: record.name === "..",
+                        }),
                         onSelectAll: (selected: boolean, selectedRows: RecordWithPath[]) => {
                             setSelectedRowKeys(
-                                selected ? selectedRows.filter((r) => r.name !== "..").map((r) => r.fullPath) : [],
+                                selected
+                                    ? selectedRows
+                                          .filter((r) => r.name !== "..")
+                                          .map((r) => r.fullPath)
+                                    : [],
                             );
                         },
                     }}

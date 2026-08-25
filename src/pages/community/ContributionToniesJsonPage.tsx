@@ -5,7 +5,11 @@ import { Typography, Collapse, Flex, Divider } from "antd";
 import { TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { Link } from "react-router-dom";
 
@@ -41,7 +45,7 @@ export const ContributionToniesJsonPage = () => {
                         item.audio_id &&
                         item.audio_id.length === 0 &&
                         !["creative-tonie", "system"].includes(item.category) &&
-                        !item.model.includes("20000")
+                        !item.model.includes("20000"),
                 );
 
                 const dataArray: TonieJsonEntry[] = filteredData.map((item: any) => ({
@@ -81,7 +85,9 @@ export const ContributionToniesJsonPage = () => {
                         { title: <Link to="/community">{t("community.navigationTitle")}</Link> },
                         {
                             title: (
-                                <Link to="/community/contribution">{t("community.contribution.navigationTitle")}</Link>
+                                <Link to="/community/contribution">
+                                    {t("community.contribution.navigationTitle")}
+                                </Link>
                             ),
                         },
                         {
@@ -101,35 +107,39 @@ export const ContributionToniesJsonPage = () => {
                                 children: (
                                     <Flex vertical gap={0}>
                                         {Array.isArray(groupedTonieJsonEntries[language]) &&
-                                            groupedTonieJsonEntries[language].map((tonieJsonEntry, index) => (
-                                                <>
-                                                    <Flex
-                                                        key={index}
-                                                        id={tonieJsonEntry.model}
-                                                        gap={8}
-                                                        align="flex-end"
-                                                        style={{
-                                                            padding: "8px 0",
-                                                            borderBottom: "1px solid rgba(0,0,0,0.1)",
-                                                        }}
-                                                    >
-                                                        <img
-                                                            src={tonieJsonEntry.pic}
-                                                            alt=""
+                                            groupedTonieJsonEntries[language].map(
+                                                (tonieJsonEntry, index) => (
+                                                    <>
+                                                        <Flex
+                                                            key={index}
+                                                            id={tonieJsonEntry.model}
+                                                            gap={8}
+                                                            align="flex-end"
                                                             style={{
-                                                                width: "100px",
-                                                                height: "auto",
-                                                                flexShrink: 0,
+                                                                padding: "8px 0",
+                                                                borderBottom:
+                                                                    "1px solid rgba(0,0,0,0.1)",
                                                             }}
-                                                        />
-                                                        <div>
-                                                            {tonieJsonEntry.model} – {tonieJsonEntry.series} –{" "}
-                                                            {tonieJsonEntry.episodes}
-                                                        </div>
-                                                    </Flex>
-                                                    <Divider style={{ margin: 0 }} />
-                                                </>
-                                            ))}
+                                                        >
+                                                            <img
+                                                                src={tonieJsonEntry.pic}
+                                                                alt=""
+                                                                style={{
+                                                                    width: "100px",
+                                                                    height: "auto",
+                                                                    flexShrink: 0,
+                                                                }}
+                                                            />
+                                                            <div>
+                                                                {tonieJsonEntry.model} –{" "}
+                                                                {tonieJsonEntry.series} –{" "}
+                                                                {tonieJsonEntry.episodes}
+                                                            </div>
+                                                        </Flex>
+                                                        <Divider style={{ margin: 0 }} />
+                                                    </>
+                                                ),
+                                            )}
                                     </Flex>
                                 ),
                             }))}

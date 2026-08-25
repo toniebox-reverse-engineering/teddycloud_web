@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { TeddyCloudPlugin } from "../../plugincard/PluginCard";
 
@@ -23,8 +23,14 @@ export const usePluginList = () => {
 
     const allSections = useMemo(
         () =>
-            Array.from(new Set(plugins.map((p: any) => p.teddyCloudSection || t("community.plugins.filter.unknown")))),
-        [plugins, t]
+            Array.from(
+                new Set(
+                    plugins.map(
+                        (p: any) => p.teddyCloudSection || t("community.plugins.filter.unknown"),
+                    ),
+                ),
+            ),
+        [plugins, t],
     );
 
     const [activeSectionFilters, setActiveSectionFilters] = useState<string[]>(allSections);
@@ -40,7 +46,7 @@ export const usePluginList = () => {
                 acc[section] = (acc[section] || 0) + 1;
                 return acc;
             }, {}),
-        [plugins, t]
+        [plugins, t],
     );
 
     const filteredPlugins = useMemo(
@@ -49,11 +55,13 @@ export const usePluginList = () => {
                 const section = plugin.teddyCloudSection || t("community.plugins.filter.unknown");
                 return activeSectionFilters.includes(section);
             }),
-        [plugins, activeSectionFilters, t]
+        [plugins, activeSectionFilters, t],
     );
 
     const toggleSectionFilter = (section: string, checked: boolean) => {
-        setActiveSectionFilters((prev) => (checked ? [...prev, section] : prev.filter((s) => s !== section)));
+        setActiveSectionFilters((prev) =>
+            checked ? [...prev, section] : prev.filter((s) => s !== section),
+        );
     };
 
     const openHelp = () => setIsVisibleHelpModal(true);
@@ -71,7 +79,7 @@ export const usePluginList = () => {
                 NotificationTypeEnum.Warning,
                 t("community.plugins.upload.warningUploadingPlugin"),
                 t("community.plugins.upload.warningUploadingPluginDetails"),
-                t("community.plugins.title")
+                t("community.plugins.title"),
             );
             return;
         }
@@ -81,7 +89,10 @@ export const usePluginList = () => {
         setUploading(true);
 
         try {
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/plugins/upload`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/plugins/upload`,
+                formData,
+            );
 
             if (!response.ok) throw new Error(response.statusText);
             addNotification(
@@ -90,7 +101,7 @@ export const usePluginList = () => {
                 t("community.plugins.upload.successUploadingPluginDetails", {
                     filename: file.name,
                 }),
-                t("community.plugins.title")
+                t("community.plugins.title"),
             );
             setFile(null);
             closeUpload();
@@ -102,7 +113,7 @@ export const usePluginList = () => {
                 t("community.plugins.upload.errorUploadingPluginDetails", {
                     filename: file.name,
                 }) + error,
-                t("community.plugins.title")
+                t("community.plugins.title"),
             );
         } finally {
             setUploading(false);
@@ -111,7 +122,9 @@ export const usePluginList = () => {
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await api.apiPostTeddyCloudRaw(`/api/plugins/delete/${pluginIdForDeletion}`);
+            const response = await api.apiPostTeddyCloudRaw(
+                `/api/plugins/delete/${pluginIdForDeletion}`,
+            );
 
             if (!response.ok) throw new Error(response.statusText);
             addNotification(
@@ -120,7 +133,7 @@ export const usePluginList = () => {
                 t("community.plugins.deletion.successDeletingPluginDetails", {
                     filename: pluginIdForDeletion,
                 }),
-                t("community.plugins.title")
+                t("community.plugins.title"),
             );
             setFile(null);
             closeUpload();
@@ -132,7 +145,7 @@ export const usePluginList = () => {
                 t("community.plugins.deletion.errorDeletingPluginDetails", {
                     filename: pluginIdForDeletion,
                 }) + error,
-                t("community.plugins.title")
+                t("community.plugins.title"),
             );
         }
         setIsConfirmDeleteModalOpen(false);

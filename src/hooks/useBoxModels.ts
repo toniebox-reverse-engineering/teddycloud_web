@@ -26,7 +26,8 @@ export function useBoxModelImages() {
             }
 
             try {
-                const responseCustom = await api.apiGetTeddyCloudApiRaw(`/api/tonieboxesCustomJson`);
+                const responseCustom =
+                    await api.apiGetTeddyCloudApiRaw(`/api/tonieboxesCustomJson`);
                 const jsonDataCustom = await responseCustom.json();
                 result.push(...jsonDataCustom);
             } catch (error) {

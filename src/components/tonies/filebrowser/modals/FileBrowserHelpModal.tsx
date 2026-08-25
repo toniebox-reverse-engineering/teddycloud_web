@@ -178,7 +178,9 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
                             {item.title}
                         </Title>
                         {item.content}
-                        {index < instructions.length - 1 && <Divider style={{ margin: "16px 0px" }} />}
+                        {index < instructions.length - 1 && (
+                            <Divider style={{ margin: "16px 0px" }} />
+                        )}
                     </div>
                 ))}
             </Flex>

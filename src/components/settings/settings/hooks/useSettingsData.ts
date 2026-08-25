@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi, OptionsList } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import SettingsDataHandler from "../../../../data/SettingsDataHandler";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -44,7 +44,10 @@ export const useSettingsData = () => {
                 const optionsRequest = (await api.apiGetIndexGet("")) as OptionsList;
                 if (optionsRequest?.options?.length && optionsRequest.options.length > 0) {
                     setOptions(optionsRequest);
-                    SettingsDataHandler.getInstance().initializeSettings(optionsRequest.options, undefined);
+                    SettingsDataHandler.getInstance().initializeSettings(
+                        optionsRequest.options,
+                        undefined,
+                    );
                 }
             } finally {
                 setLoading(false);
@@ -62,7 +65,7 @@ export const useSettingsData = () => {
                 NotificationTypeEnum.Error,
                 t("settings.errorWhileSavingConfig"),
                 t("settings.errorWhileSavingConfigDetails") + error,
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     }, [addNotification, t]);
@@ -78,11 +81,11 @@ export const useSettingsData = () => {
                     NotificationTypeEnum.Error,
                     t("settings.errorWhileSavingConfig"),
                     t("settings.errorWhileSavingConfigDetails") + e,
-                    t("tonieboxes.navigationTitle")
+                    t("tonieboxes.navigationTitle"),
                 );
             }
         },
-        [addNotification, t, triggerWriteConfig]
+        [addNotification, t, triggerWriteConfig],
     );
 
     return {

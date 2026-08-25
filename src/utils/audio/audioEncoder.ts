@@ -21,8 +21,13 @@ function createAudioContext(): AudioContext {
  * Creates an OfflineAudioContext with support for both the modern
  * options-object signature and the legacy constructor used by older Safari versions.
  */
-function createOfflineAudioContext(channels: number, length: number, sampleRate: number): OfflineAudioContext {
-    const OfflineCtx = (window as any).OfflineAudioContext || (window as any).webkitOfflineAudioContext;
+function createOfflineAudioContext(
+    channels: number,
+    length: number,
+    sampleRate: number,
+): OfflineAudioContext {
+    const OfflineCtx =
+        (window as any).OfflineAudioContext || (window as any).webkitOfflineAudioContext;
 
     if (!OfflineCtx) {
         throw new Error("OfflineAudioContext is not supported in this browser.");
@@ -47,7 +52,7 @@ function createOfflineAudioContext(channels: number, length: number, sampleRate:
 async function encodeToStereoPcm16(
     arrayBuffer: ArrayBuffer,
     debugPCMObjects: boolean | undefined,
-    debugFileIndex: number
+    debugFileIndex: number,
 ): Promise<Int16Array> {
     const audioContext = createAudioContext();
 
@@ -57,14 +62,14 @@ async function encodeToStereoPcm16(
 
         // Compute resampled length
         const targetLength = Math.round(
-            (originalAudioBuffer.length * TARGET_SAMPLE_RATE) / originalAudioBuffer.sampleRate
+            (originalAudioBuffer.length * TARGET_SAMPLE_RATE) / originalAudioBuffer.sampleRate,
         );
 
         // Create OfflineAudioContext for resampling
         const offlineAudioContext = createOfflineAudioContext(
             originalAudioBuffer.numberOfChannels,
             targetLength,
-            TARGET_SAMPLE_RATE
+            TARGET_SAMPLE_RATE,
         );
 
         const offlineSource = offlineAudioContext.createBufferSource();
@@ -82,7 +87,9 @@ async function encodeToStereoPcm16(
 
         // If mono, duplicate channel 0 → stereo
         const rightChannelData =
-            numberOfChannels > 1 ? upsampledAudioBuffer.getChannelData(1) : upsampledAudioBuffer.getChannelData(0);
+            numberOfChannels > 1
+                ? upsampledAudioBuffer.getChannelData(1)
+                : upsampledAudioBuffer.getChannelData(0);
 
         const frameCount = leftChannelData.length;
         const interleavedData = new Int16Array(frameCount * 2);
@@ -98,7 +105,9 @@ async function encodeToStereoPcm16(
 
         // Optional debugging output
         if (debugPCMObjects) {
-            const blob = new Blob([interleavedData.buffer as unknown as ArrayBuffer], { type: "audio/pcm" });
+            const blob = new Blob([interleavedData.buffer as unknown as ArrayBuffer], {
+                type: "audio/pcm",
+            });
             const url = URL.createObjectURL(blob);
             const filename = `pcmData.${debugFileIndex}.pcm`;
 
@@ -112,7 +121,11 @@ async function encodeToStereoPcm16(
     URL.revokeObjectURL(link.href);
 })();`;
 
-            console.log("Paste this code into the console to download the PCM debug file:\n\n" + snippet + "\n");
+            console.log(
+                "Paste this code into the console to download the PCM debug file:\n\n" +
+                    snippet +
+                    "\n",
+            );
         }
 
         return interleavedData;
@@ -137,7 +150,7 @@ export function upload(
     formData: FormData,
     fileList: MyUploadFile<any>[],
     file: MyUploadFile<any>,
-    debugPCMObjects?: boolean
+    debugPCMObjects?: boolean,
 ) {
     if (!file.file) {
         resolve(undefined);
@@ -155,7 +168,9 @@ export function upload(
                 const filename = `pcmData.${fileIndex}.pcm`;
 
                 // Cast ensures compatibility: BlobPart expects ArrayBuffer, not ArrayBufferLike
-                const blob = new Blob([pcmData.buffer as unknown as ArrayBuffer], { type: "audio/pcm" });
+                const blob = new Blob([pcmData.buffer as unknown as ArrayBuffer], {
+                    type: "audio/pcm",
+                });
 
                 formData.append(file.name, blob, filename);
             }

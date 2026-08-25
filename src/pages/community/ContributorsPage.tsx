@@ -9,7 +9,11 @@ import {
     gitHubTCwebContributorsUrl,
 } from "../../constants/urls";
 
-import BreadcrumbWrapper, { StyledContent, StyledLayout, StyledSider } from "../../components/common/StyledComponents";
+import BreadcrumbWrapper, {
+    StyledContent,
+    StyledLayout,
+    StyledSider,
+} from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { TonieMeetingElement } from "../../components/common/elements/TonieMeeting";
 import { ExportOutlined } from "@ant-design/icons";
@@ -39,26 +43,40 @@ export const ContributorsPage = () => {
                         <Paragraph>
                             <h3>teddycloud</h3>
                             <div>{t("community.contributors.teddyCloud")}</div>
-                            <Link to={gitHubTCContributorsUrl} target="_blank">
+                            <Link
+                                to={gitHubTCContributorsUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 {gitHubTCContributorsUrl} {<ExportOutlined />}
                             </Link>
                         </Paragraph>
                         <Paragraph>
                             <h3>teddycloud_web</h3>
                             <div>{t("community.contributors.teddyCloudWeb")}</div>
-                            <Link to={gitHubTCwebContributorsUrl} target="_blank">
+                            <Link
+                                to={gitHubTCwebContributorsUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 {gitHubTCwebContributorsUrl} {<ExportOutlined />}
                             </Link>
                         </Paragraph>
                         <Paragraph>
                             {t("community.contributors.others")}{" "}
-                            <Link to={gitHubRepositoriesUrl} target="_blank">
+                            <Link
+                                to={gitHubRepositoriesUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 {gitHubRepositoriesUrl} {<ExportOutlined />}
                             </Link>
                         </Paragraph>
                     </Paragraph>
                     <Paragraph>
-                        <div style={{ marginBottom: 24 }}>{t("community.contributors.bigRoundOfApplause")}</div>
+                        <div style={{ marginBottom: 24 }}>
+                            {t("community.contributors.bigRoundOfApplause")}
+                        </div>
                         <TonieMeetingElement
                             maxNoOfGuests={50}
                             toniesSize={150}
@@ -70,7 +88,7 @@ export const ContributorsPage = () => {
                     <Paragraph>
                         <h3>{t("community.contributors.supportTeam")}</h3>
                         <Paragraph>{t("community.contributors.supportTeamText")}</Paragraph>
-                        <Link to={gitHubSponsoringUrl} target="_blank">
+                        <Link to={gitHubSponsoringUrl} target="_blank" rel="noopener noreferrer">
                             {t("community.contributors.supportTeamLink")} {<ExportOutlined />}
                         </Link>
                     </Paragraph>

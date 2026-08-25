@@ -22,7 +22,7 @@ export class GenericApi extends runtime.BaseAPI {
      * CORS preflight request
      */
     async rootOptionsRaw(
-        initOverrides?: RequestInit | runtime.InitOverrideFunction
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<void>> {
         const queryParameters: any = {};
 
@@ -35,7 +35,7 @@ export class GenericApi extends runtime.BaseAPI {
                 headers: headerParameters,
                 query: queryParameters,
             },
-            initOverrides
+            initOverrides,
         );
 
         return new runtime.VoidApiResponse(response);

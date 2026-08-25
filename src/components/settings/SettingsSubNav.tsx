@@ -21,7 +21,7 @@ import { defaultAPIConfig } from "../../config/defaultApiConfig";
 
 import { StyledSubMenu } from "../common/StyledComponents";
 import { restartServer } from "../../utils/system/restartTeddyCloud";
-import { useTeddyCloud } from "../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
 
@@ -52,7 +52,11 @@ export const SettingsSubNav = () => {
             key: `plugin-${plugin.pluginId}`,
             label: (
                 <Link
-                    to={plugin.standalone ? `/plugin/${plugin.pluginId}` : `/settings/plugin/${plugin.pluginId}`}
+                    to={
+                        plugin.standalone
+                            ? `/plugin/${plugin.pluginId}`
+                            : `/settings/plugin/${plugin.pluginId}`
+                    }
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);
@@ -61,7 +65,9 @@ export const SettingsSubNav = () => {
                 >
                     {plugin.pluginName}
                     {plugin.standalone ? (
-                        <ExportOutlined style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }} />
+                        <ExportOutlined
+                            style={{ marginLeft: 2, fontSize: 6, bottom: 6, position: "relative" }}
+                        />
                     ) : (
                         ""
                     )}
@@ -79,12 +85,22 @@ export const SettingsSubNav = () => {
     };
 
     const handleRestartServer = async () => {
-        await restartServer(t, true, addNotification, addLoadingNotification, closeLoadingNotification);
+        await restartServer(
+            t,
+            true,
+            addNotification,
+            addLoadingNotification,
+            closeLoadingNotification,
+        );
     };
 
     const handleReloadToniesJson = async () => {
         const key = "reloadToniesJson";
-        addLoadingNotification(key, t("settings.toniesJsonUpdate"), t("settings.toniesJsonUpdateInProgress"));
+        addLoadingNotification(
+            key,
+            t("settings.toniesJsonUpdate"),
+            t("settings.toniesJsonUpdateInProgress"),
+        );
 
         try {
             const response = await api.apiGetTeddyCloudApiRaw("/api/toniesJsonUpdate");
@@ -96,14 +112,14 @@ export const SettingsSubNav = () => {
                     NotificationTypeEnum.Error,
                     t("settings.toniesJsonUpdateFailed"),
                     t("settings.toniesJsonUpdateFailed") + ": " + data.toString(),
-                    t("settings.navigationTitle")
+                    t("settings.navigationTitle"),
                 );
             } else {
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("settings.toniesJsonUpdateSuccessful"),
                     t("settings.toniesJsonUpdateSuccessful"),
-                    t("settings.navigationTitle")
+                    t("settings.navigationTitle"),
                 );
             }
         } catch (error) {
@@ -111,7 +127,7 @@ export const SettingsSubNav = () => {
                 NotificationTypeEnum.Error,
                 t("settings.toniesJsonUpdateFailed"),
                 t("settings.toniesJsonUpdateFailed") + ": " + error,
-                t("settings.navigationTitle")
+                t("settings.navigationTitle"),
             );
         }
     };
@@ -266,6 +282,7 @@ export const SettingsSubNav = () => {
                 <Link
                     to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`}
                     target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => {
                         setNavOpen(false);
                         setSubNavOpen(false);

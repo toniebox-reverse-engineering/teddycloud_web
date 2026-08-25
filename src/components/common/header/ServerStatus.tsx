@@ -7,7 +7,7 @@ import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import { BoxineApi, BoxineForcedApi, TeddyCloudApi } from "../../../api";
 
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 
 const boxineApi = new BoxineApi(defaultAPIConfig());
 const boxineForcedApi = new BoxineForcedApi(defaultAPIConfig());
@@ -136,7 +136,13 @@ export const ServerStatus = () => {
                 </Tag>
             </Tooltip>
 
-            <Tooltip title={teddyStatus ? t("server.teddycloudStatusOnline") : t("server.teddycloudStatusOffline")}>
+            <Tooltip
+                title={
+                    teddyStatus
+                        ? t("server.teddycloudStatusOnline")
+                        : t("server.teddycloudStatusOffline")
+                }
+            >
                 <Tag
                     icon={teddyStatus ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
                     style={{

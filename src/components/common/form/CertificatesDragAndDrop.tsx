@@ -6,7 +6,7 @@ import { InboxOutlined } from "@ant-design/icons";
 
 import { ApiUploadCertPostRequest, TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -21,7 +21,9 @@ export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ over
     const { t } = useTranslation();
     const { addNotification, setFetchCloudStatus } = useTeddyCloud();
 
-    const navigationTitle = overlay ? t("tonieboxes.navigationTitle") : t("settings.navigationTitle");
+    const navigationTitle = overlay
+        ? t("tonieboxes.navigationTitle")
+        : t("settings.navigationTitle");
 
     const triggerWriteConfig = async () => {
         try {
@@ -31,7 +33,7 @@ export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ over
                 NotificationTypeEnum.Error,
                 t("settings.errorWhileSavingConfig"),
                 t("settings.errorWhileSavingConfigDetails") + e,
-                navigationTitle
+                navigationTitle,
             );
         }
     };
@@ -53,7 +55,7 @@ export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ over
                 t("settings.certificates.uploadSuccessfulDetails", {
                     filename: file.name,
                 }),
-                navigationTitle
+                navigationTitle,
             );
             setFetchCloudStatus((prev) => !prev);
         } catch (err) {
@@ -65,7 +67,7 @@ export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ over
                 }) +
                     ": " +
                     err,
-                navigationTitle
+                navigationTitle,
             );
             throw err;
         }
@@ -84,7 +86,7 @@ export const CertificateDragNDrop: React.FC<CertificateDragNDropProps> = ({ over
                     }) +
                         ": " +
                         t("settings.certificates.invalidFileType"),
-                    navigationTitle
+                    navigationTitle,
                 );
                 return Upload.LIST_IGNORE;
             }

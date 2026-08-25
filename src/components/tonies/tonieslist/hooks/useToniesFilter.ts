@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { languageOptions } from "../../../common/icons/LanguageFlagIcon";
 import type { TonieCardProps } from "../../../../types/tonieTypes";
-import type { ToniesFilterActions, ToniesFilterSettings, ToniesFilterState } from "../../../../types/toniesFilterTypes";
+import type {
+    ToniesFilterActions,
+    ToniesFilterSettings,
+    ToniesFilterState,
+} from "../../../../types/toniesFilterTypes";
+import { toModelKey } from "../../utils/modelKey";
 
 const STORAGE_KEY_FILTERS = "tonieFilters";
 
@@ -42,7 +47,14 @@ const FIELD_ACCESSORS: FIELD_ACCESSOR_MAP = {
 const VALID_FIELDS = Object.keys(FIELD_ACCESSORS).filter((f) => f !== "trackseconds");
 const VALID_OPERATORS = ["&&", "||", "!", "(", ")", "==", "!=", "~", ">", "<", ">=", "<="];
 const LOGICALS = ["and", "or", "&&", "||"];
-const FUNCTIONS = ["unique(series)", "unique(episode)", "unique(model)", "tracksecondscount", "trackcount", "track"];
+const FUNCTIONS = [
+    "unique(series)",
+    "unique(episode)",
+    "unique(model)",
+    "tracksecondscount",
+    "trackcount",
+    "track",
+];
 const EMPTYABLE_FIELDS = ["series", "episode", "model", "source", "language", "picture"];
 
 type ValidateResult = { valid: boolean; error?: string };
@@ -74,7 +86,9 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         customFilterError: undefined,
         filterName: "",
     });
-    const [existingFilters, setExistingFilters] = useState<Record<string, ToniesFilterSettings>>({});
+    const [existingFilters, setExistingFilters] = useState<Record<string, ToniesFilterSettings>>(
+        {},
+    );
 
     const setPartial = (patch: Partial<ToniesFilterState>) => {
         setState((prev) => ({ ...prev, ...patch }));
@@ -235,7 +249,9 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                 }
 
                 // startswith / endswith
-                m = token.match(/^([a-zA-Z_]\w*)\s+(startswith|endswith)\s+(?:"([^"]*)"|'([^']*)'|([^\s()]+))$/i);
+                m = token.match(
+                    /^([a-zA-Z_]\w*)\s+(startswith|endswith)\s+(?:"([^"]*)"|'([^']*)'|([^\s()]+))$/i,
+                );
                 if (m && FIELD_ACCESSORS[m[1]]) {
                     const field = m[1];
                     const op = m[2].toLowerCase();
@@ -283,7 +299,7 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                 "tonie",
                 "FIELD_ACCESSORS",
                 "checkUnique",
-                `return (${expr});`
+                `return (${expr});`,
             )(tonie, FIELD_ACCESSORS, checkUnique);
         } catch (err) {
             console.error("Custom filter error:", err);
@@ -317,7 +333,9 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                     if (!VALID_FIELDS.includes(m[1])) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldNegation", { field: m[1] }),
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldNegation", {
+                                field: m[1],
+                            }),
                         };
                     }
                     continue;
@@ -339,7 +357,11 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                 m = tok.match(/^tracksecondscount\s*(>=|<=|>|<|=|!=)\s*\d+$/);
                 if (m) continue;
 
-                if (tok === "tracksecondscount=trackcount" || tok === "tracksecondscount!=trackcount") continue;
+                if (
+                    tok === "tracksecondscount=trackcount" ||
+                    tok === "tracksecondscount!=trackcount"
+                )
+                    continue;
 
                 // field ~ "..."
                 m = tok.match(/^([a-zA-Z_]\w*)(\s*~\s*)(?:"[^"]*"|'[^']*'|[^\s()]+)$/);
@@ -347,7 +369,9 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                     if (!VALID_FIELDS.includes(m[1])) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldRegex", { field: m[1] }),
+                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldRegex", {
+                                field: m[1],
+                            }),
                         };
                     }
                     continue;
@@ -359,7 +383,10 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                     if (!VALID_FIELDS.includes(m[1])) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldComparison", { field: m[1] }),
+                            error: t(
+                                "tonies.tonies.filterBar.customFilter.unknownFieldComparison",
+                                { field: m[1] },
+                            ),
                         };
                     }
                     continue;
@@ -372,7 +399,9 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                     if (!["series", "episode", "model"].includes(fieldName)) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", { field: fieldName }),
+                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", {
+                                field: fieldName,
+                            }),
                         };
                     }
                     continue;
@@ -385,19 +414,26 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                     if (!EMPTYABLE_FIELDS.includes(fieldName)) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", { field: fieldName }),
+                            error: t("tonies.tonies.filterBar.customFilter.invalidFieldUnique", {
+                                field: fieldName,
+                            }),
                         };
                     }
                     continue;
                 }
 
                 // startswith / endswith
-                m = tok.match(/^([a-zA-Z_]\w*)\s+(startswith|endswith)\s+(?:"[^"]*"|'[^']*'|[^\s()]+)$/i);
+                m = tok.match(
+                    /^([a-zA-Z_]\w*)\s+(startswith|endswith)\s+(?:"[^"]*"|'[^']*'|[^\s()]+)$/i,
+                );
                 if (m) {
                     if (!VALID_FIELDS.includes(m[1])) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldComparison", { field: m[1] }),
+                            error: t(
+                                "tonies.tonies.filterBar.customFilter.unknownFieldComparison",
+                                { field: m[1] },
+                            ),
                         };
                     }
                     continue;
@@ -409,7 +445,10 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                     if (!VALID_FIELDS.includes(m[1])) {
                         return {
                             valid: false,
-                            error: t("tonies.tonies.filterBar.customFilter.unknownFieldComparison", { field: m[1] }),
+                            error: t(
+                                "tonies.tonies.filterBar.customFilter.unknownFieldComparison",
+                                { field: m[1] },
+                            ),
                         };
                     }
                     continue;
@@ -524,7 +563,9 @@ export function useToniesFilter(params: UseToniesFilterParams) {
 
         if (isNegated) {
             return unique.map((c) =>
-                ["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(c) ? `!${c}` : c
+                ["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(c)
+                    ? `!${c}`
+                    : c,
             );
         }
 
@@ -538,25 +579,33 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         let filtered = tonieCards.filter(
             (tonie) =>
                 ((tonie.sourceInfo?.series &&
-                    tonie.sourceInfo.series.toLowerCase().includes(effective.seriesFilter.toLowerCase())) ||
-                    tonie.tonieInfo.series.toLowerCase().includes(effective.seriesFilter.toLowerCase())) &&
+                    tonie.sourceInfo.series
+                        .toLowerCase()
+                        .includes(effective.seriesFilter.toLowerCase())) ||
+                    tonie.tonieInfo.series
+                        .toLowerCase()
+                        .includes(effective.seriesFilter.toLowerCase())) &&
                 ((tonie.sourceInfo?.episode &&
-                    tonie.sourceInfo.episode.toLowerCase().includes(effective.episodeFilter.toLowerCase())) ||
-                    tonie.tonieInfo.episode.toLowerCase().includes(effective.episodeFilter.toLowerCase())) &&
+                    tonie.sourceInfo.episode
+                        .toLowerCase()
+                        .includes(effective.episodeFilter.toLowerCase())) ||
+                    tonie.tonieInfo.episode
+                        .toLowerCase()
+                        .includes(effective.episodeFilter.toLowerCase())) &&
                 (effective.selectedLanguages.length === 0 ||
                     effective.selectedLanguages.includes(
                         tonie.tonieInfo.language !== undefined
                             ? languageOptions.includes(tonie.tonieInfo.language)
                                 ? tonie.tonieInfo.language
                                 : "undefined"
-                            : "undefined"
+                            : "undefined",
                     ) ||
                     effective.selectedLanguages.includes(
                         tonie.sourceInfo && tonie.sourceInfo.language !== undefined
                             ? languageOptions.includes(tonie.sourceInfo.language)
                                 ? tonie.sourceInfo.language
                                 : "undefined"
-                            : "undefined"
+                            : "undefined",
                     )) &&
                 (!effective.validFilter || tonie.valid) &&
                 (!effective.invalidFilter || tonie.valid === false) &&
@@ -567,7 +616,7 @@ export function useToniesFilter(params: UseToniesFilterParams) {
                 (!effective.nocloudFilter || tonie.nocloud) &&
                 (!effective.unsetNocloudFilter || tonie.nocloud === false) &&
                 (!effective.hasCloudAuthFilter || tonie.hasCloudAuth) &&
-                (!effective.unsetHasCloudAuthFilter || tonie.hasCloudAuth === false)
+                (!effective.unsetHasCloudAuthFilter || tonie.hasCloudAuth === false),
         );
 
         if (effective.searchText) {
@@ -575,23 +624,29 @@ export function useToniesFilter(params: UseToniesFilterParams) {
             filtered = filtered.filter(
                 (tonie) =>
                     tonie.tonieInfo.series.toLowerCase().includes(q) ||
-                    (tonie.sourceInfo?.series && tonie.sourceInfo.series.toLowerCase().includes(q)) ||
+                    (tonie.sourceInfo?.series &&
+                        tonie.sourceInfo.series.toLowerCase().includes(q)) ||
                     tonie.tonieInfo.episode.toLowerCase().includes(q) ||
-                    (tonie.sourceInfo?.episode && tonie.sourceInfo.episode.toLowerCase().includes(q)) ||
-                    tonie.tonieInfo.model.toLowerCase().includes(q) ||
-                    (tonie.sourceInfo?.model && tonie.sourceInfo.model.toLowerCase().includes(q)) ||
+                    (tonie.sourceInfo?.episode &&
+                        tonie.sourceInfo.episode.toLowerCase().includes(q)) ||
+                    toModelKey(tonie.tonieInfo.model).includes(q) ||
+                    (tonie.sourceInfo?.model && toModelKey(tonie.sourceInfo.model).includes(q)) ||
                     tonie.ruid.toLowerCase().includes(q) ||
                     tonie.uid.toLowerCase().includes(q) ||
-                    tonie.source.toLowerCase().includes(q)
+                    tonie.source.toLowerCase().includes(q),
             );
         }
 
         if (effective.filterLastTonieboxRUIDs) {
-            filtered = filtered.filter((tonie) => (lastTonieboxRUIDs ?? []).some(([ruid]) => ruid === tonie.ruid));
+            filtered = filtered.filter((tonie) =>
+                (lastTonieboxRUIDs ?? []).some(([ruid]) => ruid === tonie.ruid),
+            );
         }
 
         if (effective.customFilter.trim() !== "") {
-            filtered = filtered.filter((tonie) => applyCustomFilterInternal(tonie, effective.customFilter));
+            filtered = filtered.filter((tonie) =>
+                applyCustomFilterInternal(tonie, effective.customFilter),
+            );
         }
 
         if (effective.hiddenRuids && effective.hiddenRuids.length > 0) {

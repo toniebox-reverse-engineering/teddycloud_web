@@ -14,9 +14,17 @@ export interface CustomItemsHook {
     customItems: CustomItem[];
     mergedResults: MergedItem[];
     addResult: (dataset: any) => void;
+    addResults: (datasets: any[]) => void;
     addCustomImage: (file: File) => boolean;
+    addCustomImageByPath: (path: string) => void;
     removeByMergedIndex: (indexToRemove: number) => void;
-    editByMergedIndex: (indexToEdit: number, titles: string[], episodes: string, text: string, picture: string) => void;
+    editByMergedIndex: (
+        indexToEdit: number,
+        titles: string[],
+        episodes: string,
+        text: string,
+        picture: string,
+    ) => void;
     clearAll: () => void;
 }
 
@@ -25,6 +33,7 @@ export interface MergedItem {
     custom: boolean;
     text?: string;
     pic?: string;
+    series: string;
     episodes: string;
     model: string;
     language: string;
@@ -70,10 +79,27 @@ export const useCustomItems = (): CustomItemsHook => {
         setResults((prev) => [...prev, ensureId(dataset)]);
     };
 
+    const addResults = (datasets: any[]) => {
+        if (!datasets || datasets.length === 0) return;
+        setResults((prev) => [...prev, ...datasets.map((d) => ensureId(d))]);
+    };
+
     const addCustomImage = (file: File) => {
         const url = URL.createObjectURL(file);
-        setCustomItems((prev) => [...prev, { id: generateUUID(), pic: url, text: "", episodes: "", trackTitles: [] }]);
+        setCustomItems((prev) => [
+            ...prev,
+            { id: generateUUID(), pic: url, text: "", episodes: "", trackTitles: [] },
+        ]);
         return false;
+    };
+
+    const addCustomImageByPath = (path: string) => {
+        const trimmed = path.trim();
+        if (!trimmed) return;
+        setCustomItems((prev) => [
+            ...prev,
+            { id: generateUUID(), pic: trimmed, text: "", episodes: "", trackTitles: [] },
+        ]);
     };
 
     const clearAll = () => {
@@ -95,7 +121,7 @@ export const useCustomItems = (): CustomItemsHook => {
         titles: string[],
         episodes: string,
         text: string,
-        picture: string
+        picture: string,
     ) => {
         if (indexToEdit < results.length) {
             setResults((prev) =>
@@ -108,8 +134,8 @@ export const useCustomItems = (): CustomItemsHook => {
                               text,
                               pic: picture,
                           }
-                        : item
-                )
+                        : item,
+                ),
             );
         } else {
             const customIndex = indexToEdit - results.length;
@@ -123,8 +149,8 @@ export const useCustomItems = (): CustomItemsHook => {
                               text,
                               pic: picture,
                           }
-                        : item
-                )
+                        : item,
+                ),
             );
         }
     };
@@ -134,7 +160,9 @@ export const useCustomItems = (): CustomItemsHook => {
         customItems,
         mergedResults,
         addResult,
+        addResults,
         addCustomImage,
+        addCustomImageByPath,
         removeByMergedIndex,
         editByMergedIndex,
         clearAll,

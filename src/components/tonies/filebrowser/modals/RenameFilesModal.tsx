@@ -10,7 +10,7 @@ import {
     INVALID_NAME_CHARS_DISPLAY as invalidCharactersAsString,
     isInputValid,
 } from "../../../../utils/validation/fieldInputValidator";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -61,13 +61,14 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
     }, [open, currentFile]);
 
     const moveRenameFile = async (source: string, target: string) => {
-        const body = "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
+        const body =
+            "source=" + encodeURIComponent(source) + "&target=" + encodeURIComponent(target);
         const key = "rename-file";
 
         addLoadingNotification(
             key,
             t("fileBrowser.messages.renaming"),
-            t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) })
+            t("fileBrowser.messages.renamingDetails", { file: source.split("/").slice(-1) }),
         );
 
         try {
@@ -85,7 +86,7 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
                         fileSource: source.split("/").slice(-1),
                         fileTarget: target.split("/").slice(-1),
                     }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             } else {
                 throw data;
@@ -99,13 +100,14 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
                     fileSource: source,
                     fileTarget: target,
                 }) + error,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
     };
 
     const handleOk = async () => {
-        const newFileName = inputRef.current && inputRef.current.input ? inputRef.current.input.value : currentFile;
+        const newFileName =
+            inputRef.current && inputRef.current.input ? inputRef.current.input.value : currentFile;
 
         if (!currentFile || !newFileName) {
             onClose();
@@ -149,12 +151,21 @@ const RenameFileModal: React.FC<RenameFileModalProps> = ({
                 showIcon
                 style={{ marginBottom: 16 }}
             />
-            <div style={{ display: "flex", flexDirection: "column", gap: 16, justifyContent: "space-between" }}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
+                    justifyContent: "space-between",
+                }}
+            >
                 <Form.Item
                     validateStatus={hasInvalidChars ? "error" : ""}
                     help={
                         hasInvalidChars
-                            ? t("inputValidator.invalidCharactersDetected", { invalidChar: invalidCharactersAsString })
+                            ? t("inputValidator.invalidCharactersDetected", {
+                                  invalidChar: invalidCharactersAsString,
+                              })
                             : ""
                     }
                     required

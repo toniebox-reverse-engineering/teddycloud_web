@@ -12,7 +12,13 @@ interface SettingsModalProps {
     onClose: () => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ open, overlayId, tonieboxName, modalKey, onClose }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({
+    open,
+    overlayId,
+    tonieboxName,
+    modalKey,
+    onClose,
+}) => {
     const { t } = useTranslation();
 
     return (

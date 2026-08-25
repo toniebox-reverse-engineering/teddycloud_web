@@ -24,7 +24,12 @@ interface PluginCardProps {
     onDelete: (pluginId: string) => void;
 }
 
-export const PluginCard: React.FC<PluginCardProps> = ({ plugin, onOpen, onOpenHomepage, onDelete }) => {
+export const PluginCard: React.FC<PluginCardProps> = ({
+    plugin,
+    onOpen,
+    onOpenHomepage,
+    onDelete,
+}) => {
     const { t } = useTranslation();
     const { token } = useToken();
 
@@ -73,8 +78,15 @@ export const PluginCard: React.FC<PluginCardProps> = ({ plugin, onOpen, onOpenHo
                 </div>
             }
             actions={[
-                <Tooltip open={!canHover ? false : undefined} title={t("community.plugins.open")} key="details">
-                    <DesktopOutlined style={{ cursor: "pointer" }} onClick={() => onOpen(plugin.pluginId)} />
+                <Tooltip
+                    open={!canHover ? false : undefined}
+                    title={t("community.plugins.open")}
+                    key="details"
+                >
+                    <DesktopOutlined
+                        style={{ cursor: "pointer" }}
+                        onClick={() => onOpen(plugin.pluginId)}
+                    />
                 </Tooltip>,
                 plugin.pluginHomepage && (
                     <Tooltip
@@ -88,7 +100,11 @@ export const PluginCard: React.FC<PluginCardProps> = ({ plugin, onOpen, onOpenHo
                         />
                     </Tooltip>
                 ),
-                <Tooltip open={!canHover ? false : undefined} title={t("community.plugins.delete")} key="delete">
+                <Tooltip
+                    open={!canHover ? false : undefined}
+                    title={t("community.plugins.delete")}
+                    key="delete"
+                >
                     <DeleteOutlined
                         style={{ cursor: "pointer", color: token.colorError }}
                         onClick={() => onDelete(plugin.pluginId)}
@@ -114,7 +130,9 @@ export const PluginCard: React.FC<PluginCardProps> = ({ plugin, onOpen, onOpenHo
                 {plugin.author && `${t("community.plugins.by")} ${plugin.author}`}
                 {plugin.version && ` - v${plugin.version}`}
             </Paragraph>
-            {plugin.description && <Paragraph style={{ marginBottom: 8 }}>{plugin.description}</Paragraph>}
+            {plugin.description && (
+                <Paragraph style={{ marginBottom: 8 }}>{plugin.description}</Paragraph>
+            )}
         </Card>
     );
 };

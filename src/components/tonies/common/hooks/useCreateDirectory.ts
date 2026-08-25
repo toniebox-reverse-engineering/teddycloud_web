@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { isInputValid } from "../../../../utils/validation/fieldInputValidator";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { DirectoryTreeApi } from "../hooks/useDirectoryTree";
 
@@ -16,6 +16,7 @@ export interface UseDirectoryCreateOptions {
     directoryTree: DirectoryTreeApi;
     selectNewNode: boolean;
     setRebuildList?: React.Dispatch<React.SetStateAction<boolean>>;
+    special?: string;
 }
 
 export interface UseDirectoryCreateResult {
@@ -41,6 +42,7 @@ export const useDirectoryCreate = ({
     directoryTree,
     selectNewNode,
     setRebuildList,
+    special = "library",
 }: UseDirectoryCreateOptions): UseDirectoryCreateResult => {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
@@ -92,7 +94,8 @@ export const useDirectoryCreate = ({
     };
 
     const createDirectory = () => {
-        const inputValueCreateDirectory = inputCreateDirectoryRef.current?.input?.value?.trim() || "";
+        const inputValueCreateDirectory =
+            inputCreateDirectoryRef.current?.input?.value?.trim() || "";
         if (!inputValueCreateDirectory) {
             return;
         }
@@ -100,7 +103,10 @@ export const useDirectoryCreate = ({
         const dirFullPath = `${decodeURIComponent(createDirectoryPath)}/${inputValueCreateDirectory}`;
 
         try {
-            api.apiPostTeddyCloudRaw(`/api/dirCreate?special=library`, dirFullPath)
+            api.apiPostTeddyCloudRaw(
+                `/api/dirCreate?special=${encodeURIComponent(special)}`,
+                dirFullPath,
+            )
                 .then((response) => response.text())
                 .then((text) => {
                     if (text !== "OK") {
@@ -119,7 +125,7 @@ export const useDirectoryCreate = ({
                         t("fileBrowser.createDirectory.directoryCreatedDetails", {
                             directory: dirFullPath,
                         }),
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
 
                     setRebuildList && setRebuildList((prev) => !prev);
@@ -133,7 +139,7 @@ export const useDirectoryCreate = ({
                         t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
                             directory: dirFullPath,
                         }) + error,
-                        t("fileBrowser.title")
+                        t("fileBrowser.title"),
                     );
                 });
         } catch (error) {
@@ -143,7 +149,7 @@ export const useDirectoryCreate = ({
                 t("fileBrowser.createDirectory.directoryCreateFailedDetails", {
                     directory: dirFullPath,
                 }) + error,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
     };

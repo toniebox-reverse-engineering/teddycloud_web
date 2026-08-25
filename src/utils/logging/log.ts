@@ -21,7 +21,7 @@ export const installConsoleLogCapture = (append: (line: string) => void) => {
         const d = new Date();
         const pad = (n: number) => String(n).padStart(2, "0");
         return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(
-            d.getMinutes()
+            d.getMinutes(),
         )}:${pad(d.getSeconds())}`;
     };
 
@@ -52,7 +52,11 @@ export const installConsoleLogCapture = (append: (line: string) => void) => {
 
                 for (const [key, value] of Object.entries(obj)) {
                     if (key === "data" || key === "raw") {
-                        if (value && typeof value === "object" && typeof (value as any).length === "number") {
+                        if (
+                            value &&
+                            typeof value === "object" &&
+                            typeof (value as any).length === "number"
+                        ) {
                             out[key] = `${(value as any).length} bytes`;
                         } else if (value && typeof value === "object") {
                             out[key] = `${Object.keys(value).length} bytes`;

@@ -33,7 +33,13 @@ export const TonieboxOverlaySelect: React.FC<TonieboxOverlaySelectProps> = ({
 
     const select = (
         <Tooltip open={!canHover ? false : undefined} title={t("tonies.content.showToniesOfBoxes")}>
-            <Select id={selectId} value={overlay ?? ""} defaultValue="" onChange={onChange} {...selectProps}>
+            <Select
+                id={selectId}
+                value={overlay ?? ""}
+                defaultValue=""
+                onChange={onChange}
+                {...selectProps}
+            >
                 {tonieBoxContentDirs.map(([contentDir, boxNames, boxId]) => (
                     <Option key={boxId} value={boxId}>
                         {boxNames.join(", ")}

@@ -1,5 +1,54 @@
 # Changelog
 
+## 0.7.0
+
+- First TB2 support (not for daily use! Search for beta testers open: [https://t.me/toniebox_reverse_engineering/74847](https://t.me/toniebox_reverse_engineering/74847))
+- Added custom tonies API
+- Enhanced condition for valid tonieInfo check
+- Added contribution.md [https://github.com/toniebox-reverse-engineering/teddycloud/issues/59](https://github.com/toniebox-reverse-engineering/teddycloud/issues/59)
+- Fixed broken web radio streaming in alpine version [https://github.com/toniebox-reverse-engineering/teddycloud/issues/160](https://github.com/toniebox-reverse-engineering/teddycloud/issues/160)
+- Added api to extend and fetch custom models entries in tonies.custom.json [https://github.com/toniebox-reverse-engineering/teddycloud/issues/176](https://github.com/toniebox-reverse-engineering/teddycloud/issues/176) & [https://github.com/toniebox-reverse-engineering/teddycloud/issues/178](https://github.com/toniebox-reverse-engineering/teddycloud/issues/178)
+- Fixed bug unremoved cache on deinit [https://github.com/toniebox-reverse-engineering/teddycloud/issues/304](https://github.com/toniebox-reverse-engineering/teddycloud/issues/304)
+- Increased max length of path/filename to 255 [https://github.com/toniebox-reverse-engineering/teddycloud/issues/374](https://github.com/toniebox-reverse-engineering/teddycloud/issues/374)
+- Support running teddycloud as non-root in Docker (PUID/PGID env vars) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/441](https://github.com/toniebox-reverse-engineering/teddycloud/issues/441)
+- Fixed Runtime error during loading settings [https://github.com/toniebox-reverse-engineering/teddycloud/issues/447](https://github.com/toniebox-reverse-engineering/teddycloud/issues/447)
+- Fixed docker-entrypoint: in-place restart loop never triggers (set -e + exit-code -2 vs 254) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/448](https://github.com/toniebox-reverse-engineering/teddycloud/issues/448)
+- Fixed bug config file loader bypasses the min/max bounds enforced by the settings setters [https://github.com/toniebox-reverse-engineering/teddycloud/issues/451](https://github.com/toniebox-reverse-engineering/teddycloud/issues/451)
+- gui: Updated packages
+- gui: Removed legacy ESP32 flasher
+- gui: Fixed decimal input on ios [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/289)
+- gui: TeddyStudio: Added Image Bottom/Left margin [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/284)
+- gui: TeddyStudio: Added font selection for label text [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/299](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/299)
+- gui: TeddyStudio: Added bulk-add tonies modal [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/300](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/300)
+- gui: Added Custom-Model-Editor to create and edit custom models
+- gui: Added custom image management to library
+- gui: Added selection for custom and original images for TeddyStudio and Custom-Model-Editor
+- gui: Added option in tonie edit modal to set audio from model in case they differ
+- gui: Fixed double episode content in TeddyStudio [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/296)
+- gui: Added formatting (internal)
+- gui: Fixed some display issues in TeddyStudio labels
+- gui: Fixed bug deleting only marked notifications
+- gui: Added ESP32-C3 UART Gateway to cc3200 Box flashing guide [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/292](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/292)
+- gui: Add mobile version of bulk-add tonies model [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/305](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/305)
+- gui: Fixed bug in browser side taf encoding [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/281](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/281)
+- gui: Fixed bug malformed library post request [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/171](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/171)
+- gui: Added noopener noreferrer to external links [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308)
+- gui: Added tonies.custom.json snippet modal for getting skeleton of tonies.custom.json for all or selected tafs in current folder
+- gui: Fixed broken load Flashfile and resetBox path in esp32 flashing
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.8...tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.8...tc_v0.7.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.8...tcw_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.8...tcw_v0.7.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-7-0/3363](https://forum.revvox.de/t/release-notes-0-7-0/3363)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0)
+
 ## 0.6.8
 
 - added tls support in mqtt
@@ -15,16 +64,16 @@
 
 ### Commits
 
-- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.6.8)
-- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.6.8)
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.6.7...tc_v0.7.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.6.7...tcw_v0.7.0)
 
 ### Discussion
 
-- [https://forum.revvox.de/t/release-notes-0-6-8/3235](https://forum.revvox.de/t/release-notes-0-6-8/3235)
+- [https://forum.revvox.de/t/release-notes-0-7-0/3235](https://forum.revvox.de/t/release-notes-0-7-0/3235)
 
 ### GitHub Release
 
-- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.6.8)
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.0)
 
 ## 0.6.7
 

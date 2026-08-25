@@ -1,17 +1,33 @@
-import React, { useMemo, useState } from "react";
-import { Table, Select, theme, Button, DatePicker, Input, Collapse, CollapseProps, Typography, Tooltip } from "antd";
-import { ExclamationCircleFilled, CheckCircleFilled, CloseCircleFilled, InfoCircleFilled } from "@ant-design/icons";
+import React, { useState } from "react";
+import dayjs from "dayjs";
+import {
+    Table,
+    Select,
+    theme,
+    Button,
+    DatePicker,
+    Input,
+    Collapse,
+    CollapseProps,
+    Typography,
+    Tooltip,
+} from "antd";
+import {
+    ExclamationCircleFilled,
+    CheckCircleFilled,
+    CloseCircleFilled,
+    InfoCircleFilled,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import type { TableRowSelection, ColumnsType } from "antd/es/table/interface";
 import { NotificationRecord, NotificationType } from "../../../types/teddyCloudNotificationTypes";
 import { useNotificationsList } from "./hooks/useNotificationsList";
 import { canHover } from "../../../utils/browser/browserUtils";
 
-const { Option } = Select;
 const { Paragraph } = Typography;
 const { useToken } = theme;
 
-type NotificationRow = NotificationRecord & { _rowId: string };
+type NotificationRow = NotificationRecord;
 
 const NotificationsList: React.FC = () => {
     const { t } = useTranslation();
@@ -48,14 +64,7 @@ const NotificationsList: React.FC = () => {
         warning: <ExclamationCircleFilled style={{ color: token.colorWarning }} />,
     };
 
-    const tableData: NotificationRow[] = useMemo(
-        () =>
-            filteredNotifications.map((n, index) => ({
-                ...n,
-                _rowId: `${n.uuid}-${index}`,
-            })),
-        [filteredNotifications]
-    );
+    const tableData: NotificationRow[] = filteredNotifications;
 
     const columns: ColumnsType<NotificationRow> = [
         {
@@ -185,50 +194,79 @@ const NotificationsList: React.FC = () => {
         >
             <Select
                 mode="multiple"
-                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colType")}
+                placeholder={`${t("settings.notifications.filterBy")} ${t(
+                    "settings.notifications.colType",
+                )}`}
                 onChange={setTypeFilter}
-            >
-                <Option value="success">{t("settings.notifications.success")}</Option>
-                <Option value="info">{t("settings.notifications.info")}</Option>
-                <Option value="warning">{t("settings.notifications.warning")}</Option>
-                <Option value="error">{t("settings.notifications.error")}</Option>
-            </Select>
+                options={[
+                    { value: "success", label: t("settings.notifications.success") },
+                    { value: "info", label: t("settings.notifications.info") },
+                    { value: "warning", label: t("settings.notifications.warning") },
+                    { value: "error", label: t("settings.notifications.error") },
+                ]}
+            />
+
             <Select
                 mode="multiple"
-                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colContext")}
+                placeholder={`${t("settings.notifications.filterBy")} ${t(
+                    "settings.notifications.colContext",
+                )}`}
                 onChange={setContextFilter}
-            >
-                {uniqueContexts.map((context) => (
-                    <Option key={context} value={context}>
-                        {context}
-                    </Option>
-                ))}
-            </Select>
+                options={uniqueContexts.map((context) => ({
+                    value: context,
+                    label: context,
+                }))}
+            />
+
             <Select
                 mode="multiple"
-                placeholder={t("settings.notifications.filterBy") + " " + t("settings.notifications.colStatus")}
+                placeholder={`${t("settings.notifications.filterBy")} ${t(
+                    "settings.notifications.colStatus",
+                )}`}
                 onChange={setStatusFilter}
-            >
-                <Option value="Confirmed">{t("settings.notifications.confirmed")}</Option>
-                <Option value="Unconfirmed">{t("settings.notifications.unconfirmed")}</Option>
-            </Select>
+                options={[
+                    { value: "Confirmed", label: t("settings.notifications.confirmed") },
+                    {
+                        value: "Unconfirmed",
+                        label: t("settings.notifications.unconfirmed"),
+                    },
+                ]}
+            />
             <DatePicker.RangePicker
                 onChange={(dates) => {
                     if (dates && dates[0] && dates[1]) {
-                        setDateRange([dates[0].toDate(), dates[1].toDate()]);
+                        setDateRange([
+                            dates[0].startOf("day").toDate(),
+                            dates[1].endOf("day").toDate(),
+                        ]);
                     } else {
                         setDateRange([null, null]);
                     }
                 }}
-                value={dateRange[0] && dateRange[1] ? [dateRange[0] as any, dateRange[1] as any] : undefined}
-                placeholder={[t("settings.notifications.startDate"), t("settings.notifications.endDate")]}
+                value={
+                    dateRange[0] && dateRange[1]
+                        ? [dayjs(dateRange[0]), dayjs(dateRange[1])]
+                        : undefined
+                }
+                placeholder={[
+                    t("settings.notifications.startDate"),
+                    t("settings.notifications.endDate"),
+                ]}
             />
             <Input
-                placeholder={t("settings.notifications.searchIn") + " " + t("settings.notifications.colTitle")}
+                placeholder={
+                    t("settings.notifications.searchIn") +
+                    " " +
+                    t("settings.notifications.colTitle")
+                }
                 onChange={(e) => setTitleFilter(e.target.value)}
             />
             <Input
-                placeholder={t("settings.notifications.searchIn") + " " + t("settings.notifications.colDetails")}
+                placeholder={
+                    t("settings.notifications.searchIn") +
+                    " " +
+                    t("settings.notifications.colDetails")
+                }
                 onChange={(e) => setDescriptionFilter(e.target.value)}
             />
         </div>
@@ -237,7 +275,9 @@ const NotificationsList: React.FC = () => {
     const filterPanelContentItem: CollapseProps["items"] = [
         {
             key: "search-filter",
-            label: collapsed ? t("tonies.tonies.filterBar.showFilters") : t("tonies.tonies.filterBar.hideFilters"),
+            label: collapsed
+                ? t("tonies.tonies.filterBar.showFilters")
+                : t("tonies.tonies.filterBar.hideFilters"),
             children: filterPanelContent,
         },
     ];
@@ -260,9 +300,18 @@ const NotificationsList: React.FC = () => {
                     style={{ width: "100%" }}
                 />
             </Paragraph>
-            <Paragraph style={{ display: "flex", gap: 8, justifyContent: "space-between" }}>
+            <Paragraph
+                style={{
+                    display: "flex",
+                    gap: 8,
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                }}
+            >
                 {selectedRowKeys.length > 0 ? (
-                    <Paragraph style={{ display: "flex", gap: 8 }}>
+                    <Paragraph
+                        style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 0 }}
+                    >
                         <Button onClick={removeSelectedNotifications}>
                             {t("settings.notifications.removeSelectedNotifications")}
                         </Button>
@@ -274,7 +323,9 @@ const NotificationsList: React.FC = () => {
                     <Paragraph />
                 )}
                 <Paragraph>
-                    <Button onClick={clearAllNotifications}>{t("settings.notifications.removeAll")}</Button>
+                    <Button onClick={clearAllNotifications}>
+                        {t("settings.notifications.removeAll")}
+                    </Button>
                 </Paragraph>
             </Paragraph>
 
@@ -284,7 +335,7 @@ const NotificationsList: React.FC = () => {
                 rowSelection={rowSelection}
                 dataSource={tableData}
                 columns={columns}
-                rowKey="_rowId"
+                rowKey="uuid"
                 pagination={{
                     current: currentPage,
                     pageSize,
@@ -302,11 +353,14 @@ const NotificationsList: React.FC = () => {
                         ? {
                               expandedRowRender: (record) => (
                                   <div>
-                                      <strong>{t("settings.notifications.colDetails")}:</strong> {record.description}
+                                      <strong>{t("settings.notifications.colDetails")}:</strong>{" "}
+                                      {record.description}
                                       {record.context ? (
                                           <div>
                                               <br />
-                                              <strong>{t("settings.notifications.colContext")}:</strong>{" "}
+                                              <strong>
+                                                  {t("settings.notifications.colContext")}:
+                                              </strong>{" "}
                                               {record.context}
                                           </div>
                                       ) : null}
@@ -314,13 +368,17 @@ const NotificationsList: React.FC = () => {
                                       {isMobile ? (
                                           <div>
                                               <div>
-                                                  <strong>{t("settings.notifications.colStatus")}:</strong>{" "}
+                                                  <strong>
+                                                      {t("settings.notifications.colStatus")}:
+                                                  </strong>{" "}
                                                   {record.flagConfirmed ? (
                                                       t("settings.notifications.confirmed")
                                                   ) : (
                                                       <Tooltip
                                                           open={!canHover ? false : undefined}
-                                                          title={t("settings.notifications.clickToConfirm")}
+                                                          title={t(
+                                                              "settings.notifications.clickToConfirm",
+                                                          )}
                                                       >
                                                           {t("settings.notifications.unconfirmed")}
                                                       </Tooltip>
@@ -328,17 +386,27 @@ const NotificationsList: React.FC = () => {
                                               </div>
                                               <br />
                                               <div>
-                                                  <strong>{t("settings.notifications.colDate")}:</strong>{" "}
-                                                  {record.date
-                                                      .toLocaleString("en-US", {
-                                                          year: "numeric",
-                                                          month: "2-digit",
-                                                          day: "2-digit",
-                                                          hour: "2-digit",
-                                                          minute: "2-digit",
-                                                          hour12: false,
-                                                      })
-                                                      .replace(",", "")}
+                                                  <strong>
+                                                      {t("settings.notifications.colDate")}:
+                                                  </strong>{" "}
+                                                  {(() => {
+                                                      const d =
+                                                          record.date instanceof Date
+                                                              ? record.date
+                                                              : new Date(record.date);
+                                                      if (Number.isNaN(d.getTime())) return "";
+
+                                                      return d
+                                                          .toLocaleString("en-US", {
+                                                              year: "numeric",
+                                                              month: "2-digit",
+                                                              day: "2-digit",
+                                                              hour: "2-digit",
+                                                              minute: "2-digit",
+                                                              hour12: false,
+                                                          })
+                                                          .replace(",", "");
+                                                  })()}
                                               </div>
                                           </div>
                                       ) : null}

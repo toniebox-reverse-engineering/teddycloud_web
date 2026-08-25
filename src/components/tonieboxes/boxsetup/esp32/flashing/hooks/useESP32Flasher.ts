@@ -1,18 +1,24 @@
 import { useEffect, useRef, useState } from "react";
-import { ESPLoader, Transport } from "esptool-js";
 import { RevvoxFlasher } from "../../../../../../tools/esp32/revvox_flasher";
 import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../../../api";
 import { defaultAPIConfig } from "../../../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../../../types/teddyCloudNotificationTypes";
 import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial";
-import { ESP32_CHIPNAME, ESP32_FLASHSIZE } from "../../../../../../constants/esp32";
+import {
+    ESP32_CHIPNAME,
+    ESP32_FLASH_STEPS,
+    ESP32_FLASHSIZE,
+} from "../../../../../../constants/esp32";
 import { scrollToTop } from "../../../../../../utils/browser/browserUtils";
 import { useGetSettingLogLevel } from "../../../../../../hooks/getsettings/useGetSettingLogLevel";
 import { checkAssetsCertPartition } from "../helper/checkAssetsCertPartition";
 import { TFunction } from "i18next";
-import { installConsoleLogCapture, uninstallConsoleLogCapture } from "../../../../../../utils/logging/log";
+import {
+    installConsoleLogCapture,
+    uninstallConsoleLogCapture,
+} from "../../../../../../utils/logging/log";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -75,6 +81,7 @@ export interface UseESP32FlasherResult {
     handleBaudrateChange: (value: number) => void;
     openHttpsUrl: () => void;
 
+    startLoadFlash: () => Promise<void>;
     loadFlashFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
     readFlash: () => Promise<void>;
     patchFlash: () => Promise<void>;
@@ -91,13 +98,17 @@ export interface UseESP32FlasherResult {
 }
 
 export const useESP32Flasher = (
-    useRevvoxFlasher = false,
     scrollToTopAnchor: HTMLElement | null,
     logEntries: string[],
-    setLogEntries: React.Dispatch<React.SetStateAction<string[]>>
+    setLogEntries: React.Dispatch<React.SetStateAction<string[]>>,
 ): UseESP32FlasherResult => {
     const { t } = useTranslation();
-    const { setFetchCloudStatus, addNotification, addLoadingNotification, closeLoadingNotification } = useTeddyCloud();
+    const {
+        setFetchCloudStatus,
+        addNotification,
+        addLoadingNotification,
+        closeLoadingNotification,
+    } = useTeddyCloud();
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -105,12 +116,13 @@ export const useESP32Flasher = (
     const [httpsUrl, setHttpsUrl] = useState<string>("");
 
     const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState(false);
-    const [isOverwriteForceConfirmationModalOpen, setIsOverwriteForceConfirmationModalOpen] = useState(false);
+    const [isOverwriteForceConfirmationModalOpen, setIsOverwriteForceConfirmationModalOpen] =
+        useState(false);
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState("");
     const [certDir, setCertDir] = useState<string>("certs/client");
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(ESP32_FLASH_STEPS.PREP);
 
     const [state, setState] = useState<ESP32Flasher>({
         progress: 0,
@@ -152,14 +164,15 @@ export const useESP32Flasher = (
 
     const [isSupported, setIsSupported] = useState(false);
     const [baudRate, setBaudRate] = useState(921600);
-    const baudRates = [300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600];
+    const baudRates = [
+        300, 1200, 2400, 4800, 9600, 14400, 19200, 38400, 57600, 115200, 230400, 460800, 921600,
+    ];
     const romBaudRate = 115200;
 
     const logLevel = useGetSettingLogLevel();
 
     const logCtx = () => ({
         step: currentStep,
-        useRevvoxFlasher,
         baudRate,
         romBaudRate,
         resetBox: state.resetBox,
@@ -211,7 +224,10 @@ export const useESP32Flasher = (
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const hasAnyLog = fullLogRef.current.length > 0 || pendingRef.current.length > 0 || (logEntries?.length ?? 0) > 0;
+    const hasAnyLog =
+        fullLogRef.current.length > 0 ||
+        pendingRef.current.length > 0 ||
+        (logEntries?.length ?? 0) > 0;
 
     const getAllLogLines = () => {
         return fullLogRef.current.slice();
@@ -232,14 +248,6 @@ export const useESP32Flasher = (
         setBaudRate(value);
     };
 
-    const arrayBufferToBstr = (arrayBuffer: any) => {
-        const u8Array = new Uint8Array(arrayBuffer);
-        let binaryString = "";
-        for (let i = 0; i < u8Array.length; i++) binaryString += String.fromCharCode(u8Array[i]);
-        return binaryString;
-    };
-
-    // RevvoxFlasher management
     const revvoxFlasherRef = useRef<RevvoxFlasher | null>(null);
 
     const getRevvoxFlasher = () => {
@@ -288,7 +296,7 @@ export const useESP32Flasher = (
         }));
 
         console.info("[ESP32][Revvox] prepare: openPort...");
-        await flasher.openPort();
+        await flasher.openPort(state.port);
 
         console.info("[ESP32][Revvox] prepare: sync...");
         await flasher.sync();
@@ -352,7 +360,8 @@ export const useESP32Flasher = (
         }
 
         const fetchHttpsPort = async (): Promise<string | undefined> => {
-            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS) return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS;
+            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS)
+                return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS;
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("core.server.https_web_port");
                 return await response.text();
@@ -362,7 +371,8 @@ export const useESP32Flasher = (
         };
 
         const fetchHttpPort = async (): Promise<string | undefined> => {
-            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP) return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP;
+            if (import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP)
+                return import.meta.env.VITE_APP_TEDDYCLOUD_PORT_HTTP;
             try {
                 const response = await api.apiGetTeddyCloudSettingRaw("core.server.http_port");
                 return await response.text();
@@ -420,7 +430,7 @@ export const useESP32Flasher = (
 
     function checkFirmwareIntegrity(
         flashData: Uint8Array<ArrayBuffer> | Uint8Array<ArrayBufferLike>,
-        t: TFunction
+        t: TFunction,
     ): boolean {
         console.info("[ESP32] integrity: start", { bytes: flashData.length });
 
@@ -438,7 +448,8 @@ export const useESP32Flasher = (
         if (!result.ok) {
             console.error("[ESP32] integrity: certificates missing", result);
             throw new Error(
-                t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashDataCertificatesMissing") + result.reason
+                t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidFlashDataCertificatesMissing") +
+                    result.reason,
             );
         } else {
             console.info("[ESP32] integrity: certs found", result);
@@ -448,94 +459,25 @@ export const useESP32Flasher = (
         return true;
     }
 
-    // --- low-level flashing logic ---
-    const disconnectESPLoader = async (esploader: ESPLoader | null, port: SerialPort | null) => {
-        if (!port) return;
-
-        console.info("[ESP32][ESPLoader] disconnect requested");
+    const startLoadFlash = async () => {
         try {
-            const transport = (esploader as any)?.transport;
-            if (transport && typeof transport.disconnect === "function") {
-                await transport.disconnect();
-            } else {
-                await port.close();
-            }
-            console.info("[ESP32][ESPLoader] disconnect OK");
-        } catch (err) {
-            console.error("[ESP32][ESPLoader] Error while closing serial connection", err);
-        }
-    };
-
-    const getPort = async (message: string): Promise<SerialPort | null> => {
-        console.info("[ESP32] getPort: start", { message, ...logCtx() });
-
-        if (state.port) {
-            try {
-                console.info("[ESP32] getPort: reusing existing port", state.port.getInfo?.());
-            } catch (e) {
-                console.warn("[ESP32] getPort: existing port getInfo failed", e);
-            }
-            return state.port;
-        }
-
-        setState((prev) => ({
-            ...prev,
-            showStatus: true,
-            showProgress: false,
-            progress: 0,
-            state: message || "Open serial port",
-        }));
-
-        let port: SerialPort | null = null;
-        try {
-            console.info("[ESP32] getPort: opening chooser...");
-            port = await navigator.serial.requestPort();
-
-            console.info("[ESP32] getPort: port selected", port?.getInfo?.());
-            console.info("[ESP32] getPort: open/close test start...");
-            await port.open({ baudRate: 115200 });
-            await port.close();
-            console.info("[ESP32] getPort: open/close test OK");
-        } catch (err: any) {
-            console.error("[ESP32] getPort failed", { name: err?.name, message: err?.message, err });
-
-            if (err === "NetworkError") {
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.portOpenFailedInUse"),
-                    error: true,
-                }));
-                alert(t("tonieboxes.esp32BoxFlashing.esp32flasher.portOpenFailedInUse"));
-            } else if (err === "NotFoundError") {
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.noPortAvailable"),
-                    error: true,
-                }));
-            } else {
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.error") + err,
-                    error: true,
-                }));
-                alert(t("tonieboxes.esp32BoxFlashing.esp32flasher.error") + ` ${err}`);
-            }
-            return null;
-        }
-
-        if (!port) {
-            console.error("[ESP32] getPort: navigator.serial returned null port");
+            const port = await navigator.serial.requestPort();
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.invalidSerialPort"),
+                port: port,
+            }));
+
+            fileInputRef.current?.click();
+        } catch (err: any) {
+            console.error("[ESP32] startLoadFlash: openPort failed", err);
+            setState((prev) => ({
+                ...prev,
+                state: err.message,
+                connected: false,
+                actionInProgress: false,
                 error: true,
             }));
-            return null;
         }
-
-        setState((prev) => ({ ...prev, port }));
-        console.info("[ESP32] getPort: stored port in state", port.getInfo?.());
-        return port;
     };
 
     const loadFlashFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -613,7 +555,6 @@ export const useESP32Flasher = (
 
             console.info("[ESP32] loadFlashFile: branching", {
                 resetBox: state.resetBox,
-                useRevvoxFlasher,
             });
 
             // --- resetBox: only load patchedFlash from file, no serial needed ---
@@ -626,10 +567,9 @@ export const useESP32Flasher = (
                     connected: false,
                     flashName: "from file",
                 }));
-            }
-            // --- RevvoxFlasher branch ---
-            else if (useRevvoxFlasher) {
+            } else {
                 const flasher = getRevvoxFlasher();
+
                 let mac = "";
 
                 try {
@@ -641,7 +581,7 @@ export const useESP32Flasher = (
                     }));
 
                     console.info("[ESP32][Revvox] loadFlashFile: openPort");
-                    await flasher.openPort();
+                    await flasher.openPort(state.port);
 
                     console.info("[ESP32][Revvox] loadFlashFile: sync");
                     setState((prev) => ({
@@ -652,7 +592,10 @@ export const useESP32Flasher = (
 
                     console.info("[ESP32][Revvox] loadFlashFile: readMac");
                     mac = (await flasher.readMac()) || "";
-                    console.info("[ESP32][Revvox] loadFlashFile: MAC read", { mac, chip: flasher.current_chip });
+                    console.info("[ESP32][Revvox] loadFlashFile: MAC read", {
+                        mac,
+                        chip: flasher.current_chip,
+                    });
 
                     setState((prev) => ({
                         ...prev,
@@ -682,7 +625,9 @@ export const useESP32Flasher = (
                 const blob = new Blob([flashData], { type: "application/octet-stream" });
                 const url = URL.createObjectURL(blob);
 
-                console.info("[ESP32] loadFlashFile: uploading file to server", { name: sanitizedName });
+                console.info("[ESP32] loadFlashFile: uploading file to server", {
+                    name: sanitizedName,
+                });
                 await uploadFlashData(flashData, sanitizedName);
 
                 console.info("[ESP32] loadFlashFile: done (revvox)", { downloadLinkCreated: true });
@@ -695,99 +640,6 @@ export const useESP32Flasher = (
                     downloadLink: url,
                 }));
             }
-            // --- original ESPLoader branch ---
-            else {
-                const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingReadMac"));
-                if (port === null || state.connected) {
-                    console.warn("[ESP32][ESPLoader] loadFlashFile: port null or already connected", {
-                        portNull: port === null,
-                        connected: state.connected,
-                    });
-                    setState((prev) => ({ ...prev, actionInProgress: false }));
-                    return;
-                }
-
-                console.info("[ESP32][ESPLoader] loadFlashFile: init", {
-                    baudRate,
-                    romBaudRate,
-                    port: port.getInfo?.(),
-                });
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${String(port.getInfo?.())}`,
-                    showFlash: false,
-                    connected: true,
-                }));
-
-                let esploader: ESPLoader | null = null;
-
-                try {
-                    const transport = new Transport(port);
-                    esploader = new ESPLoader({ transport, baudrate: baudRate, romBaudrate: romBaudRate });
-                } catch (err) {
-                    console.error("[ESP32][ESPLoader] loadFlashFile: ESPLoader init failed", err);
-                    setState((prev) => ({
-                        ...prev,
-                        state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
-                        connected: false,
-                        actionInProgress: false,
-                        error: true,
-                    }));
-                    alert(err);
-                    await disconnectESPLoader(esploader, port);
-                    return;
-                }
-
-                try {
-                    setState((prev) => ({
-                        ...prev,
-                        state: t("tonieboxes.esp32BoxFlashing.esp32flasher.retrievingMac"),
-                        actionInProgress: true,
-                    }));
-
-                    console.info("[ESP32][ESPLoader] loadFlashFile: main()");
-                    await esploader.main();
-                    console.info("[ESP32][ESPLoader] loadFlashFile: connected");
-
-                    const mac = await esploader.chip.readMac(esploader);
-                    console.info("[ESP32][ESPLoader] loadFlashFile: MAC read", { mac });
-
-                    setState((prev) => ({ ...prev, chipMac: mac }));
-
-                    await disconnectESPLoader(esploader, port);
-
-                    const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
-                    const blob = new Blob([flashData], { type: "application/octet-stream" });
-                    const url = URL.createObjectURL(blob);
-
-                    console.info("[ESP32] loadFlashFile: uploading file to server", { name: sanitizedName });
-                    await uploadFlashData(flashData, sanitizedName);
-
-                    setState((prev) => ({
-                        ...prev,
-                        patchedFlash: arrayBuffer,
-                        showFlash: true,
-                        connected: false,
-                        flashName: "from file",
-                        downloadLink: url,
-                    }));
-
-                    console.info("[ESP32] loadFlashFile: done (esploader)", { downloadLinkCreated: true });
-                } catch (err) {
-                    console.error("[ESP32][ESPLoader] loadFlashFile failed", err);
-                    setState((prev) => ({
-                        ...prev,
-                        state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
-                        connected: false,
-                        actionInProgress: false,
-                        error: true,
-                    }));
-                    alert(err);
-                    await disconnectESPLoader(esploader, port);
-                    return;
-                }
-            }
         };
 
         reader.readAsArrayBuffer(file);
@@ -799,288 +651,81 @@ export const useESP32Flasher = (
     const readFlash = async () => {
         console.info("[ESP32] readFlash: start", logCtx());
 
-        if (useRevvoxFlasher) {
-            const flashSizeKb = ESP32_FLASHSIZE;
-            const totalBytes = flashSizeKb * 1024;
-
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
-                showStatus: true,
-                showFlash: true,
-                connected: true,
-                actionInProgress: true,
-                error: false,
-            }));
-
-            let mac = "";
-            let flashData: Uint8Array;
-
-            try {
-                const flasher = await prepareRevvoxFlasher();
-
-                mac = (await flasher.readMac()) || "";
-                console.info("[ESP32][Revvox] readFlash: chip identified", {
-                    mac,
-                    chip: flasher.current_chip,
-                    flashSizeKb,
-                });
-
-                setState((prev) => ({
-                    ...prev,
-                    chipMac: mac,
-                    chipType: flasher.current_chip,
-                    flashSize: "" + flashSizeKb,
-                }));
-
-                if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
-                    console.error("[ESP32][Revvox] readFlash: chip type mismatch", {
-                        actual: flasher.current_chip,
-                        expected: ESP32_CHIPNAME,
-                    });
-                    throw new Error(
-                        t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                            actualtype: "" + flasher.current_chip,
-                            expectedtype: ESP32_CHIPNAME,
-                        })
-                    );
-                }
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFlash"),
-                    progress: 0,
-                }));
-
-                console.info("[ESP32][Revvox] readFlash: reading flash", { totalBytes });
-
-                flashData = await flasher.readFlash(0x00000000, totalBytes, (read, total, stage) => {
-                    const prog = (100 * read) / total;
-                    setState((prev) => ({
-                        ...prev,
-                        progress: prog,
-                        state:
-                            stage === "Reading"
-                                ? t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFlash")
-                                : t("tonieboxes.esp32BoxFlashing.esp32flasher.verifyingReadFlash"),
-                    }));
-                });
-
-                console.info("[ESP32][Revvox] readFlash: done", { bytes: flashData.length });
-
-                console.info("[ESP32][Revvox] readFlash: integrity check...");
-                checkFirmwareIntegrity(flashData, t);
-                console.info("[ESP32][Revvox] readFlash: integrity OK");
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFinished"),
-                    progress: 100,
-                    originalFlash: flashData,
-                    connected: false,
-                    showProgress: false,
-                }));
-
-                // FIX: url must be created BEFORE setState using it
-                const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
-                const blob = new Blob([flashData.buffer as ArrayBuffer], { type: "application/octet-stream" });
-                const url = URL.createObjectURL(blob);
-
-                console.info("[ESP32][Revvox] readFlash: download link created");
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadingFlashData"),
-                    downloadLink: url,
-                }));
-
-                console.info("[ESP32][Revvox] readFlash: uploading to server...", { name: sanitizedName });
-                await uploadFlashData(flashData, sanitizedName);
-                console.info("[ESP32][Revvox] readFlash: upload finished");
-            } catch (err: any) {
-                console.error("[ESP32][Revvox] readFlash failed", err);
-
-                setState((prev) => ({
-                    ...prev,
-                    state:
-                        t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
-                        ` ${String(err?.message ?? err)}`,
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-                alert(err);
-            } finally {
-                await disconnectRevvoxFlasher();
-            }
-
-            return;
-        }
-
-        // --- original ESPLoader branch ---
-        let esploader: ESPLoader | null = null;
-        let flashData: Uint8Array | null = null;
-        let mac = "";
-
-        const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingReadFlash"));
-        if (port === null || state.connected) {
-            console.warn("[ESP32][ESPLoader] readFlash: port null or already connected", {
-                portNull: port === null,
-                connected: state.connected,
-            });
-            return;
-        }
+        const flashSizeKb = ESP32_FLASHSIZE;
+        const totalBytes = flashSizeKb * 1024;
 
         setState((prev) => ({
             ...prev,
-            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${String(port.getInfo?.())}`,
-            chipMac: "",
-            chipType: "",
-            flashId: "",
-            flashManuf: "",
-            flashDevice: "",
-            flashSize: "",
-            showFlash: false,
+            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
+            showStatus: true,
+            showFlash: true,
             connected: true,
             actionInProgress: true,
             error: false,
         }));
 
-        console.info("[ESP32][ESPLoader] readFlash: init", { baudRate, romBaudRate, port: port.getInfo?.() });
+        let mac = "";
+        let flashData: Uint8Array;
 
         try {
-            const transport = new Transport(port);
-            esploader = new ESPLoader({ transport, baudrate: baudRate, romBaudrate: romBaudRate });
-        } catch (err) {
-            console.error("[ESP32][ESPLoader] readFlash: ESPLoader init failed", err);
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
-                connected: false,
-                actionInProgress: false,
-                error: true,
-            }));
-            alert(err);
-            await disconnectESPLoader(esploader, port);
-            return;
-        }
+            const flasher = await prepareRevvoxFlasher();
 
-        try {
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
-            }));
-
-            console.info("[ESP32][ESPLoader] readFlash: main()");
-            await esploader.main();
-            console.info("[ESP32][ESPLoader] readFlash: connected");
+            mac = (await flasher.readMac()) || "";
+            console.info("[ESP32][Revvox] readFlash: chip identified", {
+                mac,
+                chip: flasher.current_chip,
+                flashSizeKb,
+            });
 
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connected"),
+                chipMac: mac,
+                chipType: flasher.current_chip,
+                flashSize: "" + flashSizeKb,
             }));
 
-            mac = await esploader.chip.readMac(esploader);
-            console.info("[ESP32][ESPLoader] readFlash: MAC read", { mac });
-
-            setState((prev) => ({ ...prev, chipMac: mac }));
-
-            const type = await esploader.chip.getChipDescription(esploader);
-            console.info("[ESP32][ESPLoader] readFlash: chip type", { type });
-
-            setState((prev) => ({ ...prev, chipType: type }));
-
-            const flash_id = await esploader.readFlashId();
-            console.info("[ESP32][ESPLoader] readFlash: flashId", { flash_id });
-
-            setState((prev) => ({
-                ...prev,
-                flashId: "" + flash_id,
-                flashManuf: "" + (flash_id & 0xff),
-                flashDevice: "" + ((flash_id >> 8) & 0xff),
-            }));
-
-            const flash_size = await esploader.getFlashSize();
-            console.info("[ESP32][ESPLoader] readFlash: flashSize", { flash_size });
-
-            setState((prev) => ({ ...prev, flashSize: "" + flash_size }));
-
-            if (flash_size != ESP32_FLASHSIZE) {
-                console.error("[ESP32][ESPLoader] readFlash: flash size mismatch", {
-                    actual: flash_size,
-                    expected: ESP32_FLASHSIZE,
-                });
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
-                        actualsize: "" + flash_size,
-                        expectedsize: ESP32_FLASHSIZE,
-                    }),
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-                await disconnectESPLoader(esploader, port);
-                return;
-            }
-
-            if (!type.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase())) {
-                console.error("[ESP32][ESPLoader] readFlash: chip type mismatch", {
-                    actual: type,
+            if (
+                !flasher.current_chip
+                    .toUpperCase()
+                    .startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))
+            ) {
+                console.error("[ESP32][Revvox] readFlash: chip type mismatch", {
+                    actual: flasher.current_chip,
                     expected: ESP32_CHIPNAME,
                 });
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                        actualtype: "" + type,
+                throw new Error(
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                        actualtype: "" + flasher.current_chip,
                         expectedtype: ESP32_CHIPNAME,
                     }),
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-                await disconnectESPLoader(esploader, port);
-                return;
+                );
             }
 
             setState((prev) => ({
                 ...prev,
                 state: t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFlash"),
-                showProgress: true,
                 progress: 0,
             }));
 
-            console.info("[ESP32][ESPLoader] readFlash: reading flash", { totalBytes: flash_size * 1024 });
+            console.info("[ESP32][Revvox] readFlash: reading flash", { totalBytes });
 
-            flashData = await esploader.readFlash(0, flash_size * 1024, (packet, progress, totalSize) => {
-                const prog = (100 * progress) / totalSize;
+            flashData = await flasher.readFlash(0x00000000, totalBytes, (read, total, stage) => {
+                const prog = (100 * read) / total;
                 setState((prev) => ({
                     ...prev,
                     progress: prog,
+                    state:
+                        stage === "Reading"
+                            ? t("tonieboxes.esp32BoxFlashing.esp32flasher.readingFlash")
+                            : t("tonieboxes.esp32BoxFlashing.esp32flasher.verifyingReadFlash"),
                 }));
             });
 
-            console.info("[ESP32][ESPLoader] readFlash: done", { bytes: flashData.length });
+            console.info("[ESP32][Revvox] readFlash: done", { bytes: flashData.length });
 
-            await disconnectESPLoader(esploader, port);
-
-            try {
-                console.info("[ESP32][ESPLoader] readFlash: integrity check...");
-                checkFirmwareIntegrity(flashData, t);
-                console.info("[ESP32][ESPLoader] readFlash: integrity OK");
-            } catch (err: any) {
-                console.error("[ESP32][ESPLoader] readFlash: integrity FAILED", err);
-                setState((prev) => ({
-                    ...prev,
-                    state: err.message,
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-                return;
-            }
+            console.info("[ESP32][Revvox] readFlash: integrity check...");
+            checkFirmwareIntegrity(flashData, t);
+            console.info("[ESP32][Revvox] readFlash: integrity OK");
 
             setState((prev) => ({
                 ...prev,
@@ -1088,41 +733,53 @@ export const useESP32Flasher = (
                 progress: 100,
                 originalFlash: flashData,
                 connected: false,
+                showProgress: false,
             }));
-        } catch (err) {
-            console.error("[ESP32][ESPLoader] readFlash failed", err);
+
+            // FIX: url must be created BEFORE setState using it
+            const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
+            const blob = new Blob([flashData.buffer as ArrayBuffer], {
+                type: "application/octet-stream",
+            });
+            const url = URL.createObjectURL(blob);
+
+            console.info("[ESP32][Revvox] readFlash: download link created");
 
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadingFlashData"),
+                downloadLink: url,
+            }));
+
+            console.info("[ESP32][Revvox] readFlash: uploading to server...", {
+                name: sanitizedName,
+            });
+            await uploadFlashData(flashData, sanitizedName);
+            console.info("[ESP32][Revvox] readFlash: upload finished");
+        } catch (err: any) {
+            console.error("[ESP32][Revvox] readFlash failed", err);
+
+            setState((prev) => ({
+                ...prev,
+                state:
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
+                    ` ${String(err?.message ?? err)}`,
                 connected: false,
                 actionInProgress: false,
                 error: true,
             }));
             alert(err);
-            await disconnectESPLoader(esploader, port);
-            return;
+        } finally {
+            await disconnectRevvoxFlasher();
         }
-
-        const sanitizedName = `ESP32_${mac.replace(/:/g, "")}`;
-        const blob = new Blob([(flashData as Uint8Array).buffer as ArrayBuffer], { type: "application/octet-stream" });
-        const url = URL.createObjectURL(blob);
-
-        console.info("[ESP32] readFlash: download link created", { name: sanitizedName });
-
-        setState((prev) => ({
-            ...prev,
-            downloadLink: url,
-            showProgress: false,
-        }));
-
-        console.info("[ESP32] readFlash: uploading to server...", { name: sanitizedName });
-        await uploadFlashData(flashData as Uint8Array, sanitizedName);
-        console.info("[ESP32] readFlash: upload finished");
+        return;
     };
 
     const uploadFlashData = async (flashData: Uint8Array, sanitizedName: string) => {
-        console.info("[ESP32] uploadFlashData: start", { name: sanitizedName, bytes: flashData.length });
+        console.info("[ESP32] uploadFlashData: start", {
+            name: sanitizedName,
+            bytes: flashData.length,
+        });
 
         try {
             setState((prev) => ({
@@ -1132,11 +789,20 @@ export const useESP32Flasher = (
             }));
 
             const formData = new FormData();
-            formData.append(sanitizedName, new Blob([(flashData as Uint8Array).buffer as ArrayBuffer]), sanitizedName);
+            formData.append(
+                sanitizedName,
+                new Blob([(flashData as Uint8Array).buffer as ArrayBuffer]),
+                sanitizedName,
+            );
 
-            console.info("[ESP32] uploadFlashData: POST /api/esp32/uploadFirmware", { name: sanitizedName });
+            console.info("[ESP32] uploadFlashData: POST /api/esp32/uploadFirmware", {
+                name: sanitizedName,
+            });
 
-            const response = await api.apiPostTeddyCloudFormDataRaw(`/api/esp32/uploadFirmware`, formData);
+            const response = await api.apiPostTeddyCloudFormDataRaw(
+                `/api/esp32/uploadFirmware`,
+                formData,
+            );
 
             if (response.ok && response.status === 200) {
                 const filename = await response.text();
@@ -1155,7 +821,10 @@ export const useESP32Flasher = (
                 }));
             } else {
                 const body = await response.text().catch(() => "");
-                console.error("[ESP32] uploadFlashData: server error", { status: response.status, body });
+                console.error("[ESP32] uploadFlashData: server error", {
+                    status: response.status,
+                    body,
+                });
 
                 setState((prev) => ({
                     ...prev,
@@ -1177,13 +846,38 @@ export const useESP32Flasher = (
 
     const next = () => {
         setState((prev) => ({ ...prev, state: "", proceed: false }));
-        setCurrentStep((prev) => prev + 1);
+
+        setCurrentStep((prev) => {
+            if (state.resetBox === true && prev === ESP32_FLASH_STEPS.READ) {
+                return ESP32_FLASH_STEPS.WRITE;
+            }
+
+            return prev < ESP32_FLASH_STEPS.FINISH
+                ? ((prev + 1) as ESP32_FLASH_STEPS)
+                : ESP32_FLASH_STEPS.FINISH;
+        });
+
         scrollToTop(scrollToTopAnchor && scrollToTopAnchor);
     };
 
     const prev = () => {
-        setState((prevState) => ({ ...prevState, state: "", showProgress: false, error: false }));
-        setCurrentStep((prev) => prev - 1);
+        setState((prevState) => ({
+            ...prevState,
+            state: "",
+            showProgress: false,
+            error: false,
+        }));
+
+        setCurrentStep((prev) => {
+            if (state.resetBox === true && prev === ESP32_FLASH_STEPS.WRITE) {
+                return ESP32_FLASH_STEPS.READ;
+            }
+
+            return prev > ESP32_FLASH_STEPS.PREP
+                ? ((prev - 1) as ESP32_FLASH_STEPS)
+                : ESP32_FLASH_STEPS.PREP;
+        });
+
         scrollToTop(scrollToTopAnchor && scrollToTopAnchor);
     };
 
@@ -1209,7 +903,9 @@ export const useESP32Flasher = (
                 ...prev,
                 state: t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
                 showStatus: true,
-                warningTextWifi: t("tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete"),
+                warningTextWifi: t(
+                    "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete",
+                ),
                 error: true,
             }));
             return;
@@ -1237,7 +933,7 @@ export const useESP32Flasher = (
                 `&hostname=${encodeURIComponent(state.hostname)}` +
                 (state.wifi_ssid && state.wifi_pass
                     ? `&wifi_ssid=${encodeURIComponent(state.wifi_ssid)}&wifi_pass=${encodeURIComponent(
-                          state.wifi_pass
+                          state.wifi_pass,
                       )}`
                     : "");
 
@@ -1253,12 +949,17 @@ export const useESP32Flasher = (
             }));
 
             if (response.ok && response.status === 200) {
-                console.info("[ESP32] patchFlash: patching successful, downloading patched image...");
+                console.info(
+                    "[ESP32] patchFlash: patching successful, downloading patched image...",
+                );
 
                 const arrayBuffer = await response.arrayBuffer();
                 const sizeMb = arrayBuffer.byteLength / 1024 / 1024;
 
-                console.info("[ESP32] patchFlash: patched image received", { bytes: arrayBuffer.byteLength, sizeMb });
+                console.info("[ESP32] patchFlash: patched image received", {
+                    bytes: arrayBuffer.byteLength,
+                    sizeMb,
+                });
 
                 setState((prev) => ({
                     ...prev,
@@ -1284,7 +985,10 @@ export const useESP32Flasher = (
                 next();
             } else {
                 const body = await response.text().catch(() => "");
-                console.error("[ESP32] patchFlash: patching failed", { status: response.status, body });
+                console.error("[ESP32] patchFlash: patching failed", {
+                    status: response.status,
+                    body,
+                });
 
                 setState((prev) => ({
                     ...prev,
@@ -1310,470 +1014,142 @@ export const useESP32Flasher = (
     };
 
     const resetFlash = async () => {
-        console.info("[ESP32] resetFlash: start", { useRevvoxFlasher });
+        console.info("[ESP32] resetFlash: start");
 
-        // --- RevvoxFlasher branch ---
-        if (useRevvoxFlasher) {
-            if (!state.patchedFlash) {
-                console.error("[ESP32][Revvox] resetFlash: no patchedFlash loaded");
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
-                    error: true,
-                }));
-                return;
-            }
-
+        if (!state.patchedFlash) {
+            console.error("[ESP32][Revvox] resetFlash: no patchedFlash loaded");
             setState((prev) => ({
                 ...prev,
-                actionInProgress: true,
-                error: false,
-                showProgress: true,
-                showStatus: true,
-                progress: 0,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
+                error: true,
             }));
-
-            try {
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"),
-                }));
-
-                console.info("[ESP32][Revvox] resetFlash: prepare flasher");
-                const flasher = await prepareRevvoxFlasher();
-
-                console.info("[ESP32][Revvox] resetFlash: setCurrentStep(2)");
-                setCurrentStep(2);
-
-                const mac = await flasher.readMac();
-                console.info("[ESP32][Revvox] resetFlash: MAC read", { mac, chip: flasher.current_chip });
-
-                if (mac) {
-                    setState((prev) => ({
-                        ...prev,
-                        chipMac: mac,
-                        chipType: flasher.current_chip,
-                    }));
-                }
-
-                if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
-                    console.error("[ESP32][Revvox] resetFlash: chip type mismatch", {
-                        actual: flasher.current_chip,
-                        expected: ESP32_CHIPNAME,
-                    });
-                    throw new Error(
-                        t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                            actualtype: "" + flasher.current_chip,
-                            expectedtype: ESP32_CHIPNAME,
-                        })
-                    );
-                }
-
-                const data = new Uint8Array(state.patchedFlash as ArrayBuffer);
-                const totalSize = data.length;
-                const sizeMb = totalSize / 1024 / 1024;
-
-                console.info("[ESP32][Revvox] resetFlash: writing start", { bytes: totalSize, sizeMb });
-
-                const statusWriting = t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
-                    size: sizeMb.toFixed(0),
-                });
-
-                setState((prev) => ({
-                    ...prev,
-                    state: statusWriting,
-                    progress: 0,
-                }));
-
-                await flasher.writeFlash(0, data, (offset, total, stage) => {
-                    const progress = (offset / total) * 100;
-
-                    setState((prev) => ({
-                        ...prev,
-                        state:
-                            stage === "Writing"
-                                ? statusWriting
-                                : t("tonieboxes.esp32BoxFlashing.esp32flasher.verifyingWrittenFlash"),
-                        progress,
-                    }));
-                });
-
-                console.info("[ESP32][Revvox] resetFlash: writing finished");
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFinished"),
-                    connected: false,
-                    actionInProgress: false,
-                    progress: 100,
-                }));
-
-                console.info("[ESP32][Revvox] resetFlash: setCurrentStep(3)");
-                setCurrentStep(3);
-            } catch (err: any) {
-                console.error("[ESP32][Revvox] resetFlash: failed", err);
-                alert(err);
-
-                setState((prev) => ({
-                    ...prev,
-                    state:
-                        t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
-                        ` ${String(err?.message ?? err)}`,
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-            } finally {
-                console.info("[ESP32][Revvox] resetFlash: disconnect flasher");
-                await disconnectRevvoxFlasher();
-            }
-
             return;
         }
-
-        // --- original ESPLoader branch ---
-        const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"));
-        if (port === null || state.connected) {
-            console.warn("[ESP32][ESPLoader] resetFlash: port null or already connected", {
-                portNull: port === null,
-                connected: state.connected,
-            });
-            return;
-        }
-
-        console.info("[ESP32][ESPLoader] resetFlash: setCurrentStep(2)");
-        setCurrentStep(2);
 
         setState((prev) => ({
             ...prev,
             actionInProgress: true,
             error: false,
+            showProgress: true,
+            showStatus: true,
+            progress: 0,
         }));
 
-        setState((prev) => ({
-            ...prev,
-            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${port.getInfo()}`,
-            connected: true,
-        }));
-
-        let esploader: ESPLoader | null = null;
-
         try {
-            console.info("[ESP32][ESPLoader] resetFlash: init ESPLoader", { baudRate, romBaudRate });
-
-            const transport = new Transport(port);
-            esploader = new ESPLoader({
-                transport,
-                baudrate: baudRate,
-                romBaudrate: romBaudRate,
-            });
-        } catch (err) {
-            console.error("[ESP32][ESPLoader] resetFlash: init failed", err);
-
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
-                connected: false,
-                actionInProgress: false,
-                error: true,
-            }));
-            alert(err);
-            await disconnectESPLoader(esploader, port);
-            return;
-        }
-
-        try {
-            console.info("[ESP32][ESPLoader] resetFlash: connect (main)");
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"),
             }));
 
-            await esploader.main();
+            console.info("[ESP32][Revvox] resetFlash: prepare flasher");
+            const flasher = await prepareRevvoxFlasher();
 
-            console.info("[ESP32][ESPLoader] resetFlash: connected");
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connected"),
-                progress: 0,
-                showProgress: true,
-            }));
+            console.info("[ESP32][Revvox] resetFlash: setCurrentStep(ESP32_FLASH_STEPS.WRITE)");
+            setCurrentStep(ESP32_FLASH_STEPS.WRITE);
 
-            const mac = await esploader.chip.readMac(esploader);
-            const type = await esploader.chip.getChipDescription(esploader);
-            const flash_id = await esploader.readFlashId();
-            const flash_size = await esploader.getFlashSize();
-
-            console.info("[ESP32][ESPLoader] resetFlash: chip info", {
+            const mac = await flasher.readMac();
+            console.info("[ESP32][Revvox] resetFlash: MAC read", {
                 mac,
-                type,
-                flash_id,
-                flash_size,
+                chip: flasher.current_chip,
             });
 
-            setState((prev) => ({
-                ...prev,
-                chipMac: mac,
-                chipType: type,
-                flashId: "" + flash_id,
-                flashManuf: "" + (flash_id & 0xff),
-                flashDevice: "" + ((flash_id >> 8) & 0xff),
-                flashSize: "" + flash_size,
-            }));
-
-            if (flash_size != ESP32_FLASHSIZE) {
-                console.error("[ESP32][ESPLoader] resetFlash: flash size mismatch", {
-                    actual: flash_size,
-                    expected: ESP32_FLASHSIZE,
-                });
-
+            if (mac) {
                 setState((prev) => ({
                     ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
-                        actualsize: "" + flash_size,
-                        expectedsize: ESP32_FLASHSIZE,
-                    }),
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
+                    chipMac: mac,
+                    chipType: flasher.current_chip,
                 }));
-                await disconnectESPLoader(esploader, port);
-                return;
             }
 
-            if (!type.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase())) {
-                console.error("[ESP32][ESPLoader] resetFlash: chip type mismatch", {
-                    actual: type,
+            if (
+                !flasher.current_chip
+                    .toUpperCase()
+                    .startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))
+            ) {
+                console.error("[ESP32][Revvox] resetFlash: chip type mismatch", {
+                    actual: flasher.current_chip,
                     expected: ESP32_CHIPNAME,
                 });
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                        actualtype: "" + type,
+                throw new Error(
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                        actualtype: "" + flasher.current_chip,
                         expectedtype: ESP32_CHIPNAME,
                     }),
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-                await disconnectESPLoader(esploader, port);
-                return;
+                );
             }
 
-            if (!state.patchedFlash) {
-                console.error("[ESP32][ESPLoader] resetFlash: patchedFlash is missing in state");
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
-                    error: true,
-                    connected: false,
-                    actionInProgress: false,
-                }));
-                await disconnectESPLoader(esploader, port);
-                return;
-            }
+            const data = new Uint8Array(state.patchedFlash as ArrayBuffer);
+            const totalSize = data.length;
+            const sizeMb = totalSize / 1024 / 1024;
 
-            const sizeMb = state.patchedFlash.byteLength / 1024 / 1024;
+            console.info("[ESP32][Revvox] resetFlash: writing start", { bytes: totalSize, sizeMb });
 
-            console.info("[ESP32][ESPLoader] resetFlash: preparing flash", {
-                bytes: state.patchedFlash.byteLength,
-                sizeMb,
+            const statusWriting = t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
+                size: sizeMb.toFixed(0),
             });
 
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.preparingFlash", {
-                    size: sizeMb.toFixed(0),
-                }),
+                state: statusWriting,
+                progress: 0,
             }));
 
-            const fileArray: { data: string; address: number }[] = [
-                { data: arrayBufferToBstr(state.patchedFlash), address: 0 },
-            ];
+            await flasher.writeFlash(0, data, (offset, total, stage) => {
+                const progress = (offset / total) * 100;
 
-            const opts = {
-                fileArray,
-                flashSize: "keep",
-                flashMode: "keep",
-                flashFreq: "keep",
-                eraseAll: false,
-                compress: true,
-                reportProgress: (fileIndex: any, written: number, total: number) => {
-                    const prog = (100 * written) / total;
-                    setState((prev) => ({ ...prev, progress: prog }));
-                },
-            };
+                setState((prev) => ({
+                    ...prev,
+                    state:
+                        stage === "Writing"
+                            ? statusWriting
+                            : t("tonieboxes.esp32BoxFlashing.esp32flasher.verifyingWrittenFlash"),
+                    progress,
+                }));
+            });
 
-            console.info("[ESP32][ESPLoader] resetFlash: writing start");
-
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
-                    size: sizeMb.toFixed(0),
-                }),
-            }));
-
-            await esploader.writeFlash(opts);
-
-            console.info("[ESP32][ESPLoader] resetFlash: writing finished, disconnecting");
-            await disconnectESPLoader(esploader, port);
+            console.info("[ESP32][Revvox] resetFlash: writing finished");
 
             setState((prev) => ({
                 ...prev,
                 state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFinished"),
                 connected: false,
                 actionInProgress: false,
+                progress: 100,
             }));
 
-            console.info("[ESP32][ESPLoader] resetFlash: setCurrentStep(3)");
-            setCurrentStep(3);
-        } catch (err) {
-            console.error("[ESP32][ESPLoader] resetFlash failed", err);
+            console.info("[ESP32][Revvox] resetFlash: setCurrentStep(ESP32_FLASH_STEPS.FINISH)");
+            setCurrentStep(ESP32_FLASH_STEPS.FINISH);
+        } catch (err: any) {
+            console.error("[ESP32][Revvox] resetFlash: failed", err);
+            alert(err);
 
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
+                state:
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
+                    ` ${String(err?.message ?? err)}`,
                 connected: false,
                 actionInProgress: false,
                 error: true,
             }));
-            alert(err);
-            await disconnectESPLoader(esploader, port);
-            return;
+        } finally {
+            console.info("[ESP32][Revvox] resetFlash: disconnect flasher");
+            await disconnectRevvoxFlasher();
         }
+
+        return;
     };
 
     const writeFlash = async () => {
-        console.info("[ESP32] writeFlash: start", { useRevvoxFlasher });
+        console.info("[ESP32] writeFlash: start");
 
-        // --- RevvoxFlasher branch ---
-        if (useRevvoxFlasher) {
-            if (!state.patchedFlash) {
-                console.error("[ESP32][Revvox] writeFlash: no patchedFlash loaded");
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
-                    error: true,
-                }));
-                return;
-            }
-
+        if (!state.patchedFlash) {
+            console.error("[ESP32][Revvox] writeFlash: no patchedFlash loaded");
             setState((prev) => ({
                 ...prev,
-                actionInProgress: true,
-                error: false,
-                showProgress: true,
-                showStatus: true,
-                state: "",
-                progress: 0,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
+                error: true,
             }));
-
-            try {
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"),
-                }));
-
-                console.info("[ESP32][Revvox] writeFlash: prepare flasher");
-                const flasher = await prepareRevvoxFlasher();
-
-                const mac = await flasher.readMac();
-                console.info("[ESP32][Revvox] writeFlash: MAC read", { mac, chip: flasher.current_chip });
-
-                if (mac) {
-                    setState((prev) => ({
-                        ...prev,
-                        chipMac: mac,
-                        chipType: flasher.current_chip,
-                    }));
-                }
-
-                if (!flasher.current_chip.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))) {
-                    console.error("[ESP32][Revvox] writeFlash: chip type mismatch", {
-                        actual: flasher.current_chip,
-                        expected: ESP32_CHIPNAME,
-                    });
-
-                    throw new Error(
-                        t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                            actualtype: "" + flasher.current_chip,
-                            expectedtype: ESP32_CHIPNAME,
-                        })
-                    );
-                }
-
-                const data = new Uint8Array(state.patchedFlash as ArrayBuffer);
-                const totalSize = data.length;
-                const sizeMb = totalSize / 1024 / 1024;
-
-                console.info("[ESP32][Revvox] writeFlash: writing start", { bytes: totalSize, sizeMb });
-
-                const statusWriting = t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
-                    size: sizeMb.toFixed(0),
-                });
-
-                setState((prev) => ({
-                    ...prev,
-                    state: statusWriting,
-                    progress: 0,
-                }));
-
-                let lastLogged = -1;
-
-                await flasher.writeFlash(0, data, (offset, total, stage) => {
-                    const progress = (offset / total) * 100;
-
-                    setState((prev) => ({
-                        ...prev,
-                        state:
-                            stage === "Writing"
-                                ? statusWriting
-                                : t("tonieboxes.esp32BoxFlashing.esp32flasher.verifyingWrittenFlash"),
-                        progress,
-                    }));
-                });
-
-                console.info("[ESP32][Revvox] writeFlash: writing finished");
-
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFinished"),
-                    connected: false,
-                    actionInProgress: false,
-                    proceed: true,
-                    progress: 100,
-                }));
-
-                console.info("[ESP32][Revvox] writeFlash: done (proceed=true)");
-            } catch (err: any) {
-                console.error("[ESP32][Revvox] writeFlash failed", err);
-                alert(err);
-
-                setState((prev) => ({
-                    ...prev,
-                    state:
-                        t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
-                        ` ${String(err?.message ?? err)}`,
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-            } finally {
-                console.info("[ESP32][Revvox] writeFlash: disconnect flasher");
-                await disconnectRevvoxFlasher();
-            }
-
-            return;
-        }
-
-        // --- original ESPLoader branch ---
-        const port = await getPort(t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"));
-        if (port === null || state.connected) {
-            console.warn("[ESP32][ESPLoader] writeFlash: port null or already connected", {
-                portNull: port === null,
-                connected: state.connected,
-            });
             return;
         }
 
@@ -1781,179 +1157,85 @@ export const useESP32Flasher = (
             ...prev,
             actionInProgress: true,
             error: false,
+            showProgress: true,
+            showStatus: true,
+            state: "",
+            progress: 0,
         }));
 
-        setState((prev) => ({
-            ...prev,
-            state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingTo") + ` ${port.getInfo()}`,
-            connected: true,
-        }));
-
-        let esploader: ESPLoader | null = null;
-
         try {
-            console.info("[ESP32][ESPLoader] writeFlash: init ESPLoader", { baudRate, romBaudRate });
-
-            const transport = new Transport(port);
-            esploader = new ESPLoader({
-                transport,
-                baudrate: baudRate,
-                romBaudrate: romBaudRate,
-            });
-        } catch (err) {
-            console.error("[ESP32][ESPLoader] writeFlash: init failed", err);
-
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToConnect") + ` ${err}`,
-                connected: false,
-                actionInProgress: false,
-                error: true,
-            }));
-            alert(err);
-            await disconnectESPLoader(esploader, port);
-            return;
-        }
-
-        try {
-            console.info("[ESP32][ESPLoader] writeFlash: connect (main)");
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingToESP"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connectingWriteFlash"),
             }));
 
-            await esploader.main();
+            console.info("[ESP32][Revvox] writeFlash: prepare flasher");
+            const flasher = await prepareRevvoxFlasher();
 
-            console.info("[ESP32][ESPLoader] writeFlash: connected");
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.connected"),
-                progress: 0,
-                showProgress: true,
-            }));
-
-            const mac = await esploader.chip.readMac(esploader);
-            const type = await esploader.chip.getChipDescription(esploader);
-            const flash_id = await esploader.readFlashId();
-            const flash_size = await esploader.getFlashSize();
-
-            console.info("[ESP32][ESPLoader] writeFlash: chip info", {
+            const mac = await flasher.readMac();
+            console.info("[ESP32][Revvox] writeFlash: MAC read", {
                 mac,
-                type,
-                flash_id,
-                flash_size,
+                chip: flasher.current_chip,
             });
 
-            setState((prev) => ({
-                ...prev,
-                chipMac: mac,
-                chipType: type,
-                flashId: "" + flash_id,
-                flashManuf: "" + (flash_id & 0xff),
-                flashDevice: "" + ((flash_id >> 8) & 0xff),
-                flashSize: "" + flash_size,
-            }));
-
-            if (flash_size != ESP32_FLASHSIZE) {
-                console.error("[ESP32][ESPLoader] writeFlash: flash size mismatch", {
-                    actual: flash_size,
-                    expected: ESP32_FLASHSIZE,
-                });
-
+            if (mac) {
                 setState((prev) => ({
                     ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.flashSizeError", {
-                        actualsize: "" + flash_size,
-                        expectedsize: ESP32_FLASHSIZE,
-                    }),
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
+                    chipMac: mac,
+                    chipType: flasher.current_chip,
                 }));
-                await disconnectESPLoader(esploader, port);
-                return;
             }
 
-            if (!type.toUpperCase().startsWith(ESP32_CHIPNAME.toUpperCase())) {
-                console.error("[ESP32][ESPLoader] writeFlash: chip type mismatch", {
-                    actual: type,
+            if (
+                !flasher.current_chip
+                    .toUpperCase()
+                    .startsWith(ESP32_CHIPNAME.toUpperCase().replace("-", ""))
+            ) {
+                console.error("[ESP32][Revvox] writeFlash: chip type mismatch", {
+                    actual: flasher.current_chip,
                     expected: ESP32_CHIPNAME,
                 });
 
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
-                        actualtype: "" + type,
+                throw new Error(
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.chipTypeError", {
+                        actualtype: "" + flasher.current_chip,
                         expectedtype: ESP32_CHIPNAME,
                     }),
-                    connected: false,
-                    actionInProgress: false,
-                    error: true,
-                }));
-                await disconnectESPLoader(esploader, port);
-                return;
+                );
             }
 
-            if (!state.patchedFlash) {
-                console.error("[ESP32][ESPLoader] writeFlash: patchedFlash is missing in state");
-                setState((prev) => ({
-                    ...prev,
-                    state: t("tonieboxes.esp32BoxFlashing.esp32flasher.patchingFlashImage"),
-                    error: true,
-                    connected: false,
-                    actionInProgress: false,
-                }));
-                await disconnectESPLoader(esploader, port);
-                return;
-            }
+            const data = new Uint8Array(state.patchedFlash as ArrayBuffer);
+            const totalSize = data.length;
+            const sizeMb = totalSize / 1024 / 1024;
 
-            const sizeMb = state.patchedFlash.byteLength / 1024 / 1024;
+            console.info("[ESP32][Revvox] writeFlash: writing start", { bytes: totalSize, sizeMb });
 
-            console.info("[ESP32][ESPLoader] writeFlash: preparing flash", {
-                bytes: state.patchedFlash.byteLength,
-                sizeMb,
+            const statusWriting = t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
+                size: sizeMb.toFixed(0),
             });
 
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.preparingFlash", {
-                    size: sizeMb.toFixed(0),
-                }),
+                state: statusWriting,
+                progress: 0,
             }));
 
-            const fileArray: { data: string; address: number }[] = [
-                { data: arrayBufferToBstr(state.patchedFlash), address: 0 },
-            ];
+            let lastLogged = -1;
 
-            const opts = {
-                fileArray,
-                flashSize: "keep",
-                flashMode: "keep",
-                flashFreq: "keep",
-                eraseAll: false,
-                compress: true,
-                reportProgress: (fileIndex: any, written: number, total: number) => {
-                    const prog = (100 * written) / total;
-                    setState((prev) => ({ ...prev, progress: prog }));
+            await flasher.writeFlash(0, data, (offset, total, stage) => {
+                const progress = (offset / total) * 100;
 
-                    const p = Math.floor(prog);
-                    if (p % 10 === 0) console.debug("[ESP32][ESPLoader] writeFlash: progress", { p, written, total });
-                },
-            };
+                setState((prev) => ({
+                    ...prev,
+                    state:
+                        stage === "Writing"
+                            ? statusWriting
+                            : t("tonieboxes.esp32BoxFlashing.esp32flasher.verifyingWrittenFlash"),
+                    progress,
+                }));
+            });
 
-            console.info("[ESP32][ESPLoader] writeFlash: writing start");
-
-            setState((prev) => ({
-                ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.writingFlash", {
-                    size: sizeMb.toFixed(0),
-                }),
-            }));
-
-            await esploader.writeFlash(opts);
-
-            console.info("[ESP32][ESPLoader] writeFlash: writing finished, disconnecting");
-            await disconnectESPLoader(esploader, port);
+            console.info("[ESP32][Revvox] writeFlash: writing finished");
 
             setState((prev) => ({
                 ...prev,
@@ -1961,33 +1243,42 @@ export const useESP32Flasher = (
                 connected: false,
                 actionInProgress: false,
                 proceed: true,
+                progress: 100,
             }));
 
-            console.info("[ESP32][ESPLoader] writeFlash: done (proceed=true)");
-        } catch (err) {
-            console.error("[ESP32][ESPLoader] writeFlash failed", err);
+            console.info("[ESP32][Revvox] writeFlash: done (proceed=true)");
+        } catch (err: any) {
+            console.error("[ESP32][Revvox] writeFlash failed", err);
+            alert(err);
 
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") + ` ${err}`,
+                state:
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
+                    ` ${String(err?.message ?? err)}`,
                 connected: false,
                 actionInProgress: false,
                 error: true,
             }));
-            alert(err);
-            await disconnectESPLoader(esploader, port);
-            return;
+        } finally {
+            console.info("[ESP32][Revvox] writeFlash: disconnect flasher");
+            await disconnectRevvoxFlasher();
         }
+
+        return;
     };
 
     const extractAndStoreCertsFromFlash = async (force?: boolean) => {
-        console.info("[ESP32] extractAndStoreCertsFromFlash: start", { force, filename: state.filename });
+        console.info("[ESP32] extractAndStoreCertsFromFlash: start", {
+            force,
+            filename: state.filename,
+        });
 
         const key = "extractStoreCerts";
         addLoadingNotification(
             key,
             t("tonieboxes.esp32BoxFlashing.processing"),
-            t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates")
+            t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificates"),
         );
         if (force) setIsOverwriteForceConfirmationModalOpen(false);
 
@@ -2007,41 +1298,55 @@ export const useESP32Flasher = (
                 addNotification(
                     NotificationTypeEnum.Success,
                     t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessful"),
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessfulDetails", {
-                        file: state.filename,
-                    }),
-                    t("tonieboxes.esp32BoxFlashing.title")
+                    t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesSuccessfulDetails",
+                        {
+                            file: state.filename,
+                        },
+                    ),
+                    t("tonieboxes.esp32BoxFlashing.title"),
                 );
                 setFetchCloudStatus((prev) => !prev);
             } else if (!response.ok && response.status === 409) {
                 const errorMessage = await response.text();
-                console.error("[ESP32] extractAndStoreCertsFromFlash: conflict (409)", { errorMessage });
+                console.error("[ESP32] extractAndStoreCertsFromFlash: conflict (409)", {
+                    errorMessage,
+                });
 
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed"),
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails", {
-                        file: state.filename,
-                    }) +
+                    t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails",
+                        {
+                            file: state.filename,
+                        },
+                    ) +
                         ": " +
                         errorMessage,
-                    t("tonieboxes.esp32BoxFlashing.title")
+                    t("tonieboxes.esp32BoxFlashing.title"),
                 );
                 setExtractCertificateErrorMessage(errorMessage);
                 setIsOverwriteForceConfirmationModalOpen(true);
             } else {
                 const body = await response.text().catch(() => "");
-                console.error("[ESP32] extractAndStoreCertsFromFlash: failed", { status: response.status, body });
+                console.error("[ESP32] extractAndStoreCertsFromFlash: failed", {
+                    status: response.status,
+                    body,
+                });
 
                 addNotification(
                     NotificationTypeEnum.Error,
                     t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailed"),
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails", {
-                        file: state.filename,
-                    }) +
+                    t(
+                        "tonieboxes.esp32BoxFlashing.esp32flasher.extractingCertificatesFailedDetails",
+                        {
+                            file: state.filename,
+                        },
+                    ) +
                         ": " +
                         body,
-                    t("tonieboxes.esp32BoxFlashing.title")
+                    t("tonieboxes.esp32BoxFlashing.title"),
                 );
             }
         } catch (err: any) {
@@ -2055,7 +1360,7 @@ export const useESP32Flasher = (
                 }) +
                     ": " +
                     String(err?.message ?? err),
-                t("tonieboxes.esp32BoxFlashing.title")
+                t("tonieboxes.esp32BoxFlashing.title"),
             );
         } finally {
             console.info("[ESP32] extractAndStoreCertsFromFlash: finished");
@@ -2084,6 +1389,7 @@ export const useESP32Flasher = (
         fileInputRef,
         handleBaudrateChange,
         openHttpsUrl,
+        startLoadFlash,
         loadFlashFile,
         readFlash,
         patchFlash,

@@ -6,7 +6,7 @@ import { TonieboxCardProps } from "../../../types/tonieboxTypes";
 
 import { TonieboxCard } from "../tonieboxcard/TonieboxCard";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
-import { useTeddyCloud } from "../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { useGetSettingCheckCC3200CFW } from "./hooks/useGetSettingCheckCC3200CFW";
 
@@ -18,7 +18,17 @@ export const TonieboxesList: React.FC<{
     const { addNotification, boxModelImages, boxModelImagesLoading } = useTeddyCloud();
     const screens = Grid.useBreakpoint();
 
-    const columns = screens.xxl ? 4 : screens.xl ? 3 : screens.lg ? 3 : screens.md ? 2 : screens.sm ? 2 : 1;
+    const columns = screens.xxl
+        ? 4
+        : screens.xl
+          ? 3
+          : screens.lg
+            ? 3
+            : screens.md
+              ? 2
+              : screens.sm
+                ? 2
+                : 1;
 
     const checkCC3200CFW = useGetSettingCheckCC3200CFW();
 
@@ -28,7 +38,7 @@ export const TonieboxesList: React.FC<{
                 NotificationTypeEnum.Error,
                 t("settings.notifications.error"),
                 t("tonieboxes.errorFetchingModels"),
-                t("tonieboxes.navigationTitle")
+                t("tonieboxes.navigationTitle"),
             );
         }
     }, [boxModelImagesLoading, boxModelImages.length, addNotification, t]);

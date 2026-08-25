@@ -1,6 +1,6 @@
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useTranslation } from "react-i18next";
 
@@ -21,11 +21,15 @@ export function useMigrateContent2Lib({ setRebuildList }: UseMigrateContent2LibP
         addLoadingNotification(
             key,
             t("fileBrowser.messages.migrationOngoing"),
-            t("fileBrowser.messages.migrationOngoingDetails", { ruid })
+            t("fileBrowser.messages.migrationOngoingDetails", { ruid }),
         );
 
         try {
-            const response = await api.apiPostTeddyCloudRaw("/api/migrateContent2Lib", body, overlay);
+            const response = await api.apiPostTeddyCloudRaw(
+                "/api/migrateContent2Lib",
+                body,
+                overlay,
+            );
             const data = await response.text();
 
             closeLoadingNotification(key);
@@ -35,7 +39,7 @@ export function useMigrateContent2Lib({ setRebuildList }: UseMigrateContent2LibP
                     NotificationTypeEnum.Success,
                     t("fileBrowser.messages.migrationSuccessful"),
                     t("fileBrowser.messages.migrationSuccessfulDetails", { ruid }),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
                 setRebuildList((prev) => !prev);
             } else {
@@ -43,7 +47,7 @@ export function useMigrateContent2Lib({ setRebuildList }: UseMigrateContent2LibP
                     NotificationTypeEnum.Success,
                     t("fileBrowser.messages.migrationFailed"),
                     t("fileBrowser.messages.migrationFailedDetails", { ruid }).replace(": ", ""),
-                    t("fileBrowser.title")
+                    t("fileBrowser.title"),
                 );
             }
         } catch (error) {
@@ -52,7 +56,7 @@ export function useMigrateContent2Lib({ setRebuildList }: UseMigrateContent2LibP
                 NotificationTypeEnum.Success,
                 t("fileBrowser.messages.migrationFailed"),
                 t("fileBrowser.messages.migrationFailedDetails", { ruid }) + error,
-                t("fileBrowser.title")
+                t("fileBrowser.title"),
             );
         }
     };

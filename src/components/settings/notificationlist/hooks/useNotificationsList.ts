@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTeddyCloud } from "../../../../contexts/TeddyCloudContext";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationRecord } from "../../../../types/teddyCloudNotificationTypes";
 
 type NotificationStatusFilter = "Confirmed" | "Unconfirmed";
 
 export const useNotificationsList = () => {
-    const { notifications, confirmNotification, clearAllNotifications, removeNotifications } = useTeddyCloud();
+    const { notifications, confirmNotification, clearAllNotifications, removeNotifications } =
+        useTeddyCloud();
 
     const [isMobile, setIsMobile] = useState(false);
     const [isTablet, setIsTablet] = useState(false);
@@ -33,24 +34,37 @@ export const useNotificationsList = () => {
     }, []);
 
     const filteredNotifications: NotificationRecord[] = notifications.filter((notification) => {
-        const notificationDate = notification.date instanceof Date ? notification.date : new Date(notification.date);
+        const notificationDate =
+            notification.date instanceof Date ? notification.date : new Date(notification.date);
 
         const matchesDate =
-            (!dateRange[0] || notificationDate >= dateRange[0]) && (!dateRange[1] || notificationDate <= dateRange[1]);
+            (!dateRange[0] || notificationDate >= dateRange[0]) &&
+            (!dateRange[1] || notificationDate <= dateRange[1]);
 
         const title = notification.title || "";
         const description = notification.description || "";
         const context = notification.context || "";
 
         const matchesTitle = title.toLowerCase().includes(titleFilter.toLowerCase());
-        const matchesDescription = description.toLowerCase().includes(descriptionFilter.toLowerCase());
+        const matchesDescription = description
+            .toLowerCase()
+            .includes(descriptionFilter.toLowerCase());
         const matchesType = typeFilter.length === 0 || typeFilter.includes(notification.type);
         const matchesContext = contextFilter.length === 0 || contextFilter.includes(context);
 
-        const status: NotificationStatusFilter = notification.flagConfirmed ? "Confirmed" : "Unconfirmed";
+        const status: NotificationStatusFilter = notification.flagConfirmed
+            ? "Confirmed"
+            : "Unconfirmed";
         const matchesStatus = statusFilter.length === 0 || statusFilter.includes(status);
 
-        return matchesDate && matchesTitle && matchesDescription && matchesType && matchesContext && matchesStatus;
+        return (
+            matchesDate &&
+            matchesTitle &&
+            matchesDescription &&
+            matchesType &&
+            matchesContext &&
+            matchesStatus
+        );
     });
 
     const uniqueContexts = useMemo(
@@ -59,16 +73,15 @@ export const useNotificationsList = () => {
                 new Set(
                     notifications
                         .map((notification) => notification.context)
-                        .filter((value): value is string => Boolean(value))
-                )
+                        .filter((value): value is string => Boolean(value)),
+                ),
             ),
-        [notifications]
+        [notifications],
     );
 
     const confirmSelectedNotifications = () => {
         selectedRowKeys.forEach((key) => {
-            const uuid = String(key);
-            confirmNotification(uuid);
+            confirmNotification(String(key));
         });
         setSelectedRowKeys([]);
     };
