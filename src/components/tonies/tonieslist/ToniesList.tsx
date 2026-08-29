@@ -441,7 +441,7 @@ export const ToniesList: React.FC<{
     // Helpers – paging & counts
     // ------------------------
 
-    const getCurrentPageData = () => {
+    const getCurrentPageData = (): TonieCardProps[] => {
         const base = getBaseList();
 
         if (showAll) {

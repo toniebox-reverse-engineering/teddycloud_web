@@ -131,12 +131,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
     const getPictureSrc = (record: any): string | null => {
         if (!record) return null;
         if (record.tonieInfo?.picture) return toImageSrc(record.tonieInfo.picture);
-        if (
-            special === "custom_img" &&
-            !record.isDir &&
-            buildContentUrl &&
-            isImageFileName(record.name)
-        ) {
+        if (!record.isDir && buildContentUrl && isImageFileName(record.name)) {
             const path = buildContentUrl(record.name);
             return toImageSrc(path.startsWith("/") ? path : `/${path}`);
         }
@@ -145,7 +140,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
 
     let columns: any[] = [
         {
-            title: mode === "full" ? t("fileBrowser.image") : "",
+            title: "",
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
@@ -179,6 +174,19 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                     alignItems: "center",
                                 }}
                             >
+                                {record?.isDir ? (
+                                    <FolderOutlined
+                                        style={{
+                                            position: "absolute",
+                                            fontSize: 28,
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            opacity: 0.5,
+                                        }}
+                                    />
+                                ) : (
+                                    ""
+                                )}
                                 <ThumbnailCell
                                     src={src}
                                     alt={t("tonies.content.toniePicture")}
@@ -186,7 +194,14 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 />
                             </div>
                         ) : record?.isDir ? (
-                            <FolderOutlined style={{ fontSize: 24, marginRight: 8 }} />
+                            <FolderOutlined
+                                style={{
+                                    fontSize: 28,
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    opacity: 0.5,
+                                }}
+                            />
                         ) : null}
                         {mode === "full" && record?.hide ? (
                             <div style={{ textAlign: "center" }}>
@@ -199,7 +214,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 );
             },
             showOnDirOnly: false,
-            hideForSpecial: "library",
         },
 
         {
@@ -272,7 +286,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             key={`name-${record.name}`}
                             style={{ display: "flex", alignItems: "center" }}
                         >
-                            {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : null}
                             <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                 {nameContent}
                             </div>
@@ -285,11 +298,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             <div className="showSmallDevicesOnly">
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <div style={{ display: "flex" }}>
-                                        {record.isDir ? (
-                                            <FolderOutlined style={{ marginRight: 8 }} />
-                                        ) : (
-                                            ""
-                                        )}
                                         <div
                                             style={{
                                                 wordBreak: record.isDir ? "normal" : "break-word",
@@ -329,11 +337,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             <div className="showMediumDevicesOnly">
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <div style={{ display: "flex" }}>
-                                        {record.isDir ? (
-                                            <FolderOutlined style={{ marginRight: 8 }} />
-                                        ) : (
-                                            ""
-                                        )}
                                         <div
                                             style={{
                                                 wordBreak: record.isDir ? "normal" : "break-word",
@@ -355,11 +358,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             </div>
                             <div className="showBigDevicesOnly">
                                 <div style={{ display: "flex" }}>
-                                    {record.isDir ? (
-                                        <FolderOutlined style={{ marginRight: 8 }} />
-                                    ) : (
-                                        ""
-                                    )}
                                     <div
                                         style={{
                                             wordBreak: record.isDir ? "normal" : "break-word",
