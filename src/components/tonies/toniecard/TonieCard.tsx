@@ -199,6 +199,7 @@ export const TonieCard: React.FC<{
         selectedSource,
         overlay,
     });
+
     const { tooltipInfoByModel } = useTooltipInfoByModel({
         isEditModalOpen,
         selectedModel,

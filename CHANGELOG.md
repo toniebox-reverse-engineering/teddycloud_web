@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.7.1
+
+- gui: fixed missing images in library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320)
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.0...tc_v0.7.1](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.0...tc_v0.7.1)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.0...tcw_v0.7.1](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.0...tcw_v0.7.1)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-7-1/4299](https://forum.revvox.de/t/release-notes-0-7-1/4299)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.1](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.1)
+
 ## 0.7.0
 
 - First TB2 support (not for daily use! Search for beta testers open: [https://t.me/toniebox_reverse_engineering/74847](https://t.me/toniebox_reverse_engineering/74847))
