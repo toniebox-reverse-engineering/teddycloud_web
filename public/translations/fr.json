@@ -2219,6 +2219,7 @@
             "exportToJson": "Exporter en JSON",
             "hideSelectedTags": "Masquer les tags",
             "select": "Sélectionner",
+            "selectAll": "Tout sélectionner",
             "selectButtonTooltip": "Activer le mode de sélection",
             "selected": "Tags/Tonies sélectionnés",
             "setLive": "Activer live",
