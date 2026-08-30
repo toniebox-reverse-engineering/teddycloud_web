@@ -2341,6 +2341,7 @@
             "placeholder": "Saisis un terme de recherche !",
             "preview": "Aperçu étiquette",
             "printMode": "Mode",
+            "printMarginNotification": "Les marges d’impression CSS ne sont prises en charge de manière fiable que dans Chrome. Utilise Chrome pour garantir une impression correcte des étiquettes.",
             "printModeImageAndText": "Image + Texte",
             "printModeImageAndTextTooltip": "Imprime les deux côtés de ta pièce Traveltonie : image d'un côté, titre et infos de l'épisode de l'autre",
             "printModeOnlyImage": "Image",

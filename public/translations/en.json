@@ -2340,6 +2340,7 @@
             "paperSize": "Paper size",
             "placeholder": "Enter a search term!",
             "preview": "Preview Label",
+            "printMarginNotification": "CSS print margins are only reliably supported in Chrome. Please use Chrome to ensure correct label printing.",
             "printMode": "Print mode",
             "printModeImageAndText": "Image + Text",
             "printModeImageAndTextTooltip": "Print both sides of your Traveltonie with the tags image for one side and the title and episode information for the other",

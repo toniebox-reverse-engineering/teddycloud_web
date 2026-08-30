@@ -2340,6 +2340,7 @@
             "paperSize": "Papierformat",
             "placeholder": "Gib einen Suchbegriff ein!",
             "preview": "Vorschau Label",
+            "printMarginNotification": "CSS-Druckränder werden nur in Chrome zuverlässig unterstützt. Für einen korrekten Labeldruck verwende bitte Chrome.",
             "printMode": "Druckmodus",
             "printModeImageAndText": "Bild + Text",
             "printModeImageAndTextTooltip": "Beide Seiten deiner Traveltonie drucken: Bild auf der einen Seite, Titel und Episodeninfos auf der anderen",
