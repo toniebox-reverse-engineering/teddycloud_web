@@ -2340,6 +2340,7 @@
             "paperSize": "Tamaño del papel",
             "placeholder": "¡Introduce un término de búsqueda!",
             "preview": "Vista previa etiqueta",
+            "printMarginNotification": "Los márgenes de impresión CSS solo son compatibles de forma fiable con Chrome. Utiliza Chrome para garantizar una impresión correcta de las etiquetas.",
             "printMode": "Modo",
             "printModeImageAndText": "Imagen + Texto",
             "printModeImageAndTextTooltip": "Imprime ambos lados de tu moneda Traveltonie: imagen por un lado, título e información de episodio por el otro",
