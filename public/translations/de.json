@@ -1596,7 +1596,7 @@
             "attention": "Achtung",
             "baudRate": "Baudrate: ",
             "baudRateInfo": "Wenn du Probleme beim Lesen oder Schreiben des Flash-Speichers hast, versuche die Baudrate zu ändern. Der Standardwert ist 921600.",
-            "browserNotSupported": "Die integrierte ESP32 Box Flashing Funktionalität kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge.",
+            "browserNotSupported": "Die integrierte ESP32 Box Flashing Funktionalität kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge oder Firefox (> v151).",
             "esp32flasher": {
                 "ackBackUpWithOtherTool": "Ich habe ein Backup mit einem anderen Tool erstellt oder mir ist bewusst, dass ich ohne zusätzliches Backup auf eigenes Risiko fortfahre.",
                 "ackLatestFirmware": "Ich bestätige, dass die Box mit der originalen Cloud verbunden war, die aktuelle Firmware erhalten hat und ein Tonie erfolgreich abgespielt wurde.",
@@ -1712,7 +1712,7 @@
                 "writingFinished": "Schreiben abgeschlossen",
                 "writingFlash": "Schreibe {{size}} MiB Flash..."
             },
-            "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird und du einen Browser nutzt, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge. Wenn du deine ESP32 Toniebox flashen willst, dann klicke bitte auf \"Weiter zu HTTPS\", du wirst dann automatisch auf die HTTPS Version weitergeleitet. Es kann sein, dass dein Browser meldet, dass die Verbindung nicht sicher ist. Dies ist ok, bestätige es und öffne die Seite dennoch. Eventuell musst du dafür weitere Details bei der Meldung anzeigen.",
+            "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird und du einen Browser nutzt, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge oder Firefox (> v151). Wenn du deine ESP32 Toniebox flashen willst, dann klicke bitte auf \"Weiter zu HTTPS\", du wirst dann automatisch auf die HTTPS Version weitergeleitet. Es kann sein, dass dein Browser meldet, dass die Verbindung nicht sicher ist. Dies ist ok, bestätige es und öffne die Seite dennoch. Eventuell musst du dafür weitere Details bei der Meldung anzeigen.",
             "hintLegacyApproach": "Wenn du lieber keinen Browser verwenden möchtest, der WebSerial unterstützt, kannst du immer noch die Legacy-Methode verwenden (kein GUI, nur Eingabeaufforderung).",
             "httpsSettings": "HTTPS Settings",
             "legacy": {
