@@ -1596,7 +1596,7 @@
             "attention": "Attention",
             "baudRate": "Baudrate: ",
             "baudRateInfo": "If you encounter issues reading or writing to the flash, try changing the baud rate. The default is 921600.",
-            "browserNotSupported": "The integrated ESP32 Box flashing functionality can only be used with browsers that support the Web Serial API. Unfortunately, your current browser does not support this feature. Please use a browser that supports the Web Serial API, such as Chrome or Edge.",
+            "browserNotSupported": "The integrated ESP32 Box flashing functionality can only be used with browsers that support the Web Serial API. Unfortunately, your current browser does not support this feature. Please use a browser that supports the Web Serial API, such as Chrome or Edge or Firefox (> v151).",
             "esp32flasher": {
                 "ackBackUpWithOtherTool": "I have created a backup using another tool, or I understand and accept the risk of proceeding without one.",
                 "ackLatestFirmware": "I confirm that the box was connected to the original cloud, received the latest firmware, and successfully played a Tonie.",
@@ -1712,7 +1712,7 @@
                 "writingFinished": "Writing finished",
                 "writingFlash": "Writing {{size}} MiB flash..."
             },
-            "hint": "This section is only available when using HTTPS and a browser that supports the Web Serial API, such as Chrome or Edge. If you want to flash your ESP32 Toniebox, please click on \"Proceed to HTTPS\", and you will be automatically redirected to the HTTPS version. Your browser might warn that the connection is not secure. This is okay; confirm it and proceed to open the page anyway. You may need to display more details in the warning.",
+            "hint": "This section is only available when using HTTPS and a browser that supports the Web Serial API, such as Chrome or Edge or Firefox (> v151). If you want to flash your ESP32 Toniebox, please click on \"Proceed to HTTPS\", and you will be automatically redirected to the HTTPS version. Your browser might warn that the connection is not secure. This is okay; confirm it and proceed to open the page anyway. You may need to display more details in the warning.",
             "hintLegacyApproach": "If you prefer not to use a browser that supports WebSerial, you can still use the legacy method (no GUI, command line only).",
             "httpsSettings": "HTTPS Settings",
             "legacy": {

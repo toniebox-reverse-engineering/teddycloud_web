@@ -1596,7 +1596,7 @@
             "attention": "Atención",
             "baudRate": "Velocidad de transmisión: ",
             "baudRateInfo": "Si tienes problemas para leer o escribir en la memoria flash, prueba a cambiar la velocidad de transmisión. El valor predeterminado es 921600.",
-            "browserNotSupported": "La funcionalidad de flasheo integrado de la caja ESP32 solo se puede utilizar con navegadores que admiten la API Web Serial. Desafortunadamente, tu navegador actual no admite esta función. Por favor, utiliza un navegador que soporte la API Web Serial, como Chrome o Edge.",
+            "browserNotSupported": "La funcionalidad de flasheo integrado de la caja ESP32 solo se puede utilizar con navegadores que admiten la API Web Serial. Desafortunadamente, tu navegador actual no admite esta función. Por favor, utiliza un navegador que soporte la API Web Serial, como Chrome o Edge o Firefox (> v151).",
             "esp32flasher": {
                 "ackBackUpWithOtherTool": "He creado una copia de seguridad con otra herramienta o soy consciente de que continúo sin una copia de seguridad adicional bajo mi propia responsabilidad.",
                 "ackLatestFirmware": "Confirmo que la caja se conectó a la nube original, recibió el firmware más reciente y pudo reproducir un Tonie correctamente.",
@@ -1712,7 +1712,7 @@
                 "writingFinished": "Escritura finalizada",
                 "writingFlash": "Escribiendo flash de {{size}} MiB..."
             },
-            "hint": "Esta sección solo está disponible cuando se utiliza HTTPS y un navegador que admite la API Web Serial, como Chrome o Edge. Si deseas flashear tu Toniebox ESP32, haz clic en \"Proceder a HTTPS\" y serás redirigido automáticamente a la versión HTTPS. Tu navegador puede advertir que la conexión no es segura. Esto está bien; confírmalo y procede a abrir la página de todos modos. Es posible que debas mostrar más detalles en la advertencia.",
+            "hint": "Esta sección solo está disponible cuando se utiliza HTTPS y un navegador que admite la API Web Serial, como Chrome o Edge o Firefox (> v151). Si deseas flashear tu Toniebox ESP32, haz clic en \"Proceder a HTTPS\" y serás redirigido automáticamente a la versión HTTPS. Tu navegador puede advertir que la conexión no es segura. Esto está bien; confírmalo y procede a abrir la página de todos modos. Es posible que debas mostrar más detalles en la advertencia.",
             "hintLegacyApproach": "Si prefieres no usar un navegador que soporte WebSerial, aún puedes usar el método legado (sin GUI, solo línea de comandos).",
             "httpsSettings": "Configuración de HTTPS",
             "legacy": {
