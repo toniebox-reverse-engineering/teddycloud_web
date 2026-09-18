@@ -29,6 +29,7 @@ import {
     SELECT_IMAGE_THUMB_COL_WIDTH,
     SELECT_IMAGE_CELL_GAP_HALF,
 } from "../../../../constants/selectImageTableLayoutSizes";
+import { withBase } from "../../../../utils/basePath";
 
 const { useToken } = theme;
 
@@ -513,7 +514,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 playAudio(
                                     encodeURI(
                                         import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            "/content/" +
+                                            withBase("/content/") +
                                             decodeURIComponent(path) +
                                             "/" +
                                             record.name,
