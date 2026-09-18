@@ -2482,7 +2482,12 @@
             "pageSelector": " tonies/stronę",
             "showAll": "Pokaż wszystko",
             "showPagination": "Pokaż paginację",
-            "title": "Tonies"
+            "tableActions": "Akcje",
+            "tableTonie": "Tonie",
+            "tableUid": "UID",
+            "title": "Tonies",
+            "viewGrid": "Widok siatki",
+            "viewTable": "Widok tabeli"
         },
         "toniesExportList": "Lista eksportu Tonies",
         "toniesExportListCreateDate": "Wygenerowano",

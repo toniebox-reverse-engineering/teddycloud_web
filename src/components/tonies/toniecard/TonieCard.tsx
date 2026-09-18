@@ -51,6 +51,7 @@ export const TonieCard: React.FC<{
     selectionMode?: boolean;
     selected?: boolean;
     onToggleSelect: (ruid: string) => void;
+    variant?: "card" | "row";
 }> = ({
     tonieCard,
     lastRUIDs,
@@ -63,6 +64,7 @@ export const TonieCard: React.FC<{
     selectionMode = false,
     selected = false,
     onToggleSelect,
+    variant = "card",
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
@@ -497,108 +499,158 @@ export const TonieCard: React.FC<{
               liveAction,
           ];
 
+    const isPlayedOn = toniePlayedOn && toniePlayedOn.length > 0;
+
+    const titleText = tonieCard.tonieInfo.series
+        ? tonieCard.tonieInfo.series
+        : tonieCard.tonieInfo.model
+          ? tonieCard.tonieInfo.model
+          : t("tonies.unsetTonie");
+
+    const languageFlag =
+        languageCode && languageCode !== defaultLanguageCode ? (
+            <Tooltip placement="top" zIndex={2} title={t("languageUtil." + languageTooltipKey)}>
+                <Text style={{ height: 20, width: "auto" }}>
+                    <LanguageFlagIcon name={languageCode.split("-")[1].toUpperCase()} height={20} />
+                </Text>
+            </Tooltip>
+        ) : null;
+
+    const selectCheckbox =
+        readOnly || !selectionMode ? null : (
+            <Checkbox
+                checked={selected}
+                onChange={() => onToggleSelect && onToggleSelect(tonieCard.ruid)}
+            />
+        );
+
+    const sourceInfoTooltipTitle = `${sourceTitle}`
+        ? t("tonies.alternativeSource", {
+              originalTonie: '"' + modelTitle + '"',
+              assignedContent: '"' + sourceTitle + '"',
+          }).replace(' "" ', " ")
+        : t("tonies.alternativeSourceUnknown", {
+              originalTonie: '"' + modelTitle + '"',
+          }).replace(' "" ', " ");
+
     // ------------------------
     // Render
     // ------------------------
 
+    const cardView = (
+        <Card
+            hoverable={false}
+            key={tonieCard.ruid}
+            size="small"
+            style={{
+                background: selected ? token.colorBgTextHover : token.colorBgContainerDisabled,
+                borderTop: isPlayedOn ? "3px #1677ff inset" : "reset",
+                paddingTop: isPlayedOn ? "unset" : 2,
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+            }}
+            title={
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{titleText}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                        {languageFlag}
+                        {selectCheckbox}
+                    </div>
+                </div>
+            }
+            cover={
+                <div style={{ position: "relative" }}>
+                    <img
+                        alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
+                        src={toImageSrc(picture)}
+                        style={
+                            pictureLooksUnknown
+                                ? { padding: 8, paddingTop: 10, width: "100%" }
+                                : { padding: 8, width: "100%" }
+                        }
+                    />
+                    {showSourceInfoPicture ? (
+                        <Tooltip title={sourceInfoTooltipTitle} placement="bottom">
+                            <img
+                                src={toImageSrc(tonieCard.sourceInfo.picture)}
+                                alt=""
+                                style={{
+                                    bottom: 0,
+                                    padding: 8,
+                                    position: "absolute",
+                                    right: 20,
+                                    height: "50%",
+                                    width: "auto",
+                                }}
+                            />
+                        </Tooltip>
+                    ) : null}
+                </div>
+            }
+            actions={actions}
+        >
+            <Meta
+                title={tonieCard.tonieInfo.episode || tonieCard.uid}
+                description={tonieCard.tonieInfo.episode ? tonieCard.uid : undefined}
+            />
+        </Card>
+    );
+
+    const rowView = (
+        <div
+            className="tonies-table-row"
+            style={{
+                background: selected ? token.colorBgTextHover : token.colorBgContainerDisabled,
+                borderColor: token.colorBorderSecondary,
+                boxShadow: isPlayedOn ? "inset 3px 0 0 #1677ff" : undefined,
+            }}
+        >
+            {selectionMode && !readOnly ? (
+                <div className="tonies-table-cell-select">{selectCheckbox}</div>
+            ) : null}
+            <div className="tonies-table-cell-image">
+                <img
+                    alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
+                    src={toImageSrc(picture)}
+                />
+                {showSourceInfoPicture ? (
+                    <Tooltip title={sourceInfoTooltipTitle} placement="bottom">
+                        <img
+                            className="tonies-table-cell-image-source"
+                            src={toImageSrc(tonieCard.sourceInfo.picture)}
+                            alt=""
+                        />
+                    </Tooltip>
+                ) : null}
+            </div>
+            <div className="tonies-table-cell-title">
+                <Text strong ellipsis={{ tooltip: titleText }}>
+                    {titleText}
+                </Text>
+                {tonieCard.tonieInfo.episode ? (
+                    <Text type="secondary" ellipsis={{ tooltip: tonieCard.tonieInfo.episode }}>
+                        {tonieCard.tonieInfo.episode}
+                    </Text>
+                ) : null}
+            </div>
+            <div className="tonies-table-cell-uid">
+                <Text type="secondary" copyable={{ text: tonieCard.uid }}>
+                    {tonieCard.uid}
+                </Text>
+            </div>
+            <div className="tonies-table-cell-lang">{languageFlag}</div>
+            <div className="tonies-table-cell-actions">
+                {actions.map((action, index) => (
+                    <React.Fragment key={index}>{action}</React.Fragment>
+                ))}
+            </div>
+        </div>
+    );
+
     return (
         <>
-            <Card
-                hoverable={false}
-                key={tonieCard.ruid}
-                size="small"
-                style={{
-                    background: selected ? token.colorBgTextHover : token.colorBgContainerDisabled,
-                    borderTop:
-                        toniePlayedOn && toniePlayedOn.length > 0 ? "3px #1677ff inset" : "reset",
-                    paddingTop: toniePlayedOn && toniePlayedOn.length > 0 ? "unset" : 2,
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-                title={
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {tonieCard.tonieInfo.series
-                                ? tonieCard.tonieInfo.series
-                                : tonieCard.tonieInfo.model
-                                  ? tonieCard.tonieInfo.model
-                                  : t("tonies.unsetTonie")}
-                        </div>
-                        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                            {languageCode && languageCode !== defaultLanguageCode ? (
-                                <Tooltip
-                                    placement="top"
-                                    zIndex={2}
-                                    title={t("languageUtil." + languageTooltipKey)}
-                                >
-                                    <Text style={{ height: 20, width: "auto" }}>
-                                        <LanguageFlagIcon
-                                            name={languageCode.split("-")[1].toUpperCase()}
-                                            height={20}
-                                        />
-                                    </Text>
-                                </Tooltip>
-                            ) : null}
-                            {readOnly ? null : selectionMode ? (
-                                <Checkbox
-                                    checked={selected}
-                                    onChange={() =>
-                                        onToggleSelect && onToggleSelect(tonieCard.ruid)
-                                    }
-                                />
-                            ) : null}
-                        </div>
-                    </div>
-                }
-                cover={
-                    <div style={{ position: "relative" }}>
-                        <img
-                            alt={`${tonieCard.tonieInfo.series} - ${tonieCard.tonieInfo.episode}`}
-                            src={toImageSrc(picture)}
-                            style={
-                                pictureLooksUnknown
-                                    ? { padding: 8, paddingTop: 10, width: "100%" }
-                                    : { padding: 8, width: "100%" }
-                            }
-                        />
-                        {showSourceInfoPicture ? (
-                            <Tooltip
-                                title={
-                                    `${sourceTitle}`
-                                        ? t("tonies.alternativeSource", {
-                                              originalTonie: '"' + modelTitle + '"',
-                                              assignedContent: '"' + sourceTitle + '"',
-                                          }).replace(' "" ', " ")
-                                        : t("tonies.alternativeSourceUnknown", {
-                                              originalTonie: '"' + modelTitle + '"',
-                                          }).replace(' "" ', " ")
-                                }
-                                placement="bottom"
-                            >
-                                <img
-                                    src={toImageSrc(tonieCard.sourceInfo.picture)}
-                                    alt=""
-                                    style={{
-                                        bottom: 0,
-                                        padding: 8,
-                                        position: "absolute",
-                                        right: 20,
-                                        height: "50%",
-                                        width: "auto",
-                                    }}
-                                />
-                            </Tooltip>
-                        ) : null}
-                    </div>
-                }
-                actions={actions}
-            >
-                <Meta
-                    title={tonieCard.tonieInfo.episode || tonieCard.uid}
-                    description={tonieCard.tonieInfo.episode ? tonieCard.uid : undefined}
-                />
-            </Card>
+            {variant === "row" ? rowView : cardView}
 
             <TonieInformationModal
                 open={isInformationModalOpen}
