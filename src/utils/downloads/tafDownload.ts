@@ -44,8 +44,6 @@ export function buildTafDownloadUrl(
     contentUrl: string,
     options: {
         tracks?: number[];
-        filename?: string;
-        entries?: string[];
     } = {},
 ): string {
     const relative = toSameOriginUrl(contentUrl);

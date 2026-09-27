@@ -34,7 +34,7 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
         setDownloading((prev) => ({ ...prev, [record.name]: true }));
 
         try {
-            triggerBrowserDownload(toSameOriginUrl(fileUrl), sanitizeDownloadName(fileName));
+            await triggerBrowserDownload(toSameOriginUrl(fileUrl), sanitizeDownloadName(fileName));
         } finally {
             setDownloading((prev) => ({ ...prev, [record.name]: false }));
         }
