@@ -1,13 +1,28 @@
-export function triggerBrowserDownload(url: string, filename?: string): void {
-    const link = document.createElement("a");
-    link.href = url;
-    link.rel = "noopener";
-    if (filename) {
-        link.download = filename;
+export async function triggerBrowserDownload(url: string, filename?: string): Promise<void> {
+    const headers = new Headers();
+    try {
+        const token = sessionStorage.getItem("teddycloud_web_token");
+        if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
+        }
+    } catch {
+        /* ignore */
     }
+
+    const response = await fetch(url, { credentials: "include", headers });
+    if (!response.ok) {
+        throw new Error(`download failed: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    link.download = filename || "download";
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
+    URL.revokeObjectURL(objectUrl);
 }
 
 export function toSameOriginUrl(url: string): string {
@@ -40,15 +55,11 @@ export function buildTafDownloadUrl(
     parsed.searchParams.delete("filename");
     parsed.searchParams.delete("entry");
 
+    // Track titles stay out of the query. The server only accepts 255 characters,
+    // and a multi-track name list exceeds that and is dropped as an empty reply.
     if (options.tracks && options.tracks.length > 0) {
         parsed.searchParams.set("tracks", options.tracks.join(","));
     }
-    if (options.filename) {
-        parsed.searchParams.set("filename", options.filename);
-    }
-    (options.entries || []).forEach((entry) => {
-        parsed.searchParams.append("entry", entry);
-    });
 
     return parsed.pathname + parsed.search;
 }

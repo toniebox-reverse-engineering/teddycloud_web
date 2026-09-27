@@ -95,11 +95,7 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
     const downloadBase = sanitizeDownloadName(baseFilename || "download");
 
     const downloadWholeFile = () => {
-        triggerBrowserDownload(
-            buildTafDownloadUrl(contentUrl, {
-                filename: `${downloadBase}.ogg`,
-            }),
-        );
+        triggerBrowserDownload(buildTafDownloadUrl(contentUrl), `${downloadBase}.ogg`);
     };
 
     const downloadSelected = () => {
@@ -116,9 +112,8 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
         triggerBrowserDownload(
             buildTafDownloadUrl(contentUrl, {
                 tracks: selected.map((track) => track.number),
-                filename,
-                entries,
             }),
+            filename,
         );
     };
 
