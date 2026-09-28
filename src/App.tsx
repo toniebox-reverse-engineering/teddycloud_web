@@ -63,14 +63,22 @@ import MatrixRain from "./styles/matrix/matrixRain";
 
 import { detectColorScheme } from "./utils/browser/browserUtils";
 import { StyledThemeProvider } from "./provider/StyledThemeProvider";
+import { USER_STORAGE_SCOPE_EVENT, userStorage } from "./utils/storage/userStorage";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
 
     const [themeMode, setThemeMode] = useState<string>(() => {
-        const savedTheme = localStorage.getItem("theme");
+        const savedTheme = userStorage.getItem("theme");
         return savedTheme || "auto";
     });
+
+    // The theme is a per-user setting: reload it when another user logs in or out.
+    useEffect(() => {
+        const reloadTheme = () => setThemeMode(userStorage.getItem("theme") || "auto");
+        window.addEventListener(USER_STORAGE_SCOPE_EVENT, reloadTheme);
+        return () => window.removeEventListener(USER_STORAGE_SCOPE_EVENT, reloadTheme);
+    }, []);
 
     const resolveThemeMode = (mode: string): "light" | "dark" | "matrix" => {
         if (mode === "auto") {
@@ -114,7 +122,7 @@ function App() {
 
     // Meta-Theme-Color and Matrix-class
     useEffect(() => {
-        localStorage.setItem("theme", themeMode);
+        userStorage.setItem("theme", themeMode);
         updateMetaThemeColor(effectiveThemeMode);
 
         if (effectiveThemeMode === "matrix") {

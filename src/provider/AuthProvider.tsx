@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { AuthStatus } from "../utils/auth/webAuthApi";
+import { setUserStorageScope } from "../utils/storage/userStorage";
 import {
     fetchAuthStatus,
     login as apiLogin,
@@ -27,8 +28,14 @@ const emptyStatus: AuthStatus = {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [status, setStatus] = useState<AuthStatus>(emptyStatus);
+    const [status, setStatusState] = useState<AuthStatus>(emptyStatus);
     const [loading, setLoading] = useState(true);
+
+    // GUI settings are stored per user, so the scope must be switched before the UI reads them.
+    const setStatus = useCallback((next: AuthStatus) => {
+        setUserStorageScope(next.enabled && next.loggedIn ? next.username : "");
+        setStatusState(next);
+    }, []);
 
     const refresh = useCallback(async () => {
         try {
@@ -67,7 +74,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const onAuthRequired = () => {
-            setStatus((current) => ({ ...current, loggedIn: false, username: "" }));
+            setUserStorageScope("");
+            setStatusState((current) => ({ ...current, loggedIn: false, username: "" }));
             setStoredToken(null);
         };
         window.addEventListener("teddycloud-auth-required", onAuthRequired);

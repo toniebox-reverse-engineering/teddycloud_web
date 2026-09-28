@@ -25,6 +25,7 @@ import { defaultAPIConfig } from "../config/defaultApiConfig";
 import { useBoxModelImages } from "../hooks/useBoxModels";
 import { TonieboxImage } from "../types/tonieboxTypes";
 import { generateUUID } from "../utils/ids/generateUUID";
+import { userStorage } from "../utils/storage/userStorage";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -73,7 +74,7 @@ const normalizeStoredNotifications = (value: unknown): NotificationRecord[] => {
 const persistNotifications = (notificationsToPersist: NotificationRecord[]) => {
     if (typeof window === "undefined") return;
 
-    localStorage.setItem(
+    userStorage.setItem(
         NOTIFICATIONS_STORAGE_KEY,
         JSON.stringify(notificationsToPersist.slice(0, MAX_STORED_NOTIFICATIONS)),
     );
@@ -83,7 +84,7 @@ const readStoredNotifications = (): NotificationRecord[] => {
     if (typeof window === "undefined") return [];
 
     try {
-        const stored = localStorage.getItem(NOTIFICATIONS_STORAGE_KEY);
+        const stored = userStorage.getItem(NOTIFICATIONS_STORAGE_KEY);
         if (!stored) return [];
 
         const parsed = normalizeStoredNotifications(JSON.parse(stored));
@@ -304,7 +305,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
 
     const clearAllNotifications = useCallback(() => {
         setNotifications([]);
-        localStorage.removeItem(NOTIFICATIONS_STORAGE_KEY);
+        userStorage.removeItem(NOTIFICATIONS_STORAGE_KEY);
     }, []);
 
     const reloadNotifications = loadStoredNotifications;
