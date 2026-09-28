@@ -1,3 +1,5 @@
+import LANGUAGES from "virtual:languages";
+
 export interface TranslationEntry {
     question: string;
     answer: string;
@@ -7,7 +9,6 @@ export interface Translations {
     [key: string]: string | Translations | TranslationEntry[];
 }
 
-export const LANGUAGES = ["en", "fr", "de", "es"] as const;
 export const BASE_LANG = "en";
 
 export type LanguageCode = (typeof LANGUAGES)[number];

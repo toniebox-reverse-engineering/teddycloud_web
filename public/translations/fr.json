@@ -255,7 +255,7 @@
         "translations": {
             "allTranslationStrings": "Toutes les chaînes de traduction",
             "extraKeys": "Clés supplémentaires",
-            "hint": "Si tu vois une mauvaise traduction, reviens vers nous sur Telegram. Le français et l'espagnol sont actuellement complètement traduits par ChatGPT.",
+            "hint": "Si vous remarquez une mauvaise traduction, veuillez nous contacter sur Telegram. Seuls l'anglais, l'allemand, le français et l'espagnol sont activement maintenus, le français et l'espagnol étant actuellement entièrement traduits par IA. Toutes les autres langues supplémentaires ne sont pas activement maintenues ; n'hésitez donc pas à contribuer aux traductions manquantes. Vous pouvez également ajouter d'autres langues en traduisant un fichier de langue existant, en l'enregistrant sous languagecode.json dans le dossier public/translations, puis en redémarrant le serveur.",
             "key": "Clé",
             "language": "Langue",
             "missing": "MANQUANT",
@@ -315,6 +315,15 @@
     ],
     "fileBrowser": {
         "actions": "Actions",
+        "assignToTonie": {
+            "action": "Assigner à une Tonie",
+            "failedDetails": "Impossible d'assigner à \"{{series}}\" : ",
+            "failedMessage": "Échec de l'assignation !",
+            "searchPlaceholder": "Rechercher des Tonies...",
+            "successDetails": "Fichier assigné à \"{{series}}\" avec succès !",
+            "successMessage": "Tonie assignée !",
+            "title": "Assigner à une Tonie"
+        },
         "attention": "Veuillez noter !",
         "cancel": "Annuler",
         "confirmDeleteDialog": "Êtes-vous sûr de vouloir supprimer {{fileToDelete}}?",
@@ -700,11 +709,7 @@
         "invalidCharactersDetected": "Ta saisie contient des caractères invalides, tels que {{invalidChar}}"
     },
     "language": {
-        "change": "Changer de langue",
-        "english": "EN",
-        "french": "FR",
-        "german": "DE",
-        "spanish": "ES"
+        "change": "Changer de langue"
     },
     "languageUtil": {
         "af-af": "Afrikaans (Afrique du Sud)",
@@ -1597,7 +1602,7 @@
             "attention": "Attention",
             "baudRate": "Taux de baud : ",
             "baudRateInfo": "Si tu rencontres des problèmes pour lire ou écrire dans la mémoire flash, essaie de changer le taux de baud. La valeur par défaut est 921600.",
-            "browserNotSupported": "La fonctionnalité de flashage intégré de la boîte ESP32 ne peut être utilisée qu'avec des navigateurs prenant en charge l'API Web Serial. Malheureusement, votre navigateur actuel ne prend pas en charge cette fonctionnalité. Veuillez utiliser un navigateur qui prend en charge l'API Web Serial, comme Chrome ou Edge.",
+            "browserNotSupported": "La fonctionnalité de flashage intégré de la boîte ESP32 ne peut être utilisée qu'avec des navigateurs prenant en charge l'API Web Serial. Malheureusement, votre navigateur actuel ne prend pas en charge cette fonctionnalité. Veuillez utiliser un navigateur qui prend en charge l'API Web Serial, comme Chrome ou Edge ou Firefox (> v151).",
             "esp32flasher": {
                 "ackBackUpWithOtherTool": "He creado una copia de seguridad con otra herramienta o soy consciente de que continúo sin una copia de seguridad adicional bajo mi propia responsabilidad.",
                 "ackLatestFirmware": "Confirmo que la caja se conectó a la nube original, recibió el firmware más reciente y pudo reproducir un Tonie correctamente.",
@@ -1713,7 +1718,7 @@
                 "writingFinished": "Écriture terminée",
                 "writingFlash": "Écriture de {{size}} MiB de mémoire flash..."
             },
-            "hint": "Cette section est uniquement disponible si vous utilisez HTTPS et un navigateur compatible avec l'API Web Serial, comme Chrome ou Edge. Si vous souhaitez flasher votre ESP32 Toniebox, cliquez sur \"Continuer vers HTTPS\", vous serez alors automatiquement redirigé vers la version HTTPS. Il est possible que votre navigateur indique que la connexion n'est pas sécurisée. C'est normal, confirmez-le et ouvrez la page quand même. Vous devrez peut-être afficher plus de détails dans l'avertissement.",
+            "hint": "Cette section est uniquement disponible si vous utilisez HTTPS et un navigateur compatible avec l'API Web Serial, comme Chrome ou Edge ou Firefox (> v151). Si vous souhaitez flasher votre ESP32 Toniebox, cliquez sur \"Continuer vers HTTPS\", vous serez alors automatiquement redirigé vers la version HTTPS. Il est possible que votre navigateur indique que la connexion n'est pas sécurisée. C'est normal, confirmez-le et ouvrez la page quand même. Vous devrez peut-être afficher plus de détails dans l'avertissement.",
             "hintLegacyApproach": "Si vous préférez ne pas utiliser un navigateur prenant en charge WebSerial, vous pouvez toujours utiliser l'approche héritée via votre ligne de commande.",
             "httpsSettings": "Paramètres HTTPS",
             "legacy": {

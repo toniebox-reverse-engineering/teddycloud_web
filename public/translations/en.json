@@ -255,7 +255,7 @@
         "translations": {
             "allTranslationStrings": "All Translation strings",
             "extraKeys": "Extra keys",
-            "hint": "If you see any bad translation, please come back to us on Telegram. French and Spanish are currently completely translated by ChatGPT.",
+            "hint": "If you see any bad translation, please contact us on Telegram. Only English, German, French, and Spanish are actively maintained, with French and Spanish currently translated entirely by AI. All other additional languages are not actively maintained, so feel free to contribute missing translations. You can also add more languages by translating an existing language file, saving it as languagecode.json in the public/translations folder, and restarting the server.",
             "key": "Key",
             "language": "Language",
             "missing": "MISSING",
@@ -315,6 +315,15 @@
     ],
     "fileBrowser": {
         "actions": "Actions",
+        "assignToTonie": {
+            "action": "Assign to Tonie",
+            "failedDetails": "Could not assign \"{{series}}\" as content: ",
+            "failedMessage": "Assigning to Tonie failed!",
+            "searchPlaceholder": "Search Tonies...",
+            "successDetails": "File assigned to \"{{series}}\" successfully!",
+            "successMessage": "Tonie assigned!",
+            "title": "Assign to Tonie"
+        },
         "attention": "Please note!",
         "cancel": "Cancel",
         "confirmDeleteDialog": "Are you sure you want to delete {{fileToDelete}}?",
@@ -700,11 +709,7 @@
         "invalidCharactersDetected": "Your input contains invalid characters, such as {{invalidChar}}"
     },
     "language": {
-        "change": "Change language",
-        "english": "EN",
-        "french": "FR",
-        "german": "DE",
-        "spanish": "ES"
+        "change": "Change language"
     },
     "languageUtil": {
         "af-af": "Afrikaans (South Africa)",
@@ -1597,7 +1602,7 @@
             "attention": "Attention",
             "baudRate": "Baudrate: ",
             "baudRateInfo": "If you encounter issues reading or writing to the flash, try changing the baud rate. The default is 921600.",
-            "browserNotSupported": "The integrated ESP32 Box flashing functionality can only be used with browsers that support the Web Serial API. Unfortunately, your current browser does not support this feature. Please use a browser that supports the Web Serial API, such as Chrome or Edge.",
+            "browserNotSupported": "The integrated ESP32 Box flashing functionality can only be used with browsers that support the Web Serial API. Unfortunately, your current browser does not support this feature. Please use a browser that supports the Web Serial API, such as Chrome or Edge or Firefox (> v151).",
             "esp32flasher": {
                 "ackBackUpWithOtherTool": "I have created a backup using another tool, or I understand and accept the risk of proceeding without one.",
                 "ackLatestFirmware": "I confirm that the box was connected to the original cloud, received the latest firmware, and successfully played a Tonie.",
@@ -1713,7 +1718,7 @@
                 "writingFinished": "Writing finished",
                 "writingFlash": "Writing {{size}} MiB flash..."
             },
-            "hint": "This section is only available when using HTTPS and a browser that supports the Web Serial API, such as Chrome or Edge. If you want to flash your ESP32 Toniebox, please click on \"Proceed to HTTPS\", and you will be automatically redirected to the HTTPS version. Your browser might warn that the connection is not secure. This is okay; confirm it and proceed to open the page anyway. You may need to display more details in the warning.",
+            "hint": "This section is only available when using HTTPS and a browser that supports the Web Serial API, such as Chrome or Edge or Firefox (> v151). If you want to flash your ESP32 Toniebox, please click on \"Proceed to HTTPS\", and you will be automatically redirected to the HTTPS version. Your browser might warn that the connection is not secure. This is okay; confirm it and proceed to open the page anyway. You may need to display more details in the warning.",
             "hintLegacyApproach": "If you prefer not to use a browser that supports WebSerial, you can still use the legacy method (no GUI, command line only).",
             "httpsSettings": "HTTPS Settings",
             "legacy": {

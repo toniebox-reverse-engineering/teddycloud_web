@@ -4,6 +4,9 @@
 
 - gui: Download TAF tracks as separate .ogg files (ZIP when more than one track is selected) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/169](https://github.com/toniebox-reverse-engineering/teddycloud/issues/169)
 - gui: fixed missing images in library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320)
+- gui: Added Polish (pl) language support [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325)
+- gui: Added "assign to Tonie" action directly from the library file browser [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240)
+- gui: Refactored language functionality to simplify adding and maintaining additional languages. New languages can now be added without requiring code changes. Simply translate an existing language file, save it as [languagecode].json (e.g. en.json) in the public/translations folder, and rebuild the frontend. The new language will then be detected and made available automatically.
 
 ### Commits
 
