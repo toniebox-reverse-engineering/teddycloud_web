@@ -338,7 +338,11 @@ export const FileBrowser: React.FC<{
         downloadSpecial: string,
         downloadOverlay?: string,
     ) => {
-        if (record.name.toLowerCase().endsWith(".taf")) {
+        if (
+            record.name.toLowerCase().endsWith(".taf") &&
+            buildTafDownloadTracks(record.tonieInfo?.tracks, record.tafHeader?.trackSeconds)
+                .length > 1
+        ) {
             setTafDownloadRecord(record);
             return;
         }

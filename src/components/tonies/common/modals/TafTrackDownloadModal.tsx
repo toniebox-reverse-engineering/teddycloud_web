@@ -14,18 +14,6 @@ import { padTrackNumber, sanitizeDownloadName } from "../../../../utils/files/sa
 const { useToken } = theme;
 
 const TrackTableWrap = styled.div`
-    .ant-table-selection-column {
-        width: 52px;
-        min-width: 52px;
-    }
-    .ant-table-selection-column .ant-checkbox-wrapper {
-        padding: 10px;
-        margin-inline: 0;
-    }
-    .ant-checkbox .ant-checkbox-inner {
-        width: 20px;
-        height: 20px;
-    }
     .ant-table-tbody > tr > td {
         vertical-align: middle;
     }
@@ -43,7 +31,6 @@ type TafDownloadPanelProps = {
     contentUrl: string;
     baseFilename: string;
     onPlayTrack?: (startSeconds?: number) => void;
-    compact?: boolean;
 };
 
 const formatClock = (seconds?: number): string => {
@@ -80,16 +67,15 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
     contentUrl,
     baseFilename,
     onPlayTrack,
-    compact = false,
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
     const canSplit = tracks.length > 1;
     const allKeys = useMemo(() => tracks.map((track) => track.number), [tracks]);
-    const [selectedKeys, setSelectedKeys] = useState<number[]>(allKeys);
+    const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
 
     useEffect(() => {
-        setSelectedKeys(allKeys);
+        setSelectedKeys([]);
     }, [allKeys]);
 
     const downloadBase = sanitizeDownloadName(baseFilename || "download");
@@ -119,15 +105,28 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
 
     if (!canSplit) {
         return (
-            <Button
-                type="default"
-                icon={<DownloadOutlined />}
-                onClick={downloadWholeFile}
-                block
-                style={{ minHeight: 44 }}
-            >
-                {t("tonies.tafDownload.asOneFile")}
-            </Button>
+            <Flex vertical gap={8} style={{ marginTop: 8 }}>
+                {tracks.map((track) => (
+                    <Flex key={track.number} gap={16} align="center" style={{ textAlign: "left" }}>
+                        {onPlayTrack ? (
+                            <PlayCircleOutlined onClick={() => onPlayTrack(track.startSeconds)} />
+                        ) : null}
+                        <div>
+                            {track.number}.{" "}
+                            {track.title ||
+                                t("tonies.tafDownload.unnamedTrack", { number: track.number })}
+                        </div>
+                    </Flex>
+                ))}
+                <Button
+                    type="default"
+                    icon={<DownloadOutlined />}
+                    onClick={downloadWholeFile}
+                    block
+                >
+                    {t("tonies.tafDownload.asOneFile")}
+                </Button>
+            </Flex>
         );
     }
 
@@ -173,10 +172,10 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
     ];
 
     return (
-        <Flex vertical gap={12}>
+        <Flex vertical gap={12} style={{ marginTop: 8 }}>
             <TrackTableWrap>
                 <Table<TafDownloadTrack>
-                    size={compact ? "small" : "middle"}
+                    size="small"
                     pagination={false}
                     rowKey="number"
                     dataSource={tracks}
@@ -186,7 +185,6 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
                     rowSelection={{
                         selectedRowKeys: selectedKeys,
                         hideSelectAll: true,
-                        columnWidth: 52,
                         columnTitle: (
                             <Checkbox
                                 checked={allSelected}
@@ -231,17 +229,15 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
                     bottom: 0,
                     background: token.colorBgContainer,
                     paddingTop: 8,
+                    paddingBottom: 8,
                 }}
             >
-                <Button onClick={downloadWholeFile} style={{ minHeight: 44 }}>
-                    {t("tonies.tafDownload.asOneFile")}
-                </Button>
+                <Button onClick={downloadWholeFile}>{t("tonies.tafDownload.asOneFile")}</Button>
                 <Button
                     type="primary"
                     icon={<DownloadOutlined />}
                     disabled={selectedKeys.length === 0}
                     onClick={downloadSelected}
-                    style={{ minHeight: 44 }}
                 >
                     {selectedKeys.length === 1
                         ? t("tonies.tafDownload.downloadOne")

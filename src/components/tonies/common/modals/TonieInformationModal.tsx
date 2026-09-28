@@ -257,8 +257,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 footer={informationModalFooter}
                 open={open}
                 keyboard={true}
-                closable={false}
-                mask={{ closable: false }}
+                mask={{ closable: true }}
                 onCancel={onClose}
             >
                 <div style={{ position: "relative" }}>
@@ -345,7 +344,6 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                             <strong>{t("tonies.infoModal.tracklist")}</strong>
                             {canDownloadAudio ? (
                                 <TafDownloadPanel
-                                    compact
                                     tracks={downloadTracks}
                                     contentUrl={downloadContentUrl}
                                     baseFilename={sanitizeDownloadName(
