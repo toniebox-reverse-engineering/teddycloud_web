@@ -269,7 +269,7 @@
         "translations": {
             "allTranslationStrings": "Alle Übersetzungsstrings",
             "extraKeys": "Zusätzliche Schlüssel",
-            "hint": "Wenn du eine schlechte Übersetzung siehst, komm bitte über Telegram auf uns zu. Französisch und Spanisch werden derzeit vollständig von ChatGPT übersetzt.",
+            "hint": "Wenn dir eine fehlerhafte Übersetzung auffällt, melde dich bitte bei uns auf Telegram. Nur Englisch, Deutsch, Französisch und Spanisch werden aktiv gepflegt, wobei Französisch und Spanisch derzeit vollständig von KI übersetzt wurden. Alle weiteren Sprachen werden nicht aktiv gepflegt – fehlende Übersetzungen können gerne beigesteuert werden. Du kannst auch weitere Sprachen hinzufügen, indem du eine bestehende Sprachdatei übersetzt, sie als languagecode.json im Ordner public/translations speicherst und anschließend den Server neu startest.",
             "key": "Schlüssel",
             "language": "Sprache",
             "missing": "FEHLT",
@@ -329,6 +329,15 @@
     ],
     "fileBrowser": {
         "actions": "Aktionen",
+        "assignToTonie": {
+            "action": "Tonie zuweisen",
+            "failedDetails": "Zuweisung an \"{{series}}\" fehlgeschlagen: ",
+            "failedMessage": "Zuweisung fehlgeschlagen!",
+            "searchPlaceholder": "Tonies durchsuchen...",
+            "successDetails": "Datei erfolgreich \"{{series}}\" zugewiesen!",
+            "successMessage": "Tonie zugewiesen!",
+            "title": "Tonie zuweisen"
+        },
         "attention": "Bitte beachte!",
         "cancel": "Cancel",
         "confirmDeleteDialog": "Möchtest du die Datei {{fileToDelete}} wirklich löschen?",
@@ -721,11 +730,7 @@
         "invalidCharactersDetected": "Deine Eingabe enthält ungültige Zeichen, wie {{invalidChar}}"
     },
     "language": {
-        "change": "Sprache ändern",
-        "english": "EN",
-        "french": "FR",
-        "german": "DE",
-        "spanish": "ES"
+        "change": "Sprache ändern"
     },
     "languageUtil": {
         "af-af": "Afrikaans (Südafrika)",
@@ -1640,7 +1645,7 @@
             "attention": "Achtung",
             "baudRate": "Baudrate: ",
             "baudRateInfo": "Wenn du Probleme beim Lesen oder Schreiben des Flash-Speichers hast, versuche die Baudrate zu ändern. Der Standardwert ist 921600.",
-            "browserNotSupported": "Die integrierte ESP32 Box Flashing Funktionalität kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge.",
+            "browserNotSupported": "Die integrierte ESP32 Box Flashing Funktionalität kann nur mit Browsern genutzt werden, die die Web Serial API unterstützen. Dein genutzter Browser unterstützt diese Funktion leider nicht. Bitte verwende einen Browser, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge oder Firefox (> v151).",
             "esp32flasher": {
                 "ackBackUpWithOtherTool": "Ich habe ein Backup mit einem anderen Tool erstellt oder mir ist bewusst, dass ich ohne zusätzliches Backup auf eigenes Risiko fortfahre.",
                 "ackLatestFirmware": "Ich bestätige, dass die Box mit der originalen Cloud verbunden war, die aktuelle Firmware erhalten hat und ein Tonie erfolgreich abgespielt wurde.",
@@ -1756,7 +1761,7 @@
                 "writingFinished": "Schreiben abgeschlossen",
                 "writingFlash": "Schreibe {{size}} MiB Flash..."
             },
-            "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird und du einen Browser nutzt, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge. Wenn du deine ESP32 Toniebox flashen willst, dann klicke bitte auf \"Weiter zu HTTPS\", du wirst dann automatisch auf die HTTPS Version weitergeleitet. Es kann sein, dass dein Browser meldet, dass die Verbindung nicht sicher ist. Dies ist ok, bestätige es und öffne die Seite dennoch. Eventuell musst du dafür weitere Details bei der Meldung anzeigen.",
+            "hint": "Dieser Abschnitt ist nur verfügbar, wenn HTTPS verwendet wird und du einen Browser nutzt, der die Web Serial API unterstützt, wie z.B. Chrome oder Edge oder Firefox (> v151). Wenn du deine ESP32 Toniebox flashen willst, dann klicke bitte auf \"Weiter zu HTTPS\", du wirst dann automatisch auf die HTTPS Version weitergeleitet. Es kann sein, dass dein Browser meldet, dass die Verbindung nicht sicher ist. Dies ist ok, bestätige es und öffne die Seite dennoch. Eventuell musst du dafür weitere Details bei der Meldung anzeigen.",
             "hintLegacyApproach": "Wenn du lieber keinen Browser verwenden möchtest, der WebSerial unterstützt, kannst du immer noch die Legacy-Methode verwenden (kein GUI, nur Eingabeaufforderung).",
             "httpsSettings": "HTTPS Settings",
             "legacy": {

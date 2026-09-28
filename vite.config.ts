@@ -21,7 +21,45 @@ export default defineConfig(({ command, mode }) => {
 
     return {
         base: "/web",
-        plugins: [react()],
+        plugins: [
+            react(),
+
+            {
+                name: "virtual-languages",
+
+                resolveId(id) {
+                    if (id === "virtual:languages") {
+                        return "\0virtual:languages";
+                    }
+                },
+
+                load(id) {
+                    if (id !== "\0virtual:languages") {
+                        return;
+                    }
+
+                    const translationsDir = path.resolve(
+                        import.meta.dirname,
+                        "public/translations",
+                    );
+
+                    const languages = fs
+                        .readdirSync(translationsDir)
+                        .filter((file) => file.endsWith(".json"))
+                        .map((file) => path.basename(file, ".json"))
+                        .sort((a, b) => {
+                            if (a === "en") return -1;
+                            if (b === "en") return 1;
+                            return a.localeCompare(b);
+                        });
+
+                    return `
+                        export const LANGUAGES = ${JSON.stringify(languages)};
+                        export default LANGUAGES;
+                    `;
+                },
+            },
+        ],
         resolve: {
             tsconfigPaths: true,
         },

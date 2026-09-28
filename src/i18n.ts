@@ -2,6 +2,7 @@ import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
+import { LANGUAGES } from "virtual:languages";
 import { USER_STORAGE_SCOPE_EVENT, userStorage } from "./utils/storage/userStorage";
 
 const cacheBuster = "202511242019";
@@ -10,7 +11,7 @@ i18n.use(Backend)
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-        supportedLngs: ["en", "de", "fr", "es"],
+        supportedLngs: LANGUAGES,
         fallbackLng: "en",
 
         ns: ["teddycloud"],
