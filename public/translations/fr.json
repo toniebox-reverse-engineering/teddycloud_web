@@ -660,7 +660,8 @@
                 "15webLogin": {
                     "items": {
                         "01optionalLogin": "connexion optionnelle à l'interface web avec plusieurs utilisateurs (désactivée par défaut)",
-                        "02rateLimit": "session par cookie avec blocage après plusieurs échecs de connexion"
+                        "02rateLimit": "session par cookie avec blocage après plusieurs échecs de connexion",
+                        "03userLimit": "jusqu'à 32 utilisateurs"
                     },
                     "title": "Connexion à l'interface web"
                 }

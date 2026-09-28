@@ -660,7 +660,8 @@
                 "15webLogin": {
                     "items": {
                         "01optionalLogin": "optional login for the web UI with multiple users (off by default)",
-                        "02rateLimit": "cookie session with rate limiting after repeated failed logins"
+                        "02rateLimit": "cookie session with rate limiting after repeated failed logins",
+                        "03userLimit": "up to 32 users"
                     },
                     "title": "Web UI login"
                 }

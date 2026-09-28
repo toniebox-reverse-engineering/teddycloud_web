@@ -660,7 +660,8 @@
                 "15webLogin": {
                     "items": {
                         "01optionalLogin": "optionaler Login für die Weboberfläche mit mehreren Benutzern (standardmäßig aus)",
-                        "02rateLimit": "Cookie-Sitzung mit Sperre nach mehreren fehlgeschlagenen Anmeldungen"
+                        "02rateLimit": "Cookie-Sitzung mit Sperre nach mehreren fehlgeschlagenen Anmeldungen",
+                        "03userLimit": "bis zu 32 Benutzer"
                     },
                     "title": "Web-UI-Login"
                 }
