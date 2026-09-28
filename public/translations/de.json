@@ -656,6 +656,13 @@
                         "01pluginFeature": "Erweiter die TeddyCloud-Funktionalität durch benutzerdefinierte Plugins"
                     },
                     "title": "TeddyCloud-Plugins"
+                },
+                "15webLogin": {
+                    "items": {
+                        "01optionalLogin": "optionaler Login für die Weboberfläche mit mehreren Benutzern (standardmäßig aus)",
+                        "02rateLimit": "Cookie-Sitzung mit Sperre nach mehreren fehlgeschlagenen Anmeldungen"
+                    },
+                    "title": "Web-UI-Login"
                 }
             },
             "futureFeatures": {

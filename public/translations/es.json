@@ -656,6 +656,13 @@
                         "01pluginFeature": "Extiende la funcionalidad de TeddyCloud mediante complementos personalizados"
                     },
                     "title": "Complementos de TeddyCloud"
+                },
+                "15webLogin": {
+                    "items": {
+                        "01optionalLogin": "inicio de sesión opcional para la interfaz web con varios usuarios (desactivado por defecto)",
+                        "02rateLimit": "sesión con cookie y bloqueo tras varios intentos fallidos"
+                    },
+                    "title": "Inicio de sesión de la interfaz web"
                 }
             },
             "futureFeatures": {

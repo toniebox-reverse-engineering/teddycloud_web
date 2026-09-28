@@ -656,6 +656,13 @@
                         "01pluginFeature": "Étendez les fonctionnalités de TeddyCloud avec des plugins personnalisés"
                     },
                     "title": "Plugins TeddyCloud"
+                },
+                "15webLogin": {
+                    "items": {
+                        "01optionalLogin": "connexion optionnelle à l'interface web avec plusieurs utilisateurs (désactivée par défaut)",
+                        "02rateLimit": "session par cookie avec blocage après plusieurs échecs de connexion"
+                    },
+                    "title": "Connexion à l'interface web"
                 }
             },
             "futureFeatures": {
