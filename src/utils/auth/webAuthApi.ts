@@ -99,7 +99,7 @@ export async function logout(): Promise<void> {
 }
 
 export async function fetchAuthUsers(): Promise<AuthUsersResponse> {
-    const response = await authFetch("/api/auth/users");
+    const response = await authFetch("/api/auth/users/get");
     const data = await parseJson(response);
     if (!response.ok) {
         throw new Error(data.message || "Could not load users");
@@ -112,7 +112,7 @@ export async function fetchAuthUsers(): Promise<AuthUsersResponse> {
 }
 
 export async function createAuthUser(username: string, password: string): Promise<void> {
-    const response = await authFetch("/api/auth/users", {
+    const response = await authFetch("/api/auth/users/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -137,7 +137,7 @@ export async function deleteAuthUser(username: string): Promise<{ authDisabled: 
 }
 
 export async function changeAuthPassword(username: string, password: string): Promise<void> {
-    const response = await authFetch("/api/auth/users/password", {
+    const response = await authFetch("/api/auth/users/updatePassword", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
