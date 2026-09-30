@@ -18,6 +18,7 @@ import { TeddyAudioPlayer } from "../../components/tonies/teddyaudioplayer/Teddy
 import LoadingSpinner from "../../components/common/elements/LoadingSpinner";
 import { useTonies } from "../../hooks/useTonies";
 import { useAudioContext } from "../../provider/AudioProvider";
+import { withBase } from "../../utils/basePath";
 
 type TeddyAudioPlayerPageProps = {
     standalone?: boolean;
@@ -48,9 +49,9 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({
             const params = new URLSearchParams();
             params.set("ruid", currentTonie.ruid);
             params.set("position", (currentPlayPosition ?? 0).toString());
-            window.open(`../audioplayer?${params.toString()}`, "_blank");
+            window.open(`${withBase("/web")}/audioplayer?${params.toString()}`, "_blank");
         } else {
-            window.open("../audioplayer", "_blank");
+            window.open(`${withBase("/web")}/audioplayer`, "_blank");
         }
         navigate("/");
     };
@@ -129,7 +130,8 @@ export const TeddyAudioPlayerPage: React.FC<TeddyAudioPlayerPageProps> = ({
                                     },
                                 };
                                 playAudio(
-                                    import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + newTonie.audioUrl,
+                                    import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                        withBase(newTonie.audioUrl),
                                     newTonie.tonieInfo,
                                     newTonie,
                                     currentPlayPosition,

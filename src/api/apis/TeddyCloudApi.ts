@@ -661,7 +661,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<Response> {
         try {
             // To Do: Replace fetch with request
-            const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
+            const response = await fetch(this.configuration.basePath + path, {
                 method: "POST",
                 body: formData,
             });

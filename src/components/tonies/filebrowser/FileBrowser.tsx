@@ -48,6 +48,7 @@ import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
+import { withBase } from "../../../utils/basePath";
 
 const { Paragraph } = Typography;
 
@@ -767,7 +768,7 @@ export const FileBrowser: React.FC<{
                                     record.name.toLowerCase().endsWith(ext),
                                 )
                             ) {
-                                const contentPath = buildContentUrl(record.name);
+                                const contentPath = withBase(buildContentUrl(record.name));
                                 const baseApiUrl =
                                     (typeof import.meta !== "undefined" &&
                                         (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
