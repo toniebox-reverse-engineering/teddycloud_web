@@ -495,26 +495,6 @@ export const TonieCard: React.FC<{
         />
     );
 
-    const assignNextEpisodeAction = (
-        <Tooltip
-            title={
-                nextEpisodeAvailable
-                    ? t("tonies.assignNextEpisode.action")
-                    : t("tonies.assignNextEpisode.noneLeft")
-            }
-        >
-            <StepForwardOutlined
-                key="assignNextEpisode"
-                style={
-                    nextEpisodeAvailable
-                        ? undefined
-                        : { cursor: "default", color: token.colorTextDisabled }
-                }
-                onClick={nextEpisodeAvailable ? handleAssignNextEpisode : undefined}
-            />
-        </Tooltip>
-    );
-
     const languageCode = toLanguageCode(tonieCard.tonieInfo.language);
     const defaultLanguageCode = toLanguageCode(defaultLanguage);
     const languageTooltipKey = languageCode;
@@ -526,7 +506,6 @@ export const TonieCard: React.FC<{
               playAction,
               cloudAction,
               liveAction,
-              assignNextEpisodeAction,
           ];
 
     // ------------------------
