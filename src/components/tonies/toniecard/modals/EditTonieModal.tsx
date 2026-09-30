@@ -179,6 +179,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
 
     const assignNextEpisodeAction = (
         <Tooltip
+            key="assignNextEpisode"
             title={
                 nextEpisodeAvailable
                     ? t("tonies.assignNextEpisode.action", {
@@ -203,6 +204,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
 
     const assignPrevEpisodeAction = (
         <Tooltip
+            key="assignPrevEpisode"
             title={
                 prevEpisodeAvailable
                     ? t("tonies.assignPrevEpisode.action", {
