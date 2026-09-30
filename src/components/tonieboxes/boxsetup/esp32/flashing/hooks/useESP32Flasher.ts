@@ -6,7 +6,11 @@ import { defaultAPIConfig } from "../../../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../../../types/teddyCloudNotificationTypes";
 import { isWebSerialSupported } from "../../../../../../utils/browser/webSerial";
-import { ESP32_CHIPNAME, ESP32_FLASHSIZE } from "../../../../../../constants/esp32";
+import {
+    ESP32_CHIPNAME,
+    ESP32_FLASH_STEPS,
+    ESP32_FLASHSIZE,
+} from "../../../../../../constants/esp32";
 import { scrollToTop } from "../../../../../../utils/browser/browserUtils";
 import { useGetSettingLogLevel } from "../../../../../../hooks/getsettings/useGetSettingLogLevel";
 import { checkAssetsCertPartition } from "../helper/checkAssetsCertPartition";
@@ -77,6 +81,7 @@ export interface UseESP32FlasherResult {
     handleBaudrateChange: (value: number) => void;
     openHttpsUrl: () => void;
 
+    startLoadFlash: () => Promise<void>;
     loadFlashFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
     readFlash: () => Promise<void>;
     patchFlash: () => Promise<void>;
@@ -117,7 +122,7 @@ export const useESP32Flasher = (
     const [certDir, setCertDir] = useState<string>("certs/client");
     const [isOpenAvailableBoxesModal, setIsOpenAvailableBoxesModal] = useState(false);
 
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(ESP32_FLASH_STEPS.PREP);
 
     const [state, setState] = useState<ESP32Flasher>({
         progress: 0,
@@ -291,7 +296,7 @@ export const useESP32Flasher = (
         }));
 
         console.info("[ESP32][Revvox] prepare: openPort...");
-        await flasher.openPort();
+        await flasher.openPort(state.port);
 
         console.info("[ESP32][Revvox] prepare: sync...");
         await flasher.sync();
@@ -454,6 +459,27 @@ export const useESP32Flasher = (
         return true;
     }
 
+    const startLoadFlash = async () => {
+        try {
+            const port = await navigator.serial.requestPort();
+            setState((prev) => ({
+                ...prev,
+                port: port,
+            }));
+
+            fileInputRef.current?.click();
+        } catch (err: any) {
+            console.error("[ESP32] startLoadFlash: openPort failed", err);
+            setState((prev) => ({
+                ...prev,
+                state: err.message,
+                connected: false,
+                actionInProgress: false,
+                error: true,
+            }));
+        }
+    };
+
     const loadFlashFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         console.info("[ESP32] loadFlashFile: start", logCtx());
 
@@ -543,6 +569,7 @@ export const useESP32Flasher = (
                 }));
             } else {
                 const flasher = getRevvoxFlasher();
+
                 let mac = "";
 
                 try {
@@ -554,7 +581,7 @@ export const useESP32Flasher = (
                     }));
 
                     console.info("[ESP32][Revvox] loadFlashFile: openPort");
-                    await flasher.openPort();
+                    await flasher.openPort(state.port);
 
                     console.info("[ESP32][Revvox] loadFlashFile: sync");
                     setState((prev) => ({
@@ -819,13 +846,38 @@ export const useESP32Flasher = (
 
     const next = () => {
         setState((prev) => ({ ...prev, state: "", proceed: false }));
-        setCurrentStep((prev) => prev + 1);
+
+        setCurrentStep((prev) => {
+            if (state.resetBox === true && prev === ESP32_FLASH_STEPS.READ) {
+                return ESP32_FLASH_STEPS.WRITE;
+            }
+
+            return prev < ESP32_FLASH_STEPS.FINISH
+                ? ((prev + 1) as ESP32_FLASH_STEPS)
+                : ESP32_FLASH_STEPS.FINISH;
+        });
+
         scrollToTop(scrollToTopAnchor && scrollToTopAnchor);
     };
 
     const prev = () => {
-        setState((prevState) => ({ ...prevState, state: "", showProgress: false, error: false }));
-        setCurrentStep((prev) => prev - 1);
+        setState((prevState) => ({
+            ...prevState,
+            state: "",
+            showProgress: false,
+            error: false,
+        }));
+
+        setCurrentStep((prev) => {
+            if (state.resetBox === true && prev === ESP32_FLASH_STEPS.WRITE) {
+                return ESP32_FLASH_STEPS.READ;
+            }
+
+            return prev > ESP32_FLASH_STEPS.PREP
+                ? ((prev - 1) as ESP32_FLASH_STEPS)
+                : ESP32_FLASH_STEPS.PREP;
+        });
+
         scrollToTop(scrollToTopAnchor && scrollToTopAnchor);
     };
 
@@ -992,8 +1044,8 @@ export const useESP32Flasher = (
             console.info("[ESP32][Revvox] resetFlash: prepare flasher");
             const flasher = await prepareRevvoxFlasher();
 
-            console.info("[ESP32][Revvox] resetFlash: setCurrentStep(2)");
-            setCurrentStep(2);
+            console.info("[ESP32][Revvox] resetFlash: setCurrentStep(ESP32_FLASH_STEPS.WRITE)");
+            setCurrentStep(ESP32_FLASH_STEPS.WRITE);
 
             const mac = await flasher.readMac();
             console.info("[ESP32][Revvox] resetFlash: MAC read", {
@@ -1065,8 +1117,8 @@ export const useESP32Flasher = (
                 progress: 100,
             }));
 
-            console.info("[ESP32][Revvox] resetFlash: setCurrentStep(3)");
-            setCurrentStep(3);
+            console.info("[ESP32][Revvox] resetFlash: setCurrentStep(ESP32_FLASH_STEPS.FINISH)");
+            setCurrentStep(ESP32_FLASH_STEPS.FINISH);
         } catch (err: any) {
             console.error("[ESP32][Revvox] resetFlash: failed", err);
             alert(err);
@@ -1337,6 +1389,7 @@ export const useESP32Flasher = (
         fileInputRef,
         handleBaudrateChange,
         openHttpsUrl,
+        startLoadFlash,
         loadFlashFile,
         readFlash,
         patchFlash,

@@ -55,8 +55,8 @@ export const useAssignNextEpisode = ({
 
         let cancelled = false;
         api.apiGetTeddyCloudApiRaw(
-            `/api/fileIndexV2?path=${sourceFolder}&special=library` +
-                (overlay ? `&overlay=${overlay}` : ""),
+            `/api/fileIndexV2?path=${encodeURIComponent(sourceFolder)}&special=library` +
+                (overlay ? `&overlay=${encodeURIComponent(overlay)}` : ""),
         )
             .then((response) => response.json())
             .then((data: any) => {

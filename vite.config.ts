@@ -6,24 +6,62 @@ import path from "path";
 export default defineConfig(({ command, mode }) => {
     const portHttp = parseInt(process.env.VITE_APP_TEDDYCLOUD_PORT_HTTP || "3000", 10);
     const portHttps = parseInt(process.env.VITE_APP_TEDDYCLOUD_PORT_HTTPS || "3443", 10);
-    const baseApiUrl = process.env.VITE_APP_TEDDYCLOUD_API_URL || "http://localhost";
     const useHttps = process.env.HTTPS === "true";
 
     const httpsOptions = useHttps
         ? {
-              key: fs.readFileSync(path.resolve(__dirname, "./localhost-key.pem")),
-              cert: fs.readFileSync(path.resolve(__dirname, "./localhost.pem")),
+              key: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost-key.pem")),
+              cert: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost.pem")),
           }
         : undefined;
 
-    const targetUrl = useHttps ? `https://localhost:${portHttps}` : `http://localhost:${portHttp}`;
     const proxyUrl = process.env.VITE_APP_TEDDYCLOUD_API_URL
         ? process.env.VITE_APP_TEDDYCLOUD_API_URL.replace(/^https:/, "http:")
         : "http://teddycloud.local";
 
     return {
-        base: "/web",
-        plugins: [react()],
+        // Production builds use a relative base so the bundle works under any URL prefix
+        // (index.html injects a matching <base href> at runtime). The dev server keeps /web.
+        base: command === "build" ? "./" : "/web",
+        plugins: [
+            react(),
+
+            {
+                name: "virtual-languages",
+
+                resolveId(id) {
+                    if (id === "virtual:languages") {
+                        return "\0virtual:languages";
+                    }
+                },
+
+                load(id) {
+                    if (id !== "\0virtual:languages") {
+                        return;
+                    }
+
+                    const translationsDir = path.resolve(
+                        import.meta.dirname,
+                        "public/translations",
+                    );
+
+                    const languages = fs
+                        .readdirSync(translationsDir)
+                        .filter((file) => file.endsWith(".json"))
+                        .map((file) => path.basename(file, ".json"))
+                        .sort((a, b) => {
+                            if (a === "en") return -1;
+                            if (b === "en") return 1;
+                            return a.localeCompare(b);
+                        });
+
+                    return `
+                        export const LANGUAGES = ${JSON.stringify(languages)};
+                        export default LANGUAGES;
+                    `;
+                },
+            },
+        ],
         resolve: {
             tsconfigPaths: true,
         },

@@ -35,24 +35,10 @@ export type FormValues = {
 };
 
 export type SortColumnKey =
-    | "series"
-    | "model"
-    | "title"
-    | "episodes"
-    | "release"
-    | "language"
-    | "category"
-    | "no";
+    "series" | "model" | "title" | "episodes" | "release" | "language" | "category" | "no";
 export type SortOrder = "ascend" | "descend" | null;
 export type FilterFieldKey =
-    | "series"
-    | "model"
-    | "title"
-    | "episodes"
-    | "release"
-    | "language"
-    | "category"
-    | "no";
+    "series" | "model" | "title" | "episodes" | "release" | "language" | "category" | "no";
 export type DraftStatus = "clean" | "changed" | "new" | "deleted";
 
 export type TableRow = {

@@ -34,6 +34,7 @@ import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
 import { useAssignNextEpisode } from "./hooks/useAssignNextEpisode";
 import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
+import { withBase } from "../../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -201,6 +202,7 @@ export const TonieCard: React.FC<{
         selectedSource,
         overlay,
     });
+
     const { tooltipInfoByModel } = useTooltipInfoByModel({
         isEditModalOpen,
         selectedModel,
@@ -426,7 +428,8 @@ export const TonieCard: React.FC<{
                 onClick={() =>
                     handlePlayPauseClick(
                         tonieCard.valid
-                            ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl
+                            ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                  withBase(tonieCard.audioUrl)
                             : tonieCard.source,
                     )
                 }

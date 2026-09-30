@@ -524,8 +524,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             // shows correct data without any draft merge. User opens edit via card click.
         } catch (error) {
             const maybeErrorFields = (error as any)?.errorFields as
-                | Array<{ errors?: string[] }>
-                | undefined;
+                Array<{ errors?: string[] }> | undefined;
             if (Array.isArray(maybeErrorFields) && maybeErrorFields.length > 0) {
                 const issues = maybeErrorFields
                     .flatMap((item) => item.errors || [])

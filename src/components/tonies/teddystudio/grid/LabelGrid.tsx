@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { CircleText } from "../elements/CircleText";
 import { buildEffectiveSettings, LabelOverridesById } from "../types/labelOverrides";
 import { getContrastTextColor, mmToPx } from "../../../../utils/helper";
+import { withBase } from "../../../../utils/basePath";
 
 const { Paragraph } = Typography;
 
@@ -162,7 +163,7 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
                                 <div className="labelImageBleed">
                                     <img
                                         className="labelImage"
-                                        src={dataset.pic}
+                                        src={withBase(dataset.pic)}
                                         alt=""
                                         style={{
                                             position: "absolute",

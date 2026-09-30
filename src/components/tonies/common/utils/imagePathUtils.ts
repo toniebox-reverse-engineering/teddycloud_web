@@ -1,3 +1,5 @@
+import { withBase } from "../../../../utils/basePath";
+
 /**
  * Shared utilities for image path handling in tonies components.
  * Works with all tonie_json settings: cache_images, cache_preload.
@@ -19,7 +21,7 @@ export const toImageSrc = (url?: string): string => {
         (typeof import.meta !== "undefined" &&
             (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
         "";
-    return raw.startsWith("/") ? `${base.replace(/\/$/, "")}${raw}` : raw;
+    return raw.startsWith("/") ? `${base.replace(/\/$/, "")}${withBase(raw)}` : raw;
 };
 
 export const toCustomImgWebPath = (path: string, fileName: string): string => {
@@ -34,8 +36,8 @@ export const toPreviewableImageUrl = (value?: string): string => {
     const raw = (value || "").trim();
     if (!raw) return "";
     if (/^(https?:\/\/|data:|blob:)/i.test(raw)) return raw;
-    if (raw.startsWith("/")) return raw;
-    if (raw.startsWith("custom_img/")) return `/${raw}`;
+    if (raw.startsWith("/")) return withBase(raw);
+    if (raw.startsWith("custom_img/")) return withBase(`/${raw}`);
     const normalized = normalizeDirPath(raw);
     if (!normalized) return "";
     const encoded = normalized
@@ -43,5 +45,5 @@ export const toPreviewableImageUrl = (value?: string): string => {
         .filter(Boolean)
         .map((segment) => encodeURIComponent(segment))
         .join("/");
-    return `/custom_img/${encoded}`;
+    return withBase(`/custom_img/${encoded}`);
 };

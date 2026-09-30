@@ -29,6 +29,7 @@ import { SettingsModal } from "./modals/SettingsModal";
 import { DeleteModal } from "./modals/DeleteModal";
 import { useTriggerWriteConfig } from "./hooks/useTriggerWriteConfig";
 import { canHover } from "../../../utils/browser/browserUtils";
+import { withBase } from "../../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -160,7 +161,7 @@ export const TonieboxCard: React.FC<{
         if (selectedImage) {
             setBoxImage(
                 <img
-                    src={selectedImage.img_src}
+                    src={withBase(selectedImage.img_src)}
                     alt=""
                     style={{
                         ...getCroppedImageStyle(id),
@@ -214,7 +215,7 @@ export const TonieboxCard: React.FC<{
                     }
                 >
                     <img
-                        src={tonie[0].tonieInfo.picture}
+                        src={withBase(tonie[0].tonieInfo.picture)}
                         alt="Tonie"
                         style={{
                             position: "absolute",

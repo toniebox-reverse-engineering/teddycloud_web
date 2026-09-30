@@ -610,7 +610,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Response> {
         const response = await this.apiPostTeddyCloudRaw(
-            `/api/fileSetListened?path=${path}&special=${special}${overlay ? "&overlay=" + overlay : ""}`,
+            `/api/fileSetListened?path=${encodeURIComponent(path)}&special=${encodeURIComponent(special)}${overlay ? "&overlay=" + encodeURIComponent(overlay) : ""}`,
             "listened=" + listened,
             undefined,
             initOverrides,
@@ -690,7 +690,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<Response> {
         try {
             // To Do: Replace fetch with request
-            const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
+            const response = await fetch(this.configuration.basePath + path, {
                 method: "POST",
                 body: formData,
             });

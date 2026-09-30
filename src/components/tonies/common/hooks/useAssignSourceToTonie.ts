@@ -9,8 +9,16 @@ const api = new TeddyCloudApi(defaultAPIConfig());
  * useTonieCardSaveFlow.handleSourceSave (source + nocloud + live follow-up).
  */
 export const useAssignSourceToTonie = () => {
-    const assignSourceToTonie = async (tonieCard: TonieCardProps, path: string, overlay: string) => {
-        await api.apiPostTeddyCloudContentJson(tonieCard.ruid, "source=" + encodeURIComponent(path), overlay);
+    const assignSourceToTonie = async (
+        tonieCard: TonieCardProps,
+        path: string,
+        overlay: string,
+    ) => {
+        await api.apiPostTeddyCloudContentJson(
+            tonieCard.ruid,
+            "source=" + encodeURIComponent(path),
+            overlay,
+        );
 
         if (!tonieCard.nocloud) {
             await api.apiPostTeddyCloudContentJson(tonieCard.ruid, "nocloud=true", overlay);

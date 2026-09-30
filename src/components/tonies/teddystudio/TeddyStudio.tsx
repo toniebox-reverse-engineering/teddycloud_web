@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Collapse, Divider, Typography } from "antd";
+import { Alert, Button, Collapse, Divider, Typography } from "antd";
 import { ClearOutlined, PrinterOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
@@ -151,7 +151,6 @@ export const TeddyStudio: React.FC = () => {
         <>
             <h1>{t("tonies.teddystudio.title")}</h1>
             <Paragraph>{t("tonies.teddystudio.intro")}</Paragraph>
-
             <div
                 style={{
                     display: "flex",
@@ -182,20 +181,17 @@ export const TeddyStudio: React.FC = () => {
                 onClose={() => setBulkAddOpen(false)}
                 onConfirm={(datasets) => addResults(datasets)}
             />
-
             <CustomImages
                 customItems={customItems}
                 onAddImage={addCustomImage}
                 onOpenImageManager={() => setImageManagerOpen(true)}
             />
-
             <SelectImageModal
                 open={imageManagerOpen}
                 onClose={() => setImageManagerOpen(false)}
                 onSelectImage={(path) => addCustomImageByPath(path)}
                 allowMultiple
             />
-
             <Collapse
                 className="settingsPanel"
                 bordered={false}
@@ -219,9 +215,7 @@ export const TeddyStudio: React.FC = () => {
                     },
                 ]}
             />
-
             <Divider>{t("tonies.teddystudio.printSheet")}</Divider>
-
             {mergedResults.length > 0 ? (
                 <Paragraph
                     style={{
@@ -261,7 +255,12 @@ export const TeddyStudio: React.FC = () => {
             ) : (
                 <Paragraph style={{ marginBottom: 16 }}>{t("tonies.teddystudio.empty")}</Paragraph>
             )}
-
+            <Alert
+                type="info"
+                closable
+                showIcon
+                title={t("tonies.teddystudio.printMarginNotification")}
+            />
             <LabelGrid
                 mergedResults={mergedResults}
                 settings={settings}
@@ -270,7 +269,6 @@ export const TeddyStudio: React.FC = () => {
                 labelOverridesById={labelOverridesById}
                 onClearLocalOverrides={(id) => clearLabelOverride(id)}
             />
-
             <EditLabelModal
                 open={editIndex !== null}
                 item={currentItem}
