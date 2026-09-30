@@ -15,19 +15,30 @@ interface UseToggleListenedParams {
     setRebuildList: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function useToggleListened({ path, special, overlay, setRebuildList }: UseToggleListenedParams) {
+export function useToggleListened({
+    path,
+    special,
+    overlay,
+    setRebuildList,
+}: UseToggleListenedParams) {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
 
     const toggleListened = async (record: Record) => {
         try {
-            await api.apiPostFileSetListened(path + "/" + record.name, special, !record.listened, overlay);
+            await api.apiPostFileSetListened(
+                path + "/" + record.name,
+                special,
+                !record.listened,
+                overlay,
+            );
             setRebuildList((prev) => !prev);
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,
                 t("fileBrowser.messages.toggleListenedFailed"),
-                t("fileBrowser.messages.toggleListenedFailedDetails", { file: record.name }) + error,
+                t("fileBrowser.messages.toggleListenedFailedDetails", { file: record.name }) +
+                    error,
                 t("fileBrowser.title"),
             );
         }

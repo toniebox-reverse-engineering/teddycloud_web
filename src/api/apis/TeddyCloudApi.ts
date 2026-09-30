@@ -606,7 +606,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         path: string,
         special: string,
         listened: boolean,
-        overlay?: String,
+        overlay?: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Response> {
         const response = await this.apiPostTeddyCloudRaw(

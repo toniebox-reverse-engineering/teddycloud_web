@@ -66,7 +66,9 @@ export const useAssignNextEpisode = ({
                     .filter((file) => !file.isDir)
                     .sort((a, b) => a.name.localeCompare(b.name));
 
-                const currentIndex = siblingFiles.findIndex((file) => file.name === currentFileName);
+                const currentIndex = siblingFiles.findIndex(
+                    (file) => file.name === currentFileName,
+                );
                 const candidates =
                     currentIndex >= 0 ? siblingFiles.slice(currentIndex + 1) : siblingFiles;
 
