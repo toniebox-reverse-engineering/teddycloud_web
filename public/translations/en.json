@@ -1842,12 +1842,20 @@
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
         "assignNextEpisode": {
-            "action": "Assign next episode",
+            "action": "Assign next episode \"{{file}}\"",
             "failedDetails": "Could not assign \"{{episode}}\": ",
             "failedMessage": "Assigning next episode failed!",
-            "noneLeft": "No unlistened episodes left in this folder",
+            "noneLeft": "No unlistened episodes left in this folder.",
             "successDetails": "Assigned \"{{episode}}\" as next episode!",
             "successMessage": "Next episode assigned!"
+        },
+        "assignPrevEpisode": {
+            "action": "Assign previous episode \"{{file}}\"",
+            "failedDetails": "Could not assign \"{{episode}}\": ",
+            "failedMessage": "Assigning previous episode failed!",
+            "noneLeft": "No previous episodes left in this folder.",
+            "successDetails": "Assigned \"{{episode}}\" as previous episode!",
+            "successMessage": "Previous episode assigned!"
         },
         "cancel": "Cancel",
         "closeAudioPlayer": "Close player",

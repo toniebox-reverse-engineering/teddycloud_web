@@ -1842,12 +1842,20 @@
         "alternativeSource": "Este Tonie {{originalTonie}} tiene asignado el contenido {{assignedContent}}!",
         "alternativeSourceUnknown": "¡Este Tonie {{originalTonie}} tiene asignado contenido alternativo!",
         "assignNextEpisode": {
-            "action": "Asignar siguiente episodio",
+            "action": "Asignar el siguiente episodio \"{{file}}\"",
             "failedDetails": "No se pudo asignar \"{{episode}}\": ",
             "failedMessage": "¡Error al asignar el siguiente episodio!",
-            "noneLeft": "No quedan episodios sin escuchar en esta carpeta",
-            "successDetails": "¡\"{{episode}}\" asignado como siguiente episodio!",
+            "noneLeft": "No quedan episodios sin escuchar en esta carpeta.",
+            "successDetails": "¡\"{{episode}}\" se asignó como siguiente episodio!",
             "successMessage": "¡Siguiente episodio asignado!"
+        },
+        "assignPrevEpisode": {
+            "action": "Asignar el episodio anterior \"{{file}}\"",
+            "failedDetails": "No se pudo asignar \"{{episode}}\": ",
+            "failedMessage": "¡Error al asignar el episodio anterior!",
+            "noneLeft": "No hay episodios anteriores disponibles en esta carpeta.",
+            "successDetails": "¡\"{{episode}}\" se asignó como episodio anterior!",
+            "successMessage": "¡Episodio anterior asignado!"
         },
         "cancel": "Cancelar",
         "closeAudioPlayer": "Cerrar reproductor",

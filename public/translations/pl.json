@@ -1837,6 +1837,22 @@
         },
         "alternativeSource": "Do tego Tonie {{originalTonie}} przypisana jest zawartość {{assignedContent}}!",
         "alternativeSourceUnknown": "Do tego Tonie {{originalTonie}} przypisana jest alternatywna zawartość!",
+        "assignNextEpisode": {
+            "action": "Przypisz następny odcinek \"{{file}}\"",
+            "failedDetails": "Nie udało się przypisać \"{{episode}}\": ",
+            "failedMessage": "Nie udało się przypisać następnego odcinka!",
+            "noneLeft": "W tym folderze nie ma już nieodsłuchanych odcinków.",
+            "successDetails": "Przypisano \"{{episode}}\" jako następny odcinek!",
+            "successMessage": "Przypisano następny odcinek!"
+        },
+        "assignPrevEpisode": {
+            "action": "Przypisz poprzedni odcinek \"{{file}}\"",
+            "failedDetails": "Nie udało się przypisać \"{{episode}}\": ",
+            "failedMessage": "Nie udało się przypisać poprzedniego odcinka!",
+            "noneLeft": "W tym folderze nie ma już nieodsłuchanych odcinków.",
+            "successDetails": "Przypisano \"{{episode}}\" jako poprzedni odcinek!",
+            "successMessage": "Przypisano poprzedni odcinek!"
+        },
         "cancel": "Anuluj",
         "closeAudioPlayer": "Zamknij odtwarzacz",
         "closeAudioPlayerPopover": "Zamknięcie zatrzymuje odtwarzanie!",

@@ -46,7 +46,8 @@ If you don't need the ESP32 Box flashing section working, you can adapt the `pac
         "build": "tsc && vite build",
         "preview": "vite preview",
         "format": "prettier . --write",
-        "format:check": "prettier . --check"
+        "format:check": "prettier . --check",
+        "check:translations": "node scripts/check-translations.mjs"
     },
 ```
 
@@ -58,7 +59,8 @@ to
         "build": "tsc && vite build",
         "preview": "vite preview",
         "format": "prettier . --write",
-        "format:check": "prettier . --check"
+        "format:check": "prettier . --check",
+        "check:translations": "node scripts/check-translations.mjs"
      },
 ```
 

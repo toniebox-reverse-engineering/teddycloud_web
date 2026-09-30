@@ -8,7 +8,6 @@ import {
     InfoCircleOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
-    StepForwardOutlined,
     StopOutlined,
 } from "@ant-design/icons";
 
@@ -32,7 +31,6 @@ import { useResolvedModelAudio } from "./hooks/useResolvedModelAudio";
 import { useTooltipInfoByModel } from "./hooks/useTooltipInfoByModel";
 import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
-import { useAssignNextEpisode } from "./hooks/useAssignNextEpisode";
 import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
 import { withBase } from "../../../utils/basePath";
 
@@ -218,13 +216,6 @@ export const TonieCard: React.FC<{
         addNotification,
         addLoadingNotification,
         closeLoadingNotification,
-        fetchUpdatedTonieCard,
-    });
-
-    const { nextEpisodeAvailable, handleAssignNextEpisode } = useAssignNextEpisode({
-        tonieCard,
-        overlay,
-        enabled: !readOnly,
         fetchUpdatedTonieCard,
     });
 

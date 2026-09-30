@@ -343,10 +343,10 @@
             "placeholder": "Entrez le nom du dossier"
         },
         "customJsonSnippetModal": {
-            "allFiles": "Affiche l’extrait de tous les fichiers TAF avec des données d’en-tête valides.",
+            "allFiles": "Affiche l'extrait de tous les fichiers TAF avec des données d'en-tête valides.",
             "noValidHeaders": "Aucun en-tête TAF valide trouvé.",
             "ok": "OK",
-            "selectedFiles": "Affiche uniquement l’extrait des fichiers TAF sélectionnés.",
+            "selectedFiles": "Affiche uniquement l'extrait des fichiers TAF sélectionnés.",
             "title": "Extrait tonies.custom.json"
         },
         "date": "Date",
@@ -1282,7 +1282,7 @@
             "setupTeddyCloudText": "Félicitations ! En atteignant cette page, vous avez réussi à configurer TeddyCloud !",
             "title": "Ajoutez votre Toniebox à TeddyCloud",
             "UARTHint": {
-                "ackUARTHint": "J’ai réglé la tension correcte (3,3 V) et installé le dernier pilote requis.",
+                "ackUARTHint": "J'ai réglé la tension correcte (3,3 V) et installé le dernier pilote requis.",
                 "description": "Avant de continuer, vérifie bien les points suivants :",
                 "imageAlt1": "Exemple de cavalier 1",
                 "imageAlt2": "Exemple de cavalier 2",
@@ -1842,12 +1842,20 @@
         "alternativeSource": "Cette Tonie {{originalTonie}} est assignée à un contenu {{assignedContent}} !",
         "alternativeSourceUnknown": "Cette Tonie {{originalTonie}} est assignée à un contenu alternatif  !",
         "assignNextEpisode": {
-            "action": "Assigner l'épisode suivant",
-            "failedDetails": "Impossible d'assigner \"{{episode}}\" : ",
-            "failedMessage": "Échec de l'assignation de l'épisode suivant !",
-            "noneLeft": "Aucun épisode non écouté restant dans ce dossier",
-            "successDetails": "\"{{episode}}\" assigné comme épisode suivant !",
+            "action": "Assigner l'épisode suivante \"{{file}}\"",
+            "failedDetails": "Impossible assigner \"{{episode}}\" : ",
+            "failedMessage": "Échec de assignation de l'épisode suivant !",
+            "noneLeft": "Aucun épisode non écouté restant dans ce dossier.",
+            "successDetails": "\"{{episode}}\" a été assigné comme épisode suivant !",
             "successMessage": "Épisode suivant assigné !"
+        },
+        "assignPrevEpisode": {
+            "action": "Assigner l'épisode précédent \"{{file}}\"",
+            "failedDetails": "Impossible assigner \"{{episode}}\" : ",
+            "failedMessage": "Échec de l'attribution de l'épisode précédent !",
+            "noneLeft": "Aucun épisode précédent restant dans ce dossier.",
+            "successDetails": "\"{{episode}}\" a été assigné comme épisode précédent !",
+            "successMessage": "Épisode précédent assigné !"
         },
         "cancel": "Annuler",
         "closeAudioPlayer": "Fermer le lecteur audio",
@@ -2367,7 +2375,7 @@
             "paperSize": "Format du papier",
             "placeholder": "Saisis un terme de recherche !",
             "preview": "Aperçu étiquette",
-            "printMarginNotification": "Les marges d’impression CSS ne sont prises en charge de manière fiable que dans Chrome. Utilise Chrome pour garantir une impression correcte des étiquettes.",
+            "printMarginNotification": "Les marges d'impression CSS ne sont prises en charge de manière fiable que dans Chrome. Utilise Chrome pour garantir une impression correcte des étiquettes.",
             "printMode": "Mode",
             "printModeImageAndText": "Image + Texte",
             "printModeImageAndTextTooltip": "Imprime les deux côtés de ta pièce Traveltonie : image d'un côté, titre et infos de l'épisode de l'autre",
