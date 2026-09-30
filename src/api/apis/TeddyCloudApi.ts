@@ -593,6 +593,35 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
+     * @description Set/unset the "listened" flag for an arbitrary library (or other special-root) file
+     *
+     * @param path path of the file, relative to the special root (optional)
+     * @param special special root the path is relative to, e.g. "library" (optional)
+     * @param listened target value of the "listened" flag
+     * @param overlay overlay (optional)
+     * @param initOverrides initOverrides (optional)
+     * @returns
+     */
+    async apiPostFileSetListened(
+        path: string,
+        special: string,
+        listened: boolean,
+        overlay?: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Response> {
+        const response = await this.apiPostTeddyCloudRaw(
+            `/api/fileSetListened?path=${encodeURIComponent(path)}&special=${encodeURIComponent(special)}${overlay ? "&overlay=" + encodeURIComponent(overlay) : ""}`,
+            "listened=" + listened,
+            undefined,
+            initOverrides,
+        );
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response;
+    }
+
+    /**
      * @description Post simple data to endpoint path of TeddyCloud api
      *
      * @param apiPath endpoint path of API
@@ -661,7 +690,7 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     ): Promise<Response> {
         try {
             // To Do: Replace fetch with request
-            const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
+            const response = await fetch(this.configuration.basePath + path, {
                 method: "POST",
                 body: formData,
             });

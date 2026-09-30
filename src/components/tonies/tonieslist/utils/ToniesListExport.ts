@@ -1,3 +1,5 @@
+import { withBase } from "../../../../utils/basePath";
+
 function getDateTimePrefix() {
     const now = new Date();
     const yyyy = now.getFullYear();
@@ -11,7 +13,7 @@ function getDateTimePrefix() {
 
 function toAbsoluteUrl(url: string): string {
     try {
-        return new URL(url, window.location.origin).href;
+        return new URL(withBase(url), window.location.origin).href;
     } catch {
         return url;
     }

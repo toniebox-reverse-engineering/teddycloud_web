@@ -2,6 +2,7 @@ import { Card, Typography, Badge, Tooltip, theme } from "antd";
 import { DesktopOutlined, HomeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { canHover } from "../../../utils/browser/browserUtils";
+import { withBase } from "../../../utils/basePath";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -121,7 +122,7 @@ export const PluginCard: React.FC<PluginCardProps> = ({
                     borderRadius: 0,
                 }}
                 alt={`${plugin.pluginName} preview`}
-                src={`/plugins/${plugin.pluginId}/preview.png`}
+                src={withBase(`/plugins/${plugin.pluginId}/preview.png`)}
                 onError={(e) => {
                     e.currentTarget.style.display = "none";
                 }}

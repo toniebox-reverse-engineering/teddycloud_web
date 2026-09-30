@@ -9,6 +9,7 @@
 - gui: updated packages to latest version
 - gui: replaced deprecated andt list with antd listy
 - gui: added missing language entries
+- gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)
 
 ### Commits
 
@@ -58,6 +59,8 @@
 - gui: Added noopener noreferrer to external links [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308)
 - gui: Added tonies.custom.json snippet modal for getting skeleton of tonies.custom.json for all or selected tafs in current folder
 - gui: Fixed broken load Flashfile and resetBox path in esp32 flashing
+- Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
+- gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
 
 ### Commits
 

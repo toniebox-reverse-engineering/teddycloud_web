@@ -20,7 +20,9 @@ export default defineConfig(({ command, mode }) => {
         : "http://teddycloud.local";
 
     return {
-        base: "/web",
+        // Production builds use a relative base so the bundle works under any URL prefix
+        // (index.html injects a matching <base href> at runtime). The dev server keeps /web.
+        base: command === "build" ? "./" : "/web",
         plugins: [
             react(),
 
