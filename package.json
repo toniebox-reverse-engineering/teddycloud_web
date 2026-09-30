@@ -39,7 +39,9 @@
         "@types/react-syntax-highlighter": "^15.5.13",
         "concurrently": "^10.0.5",
         "cross-env": "^10.1.0",
-        "prettier": "^3.9.9"
+        "jsdom": "^30.1.1",
+        "prettier": "^3.9.9",
+        "vitest": "^5.0.3"
     },
     "scripts": {
         "start-http": "cross-env PORT=3000 vite",
@@ -49,7 +51,8 @@
         "preview": "vite preview",
         "format": "prettier . --write",
         "format:check": "prettier . --check",
-        "check:translations": "node scripts/check-translations.mjs"
+        "check:translations": "node scripts/check-translations.mjs",
+        "test": "vitest run"
     },
     "eslintConfig": {
         "extends": [
