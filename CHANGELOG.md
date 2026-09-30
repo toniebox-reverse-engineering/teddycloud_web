@@ -6,6 +6,7 @@
 - gui: Added Polish (pl) language support [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325)
 - gui: Added "assign to Tonie" action directly from the library file browser [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240)
 - gui: Refactored language functionality to simplify adding and maintaining additional languages. New languages can now be added without requiring code changes. Simply translate an existing language file, save it as [languagecode].json (e.g. en.json) in the public/translations folder, and rebuild the frontend. The new language will then be detected and made available automatically.
+- gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)
 
 ### Commits
 
