@@ -59,6 +59,7 @@ import MatrixRain from "./styles/matrix/matrixRain";
 
 import { detectColorScheme } from "./utils/browser/browserUtils";
 import { StyledThemeProvider } from "./provider/StyledThemeProvider";
+import { withBase } from "./utils/basePath";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -157,7 +158,7 @@ function App() {
                 <TeddyCloudProvider>
                     <div className="App">
                         <Layout style={{ minHeight: "100vh" }}>
-                            <Router basename={import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}>
+                            <Router basename={withBase("/web")}>
                                 <StyledHeader themeSwitch={themeSwitchIcon} themeMode={themeMode} />
                                 <AudioProvider>
                                     <Layout>

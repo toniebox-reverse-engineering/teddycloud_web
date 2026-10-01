@@ -17,6 +17,7 @@ import { toImageSrc } from "../utils/imagePathUtils";
 import { TafDownloadPanel, buildTafDownloadTracks } from "./TafTrackDownloadModal";
 import { toSameOriginUrl } from "../../../../utils/downloads/tafDownload";
 import { sanitizeDownloadName } from "../../../../utils/files/sanitizeDownloadName";
+import { withBase } from "../../../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -134,7 +135,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         (!("exists" in tonieCardOrTAFRecord) || tonieCardOrTAFRecord.exists);
     const downloadContentUrl =
         canDownloadAudio && "audioUrl" in tonieCardOrTAFRecord
-            ? toSameOriginUrl(tonieCardOrTAFRecord.audioUrl)
+            ? withBase(toSameOriginUrl(tonieCardOrTAFRecord.audioUrl))
             : "";
 
     const trackSecondsMatchSourceTracks = (

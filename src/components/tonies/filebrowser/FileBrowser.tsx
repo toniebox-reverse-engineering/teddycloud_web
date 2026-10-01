@@ -42,6 +42,7 @@ import { createColumns } from "./helper/Columns";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
+import { useToggleListened } from "./hooks/useToggleListened";
 import DeleteFilesModal from "./modals/DeleteFilesModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
 import JsonViewerModal from "./modals/JsonViewerModal";
@@ -53,6 +54,7 @@ import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
+import { withBase } from "../../../utils/basePath";
 
 const { Paragraph } = Typography;
 
@@ -364,6 +366,13 @@ export const FileBrowser: React.FC<{
         handleFileDownload(record, baseApiUrl, downloadPath, downloadSpecial, downloadOverlay);
     };
 
+    const { toggleListened } = useToggleListened({
+        path,
+        special,
+        overlay,
+        setRebuildList,
+    });
+
     // table selection / classes
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
@@ -414,6 +423,7 @@ export const FileBrowser: React.FC<{
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        toggleListened,
         showAssignTonieDialog,
         buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
         onImagePreviewClick:
@@ -588,7 +598,7 @@ export const FileBrowser: React.FC<{
                         tafDownloadRecord.tonieInfo?.tracks,
                         tafDownloadRecord.tafHeader?.trackSeconds,
                     )}
-                    contentUrl={buildContentUrl(tafDownloadRecord.name, { ogg: true })}
+                    contentUrl={withBase(buildContentUrl(tafDownloadRecord.name, { ogg: true }))}
                     baseFilename={sanitizeDownloadName(
                         tafDownloadRecord.tonieInfo?.series || tafDownloadRecord.tonieInfo?.episode
                             ? `${tafDownloadRecord.tonieInfo.series || ""}${
@@ -820,7 +830,7 @@ export const FileBrowser: React.FC<{
                                     record.name.toLowerCase().endsWith(ext),
                                 )
                             ) {
-                                const contentPath = buildContentUrl(record.name);
+                                const contentPath = withBase(buildContentUrl(record.name));
                                 const baseApiUrl =
                                     (typeof import.meta !== "undefined" &&
                                         (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||

@@ -12,6 +12,7 @@ import BreadcrumbWrapper, {
 } from "../../components/common/StyledComponents";
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { Link } from "react-router-dom";
+import { withBase } from "../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -122,7 +123,7 @@ export const ContributionToniesJsonPage = () => {
                                                             }}
                                                         >
                                                             <img
-                                                                src={tonieJsonEntry.pic}
+                                                                src={withBase(tonieJsonEntry.pic)}
                                                                 alt=""
                                                                 style={{
                                                                     width: "100px",
