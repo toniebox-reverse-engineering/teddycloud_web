@@ -56,9 +56,10 @@ interface EditTonieModalProps {
     // File selection
     onOpenFileSelectModal: () => void;
 
-    // Set audio from model (when source differs from model and model audio exists in library)
+    // Set audio from model: library path of the model audio, once located on demand
     modelAudioPath?: string | null;
-    modelAudioHasMapping?: boolean;
+    onSetAudioFromModel?: () => void;
+    isLocatingModelAudio?: boolean;
 
     // Display text for selected model (e.g. "[01-0013] Sample Series - Episode Title")
     modelDisplayText?: string;
@@ -77,7 +78,8 @@ interface EditTonieModalProps {
     onModelSelectResult?: (result: { value: string; selectionText: string }) => void;
     modelInfoTooltip?: React.ReactNode;
     audioInfoTooltip?: React.ReactNode;
-    audioModelForSet?: string;
+    // Model of the selected audio (resolved by the backend)
+    audioModel?: string;
     onSetModelFromAudio?: () => void;
 }
 
@@ -103,7 +105,8 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
     hasPendingChanges,
     onOpenFileSelectModal,
     modelAudioPath,
-    modelAudioHasMapping = false,
+    onSetAudioFromModel,
+    isLocatingModelAudio = false,
     modelDisplayText = "",
     onCreateNewModel,
     onEditModel,
@@ -112,7 +115,7 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
     onModelSelectResult,
     modelInfoTooltip,
     audioInfoTooltip,
-    audioModelForSet,
+    audioModel,
     onSetModelFromAudio,
 }) => {
     const { t } = useTranslation();
@@ -143,22 +146,17 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
             .toLowerCase();
     const isSourceUnchanged = selectedSource === (originalSource || "");
     const isModelUnchanged = selectedModel === (originalModel || "");
+    const normalizedAudioModel = (audioModel || "").trim();
     const sourceMatchesModelAudio =
-        Boolean(modelAudioPath) && normalized(selectedSource) === normalized(modelAudioPath);
+        (Boolean(modelAudioPath) && normalized(selectedSource) === normalized(modelAudioPath)) ||
+        (Boolean(normalizedAudioModel) &&
+            toModelKey(selectedModel) === toModelKey(normalizedAudioModel));
     const showSyncActions = !sourceMatchesModelAudio;
-    const normalizedAudioModelForSet = (audioModelForSet || "").trim();
-    // Show when model has a tonies.json mapping and source ≠ model audio; enable once library path resolved.
+    // The library is only searched for the model audio when the button is clicked.
     const showSetAudioFromModelAction =
-        showSyncActions && Boolean(selectedModel.trim()) && Boolean(modelAudioHasMapping);
+        showSyncActions && Boolean(selectedModel.trim()) && Boolean(onSetAudioFromModel);
     const showSetModelFromAudioAction =
-        showSyncActions &&
-        Boolean(normalizedAudioModelForSet) &&
-        Boolean(onSetModelFromAudio) &&
-        toModelKey(selectedModel) !== toModelKey(normalizedAudioModelForSet);
-    const setAudioFromModelDisabled = showSetAudioFromModelAction && !modelAudioPath;
-    const setAudioFromModelTooltip = !modelAudioPath
-        ? t("tonies.editModal.setAudioFromModelUnavailableInLibrary")
-        : undefined;
+        showSyncActions && Boolean(normalizedAudioModel) && Boolean(onSetModelFromAudio);
 
     return (
         <Modal
@@ -248,11 +246,14 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             <Button
                                 type="default"
                                 icon={<SwapOutlined />}
-                                disabled={setAudioFromModelDisabled}
+                                loading={isLocatingModelAudio}
                                 onClick={() => {
-                                    if (!modelAudioPath) return;
-                                    onSelectedSourceChange(modelAudioPath);
-                                    setInputValidationSource({ validateStatus: "", help: "" });
+                                    if (modelAudioPath) {
+                                        onSelectedSourceChange(modelAudioPath);
+                                        setInputValidationSource({ validateStatus: "", help: "" });
+                                        return;
+                                    }
+                                    onSetAudioFromModel?.();
                                 }}
                             >
                                 {t("tonies.editModal.setAudioFromModel")}
