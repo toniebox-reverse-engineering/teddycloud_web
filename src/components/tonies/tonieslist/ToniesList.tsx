@@ -1,4 +1,4 @@
-import { Button, Dropdown, Empty, Flex, Grid, Space, Tooltip } from "antd";
+import { Button, Dropdown, Empty, Flex, Grid, Segmented, Space, Tooltip } from "antd";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -24,10 +24,12 @@ import {
 import { ToniesFilterPanel } from "./filterpanel/ToniesFilterPanel";
 import ToniesPagination from "./pagination/ToniesPagination";
 import { showHideTonieConfirm } from "./modals/ToniesHideConfirmModal";
-import { EllipsisOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, EllipsisOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
+
+type ToniesViewMode = "grid" | "table";
 
 export const ToniesList: React.FC<{
     tonieCards: TonieCardProps[];
@@ -66,6 +68,18 @@ export const ToniesList: React.FC<{
             return pageSize;
         }
         return 24;
+    });
+    const [viewMode, setViewMode] = useState<ToniesViewMode>(() => {
+        try {
+            const storedState = localStorage.getItem(STORAGE_KEY);
+            if (storedState) {
+                const { viewMode } = JSON.parse(storedState);
+                if (viewMode === "grid" || viewMode === "table") return viewMode;
+            }
+        } catch {
+            // ignore invalid stored state
+        }
+        return "grid";
     });
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [paginationEnabled, setPaginationEnabled] = useState(true);
@@ -260,9 +274,10 @@ export const ToniesList: React.FC<{
             pageSize,
             paginationEnabled,
             showAll,
+            viewMode,
         });
         localStorage.setItem(STORAGE_KEY, stateToStore);
-    }, [pageSize, paginationEnabled, showAll]);
+    }, [pageSize, paginationEnabled, showAll, viewMode]);
 
     useEffect(() => {
         handlePageSizeChange(1, pageSize);
@@ -569,6 +584,23 @@ export const ToniesList: React.FC<{
                         )}
                     </div>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                        <Segmented<ToniesViewMode>
+                            size="small"
+                            value={viewMode}
+                            onChange={setViewMode}
+                            options={[
+                                {
+                                    value: "grid",
+                                    icon: <AppstoreOutlined />,
+                                    title: t("tonies.tonies.viewGrid"),
+                                },
+                                {
+                                    value: "table",
+                                    icon: <UnorderedListOutlined />,
+                                    title: t("tonies.tonies.viewTable"),
+                                },
+                            ]}
+                        />
                         <Tooltip
                             open={!canHover ? false : undefined}
                             title={
@@ -687,6 +719,61 @@ export const ToniesList: React.FC<{
 
     const currentPageData = getCurrentPageData();
 
+    // read-only lists (e.g. home page) have no switch, so they always use the grid
+    const effectiveViewMode: ToniesViewMode = readOnly ? "grid" : viewMode;
+
+    const renderTonieCard = (tonie: TonieCardProps, variant: "card" | "row") => (
+        <TonieCard
+            tonieCard={tonie}
+            lastRUIDs={lastTonieboxRUIDs}
+            overlay={overlay}
+            readOnly={readOnly}
+            defaultLanguage={defaultLanguage}
+            showSourceInfo={showSourceInfo}
+            onHide={handleHideTonieCard}
+            onUpdate={handleUpdate}
+            selectionMode={selectionMode}
+            selected={selectedTonies.includes(tonie.ruid)}
+            onToggleSelect={toggleSelectTonie}
+            variant={variant}
+        />
+    );
+
+    const gridView = (
+        <Flex wrap gap={16}>
+            {currentPageData.map((tonie) => (
+                <div
+                    key={tonie.ruid}
+                    id={tonie.ruid}
+                    style={{
+                        flex: `0 0 calc(${100 / columns}% - 16px)`,
+                        maxWidth: `calc(${100 / columns}% - 16px)`,
+                    }}
+                >
+                    {renderTonieCard(tonie, "card")}
+                </div>
+            ))}
+        </Flex>
+    );
+
+    const tableView = (
+        <div className="tonies-table">
+            <div className="tonies-table-row tonies-table-header">
+                {selectionMode ? <div className="tonies-table-cell-select" /> : null}
+                <div className="tonies-table-cell-image" />
+                <div className="tonies-table-cell-title">{t("tonies.tonies.tableTonie")}</div>
+                <div className="tonies-table-cell-uid">{t("tonies.tonies.tableUid")}</div>
+                <div className="tonies-table-cell-lang" />
+                <div className="tonies-table-cell-actions">{t("tonies.tonies.tableActions")}</div>
+            </div>
+            {currentPageData.map((tonie) => (
+                <div key={tonie.ruid} id={tonie.ruid}>
+                    {renderTonieCard(tonie, "row")}
+                </div>
+            ))}
+        </div>
+    );
+
     // ------------------------
     // Render
     // ------------------------
@@ -704,33 +791,10 @@ export const ToniesList: React.FC<{
 
                 {currentPageData.length === 0 ? (
                     <div style={{ textAlign: "center", width: "100%" }}>{noDataTonies}</div>
+                ) : effectiveViewMode === "table" ? (
+                    tableView
                 ) : (
-                    <Flex wrap gap={16}>
-                        {currentPageData.map((tonie) => (
-                            <div
-                                key={tonie.ruid}
-                                id={tonie.ruid}
-                                style={{
-                                    flex: `0 0 calc(${100 / columns}% - 16px)`,
-                                    maxWidth: `calc(${100 / columns}% - 16px)`,
-                                }}
-                            >
-                                <TonieCard
-                                    tonieCard={tonie}
-                                    lastRUIDs={lastTonieboxRUIDs}
-                                    overlay={overlay}
-                                    readOnly={readOnly}
-                                    defaultLanguage={defaultLanguage}
-                                    showSourceInfo={showSourceInfo}
-                                    onHide={handleHideTonieCard}
-                                    onUpdate={handleUpdate}
-                                    selectionMode={selectionMode}
-                                    selected={selectedTonies.includes(tonie.ruid)}
-                                    onToggleSelect={toggleSelectTonie}
-                                />
-                            </div>
-                        ))}
-                    </Flex>
+                    gridView
                 )}
 
                 {showPagination && listPagination}

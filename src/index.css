@@ -226,3 +226,109 @@ body.theme-switching *::after {
         border-bottom-right-radius: 8px !important;
     }
 }
+
+/* Tonies list – compact table view */
+.tonies-table {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tonies-table-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 12px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    min-height: 56px;
+}
+
+.tonies-table-header {
+    min-height: unset;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.tonies-table-header > div {
+    font-family: inherit;
+    font-size: small;
+    font-weight: 600;
+}
+
+.tonies-table-cell-select {
+    flex: 0 0 16px;
+}
+
+.tonies-table-cell-image {
+    flex: 0 0 48px;
+    position: relative;
+}
+
+.tonies-table-cell-image img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    display: block;
+}
+
+.tonies-table-cell-image img.tonies-table-cell-image-source {
+    position: absolute;
+    right: -6px;
+    bottom: -2px;
+    width: auto;
+    height: 50%;
+}
+
+.tonies-table-cell-title {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tonies-table-cell-uid {
+    flex: 0 0 200px;
+    font-family: monospace;
+    font-size: small;
+}
+
+.tonies-table-cell-lang {
+    flex: 0 0 28px;
+}
+
+.tonies-table-cell-actions {
+    flex: 0 0 150px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 14px;
+    font-size: 16px;
+}
+
+.tonies-table-row .tonies-table-cell-actions .anticon {
+    cursor: pointer;
+    color: var(--ant-color-text-description, rgba(0, 0, 0, 0.45));
+    transition: color 0.2s;
+}
+
+.tonies-table-row .tonies-table-cell-actions .anticon:hover {
+    color: var(--ant-color-primary, #1677ff);
+}
+
+@media (max-width: 767px) {
+    .tonies-table-cell-uid {
+        display: none;
+    }
+
+    .tonies-table-row {
+        gap: 8px;
+        padding: 4px 8px;
+    }
+
+    .tonies-table-cell-actions {
+        flex-basis: auto;
+        gap: 10px;
+    }
+}
