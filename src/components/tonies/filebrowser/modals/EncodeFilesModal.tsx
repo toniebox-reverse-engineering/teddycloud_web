@@ -265,7 +265,7 @@ const EncodeFilesModal: React.FC<EncodeFilesModalProps> = ({
                                 disabled={processing}
                                 onClick={sortFileListAlphabetically}
                             >
-                                {t("tonies.encoder.sortAlphabetically")}
+                                {t("tonies.encoder.sortAlphabeticallyLiteral")}
                             </Button>
                         </Space>
                         <Divider />

@@ -92,8 +92,8 @@ export const useTapEditor = ({ currentPath, setRebuildList }: UseTapEditorArgs) 
             } catch (err: any) {
                 addNotification(
                     NotificationTypeEnum.Warning,
-                    t("fileBrowser.tap.messages.uploadFailed"),
-                    t("fileBrowser.tap.messages.uploadFailedDetails", {
+                    t("fileBrowser.tap.messages.savingFailed"),
+                    t("fileBrowser.tap.messages.savingFailedDetails", {
                         file: `${values?.name || "unknown"}.tap`,
                         path: currentPath || "/",
                     }) + ` ${err?.message || ""}`,

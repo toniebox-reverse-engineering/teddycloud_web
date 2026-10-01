@@ -1028,7 +1028,7 @@
         "close": "Close",
         "discard": "Discard changes",
         "errorFetchingFieldValue": "Error fetching field value",
-        "errorFetchingFieldValueDetails": "Error fetching field value for \"{{setting}}\"{{overlay}}:",
+        "errorFetchingFieldValueDetails": "Error fetching field value for \"{{setting}}\" {{overlay}}:",
         "errorFetchingSetting": "Error fetching setting!",
         "errorFetchingSettingDetails": "Error fetching setting \"{{setting}}\": ",
         "errorSettingSettingsLevel": "Error setting Settings level",
@@ -1326,6 +1326,7 @@
             "setupTeddyCloudText": "Congratulations! By reaching this page, you've successfully set up TeddyCloud!",
             "title": "Add your Toniebox to TeddyCloud",
             "UARTHint": {
+                "ackUARTHint": "I have set the correct voltage (3.3 V) and installed the latest required driver.",
                 "description": "Before proceeding, please double-check the following:",
                 "imageAlt1": "Jumper Example 1",
                 "imageAlt2": "Jumper Example 2",
@@ -1527,6 +1528,7 @@
             "certificatesDumpedCAreplacementFlashed": "Certificates dumped and CA replacement flashed",
             "CH341AProgrammer": {
                 "CH341AProgrammer": "Set up CH341A programmer connection",
+                "CH341AProgrammerClampConnection": "CH341A Programmer with SOP8 Clamp connected to the IS25LP032D Flash memory",
                 "CH341Sop8remove": "Trim here until it fits properly.",
                 "flashMemoryDumpText1": "Connect the clamp to the IS25LP032D Flash memory. Ensure the red cable on the clamp aligns with the dot on the chip marking pin 1.",
                 "flashMemoryDumpText2": "If the clamp does not hold, it may be colliding with a nearby black block. Trim more plastic if needed. Do not connect the CH341A yet. Double-check cable positions.",
@@ -1604,8 +1606,8 @@
         "confirmDeleteModal": "Confirm delete",
         "connectESP32Modal": {
             "beware": "Beware!",
-            "connectESP32Text1.1": "Please connect the jumper J100 (Boot) and reset the box to put it into the required UARTmode.",
-            "connectESP32Text1.2": "Connect your 3.3V UART to J103:",
+            "connectESP32Text1_1": "Please connect the jumper J100 (Boot) and reset the box to put it into the required UARTmode.",
+            "connectESP32Text1_2": "Connect your 3.3V UART to J103:",
             "connectESP32Text2": "If you`re unsure in which mode the ESP32 is starting, check the following.",
             "downloadMode": "Download mode",
             "downloadModeText": "LED is off, no sound, Serial output:",
@@ -1778,6 +1780,7 @@
                 "flashCAreplacementText1": "Replace the original CA within your flash dump with esptool.",
                 "flashCAreplacementText2": "Reassamble your Toniebox again. If you already set the TeddyCloud hostname, you can skip the DNS step for the ESP32, if not continue with DNS step for the ESP32.",
                 "flashCAreplacementText3": "Your Toniebox should now be able to connect to your TeddyCloud. Do a freshnesscheck and click on \"Check available Boxes\".",
+                "flashESPtoolScreen": "ESPtool Screen",
                 "followLegacyApproach": "Or use the legacy method (no GUI, command line only).",
                 "hint": "There is a direct support of flashing your ESP32 Toniebox with TeddyCloud available!",
                 "installESPTool": "Install recent ESPtool",
@@ -1793,6 +1796,7 @@
             "linkWikiGeneral": "Patching your Toniebox for using with TeddyCloud",
             "linkWikiSpecific": "ESP32 specific setup",
             "navigationTitle": "ESP32",
+            "processing": "Processing...",
             "redirect": "Proceed to HTTPS",
             "title": "ESP32 Box Flashing"
         },
@@ -1882,12 +1886,20 @@
         "alternativeSource": "This Tonie {{originalTonie}} is assigned the content {{assignedContent}}!",
         "alternativeSourceUnknown": "This Tonie {{originalTonie}} is assigned alternative content!",
         "assignNextEpisode": {
-            "action": "Assign next episode",
+            "action": "Assign next episode \"{{file}}\"",
             "failedDetails": "Could not assign \"{{episode}}\": ",
             "failedMessage": "Assigning next episode failed!",
-            "noneLeft": "No unlistened episodes left in this folder",
+            "noneLeft": "No unlistened episodes left in this folder.",
             "successDetails": "Assigned \"{{episode}}\" as next episode!",
             "successMessage": "Next episode assigned!"
+        },
+        "assignPrevEpisode": {
+            "action": "Assign previous episode \"{{file}}\"",
+            "failedDetails": "Could not assign \"{{episode}}\": ",
+            "failedMessage": "Assigning previous episode failed!",
+            "noneLeft": "No previous episodes left in this folder.",
+            "successDetails": "Assigned \"{{episode}}\" as previous episode!",
+            "successMessage": "Previous episode assigned!"
         },
         "cancel": "Cancel",
         "closeAudioPlayer": "Close player",
@@ -2040,6 +2052,8 @@
             "modelInfoHeading": "Model Info",
             "modelInfoLanguage": "Language",
             "modelInfoModel": "Model",
+            "modelInfoNo": "No",
+            "modelInfoRelease": "Release",
             "modelInfoSeries": "Series",
             "modelInfoTitle": "Title",
             "modelReadOnlyHint": "Original tonie: Model cannot be changed. You can only assign custom audio.",
@@ -2060,6 +2074,7 @@
             "encoding": "Encoding",
             "errorFileProcessing": "Failed to process the audio file: ",
             "filename": "Filename",
+            "loading": "Loading...",
             "loadingWasmEncoder": "Loading WASM encoder...",
             "maxFiles": "You can only add up to {{maxFiles}} files.",
             "navigationTitle": "Audio Encoder",
@@ -2375,7 +2390,10 @@
             "episodes": "Episodes",
             "fontFamily": "Label font",
             "fontFamilyPlaceholder": "Choose a font",
+            "height": "Height",
+            "imageBottom": "Image margin bottom",
             "imageBottomLeft": "Image margin bottom/left",
+            "imageLeft": "Image margin left",
             "imagePosition": "Image position",
             "imageScale": "Image scale",
             "intro": "Search all Tonies and tags - both official and your custom ones - to create your printable Traveltonies sheet.",
@@ -2431,7 +2449,8 @@
             "square": "Square",
             "textFontSize": "Text size",
             "title": "TeddyStudio",
-            "trackTitles": "Track titles (one per line)"
+            "trackTitles": "Track titles (one per line)",
+            "width": "Width"
         },
         "title": "Tonies",
         "tonies": {

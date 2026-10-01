@@ -499,7 +499,7 @@ export const ToniesList: React.FC<{
             addNotification(
                 NotificationTypeEnum.Error,
                 t("tonies.messages.noFilterFound"),
-                t("tonies.messages.noFilterFoundWithName", { name }),
+                t("tonies.messages.noFilterFoundDetails", { name }),
                 t("tonies.title"),
             );
             return;

@@ -46,7 +46,8 @@ If you don't need the ESP32 Box flashing section working, you can adapt the `pac
         "build": "tsc && vite build",
         "preview": "vite preview",
         "format": "prettier . --write",
-        "format:check": "prettier . --check"
+        "format:check": "prettier . --check",
+        "check:translations": "node scripts/check-translations.mjs"
     },
 ```
 
@@ -58,7 +59,8 @@ to
         "build": "tsc && vite build",
         "preview": "vite preview",
         "format": "prettier . --write",
-        "format:check": "prettier . --check"
+        "format:check": "prettier . --check",
+        "check:translations": "node scripts/check-translations.mjs"
      },
 ```
 
@@ -217,6 +219,8 @@ All changes must be added to the central `CHANGELOG.md` file.
 Whenever you implement a change, add a new entry under the correct version.
 If the next version does not yet exist in the changelog, create a new version block and append your changes there.
 Reference related GitHub issues or pull requests whenever possible.
+Pull requests are checked by the GitHub Actions workflow `.github/workflows/changelog-check.yml`.
+The workflow verifies that `CHANGELOG.md` was changed and that at least one new changelog entry was added.
 
 ---
 
@@ -270,9 +274,11 @@ This ensures that your component respects both light and dark themes.
 
 Always use `t("...")` instead of hard-coded text.
 
-- Add new strings to the English, German, French and Spanish translation JSON files.
+- English (`en`), German (`de`), French (`fr`) and Spanish (`es`) are actively maintained. New strings must be added to all four translation JSON files.
+- Additional languages are optional to maintain. Missing translations in these languages are allowed, but contributions are welcome.
 - Use meaningful, structured keys (e.g. `settings.notifications.title`, `tonies.encoder.uploadHint`).
 - Avoid inline strings in JSX, especially in pages and reusable components.
+- Run `npm run translation:check` before opening a pull request.
 
 ---
 
@@ -423,6 +429,20 @@ Then commit the changed files.
 
 The CI workflow runs the same formatting check (and additionally a production build) on pull requests, as well as on pushes to `master` and `develop`.
 
+### Translation check
+
+Before opening a pull request, run:
+
+```shell
+npm run translation:check
+```
+
+The check uses English (`en`) as the reference language. English (`en`), German (`de`), French (`fr`) and Spanish (`es`) are actively maintained and must contain all required translation keys.
+
+Additional languages are optional to maintain. Missing keys in optional languages are reported as warnings only.
+
+The check also reports statically used translation keys that are missing from `en.json`. Dynamically constructed translation keys cannot be resolved reliably and are therefore ignored by this source-code check.
+
 ### Install dotenv
 
 #### Debian
@@ -474,6 +494,18 @@ npm run format
 ```
 
 Then commit the formatted files.
+
+### `npm run translation:check`
+
+Checks the translation files and statically used translation keys.
+
+```shell
+npm run translation:check
+```
+
+English (`en`) is used as the reference language. German (`de`), French (`fr`) and Spanish (`es`) are actively maintained and must contain all required translation keys.
+
+Additional languages are optional to maintain. Missing keys in these languages are reported as warnings only.
 
 ### `npm start`
 
