@@ -1,4 +1,5 @@
 import { RefObject, useEffect, useState, useCallback } from "react";
+import { userStorage } from "../storage/userStorage";
 
 // ============================
 // Browser / Platform Helpers
@@ -66,7 +67,7 @@ export type ThemeMode = "dark" | "light" | "matrix" | "auto";
 export function detectColorScheme(): ThemeMode {
     if (!isBrowser) return "light";
 
-    const storedTheme = localStorage.getItem("theme") as ThemeMode | null;
+    const storedTheme = userStorage.getItem("theme") as ThemeMode | null;
     const prefersDarkMode = window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
 
     if (!storedTheme || storedTheme === "auto") {

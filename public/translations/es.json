@@ -10,6 +10,20 @@
         "errorNoOggOpusSupportByApple": "Tu navegador no soporta archivos OGG/Opus (taf) en este momento. Si estás utilizando un dispositivo Apple, ¡ayúdanos enviando un ticket a Apple para solicitar una solución!",
         "unknownSource": "Desconocido"
     },
+    "auth": {
+        "loginFailed": "Usuario o contraseña no válidos",
+        "loginRateLimited": "Demasiados intentos de inicio de sesión. Inténtalo de nuevo en unos minutos.",
+        "loginHint": "Inicia sesión en TeddyCloud",
+        "loginSubmit": "Iniciar sesión",
+        "loginTitle": "Inicio de sesión web",
+        "logout": "Cerrar sesión",
+        "newPassword": "Nueva contraseña",
+        "password": "Contraseña",
+        "passwordMin": "Al menos 4 caracteres",
+        "passwordRequired": "La contraseña es obligatoria",
+        "username": "Usuario",
+        "usernameRequired": "El usuario es obligatorio"
+    },
     "common": {
         "cancel": "Cancelar"
     },
@@ -655,6 +669,14 @@
                         "01pluginFeature": "Extiende la funcionalidad de TeddyCloud mediante complementos personalizados"
                     },
                     "title": "Complementos de TeddyCloud"
+                },
+                "15webLogin": {
+                    "items": {
+                        "01optionalLogin": "inicio de sesión opcional para la interfaz web con varios usuarios (desactivado por defecto)",
+                        "02rateLimit": "sesión con cookie y bloqueo tras varios intentos fallidos",
+                        "03userLimit": "hasta 32 usuarios"
+                    },
+                    "title": "Inicio de sesión de la interfaz web"
                 }
             },
             "futureFeatures": {
@@ -1027,6 +1049,28 @@
             "navigationTitle": "Configuración de GUI",
             "noLocalSettings": "No se encontraron valores locales",
             "title": "Configuración de GUI y valores almacenados localmente"
+        },
+        "webAuth": {
+            "addUser": "Añadir usuario",
+            "changePassword": "Cambiar contraseña",
+            "createFirstUser": "Crea un usuario antes de activar el inicio de sesión.",
+            "deleteContent": "¿Eliminar el usuario {{username}}?",
+            "deleteLastContent": "¿Eliminar el último usuario {{username}}? La protección de inicio de sesión se desactivará.",
+            "deleteLastHint": "Puedes volver a activar la protección después de crear un usuario.",
+            "deleteLastTitle": "Eliminar el último usuario",
+            "deleteTitle": "Eliminar usuario",
+            "deleteUser": "Eliminar",
+            "enabled": "Exigir inicio de sesión en la interfaz web",
+            "envOverride": "La protección de inicio de sesión está desactivada por TEDDYCLOUD_WEB_AUTH_DISABLE.",
+            "intro": "Todos los usuarios tienen acceso completo a la interfaz web. Las APIs de las cajas no se ven afectadas.",
+            "loadFailed": "No se pudieron cargar los usuarios",
+            "navigationTitle": "Inicio de sesión web",
+            "passwordChanged": "Contraseña actualizada",
+            "passwordChangedDetails": "La contraseña de {{username}} se ha actualizado.",
+            "changePasswordFor": "Cambiar la contraseña de {{username}}",
+            "saveFailed": "No se pudieron guardar los cambios",
+            "title": "Inicio de sesión web",
+            "users": "Usuarios"
         },
         "hint": "Esta es la configuración predeterminada. Algunas de las configuraciones pueden ser reemplazadas por cada una de tus Tonieboxes. Para cambiar estas configuraciones ve a ",
         "information": "Información",

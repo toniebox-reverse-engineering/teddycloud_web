@@ -3,6 +3,7 @@ import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import { LANGUAGES } from "virtual:languages";
+import { USER_STORAGE_SCOPE_EVENT, userStorage } from "./utils/storage/userStorage";
 import { withBase } from "./utils/basePath";
 
 const cacheBuster = "202511242019";
@@ -33,8 +34,22 @@ i18n.use(Backend)
 
         detection: {
             order: ["localStorage", "navigator", "htmlTag"],
-            caches: ["localStorage"],
+            caches: [],
         },
     });
+
+// The language is a per-user setting: keep a copy in the user's storage and switch when the user changes.
+const LANGUAGE_KEY = "i18nextLng";
+
+i18n.on("languageChanged", (lng) => {
+    userStorage.setItem(LANGUAGE_KEY, lng);
+});
+
+window.addEventListener(USER_STORAGE_SCOPE_EVENT, () => {
+    const saved = userStorage.getItem(LANGUAGE_KEY);
+    if (saved && saved !== i18n.language) {
+        i18n.changeLanguage(saved);
+    }
+});
 
 export default i18n;
