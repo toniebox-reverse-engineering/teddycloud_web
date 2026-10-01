@@ -9,12 +9,15 @@ import {
     PlusOutlined,
     RollbackOutlined,
     SaveFilled,
+    StepBackwardOutlined,
+    StepForwardOutlined,
     SwapOutlined,
 } from "@ant-design/icons";
 
 import { ToniesJsonSearch } from "../../common/searches/ToniesJsonSearch";
 import { RadioStreamSearch } from "../search/RadioStreamSearch";
 import { toModelKey } from "../../utils/modelKey";
+import { useAssignSiblingEpisode } from "../hooks/useAssignSiblingEpisode";
 
 const { useToken } = theme;
 const { Text } = Typography;
@@ -120,6 +123,20 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+
+    const {
+        nextEpisodeAvailable,
+        prevEpisodeAvailable,
+        nextEpisodeFile,
+        prevEpisodeFile,
+        handleAssignNextEpisode,
+        handleAssignPrevEpisode,
+    } = useAssignSiblingEpisode({
+        source: selectedSource,
+        onSelectedSourceChange,
+        setInputValidationSource,
+    });
+
     const handleClearSource = () => {
         onSelectedSourceChange("");
         setInputValidationSource({ validateStatus: "", help: "" });
@@ -157,6 +174,56 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
         showSyncActions && Boolean(selectedModel.trim()) && Boolean(onSetAudioFromModel);
     const showSetModelFromAudioAction =
         showSyncActions && Boolean(normalizedAudioModel) && Boolean(onSetModelFromAudio);
+
+    const assignNextEpisodeAction = (
+        <Tooltip
+            key="assignNextEpisode"
+            title={
+                nextEpisodeAvailable
+                    ? t("tonies.assignNextEpisode.action", {
+                          file: nextEpisodeFile?.tonieInfo?.episode
+                              ? nextEpisodeFile?.tonieInfo?.episode
+                              : nextEpisodeFile?.name,
+                      })
+                    : t("tonies.assignNextEpisode.noneLeft")
+            }
+        >
+            <StepForwardOutlined
+                key="assignNextEpisode"
+                style={
+                    nextEpisodeAvailable
+                        ? undefined
+                        : { cursor: "default", color: token.colorTextDisabled }
+                }
+                onClick={nextEpisodeAvailable ? handleAssignNextEpisode : undefined}
+            />
+        </Tooltip>
+    );
+
+    const assignPrevEpisodeAction = (
+        <Tooltip
+            key="assignPrevEpisode"
+            title={
+                prevEpisodeAvailable
+                    ? t("tonies.assignPrevEpisode.action", {
+                          file: prevEpisodeFile?.tonieInfo?.episode
+                              ? prevEpisodeFile?.tonieInfo?.episode
+                              : prevEpisodeFile?.name,
+                      })
+                    : t("tonies.assignPrevEpisode.noneLeft")
+            }
+        >
+            <StepBackwardOutlined
+                key="assignPrevEpisode"
+                style={
+                    prevEpisodeAvailable
+                        ? undefined
+                        : { cursor: "default", color: token.colorTextDisabled }
+                }
+                onClick={prevEpisodeAvailable ? handleAssignPrevEpisode : undefined}
+            />
+        </Tooltip>
+    );
 
     return (
         <Modal
@@ -225,6 +292,19 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             audioInfoTooltip ? (
                                 <Divider
                                     key="divider-source-info"
+                                    orientation="vertical"
+                                    style={{ marginLeft: 2 }}
+                                />
+                            ) : null,
+                            prevEpisodeAvailable || nextEpisodeAvailable
+                                ? assignPrevEpisodeAction
+                                : null,
+                            prevEpisodeAvailable || nextEpisodeAvailable
+                                ? assignNextEpisodeAction
+                                : null,
+                            prevEpisodeAvailable || nextEpisodeAvailable ? (
+                                <Divider
+                                    key="divider-assign-sibling-episode"
                                     orientation="vertical"
                                     style={{ marginLeft: 2 }}
                                 />

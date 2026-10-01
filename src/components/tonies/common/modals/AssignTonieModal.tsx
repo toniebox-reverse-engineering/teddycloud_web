@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Input, List, Modal, Typography } from "antd";
+import { Empty, Flex, Input, Listy, Modal, Typography } from "antd";
 
 import { TonieCardProps } from "../../../../types/tonieTypes";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
@@ -110,31 +110,41 @@ export const AssignTonieModal: React.FC<AssignTonieModalProps> = ({
             />
             {loading ? (
                 <LoadingSpinner />
+            ) : filteredTonies.length === 0 ? (
+                <Empty style={{ margin: "40px 0" }} description={t("tonies.noData")} />
             ) : (
-                <List
+                <Listy
                     style={{ maxHeight: 420, overflowY: "auto" }}
-                    dataSource={filteredTonies}
+                    items={filteredTonies}
                     rowKey={(tonie) => tonie.ruid}
-                    renderItem={(tonie) => (
-                        <List.Item
-                            style={{ cursor: "pointer", opacity: assigningRuid ? 0.6 : 1 }}
-                            onClick={() => (assigningRuid ? undefined : handleAssign(tonie))}
+                    itemRender={(tonie) => (
+                        <Flex
+                            align="center"
+                            gap={16}
+                            style={{
+                                padding: "12px 0",
+                                cursor: assigningRuid ? "default" : "pointer",
+                                opacity: assigningRuid ? 0.6 : 1,
+                            }}
+                            onClick={() => {
+                                if (!assigningRuid) {
+                                    handleAssign(tonie);
+                                }
+                            }}
                         >
-                            <List.Item.Meta
-                                avatar={
-                                    <ThumbnailCell
-                                        src={toImageSrc(tonie.tonieInfo.picture)}
-                                        alt={tonie.tonieInfo.series}
-                                    />
-                                }
-                                title={tonie.tonieInfo.series || t("tonies.unsetTonie")}
-                                description={
-                                    <Text type="secondary">
-                                        {tonie.tonieInfo.episode || tonie.uid}
-                                    </Text>
-                                }
+                            <ThumbnailCell
+                                src={toImageSrc(tonie.tonieInfo.picture)}
+                                alt={tonie.tonieInfo.series}
                             />
-                        </List.Item>
+
+                            <Flex vertical style={{ minWidth: 0 }}>
+                                <Text strong>
+                                    {tonie.tonieInfo.series || t("tonies.unsetTonie")}
+                                </Text>
+
+                                <Text type="secondary">{tonie.tonieInfo.episode || tonie.uid}</Text>
+                            </Flex>
+                        </Flex>
                     )}
                 />
             )}

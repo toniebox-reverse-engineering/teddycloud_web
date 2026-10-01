@@ -4,6 +4,7 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useNewBoxesAllowed } from "../../../../hooks/getsettings/useGetSettingNewBoxesAllowed";
 import { useTonieboxes } from "../../../../hooks/useTonieboxes";
 import { useTonies } from "../../../../hooks/useTonies";
+import { userStorage } from "../../../../utils/storage/userStorage";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -22,10 +23,10 @@ export const useHomeData = () => {
     const [displayIncidentAlert, setDisplayIncidentAlert] = useState(false);
     const [accessApiEnabled, setAccessApiEnabled] = useState<[string, boolean][]>([]);
 
-    const [activeTab, setActiveTab] = useState(localStorage.getItem("homeActiveTab") ?? "tonies");
+    const [activeTab, setActiveTab] = useState(userStorage.getItem("homeActiveTab") ?? "tonies");
 
     useEffect(() => {
-        localStorage.setItem("homeActiveTab", activeTab);
+        userStorage.setItem("homeActiveTab", activeTab);
     }, [activeTab]);
 
     useEffect(() => {
