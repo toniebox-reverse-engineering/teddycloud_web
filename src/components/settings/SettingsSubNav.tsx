@@ -14,6 +14,7 @@ import {
     MinusOutlined,
     PlusOutlined,
     ExportOutlined,
+    LockOutlined,
 } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
@@ -140,6 +141,10 @@ export const SettingsSubNav = () => {
             newKeys.push("general");
             newKeys.push("guisettings");
         }
+        if (pathname.includes("/settings/webauth")) {
+            newKeys.push("general");
+            newKeys.push("webauth");
+        }
         setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
     };
 
@@ -204,6 +209,22 @@ export const SettingsSubNav = () => {
                     ),
                     icon: React.createElement(SettingOutlined),
                     title: t("settings.guiSettings.navigationTitle"),
+                },
+                {
+                    key: "webauth",
+                    label: (
+                        <Link
+                            to="/settings/webauth"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
+                            {t("settings.webAuth.navigationTitle")}
+                        </Link>
+                    ),
+                    icon: React.createElement(LockOutlined),
+                    title: t("settings.webAuth.navigationTitle"),
                 },
             ],
         },

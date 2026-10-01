@@ -23,6 +23,7 @@ import { isIOS } from "../../../utils/browser/browserUtils";
 import { useNavigate } from "react-router";
 import { getLongestStringByPixelWidth } from "../../../utils/strings/getLongestStringByPixelWidth";
 import { useAudioContext } from "../../../provider/AudioProvider";
+import { userStorage } from "../../../utils/storage/userStorage";
 
 interface AudioPlayerFooterProps {
     isPlaying?: boolean;
@@ -62,11 +63,11 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
     });
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
     const [volume, setVolume] = useState<number | null>(() => {
-        const saved = localStorage.getItem("audioVolume");
+        const saved = userStorage.getItem("audioVolume");
         return saved ? Number(saved) : 100;
     });
     const [lastVolume, setLastVolume] = useState<number | null>(() => {
-        const saved = localStorage.getItem("audioVolume");
+        const saved = userStorage.getItem("audioVolume");
         return saved ? Number(saved) : 100;
     });
     const [closePlayerPopoverOpen, setClosePlayerPopoverOpen] = useState(false);
@@ -84,7 +85,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         if (globalAudio) {
             globalAudio.volume = volume === null ? 0 : volume / 100;
         }
-        localStorage.setItem("audioVolume", (volume ?? 0).toString());
+        userStorage.setItem("audioVolume", (volume ?? 0).toString());
     }, [volume, globalAudio]);
 
     useEffect(() => {
