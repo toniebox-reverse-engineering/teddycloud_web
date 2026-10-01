@@ -18,6 +18,7 @@ import { isIOS, supportsOggOpus } from "../../../../utils/browser/browserUtils";
 import logoImg from "../../../../assets/logo.png";
 import TracklistModal from "../modals/TracklistModal";
 import { userStorage } from "../../../../utils/storage/userStorage";
+import { withBase } from "../../../../utils/basePath";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -61,7 +62,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const url =
         tonieCard != null
             ? tonieCard.valid
-                ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl
+                ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + withBase(tonieCard.audioUrl)
                 : tonieCard.source
             : "";
 
@@ -171,7 +172,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             artist: tonieCard.tonieInfo.series || "",
             artwork: [
                 {
-                    src: tonieCard.tonieInfo.picture,
+                    src: withBase(tonieCard.tonieInfo.picture),
                     sizes: "96x96,128x128,192x192,256x256,384x384,512x512",
                 },
             ],
@@ -358,7 +359,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 <div style={{ display: "flex", justifyContent: "center" }}>
                     <img
                         alt={tonieCard.tonieInfo.episode}
-                        src={tonieCard.tonieInfo.picture}
+                        src={withBase(tonieCard.tonieInfo.picture)}
                         style={{
                             borderRadius: 12,
                             objectFit: "contain",

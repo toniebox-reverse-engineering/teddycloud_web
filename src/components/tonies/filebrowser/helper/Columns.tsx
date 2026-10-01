@@ -12,6 +12,7 @@ import {
     NodeExpandOutlined,
     DeleteOutlined,
     LoadingOutlined,
+    CheckCircleOutlined,
     SwapOutlined,
 } from "@ant-design/icons";
 
@@ -29,6 +30,7 @@ import {
     SELECT_IMAGE_THUMB_COL_WIDTH,
     SELECT_IMAGE_CELL_GAP_HALF,
 } from "../../../../constants/selectImageTableLayoutSizes";
+import { withBase } from "../../../../utils/basePath";
 
 const { useToken } = theme;
 
@@ -77,6 +79,7 @@ export interface CreateColumnsOptions {
     showRenameDialog?: (fileName: string) => void;
     showMoveDialog?: (fileName: string) => void;
     showDeleteConfirmDialog?: (fileName: string, fullPath: string, query: string) => void;
+    toggleListened?: (record: Record) => void;
     showAssignTonieDialog?: (record: Record) => void;
     buildContentUrl?: (fileName: string, options?: { ogg?: boolean }) => string;
     onImagePreviewClick?: (imageUrl: string) => void;
@@ -113,6 +116,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        toggleListened,
         showAssignTonieDialog,
         buildContentUrl,
         onImagePreviewClick,
@@ -513,7 +517,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 playAudio(
                                     encodeURI(
                                         import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            "/content/" +
+                                            withBase("/content/") +
                                             decodeURIComponent(path) +
                                             "/" +
                                             record.name,
@@ -658,6 +662,28 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 }
 
                 if ((special === "library" || special === "custom_img") && record.name !== "..") {
+                    if (!record.isDir && special === "library" && toggleListened) {
+                        actions.push(
+                            <Tooltip
+                                open={!canHover ? false : undefined}
+                                key={`action-listened-${record.name}`}
+                                title={
+                                    record.listened
+                                        ? t("fileBrowser.unmarkAsListened")
+                                        : t("fileBrowser.markAsListened")
+                                }
+                            >
+                                <CheckCircleOutlined
+                                    onClick={() => toggleListened(record)}
+                                    style={{
+                                        margin: "4px 8px 4px 0",
+                                        padding: 4,
+                                        color: record.listened ? token.colorSuccess : undefined,
+                                    }}
+                                />
+                            </Tooltip>,
+                        );
+                    }
                     if (!record.isDir && special === "library" && showAssignTonieDialog) {
                         actions.push(
                             <Tooltip

@@ -64,6 +64,7 @@ import MatrixRain from "./styles/matrix/matrixRain";
 import { detectColorScheme } from "./utils/browser/browserUtils";
 import { StyledThemeProvider } from "./provider/StyledThemeProvider";
 import { USER_STORAGE_SCOPE_EVENT, userStorage } from "./utils/storage/userStorage";
+import { withBase } from "./utils/basePath";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -166,7 +167,7 @@ function App() {
         >
             <StyledThemeProvider>
                 {effectiveThemeMode === "matrix" && <MatrixRain />}
-                <Router basename={import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}>
+                <Router basename={withBase("/web")}>
                     <AuthProvider>
                         <AuthenticatedApp themeSwitch={themeSwitchIcon} themeMode={themeMode} />
                     </AuthProvider>

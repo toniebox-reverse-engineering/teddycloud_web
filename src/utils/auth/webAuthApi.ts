@@ -1,3 +1,5 @@
+import { withBase } from "../basePath";
+
 const TOKEN_KEY = "teddycloud_web_token";
 
 export type AuthStatus = {
@@ -52,7 +54,7 @@ async function authFetch(path: string, init: RequestInit = {}): Promise<Response
     if (token && !headers.has("Authorization")) {
         headers.set("Authorization", `Bearer ${token}`);
     }
-    return fetch(path, {
+    return fetch(withBase(path), {
         ...init,
         headers,
         credentials: "include",

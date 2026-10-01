@@ -4,6 +4,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import { LANGUAGES } from "virtual:languages";
 import { USER_STORAGE_SCOPE_EVENT, userStorage } from "./utils/storage/userStorage";
+import { withBase } from "./utils/basePath";
 
 const cacheBuster = "202511242019";
 
@@ -23,7 +24,7 @@ i18n.use(Backend)
         debug: false,
 
         backend: {
-            loadPath: `${import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}/translations/{{lng}}.json?v=${cacheBuster}`,
+            loadPath: `${withBase("/web")}/translations/{{lng}}.json?v=${cacheBuster}`,
             crossDomain: false,
         },
 
