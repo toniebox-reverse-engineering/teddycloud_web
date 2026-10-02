@@ -592,6 +592,16 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         return response;
     }
 
+    async apiPostTeddyCloudJsonRaw(
+        path: string,
+        body: unknown,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Response> {
+        return this.apiPostTeddyCloudRaw(path, JSON.stringify(body), undefined, initOverrides, {
+            "Content-Type": "application/json",
+        });
+    }
+
     /**
      * @description Set/unset the "listened" flag for an arbitrary library (or other special-root) file
      *
