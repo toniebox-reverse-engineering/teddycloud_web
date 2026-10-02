@@ -1891,6 +1891,8 @@
             },
             "audio": {
                 "libraryLabel": "Niestandardowe audio ({{library}})",
+                "locateInLibrary": "Znajdź w bibliotece",
+                "notFoundInLibrary": "Nie znaleziono w bibliotece",
                 "notInIndex": "Brak w indeksie niestandardowego audio: {{audioId}}/{{hash}}",
                 "placeholder": "Wybierz niestandardowe audio z {{library}}",
                 "selectFromLibrary": "Wybierz audio z {{library}}"
@@ -2013,6 +2015,7 @@
             "placeholderSearchForARadioStream": "Szukaj strumienia radiowego",
             "save": "Zapisz",
             "setAudioFromModel": "Ustaw audio na podstawie modelu",
+            "setAudioFromModelNoMapping": "Wybrany model nie ma przypisanego audio.",
             "setAudioFromModelUnavailableInLibrary": "Audio modelu nie jest jeszcze dostępne w bibliotece.",
             "setModelFromAudio": "Ustaw model na podstawie audio",
             "source": "Źródło",

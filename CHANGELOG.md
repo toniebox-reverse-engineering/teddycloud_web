@@ -15,6 +15,7 @@
 - gui: replaced deprecated andt list with antd listy
 - gui: added missing language entries
 - gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)
+- gui: Opening the Tonie edit modal and the Custom Model Editor no longer scans the whole library. "Set model from audio" uses the model resolved by the backend, "Set audio from model" and the custom audio path ("locate in library") only search the library on click [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/332](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/332)
 - gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
 - gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
 - gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)

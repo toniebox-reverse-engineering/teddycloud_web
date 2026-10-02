@@ -11,7 +11,7 @@ import {
     StopOutlined,
 } from "@ant-design/icons";
 
-import { TonieCardProps } from "../../../types/tonieTypes";
+import { TonieCardProps, TonieInfo } from "../../../types/tonieTypes";
 
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../api";
@@ -21,18 +21,18 @@ import { toLanguageCode, LanguageFlagIcon } from "../../common/icons/LanguageFla
 import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
 import { EditTonieModal } from "./modals/EditTonieModal";
-import { SelectAudioModal } from "../common/modals/SelectAudioModal";
+import { SelectAudioFileResult, SelectAudioModal } from "../common/modals/SelectAudioModal";
 import { useAudioContext } from "../../../provider/AudioProvider";
 import { CustomModelEditor } from "../custommodel/CustomModelEditor";
 import { toModelKey, useCustomModelKeys } from "../hooks/useCustomModelKeys";
 import { toImageSrc } from "../common/utils/imagePathUtils";
 import { useTonieCardActions } from "./hooks/useTonieCardActions";
-import { useResolvedModelAudio } from "./hooks/useResolvedModelAudio";
 import { useTooltipInfoByModel } from "./hooks/useTooltipInfoByModel";
 import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
 import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
 import { backendUrl } from "../../../utils/basePath";
+import { locateModelAudioInLibrary } from "../../../utils/teddycloud/modelAudioResolution";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -99,6 +99,14 @@ export const TonieCard: React.FC<{
     const [selectedModel, setSelectedModel] = useState<string>(tonieCard.tonieInfo.model || "");
     const [selectedSource, setSelectedSource] = useState<string>(tonieCard.source || "");
     const [tempSelectedSource, setTempSelectedSource] = useState<string>(tonieCard.source || "");
+    // Last file picked in the file browser, incl. the model the backend resolved for it.
+    const [pickedSource, setPickedSource] = useState<SelectAudioFileResult | null>(null);
+    // Library path of the model's audio, located on demand via "Set audio from model".
+    const [locatedModelAudio, setLocatedModelAudio] = useState<{
+        model: string;
+        path: string;
+    } | null>(null);
+    const [isLocatingModelAudio, setIsLocatingModelAudio] = useState(false);
 
     const customModelKeys = useCustomModelKeys(isEditModalOpen);
     const isSelectedModelCustom = customModelKeys.has(toModelKey(selectedModel));
@@ -136,6 +144,13 @@ export const TonieCard: React.FC<{
         validateStatus: "",
         help: "",
     });
+
+    // The "model audio not found" hint refers to the model it was searched for.
+    useEffect(() => {
+        setInputValidationSource((prev) =>
+            prev.validateStatus === "warning" ? { validateStatus: "", help: "" } : prev,
+        );
+    }, [selectedModel]);
 
     // ------------------------
     // Derived data
@@ -194,17 +209,33 @@ export const TonieCard: React.FC<{
         }
     };
 
-    const { modelAudioPath, modelAudioHasMapping, resolvedAudioModel } = useResolvedModelAudio({
-        isEditModalOpen,
-        selectedModel,
-        selectedSource,
-        overlay,
-    });
+    // Model info of the selected audio. The backend already resolves it from the TAF header
+    // (sourceInfo for the assigned source, tonieInfo for files picked in the file browser),
+    // so no library lookup is needed here.
+    const selectedAudioInfo = ((): Partial<TonieInfo> | undefined => {
+        const source = selectedSource.trim();
+        if (!source) return undefined;
+        if (pickedSource && pickedSource.path === selectedSource) return pickedSource.tonieInfo;
+        if (locatedModelAudio && locatedModelAudio.path === selectedSource) {
+            return { model: locatedModelAudio.model };
+        }
+        if (selectedSource === (tonieCard.source || "")) {
+            if ("sourceInfo" in tonieCard && tonieCard.sourceInfo) return tonieCard.sourceInfo;
+            // sourceInfo is only sent when the audio model differs from the tonie model.
+            if (source.startsWith("lib://")) return tonieCard.tonieInfo;
+        }
+        return undefined;
+    })();
+    const audioModel = (selectedAudioInfo?.model || "").trim();
+    const modelAudioPath =
+        locatedModelAudio && toModelKey(locatedModelAudio.model) === toModelKey(selectedModel)
+            ? locatedModelAudio.path
+            : null;
 
     const { tooltipInfoByModel } = useTooltipInfoByModel({
         isEditModalOpen,
         selectedModel,
-        resolvedAudioModel,
+        audioModel,
         overlay,
     });
 
@@ -237,7 +268,7 @@ export const TonieCard: React.FC<{
         modelTitle,
         selectedModel,
         selectedSource,
-        resolvedAudioModel,
+        audioModel,
         modelAudioPath,
         fetchUpdatedTonieCard,
         setIsEditModalOpen,
@@ -258,7 +289,8 @@ export const TonieCard: React.FC<{
         setSelectFileModalOpen(false);
     };
 
-    const handleFileSelected = (result: { path: string }) => {
+    const handleFileSelected = (result: SelectAudioFileResult) => {
+        setPickedSource(result);
         setSelectedSource(result.path);
         setTempSelectedSource(result.path);
         setSelectFileModalOpen(false);
@@ -290,6 +322,8 @@ export const TonieCard: React.FC<{
         setSelectedModel(model);
         setSelectedSource(tonieCard.source || "");
         setTempSelectedSource(tonieCard.source || "");
+        setPickedSource(null);
+        setLocatedModelAudio(null);
         if (model && tonieCard.tonieInfo.series) {
             const episode = tonieCard.tonieInfo.episode || "";
             setSelectedModelDisplayText(
@@ -303,8 +337,32 @@ export const TonieCard: React.FC<{
         setIsEditModalOpen(true);
     };
 
+    const handleSetAudioFromModel = async () => {
+        const model = selectedModel.trim();
+        if (!model) return;
+        setIsLocatingModelAudio(true);
+        try {
+            const result = await locateModelAudioInLibrary(model, overlay);
+            if (result.path) {
+                setLocatedModelAudio({ model, path: result.path });
+                setSelectedSource(result.path);
+                setTempSelectedSource(result.path);
+                setInputValidationSource({ validateStatus: "", help: "" });
+            } else {
+                setInputValidationSource({
+                    validateStatus: "warning",
+                    help: result.hasMapping
+                        ? t("tonies.editModal.setAudioFromModelUnavailableInLibrary")
+                        : t("tonies.editModal.setAudioFromModelNoMapping"),
+                });
+            }
+        } finally {
+            setIsLocatingModelAudio(false);
+        }
+    };
+
     const modelInfoFromTonie = selectedModel as unknown as TooltipInfo;
-    const audioInfoFromSource = selectedSource as unknown as TooltipInfo;
+    const audioInfoFromSource: TooltipInfo = selectedAudioInfo ?? {};
     const renderInfoTooltip = (
         kind: "model" | "audio",
         modelName: string,
@@ -385,7 +443,6 @@ export const TonieCard: React.FC<{
         );
     };
 
-    const currentAudioModelForSet = (selectedSource || "").trim() ? resolvedAudioModel : "";
     const currentModelForTooltip = (selectedModel || "").trim();
 
     const editModalTitle = (
@@ -657,7 +714,8 @@ export const TonieCard: React.FC<{
                 hasPendingChanges={hasPendingChanges}
                 onOpenFileSelectModal={showFileSelectModal}
                 modelAudioPath={modelAudioPath}
-                modelAudioHasMapping={modelAudioHasMapping}
+                onSetAudioFromModel={handleSetAudioFromModel}
+                isLocatingModelAudio={isLocatingModelAudio}
                 modelDisplayText={selectedModelDisplayText}
                 onCreateNewModel={() => setIsCreateModelModalOpen(true)}
                 onEditModel={() => setIsEditModelModalOpen(true)}
@@ -678,13 +736,11 @@ export const TonieCard: React.FC<{
                         : undefined
                 }
                 audioInfoTooltip={
-                    currentAudioModelForSet
-                        ? renderInfoTooltip("audio", currentAudioModelForSet, true)
-                        : undefined
+                    audioModel ? renderInfoTooltip("audio", audioModel, true) : undefined
                 }
-                audioModelForSet={currentAudioModelForSet}
+                audioModel={audioModel}
                 onSetModelFromAudio={() => {
-                    const m = currentAudioModelForSet.trim();
+                    const m = audioModel;
                     if (!m) return;
                     setSelectedModel(m);
                     const series = (audioInfoFromSource?.series || "").trim();

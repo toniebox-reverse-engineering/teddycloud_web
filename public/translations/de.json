@@ -1939,6 +1939,8 @@
             },
             "audio": {
                 "libraryLabel": "Custom-Audio ({{library}})",
+                "locateInLibrary": "In Bibliothek suchen",
+                "notFoundInLibrary": "Nicht in der Bibliothek gefunden",
                 "notInIndex": "Nicht im Custom-Audio-Index: {{audioId}}/{{hash}}",
                 "placeholder": "Custom-Audio aus {{library}} wählen",
                 "selectFromLibrary": "Audio aus {{library}} auswählen"
@@ -2061,6 +2063,7 @@
             "placeholderSearchForARadioStream": "Suche nach einem Radiostream",
             "save": "Speichern",
             "setAudioFromModel": "Audio aus Modell setzen",
+            "setAudioFromModelNoMapping": "Dem ausgewählten Modell ist kein Audio zugeordnet.",
             "setAudioFromModelUnavailableInLibrary": "Audio aus dem Modell ist noch nicht in der Bibliothek verfügbar.",
             "setModelFromAudio": "Modell aus Audio setzen",
             "source": "Quelle",
