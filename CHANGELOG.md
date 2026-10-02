@@ -17,6 +17,7 @@
 - gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)
 - gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
 - gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
+- gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)
 
 ### Commits
 

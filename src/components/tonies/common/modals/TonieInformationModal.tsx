@@ -15,7 +15,7 @@ import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useAudioContext } from "../../../../provider/AudioProvider";
 import { toImageSrc } from "../utils/imagePathUtils";
-import { withBase } from "../../../../utils/basePath";
+import { backendUrl } from "../../../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -372,11 +372,9 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                 <PlayCircleOutlined
                                                     onClick={() =>
                                                         handlePlayPauseClick(
-                                                            import.meta.env
-                                                                .VITE_APP_TEDDYCLOUD_API_URL +
-                                                                withBase(
-                                                                    tonieCardOrTAFRecord.audioUrl,
-                                                                ),
+                                                            backendUrl(
+                                                                tonieCardOrTAFRecord.audioUrl,
+                                                            ),
                                                             getTrackStartTime(
                                                                 tonieCardOrTAFRecord,
                                                                 index,
@@ -419,11 +417,9 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                 <PlayCircleOutlined
                                                     onClick={() =>
                                                         handlePlayPauseClick(
-                                                            import.meta.env
-                                                                .VITE_APP_TEDDYCLOUD_API_URL +
-                                                                withBase(
-                                                                    tonieCardOrTAFRecord.audioUrl,
-                                                                ),
+                                                            backendUrl(
+                                                                tonieCardOrTAFRecord.audioUrl,
+                                                            ),
                                                             getTrackStartTime(
                                                                 tonieCardOrTAFRecord,
                                                                 index,
@@ -458,8 +454,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                 !isDownloading
                                     ? () =>
                                           handleDownload(
-                                              import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                                  withBase(tonieCardOrTAFRecord.audioUrl),
+                                              backendUrl(tonieCardOrTAFRecord.audioUrl),
                                               sourceTitle ? sourceTitle : modelTitle + ".ogg",
                                           )
                                     : undefined

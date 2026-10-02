@@ -1,5 +1,5 @@
 import LANGUAGES from "virtual:languages";
-import { withBase } from "../../../../utils/basePath";
+import { backendUrl, withBase } from "../../../../utils/basePath";
 
 export interface TranslationEntry {
     question: string;
@@ -138,7 +138,7 @@ export async function fetchTranslations(
     for (const lang of languages) {
         const url =
             import.meta.env.MODE === "production"
-                ? `${import.meta.env.VITE_APP_TEDDYCLOUD_API_URL}${withBase(`/web/translations/${lang}.json`)}`
+                ? backendUrl(`/web/translations/${lang}.json`)
                 : withBase(`/web/translations/${lang}.json`);
 
         const response = await fetch(url);

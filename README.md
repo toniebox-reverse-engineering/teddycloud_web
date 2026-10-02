@@ -14,7 +14,6 @@ Please place an environment file '.env.local' in the teddycloud_web directory.
 
 ```env
 VITE_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
-VITE_APP_TEDDYCLOUD_WEB_BASE=/web
 VITE_APP_TEDDYCLOUD_PORT_HTTPS=3443
 VITE_APP_TEDDYCLOUD_PORT_HTTP=3000
 SSL_CRT_FILE=./localhost.pem
@@ -70,6 +69,10 @@ Use `./start_dev.sh` to start the NPM server in development mode. Be patient, it
 Be sure your teddyCloud instance is also running.
 
 If you just need the http variant, simply call `dotenv -e .env.development.local npm start-http`
+
+### Tests
+
+Unit tests use [Vitest](https://vitest.dev/) and live next to the code they cover (`*.test.ts`). Run them with `npm test`.
 
 ## Project Structure & Architecture (Frontend)
 
@@ -312,6 +315,18 @@ One reason is the upcoming authentication for accessing the API and the possibil
 
 ---
 
+#### Backend URLs and the URL prefix
+
+The web UI can be served under a URL prefix that is only known at runtime (see [Serving under a URL prefix](#serving-under-a-url-prefix)). Never hardcode root-absolute backend paths like `/content/...`, `/api/...` or `/web/...` in `src`:
+
+- API requests through `TeddyCloudApi` already take the prefix into account.
+- For URLs handed to the browser directly (`<img src>`, audio sources, downloads, `EventSource`, ...), use `backendUrl(path)` from `src/utils/basePath.ts`. It adds the dev-only `VITE_APP_TEDDYCLOUD_API_URL` and the runtime prefix.
+- For other same-origin paths (router basename, i18n, WASM scripts, iframes), use `withBase(path)`.
+
+Both helpers leave absolute URLs (`https:`, `data:`, `blob:`, ...) unchanged and are safe to apply twice.
+
+---
+
 #### Linking to other sites
 
 If you need to link to another source, element, or URL, please check if it is already defined in `src/constants/urls.ts`.
@@ -344,6 +359,20 @@ Some URLs already defined (partial list):
 This combined structure and guideline set should be followed for all new code and refactorings.
 
 ## Tips and Tricks
+
+### Serving under a URL prefix
+
+The production build works unchanged behind a reverse proxy sub-path or Home Assistant ingress. There is nothing to configure: the prefix is everything in the browser URL before the first `/web` path segment, e.g. `/teddycloud` for `https://proxy/teddycloud/web/`.
+
+The proxy has to strip the prefix and forward everything below it to the root of teddyCloud, not only `/web` (the UI also calls `/api`, `/content`, `/v1`, `/reverse`, ...). Example for nginx:
+
+```nginx
+location /teddycloud/ {
+    proxy_pass http://teddycloud:80/; # the trailing slash strips /teddycloud
+}
+```
+
+Then open `https://proxy/teddycloud/web/`. The prefix itself must not contain a `/web` segment.
 
 ### Missing img_unknown.png
 

@@ -30,7 +30,7 @@ import {
     SELECT_IMAGE_THUMB_COL_WIDTH,
     SELECT_IMAGE_CELL_GAP_HALF,
 } from "../../../../constants/selectImageTableLayoutSizes";
-import { withBase } from "../../../../utils/basePath";
+import { backendUrl } from "../../../../utils/basePath";
 
 const { useToken } = theme;
 
@@ -65,13 +65,7 @@ export interface CreateColumnsOptions {
         startTime?: number,
     ) => void;
 
-    handleFileDownload?: (
-        record: Record,
-        baseUrl: string,
-        path: string,
-        special: string,
-        overlay?: string,
-    ) => void;
+    handleFileDownload?: (record: Record, path: string, special: string, overlay?: string) => void;
 
     migrateContent2Lib?: (ruid: string, libroot: boolean, overlay?: string) => void;
     handleEditTapClick?: (fullPath: string) => void;
@@ -516,11 +510,12 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             onClick={() =>
                                 playAudio(
                                     encodeURI(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                            withBase("/content/") +
-                                            decodeURIComponent(path) +
-                                            "/" +
-                                            record.name,
+                                        backendUrl(
+                                            "/content/" +
+                                                decodeURIComponent(path) +
+                                                "/" +
+                                                record.name,
+                                        ),
                                     ) +
                                         "?ogg=true&special=" +
                                         special +
@@ -609,13 +604,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 <DownloadOutlined
                                     style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                     onClick={() =>
-                                        handleFileDownload(
-                                            record,
-                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL,
-                                            path,
-                                            special,
-                                            overlay,
-                                        )
+                                        handleFileDownload(record, path, special, overlay)
                                     }
                                 />
                             </Tooltip>
