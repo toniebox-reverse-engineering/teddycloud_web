@@ -8,7 +8,6 @@ import {
     PoweroffOutlined,
     FileSearchOutlined,
     SyncOutlined,
-    HistoryOutlined,
     BellOutlined,
     CodeSandboxOutlined,
     MinusOutlined,
@@ -25,7 +24,6 @@ import { restartServer } from "../../utils/system/restartTeddyCloud";
 import { useTeddyCloud } from "../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
 import { TeddyCloudSection } from "../../types/pluginsMetaTypes";
-import { withBase } from "../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -297,24 +295,6 @@ export const SettingsSubNav = () => {
             },
             icon: React.createElement(PoweroffOutlined),
             title: t("settings.restartServer"),
-        },
-        {
-            key: "legacy",
-            label: (
-                <Link
-                    to={`${extractBaseUrl(new URL(window.location.href))}${withBase("/legacy.html")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("settings.legacyGui")}
-                </Link>
-            ),
-            icon: React.createElement(HistoryOutlined),
-            title: t("settings.legacyGui"),
         },
         ...pluginItems,
     ];
