@@ -31,7 +31,7 @@ import { useTooltipInfoByModel } from "./hooks/useTooltipInfoByModel";
 import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
 import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
-import { withBase } from "../../../utils/basePath";
+import { backendUrl } from "../../../utils/basePath";
 import { locateModelAudioInLibrary } from "../../../utils/teddycloud/modelAudioResolution";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
@@ -475,10 +475,7 @@ export const TonieCard: React.FC<{
                 key="playpause"
                 onClick={() =>
                     handlePlayPauseClick(
-                        tonieCard.valid
-                            ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                  withBase(tonieCard.audioUrl)
-                            : tonieCard.source,
+                        tonieCard.valid ? backendUrl(tonieCard.audioUrl) : tonieCard.source,
                     )
                 }
             />

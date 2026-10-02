@@ -1,4 +1,4 @@
-import { withBase } from "../../../../utils/basePath";
+import { backendUrl, withBase } from "../../../../utils/basePath";
 
 /**
  * Shared utilities for image path handling in tonies components.
@@ -16,12 +16,7 @@ export const normalizeDirPath = (value: string) => value.replace(/^\/+/, "").rep
 export const toImageSrc = (url?: string): string => {
     const raw = (url || "").trim();
     if (!raw) return "";
-    if (/^(https?:\/\/|data:|blob:)/i.test(raw)) return raw;
-    const base =
-        (typeof import.meta !== "undefined" &&
-            (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
-        "";
-    return raw.startsWith("/") ? `${base.replace(/\/$/, "")}${withBase(raw)}` : raw;
+    return backendUrl(raw);
 };
 
 export const toCustomImgWebPath = (path: string, fileName: string): string => {
