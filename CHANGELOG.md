@@ -35,6 +35,7 @@
 - gui: Added noopener noreferrer to external links [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/308)
 - gui: Added tonies.custom.json snippet modal for getting skeleton of tonies.custom.json for all or selected tafs in current folder
 - gui: Fixed broken load Flashfile and resetBox path in esp32 flashing
+- gui: Removed link to the legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
 
 ### Commits
 
