@@ -78,12 +78,6 @@ export const SettingsSubNav = () => {
             title: plugin.pluginName,
         }));
 
-    const extractBaseUrl = (fullUrl: URL) => {
-        const url = new URL(fullUrl);
-        const port = url.port ? `:${url.port}` : "";
-        return `${url.protocol}//${url.hostname}${port}`;
-    };
-
     const handleRestartServer = async () => {
         await restartServer(
             t,
