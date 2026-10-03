@@ -10,6 +10,20 @@
         "errorNoOggOpusSupportByApple": "Twoja przeglądarka nie obsługuje obecnie plików OGG/Opus (taf). Jeśli korzystasz z urządzenia Apple, pomóż nam, zgłaszając to jako problem do Apple!",
         "unknownSource": "Nieznane"
     },
+    "auth": {
+        "loginFailed": "Nieprawidłowa nazwa użytkownika lub hasło",
+        "loginHint": "Zaloguj się do TeddyCloud",
+        "loginRateLimited": "Zbyt wiele prób logowania. Spróbuj ponownie za kilka minut.",
+        "loginSubmit": "Zaloguj się",
+        "loginTitle": "Logowanie do interfejsu WWW",
+        "logout": "Wyloguj się",
+        "newPassword": "Nowe hasło",
+        "password": "Hasło",
+        "passwordMin": "Co najmniej 4 znaki",
+        "passwordRequired": "Hasło jest wymagane",
+        "username": "Nazwa użytkownika",
+        "usernameRequired": "Nazwa użytkownika jest wymagana"
+    },
     "common": {
         "cancel": "Anuluj"
     },
@@ -455,6 +469,7 @@
         },
         "hidden": "Ukryte",
         "image": "Obraz",
+        "markAsListened": "Oznacz jako odsłuchane",
         "maxSelectedRows": "Możesz wybrać maksymalnie {{maxSelectedRows}} plików",
         "maxSelectedRowsWarning": "Wybrano zbyt wiele plików!",
         "messages": {
@@ -486,7 +501,9 @@
             "renamingFailed": "Zmiana nazwy nie powiodła się",
             "renamingFailedDetails": "Zmiana nazwy pliku \"{{fileSource}}\" na \"{{fileTarget}}\" nie powiodła się: ",
             "renamingSuccessful": "Nazwa pliku została zmieniona pomyślnie!",
-            "renamingSuccessfulDetails": "Nazwa pliku \"{{fileSource}}\" została pomyślnie zmieniona na \"{{fileTarget}}\"!"
+            "renamingSuccessfulDetails": "Nazwa pliku \"{{fileSource}}\" została pomyślnie zmieniona na \"{{fileTarget}}\"!",
+            "toggleListenedFailed": "Nie udało się zmienić stanu odsłuchania",
+            "toggleListenedFailedDetails": "Nie udało się zmienić stanu odsłuchania pliku \"{{file}}\": "
         },
         "migrateContentToLib": "Migruj TAF do biblioteki (by/audioId/)",
         "migrateContentToLibRoot": "Migruj TAF do biblioteki (katalog główny)",
@@ -528,6 +545,7 @@
             }
         },
         "title": "Przeglądarka plików",
+        "unmarkAsListened": "Oznacz jako nieodsłuchane",
         "unusedTafsModal": {
             "actions": "Akcje",
             "fullPath": "Pełna ścieżka",
@@ -651,6 +669,14 @@
                         "01pluginFeature": "rozszerzanie funkcjonalności TeddyCloud za pomocą własnych wtyczek"
                     },
                     "title": "Wtyczki TeddyCloud"
+                },
+                "15webLogin": {
+                    "items": {
+                        "01optionalLogin": "opcjonalne logowanie do interfejsu WWW z obsługą wielu użytkowników (domyślnie wyłączone)",
+                        "02rateLimit": "sesja cookie z ograniczeniem liczby prób po wielokrotnych nieudanych logowaniach",
+                        "03userLimit": "do 32 użytkowników"
+                    },
+                    "title": "Logowanie do interfejsu WWW"
                 }
             },
             "futureFeatures": {
@@ -1079,7 +1105,29 @@
         "toniesJsonUpdateSuccessful": "Tonies(.custom).json wczytany ponownie pomyślnie!",
         "tryToRestartTC": "Spróbuj ponownie uruchomić TeddyCloud",
         "warning": "Uwaga! Settings level",
-        "warningHint": "Jeśli brakuje Ci ustawień, zwiększ 'Settings level'."
+        "warningHint": "Jeśli brakuje Ci ustawień, zwiększ 'Settings level'.",
+        "webAuth": {
+            "addUser": "Dodaj użytkownika",
+            "changePassword": "Zmień hasło",
+            "changePasswordFor": "Zmień hasło użytkownika {{username}}",
+            "createFirstUser": "Utwórz użytkownika przed włączeniem ochrony logowaniem.",
+            "deleteContent": "Usunąć użytkownika {{username}}?",
+            "deleteLastContent": "Usunąć ostatniego użytkownika {{username}}? Ochrona logowaniem zostanie wyłączona.",
+            "deleteLastHint": "Po utworzeniu użytkownika możesz ponownie włączyć ochronę logowaniem.",
+            "deleteLastTitle": "Usuń ostatniego użytkownika",
+            "deleteTitle": "Usuń użytkownika",
+            "deleteUser": "Usuń",
+            "enabled": "Wymagaj logowania do interfejsu WWW",
+            "envOverride": "Ochrona logowaniem jest obecnie wyłączona przez TEDDYCLOUD_WEB_AUTH_DISABLE.",
+            "intro": "Wszyscy użytkownicy mają pełny dostęp do interfejsu WWW. Interfejsy API Tonieboxa pozostają bez zmian.",
+            "loadFailed": "Nie udało się wczytać użytkowników",
+            "navigationTitle": "Logowanie do interfejsu WWW",
+            "passwordChanged": "Hasło zaktualizowane",
+            "passwordChangedDetails": "Hasło użytkownika {{username}} zostało zaktualizowane.",
+            "saveFailed": "Nie udało się zapisać zmian",
+            "title": "Logowanie do interfejsu WWW",
+            "users": "Użytkownicy"
+        }
     },
     "teddycloud": {
         "newVersionAvailable": "Dostępna jest nowa wersja!",
