@@ -82,7 +82,6 @@ export const TonieCard: React.FC<{
     // UI / Modal State
     // ------------------------
 
-    const [keyInfoModal, setKeyInfoModal] = useState(0);
     const [keyRadioStreamSearch, setKeyRadioStreamSearch] = useState(0);
     const [keyTonieArticleSearch, setKeyTonieArticleSearch] = useState(0);
     const [keySelectFileFileBrowser, setKeySelectFileFileBrowser] = useState(0);
@@ -406,7 +405,6 @@ export const TonieCard: React.FC<{
         <InfoCircleOutlined
             key="info"
             onClick={() => {
-                setKeyInfoModal((prev) => prev + 1);
                 setInformationModalOpen(true);
             }}
         />
@@ -599,125 +597,120 @@ export const TonieCard: React.FC<{
                 />
             </Card>
 
-            <TonieInformationModal
-                open={isInformationModalOpen}
-                onClose={() => setInformationModalOpen(false)}
-                tonieCardOrTAFRecord={tonieCard}
-                showSourceInfo={showSourceInfo}
-                readOnly={readOnly}
-                lastRUIDs={lastRUIDs}
-                onHide={onHide}
-                overlay={overlay}
-                key={keyInfoModal}
-            />
+            {isInformationModalOpen && (
+                <TonieInformationModal
+                    open={isInformationModalOpen}
+                    onClose={() => setInformationModalOpen(false)}
+                    tonieCardOrTAFRecord={tonieCard}
+                    showSourceInfo={showSourceInfo}
+                    readOnly={readOnly}
+                    lastRUIDs={lastRUIDs}
+                    onHide={onHide}
+                    overlay={overlay}
+                />
+            )}
 
-            <SelectAudioModal
-                open={isSelectFileModalOpen}
-                onClose={handleCancelSelectFile}
-                onSelect={handleFileSelected}
-                keySelectFileFileBrowser={keySelectFileFileBrowser}
-                initialPath={tempSelectedSource || selectedSource}
-            />
+            {isSelectFileModalOpen && (
+                <SelectAudioModal
+                    open={isSelectFileModalOpen}
+                    onClose={handleCancelSelectFile}
+                    onSelect={handleFileSelected}
+                    keySelectFileFileBrowser={keySelectFileFileBrowser}
+                    initialPath={tempSelectedSource || selectedSource}
+                />
+            )}
 
-            <EditTonieModal
-                open={isEditModalOpen}
-                title={editModalTitle}
-                onCancel={() => setIsEditModalOpen(false)}
-                onSave={handleSaveChanges}
-                selectedSource={selectedSource}
-                onSelectedSourceChange={(value) => {
-                    setSelectedSource(value);
-                    setTempSelectedSource(value);
-                }}
-                originalSource={tonieCard.source || ""}
-                inputValidationSource={inputValidationSource}
-                setInputValidationSource={setInputValidationSource}
-                keyRadioStreamSearch={keyRadioStreamSearch}
-                onSearchRadioChange={searchRadioResultChanged}
-                selectedModel={selectedModel}
-                onSelectedModelChange={(value) => {
-                    setSelectedModel(value);
-                    setInputValidationModel({ validateStatus: "", help: "" });
-                    if (!value) {
-                        setSelectedModelDisplayText("");
-                    } else if (value === tonieCard.tonieInfo.model) {
-                        const m = tonieCard.tonieInfo.model || "";
-                        const s = tonieCard.tonieInfo.series || "";
-                        const e = tonieCard.tonieInfo.episode || "";
-                        setSelectedModelDisplayText(
-                            m && s ? `[${m}] ${s}${e ? ` - ${e}` : ""}` : "",
-                        );
+            {isEditModalOpen && (
+                <EditTonieModal
+                    open={isEditModalOpen}
+                    title={editModalTitle}
+                    onCancel={() => setIsEditModalOpen(false)}
+                    onSave={handleSaveChanges}
+                    selectedSource={selectedSource}
+                    onSelectedSourceChange={(value) => {
+                        setSelectedSource(value);
+                        setTempSelectedSource(value);
+                    }}
+                    originalSource={tonieCard.source || ""}
+                    inputValidationSource={inputValidationSource}
+                    setInputValidationSource={setInputValidationSource}
+                    keyRadioStreamSearch={keyRadioStreamSearch}
+                    onSearchRadioChange={searchRadioResultChanged}
+                    selectedModel={selectedModel}
+                    onSelectedModelChange={(value) => {
+                        setSelectedModel(value);
+                        setInputValidationModel({ validateStatus: "", help: "" });
+                        if (!value) {
+                            setSelectedModelDisplayText("");
+                        } else if (value === tonieCard.tonieInfo.model) {
+                            const m = tonieCard.tonieInfo.model || "";
+                            const s = tonieCard.tonieInfo.series || "";
+                            const e = tonieCard.tonieInfo.episode || "";
+                            setSelectedModelDisplayText(
+                                m && s ? `[${m}] ${s}${e ? ` - ${e}` : ""}` : "",
+                            );
+                        }
+                    }}
+                    originalModel={tonieCard.tonieInfo.model || ""}
+                    inputValidationModel={inputValidationModel}
+                    setInputValidationModel={setInputValidationModel}
+                    keyTonieArticleSearch={keyTonieArticleSearch}
+                    onSearchModelChange={searchModelResultChanged}
+                    hasPendingChanges={hasPendingChanges}
+                    onOpenFileSelectModal={showFileSelectModal}
+                    modelAudioPath={modelAudioPath}
+                    modelAudioHasMapping={modelAudioHasMapping}
+                    modelDisplayText={selectedModelDisplayText}
+                    onCreateNewModel={() => setIsCreateModelModalOpen(true)}
+                    onEditModel={() => setIsEditModelModalOpen(true)}
+                    isSelectedModelCustom={isSelectedModelCustom}
+                    modelReadOnly={false}
+                    onModelSelectResult={(result) => {
+                        setSelectedModel(result.value);
+                        setSelectedModelDisplayText(result.selectionText);
+                    }}
+                    modelInfoTooltip={
+                        currentModelForTooltip
+                            ? renderInfoTooltip(
+                                  "model",
+                                  currentModelForTooltip,
+                                  Boolean(modelAudioPath),
+                                  modelAudioPath || undefined,
+                              )
+                            : undefined
                     }
-                }}
-                originalModel={tonieCard.tonieInfo.model || ""}
-                inputValidationModel={inputValidationModel}
-                setInputValidationModel={setInputValidationModel}
-                keyTonieArticleSearch={keyTonieArticleSearch}
-                onSearchModelChange={searchModelResultChanged}
-                hasPendingChanges={hasPendingChanges}
-                onOpenFileSelectModal={showFileSelectModal}
-                modelAudioPath={modelAudioPath}
-                modelAudioHasMapping={modelAudioHasMapping}
-                modelDisplayText={selectedModelDisplayText}
-                onCreateNewModel={() => setIsCreateModelModalOpen(true)}
-                onEditModel={() => setIsEditModelModalOpen(true)}
-                isSelectedModelCustom={isSelectedModelCustom}
-                modelReadOnly={false}
-                onModelSelectResult={(result) => {
-                    setSelectedModel(result.value);
-                    setSelectedModelDisplayText(result.selectionText);
-                }}
-                modelInfoTooltip={
-                    currentModelForTooltip
-                        ? renderInfoTooltip(
-                              "model",
-                              currentModelForTooltip,
-                              Boolean(modelAudioPath),
-                              modelAudioPath || undefined,
-                          )
-                        : undefined
-                }
-                audioInfoTooltip={
-                    currentAudioModelForSet
-                        ? renderInfoTooltip("audio", currentAudioModelForSet, true)
-                        : undefined
-                }
-                audioModelForSet={currentAudioModelForSet}
-                onSetModelFromAudio={() => {
-                    const m = currentAudioModelForSet.trim();
-                    if (!m) return;
-                    setSelectedModel(m);
-                    const series = (audioInfoFromSource?.series || "").trim();
-                    const episode = (audioInfoFromSource?.episode || "").trim();
-                    setSelectedModelDisplayText(
-                        series ? `[${m}] ${series}${episode ? ` - ${episode}` : ""}` : `[${m}]`,
-                    );
-                }}
-            />
+                    audioInfoTooltip={
+                        currentAudioModelForSet
+                            ? renderInfoTooltip("audio", currentAudioModelForSet, true)
+                            : undefined
+                    }
+                    audioModelForSet={currentAudioModelForSet}
+                    onSetModelFromAudio={() => {
+                        const m = currentAudioModelForSet.trim();
+                        if (!m) return;
+                        setSelectedModel(m);
+                        const series = (audioInfoFromSource?.series || "").trim();
+                        const episode = (audioInfoFromSource?.episode || "").trim();
+                        setSelectedModelDisplayText(
+                            series ? `[${m}] ${series}${episode ? ` - ${episode}` : ""}` : `[${m}]`,
+                        );
+                    }}
+                />
+            )}
 
-            <CustomModelEditor
-                open={isCreateModelModalOpen}
-                onClose={() => setIsCreateModelModalOpen(false)}
-                mode="create-single"
-                onCreated={(model, selectionText) => {
-                    setSelectedModel(model);
-                    setSelectedModelDisplayText(selectionText || `[${model}]`);
-                    setIsCreateModelModalOpen(false);
-                    setIsEditModalOpen(true);
-                }}
-            />
-            <CustomModelEditor
-                open={isEditModelModalOpen}
-                onClose={() => setIsEditModelModalOpen(false)}
-                mode="edit-single"
-                initialModel={selectedModel}
-                onUpdated={(model, selectionText) => {
-                    setSelectedModel(model);
-                    setSelectedModelDisplayText(selectionText || `[${model}]`);
-                    setIsEditModelModalOpen(false);
-                    setIsEditModalOpen(true);
-                }}
-            />
+            {isCreateModelModalOpen && (
+                <CustomModelEditor
+                    open={isCreateModelModalOpen}
+                    onClose={() => setIsCreateModelModalOpen(false)}
+                    mode="create-single"
+                    onCreated={(model, selectionText) => {
+                        setSelectedModel(model);
+                        setSelectedModelDisplayText(selectionText || `[${model}]`);
+                        setIsCreateModelModalOpen(false);
+                        setIsEditModalOpen(true);
+                    }}
+                />
+            )}
         </>
     );
 };
