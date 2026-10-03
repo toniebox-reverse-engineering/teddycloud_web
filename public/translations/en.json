@@ -368,6 +368,7 @@
         "deleteMultiple": "Delete {{selectedRowCount}} selected rows",
         "downloadFile": "Download File",
         "downloadFileAsOgg": "Download TAF as *.ogg",
+        "downloadTracks": "Download TAF tracks as *.ogg",
         "encodeFiles": {
             "addFiles": "Add files",
             "cancel": "Cancel",
@@ -2140,9 +2141,9 @@
                 },
                 "infoIcon": {
                     "download": {
-                        "description": "If available, the linked TAF file can be downloaded as a single .ogg file.",
-                        "text": "Enables downloading the TAF file as an .ogg audio file.",
-                        "title": "Download TAF as .ogg"
+                        "description": "If available, tracks can be downloaded as separate *.ogg files (or as one *.ogg file).",
+                        "text": "Opens track selection to download the TAF as *.ogg.",
+                        "title": "Download TAF as *.ogg"
                     },
                     "exists": {
                         "description": "The 'exists' status is set to 'yes' if the assigned source file is present.",
@@ -2212,6 +2213,17 @@
             "tracklist": "Tracklist:",
             "valid": "Valid:",
             "yes": "Yes"
+        },
+        "tafDownload": {
+            "asOneFile": "Download as one *.ogg file",
+            "downloadCount": "Download {{count}} tracks as *.ogg",
+            "downloadOne": "Download 1 track as *.ogg",
+            "duration": "Time",
+            "modalTitle": "Download tracks as *.ogg",
+            "selectAll": "Select all tracks",
+            "selectedCount": "{{selected}} of {{total}} selected",
+            "track": "Track",
+            "unnamedTrack": "Track {{number}}"
         },
         "informationModal": {
             "hideTag": "Hide Tonie/Tag",

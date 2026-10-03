@@ -596,8 +596,8 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 open={!canHover ? false : undefined}
                                 key={`action-download-${record.name}`}
                                 title={
-                                    record.name.endsWith(".taf")
-                                        ? t("fileBrowser.downloadFileAsOgg")
+                                    record.name.toLowerCase().endsWith(".taf")
+                                        ? t("fileBrowser.downloadTracks")
                                         : t("fileBrowser.downloadFile")
                                 }
                             >

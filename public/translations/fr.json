@@ -368,6 +368,7 @@
         "deleteMultiple": "{{selectedRowCount}} lignes sélectionnées à supprimer",
         "downloadFile": "Télécharger le fichier",
         "downloadFileAsOgg": "Télécharger TAF en *.ogg",
+        "downloadTracks": "Télécharger les pistes TAF en *.ogg",
         "encodeFiles": {
             "addFiles": "Ajouter des fichiers",
             "cancel": "Annuler",
@@ -2140,9 +2141,9 @@
                 },
                 "infoIcon": {
                     "download": {
-                        "description": "Si disponible, tu peux télécharger le fichier TAF lié sous forme d'un fichier .ogg unique.",
-                        "text": "Permet de télécharger le fichier TAF au format audio .ogg.",
-                        "title": "Télécharger le TAF en .ogg"
+                        "description": "Si disponible, les pistes peuvent être téléchargées en fichiers *.ogg séparés (ou en un seul fichier *.ogg).",
+                        "text": "Ouvre la sélection des pistes pour télécharger le TAF en *.ogg.",
+                        "title": "Télécharger le TAF en *.ogg"
                     },
                     "exists": {
                         "description": "Le statut 'existe' est défini sur 'oui' si le fichier source assigné est présent.",
@@ -2212,6 +2213,17 @@
             "tracklist": "Liste des pistes:",
             "valid": "Valide:",
             "yes": "Oui"
+        },
+        "tafDownload": {
+            "asOneFile": "Télécharger en un seul fichier *.ogg",
+            "downloadCount": "Télécharger {{count}} pistes en *.ogg",
+            "downloadOne": "Télécharger 1 piste en *.ogg",
+            "duration": "Durée",
+            "modalTitle": "Télécharger les pistes en *.ogg",
+            "selectAll": "Sélectionner toutes les pistes",
+            "selectedCount": "{{selected}} sur {{total}} sélectionnées",
+            "track": "Piste",
+            "unnamedTrack": "Piste {{number}}"
         },
         "informationModal": {
             "hideTag": "Masquer le Tonie/Tag",

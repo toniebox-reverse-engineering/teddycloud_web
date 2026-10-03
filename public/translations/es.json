@@ -368,6 +368,7 @@
         "deleteMultiple": "{{selectedRowCount}} filas seleccionadas para eliminar",
         "downloadFile": "Descargar archivo",
         "downloadFileAsOgg": "Descargar TAF como *.ogg",
+        "downloadTracks": "Descargar pistas TAF como *.ogg",
         "encodeFiles": {
             "addFiles": "Agregar archivos",
             "cancel": "Cancelar",
@@ -2140,9 +2141,9 @@
                 },
                 "infoIcon": {
                     "download": {
-                        "description": "Si está disponible, puedes descargar el archivo TAF vinculado como un único archivo .ogg.",
-                        "text": "Permite descargar el archivo TAF como un archivo de audio .ogg.",
-                        "title": "Descargar TAF como .ogg"
+                        "description": "Si está disponible, las pistas se pueden descargar como archivos *.ogg separados (o como un solo archivo *.ogg).",
+                        "text": "Abre la selección de pistas para descargar el TAF como *.ogg.",
+                        "title": "Descargar TAF como *.ogg"
                     },
                     "exists": {
                         "description": "El estado 'existe' se muestra como 'sí' si el archivo fuente asignado está presente.",
@@ -2212,6 +2213,17 @@
             "tracklist": "Lista de pistas:",
             "valid": "Válido:",
             "yes": "Sí"
+        },
+        "tafDownload": {
+            "asOneFile": "Descargar como un solo archivo *.ogg",
+            "downloadCount": "Descargar {{count}} pistas como *.ogg",
+            "downloadOne": "Descargar 1 pista como *.ogg",
+            "duration": "Tiempo",
+            "modalTitle": "Descargar pistas como *.ogg",
+            "selectAll": "Seleccionar todas las pistas",
+            "selectedCount": "{{selected}} de {{total}} seleccionadas",
+            "track": "Pista",
+            "unnamedTrack": "Pista {{number}}"
         },
         "informationModal": {
             "hideTag": "Ocultar Tonie/Tag",
