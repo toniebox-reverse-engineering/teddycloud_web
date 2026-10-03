@@ -18,6 +18,8 @@
 - gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
 - gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
 - gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)
+- gui: Removed link to be sunsetted legacy admin gui
+- gui: Refactored WebAuthApi to use TeddycloudApi (and allow again local dev setup with remote teddycloud instance)
 
 ### Commits
 
