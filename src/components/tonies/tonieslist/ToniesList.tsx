@@ -25,6 +25,7 @@ import { ToniesFilterPanel } from "./filterpanel/ToniesFilterPanel";
 import ToniesPagination from "./pagination/ToniesPagination";
 import { showHideTonieConfirm } from "./modals/ToniesHideConfirmModal";
 import { EllipsisOutlined } from "@ant-design/icons";
+import { userStorage } from "../../../utils/storage/userStorage";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 const STORAGE_KEY = "toniesListState";
@@ -60,7 +61,7 @@ export const ToniesList: React.FC<{
     const [loading, setLoading] = useState(true);
     const [lastTonieboxRUIDs, setLastTonieboxRUIDs] = useState<Array<[string, string, string]>>([]);
     const [pageSize, setPageSize] = useState<number>(() => {
-        const storedState = localStorage.getItem(STORAGE_KEY);
+        const storedState = userStorage.getItem(STORAGE_KEY);
         if (storedState) {
             const { pageSize } = JSON.parse(storedState);
             return pageSize;
@@ -102,7 +103,7 @@ export const ToniesList: React.FC<{
     // ------------------------
 
     useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<
+        const stored = JSON.parse(userStorage.getItem("tonieFilters") || "{}") as Record<
             string,
             ToniesFilterSettings
         >;
@@ -175,7 +176,7 @@ export const ToniesList: React.FC<{
     }, [hookExistingFilters]);
 
     useEffect(() => {
-        const storedState = localStorage.getItem(STORAGE_KEY);
+        const storedState = userStorage.getItem(STORAGE_KEY);
         if (storedState) {
             try {
                 const { pageSize: storedPageSize, showAll: storedShowAll } =
@@ -261,7 +262,7 @@ export const ToniesList: React.FC<{
             paginationEnabled,
             showAll,
         });
-        localStorage.setItem(STORAGE_KEY, stateToStore);
+        userStorage.setItem(STORAGE_KEY, stateToStore);
     }, [pageSize, paginationEnabled, showAll]);
 
     useEffect(() => {
@@ -484,7 +485,7 @@ export const ToniesList: React.FC<{
             t("tonies.messages.filterSavedDetails", { name }),
             t("tonies.title"),
         );
-        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<
+        const stored = JSON.parse(userStorage.getItem("tonieFilters") || "{}") as Record<
             string,
             ToniesFilterSettings
         >;
@@ -498,7 +499,7 @@ export const ToniesList: React.FC<{
             addNotification(
                 NotificationTypeEnum.Error,
                 t("tonies.messages.noFilterFound"),
-                t("tonies.messages.noFilterFoundWithName", { name }),
+                t("tonies.messages.noFilterFoundDetails", { name }),
                 t("tonies.title"),
             );
             return;
@@ -511,7 +512,7 @@ export const ToniesList: React.FC<{
         if (!name) return;
         const ok = deleteFilter(name);
         if (!ok) return;
-        const stored = JSON.parse(localStorage.getItem("tonieFilters") || "{}") as Record<
+        const stored = JSON.parse(userStorage.getItem("tonieFilters") || "{}") as Record<
             string,
             ToniesFilterSettings
         >;

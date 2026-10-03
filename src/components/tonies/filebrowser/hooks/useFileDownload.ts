@@ -1,7 +1,7 @@
 import { Record as tafRecord } from "../../../../types/fileBrowserTypes";
 import { triggerBrowserDownload, toSameOriginUrl } from "../../../../utils/downloads/tafDownload";
 import { sanitizeDownloadName } from "../../../../utils/files/sanitizeDownloadName";
-import { withBase } from "../../../../utils/basePath";
+import { backendUrl } from "../../../../utils/basePath";
 
 interface UseFileDownloadParams {
     setDownloading: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
@@ -10,15 +10,12 @@ interface UseFileDownloadParams {
 export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
     const handleFileDownload = async (
         record: tafRecord,
-        baseApiUrl: string,
         path: string,
         special: string,
         overlay?: string,
     ) => {
         const fileUrl =
-            encodeURI(
-                baseApiUrl + withBase("/content/") + decodeURIComponent(path) + "/" + record.name,
-            ) +
+            encodeURI(backendUrl("/content/" + decodeURIComponent(path) + "/" + record.name)) +
             "?" +
             (record.name.toLowerCase().endsWith(".taf") ? "ogg=true&" : "") +
             "special=" +

@@ -8,6 +8,7 @@ import type {
     ToniesFilterState,
 } from "../../../../types/toniesFilterTypes";
 import { toModelKey } from "../../utils/modelKey";
+import { userStorage } from "../../../../utils/storage/userStorage";
 
 const STORAGE_KEY_FILTERS = "tonieFilters";
 
@@ -115,7 +116,7 @@ export function useToniesFilter(params: UseToniesFilterParams) {
     });
 
     useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY_FILTERS) || "{}") as Record<
+        const stored = JSON.parse(userStorage.getItem(STORAGE_KEY_FILTERS) || "{}") as Record<
             string,
             ToniesFilterSettings
         >;
@@ -720,7 +721,7 @@ export function useToniesFilter(params: UseToniesFilterParams) {
         if (!name) return;
         setExistingFilters((prev) => {
             const next = { ...prev, [name]: getFilterSettings() };
-            localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
+            userStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
             return next;
         });
     };
@@ -745,7 +746,7 @@ export function useToniesFilter(params: UseToniesFilterParams) {
 
         setExistingFilters((prev) => {
             const { [name]: _, ...next } = prev;
-            localStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
+            userStorage.setItem(STORAGE_KEY_FILTERS, JSON.stringify(next));
             return next;
         });
         return true;

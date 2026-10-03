@@ -125,8 +125,8 @@ const DeleteFilesModal: React.FC<DeleteFilesModalProps> = ({
         if (selectedRowKeys.length === 0) {
             addNotification(
                 NotificationTypeEnum.Warning,
-                t("tonies.messages.noRowsSelected"),
-                t("tonies.messages.noRowsSelectedForDeletion"),
+                t("fileBrowser.messages.noRowsSelected"),
+                t("fileBrowser.messages.noRowsSelectedForDeletion"),
                 t("fileBrowser.title"),
             );
             return;

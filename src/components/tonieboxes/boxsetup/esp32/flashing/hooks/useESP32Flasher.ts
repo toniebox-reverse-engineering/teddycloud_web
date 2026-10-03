@@ -747,7 +747,7 @@ export const useESP32Flasher = (
 
             setState((prev) => ({
                 ...prev,
-                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploadingFlashData"),
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.uploading"),
                 downloadLink: url,
             }));
 

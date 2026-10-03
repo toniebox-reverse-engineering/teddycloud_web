@@ -17,7 +17,8 @@ import { isIOS, supportsOggOpus } from "../../../../utils/browser/browserUtils";
 
 import logoImg from "../../../../assets/logo.png";
 import TracklistModal from "../modals/TracklistModal";
-import { withBase } from "../../../../utils/basePath";
+import { userStorage } from "../../../../utils/storage/userStorage";
+import { backendUrl, withBase } from "../../../../utils/basePath";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -45,7 +46,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const [isTracklistVisible, setIsTracklistVisible] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [volume, setVolume] = useState(() => {
-        const saved = localStorage.getItem("audioVolume");
+        const saved = userStorage.getItem("audioVolume");
         return saved ? Number(saved) : 100;
     });
 
@@ -61,7 +62,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const url =
         tonieCard != null
             ? tonieCard.valid
-                ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + withBase(tonieCard.audioUrl)
+                ? backendUrl(tonieCard.audioUrl)
                 : tonieCard.source
             : "";
 
@@ -144,7 +145,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         if (audioRef.current) {
             audioRef.current.volume = volume / 100;
         }
-        localStorage.setItem("audioVolume", volume.toString());
+        userStorage.setItem("audioVolume", volume.toString());
     }, [volume]);
 
     useEffect(() => {

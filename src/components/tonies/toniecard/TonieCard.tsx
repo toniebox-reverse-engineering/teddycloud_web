@@ -8,7 +8,6 @@ import {
     InfoCircleOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
-    StepForwardOutlined,
     StopOutlined,
 } from "@ant-design/icons";
 
@@ -32,9 +31,8 @@ import { useResolvedModelAudio } from "./hooks/useResolvedModelAudio";
 import { useTooltipInfoByModel } from "./hooks/useTooltipInfoByModel";
 import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
-import { useAssignNextEpisode } from "./hooks/useAssignNextEpisode";
 import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
-import { withBase } from "../../../utils/basePath";
+import { backendUrl } from "../../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -221,13 +219,6 @@ export const TonieCard: React.FC<{
         fetchUpdatedTonieCard,
     });
 
-    const { nextEpisodeAvailable, handleAssignNextEpisode } = useAssignNextEpisode({
-        tonieCard,
-        overlay,
-        enabled: !readOnly,
-        fetchUpdatedTonieCard,
-    });
-
     // ------------------------
     // Handlers – playback
     // ------------------------
@@ -382,7 +373,7 @@ export const TonieCard: React.FC<{
                     {modelName || t("tonies.unsetTonie")}
                 </div>
                 {rows.length === 0 ? (
-                    <span>{t("tonies.customEditor.unknownModel")}</span>
+                    <span>{t("tonies.informationModal.unknownModel")}</span>
                 ) : (
                     rows.map((r) => (
                         <div key={r.label}>
@@ -427,10 +418,7 @@ export const TonieCard: React.FC<{
                 key="playpause"
                 onClick={() =>
                     handlePlayPauseClick(
-                        tonieCard.valid
-                            ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                  withBase(tonieCard.audioUrl)
-                            : tonieCard.source,
+                        tonieCard.valid ? backendUrl(tonieCard.audioUrl) : tonieCard.source,
                     )
                 }
             />
@@ -495,26 +483,6 @@ export const TonieCard: React.FC<{
         />
     );
 
-    const assignNextEpisodeAction = (
-        <Tooltip
-            title={
-                nextEpisodeAvailable
-                    ? t("tonies.assignNextEpisode.action")
-                    : t("tonies.assignNextEpisode.noneLeft")
-            }
-        >
-            <StepForwardOutlined
-                key="assignNextEpisode"
-                style={
-                    nextEpisodeAvailable
-                        ? undefined
-                        : { cursor: "default", color: token.colorTextDisabled }
-                }
-                onClick={nextEpisodeAvailable ? handleAssignNextEpisode : undefined}
-            />
-        </Tooltip>
-    );
-
     const languageCode = toLanguageCode(tonieCard.tonieInfo.language);
     const defaultLanguageCode = toLanguageCode(defaultLanguage);
     const languageTooltipKey = languageCode;
@@ -526,7 +494,6 @@ export const TonieCard: React.FC<{
               playAction,
               cloudAction,
               liveAction,
-              assignNextEpisodeAction,
           ];
 
     // ------------------------

@@ -1,11 +1,13 @@
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { ConfigProvider, Layout, theme } from "antd";
+import { ConfigProvider, Flex, Layout, Spin, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import { StyledFooter } from "./components/common/footer/StyledFooter";
 import { StyledHeader } from "./components/common/header/StyledHeader";
 import { AudioProvider } from "./provider/AudioProvider";
+import { AuthProvider, useAuth } from "./provider/AuthProvider";
 import { TeddyCloudProvider } from "./provider/TeddyCloudProvider";
 
 import { Error404Page } from "./pages/Error404Page";
@@ -31,6 +33,8 @@ import { NotificationsListPage } from "./pages/settings/NotificationsListPage";
 import { RtnlPage } from "./pages/settings/RtnlPage";
 import { SettingsPage } from "./pages/settings/SettingsPage";
 import { CertificatesPage } from "./pages/settings/certificates/CertificatesPage";
+import { WebAuthPage } from "./pages/settings/WebAuthPage";
+import { LoginPage } from "./pages/LoginPage";
 
 import { TonieboxesPage } from "./pages/tonieboxes/TonieboxesPage";
 import { BoxSetupPage } from "./pages/tonieboxes/boxsetup/BoxSetupPage";
@@ -59,15 +63,23 @@ import MatrixRain from "./styles/matrix/matrixRain";
 
 import { detectColorScheme } from "./utils/browser/browserUtils";
 import { StyledThemeProvider } from "./provider/StyledThemeProvider";
+import { USER_STORAGE_SCOPE_EVENT, userStorage } from "./utils/storage/userStorage";
 import { withBase } from "./utils/basePath";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
 
     const [themeMode, setThemeMode] = useState<string>(() => {
-        const savedTheme = localStorage.getItem("theme");
+        const savedTheme = userStorage.getItem("theme");
         return savedTheme || "auto";
     });
+
+    // The theme is a per-user setting: reload it when another user logs in or out.
+    useEffect(() => {
+        const reloadTheme = () => setThemeMode(userStorage.getItem("theme") || "auto");
+        window.addEventListener(USER_STORAGE_SCOPE_EVENT, reloadTheme);
+        return () => window.removeEventListener(USER_STORAGE_SCOPE_EVENT, reloadTheme);
+    }, []);
 
     const resolveThemeMode = (mode: string): "light" | "dark" | "matrix" => {
         if (mode === "auto") {
@@ -111,7 +123,7 @@ function App() {
 
     // Meta-Theme-Color and Matrix-class
     useEffect(() => {
-        localStorage.setItem("theme", themeMode);
+        userStorage.setItem("theme", themeMode);
         updateMetaThemeColor(effectiveThemeMode);
 
         if (effectiveThemeMode === "matrix") {
@@ -155,203 +167,182 @@ function App() {
         >
             <StyledThemeProvider>
                 {effectiveThemeMode === "matrix" && <MatrixRain />}
-                <TeddyCloudProvider>
-                    <div className="App">
-                        <Layout style={{ minHeight: "100vh" }}>
-                            <Router basename={withBase("/web")}>
-                                <StyledHeader themeSwitch={themeSwitchIcon} themeMode={themeMode} />
-                                <AudioProvider>
-                                    <Layout>
-                                        <Routes>
-                                            <Route path="/" element={<HomePage />} />
-                                            <Route path="/home/stats" element={<StatsPage />} />
-                                            <Route
-                                                path="/home/features"
-                                                element={<FeaturesPage />}
-                                            />
-                                            <Route
-                                                path="/home/toniemeeting"
-                                                element={<TonieMeetingPage />}
-                                            />
-                                            <Route
-                                                path="/home/plugin/:pluginId"
-                                                element={<PluginPage />}
-                                            />
-
-                                            <Route path="/tonies" element={<ToniesPage />} />
-                                            <Route
-                                                path="/tonies/audioplayer"
-                                                element={
-                                                    <TeddyAudioPlayerPage standalone={false} />
-                                                }
-                                            />
-                                            <Route
-                                                path="/audioplayer"
-                                                element={<TeddyAudioPlayerPage standalone />}
-                                            />
-                                            <Route
-                                                path="/tonies/system-sounds"
-                                                element={<SystemSoundsPage />}
-                                            />
-                                            <Route
-                                                path="/tonies/content"
-                                                element={<ContentPage />}
-                                            />
-                                            <Route
-                                                path="/tonies/library"
-                                                element={<LibraryPage />}
-                                            />
-                                            <Route
-                                                path="/tonies/customimages"
-                                                element={
-                                                    <Navigate
-                                                        to="/tonies/library?view=custom_img"
-                                                        replace
-                                                    />
-                                                }
-                                            />
-                                            <Route
-                                                path="/tonies/encoder"
-                                                element={<EncoderPage />}
-                                            />
-                                            <Route
-                                                path="/tonies/tap"
-                                                element={<TeddyAudioPlaylistsPage />}
-                                            />
-                                            <Route
-                                                path="/tonies/teddystudio"
-                                                element={<TeddyStudioPage />}
-                                            />
-                                            <Route
-                                                path="/tonies/customeditor"
-                                                element={<CustomTonieCreatorPage />}
-                                            />
-                                            <Route
-                                                path="/tonies/plugin/:pluginId"
-                                                element={<PluginPage />}
-                                            />
-
-                                            <Route
-                                                path="/tonieboxes"
-                                                element={<TonieboxesPage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup"
-                                                element={<BoxSetupPage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/identifyboxversion"
-                                                element={<IdentifyBoxVersionPage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/openboxguide"
-                                                element={<OpenBoxGuidePage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/boxversioninfo"
-                                                element={<BoxVersionInformationPage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/tb2/flashing"
-                                                element={<TB2BoxFlashingGuidePage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/esp32/flashing"
-                                                element={<ESP32BoxFlashingPage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/esp32/legacy"
-                                                element={<ESP32LegacyFlashingGuidePage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/cc3200/flashing"
-                                                element={<CC3200BoxFlashingGuidePage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/boxsetup/cc3235/flashing"
-                                                element={<CC3235BoxFlashingGuidePage />}
-                                            />
-                                            <Route
-                                                path="/tonieboxes/plugin/:pluginId"
-                                                element={<PluginPage />}
-                                            />
-
-                                            <Route path="/settings" element={<SettingsPage />} />
-                                            <Route
-                                                path="/settings/guisettings"
-                                                element={<GUISettingsPage />}
-                                            />
-                                            <Route
-                                                path="/settings/certificates"
-                                                element={<CertificatesPage />}
-                                            />
-                                            <Route path="/settings/rtnl" element={<RtnlPage />} />
-                                            <Route
-                                                path="/settings/notifications"
-                                                element={<NotificationsListPage />}
-                                            />
-                                            <Route
-                                                path="/settings/plugin/:pluginId"
-                                                element={<PluginPage />}
-                                            />
-
-                                            <Route path="/community" element={<CommunityPage />} />
-                                            <Route
-                                                path="/community/tcplugins"
-                                                element={<PluginListPage />}
-                                            />
-                                            <Route
-                                                path="/community/tcplugins/:pluginId"
-                                                element={<PluginPage />}
-                                            />
-                                            <Route
-                                                path="/community/plugin/:pluginId"
-                                                element={<PluginPage />}
-                                            />
-                                            <Route path="/community/faq" element={<FAQPage />} />
-                                            <Route
-                                                path="/community/supportrequestguide"
-                                                element={<HowToGetSupportPage />}
-                                            />
-                                            <Route
-                                                path="/community/contribution"
-                                                element={<ContributionPage />}
-                                            />
-                                            <Route
-                                                path="/community/contribution/tonies-json"
-                                                element={<ContributionToniesJsonPage />}
-                                            />
-                                            <Route
-                                                path="/community/contribution/translations"
-                                                element={<TranslationsPage />}
-                                            />
-                                            <Route
-                                                path="/community/contributors"
-                                                element={<ContributorsPage />}
-                                            />
-                                            <Route
-                                                path="/community/attribution"
-                                                element={<AttributionPage />}
-                                            />
-                                            <Route
-                                                path="/community/changelog"
-                                                element={<ChangelogPage />}
-                                            />
-                                            <Route
-                                                path="/plugin/:pluginId"
-                                                element={<PluginPage standalone />}
-                                            />
-                                            <Route path="/*" element={<Error404Page />} />
-                                        </Routes>
-                                    </Layout>
-                                    <StyledFooter />
-                                </AudioProvider>
-                            </Router>
-                        </Layout>
-                    </div>
-                </TeddyCloudProvider>
+                <Router basename={withBase("/web")}>
+                    <AuthProvider>
+                        <AuthenticatedApp themeSwitch={themeSwitchIcon} themeMode={themeMode} />
+                    </AuthProvider>
+                </Router>
             </StyledThemeProvider>
         </ConfigProvider>
+    );
+}
+
+function AuthenticatedApp({
+    themeSwitch,
+    themeMode,
+}: {
+    themeSwitch: ReactNode;
+    themeMode: string;
+}) {
+    const { loading, needsLogin } = useAuth();
+
+    if (loading) {
+        return (
+            <Flex align="center" justify="center" style={{ minHeight: "100vh" }}>
+                <Spin size="large" />
+            </Flex>
+        );
+    }
+
+    if (needsLogin) {
+        return <LoginPage themeSwitch={themeSwitch} />;
+    }
+
+    return (
+        <TeddyCloudProvider>
+            <div className="App">
+                <Layout style={{ minHeight: "100vh" }}>
+                    <StyledHeader themeSwitch={themeSwitch} themeMode={themeMode} />
+                    <AudioProvider>
+                        <Layout>
+                            <Routes>
+                                <Route path="/" element={<HomePage />} />
+                                <Route path="/home/stats" element={<StatsPage />} />
+                                <Route path="/home/features" element={<FeaturesPage />} />
+                                <Route path="/home/toniemeeting" element={<TonieMeetingPage />} />
+                                <Route path="/home/plugin/:pluginId" element={<PluginPage />} />
+
+                                <Route path="/tonies" element={<ToniesPage />} />
+                                <Route
+                                    path="/tonies/audioplayer"
+                                    element={<TeddyAudioPlayerPage standalone={false} />}
+                                />
+                                <Route
+                                    path="/audioplayer"
+                                    element={<TeddyAudioPlayerPage standalone />}
+                                />
+                                <Route
+                                    path="/tonies/system-sounds"
+                                    element={<SystemSoundsPage />}
+                                />
+                                <Route path="/tonies/content" element={<ContentPage />} />
+                                <Route path="/tonies/library" element={<LibraryPage />} />
+                                <Route
+                                    path="/tonies/customimages"
+                                    element={
+                                        <Navigate to="/tonies/library?view=custom_img" replace />
+                                    }
+                                />
+                                <Route path="/tonies/encoder" element={<EncoderPage />} />
+                                <Route path="/tonies/tap" element={<TeddyAudioPlaylistsPage />} />
+                                <Route path="/tonies/teddystudio" element={<TeddyStudioPage />} />
+                                <Route
+                                    path="/tonies/customeditor"
+                                    element={<CustomTonieCreatorPage />}
+                                />
+                                <Route path="/tonies/plugin/:pluginId" element={<PluginPage />} />
+
+                                <Route path="/tonieboxes" element={<TonieboxesPage />} />
+                                <Route path="/tonieboxes/boxsetup" element={<BoxSetupPage />} />
+                                <Route
+                                    path="/tonieboxes/boxsetup/identifyboxversion"
+                                    element={<IdentifyBoxVersionPage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/boxsetup/openboxguide"
+                                    element={<OpenBoxGuidePage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/boxsetup/boxversioninfo"
+                                    element={<BoxVersionInformationPage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/boxsetup/tb2/flashing"
+                                    element={<TB2BoxFlashingGuidePage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/boxsetup/esp32/flashing"
+                                    element={<ESP32BoxFlashingPage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/boxsetup/esp32/legacy"
+                                    element={<ESP32LegacyFlashingGuidePage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/boxsetup/cc3200/flashing"
+                                    element={<CC3200BoxFlashingGuidePage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/boxsetup/cc3235/flashing"
+                                    element={<CC3235BoxFlashingGuidePage />}
+                                />
+                                <Route
+                                    path="/tonieboxes/plugin/:pluginId"
+                                    element={<PluginPage />}
+                                />
+
+                                <Route path="/settings" element={<SettingsPage />} />
+                                <Route path="/settings/guisettings" element={<GUISettingsPage />} />
+                                <Route path="/settings/webauth" element={<WebAuthPage />} />
+                                <Route
+                                    path="/settings/certificates"
+                                    element={<CertificatesPage />}
+                                />
+                                <Route path="/settings/rtnl" element={<RtnlPage />} />
+                                <Route
+                                    path="/settings/notifications"
+                                    element={<NotificationsListPage />}
+                                />
+                                <Route path="/settings/plugin/:pluginId" element={<PluginPage />} />
+
+                                <Route path="/community" element={<CommunityPage />} />
+                                <Route path="/community/tcplugins" element={<PluginListPage />} />
+                                <Route
+                                    path="/community/tcplugins/:pluginId"
+                                    element={<PluginPage />}
+                                />
+                                <Route
+                                    path="/community/plugin/:pluginId"
+                                    element={<PluginPage />}
+                                />
+                                <Route path="/community/faq" element={<FAQPage />} />
+                                <Route
+                                    path="/community/supportrequestguide"
+                                    element={<HowToGetSupportPage />}
+                                />
+                                <Route
+                                    path="/community/contribution"
+                                    element={<ContributionPage />}
+                                />
+                                <Route
+                                    path="/community/contribution/tonies-json"
+                                    element={<ContributionToniesJsonPage />}
+                                />
+                                <Route
+                                    path="/community/contribution/translations"
+                                    element={<TranslationsPage />}
+                                />
+                                <Route
+                                    path="/community/contributors"
+                                    element={<ContributorsPage />}
+                                />
+                                <Route
+                                    path="/community/attribution"
+                                    element={<AttributionPage />}
+                                />
+                                <Route path="/community/changelog" element={<ChangelogPage />} />
+                                <Route
+                                    path="/plugin/:pluginId"
+                                    element={<PluginPage standalone />}
+                                />
+                                <Route path="/*" element={<Error404Page />} />
+                            </Routes>
+                        </Layout>
+                        <StyledFooter />
+                    </AudioProvider>
+                </Layout>
+            </div>
+        </TeddyCloudProvider>
     );
 }
 

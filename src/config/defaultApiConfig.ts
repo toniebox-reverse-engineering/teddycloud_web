@@ -20,5 +20,24 @@ const getBasePath = (): string => {
 export const defaultAPIConfig = () =>
     new Configuration({
         basePath: getBasePath(),
-        //fetchApi: fetch,
+        credentials: "include",
+        fetchApi: async (url, init) => {
+            const headers = new Headers(init?.headers);
+            try {
+                const token = sessionStorage.getItem("teddycloud_web_token");
+                if (token && !headers.has("Authorization")) {
+                    headers.set("Authorization", `Bearer ${token}`);
+                }
+            } catch {
+                /* ignore */
+            }
+            const response = await fetch(url, { ...init, headers, credentials: "include" });
+            if (response.status === 401) {
+                const path = typeof url === "string" ? url : url.toString();
+                if (!path.includes("/api/auth/")) {
+                    window.dispatchEvent(new Event("teddycloud-auth-required"));
+                }
+            }
+            return response;
+        },
     });

@@ -1,4 +1,5 @@
 import { useEffect, useReducer } from "react";
+import { userStorage } from "../../../../utils/storage/userStorage";
 
 export type LabelShape = "round" | "square";
 export type PaperSize = "A4" | "A5" | "Letter" | "Custom";
@@ -217,7 +218,7 @@ export const useSettings = (): SettingsHook => {
     const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
     useEffect(() => {
-        const saved = localStorage.getItem("labelSettings");
+        const saved = userStorage.getItem("labelSettings");
         if (saved) {
             try {
                 const data = JSON.parse(saved);
@@ -259,11 +260,11 @@ export const useSettings = (): SettingsHook => {
             showLabelBorder: state.showLabelBorder,
             paperLabelImageBleed: state.paperLabelImageBleed,
         };
-        localStorage.setItem("labelSettings", JSON.stringify(toStore));
+        userStorage.setItem("labelSettings", JSON.stringify(toStore));
     };
 
     const clear = () => {
-        localStorage.removeItem("labelSettings");
+        userStorage.removeItem("labelSettings");
         dispatch({ type: "RESET" });
     };
 
