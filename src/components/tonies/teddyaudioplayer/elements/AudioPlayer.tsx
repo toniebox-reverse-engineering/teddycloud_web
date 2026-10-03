@@ -18,7 +18,7 @@ import { isIOS, supportsOggOpus } from "../../../../utils/browser/browserUtils";
 import logoImg from "../../../../assets/logo.png";
 import TracklistModal from "../modals/TracklistModal";
 import { userStorage } from "../../../../utils/storage/userStorage";
-import { withBase } from "../../../../utils/basePath";
+import { backendUrl, withBase } from "../../../../utils/basePath";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -62,7 +62,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const url =
         tonieCard != null
             ? tonieCard.valid
-                ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + withBase(tonieCard.audioUrl)
+                ? backendUrl(tonieCard.audioUrl)
                 : tonieCard.source
             : "";
 
