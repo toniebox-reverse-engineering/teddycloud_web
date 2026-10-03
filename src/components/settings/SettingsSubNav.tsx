@@ -8,7 +8,6 @@ import {
     PoweroffOutlined,
     FileSearchOutlined,
     SyncOutlined,
-    HistoryOutlined,
     BellOutlined,
     CodeSandboxOutlined,
     MinusOutlined,
@@ -77,12 +76,6 @@ export const SettingsSubNav = () => {
 
             title: plugin.pluginName,
         }));
-
-    const extractBaseUrl = (fullUrl: URL) => {
-        const url = new URL(fullUrl);
-        const port = url.port ? `:${url.port}` : "";
-        return `${url.protocol}//${url.hostname}${port}`;
-    };
 
     const handleRestartServer = async () => {
         await restartServer(
@@ -275,24 +268,6 @@ export const SettingsSubNav = () => {
             },
             icon: React.createElement(PoweroffOutlined),
             title: t("settings.restartServer"),
-        },
-        {
-            key: "legacy",
-            label: (
-                <Link
-                    to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("settings.legacyGui")}
-                </Link>
-            ),
-            icon: React.createElement(HistoryOutlined),
-            title: t("settings.legacyGui"),
         },
         ...pluginItems,
     ];

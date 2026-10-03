@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1
+
+- gui: Removed link to the legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
+
 ## 0.7.0
 
 - First TB2 support (not for daily use! Search for beta testers open: [https://t.me/toniebox_reverse_engineering/74847](https://t.me/toniebox_reverse_engineering/74847))
