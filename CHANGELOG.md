@@ -5,6 +5,7 @@
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
 - gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
 - gui: Rate-limit web login after repeated failures
+- Fixed WARN log spam (incl. leaked session token) for every web UI request when login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud/issues/485](https://github.com/toniebox-reverse-engineering/teddycloud/issues/485)
 - Fixed auto-redirect from base URL to web UI returning "Login required" when web login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333)
 - gui: fixed missing images in library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320)
 - gui: Added Polish (pl) language support [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325)
