@@ -698,6 +698,21 @@ export const TonieCard: React.FC<{
                 />
             )}
 
+            {isEditModelModalOpen && (
+                <CustomModelEditor
+                    open={isEditModelModalOpen}
+                    onClose={() => setIsEditModelModalOpen(false)}
+                    mode="edit-single"
+                    initialModel={selectedModel}
+                    onUpdated={(model, selectionText) => {
+                        setSelectedModel(model);
+                        setSelectedModelDisplayText(selectionText || `[${model}]`);
+                        setIsEditModelModalOpen(false);
+                        setIsEditModalOpen(true);
+                    }}
+                />
+            )}
+
             {isCreateModelModalOpen && (
                 <CustomModelEditor
                     open={isCreateModelModalOpen}
