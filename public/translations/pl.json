@@ -422,6 +422,24 @@
                 "renameFile": {
                     "text": "Zmienia nazwę pliku. Uwaga: jeśli ten plik jest przypisany do Tonie/Taga, odwołanie nie zostanie zaktualizowane automatycznie.",
                     "title": "Zmień nazwę pliku"
+                },
+                "downloadFile": {
+                    "title": "Pobierz plik",
+                    "text": "Pobiera wybrany plik lub, w przypadku plików TAF, pobiera go jako plik OGG."
+                },
+                "markAsListened": {
+                    "unlistened": {
+                        "title": "Oznacz jako odsłuchane",
+                        "text": "Plik jest obecnie oznaczony jako nieodsłuchany. Kliknij, aby oznaczyć go jako odsłuchany."
+                    },
+                    "listened": {
+                        "title": "Oznacz jako nieodsłuchane",
+                        "text": "Plik jest obecnie oznaczony jako odsłuchany. Kliknij, aby oznaczyć go jako nieodsłuchany."
+                    }
+                },
+                "assignToTonie": {
+                    "title": "Przypisz do Tonie",
+                    "text": "Przypisuje wybrany plik jako zawartość do Tonie/Taga."
                 }
             },
             "actionItemsMulti": {

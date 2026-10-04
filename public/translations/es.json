@@ -422,6 +422,24 @@
                 "renameFile": {
                     "text": "Renombra el archivo. Nota: Si este archivo está asignado a un Tonie/Tag, la referencia no se actualizará automáticamente.",
                     "title": "Renombrar archivo"
+                },
+                "downloadFile": {
+                    "title": "Descargar archivo",
+                    "text": "Descarga el archivo seleccionado o, en el caso de archivos TAF, lo descarga como archivo OGG."
+                },
+                "markAsListened": {
+                    "unlistened": {
+                        "title": "Marcar como escuchado",
+                        "text": "El archivo está marcado actualmente como no escuchado. Haz clic para marcarlo como escuchado."
+                    },
+                    "listened": {
+                        "title": "Marcar como no escuchado",
+                        "text": "El archivo está marcado actualmente como escuchado. Haz clic para marcarlo como no escuchado."
+                    }
+                },
+                "assignToTonie": {
+                    "title": "Asignar a Tonie",
+                    "text": "Asigna el archivo seleccionado como contenido a un Tonie/Tag."
                 }
             },
             "actionItemsMulti": {

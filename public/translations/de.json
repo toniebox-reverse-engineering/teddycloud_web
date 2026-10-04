@@ -422,6 +422,24 @@
                 "renameFile": {
                     "text": "Benennt die Datei um. Hinweis: Wenn diese Datei einem Tonie/Tag zugewiesen ist, wird der Verweis nicht automatisch aktualisiert.",
                     "title": "Datei umbenennen"
+                },
+                "downloadFile": {
+                    "title": "Datei herunterladen",
+                    "text": "Lädt die ausgewählte Datei herunter oder lädt TAF-Dateien als OGG-Datei herunter."
+                },
+                "markAsListened": {
+                    "unlistened": {
+                        "title": "Als gehört markieren",
+                        "text": "Die Datei ist derzeit als nicht gehört markiert. Klicke, um sie als gehört zu markieren."
+                    },
+                    "listened": {
+                        "title": "Als nicht gehört markieren",
+                        "text": "Die Datei ist derzeit als gehört markiert. Klicke, um sie als nicht gehört zu markieren."
+                    }
+                },
+                "assignToTonie": {
+                    "title": "Tonie zuweisen",
+                    "text": "Weist die ausgewählte Datei einem Tonie/Tag als Inhalt zu."
                 }
             },
             "actionItemsMulti": {

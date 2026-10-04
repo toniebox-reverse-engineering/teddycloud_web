@@ -422,6 +422,24 @@
                 "renameFile": {
                     "text": "Renames the file. Note: If this file is assigned to a Tonie/Tag, the reference will not be updated automatically.",
                     "title": "Rename File"
+                },
+                "downloadFile": {
+                    "title": "Download File",
+                    "text": "Downloads the selected file or, for TAF files, downloads it as an OGG file."
+                },
+                "markAsListened": {
+                    "unlistened": {
+                        "title": "Mark as Listened",
+                        "text": "The file is currently marked as not listened. Click to mark it as listened."
+                    },
+                    "listened": {
+                        "title": "Mark as Not Listened",
+                        "text": "The file is currently marked as listened. Click to mark it as not listened."
+                    }
+                },
+                "assignToTonie": {
+                    "title": "Assign to Tonie",
+                    "text": "Assigns the selected file as content to a Tonie/Tag."
                 }
             },
             "actionItemsMulti": {
