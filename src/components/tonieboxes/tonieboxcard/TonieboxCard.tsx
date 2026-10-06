@@ -25,6 +25,7 @@ import defaultBoxImage from "../../../assets/unknown_box.png";
 
 import { EditBoxModal } from "./modals/EditTonieModal";
 import { CertificatesModal } from "../common/modals/CertificatesModal";
+import { useBoxCertificate } from "../common/hooks/useBoxCertificate";
 import { SettingsModal } from "./modals/SettingsModal";
 import { DeleteModal } from "./modals/DeleteModal";
 import { useTriggerWriteConfig } from "./hooks/useTriggerWriteConfig";
@@ -67,6 +68,7 @@ export const TonieboxCard: React.FC<{
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [tonieboxAccessApi, setTonieboxAccessApi] = useState<boolean>(true);
     const [modalKey, setModalKey] = useState(0);
+    const { status: certStatus } = useBoxCertificate(tonieboxCard.ID);
 
     useEffect(() => {
         const fetchTonieboxApiAccess = async () => {
@@ -233,6 +235,14 @@ export const TonieboxCard: React.FC<{
     };
 
     // certificates
+    const certStatusColor = () =>
+        ({
+            trusted: token.colorSuccess,
+            pinned: token.colorSuccess,
+            mismatch: token.colorError,
+            "": undefined,
+        })[certStatus];
+
     const handleUploadCertificatesClick = () => {
         const fetchOptions = async () => {
             const optionsRequest = (await api.apiGetIndexGet(tonieboxCard.ID)) as OptionsList;
@@ -628,11 +638,18 @@ export const TonieboxCard: React.FC<{
                                   )}
                               </>,
                               <EditOutlined key="edit" onClick={() => showModelModal()} />,
-                              <SafetyCertificateOutlined
+                              <Tooltip
                                   key="certificate"
-                                  style={{ marginRight: 8 }}
-                                  onClick={handleUploadCertificatesClick}
-                              />,
+                                  open={!canHover || !certStatus ? false : undefined}
+                                  title={t(
+                                      `tonieboxes.boxCertificate.statusText.${certStatus || "none"}`,
+                                  )}
+                              >
+                                  <SafetyCertificateOutlined
+                                      style={{ marginRight: 8, color: certStatusColor() }}
+                                      onClick={handleUploadCertificatesClick}
+                                  />
+                              </Tooltip>,
                               <SettingOutlined
                                   key="settings"
                                   style={{ marginRight: 8 }}

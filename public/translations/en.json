@@ -1849,7 +1849,20 @@
             "uploadTonieboxCertificates": "Upload certificates for Toniebox{{name}}"
         },
         "warningUseAtYourOwnRisk": "Warning: Use at your own risk!",
-        "warningUseAtYourOwnRiskText": "Flashing your Toniebox with a patched firmware will void your warranty and may lead to a broken box. Please follow the instructions carefully and ensure you understand the risks involved."
+        "warningUseAtYourOwnRiskText": "Flashing your Toniebox with a patched firmware will void your warranty and may lead to a broken box. Please follow the instructions carefully and ensure you understand the risks involved.",
+        "boxCertificate": {
+            "title": "Certificate check",
+            "status": "Status",
+            "presented": "Presented certificate (SHA-256)",
+            "pin": "Pinned certificate (SHA-256)",
+            "nextConnection": "The status is updated with the next connection of the box.",
+            "statusText": {
+                "none": "Not checked yet",
+                "trusted": "Certificate issued by TeddyCloud",
+                "pinned": "Pinned certificate",
+                "mismatch": "Other certificate than the pinned one!"
+            }
+        }
     },
     "tonies": {
         "addNewCustomTonie": "Create new model",

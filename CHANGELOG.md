@@ -2,6 +2,7 @@
 
 ## 0.7.1
 
+- gui: Certificate check per box (issued by TeddyCloud / pinned / other certificate) on the box card and in the certificates dialog [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
 - gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
 - gui: Rate-limit web login after repeated failures
