@@ -41,7 +41,13 @@ const FIELD_ACCESSORS: FIELD_ACCESSOR_MAP = {
     claimed: (t) => t.claimed,
     hasCloudAuth: (t) => t.hasCloudAuth,
     source: (t) => t.source,
-    tracks: (t) => (t.sourceInfo?.tracks || t.tonieInfo?.tracks || []) as string[],
+    tracks: (t) => {
+        const sourceTracks = t.sourceInfo?.tracks;
+        if (Array.isArray(sourceTracks) && sourceTracks.length > 0) {
+            return sourceTracks;
+        }
+        return t.tonieInfo?.tracks || [];
+    },
     trackseconds: (t) => (t.trackSeconds || []) as number[],
 };
 

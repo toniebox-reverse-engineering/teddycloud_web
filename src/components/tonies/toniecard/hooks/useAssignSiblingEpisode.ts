@@ -43,7 +43,12 @@ export const useAssignSiblingEpisode = ({
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${encodeURIComponent(sourceFolder)}&special=library`,
         )
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
             .then((data: any) => {
                 if (cancelled) return;
 
@@ -84,7 +89,8 @@ export const useAssignSiblingEpisode = ({
     const assignEpisode = (file: Record | null) => {
         if (!file) return;
 
-        onSelectedSourceChange(`lib://${folder}/${file.name}`);
+        const normalizedFolder = folder ? `${folder}/` : "";
+        onSelectedSourceChange(`lib://${normalizedFolder}${file.name}`);
         setInputValidationSource({
             validateStatus: "",
             help: "",
