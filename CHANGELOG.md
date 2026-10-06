@@ -4,6 +4,7 @@
 
 - gui: Download TAF tracks as separate .ogg files (ZIP when more than one track is selected) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/169](https://github.com/toniebox-reverse-engineering/teddycloud/issues/169)
 - gui: Box setup can create a port patch for CC3200 boxes (altPort.custom.json) and patch the port of ESP32 boxes, e.g. for a proxy that routes boxes by port
+- gui: Certificate check per box (issued by TeddyCloud / pinned / other certificate) on the box card and in the certificates dialog [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
 - Added total audio length (`lengthSeconds`) to the TAF info of the file index and the tag index [https://github.com/toniebox-reverse-engineering/teddycloud/pull/537](https://github.com/toniebox-reverse-engineering/teddycloud/pull/537)
 - gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
