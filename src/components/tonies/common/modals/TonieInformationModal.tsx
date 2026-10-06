@@ -92,19 +92,22 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         );
     };
 
-    const handleDownload = async (url: string, filename: string) => {
+    const handleDownload = async (path: string, filename: string) => {
         setIsDownloading(true);
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
-        setIsDownloading(false);
+        try {
+            const response = await api.apiGetTeddyCloudApiRaw(path);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+        } finally {
+            setIsDownloading(false);
+        }
     };
 
     const toniePlayedOn =
@@ -454,7 +457,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                 !isDownloading
                                     ? () =>
                                           handleDownload(
-                                              backendUrl(tonieCardOrTAFRecord.audioUrl),
+                                              tonieCardOrTAFRecord.audioUrl,
                                               sourceTitle ? sourceTitle : modelTitle + ".ogg",
                                           )
                                     : undefined

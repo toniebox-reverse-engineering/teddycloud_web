@@ -1,4 +1,8 @@
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { withBase } from "../../../../utils/basePath";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 function getDateTimePrefix() {
     const now = new Date();
@@ -23,7 +27,10 @@ async function tryInlineImage(url: string): Promise<string> {
     const absoluteUrl = toAbsoluteUrl(url);
 
     try {
-        const res = await fetch(absoluteUrl, { mode: "cors" });
+        const res =
+            url.startsWith("/") && !url.startsWith("//")
+                ? await api.apiGetTeddyCloudApiRaw(url)
+                : await fetch(absoluteUrl, { mode: "cors" });
 
         const blob = await res.blob();
         return await new Promise((resolve, reject) => {

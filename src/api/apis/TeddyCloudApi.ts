@@ -691,7 +691,6 @@ export class TeddyCloudApi extends runtime.BaseAPI {
      * @param headerParameters
      * @returns
      */
-
     async apiPostTeddyCloudFormDataRaw(
         path: string,
         formData: FormData,
