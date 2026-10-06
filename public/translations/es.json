@@ -22,7 +22,10 @@
         "passwordMin": "Al menos 4 caracteres",
         "passwordRequired": "La contraseña es obligatoria",
         "username": "Usuario",
-        "usernameRequired": "El usuario es obligatorio"
+        "usernameRequired": "El usuario es obligatorio",
+        "statusLoadFailed": "No se pudo cargar el estado de autenticación",
+        "statusLoadFailedDetails": "No se pudo cargar el estado de autenticación. Comprueba la conexión con TeddyCloud e inténtalo de nuevo.",
+        "retry": "Reintentar"
     },
     "common": {
         "cancel": "Cancelar"

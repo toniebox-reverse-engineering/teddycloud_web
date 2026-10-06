@@ -220,7 +220,6 @@ export const StyledHeader = ({
                 <ServerStatus />
                 {themeSwitch}
                 <StyledLanguageSwitcher />
-                <NotificationButton notificationCount={unconfirmedCount} />
                 {authEnabled ? (
                     <Button
                         type="text"
@@ -228,10 +227,10 @@ export const StyledHeader = ({
                         onClick={() => void logout()}
                         title={t("auth.logout")}
                         aria-label={t("auth.logout")}
-                        style={{ color: "white" }}
+                        style={{ color: "white", marginLeft: -12 }}
                     />
                 ) : null}
-
+                <NotificationButton notificationCount={unconfirmedCount} />
                 <HiddenDesktop style={{ marginLeft: 8 }}>
                     <Button
                         type="primary"

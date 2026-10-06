@@ -11,6 +11,8 @@ import {
 
 type AuthContextValue = AuthStatus & {
     loading: boolean;
+    error: string | null;
+    statusAvailable: boolean;
     needsLogin: boolean;
     refresh: () => Promise<void>;
     login: (username: string, password: string) => Promise<void>;
@@ -28,8 +30,9 @@ const emptyStatus: AuthStatus = {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [status, setStatusState] = useState<AuthStatus>(emptyStatus);
+    const [status, setStatusState] = useState<AuthStatus | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     // GUI settings are stored per user, so the scope must be switched before the UI reads them.
     const setStatus = useCallback((next: AuthStatus) => {
@@ -38,28 +41,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const refresh = useCallback(async () => {
+        setError(null);
+
         try {
             const next = await fetchAuthStatus();
+
             setStatus(next);
+
             if (!next.loggedIn) {
                 setStoredToken(null);
             }
-        } catch {
-            setStatus(emptyStatus);
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : "Could not load authentication status";
+
+            setError(message);
+            throw err;
         }
-    }, []);
+    }, [setStatus]);
 
     useEffect(() => {
         let cancelled = false;
+
         (async () => {
             try {
                 const next = await fetchAuthStatus();
+
                 if (!cancelled) {
                     setStatus(next);
+                    setError(null);
                 }
-            } catch {
+            } catch (err) {
                 if (!cancelled) {
-                    setStatus(emptyStatus);
+                    setError(
+                        err instanceof Error ? err.message : "Could not load authentication status",
+                    );
                 }
             } finally {
                 if (!cancelled) {
@@ -67,6 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 }
             }
         })();
+
         return () => {
             cancelled = true;
         };
@@ -75,7 +92,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const onAuthRequired = () => {
             setUserStorageScope("");
-            setStatusState((current) => ({ ...current, loggedIn: false, username: "" }));
+            setStatusState((current) =>
+                current ? { ...current, loggedIn: false, username: "" } : current,
+            );
             setStoredToken(null);
         };
         window.addEventListener("teddycloud-auth-required", onAuthRequired);
@@ -94,14 +113,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const value = useMemo<AuthContextValue>(
         () => ({
-            ...status,
+            ...(status ?? emptyStatus),
             loading,
-            needsLogin: status.enabled && !status.loggedIn,
+            error,
+            statusAvailable: status !== null,
+            needsLogin: Boolean(status?.enabled && !status.loggedIn),
             refresh,
             login,
             logout,
         }),
-        [status, loading, refresh, login, logout],
+        [status, loading, error, refresh, login, logout],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

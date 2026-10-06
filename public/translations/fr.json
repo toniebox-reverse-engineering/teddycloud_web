@@ -22,7 +22,10 @@
         "passwordMin": "Au moins 4 caractères",
         "passwordRequired": "Le mot de passe est requis",
         "username": "Nom d'utilisateur",
-        "usernameRequired": "Le nom d'utilisateur est requis"
+        "usernameRequired": "Le nom d'utilisateur est requis",
+        "statusLoadFailed": "Impossible de charger l’état d’authentification",
+        "statusLoadFailedDetails": "L’état d’authentification n’a pas pu être chargé. Vérifiez la connexion à TeddyCloud et réessayez.",
+        "retry": "Réessayer"
     },
     "common": {
         "cancel": "Annuler"

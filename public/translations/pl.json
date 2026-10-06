@@ -22,7 +22,10 @@
         "passwordMin": "Co najmniej 4 znaki",
         "passwordRequired": "Hasło jest wymagane",
         "username": "Nazwa użytkownika",
-        "usernameRequired": "Nazwa użytkownika jest wymagana"
+        "usernameRequired": "Nazwa użytkownika jest wymagana",
+        "statusLoadFailed": "Nie udało się wczytać stanu uwierzytelniania",
+        "statusLoadFailedDetails": "Nie udało się wczytać stanu uwierzytelniania. Sprawdź połączenie z TeddyCloud i spróbuj ponownie.",
+        "retry": "Spróbuj ponownie"
     },
     "common": {
         "cancel": "Anuluj"

@@ -57,9 +57,19 @@ export async function fetchAuthStatus(): Promise<AuthStatus> {
     const response = await api.apiGetTeddyCloudApiRaw("/api/auth/status");
     const data = await parseJson(response);
 
+    if (!response.ok) {
+        throw new Error(
+            data.message || `Could not load authentication status (HTTP ${response.status})`,
+        );
+    }
+
+    if (typeof data.enabled !== "boolean" || typeof data.loggedIn !== "boolean") {
+        throw new Error("Invalid authentication status response");
+    }
+
     return {
-        enabled: !!data.enabled,
-        loggedIn: !!data.loggedIn,
+        enabled: data.enabled,
+        loggedIn: data.loggedIn,
         username: data.username || "",
         envOverride: !!data.envOverride,
         userCount: Number(data.userCount || 0),
