@@ -40,9 +40,7 @@ describe("TeddyCloudApi.apiPostTeddyCloudFormDataRaw", () => {
             "box-1",
         );
 
-        expect(fetchApi.mock.calls[0][0]).toBe(
-            "/api/fileUpload?special=library&overlay=box-1",
-        );
+        expect(fetchApi.mock.calls[0][0]).toBe("/api/fileUpload?special=library&overlay=box-1");
     });
 
     it("does not append overlay when it is empty", async () => {
@@ -63,13 +61,9 @@ describe("TeddyCloudApi.apiPostTeddyCloudFormDataRaw", () => {
         const api = new TeddyCloudApi(new Configuration({ basePath: "", fetchApi }));
         const formData = new FormData();
 
-        await api.apiPostTeddyCloudFormDataRaw(
-            "/api/fileUpload",
-            formData,
-            undefined,
-            undefined,
-            { "X-Test": "yes" },
-        );
+        await api.apiPostTeddyCloudFormDataRaw("/api/fileUpload", formData, undefined, undefined, {
+            "X-Test": "yes",
+        });
 
         const [, init] = fetchApi.mock.calls[0];
         const headers = new Headers(init.headers);
@@ -100,10 +94,7 @@ describe("TeddyCloudApi.apiPostTeddyCloudFormDataRaw", () => {
         const fetchApi = vi.fn().mockResolvedValue(response);
         const api = new TeddyCloudApi(new Configuration({ basePath: "", fetchApi }));
 
-        const result = await api.apiPostTeddyCloudFormDataRaw(
-            "/api/fileUpload",
-            new FormData(),
-        );
+        const result = await api.apiPostTeddyCloudFormDataRaw("/api/fileUpload", new FormData());
 
         expect(result).toBe(response);
         expect(result.status).toBe(500);

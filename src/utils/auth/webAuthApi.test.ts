@@ -111,9 +111,7 @@ describe("webAuthApi", () => {
         });
 
         it("rejects an invalid status payload instead of coercing missing values to false", async () => {
-            apiMock.apiGetTeddyCloudApiRaw.mockResolvedValue(
-                jsonResponse({ username: "alice" }),
-            );
+            apiMock.apiGetTeddyCloudApiRaw.mockResolvedValue(jsonResponse({ username: "alice" }));
 
             await expect(fetchAuthStatus()).rejects.toThrow(
                 "Invalid authentication status response",
@@ -250,10 +248,9 @@ describe("webAuthApi", () => {
 
             await setAuthEnabled(true);
 
-            expect(apiMock.apiPostTeddyCloudJsonRaw).toHaveBeenCalledWith(
-                "/api/auth/enabled",
-                { enabled: true },
-            );
+            expect(apiMock.apiPostTeddyCloudJsonRaw).toHaveBeenCalledWith("/api/auth/enabled", {
+                enabled: true,
+            });
         });
 
         it("propagates user administration errors", async () => {

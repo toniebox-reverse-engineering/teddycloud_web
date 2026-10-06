@@ -39,10 +39,7 @@ describe("customModelEditorUtils", () => {
     });
 
     it("normalizes tracks and drops empty rows", () => {
-        expect(normalizeTracks(entry({ tracks: [" One ", "", "  Two"] }))).toEqual([
-            "One",
-            "Two",
-        ]);
+        expect(normalizeTracks(entry({ tracks: [" One ", "", "  Two"] }))).toEqual(["One", "Two"]);
     });
 
     it("builds the next custom model id and ignores unrelated models", () => {
