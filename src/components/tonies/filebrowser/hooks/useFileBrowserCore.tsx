@@ -123,21 +123,24 @@ export const useFileBrowserCore = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialPathProp, mode]);
 
-    // overlay → reset path + URL + force reload
+    const previousOverlayRef = useRef(overlay);
+
+    // overlay change → reset path + URL. The fetch effect below reacts to overlay directly.
     useEffect(() => {
-        if (!overlay) return;
+        if (previousOverlayRef.current === overlay) return;
+        previousOverlayRef.current = overlay;
 
         if (mode === "fileBrowser" && trackUrl) {
-            const qp = new URLSearchParams(location.search);
+            const qp = new URLSearchParams(window.location.search);
             qp.set("path", "");
             const newUrl = `${window.location.pathname}?${qp.toString()}`;
             window.history.replaceState(null, "", newUrl);
         }
 
         setPath("");
-        setRebuildList((prev) => !prev);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [overlay]);
+    }, [overlay, mode, trackUrl]);
+
+    const filetypeFilterKey = filetypeFilter.join("|");
 
     // fetch directory listing (SWR for custom_img: show cache first, revalidate in background)
     useEffect(() => {
@@ -149,7 +152,8 @@ export const useFileBrowserCore = ({
             requestIdRef.current === requestId && !abortController.signal.aborted;
 
         const apiPathParam = mode === "fileBrowser" ? path : encodeURIComponent(path);
-        const cacheKey = `fileIndexV2:${special}:${overlay || ""}:${apiPathParam}:${showDirOnly}:${filetypeFilter.join(",")}`;
+        const activeFiletypeFilter = filetypeFilterKey ? filetypeFilterKey.split("|") : [];
+        const cacheKey = `fileIndexV2:${special}:${overlay || ""}:${apiPathParam}:${showDirOnly}:${filetypeFilterKey}`;
         const useSwr = special === "custom_img";
 
         let hadCache = false;
@@ -199,9 +203,9 @@ export const useFileBrowserCore = ({
                 const filteredList = list.filter((entry) => {
                     if (showDirOnly && !entry.isDir) return false;
 
-                    if (filetypeFilter.length > 0 && !entry.isDir) {
+                    if (activeFiletypeFilter.length > 0 && !entry.isDir) {
                         const lowerName = entry.name.toLowerCase();
-                        return filetypeFilter.some((suffix) =>
+                        return activeFiletypeFilter.some((suffix) =>
                             lowerName.endsWith(suffix.toLowerCase()),
                         );
                     }
@@ -254,7 +258,7 @@ export const useFileBrowserCore = ({
                     setPath("");
 
                     if (mode === "fileBrowser" && trackUrl) {
-                        const qp = new URLSearchParams(location.search);
+                        const qp = new URLSearchParams(window.location.search);
                         qp.set("path", "");
                         navigate(`?${qp.toString()}`, { replace: true });
                     }
@@ -270,7 +274,7 @@ export const useFileBrowserCore = ({
         return () => {
             abortController.abort();
         };
-    }, [active, path, special, showDirOnly, rebuildList]);
+    }, [active, path, special, overlay, showDirOnly, filetypeFilterKey, rebuildList]);
 
     useEffect(() => {
         const timer = window.setTimeout(
