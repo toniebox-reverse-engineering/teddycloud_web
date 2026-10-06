@@ -106,6 +106,9 @@ export const useFileBrowserCore = ({
     // Prevent infinite fallback loops
     const fallbackInProgressRef = useRef(false);
 
+    // Only the latest directory request may update FileBrowser state.
+    const requestIdRef = useRef(0);
+
     // If initialPathProp changes, apply it in select-mode
     const lastAppliedInitialPathRef = useRef<string>(resolvedInitialPath);
     useEffect(() => {
@@ -139,6 +142,12 @@ export const useFileBrowserCore = ({
     // fetch directory listing (SWR for custom_img: show cache first, revalidate in background)
     useEffect(() => {
         if (!active) return;
+
+        const requestId = ++requestIdRef.current;
+        const abortController = new AbortController();
+        const isCurrentRequest = () =>
+            requestIdRef.current === requestId && !abortController.signal.aborted;
+
         const apiPathParam = mode === "fileBrowser" ? path : encodeURIComponent(path);
         const cacheKey = `fileIndexV2:${special}:${overlay || ""}:${apiPathParam}:${showDirOnly}:${filetypeFilter.join(",")}`;
         const useSwr = special === "custom_img";
@@ -166,8 +175,12 @@ export const useFileBrowserCore = ({
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${apiPathParam}&special=${special}` +
                 (overlay ? `&overlay=${overlay}` : ""),
+            undefined,
+            { signal: abortController.signal },
         )
             .then(async (response: Response) => {
+                if (!isCurrentRequest()) return null;
+
                 // IMPORTANT: make non-2xx fail deterministically (so we can fallback)
                 if (!response.ok) {
                     const err: any = new Error(`HTTP ${response.status}`);
@@ -177,6 +190,8 @@ export const useFileBrowserCore = ({
                 return response.json();
             })
             .then((data: any) => {
+                if (!isCurrentRequest() || !data) return;
+
                 fallbackInProgressRef.current = false;
 
                 const list: Record[] = (data.files || []) as Record[];
@@ -204,6 +219,14 @@ export const useFileBrowserCore = ({
                 }
             })
             .catch((error: any) => {
+                if (
+                    !isCurrentRequest() ||
+                    abortController.signal.aborted ||
+                    error?.name === "AbortError"
+                ) {
+                    return;
+                }
+
                 // If the requested path is invalid/unavailable -> go back to root
                 // Do this only once to avoid loops if root is also failing.
                 const canFallback = path !== "" && !fallbackInProgressRef.current;
@@ -239,8 +262,14 @@ export const useFileBrowserCore = ({
                 }
             })
             .finally(() => {
-                setLoading(false);
+                if (isCurrentRequest()) {
+                    setLoading(false);
+                }
             });
+
+        return () => {
+            abortController.abort();
+        };
     }, [active, path, special, showDirOnly, rebuildList]);
 
     useEffect(() => {
