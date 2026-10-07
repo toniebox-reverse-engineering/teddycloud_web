@@ -1,8 +1,9 @@
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { ConfigProvider, Flex, Layout, Spin, theme } from "antd";
+import { ConfigProvider, Flex, Alert, Button, Layout, Spin, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { StyledFooter } from "./components/common/footer/StyledFooter";
 import { StyledHeader } from "./components/common/header/StyledHeader";
@@ -184,12 +185,35 @@ function AuthenticatedApp({
     themeSwitch: ReactNode;
     themeMode: string;
 }) {
-    const { loading, needsLogin } = useAuth();
+    const { t } = useTranslation();
+    const { loading, error, statusAvailable, needsLogin, refresh } = useAuth();
 
     if (loading) {
         return (
             <Flex align="center" justify="center" style={{ minHeight: "100vh" }}>
                 <Spin size="large" />
+            </Flex>
+        );
+    }
+
+    if (!statusAvailable) {
+        return (
+            <Flex align="center" justify="center" style={{ minHeight: "100vh", padding: 16 }}>
+                <Alert
+                    type="error"
+                    showIcon
+                    title={t("auth.statusLoadFailed")}
+                    description={error || t("auth.statusLoadFailedDetails")}
+                    action={
+                        <Button
+                            onClick={() => {
+                                void refresh().catch(() => undefined);
+                            }}
+                        >
+                            {t("auth.retry")}
+                        </Button>
+                    }
+                />
             </Flex>
         );
     }

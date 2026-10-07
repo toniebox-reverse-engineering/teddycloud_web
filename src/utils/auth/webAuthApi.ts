@@ -1,4 +1,7 @@
-import { withBase } from "../basePath";
+import { TeddyCloudApi } from "../../api";
+import { defaultAPIConfig } from "../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const TOKEN_KEY = "teddycloud_web_token";
 
@@ -38,9 +41,11 @@ export function setStoredToken(token: string | null): void {
 
 async function parseJson(response: Response): Promise<any> {
     const text = await response.text();
+
     if (!text) {
         return {};
     }
+
     try {
         return JSON.parse(text);
     } catch {
@@ -48,25 +53,23 @@ async function parseJson(response: Response): Promise<any> {
     }
 }
 
-async function authFetch(path: string, init: RequestInit = {}): Promise<Response> {
-    const headers = new Headers(init.headers);
-    const token = getStoredToken();
-    if (token && !headers.has("Authorization")) {
-        headers.set("Authorization", `Bearer ${token}`);
-    }
-    return fetch(withBase(path), {
-        ...init,
-        headers,
-        credentials: "include",
-    });
-}
-
 export async function fetchAuthStatus(): Promise<AuthStatus> {
-    const response = await authFetch("/api/auth/status");
+    const response = await api.apiGetTeddyCloudApiRaw("/api/auth/status");
     const data = await parseJson(response);
+
+    if (!response.ok) {
+        throw new Error(
+            data.message || `Could not load authentication status (HTTP ${response.status})`,
+        );
+    }
+
+    if (typeof data.enabled !== "boolean" || typeof data.loggedIn !== "boolean") {
+        throw new Error("Invalid authentication status response");
+    }
+
     return {
-        enabled: !!data.enabled,
-        loggedIn: !!data.loggedIn,
+        enabled: data.enabled,
+        loggedIn: data.loggedIn,
         username: data.username || "",
         envOverride: !!data.envOverride,
         userCount: Number(data.userCount || 0),
@@ -74,38 +77,44 @@ export async function fetchAuthStatus(): Promise<AuthStatus> {
 }
 
 export async function login(username: string, password: string): Promise<AuthStatus> {
-    const response = await authFetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+    const response = await api.apiPostTeddyCloudJsonRaw("/api/auth/login", {
+        username,
+        password,
     });
+
     const data = await parseJson(response);
+
     if (!response.ok) {
         if (response.status === 429 || data.error === "rate_limited") {
             throw new Error("rate_limited");
         }
+
         throw new Error(data.message || "Login failed");
     }
+
     if (data.token) {
         setStoredToken(data.token);
     }
+
     return fetchAuthStatus();
 }
 
 export async function logout(): Promise<void> {
     try {
-        await authFetch("/api/auth/logout");
+        await api.apiGetTeddyCloudApiRaw("/api/auth/logout");
     } finally {
         setStoredToken(null);
     }
 }
 
 export async function fetchAuthUsers(): Promise<AuthUsersResponse> {
-    const response = await authFetch("/api/auth/users/get");
+    const response = await api.apiGetTeddyCloudApiRaw("/api/auth/users/get");
     const data = await parseJson(response);
+
     if (!response.ok) {
         throw new Error(data.message || "Could not load users");
     }
+
     return {
         users: Array.isArray(data.users) ? data.users : [],
         enabled: !!data.enabled,
@@ -114,49 +123,53 @@ export async function fetchAuthUsers(): Promise<AuthUsersResponse> {
 }
 
 export async function createAuthUser(username: string, password: string): Promise<void> {
-    const response = await authFetch("/api/auth/users/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+    const response = await api.apiPostTeddyCloudJsonRaw("/api/auth/users/create", {
+        username,
+        password,
     });
+
     const data = await parseJson(response);
+
     if (!response.ok) {
         throw new Error(data.message || "Could not create user");
     }
 }
 
 export async function deleteAuthUser(username: string): Promise<{ authDisabled: boolean }> {
-    const response = await authFetch("/api/auth/users/delete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username }),
+    const response = await api.apiPostTeddyCloudJsonRaw("/api/auth/users/delete", {
+        username,
     });
+
     const data = await parseJson(response);
+
     if (!response.ok) {
         throw new Error(data.message || "Could not delete user");
     }
-    return { authDisabled: !!data.authDisabled };
+
+    return {
+        authDisabled: !!data.authDisabled,
+    };
 }
 
 export async function changeAuthPassword(username: string, password: string): Promise<void> {
-    const response = await authFetch("/api/auth/users/updatePassword", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+    const response = await api.apiPostTeddyCloudJsonRaw("/api/auth/users/updatePassword", {
+        username,
+        password,
     });
+
     const data = await parseJson(response);
+
     if (!response.ok) {
         throw new Error(data.message || "Could not change password");
     }
 }
-
 export async function setAuthEnabled(enabled: boolean): Promise<void> {
-    const response = await authFetch("/api/auth/enabled", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ enabled }),
+    const response = await api.apiPostTeddyCloudJsonRaw("/api/auth/enabled", {
+        enabled,
     });
+
     const data = await parseJson(response);
+
     if (!response.ok) {
         throw new Error(data.message || "Could not update login setting");
     }
