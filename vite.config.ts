@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
@@ -15,12 +15,21 @@ export default defineConfig(({ command, mode }) => {
           }
         : undefined;
 
-    const proxyUrl = process.env.VITE_APP_TEDDYCLOUD_API_URL
-        ? process.env.VITE_APP_TEDDYCLOUD_API_URL.replace(/^https:/, "http:")
-        : "http://teddycloud.local";
+    // Read .env files as well (process.env only contains variables exported in the shell)
+    const env = { ...loadEnv(mode, process.cwd(), "VITE_"), ...process.env };
+    const apiUrl = env.VITE_APP_TEDDYCLOUD_API_URL;
+    const proxyUrl = apiUrl ? apiUrl.replace(/^https:/, "http:") : "http://teddycloud.local";
+
+    const webBase = "/web";
 
     return {
-        base: "/web",
+        base: webBase,
+        // In dev, API URLs must be relative so that they hit the proxy below.
+        // VITE_APP_TEDDYCLOUD_API_URL is only used as proxy target there.
+        define:
+            command === "serve"
+                ? { "import.meta.env.VITE_APP_TEDDYCLOUD_API_URL": JSON.stringify("") }
+                : {},
         plugins: [react()],
         resolve: {
             tsconfigPaths: true,
@@ -30,40 +39,10 @@ export default defineConfig(({ command, mode }) => {
             port: useHttps ? portHttps : portHttp,
             host: true,
             https: httpsOptions,
+            // Same-origin setup: the dev server forwards everything except the web app itself to
+            // teddyCloud. This way API calls (which send credentials) need neither CORS nor an absolute URL.
             proxy: {
-                "/api": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
-                "/img_unknown.png": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/img_unknown\.png/, "/img_unknown.png"),
-                    secure: false,
-                },
-
-                // Proxy /cache/* (cached figurine images when tonie_json.cache_images is enabled)
-                "/cache": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
-
-                // Proxy /img/* (static images from tonies.json)
-                "/img": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
-
-                // Proxy all requests from /custom_img/* to the Teddycloud API URL during development.
-                // The target URL is taken from the environment variable VITE_APP_TEDDYCLOUD_API_URL,
-                // converted to HTTP if it was HTTPS, so local development works correctly.
-                // Example:
-                //   /custom_img/example.png -> [VITE_APP_TEDDYCLOUD_API_URL]/custom_img/example.png
-                // Fallback: if the env variable is missing, it defaults to http://teddycloud.local.
-                "/custom_img": {
+                [`^(?!${webBase}(/|$)).*`]: {
                     target: proxyUrl,
                     changeOrigin: true,
                     secure: false,

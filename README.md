@@ -6,7 +6,7 @@ If you are using this repository for the first time, please refer to the **Gener
 
 ## TeddyCloud configuration
 
-You'll need to allow CORS for your teddyCloud instance used for development. The easiest variant is to set `CORS Allow-Originⓘ` to `*`.
+No special configuration (e.g. CORS) is needed. The dev server runs same-origin with the GUI and proxies all requests except `/web` to the teddyCloud instance set in `VITE_APP_TEDDYCLOUD_API_URL`. This is required because API calls send credentials (web login), which do not work with CORS `*`.
 
 ## NPM Environment file '.env'
 
