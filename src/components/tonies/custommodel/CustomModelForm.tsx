@@ -18,7 +18,7 @@ import type { FormInstance } from "antd/es/form";
 import { toPreviewableImageUrl } from "../common/utils/imagePathUtils";
 import { languageOptions, toLanguageCode } from "../../common/icons/LanguageFlagIcon";
 import type { CustomEntry, FormValues } from "./types/customModelEditorTypes";
-import { formatTrackStart } from "./utils/customModelEditorUtils";
+import { formatTrackStart, toTrackArray } from "./utils/customModelEditorUtils";
 
 type AudioLibraryPathInputProps = {
     audioId: string;
@@ -100,7 +100,8 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
     fileTrackSeconds,
 }) => {
     const { t } = useTranslation();
-    const trackNames = (Form.useWatch("tracks", form) || []).filter((row) => row?.track?.trim());
+    // as saved: by position, without trailing empty rows
+    const trackNames = toTrackArray((Form.useWatch("tracks", form) || []).map((row) => row?.track));
     const fileTrackCount = fileTrackSeconds?.length ?? 0;
     const trackCountMismatch =
         fileTrackCount > 0 && trackNames.length > 0 && trackNames.length !== fileTrackCount;
@@ -480,14 +481,24 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                     type={trackNames.length > fileTrackCount ? "info" : "warning"}
                                     showIcon
                                     style={{ marginBottom: 12 }}
-                                    title={t("tonies.customEditor.tracks.countMismatchTitle", {
-                                        names: trackNames.length,
-                                        tracks: fileTrackCount,
-                                    })}
+                                    title={
+                                        trackNames.length > fileTrackCount
+                                            ? t("tonies.customEditor.tracks.moreNamesTitle", {
+                                                  tracks: fileTrackCount,
+                                              })
+                                            : t("tonies.customEditor.tracks.fewerNamesTitle", {
+                                                  tracks: fileTrackCount,
+                                              })
+                                    }
                                     description={
                                         trackNames.length > fileTrackCount
                                             ? t("tonies.customEditor.tracks.moreNamesDescription")
-                                            : t("tonies.customEditor.tracks.fewerNamesDescription")
+                                            : t(
+                                                  "tonies.customEditor.tracks.fewerNamesDescription",
+                                                  {
+                                                      tracks: fileTrackCount,
+                                                  },
+                                              )
                                     }
                                 />
                             )}

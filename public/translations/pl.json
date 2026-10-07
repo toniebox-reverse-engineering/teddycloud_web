@@ -2051,9 +2051,10 @@
             "tableMenu": "Menu tabeli",
             "title": "Edytor modeli",
             "tracks": {
-                "countMismatchTitle": "Nazwy ścieżek: {{names}}, ścieżki w pliku: {{tracks}}",
-                "fewerNamesDescription": "Puste wiersze nie są zapisywane, więc nazwy poniżej przesuwają się do wcześniejszych ścieżek.",
+                "fewerNamesDescription": "Plik ma {{tracks}} ścieżek. Nazwy zachowują swoją pozycję, ale okno informacji pozwala przejść do ścieżki tylko wtedy, gdy wymienione są wszystkie ścieżki aż do ostatniej.",
+                "fewerNamesTitle": "Ostatnie ścieżki pliku nie mają nazwy",
                 "moreNamesDescription": "Dodatkowe nazwy są zapisywane i wyświetlane, ale nie mają pozycji w pliku. Okno informacji nie może wtedy przechodzić do poszczególnych ścieżek.",
+                "moreNamesTitle": "Więcej nazw niż ścieżek w pliku ({{tracks}})",
                 "notInFile": "Dodatkowe nazwy bez ścieżki w pliku:"
             },
             "unsaved": "{{count}} niezapisanych zmian",

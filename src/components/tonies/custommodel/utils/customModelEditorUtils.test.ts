@@ -38,8 +38,13 @@ describe("customModelEditorUtils", () => {
         ).toEqual(["123::aabb"]);
     });
 
-    it("normalizes tracks and drops empty rows", () => {
-        expect(normalizeTracks(entry({ tracks: [" One ", "", "  Two"] }))).toEqual(["One", "Two"]);
+    it("normalizes tracks, keeps unnamed tracks in between and drops trailing empty rows", () => {
+        expect(normalizeTracks(entry({ tracks: [" One ", "", "  Two", " ", ""] }))).toEqual([
+            "One",
+            "",
+            "Two",
+        ]);
+        expect(normalizeTracks(entry({ tracks: ["", " "] }))).toEqual([]);
     });
 
     it("builds the next custom model id and ignores unrelated models", () => {

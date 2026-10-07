@@ -2051,9 +2051,10 @@
             "tableMenu": "Menu tabella",
             "title": "Editor modelli",
             "tracks": {
-                "countMismatchTitle": "Nomi di traccia: {{names}}, tracce nel file: {{tracks}}",
-                "fewerNamesDescription": "Le righe vuote non vengono salvate, quindi i nomi sottostanti passano a tracce precedenti.",
+                "fewerNamesDescription": "Il file ha {{tracks}} tracce. I nomi mantengono la loro posizione, ma la finestra informativa consente di saltare a una traccia solo se sono elencate tutte le tracce fino all'ultima.",
+                "fewerNamesTitle": "Le ultime tracce del file non hanno un nome",
                 "moreNamesDescription": "I nomi aggiuntivi vengono salvati ed elencati, ma non hanno una posizione nel file. La finestra informativa non può quindi saltare alle singole tracce.",
+                "moreNamesTitle": "Più nomi che tracce nel file ({{tracks}})",
                 "notInFile": "Nomi aggiuntivi senza traccia nel file:"
             },
             "unsaved": "{{count}} modifica/e non salvata/e",

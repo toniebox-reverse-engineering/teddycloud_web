@@ -2051,9 +2051,10 @@
             "tableMenu": "Menú de tabla",
             "title": "Editor de modelos",
             "tracks": {
-                "countMismatchTitle": "Nombres de pista: {{names}}, pistas en el archivo: {{tracks}}",
-                "fewerNamesDescription": "Las filas vacías no se guardan, por lo que los nombres situados debajo pasan a pistas anteriores.",
+                "fewerNamesDescription": "El archivo tiene {{tracks}} pistas. Los nombres conservan su posición, pero el diálogo de información solo permite saltar a una pista si están listadas todas las pistas hasta la última.",
+                "fewerNamesTitle": "Las últimas pistas del archivo no tienen nombre",
                 "moreNamesDescription": "Los nombres adicionales se guardan y se muestran, pero no tienen posición en el archivo. El diálogo de información no puede entonces saltar a pistas individuales.",
+                "moreNamesTitle": "Más nombres que pistas en el archivo ({{tracks}})",
                 "notInFile": "Nombres adicionales sin pista en el archivo:"
             },
             "unsaved": "{{count}} cambio(s) sin guardar",

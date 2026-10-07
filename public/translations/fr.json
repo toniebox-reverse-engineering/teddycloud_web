@@ -2051,9 +2051,10 @@
             "tableMenu": "Menu du tableau",
             "title": "Éditeur de modèles",
             "tracks": {
-                "countMismatchTitle": "Noms de pistes : {{names}}, pistes dans le fichier : {{tracks}}",
-                "fewerNamesDescription": "Les lignes vides ne sont pas enregistrées ; les noms situés en dessous remontent donc vers des pistes précédentes.",
+                "fewerNamesDescription": "Le fichier contient {{tracks}} pistes. Les noms conservent leur position, mais la fenêtre d'information ne propose le saut vers une piste que si toutes les pistes jusqu'à la dernière sont listées.",
+                "fewerNamesTitle": "Les dernières pistes du fichier n'ont pas de nom",
                 "moreNamesDescription": "Les noms supplémentaires sont enregistrés et listés, mais n'ont pas de position dans le fichier. La fenêtre d'information ne peut alors pas sauter vers une piste précise.",
+                "moreNamesTitle": "Plus de noms que de pistes dans le fichier ({{tracks}})",
                 "notInFile": "Noms supplémentaires sans piste dans le fichier :"
             },
             "unsaved": "{{count}} modification(s) non enregistrée(s)",

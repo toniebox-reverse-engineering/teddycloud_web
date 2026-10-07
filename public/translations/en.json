@@ -2051,9 +2051,10 @@
             "tableMenu": "Table menu",
             "title": "Model editor",
             "tracks": {
-                "countMismatchTitle": "Track names: {{names}}, tracks in the file: {{tracks}}",
-                "fewerNamesDescription": "Empty rows are not saved, so the names below them move up to earlier tracks.",
+                "fewerNamesDescription": "The file has {{tracks}} tracks. Names keep their position, but the info dialog only offers jumping to a track when every track up to the last one is listed.",
+                "fewerNamesTitle": "The last tracks of the file have no name",
                 "moreNamesDescription": "The additional names are saved and listed, but have no position in the file. The info dialog then cannot jump to single tracks.",
+                "moreNamesTitle": "More names than tracks in the file ({{tracks}})",
                 "notInFile": "Additional names without a track in the file:"
             },
             "unsaved": "{{count}} unsaved change(s)",

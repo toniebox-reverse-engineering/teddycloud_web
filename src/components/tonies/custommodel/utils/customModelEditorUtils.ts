@@ -54,7 +54,14 @@ export const findEntryByAudio = (
     return entries.findIndex((entry) => normalizeAudioPairs(entry).includes(audioKey));
 };
 
-export const normalizeTracks = (entry: CustomEntry): string[] => toStringArray(entry.tracks);
+/** Track names by position: unnamed tracks in between are kept, trailing ones dropped. */
+export const toTrackArray = (value: unknown): string[] => {
+    const tracks = (Array.isArray(value) ? value : [value]).map((item) => normalizeText(item));
+    while (tracks.length > 0 && tracks[tracks.length - 1] === "") tracks.pop();
+    return tracks;
+};
+
+export const normalizeTracks = (entry: CustomEntry): string[] => toTrackArray(entry.tracks);
 export const areStringArraysEqual = (left: string[], right: string[]): boolean =>
     left.length === right.length && left.every((value, index) => value === right[index]);
 
@@ -108,7 +115,7 @@ export const normalizeEntryFromApi = (entry: unknown): CustomEntry => {
     const source = entry && typeof entry === "object" ? (entry as Record<string, unknown>) : {};
     const audioIds = toStringArray(source.audio_id);
     const hashes = toStringArray(source.hash);
-    const tracks = toStringArray(source.tracks);
+    const tracks = toTrackArray(source.tracks);
 
     return {
         no: toOptionalText(source.no),
@@ -131,10 +138,11 @@ export const toEntry = (values: FormValues): CustomEntry => {
         .filter((pair): pair is AudioPair => pair != null && typeof pair === "object")
         .map((pair) => ({ audio_id: normalizeText(pair.audio_id), hash: normalizeText(pair.hash) }))
         .filter((pair) => pair.audio_id.length > 0 && pair.hash.length > 0);
-    const tracks = (values.tracks || [])
-        .filter((track): track is TrackRow => track != null && typeof track === "object")
-        .map((track) => normalizeText(track.track))
-        .filter((track) => track.length > 0);
+    const tracks = toTrackArray(
+        (values.tracks || [])
+            .filter((track): track is TrackRow => track != null && typeof track === "object")
+            .map((track) => track.track),
+    );
     const releaseRaw =
         values.release === undefined || values.release === null
             ? ""
