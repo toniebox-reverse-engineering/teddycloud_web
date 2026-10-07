@@ -1870,7 +1870,20 @@
             "uploadTonieboxCertificates": "Prześlij certyfikaty dla Tonieboxa {{name}}"
         },
         "warningUseAtYourOwnRisk": "Ostrzeżenie: używasz na własne ryzyko!",
-        "warningUseAtYourOwnRiskText": "Flashowanie Tonieboxa spatchowanym firmware unieważni gwarancję i może doprowadzić do uszkodzenia boxa. Postępuj dokładnie zgodnie z instrukcjami i upewnij się, że rozumiesz związane z tym ryzyko."
+        "warningUseAtYourOwnRiskText": "Flashowanie Tonieboxa spatchowanym firmware unieważni gwarancję i może doprowadzić do uszkodzenia boxa. Postępuj dokładnie zgodnie z instrukcjami i upewnij się, że rozumiesz związane z tym ryzyko.",
+        "boxCertificate": {
+            "title": "Sprawdzanie certyfikatu",
+            "status": "Status",
+            "presented": "Przedstawiony certyfikat (SHA-256)",
+            "pin": "Przypięty certyfikat (SHA-256)",
+            "nextConnection": "Status zostanie zaktualizowany przy następnym połączeniu Toniebox.",
+            "statusText": {
+                "none": "Jeszcze nie sprawdzono",
+                "trusted": "Certyfikat wystawiony przez TeddyCloud",
+                "pinned": "Przypięty certyfikat",
+                "mismatch": "Inny certyfikat niż przypięty!"
+            }
+        }
     },
     "tonies": {
         "addNewCustomTonie": "Utwórz nowy model",

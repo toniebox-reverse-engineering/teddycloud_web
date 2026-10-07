@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { OptionsList } from "../../../../api";
 import { CertificateDragNDrop } from "../../../common/form/CertificatesDragAndDrop";
+import { BoxCertificateCheck } from "../elements/BoxCertificateCheck";
 
 const { Paragraph } = Typography;
 
@@ -53,6 +54,7 @@ export const CertificatesModal: React.FC<CertificatesModalProps> = ({
                 )}
             </Paragraph>
             <CertificateDragNDrop overlay={overlayId} />
+            {overlayId && <BoxCertificateCheck overlayId={overlayId} />}
         </Modal>
     );
 };

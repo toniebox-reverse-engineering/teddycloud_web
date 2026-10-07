@@ -1870,7 +1870,20 @@
             "uploadTonieboxCertificates": "Subir certificados para Toniebox{{name}}"
         },
         "warningUseAtYourOwnRisk": "Advertencia: úsalo bajo tu propia responsabilidad",
-        "warningUseAtYourOwnRiskText": "Flashear tu Toniebox con un firmware modificado anulará la garantía y puede dejar la caja inutilizable. Sigue las instrucciones cuidadosamente y asegúrate de comprender los riesgos asociados."
+        "warningUseAtYourOwnRiskText": "Flashear tu Toniebox con un firmware modificado anulará la garantía y puede dejar la caja inutilizable. Sigue las instrucciones cuidadosamente y asegúrate de comprender los riesgos asociados.",
+        "boxCertificate": {
+            "title": "Comprobación del certificado",
+            "status": "Estado",
+            "presented": "Certificado presentado (SHA-256)",
+            "pin": "Certificado fijado (SHA-256)",
+            "nextConnection": "El estado se actualiza con la próxima conexión de la Toniebox.",
+            "statusText": {
+                "none": "Aún no comprobado",
+                "trusted": "Certificado emitido por TeddyCloud",
+                "pinned": "Certificado fijado",
+                "mismatch": "¡Otro certificado distinto del fijado!"
+            }
+        }
     },
     "tonies": {
         "addNewCustomTonie": "Crear nuevo modelo",
