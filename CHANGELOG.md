@@ -20,6 +20,7 @@
 - gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
 - gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)
 - gui: Removed link to the legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
+- gui: Connected the "edit metadata" action of TAF files in the file browser with the Custom Model Editor [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341)
 
 ### Commits
 

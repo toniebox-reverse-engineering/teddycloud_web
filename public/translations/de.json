@@ -396,7 +396,7 @@
                     "title": "TAP-Datei duplizieren"
                 },
                 "editTAFMetadata": {
-                    "text": "Öffnet den Metadaten-Editor, um Details der TAF-Datei zu ändern. Änderungen werden in tonies.custom.json gespeichert. (WIP)",
+                    "text": "Öffnet den Custom-Modell-Editor für die TAF-Datei. Ein bereits verknüpftes Custom-Modell (gleiche Audio-ID und gleicher Hash) wird bearbeitet, andernfalls wird ein neues für die Datei angelegt. Änderungen werden in tonies.custom.json gespeichert.",
                     "title": "TAF-Metadaten bearbeiten"
                 },
                 "editTAPPlaylist": {
@@ -533,7 +533,7 @@
         "series": "Serie",
         "size": "Größe",
         "tafMeta": {
-            "edit": "(WIP - not implemented yet) Metadaten editieren"
+            "edit": "Metadaten editieren (Custom-Modell)"
         },
         "tap": {
             "edit": "TeddyAudio Playlist editieren",
@@ -1942,6 +1942,14 @@
                 "placeholder": "Custom-Audio aus {{library}} wählen",
                 "selectFromLibrary": "Audio aus {{library}} auswählen"
             },
+            "audioSource": {
+                "knownDescription": "Beim Speichern wird ein Custom-Modell angelegt, das die Original-Informationen für dieses Audio ersetzt.",
+                "knownTitle": "{{file}} wird als Modell {{model}} erkannt",
+                "linkedDescription": "Änderungen gelten für alle Dateien und Tags, die dieses Modell verwenden.",
+                "linkedTitle": "{{file}} ist mit diesem Custom-Modell verknüpft",
+                "newDescription": "Beim Speichern wird ein neues Custom-Modell angelegt und über Audio-ID und Hash mit der Datei verknüpft.",
+                "newTitle": "Noch kein Custom-Modell für {{file}}"
+            },
             "batch": {
                 "description": "Änderungen gelten für alle ausgewählten Modelle.",
                 "title": "Batch-Bearbeitung aktiv"
@@ -2021,6 +2029,12 @@
             },
             "tableMenu": "Tabellen-Menü",
             "title": "Modell-Editor",
+            "tracks": {
+                "countMismatchTitle": "Tracknamen: {{names}}, Tracks in der Datei: {{tracks}}",
+                "fewerNamesDescription": "Leere Zeilen werden nicht gespeichert, die Namen darunter rücken dadurch zu früheren Tracks auf.",
+                "moreNamesDescription": "Die zusätzlichen Namen werden gespeichert und aufgelistet, haben aber keine Position in der Datei. Der Info-Dialog kann dann nicht zu einzelnen Tracks springen.",
+                "notInFile": "Zusätzliche Namen ohne Track in der Datei:"
+            },
             "unsaved": "{{count}} ungespeicherte Änderung(en)",
             "validation": {
                 "title": "Bitte zuerst diese Probleme beheben"

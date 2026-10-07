@@ -396,7 +396,7 @@
                     "title": "Duplicate TAP File"
                 },
                 "editTAFMetadata": {
-                    "text": "Opens the metadata editor to modify TAF file details. Changes are stored in tonies.custom.json. (WIP)",
+                    "text": "Opens the custom model editor for the TAF file. An already linked custom model (same audio ID and hash) is edited, otherwise a new one is created for the file. Changes are stored in tonies.custom.json.",
                     "title": "Edit TAF Metadata"
                 },
                 "editTAPPlaylist": {
@@ -533,7 +533,7 @@
         "series": "Series",
         "size": "Size",
         "tafMeta": {
-            "edit": "(WIP - not implemented yet) Edit metadata"
+            "edit": "Edit metadata (custom model)"
         },
         "tap": {
             "edit": "Edit TeddyAudio Playlist",
@@ -1942,6 +1942,14 @@
                 "placeholder": "Select custom audio from {{library}}",
                 "selectFromLibrary": "Select audio from {{library}}"
             },
+            "audioSource": {
+                "knownDescription": "Saving creates a custom model that replaces the original information for this audio.",
+                "knownTitle": "{{file}} is recognized as model {{model}}",
+                "linkedDescription": "Changes apply to all files and tags that use this model.",
+                "linkedTitle": "{{file}} is linked to this custom model",
+                "newDescription": "Saving creates a new custom model and links it to the file by audio ID and hash.",
+                "newTitle": "No custom model for {{file}} yet"
+            },
             "batch": {
                 "description": "Changes apply to all selected models.",
                 "title": "Batch editing active"
@@ -2021,6 +2029,12 @@
             },
             "tableMenu": "Table menu",
             "title": "Model editor",
+            "tracks": {
+                "countMismatchTitle": "Track names: {{names}}, tracks in the file: {{tracks}}",
+                "fewerNamesDescription": "Empty rows are not saved, so the names below them move up to earlier tracks.",
+                "moreNamesDescription": "The additional names are saved and listed, but have no position in the file. The info dialog then cannot jump to single tracks.",
+                "notInFile": "Additional names without a track in the file:"
+            },
             "unsaved": "{{count}} unsaved change(s)",
             "validation": {
                 "title": "Please fix these issues first"

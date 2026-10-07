@@ -382,7 +382,7 @@
                     "title": "Duplica file TAP"
                 },
                 "editTAFMetadata": {
-                    "text": "Apre l'editor dei metadati per modificare i dettagli del file TAF. Le modifiche vengono salvate in tonies.custom.json. (WIP)",
+                    "text": "Apre l'editor dei modelli personalizzati per il file TAF. Un modello personalizzato già collegato (stesso ID audio e hash) viene modificato, altrimenti ne viene creato uno nuovo per il file. Le modifiche vengono salvate in tonies.custom.json.",
                     "title": "Modifica metadati TAF"
                 },
                 "editTAPPlaylist": {
@@ -516,7 +516,7 @@
         "series": "Serie",
         "size": "Dimensione",
         "tafMeta": {
-            "edit": "(WIP - non ancora implementato) Modifica metadati"
+            "edit": "Modifica metadati (modello personalizzato)"
         },
         "tap": {
             "edit": "Modifica playlist TeddyAudio",
@@ -1894,6 +1894,14 @@
                 "placeholder": "Seleziona audio personalizzato da {{library}}",
                 "selectFromLibrary": "Seleziona audio da {{library}}"
             },
+            "audioSource": {
+                "knownDescription": "Salvando viene creato un modello personalizzato che sostituisce le informazioni originali per questo audio.",
+                "knownTitle": "{{file}} è riconosciuto come modello {{model}}",
+                "linkedDescription": "Le modifiche valgono per tutti i file e i tag che usano questo modello.",
+                "linkedTitle": "{{file}} è collegato a questo modello personalizzato",
+                "newDescription": "Salvando viene creato un nuovo modello personalizzato, collegato al file tramite ID audio e hash.",
+                "newTitle": "Nessun modello personalizzato per {{file}}"
+            },
             "batch": {
                 "description": "Le modifiche si applicano a tutti i modelli selezionati.",
                 "title": "Modifica in blocco attiva"
@@ -1973,6 +1981,12 @@
             },
             "tableMenu": "Menu tabella",
             "title": "Editor modelli",
+            "tracks": {
+                "countMismatchTitle": "Nomi di traccia: {{names}}, tracce nel file: {{tracks}}",
+                "fewerNamesDescription": "Le righe vuote non vengono salvate, quindi i nomi sottostanti passano a tracce precedenti.",
+                "moreNamesDescription": "I nomi aggiuntivi vengono salvati ed elencati, ma non hanno una posizione nel file. La finestra informativa non può quindi saltare alle singole tracce.",
+                "notInFile": "Nomi aggiuntivi senza traccia nel file:"
+            },
             "unsaved": "{{count}} modifica/e non salvata/e",
             "validation": {
                 "title": "Correggi prima questi problemi"

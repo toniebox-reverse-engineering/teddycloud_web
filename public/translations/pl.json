@@ -382,7 +382,7 @@
                     "title": "Duplikuj plik TAP"
                 },
                 "editTAFMetadata": {
-                    "text": "Otwiera edytor metadanych do modyfikacji szczegółów pliku TAF. Zmiany są zapisywane w tonies.custom.json. (W trakcie prac)",
+                    "text": "Otwiera edytor modeli niestandardowych dla pliku TAF. Powiązany już model niestandardowy (ten sam identyfikator audio i hash) jest edytowany, w przeciwnym razie dla pliku tworzony jest nowy. Zmiany są zapisywane w tonies.custom.json.",
                     "title": "Edytuj metadane TAF"
                 },
                 "editTAPPlaylist": {
@@ -516,7 +516,7 @@
         "series": "Seria",
         "size": "Rozmiar",
         "tafMeta": {
-            "edit": "(W trakcie prac - jeszcze niezaimplementowane) Edytuj metadane"
+            "edit": "Edytuj metadane (model niestandardowy)"
         },
         "tap": {
             "edit": "Edytuj playlistę TeddyAudio",
@@ -1894,6 +1894,14 @@
                 "placeholder": "Wybierz niestandardowe audio z {{library}}",
                 "selectFromLibrary": "Wybierz audio z {{library}}"
             },
+            "audioSource": {
+                "knownDescription": "Zapisanie tworzy model niestandardowy, który zastępuje oryginalne informacje dla tego audio.",
+                "knownTitle": "{{file}} jest rozpoznawany jako model {{model}}",
+                "linkedDescription": "Zmiany dotyczą wszystkich plików i tagów korzystających z tego modelu.",
+                "linkedTitle": "{{file}} jest powiązany z tym modelem niestandardowym",
+                "newDescription": "Zapisanie tworzy nowy model niestandardowy i łączy go z plikiem przez identyfikator audio i hash.",
+                "newTitle": "Brak modelu niestandardowego dla {{file}}"
+            },
             "batch": {
                 "description": "Zmiany dotyczą wszystkich zaznaczonych modeli.",
                 "title": "Edycja zbiorcza aktywna"
@@ -1973,6 +1981,12 @@
             },
             "tableMenu": "Menu tabeli",
             "title": "Edytor modeli",
+            "tracks": {
+                "countMismatchTitle": "Nazwy ścieżek: {{names}}, ścieżki w pliku: {{tracks}}",
+                "fewerNamesDescription": "Puste wiersze nie są zapisywane, więc nazwy poniżej przesuwają się do wcześniejszych ścieżek.",
+                "moreNamesDescription": "Dodatkowe nazwy są zapisywane i wyświetlane, ale nie mają pozycji w pliku. Okno informacji nie może wtedy przechodzić do poszczególnych ścieżek.",
+                "notInFile": "Dodatkowe nazwy bez ścieżki w pliku:"
+            },
             "unsaved": "{{count}} niezapisanych zmian",
             "validation": {
                 "title": "Najpierw popraw poniższe problemy"

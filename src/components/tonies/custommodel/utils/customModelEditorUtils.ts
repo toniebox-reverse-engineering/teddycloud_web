@@ -43,6 +43,17 @@ export const normalizeAudioPairs = (entry: CustomEntry): string[] => {
         .filter((pair) => pair !== "::");
 };
 
+/** Index of the entry holding this audio id and hash, -1 if none. */
+export const findEntryByAudio = (
+    entries: CustomEntry[],
+    audioId: unknown,
+    hash: unknown,
+): number => {
+    const audioKey = `${normalizeText(audioId)}::${normalizeText(hash).toLowerCase()}`;
+    if (audioKey === "::") return -1;
+    return entries.findIndex((entry) => normalizeAudioPairs(entry).includes(audioKey));
+};
+
 export const normalizeTracks = (entry: CustomEntry): string[] => toStringArray(entry.tracks);
 export const areStringArraysEqual = (left: string[], right: string[]): boolean =>
     left.length === right.length && left.every((value, index) => value === right[index]);
@@ -147,6 +158,10 @@ export const toEntry = (values: FormValues): CustomEntry => {
         pic: toOptionalText(values.pic),
     };
 };
+
+/** Start of a track as m:ss. */
+export const formatTrackStart = (seconds: number): string =>
+    `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
 
 export const isImageFile = (name: string): boolean =>
     IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));
