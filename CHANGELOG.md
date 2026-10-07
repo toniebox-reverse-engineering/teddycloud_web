@@ -3,6 +3,7 @@
 ## 0.7.1
 
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
+- Added total audio length (`lengthSeconds`) to the TAF info of the file index and the tag index [https://github.com/toniebox-reverse-engineering/teddycloud/pull/537](https://github.com/toniebox-reverse-engineering/teddycloud/pull/537)
 - gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
 - gui: Rate-limit web login after repeated failures
 - Fixed WARN log spam (incl. leaked session token) for every web UI request when login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud/issues/485](https://github.com/toniebox-reverse-engineering/teddycloud/issues/485)
