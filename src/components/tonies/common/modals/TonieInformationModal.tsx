@@ -15,6 +15,7 @@ import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { useAudioContext } from "../../../../provider/AudioProvider";
 import { toImageSrc } from "../utils/imagePathUtils";
+import { backendUrl } from "../../../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -91,19 +92,22 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         );
     };
 
-    const handleDownload = async (url: string, filename: string) => {
+    const handleDownload = async (path: string, filename: string) => {
         setIsDownloading(true);
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
-        setIsDownloading(false);
+        try {
+            const response = await api.apiGetTeddyCloudApiRaw(path);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(blobUrl);
+        } finally {
+            setIsDownloading(false);
+        }
     };
 
     const toniePlayedOn =
@@ -266,8 +270,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 footer={informationModalFooter}
                 open={open}
                 keyboard={true}
-                closable={false}
-                mask={{ closable: false }}
+                closable={true}
+                mask={{ closable: true }}
                 onCancel={onClose}
             >
                 <div style={{ position: "relative" }}>
@@ -371,9 +375,9 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                 <PlayCircleOutlined
                                                     onClick={() =>
                                                         handlePlayPauseClick(
-                                                            import.meta.env
-                                                                .VITE_APP_TEDDYCLOUD_API_URL +
+                                                            backendUrl(
                                                                 tonieCardOrTAFRecord.audioUrl,
+                                                            ),
                                                             getTrackStartTime(
                                                                 tonieCardOrTAFRecord,
                                                                 index,
@@ -416,9 +420,9 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                                 <PlayCircleOutlined
                                                     onClick={() =>
                                                         handlePlayPauseClick(
-                                                            import.meta.env
-                                                                .VITE_APP_TEDDYCLOUD_API_URL +
+                                                            backendUrl(
                                                                 tonieCardOrTAFRecord.audioUrl,
+                                                            ),
                                                             getTrackStartTime(
                                                                 tonieCardOrTAFRecord,
                                                                 index,
@@ -453,8 +457,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                                 !isDownloading
                                     ? () =>
                                           handleDownload(
-                                              import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                                  tonieCardOrTAFRecord.audioUrl,
+                                              tonieCardOrTAFRecord.audioUrl,
                                               sourceTitle ? sourceTitle : modelTitle + ".ogg",
                                           )
                                     : undefined

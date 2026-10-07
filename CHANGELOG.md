@@ -2,7 +2,30 @@
 
 ## 0.7.1
 
+- Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
+- gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
+- gui: Rate-limit web login after repeated failures
+- Fixed WARN log spam (incl. leaked session token) for every web UI request when login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud/issues/485](https://github.com/toniebox-reverse-engineering/teddycloud/issues/485)
+- Fixed auto-redirect from base URL to web UI returning "Login required" when web login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333)
 - gui: fixed missing images in library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320)
+- gui: Added Polish (pl) language support [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325)
+- gui: Added "assign to Tonie" action directly from the library file browser [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240)
+- gui: Refactored language functionality to simplify adding and maintaining additional languages. New languages can now be added without requiring code changes. Simply translate an existing language file, save it as [languagecode].json (e.g. en.json) in the public/translations folder, and rebuild the frontend. The new language will then be detected and made available automatically.
+- gui: added Italian language
+- gui: updated packages to latest version
+- gui: replaced deprecated andt list with antd listy
+- gui: added missing language entries
+- gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)
+- gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
+- gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
+- gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)
+- gui: Refactored WebAuthApi to use TeddycloudApi (and allow again local dev setup with remote teddycloud instance)
+- gui: Removed link to the sunseted legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
+- gui: Improved API request handling so authenticated requests consistently use the central TeddyCloud API configuration, including FormData uploads and protected file downloads
+- gui: Improved web authentication error handling so backend/network failures are no longer treated as disabled authentication
+- gui: Fixed custom Tonie track filtering when `sourceInfo.tracks` is empty but `tonieInfo.tracks` contains track data
+- gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
+- gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
 
 ### Commits
 

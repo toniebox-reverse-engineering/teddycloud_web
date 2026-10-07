@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { TeddyCloudApi } from "../api";
 import { defaultAPIConfig } from "../config/defaultApiConfig";
+import { userStorage } from "../utils/storage/userStorage";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -11,11 +12,11 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
 
     const [overlay, setOverlay] = useState<string>(() => {
         if (linkOverlay !== undefined && linkOverlay !== null) {
-            localStorage.setItem("contentOverlay", linkOverlay);
+            userStorage.setItem("contentOverlay", linkOverlay);
             return linkOverlay;
         }
 
-        const savedOverlay = localStorage.getItem("contentOverlay");
+        const savedOverlay = userStorage.getItem("contentOverlay");
         return savedOverlay ?? "";
     });
 
@@ -60,7 +61,7 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
                 const firstBoxId: string =
                     groupedContentDirs.length > 0 ? groupedContentDirs[0][2] : "";
                 setOverlay(firstBoxId);
-                localStorage.setItem("contentOverlay", firstBoxId);
+                userStorage.setItem("contentOverlay", firstBoxId);
             }
 
             setTonieboxContentDirs(groupedContentDirs);
@@ -72,7 +73,7 @@ export const useTonieboxContent = (linkOverlay?: string | null) => {
 
     const handleContentOverlayChange = (nextOverlay: string) => {
         setOverlay(nextOverlay);
-        localStorage.setItem("contentOverlay", nextOverlay);
+        userStorage.setItem("contentOverlay", nextOverlay);
     };
 
     return { tonieBoxContentDirs, overlay, handleContentOverlayChange };

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 import TeddyAudioPlaylistEditor from "./modals/TeddyAudioPlaylistEditorModal";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
+import { AssignTonieModal } from "../common/modals/AssignTonieModal";
 
 import { IMAGE_EXTENSIONS } from "../../../constants/fileTypes";
 import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
@@ -36,6 +37,7 @@ import { createColumns } from "./helper/Columns";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
+import { useToggleListened } from "./hooks/useToggleListened";
 import DeleteFilesModal from "./modals/DeleteFilesModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
 import JsonViewerModal from "./modals/JsonViewerModal";
@@ -47,6 +49,7 @@ import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
+import { backendUrl } from "../../../utils/basePath";
 
 const { Paragraph } = Typography;
 
@@ -101,6 +104,9 @@ export const FileBrowser: React.FC<{
 
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
+
+    const [isAssignTonieModalOpen, setIsAssignTonieModalOpen] = useState<boolean>(false);
+    const [assignTonieSourcePath, setAssignTonieSourcePath] = useState<string>("");
 
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] =
         useState<boolean>(false);
@@ -269,6 +275,17 @@ export const FileBrowser: React.FC<{
         setIsRenameFileModalOpen(false);
     };
 
+    // assign to tonie
+    const showAssignTonieDialog = (record: Record) => {
+        const normalizedPath = path === "" || path.endsWith("/") ? path : `${path}/`;
+        setAssignTonieSourcePath(`lib://${normalizedPath}${record.name}`);
+        setIsAssignTonieModalOpen(true);
+    };
+
+    const closeAssignTonieModal = () => {
+        setIsAssignTonieModalOpen(false);
+    };
+
     // encode files
     const showFileEncodeModal = () => {
         setTreeNodeId(rootTreeNode.id);
@@ -325,6 +342,13 @@ export const FileBrowser: React.FC<{
         setDownloading,
     });
 
+    const { toggleListened } = useToggleListened({
+        path,
+        special,
+        overlay,
+        setRebuildList,
+    });
+
     // table selection / classes
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
@@ -375,6 +399,8 @@ export const FileBrowser: React.FC<{
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        toggleListened,
+        showAssignTonieDialog,
         buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
         onImagePreviewClick:
             special === "custom_img"
@@ -485,6 +511,14 @@ export const FileBrowser: React.FC<{
                     path={path}
                     currentFile={currentFile || null}
                     setRebuildList={setRebuildList}
+                />
+            )}
+            {isAssignTonieModalOpen && (
+                <AssignTonieModal
+                    open={isAssignTonieModalOpen}
+                    onClose={closeAssignTonieModal}
+                    sourcePath={assignTonieSourcePath}
+                    onAssigned={() => setRebuildList((prev) => !prev)}
                 />
             )}
             {isEncodeFilesModalOpen && (
@@ -743,15 +777,7 @@ export const FileBrowser: React.FC<{
                                     record.name.toLowerCase().endsWith(ext),
                                 )
                             ) {
-                                const contentPath = buildContentUrl(record.name);
-                                const baseApiUrl =
-                                    (typeof import.meta !== "undefined" &&
-                                        (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
-                                    "";
-                                const url = baseApiUrl
-                                    ? `${baseApiUrl.replace(/\/$/, "")}${contentPath.startsWith("/") ? contentPath : `/${contentPath}`}`
-                                    : contentPath;
-                                setImagePreviewUrl(url);
+                                setImagePreviewUrl(backendUrl(buildContentUrl(record.name)));
                                 setImagePreviewOpen(true);
                             } else if (
                                 record.name.includes(".json") ||

@@ -164,8 +164,8 @@ const MoveFilesModal: React.FC<MoveFilesModalProps> = ({
         if (selectedRowKeys.length === 0) {
             addNotification(
                 NotificationTypeEnum.Warning,
-                t("tonies.messages.noRowsSelected"),
-                t("tonies.messages.noRowsSelectedForMoving"),
+                t("fileBrowser.messages.noRowsSelected"),
+                t("fileBrowser.messages.noRowsSelectedForMoving"),
                 t("fileBrowser.title"),
             );
             return;

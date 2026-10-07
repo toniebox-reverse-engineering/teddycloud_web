@@ -298,7 +298,7 @@ export default class SettingsDataHandler {
                         this.addNotification(
                             NotificationTypeEnum.Error,
                             t("settings.errorFetchingFieldValue"),
-                            t("setting.errorFetchingFieldValueDetails", {
+                            t("settings.errorFetchingFieldValueDetails", {
                                 setting: settingToChange.label,
                                 overlay:
                                     settingToChange.overlayId !== undefined

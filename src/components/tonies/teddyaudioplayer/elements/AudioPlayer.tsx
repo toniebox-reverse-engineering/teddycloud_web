@@ -17,6 +17,8 @@ import { isIOS, supportsOggOpus } from "../../../../utils/browser/browserUtils";
 
 import logoImg from "../../../../assets/logo.png";
 import TracklistModal from "../modals/TracklistModal";
+import { userStorage } from "../../../../utils/storage/userStorage";
+import { backendUrl, withBase } from "../../../../utils/basePath";
 
 const { Title, Text } = Typography;
 const { useToken } = theme;
@@ -44,7 +46,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const [isTracklistVisible, setIsTracklistVisible] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [volume, setVolume] = useState(() => {
-        const saved = localStorage.getItem("audioVolume");
+        const saved = userStorage.getItem("audioVolume");
         return saved ? Number(saved) : 100;
     });
 
@@ -60,7 +62,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     const url =
         tonieCard != null
             ? tonieCard.valid
-                ? import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + tonieCard.audioUrl
+                ? backendUrl(tonieCard.audioUrl)
                 : tonieCard.source
             : "";
 
@@ -143,7 +145,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
         if (audioRef.current) {
             audioRef.current.volume = volume / 100;
         }
-        localStorage.setItem("audioVolume", volume.toString());
+        userStorage.setItem("audioVolume", volume.toString());
     }, [volume]);
 
     useEffect(() => {
@@ -170,7 +172,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
             artist: tonieCard.tonieInfo.series || "",
             artwork: [
                 {
-                    src: tonieCard.tonieInfo.picture,
+                    src: withBase(tonieCard.tonieInfo.picture),
                     sizes: "96x96,128x128,192x192,256x256,384x384,512x512",
                 },
             ],
@@ -357,7 +359,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
                 <div style={{ display: "flex", justifyContent: "center" }}>
                     <img
                         alt={tonieCard.tonieInfo.episode}
-                        src={tonieCard.tonieInfo.picture}
+                        src={withBase(tonieCard.tonieInfo.picture)}
                         style={{
                             borderRadius: 12,
                             objectFit: "contain",

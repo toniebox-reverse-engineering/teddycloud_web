@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Button, Drawer, Menu, MenuProps, theme } from "antd";
 import { Header } from "antd/es/layout/layout";
-import { MenuOutlined, PlusOutlined } from "@ant-design/icons";
+import { LogoutOutlined, MenuOutlined, PlusOutlined } from "@ant-design/icons";
 
 import logoImg from "../../../assets/logo.png";
 
@@ -13,6 +13,7 @@ import { StyledLanguageSwitcher } from "./StyledLanguageSwitcher";
 import { HiddenDesktop, HiddenMobile } from "../StyledComponents";
 import NotificationButton from "../buttons/NotificationButton";
 import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
+import { useAuth } from "../../../provider/AuthProvider";
 import { HomeSubNav } from "../../home/HomeSubNav";
 import { CommunitySubNav } from "../../community/CommunitySubNav";
 import { SettingsSubNav } from "../../settings/SettingsSubNav";
@@ -71,6 +72,7 @@ export const StyledHeader = ({
         currentTCSection,
         setCurrentTCSection,
     } = useTeddyCloud();
+    const { enabled: authEnabled, logout } = useAuth();
 
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -218,8 +220,17 @@ export const StyledHeader = ({
                 <ServerStatus />
                 {themeSwitch}
                 <StyledLanguageSwitcher />
+                {authEnabled ? (
+                    <Button
+                        type="text"
+                        icon={<LogoutOutlined />}
+                        onClick={() => void logout()}
+                        title={t("auth.logout")}
+                        aria-label={t("auth.logout")}
+                        style={{ color: "white", marginLeft: -12 }}
+                    />
+                ) : null}
                 <NotificationButton notificationCount={unconfirmedCount} />
-
                 <HiddenDesktop style={{ marginLeft: 8 }}>
                     <Button
                         type="primary"

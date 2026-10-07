@@ -8,12 +8,13 @@ import {
     PoweroffOutlined,
     FileSearchOutlined,
     SyncOutlined,
-    HistoryOutlined,
     BellOutlined,
     CodeSandboxOutlined,
     MinusOutlined,
     PlusOutlined,
     ExportOutlined,
+    LockOutlined,
+    AppstoreOutlined,
 } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
@@ -78,12 +79,6 @@ export const SettingsSubNav = () => {
             title: plugin.pluginName,
         }));
 
-    const extractBaseUrl = (fullUrl: URL) => {
-        const url = new URL(fullUrl);
-        const port = url.port ? `:${url.port}` : "";
-        return `${url.protocol}//${url.hostname}${port}`;
-    };
-
     const handleRestartServer = async () => {
         await restartServer(
             t,
@@ -138,6 +133,10 @@ export const SettingsSubNav = () => {
         if (pathname.includes("/settings/guisettings")) {
             newKeys.push("general");
             newKeys.push("guisettings");
+        }
+        if (pathname.includes("/settings/webauth")) {
+            newKeys.push("general");
+            newKeys.push("webauth");
         }
         setOpenKeys((prevKeys) => Array.from(new Set([...prevKeys, ...newKeys])));
     };
@@ -204,6 +203,22 @@ export const SettingsSubNav = () => {
                     icon: React.createElement(SettingOutlined),
                     title: t("settings.guiSettings.navigationTitle"),
                 },
+                {
+                    key: "webauth",
+                    label: (
+                        <Link
+                            to="/settings/webauth"
+                            onClick={() => {
+                                setNavOpen(false);
+                                setSubNavOpen(false);
+                            }}
+                        >
+                            {t("settings.webAuth.navigationTitle")}
+                        </Link>
+                    ),
+                    icon: React.createElement(LockOutlined),
+                    title: t("settings.webAuth.navigationTitle"),
+                },
             ],
         },
         {
@@ -221,6 +236,28 @@ export const SettingsSubNav = () => {
             ),
             icon: React.createElement(SafetyCertificateOutlined),
             title: t("settings.certificates.navigationTitle"),
+        },
+        {
+            key: "tcplugins",
+            label: (
+                <Link
+                    to="/community/tcplugins"
+                    style={{
+                        color: "currentColor",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 50px 0 0",
+                    }}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("community.plugins.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(AppstoreOutlined),
+            title: t("community.plugins.navigationTitle"),
         },
         {
             key: "rtnl",
@@ -275,24 +312,6 @@ export const SettingsSubNav = () => {
             },
             icon: React.createElement(PoweroffOutlined),
             title: t("settings.restartServer"),
-        },
-        {
-            key: "legacy",
-            label: (
-                <Link
-                    to={`${extractBaseUrl(new URL(window.location.href))}/legacy.html`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                        setNavOpen(false);
-                        setSubNavOpen(false);
-                    }}
-                >
-                    {t("settings.legacyGui")}
-                </Link>
-            ),
-            icon: React.createElement(HistoryOutlined),
-            title: t("settings.legacyGui"),
         },
         ...pluginItems,
     ];

@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 import {
     Translations,
     fetchTranslations,
-    LANGUAGES,
     BASE_LANG,
     findMissingKeys,
     findExtraKeys,
 } from "./utils/TranslationUtils";
+import LANGUAGES from "virtual:languages";
 
 const TranslationDiff: React.FC = () => {
     const { t } = useTranslation();

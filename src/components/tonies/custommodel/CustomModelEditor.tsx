@@ -55,6 +55,7 @@ import {
 import { toCustomImgWebPath } from "../common/utils/imagePathUtils";
 import { AudioLibraryPathInput } from "./input/AudioLibraryPathInput";
 import { useCustomModelEditorTable } from "./hooks/useCustomModelEditorTable";
+import { userStorage } from "../../../utils/storage/userStorage";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -138,7 +139,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     const [modelListPage, setModelListPage] = useState(1);
     const [modelListPageSize, setModelListPageSize] = useState<number>(() => {
         try {
-            const stored = localStorage.getItem(CUSTOM_EDITOR_PAGE_SIZE_KEY);
+            const stored = userStorage.getItem(CUSTOM_EDITOR_PAGE_SIZE_KEY);
             if (stored) {
                 const n = parseInt(stored, 10);
                 if ([24, 48, 96, 192].includes(n)) return n;
@@ -609,7 +610,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
     useEffect(() => {
         try {
-            const raw = localStorage.getItem(TABLE_SETTINGS_STORAGE_KEY);
+            const raw = userStorage.getItem(TABLE_SETTINGS_STORAGE_KEY);
             if (!raw) return;
             const parsed = JSON.parse(raw) as {
                 tableSortColumn?: SortColumnKey;
@@ -646,7 +647,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
     useEffect(() => {
         try {
-            localStorage.setItem(
+            userStorage.setItem(
                 TABLE_SETTINGS_STORAGE_KEY,
                 JSON.stringify({
                     tableSortColumn,
@@ -776,7 +777,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
     const handleShowPagination = () => {
         setModelListPageSize(24);
-        localStorage.setItem(CUSTOM_EDITOR_PAGE_SIZE_KEY, "24");
+        userStorage.setItem(CUSTOM_EDITOR_PAGE_SIZE_KEY, "24");
         setModelListPage(1);
         setPaginationEnabled(true);
     };
@@ -971,7 +972,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                                 const newSize = size || modelListPageSize;
                                 if (newSize !== modelListPageSize) {
                                     setModelListPageSize(newSize);
-                                    localStorage.setItem(
+                                    userStorage.setItem(
                                         CUSTOM_EDITOR_PAGE_SIZE_KEY,
                                         String(newSize),
                                     );
