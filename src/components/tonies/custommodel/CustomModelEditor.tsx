@@ -51,6 +51,8 @@ import {
     toEntry,
     buildSuggestedModel,
     findEntryByAudio,
+    buildBaseEntryIndex,
+    findOverriddenBaseEntry,
     isImageFile,
 } from "./utils/customModelEditorUtils";
 import { toCustomImgWebPath } from "../common/utils/imagePathUtils";
@@ -256,6 +258,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             })
             .map(([category]) => category);
     }, [customEntries, baseEntries]);
+
+    const baseEntryIndex = useMemo(() => buildBaseEntryIndex(baseEntries), [baseEntries]);
 
     const buildNewEntryDraft = (seedEntries: CustomEntry[]): CustomEntry => {
         const suggestedModel = buildSuggestedModel(seedEntries);
@@ -1004,6 +1008,31 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         />
     );
 
+    // read the whole form store: collapsed sections (audio) are not part of the watched values
+    const overriddenBaseEntry =
+        editIndex !== null
+            ? findOverriddenBaseEntry(
+                  toEntry((form.getFieldsValue(true) as FormValues) || {}),
+                  baseEntryIndex,
+              )
+            : undefined;
+
+    const overrideHint = overriddenBaseEntry ? (
+        <Alert
+            type="warning"
+            showIcon
+            style={{ marginBottom: 12 }}
+            title={t("tonies.customEditor.overridesOriginal.title", {
+                model: overriddenBaseEntry.model,
+                name:
+                    [overriddenBaseEntry.series, overriddenBaseEntry.episodes]
+                        .filter(Boolean)
+                        .join(" - ") || "-",
+            })}
+            description={t("tonies.customEditor.overridesOriginal.description")}
+        />
+    ) : null;
+
     const audioSourceHint =
         mode === "audio-single" && audioSource && editIndex !== null ? (
             modalMode === "edit" ? (
@@ -1016,18 +1045,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     })}
                     description={t("tonies.customEditor.audioSource.linkedDescription")}
                 />
-            ) : audioSource.tonieInfo?.model ? (
-                <Alert
-                    type="warning"
-                    showIcon
-                    style={{ marginBottom: 12 }}
-                    title={t("tonies.customEditor.audioSource.knownTitle", {
-                        file: audioSource.fileName,
-                        model: audioSource.tonieInfo.model,
-                    })}
-                    description={t("tonies.customEditor.audioSource.knownDescription")}
-                />
-            ) : (
+            ) : overriddenBaseEntry ? null : (
                 <Alert
                     type="info"
                     showIcon
@@ -1074,6 +1092,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                                 const nextEntries = mergeCurrentFormIntoEntries(customEntries);
                                 void createAndSelectNewEntry(nextEntries);
                             }}
+                            getOverriddenModel={(entry) =>
+                                findOverriddenBaseEntry(entry, baseEntryIndex)?.model
+                            }
                             onEdit={handleOpenEditModal}
                             onDuplicate={handleDuplicateEntryByIndex}
                             onDelete={handleDeleteEntryByIndex}
@@ -1161,6 +1182,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     zIndex={singleFormMode ? 1100 : undefined}
                 >
                     {audioSourceHint}
+                    {overrideHint}
                     {editModelFormContent}
                 </CustomModelEditModal>
             </Col>

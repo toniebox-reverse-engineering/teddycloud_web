@@ -1964,8 +1964,6 @@
                 "selectFromLibrary": "Sélectionner l'audio dans {{library}}"
             },
             "audioSource": {
-                "knownDescription": "L'enregistrement crée un modèle personnalisé qui remplace les informations d'origine pour cet audio.",
-                "knownTitle": "{{file}} est reconnu comme le modèle {{model}}",
                 "linkedDescription": "Les modifications s'appliquent à tous les fichiers et tags qui utilisent ce modèle.",
                 "linkedTitle": "{{file}} est lié à ce modèle personnalisé",
                 "newDescription": "L'enregistrement crée un nouveau modèle personnalisé et le lie au fichier via l'ID audio et le hash.",
@@ -2012,6 +2010,11 @@
             "noChangesBody": "Il n'y a rien à enregistrer pour le moment.",
             "noChangesTitle": "Aucune modification détectée",
             "optionalColumns": "Colonnes optionnelles",
+            "overridesOriginal": {
+                "description": "Les modifications enregistrées remplacent les informations d'origine partout où cet audio ou ce modèle est utilisé. Supprimez le modèle personnalisé pour réafficher l'original.",
+                "tag": "Remplace l'original {{model}}",
+                "title": "Remplace le Tonie d'origine {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "modèles/page"
             },

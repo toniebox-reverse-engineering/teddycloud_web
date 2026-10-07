@@ -1964,8 +1964,6 @@
                 "selectFromLibrary": "Wybierz audio z {{library}}"
             },
             "audioSource": {
-                "knownDescription": "Zapisanie tworzy model niestandardowy, który zastępuje oryginalne informacje dla tego audio.",
-                "knownTitle": "{{file}} jest rozpoznawany jako model {{model}}",
                 "linkedDescription": "Zmiany dotyczą wszystkich plików i tagów korzystających z tego modelu.",
                 "linkedTitle": "{{file}} jest powiązany z tym modelem niestandardowym",
                 "newDescription": "Zapisanie tworzy nowy model niestandardowy i łączy go z plikiem przez identyfikator audio i hash.",
@@ -2012,6 +2010,11 @@
             "noChangesBody": "Obecnie nie ma nic do zapisania.",
             "noChangesTitle": "Nie wykryto zmian",
             "optionalColumns": "Opcjonalne kolumny",
+            "overridesOriginal": {
+                "description": "Zapisane zmiany zastępują oryginalne informacje wszędzie tam, gdzie używane jest to audio lub ten model. Usuń model niestandardowy, aby ponownie wyświetlić oryginał.",
+                "tag": "Zastępuje oryginał {{model}}",
+                "title": "Zastępuje oryginalnego Tonie {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "modeli/stronę"
             },

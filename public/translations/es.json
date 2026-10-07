@@ -1964,8 +1964,6 @@
                 "selectFromLibrary": "Seleccionar audio de {{library}}"
             },
             "audioSource": {
-                "knownDescription": "Al guardar se crea un modelo personalizado que reemplaza la información original de este audio.",
-                "knownTitle": "{{file}} se reconoce como el modelo {{model}}",
                 "linkedDescription": "Los cambios se aplican a todos los archivos y tags que usan este modelo.",
                 "linkedTitle": "{{file}} está vinculado a este modelo personalizado",
                 "newDescription": "Al guardar se crea un nuevo modelo personalizado y se vincula al archivo mediante el ID de audio y el hash.",
@@ -2012,6 +2010,11 @@
             "noChangesBody": "No hay nada que guardar en este momento.",
             "noChangesTitle": "No se detectaron cambios",
             "optionalColumns": "Columnas opcionales",
+            "overridesOriginal": {
+                "description": "Los cambios guardados reemplazan la información original en todos los lugares donde se usa este audio o modelo. Elimina el modelo personalizado para volver a mostrar el original.",
+                "tag": "Reemplaza el original {{model}}",
+                "title": "Reemplaza el Tonie original {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "modelos/página"
             },

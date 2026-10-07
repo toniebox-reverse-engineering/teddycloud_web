@@ -61,6 +61,38 @@ export const toTrackArray = (value: unknown): string[] => {
     return tracks;
 };
 
+export type BaseEntryIndex = {
+    byAudio: Map<string, CustomEntry>;
+    byModel: Map<string, CustomEntry>;
+};
+
+/** Lookup of the original tonies.json entries by audio id + hash and by model. */
+export const buildBaseEntryIndex = (baseEntries: CustomEntry[]): BaseEntryIndex => {
+    const byAudio = new Map<string, CustomEntry>();
+    const byModel = new Map<string, CustomEntry>();
+    baseEntries.forEach((entry) => {
+        normalizeAudioPairs(entry).forEach((pair) => {
+            if (!byAudio.has(pair)) byAudio.set(pair, entry);
+        });
+        const modelKey = toModelKey(entry.model);
+        if (modelKey && !byModel.has(modelKey)) byModel.set(modelKey, entry);
+    });
+    return { byAudio, byModel };
+};
+
+/** Original entry a custom entry takes precedence over (same audio or same model). */
+export const findOverriddenBaseEntry = (
+    entry: CustomEntry,
+    index: BaseEntryIndex,
+): CustomEntry | undefined => {
+    for (const pair of normalizeAudioPairs(entry)) {
+        const match = index.byAudio.get(pair);
+        if (match) return match;
+    }
+    const modelKey = toModelKey(entry.model);
+    return modelKey ? index.byModel.get(modelKey) : undefined;
+};
+
 export const normalizeTracks = (entry: CustomEntry): string[] => toTrackArray(entry.tracks);
 export const areStringArraysEqual = (left: string[], right: string[]): boolean =>
     left.length === right.length && left.every((value, index) => value === right[index]);

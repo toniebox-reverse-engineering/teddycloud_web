@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import type { CustomEntry, FormValues } from "../types/customModelEditorTypes";
 import {
     areStringArraysEqual,
+    buildBaseEntryIndex,
     buildSuggestedModel,
     cloneEntry,
     filterValueForEntry,
+    findOverriddenBaseEntry,
     isImageFile,
     normalizeAudioPairs,
     normalizeEntryFromApi,
@@ -45,6 +47,19 @@ describe("customModelEditorUtils", () => {
             "Two",
         ]);
         expect(normalizeTracks(entry({ tracks: ["", " "] }))).toEqual([]);
+    });
+
+    it("finds the original entry a custom entry overrides by audio or by model", () => {
+        const original = entry({ model: "01-0004", audio_id: ["42"], hash: ["ABC"] });
+        const index = buildBaseEntryIndex([original]);
+
+        expect(findOverriddenBaseEntry(entry({ audio_id: ["42"], hash: ["abc"] }), index)).toBe(
+            original,
+        );
+        expect(findOverriddenBaseEntry(entry({ model: "01-0004" }), index)).toBe(original);
+        expect(
+            findOverriddenBaseEntry(entry({ audio_id: ["43"], hash: ["abc"] }), index),
+        ).toBeUndefined();
     });
 
     it("builds the next custom model id and ignores unrelated models", () => {

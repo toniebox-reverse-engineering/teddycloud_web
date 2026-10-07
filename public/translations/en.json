@@ -1964,8 +1964,6 @@
                 "selectFromLibrary": "Select audio from {{library}}"
             },
             "audioSource": {
-                "knownDescription": "Saving creates a custom model that replaces the original information for this audio.",
-                "knownTitle": "{{file}} is recognized as model {{model}}",
                 "linkedDescription": "Changes apply to all files and tags that use this model.",
                 "linkedTitle": "{{file}} is linked to this custom model",
                 "newDescription": "Saving creates a new custom model and links it to the file by audio ID and hash.",
@@ -2012,6 +2010,11 @@
             "noChangesBody": "There is nothing to save at the moment.",
             "noChangesTitle": "No changes detected",
             "optionalColumns": "Optional columns",
+            "overridesOriginal": {
+                "description": "Saved changes replace the original information wherever this audio or model is used. Delete the custom model to show the original again.",
+                "tag": "Overrides original {{model}}",
+                "title": "Overrides original Tonie {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "models/page"
             },

@@ -1964,8 +1964,6 @@
                 "selectFromLibrary": "Seleziona audio da {{library}}"
             },
             "audioSource": {
-                "knownDescription": "Salvando viene creato un modello personalizzato che sostituisce le informazioni originali per questo audio.",
-                "knownTitle": "{{file}} è riconosciuto come modello {{model}}",
                 "linkedDescription": "Le modifiche valgono per tutti i file e i tag che usano questo modello.",
                 "linkedTitle": "{{file}} è collegato a questo modello personalizzato",
                 "newDescription": "Salvando viene creato un nuovo modello personalizzato, collegato al file tramite ID audio e hash.",
@@ -2012,6 +2010,11 @@
             "noChangesBody": "Al momento non c'è nulla da salvare.",
             "noChangesTitle": "Nessuna modifica rilevata",
             "optionalColumns": "Colonne facoltative",
+            "overridesOriginal": {
+                "description": "Le modifiche salvate sostituiscono le informazioni originali ovunque venga usato questo audio o modello. Elimina il modello personalizzato per mostrare di nuovo l'originale.",
+                "tag": "Sostituisce l'originale {{model}}",
+                "title": "Sostituisce il Tonie originale {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "modelli/pagina"
             },

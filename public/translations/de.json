@@ -1964,8 +1964,6 @@
                 "selectFromLibrary": "Audio aus {{library}} auswählen"
             },
             "audioSource": {
-                "knownDescription": "Beim Speichern wird ein Custom-Modell angelegt, das die Original-Informationen für dieses Audio ersetzt.",
-                "knownTitle": "{{file}} wird als Modell {{model}} erkannt",
                 "linkedDescription": "Änderungen gelten für alle Dateien und Tags, die dieses Modell verwenden.",
                 "linkedTitle": "{{file}} ist mit diesem Custom-Modell verknüpft",
                 "newDescription": "Beim Speichern wird ein neues Custom-Modell angelegt und über Audio-ID und Hash mit der Datei verknüpft.",
@@ -2012,6 +2010,11 @@
             "noChangesBody": "Es gibt aktuell nichts zu speichern.",
             "noChangesTitle": "Keine Änderungen erkannt",
             "optionalColumns": "Zusatzspalten",
+            "overridesOriginal": {
+                "description": "Gespeicherte Änderungen ersetzen die Original-Informationen überall, wo dieses Audio oder Modell verwendet wird. Wird das Custom-Modell gelöscht, erscheint wieder das Original.",
+                "tag": "Überschreibt Original {{model}}",
+                "title": "Überschreibt Original-Tonie {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "Modelle/Seite"
             },
