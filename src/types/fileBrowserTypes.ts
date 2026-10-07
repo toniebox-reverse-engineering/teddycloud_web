@@ -5,6 +5,7 @@ export interface RecordTafHeader {
     sha1Hash?: any;
     size?: number;
     trackSeconds?: number[];
+    lengthSeconds?: number;
     valid?: boolean;
 }
 

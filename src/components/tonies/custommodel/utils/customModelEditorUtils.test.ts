@@ -14,6 +14,7 @@ import {
     sortValueForEntry,
     toEntry,
     toFormValues,
+    toTrackDurations,
 } from "./customModelEditorUtils";
 
 const entry = (overrides: Partial<CustomEntry> = {}): CustomEntry => ({
@@ -60,6 +61,12 @@ describe("customModelEditorUtils", () => {
         expect(
             findOverriddenBaseEntry(entry({ audio_id: ["43"], hash: ["abc"] }), index),
         ).toBeUndefined();
+    });
+
+    it("derives track durations and leaves the last one open without total length", () => {
+        expect(toTrackDurations([0, 29, 69, 119], 179)).toEqual([29, 40, 50, 60]);
+        expect(toTrackDurations([0, 29, 69, 119])).toEqual([29, 40, 50, undefined]);
+        expect(toTrackDurations([0], 3)).toEqual([3]);
     });
 
     it("builds the next custom model id and ignores unrelated models", () => {

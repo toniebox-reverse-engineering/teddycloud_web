@@ -73,6 +73,8 @@ export interface CustomModelEditorAudioSource {
     path?: string;
     /** Start of each track in seconds, from the TAF header. */
     trackSeconds?: number[];
+    /** Total audio length in seconds, when the backend provides it. */
+    lengthSeconds?: number;
     /** Info the backend currently resolves for this audio. */
     tonieInfo?: TonieInfo;
 }
@@ -176,6 +178,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     // tracks of the file the editor was opened for or that was picked last
     const [fileTrackSeconds, setFileTrackSeconds] = useState<number[] | undefined>(
         audioSource?.trackSeconds,
+    );
+    const [fileLengthSeconds, setFileLengthSeconds] = useState<number | undefined>(
+        audioSource?.lengthSeconds,
     );
 
     const mergeCurrentFormIntoEntries = (entries: CustomEntry[]) => {
@@ -1005,6 +1010,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             setSelectAudioModalOpen={setSelectAudioModalOpen}
             AudioLibraryPathInputComponent={AudioLibraryPathInput}
             fileTrackSeconds={fileTrackSeconds}
+            fileLengthSeconds={fileLengthSeconds}
         />
     );
 
@@ -1247,6 +1253,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                             result.path,
                         );
                         setFileTrackSeconds(result.trackSeconds);
+                        setFileLengthSeconds(result.lengthSeconds);
                     }
                     setSelectAudioModalOpen(false);
                     setTargetAudioPairIndex(null);

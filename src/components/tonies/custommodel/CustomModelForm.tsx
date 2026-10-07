@@ -18,7 +18,7 @@ import type { FormInstance } from "antd/es/form";
 import { toPreviewableImageUrl } from "../common/utils/imagePathUtils";
 import { languageOptions, toLanguageCode } from "../../common/icons/LanguageFlagIcon";
 import type { CustomEntry, FormValues } from "./types/customModelEditorTypes";
-import { formatTrackStart, toTrackArray } from "./utils/customModelEditorUtils";
+import { formatTrackTime, toTrackArray, toTrackDurations } from "./utils/customModelEditorUtils";
 
 type AudioLibraryPathInputProps = {
     audioId: string;
@@ -73,6 +73,8 @@ interface CustomModelFormProps {
     AudioLibraryPathInputComponent: React.ComponentType<AudioLibraryPathInputProps>;
     /** Track starts (seconds) of the linked file, when known. */
     fileTrackSeconds?: number[];
+    /** Total length (seconds) of the linked file, when known. */
+    fileLengthSeconds?: number;
 }
 
 export const CustomModelForm: React.FC<CustomModelFormProps> = ({
@@ -98,11 +100,13 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
     setSelectAudioModalOpen,
     AudioLibraryPathInputComponent,
     fileTrackSeconds,
+    fileLengthSeconds,
 }) => {
     const { t } = useTranslation();
     // as saved: by position, without trailing empty rows
     const trackNames = toTrackArray((Form.useWatch("tracks", form) || []).map((row) => row?.track));
     const fileTrackCount = fileTrackSeconds?.length ?? 0;
+    const fileTrackDurations = toTrackDurations(fileTrackSeconds ?? [], fileLengthSeconds);
     const trackCountMismatch =
         fileTrackCount > 0 && trackNames.length > 0 && trackNames.length !== fileTrackCount;
     const collapseItems = [
@@ -527,7 +531,9 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                                 prefix={
                                                     idx < fileTrackCount ? (
                                                         <Typography.Text type="secondary">
-                                                            {`${idx + 1} · ${formatTrackStart(fileTrackSeconds![idx])}`}
+                                                            {fileTrackDurations[idx] !== undefined
+                                                                ? `${idx + 1} · ${formatTrackTime(fileTrackDurations[idx]!)}`
+                                                                : idx + 1}
                                                         </Typography.Text>
                                                     ) : undefined
                                                 }

@@ -32,6 +32,7 @@ export const useTafMetaEditor = ({ special, setRebuildList }: UseTafMetaEditorAr
                         ? `lib://${decodedPath ? `${decodedPath}/` : ""}${record.name}`
                         : undefined,
                 trackSeconds: record.tafHeader.trackSeconds,
+                lengthSeconds: record.tafHeader.lengthSeconds,
                 tonieInfo: record.tonieInfo,
             });
             setIsTafMetaEditorModalOpen(true);

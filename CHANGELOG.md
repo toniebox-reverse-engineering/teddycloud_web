@@ -26,7 +26,8 @@
 - gui: Fixed custom Tonie track filtering when `sourceInfo.tracks` is empty but `tonieInfo.tracks` contains track data
 - gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
 - gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
-- gui: Connected the "edit metadata" action of TAF files in the file browser with the Custom Model Editor [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341)
+- gui: Connected the "edit metadata" action of TAF files in the file browser with the Custom Model Editor, incl. track rows from the TAF header with their duration and a hint when a custom model overrides an original tonie [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341)
+- gui: Track names in the Custom Model Editor keep their position, unnamed tracks in between are no longer dropped
 
 ### Commits
 

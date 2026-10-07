@@ -199,9 +199,19 @@ export const toEntry = (values: FormValues): CustomEntry => {
     };
 };
 
-/** Start of a track as m:ss. */
-export const formatTrackStart = (seconds: number): string =>
+/** Seconds as m:ss. */
+export const formatTrackTime = (seconds: number): string =>
     `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+
+/** Duration per track from the track starts; the last one needs the total length. */
+export const toTrackDurations = (
+    trackSeconds: number[],
+    lengthSeconds?: number,
+): (number | undefined)[] =>
+    trackSeconds.map((start, idx) => {
+        const end = idx < trackSeconds.length - 1 ? trackSeconds[idx + 1] : lengthSeconds;
+        return end !== undefined && end >= start ? end - start : undefined;
+    });
 
 export const isImageFile = (name: string): boolean =>
     IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));
