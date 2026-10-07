@@ -21,6 +21,9 @@ export default defineConfig(({ command, mode }) => {
         ? env.VITE_APP_TEDDYCLOUD_API_URL.replace(/^https:/, "http:")
         : "http://teddycloud.local";
 
+    const teddyCloudPaths = ["/api", "/img_unknown.png", "/cache", "/img", "/custom_img"];
+    const proxyOptions = { target: proxyUrl, changeOrigin: true, secure: false };
+
     // The dev server serves the app below this path; everything else is proxied to teddyCloud
     const devBase = "/web";
 
@@ -83,12 +86,12 @@ export default defineConfig(({ command, mode }) => {
             https: httpsOptions,
             // Same-origin setup: API calls send credentials, which do not work cross-origin with CORS "*".
             proxy: {
-                [`^(?!${devBase}(/|$)).*`]: {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
+                [`^(?!${devBase}(/|$)).*`]: proxyOptions,
             },
+        },
+        // `vite preview` inherits server.proxy by default; keep it limited to the teddyCloud paths.
+        preview: {
+            proxy: Object.fromEntries(teddyCloudPaths.map((p) => [p, proxyOptions])),
         },
     };
 });
