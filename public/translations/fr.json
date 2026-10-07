@@ -1620,6 +1620,7 @@
             "locateFlashMemoryText": "Identifie la puce de mémoire flash IS25LP032D sur la carte ; elle est située à droite du dock de chargement.",
             "navigationTitle": "CC3235",
             "next": "Suivant",
+            "portHint": "Les box CC3235 se connectent toujours au port 443 : il n'existe pas de patch de port pour elles, TeddyCloud doit donc être accessible sur le port 443 (un proxy ne peut les router que par IP).",
             "pico": {
                 "preparation": "Uniquement nécessaire si tu prévois de flasher avec un Raspberry Pi Pico",
                 "readingFlash": "Lire la mémoire flash avec Raspberry Pi Pico",

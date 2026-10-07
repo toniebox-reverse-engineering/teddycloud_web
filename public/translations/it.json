@@ -1620,6 +1620,7 @@
             "locateFlashMemoryText": "Individua sulla scheda il chip di memoria flash IS25LP032D; si trova a destra della base di ricarica.",
             "navigationTitle": "CC3235",
             "next": "Avanti",
+            "portHint": "I box CC3235 si collegano sempre alla porta 443: per loro non esiste una patch della porta, quindi TeddyCloud deve essere raggiungibile sulla porta 443 (un proxy può instradarli solo per IP).",
             "pico": {
                 "preparation": "Necessario solo se intendi eseguire il flashing con un Raspberry Pi Pico",
                 "readingFlash": "Lettura della flash con Raspberry Pi Pico",

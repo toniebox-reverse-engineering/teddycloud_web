@@ -1620,6 +1620,7 @@
             "locateFlashMemoryText": "Zidentyfikuj układ pamięci flash IS25LP032D na płytce; znajduje się on na prawo od stacji dokującej ładowania.",
             "navigationTitle": "CC3235",
             "next": "Dalej",
+            "portHint": "Pudełka CC3235 zawsze łączą się z portem 443: nie ma dla nich łatki portu, więc TeddyCloud musi być dostępny na porcie 443 (proxy może je kierować tylko według IP).",
             "pico": {
                 "preparation": "Wymagane tylko wtedy, gdy planujesz flashowanie za pomocą Raspberry Pi Pico",
                 "readingFlash": "Odczyt Flasha za pomocą Raspberry Pi Pico",
