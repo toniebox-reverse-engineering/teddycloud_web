@@ -27,6 +27,7 @@
 - gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
 - gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
 - gui: Fixed web login edge cases: the login page now appears when login gets enabled while the UI is open, and logging out while TeddyCloud is unreachable no longer leaves the logged-in view on screen
+- gui: Failed file downloads in the library and the Tonie information dialog now show an error notification instead of failing silently
 
 ### Commits
 

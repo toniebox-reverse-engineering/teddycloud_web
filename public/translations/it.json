@@ -500,6 +500,8 @@
             "deleteSuccessfulDetails": "File \"{{file}}\" eliminato correttamente!",
             "deleting": "Eliminazione...",
             "deletingDetails": "Eliminazione del file \"{{file}}\"...",
+            "downloadFailed": "Download non riuscito",
+            "downloadFailedDetails": "Download del file \"{{file}}\" non riuscito",
             "errorFetchingDirContent": "Caricamento del contenuto della directory non riuscito",
             "errorFetchingDirContentDetails": "Impossibile caricare il contenuto della directory \"{{path}}\": ",
             "migrationFailed": "Migrazione non riuscita",
