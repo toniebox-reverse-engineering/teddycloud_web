@@ -22,6 +22,12 @@ import {
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
+// the highest port the ESP32 port patch of TeddyCloud can encode is 32767
+export const isValidApiPort = (value: string) => {
+    const port = Number(value);
+    return /^[0-9]+$/.test(value) && port >= 1 && port <= 32767;
+};
+
 export interface ESP32Flasher {
     progress: number;
     chipMac: string;
@@ -45,11 +51,13 @@ export interface ESP32Flasher {
     flagPreviousHostname: boolean;
     previousHostname: string;
     hostname: string;
+    apiPort: string;
     wifi_ssid: string;
     wifi_pass: string;
     proceed: boolean;
     actionInProgress: boolean;
     warningTextHostname: string;
+    warningTextApiPort: string;
     warningTextWifi: string;
     downloadLink: string;
     downloadLinkPatched: string;
@@ -150,11 +158,13 @@ export const useESP32Flasher = (
             window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
                 ? window.location.hostname
                 : "",
+        apiPort: "443",
         wifi_ssid: "",
         wifi_pass: "",
         proceed: false,
         actionInProgress: false,
         warningTextHostname: "",
+        warningTextApiPort: "",
         warningTextWifi: "",
         downloadLink: "",
         downloadLinkPatched: "",
@@ -887,6 +897,7 @@ export const useESP32Flasher = (
             hostname: state.hostname,
             previousHostname: state.previousHostname,
             flagPreviousHostname: state.flagPreviousHostname,
+            apiPort: state.apiPort,
             wifi: {
                 ssid: state.wifi_ssid ? "***" : "",
                 pass: state.wifi_pass ? "***" : "",
@@ -906,6 +917,19 @@ export const useESP32Flasher = (
                 warningTextWifi: t(
                     "tonieboxes.esp32BoxFlashing.esp32flasher.wifiCredentialsIncomplete",
                 ),
+                error: true,
+            }));
+            return;
+        }
+
+        if (!isValidApiPort(state.apiPort)) {
+            console.error("[ESP32] patchFlash: invalid port", { apiPort: state.apiPort });
+
+            setState((prev) => ({
+                ...prev,
+                state: t("tonieboxes.esp32BoxFlashing.esp32flasher.portInvalid"),
+                showStatus: true,
+                warningTextApiPort: t("tonieboxes.esp32BoxFlashing.esp32flasher.portInvalid"),
                 error: true,
             }));
             return;
@@ -931,6 +955,9 @@ export const useESP32Flasher = (
                     ? `&hostname_old=${encodeURIComponent(state.previousHostname)}`
                     : "") +
                 `&hostname=${encodeURIComponent(state.hostname)}` +
+                (Number(state.apiPort) !== 443
+                    ? `&port=${encodeURIComponent(state.apiPort)}`
+                    : "") +
                 (state.wifi_ssid && state.wifi_pass
                     ? `&wifi_ssid=${encodeURIComponent(state.wifi_ssid)}&wifi_pass=${encodeURIComponent(
                           state.wifi_pass,

@@ -2,7 +2,7 @@ import React from "react";
 import { Alert, Col, Divider, Form, Input, Row, theme, Typography } from "antd";
 import { Checkbox } from "antd";
 
-import { ESP32Flasher } from "../hooks/useESP32Flasher";
+import { ESP32Flasher, isValidApiPort } from "../hooks/useESP32Flasher";
 import { useTranslation } from "react-i18next";
 
 const { Paragraph } = Typography;
@@ -151,6 +151,51 @@ export const Step2PatchFlash: React.FC<Step2Props> = ({
                         {state.warningTextHostname && (
                             <p style={{ color: token.colorErrorText }}>
                                 {t("tonieboxes.esp32BoxFlashing.esp32flasher.hostnameTooLong")}
+                            </p>
+                        )}
+                    </Form.Item>
+
+                    <Paragraph>
+                        {t("tonieboxes.esp32BoxFlashing.esp32flasher.hintPatchPort")}
+                    </Paragraph>
+                    <Form.Item>
+                        <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
+                            <Col
+                                style={{
+                                    flex: "0 0 200px",
+                                    color: state.warningTextApiPort
+                                        ? token.colorErrorText
+                                        : "unset",
+                                }}
+                            >
+                                <label>{t("tonieboxes.esp32BoxFlashing.esp32flasher.port")}</label>
+                            </Col>
+                            <Col style={{ flex: "1 1 auto" }}>
+                                <Input
+                                    type="text"
+                                    inputMode="numeric"
+                                    value={state.apiPort}
+                                    onChange={(e) => {
+                                        const value = e.target.value
+                                            .replace(/[^0-9]/g, "")
+                                            .slice(0, 5);
+                                        setState((prev) => ({
+                                            ...prev,
+                                            apiPort: value,
+                                            warningTextApiPort:
+                                                value && !isValidApiPort(value)
+                                                    ? t(
+                                                          "tonieboxes.esp32BoxFlashing.esp32flasher.portInvalid",
+                                                      )
+                                                    : "",
+                                        }));
+                                    }}
+                                />
+                            </Col>
+                        </Row>
+                        {state.warningTextApiPort && (
+                            <p style={{ color: token.colorErrorText }}>
+                                {state.warningTextApiPort}
                             </p>
                         )}
                     </Form.Item>
