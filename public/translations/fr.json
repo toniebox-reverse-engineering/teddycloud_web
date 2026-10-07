@@ -1402,7 +1402,8 @@
                     "waitForPressDesc": "Attends une pression sur l'oreille au démarrage avec une séquence de clignotement (bleu, vert, cyan, noir)",
                     "waitTimeoutInSDesc": "Délai en secondes pour waitForPress si aucune pression sur l'oreille (hibernation)",
                     "watchdogDesc": "Garder le watchdog activé lors du démarrage du firmware (si le démarrage échoue, la box redémarrera)"
-                }
+                },
+                "altPortHint": "Si tu as créé un patch de port, place-le aussi dans /revvox/boot/patch/ et ajoute \"altPort.custom\" à la liste des patches."
             },
             "applyingPatchesWithNgCfgJson": "Appliquer les patches en utilisant ngCfg.json",
             "applyingPatchesWithNgCfgJsonLink": "Trouve les instructions ici",
@@ -1426,6 +1427,12 @@
             "connectToTonieboxText": "La LED verte de la carte principale de la Toniebox doit rester allumée en continu (sans clignoter). Si ce n'est pas le cas, tes connexions pourraient être mal fixées ou incorrectes. Déconnecte le programmeur, vérifie toutes les connexions et essaie à nouveau. Si tu travailles avec des fils fins, pense à utiliser de la colle chaude pour les fixer et éviter qu'ils ne bougent. De plus, assure-toi que la Toniebox est alimentée via son chargeur.",
             "connectToTonieboxTextUart": "Assure-toi que l'UART est configuré à 3,3V avant de connecter le programmeur UART à ton ordinateur via USB.",
             "createPatch": "Créer altUrl.custom.305.patch",
+            "customPortPatch": "Optionnel : créer un patch de port (altPort.custom.json)",
+            "customPortPatchHint": "Nécessaire uniquement si la Toniebox doit joindre TeddyCloud sur un autre port que 443, par exemple via un proxy qui route selon le port. Le patch fonctionne avec les versions de firmware 3.1.0 BF2, 3.3.0 et 3.4.0. hackiebox-ng fournit déjà altPort.json pour le port 10443 ; crée ton propre patch uniquement pour un autre port.",
+            "hintPatchPort": "Saisis le port auquel la Toniebox doit se connecter, puis clique sur 'Créer altPort.custom.patch'. Le patch sera ensuite téléchargé automatiquement.",
+            "port": "Port TeddyCloud :",
+            "portInvalid": "Le port doit être compris entre 1 et 65535.",
+            "createPortPatch": "Créer altPort.custom.patch",
             "customUrlPatch": "Créer un patch URL personnalisé (altUrl.custom.305.json)",
             "customUrlPatchHint": "Veuillez créer ce patch uniquement si les patches prédéfinis altUrl.tc.fritz.box.json et altUrl.305.json ne fonctionnent pas avec votre configuration actuelle de TeddyCloud. S'ils répondent à vos besoins, vous pouvez continuer en cliquant sur 'Suivant'.",
             "dedicatedUart": "UART dédié",
@@ -1720,6 +1727,9 @@
                 "hostname": "Nom d'hôte TeddyCloud:",
                 "hostnameSettings": "Nom d'hôte TeddyCloud",
                 "hostnameTooLong": "Si vous souhaitez connecter ultérieurement une Toniebox CC3200, le nom d'hôte ne doit pas dépasser 12 caractères (limitation du firmware).",
+                "hintPatchPort": "Port auquel la Toniebox se connecte. Garde 443, sauf si la Toniebox doit joindre TeddyCloud sur un autre port, par exemple via un proxy qui route selon le port.",
+                "port": "Port TeddyCloud :",
+                "portInvalid": "Le port doit être compris entre 1 et 32767.",
                 "importanceBackup": "Avant de faire des modifications sur ta Toniebox, télécharge une copie du firmware original et stocke-la de manière sécurisée. Cela te permettra de restaurer ta Toniebox à son état d'usine en cas de problème. Sauvegarde-la à plusieurs endroits, comme sur ton ordinateur principal ou portable, un disque dur externe ou une clé USB, et/ou un service de stockage en ligne fiable (comme Google Drive, Dropbox, OneDrive). Ne conserve jamais ta seule copie uniquement sur le serveur TeddyCloud.",
                 "infoTable": "Infos ESP32",
                 "invalidFlashData": "La lecture / le chargement du flash ne contient que des 0x00 ou 0xFF. Vérifie la connexion ou le fichier chargé et réessaie !",
