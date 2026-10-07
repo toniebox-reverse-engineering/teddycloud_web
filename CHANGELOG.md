@@ -26,6 +26,7 @@
 - gui: Fixed custom Tonie track filtering when `sourceInfo.tracks` is empty but `tonieInfo.tracks` contains track data
 - gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
 - gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
+- gui: Fixed web login edge cases: the login page now appears when login gets enabled while the UI is open, and logging out while TeddyCloud is unreachable no longer leaves the logged-in view on screen
 
 ### Commits
 
