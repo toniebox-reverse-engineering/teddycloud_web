@@ -1,13 +1,16 @@
 import { Record as tafRecord } from "../../../../types/fileBrowserTypes";
-import { backendUrl } from "../../../../utils/basePath";
+import { TeddyCloudApi } from "../../../../api";
+import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface UseFileDownloadParams {
     setDownloading: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }
 
 export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
-    const handleDownload = async (url: string, filename: string) => {
-        const response = await fetch(url);
+    const handleDownload = async (path: string, filename: string) => {
+        const response = await api.apiGetTeddyCloudApiRaw(path);
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
 
@@ -28,7 +31,7 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
         overlay?: string,
     ) => {
         const fileUrl =
-            encodeURI(backendUrl("/content/" + decodeURIComponent(path) + "/" + record.name)) +
+            encodeURI("/content/" + decodeURIComponent(path) + "/" + record.name) +
             "?" +
             (record.name.endsWith(".taf") ? "ogg=true&" : "") +
             "special=" +

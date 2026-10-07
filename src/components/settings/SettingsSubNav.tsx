@@ -14,6 +14,7 @@ import {
     PlusOutlined,
     ExportOutlined,
     LockOutlined,
+    AppstoreOutlined,
 } from "@ant-design/icons";
 
 import { TeddyCloudApi } from "../../api";
@@ -235,6 +236,28 @@ export const SettingsSubNav = () => {
             ),
             icon: React.createElement(SafetyCertificateOutlined),
             title: t("settings.certificates.navigationTitle"),
+        },
+        {
+            key: "tcplugins",
+            label: (
+                <Link
+                    to="/community/tcplugins"
+                    style={{
+                        color: "currentColor",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "0 50px 0 0",
+                    }}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {t("community.plugins.navigationTitle")}
+                </Link>
+            ),
+            icon: React.createElement(AppstoreOutlined),
+            title: t("community.plugins.navigationTitle"),
         },
         {
             key: "rtnl",

@@ -19,7 +19,13 @@
 - gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
 - gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
 - gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)
-- gui: Removed link to the legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
+- gui: Refactored WebAuthApi to use TeddycloudApi (and allow again local dev setup with remote teddycloud instance)
+- gui: Removed link to the sunseted legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
+- gui: Improved API request handling so authenticated requests consistently use the central TeddyCloud API configuration, including FormData uploads and protected file downloads
+- gui: Improved web authentication error handling so backend/network failures are no longer treated as disabled authentication
+- gui: Fixed custom Tonie track filtering when `sourceInfo.tracks` is empty but `tonieInfo.tracks` contains track data
+- gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
+- gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
 - gui: Connected the "edit metadata" action of TAF files in the file browser with the Custom Model Editor [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341)
 
 ### Commits
