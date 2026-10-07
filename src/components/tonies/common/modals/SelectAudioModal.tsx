@@ -10,6 +10,10 @@ export interface SelectAudioFileResult {
     path: string;
     audioId?: string;
     hash?: string;
+    /** Start of each track in seconds, from the TAF header. */
+    trackSeconds?: number[];
+    /** Total audio length in seconds, when the backend provides it. */
+    lengthSeconds?: number;
 }
 
 /**
@@ -46,6 +50,8 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
         path: string;
         audioId?: string;
         hash?: string;
+        trackSeconds?: number[];
+        lengthSeconds?: number;
     } | null>(null);
 
     const resolveSelectedFile = (files: any[], path: string) => {
@@ -66,6 +72,8 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
             path: filePath,
             audioId: String(audioIdRaw).trim(),
             hash: String(hashRaw).trim(),
+            trackSeconds: file?.tafHeader?.trackSeconds,
+            lengthSeconds: file?.tafHeader?.lengthSeconds,
         };
     };
 
@@ -87,6 +95,8 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
                 path: selectedFile.path,
                 audioId: selectedFile.audioId,
                 hash: selectedFile.hash,
+                trackSeconds: selectedFile.trackSeconds,
+                lengthSeconds: selectedFile.lengthSeconds,
             });
             setSelectedFile(null);
             onClose();

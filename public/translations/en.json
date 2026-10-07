@@ -407,7 +407,7 @@
                     "title": "Duplicate TAP File"
                 },
                 "editTAFMetadata": {
-                    "text": "Opens the metadata editor to modify TAF file details. Changes are stored in tonies.custom.json. (WIP)",
+                    "text": "Opens the custom model editor for the TAF file. An already linked custom model (same audio ID and hash) is edited, otherwise a new one is created for the file. Changes are stored in tonies.custom.json.",
                     "title": "Edit TAF Metadata"
                 },
                 "editTAPPlaylist": {
@@ -554,7 +554,7 @@
         "series": "Series",
         "size": "Size",
         "tafMeta": {
-            "edit": "(WIP - not implemented yet) Edit metadata"
+            "edit": "Edit metadata (custom model)"
         },
         "tap": {
             "edit": "Edit TeddyAudio Playlist",
@@ -1963,6 +1963,12 @@
                 "placeholder": "Select custom audio from {{library}}",
                 "selectFromLibrary": "Select audio from {{library}}"
             },
+            "audioSource": {
+                "linkedDescription": "Changes apply to all files and tags that use this model.",
+                "linkedTitle": "{{file}} is linked to this custom model",
+                "newDescription": "Saving creates a new custom model and links it to the file by audio ID and hash.",
+                "newTitle": "No custom model for {{file}} yet"
+            },
             "batch": {
                 "description": "Changes apply to all selected models.",
                 "title": "Batch editing active"
@@ -2004,6 +2010,11 @@
             "noChangesBody": "There is nothing to save at the moment.",
             "noChangesTitle": "No changes detected",
             "optionalColumns": "Optional columns",
+            "overridesOriginal": {
+                "description": "Saved changes replace the original information wherever this audio or model is used. Delete the custom model to show the original again.",
+                "tag": "Overrides original {{model}}",
+                "title": "Overrides original Tonie {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "models/page"
             },
@@ -2042,6 +2053,13 @@
             },
             "tableMenu": "Table menu",
             "title": "Model editor",
+            "tracks": {
+                "fewerNamesDescription": "The file has {{tracks}} tracks. Names keep their position, but the info dialog only offers jumping to a track when every track up to the last one is listed.",
+                "fewerNamesTitle": "The last tracks of the file have no name",
+                "moreNamesDescription": "The additional names are saved and listed, but have no position in the file. The info dialog then cannot jump to single tracks.",
+                "moreNamesTitle": "More names than tracks in the file ({{tracks}})",
+                "notInFile": "Additional names without a track in the file:"
+            },
             "unsaved": "{{count}} unsaved change(s)",
             "validation": {
                 "title": "Please fix these issues first"

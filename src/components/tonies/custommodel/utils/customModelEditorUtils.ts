@@ -43,7 +43,57 @@ export const normalizeAudioPairs = (entry: CustomEntry): string[] => {
         .filter((pair) => pair !== "::");
 };
 
-export const normalizeTracks = (entry: CustomEntry): string[] => toStringArray(entry.tracks);
+/** Index of the entry holding this audio id and hash, -1 if none. */
+export const findEntryByAudio = (
+    entries: CustomEntry[],
+    audioId: unknown,
+    hash: unknown,
+): number => {
+    const audioKey = `${normalizeText(audioId)}::${normalizeText(hash).toLowerCase()}`;
+    if (audioKey === "::") return -1;
+    return entries.findIndex((entry) => normalizeAudioPairs(entry).includes(audioKey));
+};
+
+/** Track names by position: unnamed tracks in between are kept, trailing ones dropped. */
+export const toTrackArray = (value: unknown): string[] => {
+    const tracks = (Array.isArray(value) ? value : [value]).map((item) => normalizeText(item));
+    while (tracks.length > 0 && tracks[tracks.length - 1] === "") tracks.pop();
+    return tracks;
+};
+
+export type BaseEntryIndex = {
+    byAudio: Map<string, CustomEntry>;
+    byModel: Map<string, CustomEntry>;
+};
+
+/** Lookup of the original tonies.json entries by audio id + hash and by model. */
+export const buildBaseEntryIndex = (baseEntries: CustomEntry[]): BaseEntryIndex => {
+    const byAudio = new Map<string, CustomEntry>();
+    const byModel = new Map<string, CustomEntry>();
+    baseEntries.forEach((entry) => {
+        normalizeAudioPairs(entry).forEach((pair) => {
+            if (!byAudio.has(pair)) byAudio.set(pair, entry);
+        });
+        const modelKey = toModelKey(entry.model);
+        if (modelKey && !byModel.has(modelKey)) byModel.set(modelKey, entry);
+    });
+    return { byAudio, byModel };
+};
+
+/** Original entry a custom entry takes precedence over (same audio or same model). */
+export const findOverriddenBaseEntry = (
+    entry: CustomEntry,
+    index: BaseEntryIndex,
+): CustomEntry | undefined => {
+    for (const pair of normalizeAudioPairs(entry)) {
+        const match = index.byAudio.get(pair);
+        if (match) return match;
+    }
+    const modelKey = toModelKey(entry.model);
+    return modelKey ? index.byModel.get(modelKey) : undefined;
+};
+
+export const normalizeTracks = (entry: CustomEntry): string[] => toTrackArray(entry.tracks);
 export const areStringArraysEqual = (left: string[], right: string[]): boolean =>
     left.length === right.length && left.every((value, index) => value === right[index]);
 
@@ -97,7 +147,7 @@ export const normalizeEntryFromApi = (entry: unknown): CustomEntry => {
     const source = entry && typeof entry === "object" ? (entry as Record<string, unknown>) : {};
     const audioIds = toStringArray(source.audio_id);
     const hashes = toStringArray(source.hash);
-    const tracks = toStringArray(source.tracks);
+    const tracks = toTrackArray(source.tracks);
 
     return {
         no: toOptionalText(source.no),
@@ -120,10 +170,11 @@ export const toEntry = (values: FormValues): CustomEntry => {
         .filter((pair): pair is AudioPair => pair != null && typeof pair === "object")
         .map((pair) => ({ audio_id: normalizeText(pair.audio_id), hash: normalizeText(pair.hash) }))
         .filter((pair) => pair.audio_id.length > 0 && pair.hash.length > 0);
-    const tracks = (values.tracks || [])
-        .filter((track): track is TrackRow => track != null && typeof track === "object")
-        .map((track) => normalizeText(track.track))
-        .filter((track) => track.length > 0);
+    const tracks = toTrackArray(
+        (values.tracks || [])
+            .filter((track): track is TrackRow => track != null && typeof track === "object")
+            .map((track) => track.track),
+    );
     const releaseRaw =
         values.release === undefined || values.release === null
             ? ""
@@ -147,6 +198,20 @@ export const toEntry = (values: FormValues): CustomEntry => {
         pic: toOptionalText(values.pic),
     };
 };
+
+/** Seconds as m:ss. */
+export const formatTrackTime = (seconds: number): string =>
+    `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+
+/** Duration per track from the track starts; the last one needs the total length. */
+export const toTrackDurations = (
+    trackSeconds: number[],
+    lengthSeconds?: number,
+): (number | undefined)[] =>
+    trackSeconds.map((start, idx) => {
+        const end = idx < trackSeconds.length - 1 ? trackSeconds[idx + 1] : lengthSeconds;
+        return end !== undefined && end >= start ? end - start : undefined;
+    });
 
 export const isImageFile = (name: string): boolean =>
     IMAGE_EXTENSIONS.some((ext) => name.toLowerCase().endsWith(ext));

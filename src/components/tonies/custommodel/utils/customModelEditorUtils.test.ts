@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import type { CustomEntry, FormValues } from "../types/customModelEditorTypes";
 import {
     areStringArraysEqual,
+    buildBaseEntryIndex,
     buildSuggestedModel,
     cloneEntry,
     filterValueForEntry,
+    findOverriddenBaseEntry,
     isImageFile,
     normalizeAudioPairs,
     normalizeEntryFromApi,
@@ -12,6 +14,7 @@ import {
     sortValueForEntry,
     toEntry,
     toFormValues,
+    toTrackDurations,
 } from "./customModelEditorUtils";
 
 const entry = (overrides: Partial<CustomEntry> = {}): CustomEntry => ({
@@ -38,8 +41,32 @@ describe("customModelEditorUtils", () => {
         ).toEqual(["123::aabb"]);
     });
 
-    it("normalizes tracks and drops empty rows", () => {
-        expect(normalizeTracks(entry({ tracks: [" One ", "", "  Two"] }))).toEqual(["One", "Two"]);
+    it("normalizes tracks, keeps unnamed tracks in between and drops trailing empty rows", () => {
+        expect(normalizeTracks(entry({ tracks: [" One ", "", "  Two", " ", ""] }))).toEqual([
+            "One",
+            "",
+            "Two",
+        ]);
+        expect(normalizeTracks(entry({ tracks: ["", " "] }))).toEqual([]);
+    });
+
+    it("finds the original entry a custom entry overrides by audio or by model", () => {
+        const original = entry({ model: "01-0004", audio_id: ["42"], hash: ["ABC"] });
+        const index = buildBaseEntryIndex([original]);
+
+        expect(findOverriddenBaseEntry(entry({ audio_id: ["42"], hash: ["abc"] }), index)).toBe(
+            original,
+        );
+        expect(findOverriddenBaseEntry(entry({ model: "01-0004" }), index)).toBe(original);
+        expect(
+            findOverriddenBaseEntry(entry({ audio_id: ["43"], hash: ["abc"] }), index),
+        ).toBeUndefined();
+    });
+
+    it("derives track durations and leaves the last one open without total length", () => {
+        expect(toTrackDurations([0, 29, 69, 119], 179)).toEqual([29, 40, 50, 60]);
+        expect(toTrackDurations([0, 29, 69, 119])).toEqual([29, 40, 50, undefined]);
+        expect(toTrackDurations([0], 3)).toEqual([3]);
     });
 
     it("builds the next custom model id and ignores unrelated models", () => {

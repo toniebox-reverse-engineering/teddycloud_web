@@ -399,7 +399,7 @@
                     "title": "Duplikuj plik TAP"
                 },
                 "editTAFMetadata": {
-                    "text": "Otwiera edytor metadanych do modyfikacji szczegółów pliku TAF. Zmiany są zapisywane w tonies.custom.json. (W trakcie prac)",
+                    "text": "Otwiera edytor modeli niestandardowych dla pliku TAF. Powiązany już model niestandardowy (ten sam identyfikator audio i hash) jest edytowany, w przeciwnym razie dla pliku tworzony jest nowy. Zmiany są zapisywane w tonies.custom.json.",
                     "title": "Edytuj metadane TAF"
                 },
                 "editTAPPlaylist": {
@@ -554,7 +554,7 @@
         "series": "Seria",
         "size": "Rozmiar",
         "tafMeta": {
-            "edit": "(W trakcie prac - jeszcze niezaimplementowane) Edytuj metadane"
+            "edit": "Edytuj metadane (model niestandardowy)"
         },
         "tap": {
             "edit": "Edytuj playlistę TeddyAudio",
@@ -1963,6 +1963,12 @@
                 "placeholder": "Wybierz niestandardowe audio z {{library}}",
                 "selectFromLibrary": "Wybierz audio z {{library}}"
             },
+            "audioSource": {
+                "linkedDescription": "Zmiany dotyczą wszystkich plików i tagów korzystających z tego modelu.",
+                "linkedTitle": "{{file}} jest powiązany z tym modelem niestandardowym",
+                "newDescription": "Zapisanie tworzy nowy model niestandardowy i łączy go z plikiem przez identyfikator audio i hash.",
+                "newTitle": "Brak modelu niestandardowego dla {{file}}"
+            },
             "batch": {
                 "description": "Zmiany dotyczą wszystkich zaznaczonych modeli.",
                 "title": "Edycja zbiorcza aktywna"
@@ -2004,6 +2010,11 @@
             "noChangesBody": "Obecnie nie ma nic do zapisania.",
             "noChangesTitle": "Nie wykryto zmian",
             "optionalColumns": "Opcjonalne kolumny",
+            "overridesOriginal": {
+                "description": "Zapisane zmiany zastępują oryginalne informacje wszędzie tam, gdzie używane jest to audio lub ten model. Usuń model niestandardowy, aby ponownie wyświetlić oryginał.",
+                "tag": "Zastępuje oryginał {{model}}",
+                "title": "Zastępuje oryginalnego Tonie {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "modeli/stronę"
             },
@@ -2042,6 +2053,13 @@
             },
             "tableMenu": "Menu tabeli",
             "title": "Edytor modeli",
+            "tracks": {
+                "fewerNamesDescription": "Plik ma {{tracks}} ścieżek. Nazwy zachowują swoją pozycję, ale okno informacji pozwala przejść do ścieżki tylko wtedy, gdy wymienione są wszystkie ścieżki aż do ostatniej.",
+                "fewerNamesTitle": "Ostatnie ścieżki pliku nie mają nazwy",
+                "moreNamesDescription": "Dodatkowe nazwy są zapisywane i wyświetlane, ale nie mają pozycji w pliku. Okno informacji nie może wtedy przechodzić do poszczególnych ścieżek.",
+                "moreNamesTitle": "Więcej nazw niż ścieżek w pliku ({{tracks}})",
+                "notInFile": "Dodatkowe nazwy bez ścieżki w pliku:"
+            },
             "unsaved": "{{count}} niezapisanych zmian",
             "validation": {
                 "title": "Najpierw popraw poniższe problemy"

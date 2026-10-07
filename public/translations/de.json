@@ -399,7 +399,7 @@
                     "title": "TAP-Datei duplizieren"
                 },
                 "editTAFMetadata": {
-                    "text": "Öffnet den Metadaten-Editor, um Details der TAF-Datei zu ändern. Änderungen werden in tonies.custom.json gespeichert. (WIP)",
+                    "text": "Öffnet den Custom-Modell-Editor für die TAF-Datei. Ein bereits verknüpftes Custom-Modell (gleiche Audio-ID und gleicher Hash) wird bearbeitet, andernfalls wird ein neues für die Datei angelegt. Änderungen werden in tonies.custom.json gespeichert.",
                     "title": "TAF-Metadaten bearbeiten"
                 },
                 "editTAPPlaylist": {
@@ -554,7 +554,7 @@
         "series": "Serie",
         "size": "Größe",
         "tafMeta": {
-            "edit": "(WIP - not implemented yet) Metadaten editieren"
+            "edit": "Metadaten editieren (Custom-Modell)"
         },
         "tap": {
             "edit": "TeddyAudio Playlist editieren",
@@ -1963,6 +1963,12 @@
                 "placeholder": "Custom-Audio aus {{library}} wählen",
                 "selectFromLibrary": "Audio aus {{library}} auswählen"
             },
+            "audioSource": {
+                "linkedDescription": "Änderungen gelten für alle Dateien und Tags, die dieses Modell verwenden.",
+                "linkedTitle": "{{file}} ist mit diesem Custom-Modell verknüpft",
+                "newDescription": "Beim Speichern wird ein neues Custom-Modell angelegt und über Audio-ID und Hash mit der Datei verknüpft.",
+                "newTitle": "Noch kein Custom-Modell für {{file}}"
+            },
             "batch": {
                 "description": "Änderungen gelten für alle ausgewählten Modelle.",
                 "title": "Batch-Bearbeitung aktiv"
@@ -2004,6 +2010,11 @@
             "noChangesBody": "Es gibt aktuell nichts zu speichern.",
             "noChangesTitle": "Keine Änderungen erkannt",
             "optionalColumns": "Zusatzspalten",
+            "overridesOriginal": {
+                "description": "Gespeicherte Änderungen ersetzen die Original-Informationen überall, wo dieses Audio oder Modell verwendet wird. Wird das Custom-Modell gelöscht, erscheint wieder das Original.",
+                "tag": "Überschreibt Original {{model}}",
+                "title": "Überschreibt Original-Tonie {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "Modelle/Seite"
             },
@@ -2042,6 +2053,13 @@
             },
             "tableMenu": "Tabellen-Menü",
             "title": "Modell-Editor",
+            "tracks": {
+                "fewerNamesDescription": "Die Datei hat {{tracks}} Tracks. Namen behalten ihre Position, der Info-Dialog bietet das Springen zu einem Track aber nur an, wenn alle Tracks bis zum letzten aufgeführt sind.",
+                "fewerNamesTitle": "Die letzten Tracks der Datei haben keinen Namen",
+                "moreNamesDescription": "Die zusätzlichen Namen werden gespeichert und aufgelistet, haben aber keine Position in der Datei. Der Info-Dialog kann dann nicht zu einzelnen Tracks springen.",
+                "moreNamesTitle": "Mehr Namen als Tracks in der Datei ({{tracks}})",
+                "notInFile": "Zusätzliche Namen ohne Track in der Datei:"
+            },
             "unsaved": "{{count}} ungespeicherte Änderung(en)",
             "validation": {
                 "title": "Bitte zuerst diese Probleme beheben"

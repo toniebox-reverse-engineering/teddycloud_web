@@ -399,7 +399,7 @@
                     "title": "Duplicar archivo TAP"
                 },
                 "editTAFMetadata": {
-                    "text": "Abre el editor de metadatos para modificar los detalles del archivo TAF. Los cambios se guardan en tonies.custom.json. (WIP)",
+                    "text": "Abre el editor de modelos personalizados para el archivo TAF. Si ya hay un modelo personalizado vinculado (mismo ID de audio y hash), se edita; de lo contrario, se crea uno nuevo para el archivo. Los cambios se guardan en tonies.custom.json.",
                     "title": "Editar metadatos de TAF"
                 },
                 "editTAPPlaylist": {
@@ -554,7 +554,7 @@
         "series": "Serie",
         "size": "Tamaño",
         "tafMeta": {
-            "edit": "(WIP - aún no implementado) Editar metadatos"
+            "edit": "Editar metadatos (modelo personalizado)"
         },
         "tap": {
             "edit": "Editar lista de reproducción de Tonie",
@@ -1963,6 +1963,12 @@
                 "placeholder": "Seleccionar audio personalizado de {{library}}",
                 "selectFromLibrary": "Seleccionar audio de {{library}}"
             },
+            "audioSource": {
+                "linkedDescription": "Los cambios se aplican a todos los archivos y tags que usan este modelo.",
+                "linkedTitle": "{{file}} está vinculado a este modelo personalizado",
+                "newDescription": "Al guardar se crea un nuevo modelo personalizado y se vincula al archivo mediante el ID de audio y el hash.",
+                "newTitle": "Aún no hay un modelo personalizado para {{file}}"
+            },
             "batch": {
                 "description": "Los cambios se aplican a todos los modelos seleccionados.",
                 "title": "Edición por lotes activa"
@@ -2004,6 +2010,11 @@
             "noChangesBody": "No hay nada que guardar en este momento.",
             "noChangesTitle": "No se detectaron cambios",
             "optionalColumns": "Columnas opcionales",
+            "overridesOriginal": {
+                "description": "Los cambios guardados reemplazan la información original en todos los lugares donde se usa este audio o modelo. Elimina el modelo personalizado para volver a mostrar el original.",
+                "tag": "Reemplaza el original {{model}}",
+                "title": "Reemplaza el Tonie original {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "modelos/página"
             },
@@ -2042,6 +2053,13 @@
             },
             "tableMenu": "Menú de tabla",
             "title": "Editor de modelos",
+            "tracks": {
+                "fewerNamesDescription": "El archivo tiene {{tracks}} pistas. Los nombres conservan su posición, pero el diálogo de información solo permite saltar a una pista si están listadas todas las pistas hasta la última.",
+                "fewerNamesTitle": "Las últimas pistas del archivo no tienen nombre",
+                "moreNamesDescription": "Los nombres adicionales se guardan y se muestran, pero no tienen posición en el archivo. El diálogo de información no puede entonces saltar a pistas individuales.",
+                "moreNamesTitle": "Más nombres que pistas en el archivo ({{tracks}})",
+                "notInFile": "Nombres adicionales sin pista en el archivo:"
+            },
             "unsaved": "{{count}} cambio(s) sin guardar",
             "validation": {
                 "title": "Por favor corrige estos problemas primero"

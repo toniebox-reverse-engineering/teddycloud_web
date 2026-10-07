@@ -399,7 +399,7 @@
                     "title": "Dupliquer le fichier TAP"
                 },
                 "editTAFMetadata": {
-                    "text": "Ouvre l'éditeur de métadonnées pour modifier les détails du fichier TAF. Les modifications sont enregistrées dans tonies.custom.json. (WIP)",
+                    "text": "Ouvre l'éditeur de modèles personnalisés pour le fichier TAF. Un modèle personnalisé déjà lié (même ID audio et même hash) est modifié, sinon un nouveau modèle est créé pour le fichier. Les modifications sont enregistrées dans tonies.custom.json.",
                     "title": "Modifier les métadonnées TAF"
                 },
                 "editTAPPlaylist": {
@@ -554,7 +554,7 @@
         "series": "Série",
         "size": "Taille",
         "tafMeta": {
-            "edit": "(WIP - non implémenté) Éditer les métadonnées"
+            "edit": "Éditer les métadonnées (modèle personnalisé)"
         },
         "tap": {
             "edit": "Modifier la playlist audio Tonie",
@@ -1963,6 +1963,12 @@
                 "placeholder": "Sélectionner l'audio personnalisé dans {{library}}",
                 "selectFromLibrary": "Sélectionner l'audio dans {{library}}"
             },
+            "audioSource": {
+                "linkedDescription": "Les modifications s'appliquent à tous les fichiers et tags qui utilisent ce modèle.",
+                "linkedTitle": "{{file}} est lié à ce modèle personnalisé",
+                "newDescription": "L'enregistrement crée un nouveau modèle personnalisé et le lie au fichier via l'ID audio et le hash.",
+                "newTitle": "Pas encore de modèle personnalisé pour {{file}}"
+            },
             "batch": {
                 "description": "Les modifications s'appliquent à tous les modèles sélectionnés.",
                 "title": "Édition par lot active"
@@ -2004,6 +2010,11 @@
             "noChangesBody": "Il n'y a rien à enregistrer pour le moment.",
             "noChangesTitle": "Aucune modification détectée",
             "optionalColumns": "Colonnes optionnelles",
+            "overridesOriginal": {
+                "description": "Les modifications enregistrées remplacent les informations d'origine partout où cet audio ou ce modèle est utilisé. Supprimez le modèle personnalisé pour réafficher l'original.",
+                "tag": "Remplace l'original {{model}}",
+                "title": "Remplace le Tonie d'origine {{model}} ({{name}})"
+            },
             "pagination": {
                 "modelsPerPage": "modèles/page"
             },
@@ -2042,6 +2053,13 @@
             },
             "tableMenu": "Menu du tableau",
             "title": "Éditeur de modèles",
+            "tracks": {
+                "fewerNamesDescription": "Le fichier contient {{tracks}} pistes. Les noms conservent leur position, mais la fenêtre d'information ne propose le saut vers une piste que si toutes les pistes jusqu'à la dernière sont listées.",
+                "fewerNamesTitle": "Les dernières pistes du fichier n'ont pas de nom",
+                "moreNamesDescription": "Les noms supplémentaires sont enregistrés et listés, mais n'ont pas de position dans le fichier. La fenêtre d'information ne peut alors pas sauter vers une piste précise.",
+                "moreNamesTitle": "Plus de noms que de pistes dans le fichier ({{tracks}})",
+                "notInFile": "Noms supplémentaires sans piste dans le fichier :"
+            },
             "unsaved": "{{count}} modification(s) non enregistrée(s)",
             "validation": {
                 "title": "Veuillez d'abord corriger ces problèmes"

@@ -14,7 +14,7 @@ import {
     Typography,
 } from "antd";
 
-import { TonieCardProps } from "../../../types/tonieTypes";
+import { TonieCardProps, TonieInfo } from "../../../types/tonieTypes";
 import { TeddyCloudApi } from "../../../api";
 import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
@@ -50,6 +50,9 @@ import {
     toFormValues,
     toEntry,
     buildSuggestedModel,
+    findEntryByAudio,
+    buildBaseEntryIndex,
+    findOverriddenBaseEntry,
     isImageFile,
 } from "./utils/customModelEditorUtils";
 import { toCustomImgWebPath } from "../common/utils/imagePathUtils";
@@ -59,7 +62,22 @@ import { userStorage } from "../../../utils/storage/userStorage";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
-type CustomModelEditorMode = "full" | "create-single" | "edit-single";
+type CustomModelEditorMode = "full" | "create-single" | "edit-single" | "audio-single";
+
+/** Library file the editor is opened for in "audio-single" mode. */
+export interface CustomModelEditorAudioSource {
+    fileName: string;
+    audioId: string;
+    hash: string;
+    /** Shown in the audio row, e.g. lib://folder/file.taf. */
+    path?: string;
+    /** Start of each track in seconds, from the TAF header. */
+    trackSeconds?: number[];
+    /** Total audio length in seconds, when the backend provides it. */
+    lengthSeconds?: number;
+    /** Info the backend currently resolves for this audio. */
+    tonieInfo?: TonieInfo;
+}
 const CHANGED_TEXT_FIELDS: ReadonlySet<keyof CustomEntry> = new Set([
     "no",
     "model",
@@ -87,6 +105,8 @@ interface CustomModelEditorProps {
     onUpdated?: (model: string, selectionText: string) => void;
     /** Overlay for library path resolution (e.g. toniebox content dir). */
     overlay?: string;
+    /** "audio-single": edit the model linked to this audio or create one for it. */
+    audioSource?: CustomModelEditorAudioSource;
 }
 
 export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
@@ -102,6 +122,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     onCreated,
     onUpdated,
     overlay = "",
+    audioSource,
 }) => {
     const { t } = useTranslation();
     const { token } = theme.useToken();
@@ -154,6 +175,13 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
     const [renameConfirmSkipUpdate, setRenameConfirmSkipUpdate] = useState(false);
     const [pendingRenameSave, setPendingRenameSave] = useState<PendingRenameSave | null>(null);
     const [validationMessages, setValidationMessages] = useState<string[]>([]);
+    // tracks of the file the editor was opened for or that was picked last
+    const [fileTrackSeconds, setFileTrackSeconds] = useState<number[] | undefined>(
+        audioSource?.trackSeconds,
+    );
+    const [fileLengthSeconds, setFileLengthSeconds] = useState<number | undefined>(
+        audioSource?.lengthSeconds,
+    );
 
     const mergeCurrentFormIntoEntries = (entries: CustomEntry[]) => {
         if (editIndex === null || editIndex < 0 || editIndex >= entries.length) {
@@ -236,8 +264,29 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             .map(([category]) => category);
     }, [customEntries, baseEntries]);
 
+    const baseEntryIndex = useMemo(() => buildBaseEntryIndex(baseEntries), [baseEntries]);
+
     const buildNewEntryDraft = (seedEntries: CustomEntry[]): CustomEntry => {
         const suggestedModel = buildSuggestedModel(seedEntries);
+        if (mode === "audio-single" && audioSource) {
+            // only reuse resolved info of a known model, not the "unknown" placeholders
+            const known = audioSource.tonieInfo?.model ? audioSource.tonieInfo : undefined;
+            const tracks = (known?.tracks || []).filter(Boolean);
+            return {
+                no: "",
+                model: suggestedModel,
+                title: "",
+                series: known?.series || audioSource.fileName.replace(/\.[^.]+$/, ""),
+                episodes: known?.episode || "",
+                release: "",
+                language: known?.language || "",
+                category: "",
+                pic: known?.picture || "",
+                audio_id: [audioSource.audioId],
+                hash: [audioSource.hash],
+                tracks: tracks.length > 0 ? tracks : undefined,
+            };
+        }
         const seedAudioId = audioId && hash ? [String(audioId)] : undefined;
         const seedHash = audioId && hash ? [hash] : undefined;
         return {
@@ -256,12 +305,33 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         };
     };
 
+    // show the known file path instead of resolving it by audio id and hash
+    const withAudioSourcePath = (entry: CustomEntry): FormValues => {
+        const values = toFormValues(entry);
+        if (mode !== "audio-single" || !audioSource?.path) return values;
+        const hashKey = normalizeText(audioSource.hash).toLowerCase();
+        return {
+            ...values,
+            audioPairs: values.audioPairs.map((pair) =>
+                normalizeText(pair.audio_id) === normalizeText(audioSource.audioId) &&
+                normalizeText(pair.hash).toLowerCase() === hashKey
+                    ? { ...pair, path: audioSource.path }
+                    : pair,
+            ),
+        };
+    };
+
     const createAndSelectNewEntry = (seedEntries: CustomEntry[]) => {
         const newEntry = buildNewEntryDraft(seedEntries);
         const nextEntries = [...seedEntries.map((entry) => cloneEntry(entry)), newEntry];
         setCustomEntries(nextEntries);
         setEditIndex(nextEntries.length - 1);
-        form.setFieldsValue(toFormValues(newEntry));
+        const values = withAudioSourcePath(newEntry);
+        const fileTrackCount =
+            mode === "audio-single" ? (audioSource?.trackSeconds?.length ?? 0) : 0;
+        // one row per track of the file, so the names line up with its tracks
+        while (values.tracks.length < fileTrackCount) values.tracks.push({ track: "" });
+        form.setFieldsValue(values);
         setModalMode("create");
         setEditModalOpen(true);
         return nextEntries;
@@ -501,6 +571,21 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
 
             if (mode === "create-single") {
                 void createAndSelectNewEntry(normalizedCustom);
+                return;
+            }
+
+            if (mode === "audio-single") {
+                const linkedIdx = audioSource
+                    ? findEntryByAudio(normalizedCustom, audioSource.audioId, audioSource.hash)
+                    : -1;
+                if (linkedIdx >= 0) {
+                    setEditIndex(linkedIdx);
+                    form.setFieldsValue(withAudioSourcePath(normalizedCustom[linkedIdx]));
+                    setModalMode("edit");
+                    setEditModalOpen(true);
+                } else {
+                    void createAndSelectNewEntry(normalizedCustom);
+                }
                 return;
             }
 
@@ -868,7 +953,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 ? 2
                 : 1;
 
-    const singleFormMode = mode === "create-single" || mode === "edit-single";
+    const singleFormMode =
+        mode === "create-single" || mode === "edit-single" || mode === "audio-single";
 
     const currentTableRowIndex =
         editIndex === null ? -1 : tableRows.findIndex((row) => row.idx === editIndex);
@@ -883,6 +969,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         const draft = toEntry((form.getFieldsValue(true) as FormValues) || {});
         const entry = customEntries[editIndex];
         if (!entry) return true;
+        // a model created for a file is prefilled and can be saved right away
+        if (mode === "audio-single" && !persistedByModel.has(toModelKey(entry.model))) return true;
         return (
             normalizeText(draft.model) !== normalizeText(entry.model) ||
             normalizeText(draft.title) !== normalizeText(entry.title) ||
@@ -921,8 +1009,60 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             setKeySelectAudioFileBrowser={setKeySelectAudioFileBrowser}
             setSelectAudioModalOpen={setSelectAudioModalOpen}
             AudioLibraryPathInputComponent={AudioLibraryPathInput}
+            fileTrackSeconds={fileTrackSeconds}
+            fileLengthSeconds={fileLengthSeconds}
         />
     );
+
+    // read the whole form store: collapsed sections (audio) are not part of the watched values
+    const overriddenBaseEntry =
+        editIndex !== null
+            ? findOverriddenBaseEntry(
+                  toEntry((form.getFieldsValue(true) as FormValues) || {}),
+                  baseEntryIndex,
+              )
+            : undefined;
+
+    const overrideHint = overriddenBaseEntry ? (
+        <Alert
+            type="warning"
+            showIcon
+            style={{ marginBottom: 12 }}
+            title={t("tonies.customEditor.overridesOriginal.title", {
+                model: overriddenBaseEntry.model,
+                name:
+                    [overriddenBaseEntry.series, overriddenBaseEntry.episodes]
+                        .filter(Boolean)
+                        .join(" - ") || "-",
+            })}
+            description={t("tonies.customEditor.overridesOriginal.description")}
+        />
+    ) : null;
+
+    const audioSourceHint =
+        mode === "audio-single" && audioSource && editIndex !== null ? (
+            modalMode === "edit" ? (
+                <Alert
+                    type="info"
+                    showIcon
+                    style={{ marginBottom: 12 }}
+                    title={t("tonies.customEditor.audioSource.linkedTitle", {
+                        file: audioSource.fileName,
+                    })}
+                    description={t("tonies.customEditor.audioSource.linkedDescription")}
+                />
+            ) : overriddenBaseEntry ? null : (
+                <Alert
+                    type="info"
+                    showIcon
+                    style={{ marginBottom: 12 }}
+                    title={t("tonies.customEditor.audioSource.newTitle", {
+                        file: audioSource.fileName,
+                    })}
+                    description={t("tonies.customEditor.audioSource.newDescription")}
+                />
+            )
+        ) : null;
 
     const editorBody = (
         <Row gutter={16}>
@@ -958,6 +1098,9 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                                 const nextEntries = mergeCurrentFormIntoEntries(customEntries);
                                 void createAndSelectNewEntry(nextEntries);
                             }}
+                            getOverriddenModel={(entry) =>
+                                findOverriddenBaseEntry(entry, baseEntryIndex)?.model
+                            }
                             onEdit={handleOpenEditModal}
                             onDuplicate={handleDuplicateEntryByIndex}
                             onDelete={handleDeleteEntryByIndex}
@@ -1044,6 +1187,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                     hasChanges={hasEditChanges}
                     zIndex={singleFormMode ? 1100 : undefined}
                 >
+                    {audioSourceHint}
+                    {overrideHint}
                     {editModelFormContent}
                 </CustomModelEditModal>
             </Col>
@@ -1107,6 +1252,8 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                             ["audioPairs", targetAudioPairIndex, "path"],
                             result.path,
                         );
+                        setFileTrackSeconds(result.trackSeconds);
+                        setFileLengthSeconds(result.lengthSeconds);
                     }
                     setSelectAudioModalOpen(false);
                     setTargetAudioPairIndex(null);
