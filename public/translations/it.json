@@ -1423,7 +1423,8 @@
                     "waitForPressDesc": "Attende la pressione di un orecchio all'avvio con una sequenza lampeggiante (blu, verde, ciano, nero)",
                     "waitTimeoutInSDesc": "Timeout in secondi per waitForPress se non viene premuto alcun orecchio (ibernazione)",
                     "watchdogDesc": "Mantiene il watchdog abilitato durante l'avvio del firmware (se l'avvio fallisce, il box si riavvia)"
-                }
+                },
+                "altPortHint": "Se hai creato una patch della porta, mettila anche in /revvox/boot/patch/ e aggiungi \"altPort.custom\" all'elenco delle patch."
             },
             "applyingPatchesWithNgCfgJson": "Applica patch usando ngCfg.json",
             "applyingPatchesWithNgCfgJsonLink": "Trova qui le istruzioni",
@@ -1447,6 +1448,12 @@
             "connectToTonieboxText": "Il LED verde sulla scheda madre del Toniebox deve rimanere acceso in modo fisso (senza lampeggiare). In caso contrario, i collegamenti potrebbero essere allentati o errati. Scollega il programmatore, ricontrolla tutti i collegamenti e riprova. Se utilizzi fili sottili, valuta l'uso di colla a caldo per fissarli e impedirne il movimento. Assicurati inoltre che il Toniebox sia alimentato tramite il caricatore.",
             "connectToTonieboxTextUart": "Assicurati che la UART sia configurata a 3,3 V prima di collegare il programmatore UART al computer tramite USB.",
             "createPatch": "Crea altUrl.custom.305.patch",
+            "customPortPatch": "Opzionale: crea una patch della porta (altPort.custom.json)",
+            "customPortPatchHint": "Necessaria solo se la Toniebox deve raggiungere TeddyCloud su una porta diversa da 443, ad esempio tramite un proxy che instrada in base alla porta. La patch funziona con le versioni firmware 3.1.0 BF2, 3.3.0 e 3.4.0. hackiebox-ng include già altPort.json per la porta 10443; crea una patch propria solo per un'altra porta.",
+            "hintPatchPort": "Inserisci la porta a cui la Toniebox deve connettersi e fai clic su 'Crea altPort.custom.patch'. La patch verrà scaricata automaticamente.",
+            "port": "Porta TeddyCloud:",
+            "portInvalid": "La porta deve essere compresa tra 1 e 65535.",
+            "createPortPatch": "Crea altPort.custom.patch",
             "customUrlPatch": "Crea una patch URL personalizzata (altUrl.custom.305.json)",
             "customUrlPatchHint": "Crea questa patch solo se le patch predefinite altUrl.tc.fritz.box.json e altUrl.305.json non funzionano con la configurazione TeddyCloud corrente. Se soddisfano le tue esigenze, puoi procedere facendo clic su 'Avanti'.",
             "dedicatedUart": "UART dedicata",
@@ -1741,6 +1748,9 @@
                 "hostname": "Hostname TeddyCloud:",
                 "hostnameSettings": "Hostname TeddyCloud",
                 "hostnameTooLong": "Se in seguito vuoi collegare un Toniebox CC3200, l'hostname non deve superare 12 caratteri (limitazione del firmware).",
+                "hintPatchPort": "Porta a cui si connette la Toniebox. Lascia 443, a meno che la Toniebox non debba raggiungere TeddyCloud su un'altra porta, ad esempio tramite un proxy che instrada in base alla porta.",
+                "port": "Porta TeddyCloud:",
+                "portInvalid": "La porta deve essere compresa tra 1 e 32767.",
                 "importanceBackup": "Prima di apportare modifiche al Toniebox, scarica e conserva in modo sicuro una copia del firmware originale. In questo modo potrai sempre ripristinare il Toniebox alle condizioni di fabbrica in caso di problemi. Salvala in più posizioni, ad esempio sul computer principale o laptop, su un disco esterno o chiavetta USB e/o su un servizio cloud affidabile (ad es. Google Drive, Dropbox, OneDrive). Non conservare mai l'unica copia sul server TeddyCloud.",
                 "infoTable": "Informazioni ESP32",
                 "invalidFlashData": "La flash letta/caricata contiene solo 0x00 o 0xFF! Controlla il collegamento o il file caricato e riprova!",

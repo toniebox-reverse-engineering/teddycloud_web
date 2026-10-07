@@ -1423,7 +1423,8 @@
                     "waitForPressDesc": "Espera una presión en la oreja al inicio con una secuencia de parpadeo (azul, verde, cian, negro)",
                     "waitTimeoutInSDesc": "Tiempo de espera en segundos para waitForPress si no hay presión en la oreja (hibernación)",
                     "watchdogDesc": "Mantener el watchdog habilitado al iniciar firmware (si el inicio falla, la caja se reiniciará)"
-                }
+                },
+                "altPortHint": "Si has creado un parche de puerto, colócalo también en /revvox/boot/patch/ y añade \"altPort.custom\" a la lista de parches."
             },
             "applyingPatchesWithNgCfgJson": "Aplicar parches utilizando ngCfg.json",
             "applyingPatchesWithNgCfgJsonLink": "Encuentra las instrucciones aquí",
@@ -1447,6 +1448,12 @@
             "connectToTonieboxText": "El LED verde en la placa principal de la Toniebox debe permanecer encendido de forma continua (sin parpadear). Si no lo hace, es posible que las conexiones estén flojas o incorrectas. Desconecta el programador, verifica todas las conexiones y vuelve a intentarlo. Si estás trabajando con cables finos, considera usar pegamento caliente para asegurarlos y evitar que se muevan. Además, asegúrate de que la Toniebox esté alimentada mediante su cargador.",
             "connectToTonieboxTextUart": "Asegúrate de que el UART esté configurado a 3.3V antes de conectar el programador UART a tu computadora mediante USB.",
             "createPatch": "Crear altUrl.custom.305.patch",
+            "customPortPatch": "Opcional: crear un parche de puerto (altPort.custom.json)",
+            "customPortPatchHint": "Solo es necesario si la Toniebox debe conectarse a TeddyCloud a través de un puerto distinto de 443, por ejemplo mediante un proxy que enruta por puerto. El parche funciona con las versiones de firmware 3.1.0 BF2, 3.3.0 y 3.4.0. hackiebox-ng ya incluye altPort.json para el puerto 10443; crea tu propio parche solo para otro puerto.",
+            "hintPatchPort": "Introduce el puerto al que debe conectarse la Toniebox y haz clic en 'Crear altPort.custom.patch'. El parche se descargará automáticamente.",
+            "port": "Puerto de TeddyCloud:",
+            "portInvalid": "El puerto debe estar entre 1 y 65535.",
+            "createPortPatch": "Crear altPort.custom.patch",
             "customUrlPatch": "Crear un parche de URL personalizado (altUrl.custom.305.json)",
             "customUrlPatchHint": "Por favor, crea este parche solo si los parches predefinidos altUrl.tc.fritz.box.json y altUrl.305.json no funcionan con tu configuración actual de TeddyCloud. Si satisfacen tus necesidades, puedes continuar haciendo clic en 'Siguiente'.",
             "dedicatedUart": "UART dedicado",
@@ -1741,6 +1748,9 @@
                 "hostname": "Nombre de host de TeddyCloud:",
                 "hostnameSettings": "Configuración del nombre de host",
                 "hostnameTooLong": "Si más adelante quieres conectar una Toniebox CC3200, el nombre de host no puede superar los 12 caracteres (limitación del firmware).",
+                "hintPatchPort": "Puerto al que se conecta la Toniebox. Deja 443 salvo que la Toniebox deba conectarse a TeddyCloud a través de otro puerto, por ejemplo mediante un proxy que enruta por puerto.",
+                "port": "Puerto de TeddyCloud:",
+                "portInvalid": "El puerto debe estar entre 1 y 32767.",
                 "importanceBackup": "Antes de hacer cualquier cambio en tu Toniebox, descarga y guarda de forma segura una copia del firmware original. Esto te permitirá restaurar tu Toniebox a su estado de fábrica si algo sale mal. Guárdala en varios lugares, como tu ordenador principal o portátil, un disco duro externo o memoria USB, y/o un servicio de almacenamiento en la nube de confianza (por ejemplo, Google Drive, Dropbox, OneDrive). Nunca guardes tu única copia solo en el servidor TeddyCloud.",
                 "infoTable": "Información del ESP32",
                 "invalidFlashData": "La lectura / carga del flash contiene únicamente 0x00 o 0xFF. ¡Revisa la conexión o el archivo cargado e inténtalo de nuevo!",
