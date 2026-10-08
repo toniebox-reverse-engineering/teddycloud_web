@@ -75,9 +75,7 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
                         gap: 8,
                     }}
                 >
-                    {/* // disabled as it seems to be not working
-
-                    !hideNavigationControls && totalItems > 1 ? (
+                    {!hideNavigationControls && totalItems > 1 ? (
                         <Checkbox
                             checked={saveOnNavigate}
                             onChange={(e) => setSaveOnNavigate(e.target.checked)}
@@ -87,9 +85,7 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
                         </Checkbox>
                     ) : (
                         <div style={{ marginRight: "auto" }} />
-                    )
-                    
-                    */}
+                    )}
                     <div
                         style={{
                             display: "flex",
