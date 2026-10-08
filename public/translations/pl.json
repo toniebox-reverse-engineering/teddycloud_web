@@ -2139,9 +2139,14 @@
                 },
                 "editIcon": {
                     "createNewModel": {
-                        "description": "Otwiera okno do wprowadzenia wymaganych danych dla nowego modelu. Ta funkcja jest wciąż w fazie rozwoju i może jeszcze nie działać poprawnie.",
+                        "description": "Otwiera edytor modeli niestandardowych, aby wprowadzić szczegóły nowego modelu dla Twojego Tonie/Tag.",
                         "text": "Utwórz nowy niestandardowy model dla swojego Tonie/Taga.",
-                        "title": "Utwórz nowy model (w trakcie prac)"
+                        "title": "Utwórz nowy model"
+                    },
+                    "editModel": {
+                        "description": "Edytuje wybrany model niestandardowy w edytorze modeli niestandardowych. Wpisy audio od razu pokazują identyfikator audio i hash; ikona lokalizacji przy wpisie pozwala znaleźć jego plik w bibliotece.",
+                        "text": "Edytuje model niestandardowy przypisany do Tonie/Tag.",
+                        "title": "Edytuj model niestandardowy"
                     },
                     "model": {
                         "description": "Wyszukaj model i przypisz go do Tonie/Taga. Obraz zostanie wyświetlony w widoku przeglądowym.",
@@ -2152,6 +2157,16 @@
                         "description": "Użyj pola wyszukiwania, aby znaleźć i przypisać strumień z bazy radio-browser.",
                         "text": "Wyszukaj internetowe strumienie radiowe (dostępne, jeśli API radio-browser.info jest osiągalne).",
                         "title": "Wyszukiwanie strumienia radiowego"
+                    },
+                    "setAudioFromModel": {
+                        "description": "Pojawia się, gdy wybrano model niepasujący do bieżącego audio. Biblioteka jest przeszukiwana dopiero po kliknięciu przycisku, co może chwilę potrwać. Jeśli nie znaleziono pasującego pliku, pod polem źródła wyświetlana jest wskazówka.",
+                        "text": "Przypisuje plik audio należący do wybranego modelu.",
+                        "title": "Ustaw audio z modelu"
+                    },
+                    "setModelFromAudio": {
+                        "description": "Pojawia się, gdy przypisane audio należy do znanego modelu. Przeszukiwanie biblioteki nie jest potrzebne, model jest pobierany z informacji o audio.",
+                        "text": "Przypisuje model należący do bieżącego audio.",
+                        "title": "Ustaw model z audio"
                     },
                     "source": {
                         "description": "Możesz przypisać zawartość ze swojej biblioteki (np. pliki TAF lub TAP) lub wprowadzić adres URL strumienia.",
