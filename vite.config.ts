@@ -20,7 +20,14 @@ export default defineConfig(({ command, mode }) => {
     // Use the configured URL as is: the proxy must talk to exactly the host and port that was set.
     const proxyUrl = env.VITE_APP_TEDDYCLOUD_API_URL || "http://teddycloud.local";
 
-    const teddyCloudPaths = ["/api", "/img_unknown.png", "/cache", "/img", "/custom_img"];
+    const teddyCloudPaths = [
+        "/api",
+        "/img_unknown.png",
+        "/cache",
+        "/img",
+        "/custom_img",
+        "/plugins",
+    ];
     const proxyOptions = { target: proxyUrl, changeOrigin: true, secure: false };
 
     // The dev server serves the app below this path; everything else is proxied to teddyCloud
