@@ -20,7 +20,7 @@ const getBasePath = (): string => {
 export const defaultAPIConfig = () =>
     new Configuration({
         basePath: getBasePath(),
-        credentials: "include",
+        credentials: "same-origin",
         fetchApi: async (url, init) => {
             const headers = new Headers(init?.headers);
             try {
@@ -31,7 +31,7 @@ export const defaultAPIConfig = () =>
             } catch {
                 /* ignore */
             }
-            const response = await fetch(url, { ...init, headers, credentials: "include" });
+            const response = await fetch(url, { ...init, headers, credentials: "same-origin" });
             if (response.status === 401) {
                 const path = typeof url === "string" ? url : url.toString();
                 if (!path.includes("/api/auth/")) {
