@@ -64,6 +64,49 @@ export async function fetchAllTAFsInLibrary(args?: {
     return merged;
 }
 
+/**
+ * Depth-first library search that stops at the first record matching the predicate.
+ * Unlike fetchAllTAFsInLibrary, it does not traverse the remaining directories once found.
+ */
+export async function findFirstInLibrary(
+    predicate: (record: RecordWithPath) => boolean,
+    args?: { path?: string; special?: string; overlay?: string },
+): Promise<RecordWithPath | null> {
+    const path = args?.path ?? "";
+    const special = args?.special ?? "library";
+    const overlay = args?.overlay;
+
+    const apiPathParam = encodeURIComponent(path);
+    const url =
+        `/api/fileIndexV2?path=${apiPathParam}&special=${special}` +
+        (overlay ? `&overlay=${overlay}` : "");
+
+    const res = await api.apiGetTeddyCloudApiRaw(url);
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    const files: Record[] = Array.isArray(data.files) ? data.files : [];
+
+    const records: RecordWithPath[] = files.map((f) => ({
+        ...f,
+        fullPath: path ? `${path}/${f.name}` : f.name,
+    }));
+
+    const match = records.find((r) => !r.isDir && predicate(r));
+    if (match) return match;
+
+    for (const dir of records.filter((r) => r.isDir && r.name !== "..")) {
+        const found = await findFirstInLibrary(predicate, {
+            path: dir.fullPath,
+            special,
+            overlay,
+        });
+        if (found) return found;
+    }
+
+    return null;
+}
+
 export async function fetchUnusedTAFsInLibrary(
     tonies: TonieCardProps[],
     args?: { path?: string; special?: string; overlay?: string },

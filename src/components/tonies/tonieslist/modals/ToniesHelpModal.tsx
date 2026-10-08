@@ -95,6 +95,27 @@ const HelpModal: React.FC<HelpModalProps> = ({ isHelpModalOpen, onClose }) => {
             text: t("tonies.help.actionItems.editIcon.createNewModel.text"),
             description: t("tonies.help.actionItems.editIcon.createNewModel.description"),
         },
+        {
+            key: 5,
+            icon: <EditOutlined />,
+            title: t("tonies.help.actionItems.editIcon.editModel.title"),
+            text: t("tonies.help.actionItems.editIcon.editModel.text"),
+            description: t("tonies.help.actionItems.editIcon.editModel.description"),
+        },
+        {
+            key: 6,
+            icon: <EditOutlined />,
+            title: t("tonies.help.actionItems.editIcon.setModelFromAudio.title"),
+            text: t("tonies.help.actionItems.editIcon.setModelFromAudio.text"),
+            description: t("tonies.help.actionItems.editIcon.setModelFromAudio.description"),
+        },
+        {
+            key: 7,
+            icon: <EditOutlined />,
+            title: t("tonies.help.actionItems.editIcon.setAudioFromModel.title"),
+            text: t("tonies.help.actionItems.editIcon.setAudioFromModel.text"),
+            description: t("tonies.help.actionItems.editIcon.setAudioFromModel.description"),
+        },
     ];
 
     const renderSubItems = (
