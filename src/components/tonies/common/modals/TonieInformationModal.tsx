@@ -258,6 +258,7 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 footer={informationModalFooter}
                 open={open}
                 keyboard={true}
+                closable={true}
                 mask={{ closable: true }}
                 onCancel={onClose}
             >

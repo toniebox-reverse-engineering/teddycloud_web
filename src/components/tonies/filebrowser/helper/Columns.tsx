@@ -14,6 +14,7 @@ import {
     LoadingOutlined,
     CheckCircleOutlined,
     SwapOutlined,
+    ClockCircleOutlined,
 } from "@ant-design/icons";
 
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
@@ -662,14 +663,25 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                         : t("fileBrowser.markAsListened")
                                 }
                             >
-                                <CheckCircleOutlined
-                                    onClick={() => toggleListened(record)}
-                                    style={{
-                                        margin: "4px 8px 4px 0",
-                                        padding: 4,
-                                        color: record.listened ? token.colorSuccess : undefined,
-                                    }}
-                                />
+                                {record.listened ? (
+                                    <CheckCircleOutlined
+                                        onClick={() => toggleListened(record)}
+                                        style={{
+                                            margin: "4px 8px 4px 0",
+                                            padding: 4,
+                                            color: token.colorSuccess,
+                                        }}
+                                    />
+                                ) : (
+                                    <ClockCircleOutlined
+                                        onClick={() => toggleListened(record)}
+                                        style={{
+                                            margin: "4px 8px 4px 0",
+                                            padding: 4,
+                                            color: undefined,
+                                        }}
+                                    />
+                                )}
                             </Tooltip>,
                         );
                     }

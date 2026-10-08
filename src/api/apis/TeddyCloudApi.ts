@@ -592,6 +592,16 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         return response;
     }
 
+    async apiPostTeddyCloudJsonRaw(
+        path: string,
+        body: unknown,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Response> {
+        return this.apiPostTeddyCloudRaw(path, JSON.stringify(body), undefined, initOverrides, {
+            "Content-Type": "application/json",
+        });
+    }
+
     /**
      * @description Set/unset the "listened" flag for an arbitrary library (or other special-root) file
      *
@@ -688,45 +698,30 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
         headerParameters: runtime.HTTPHeaders = {},
     ): Promise<Response> {
+        const overlaySeparator = path.includes("?") ? "&" : "?";
+        const requestPath = `${path}${overlay ? `${overlaySeparator}overlay=${overlay}` : ""}`;
+
         try {
-            // To Do: Replace fetch with request
-            const response = await fetch(this.configuration.basePath + path, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await this.request(
+                {
+                    path: requestPath,
+                    method: "POST",
+                    headers: headerParameters,
+                    body: formData,
+                },
+                initOverrides,
+            );
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
             return response;
         } catch (err: any) {
-            if (err.response) {
+            if (err?.response) {
                 return err.response;
-            } else if (err instanceof TypeError) {
-                return new Response(
-                    JSON.stringify({
-                        error: "Network error, please try again later.",
-                        message: err.message,
-                    }),
-                    {
-                        status: 500,
-                        statusText: "Network Error",
-                        headers: { "Content-Type": "application/json" },
-                    },
-                );
-            } else {
-                return new Response(
-                    JSON.stringify({
-                        error: "An unexpected error occurred.",
-                        message: err,
-                    }),
-                    {
-                        status: 500,
-                        statusText: "Unexpected Error",
-                        headers: { "Content-Type": "application/json" },
-                    },
-                );
             }
+            const causeMsg = err?.cause?.message ?? err?.message;
+            throw new Error(causeMsg || "Network error, please try again");
         }
     }
 }
