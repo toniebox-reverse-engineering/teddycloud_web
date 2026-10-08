@@ -28,6 +28,7 @@
 - gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
 - gui: Fixed web login edge cases: the login page now appears when login gets enabled while the UI is open, and logging out while TeddyCloud is unreachable no longer leaves the logged-in view on screen
 - gui: Failed file downloads in the library and the Tonie information dialog now show an error notification instead of failing silently
+- gui: A failed upload in the browser-side (WASM) audio encoder no longer additionally raises an uncaught promise rejection after showing the error notification
 
 ### Commits
 
