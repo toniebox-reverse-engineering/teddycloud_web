@@ -13,6 +13,7 @@ import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
 import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { describeDownloadError } from "../utils/downloadError";
 import { useAudioContext } from "../../../../provider/AudioProvider";
 import { toImageSrc } from "../utils/imagePathUtils";
 import { backendUrl } from "../../../../utils/basePath";
@@ -105,6 +106,13 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.messages.downloadFailed"),
+                `${t("fileBrowser.messages.downloadFailedDetails", { file: filename })}: ${describeDownloadError(error)}`,
+                t("tonies.navigationTitle"),
+            );
         } finally {
             setIsDownloading(false);
         }

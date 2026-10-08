@@ -420,7 +420,6 @@ export const useEncoder = () => {
                 t("tonies.encoder.uploadFailedDetails") + err,
                 t("tonies.title"),
             );
-            throw err;
         } finally {
             setProcessing(false);
             setUploading(false);

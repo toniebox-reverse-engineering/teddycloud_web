@@ -92,8 +92,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const onAuthRequired = () => {
             setUserStorageScope("");
+            // A 401 proves that login is enabled, even if it was disabled when the UI was loaded.
             setStatusState((current) =>
-                current ? { ...current, loggedIn: false, username: "" } : current,
+                current ? { ...current, enabled: true, loggedIn: false, username: "" } : current,
             );
             setStoredToken(null);
         };
@@ -107,8 +108,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const logout = useCallback(async () => {
-        await apiLogout();
-        await refresh();
+        try {
+            await apiLogout();
+        } catch {
+            // The token is removed locally either way.
+        }
+
+        try {
+            await refresh();
+        } catch {
+            // Without a reachable API the old "logged in" status must not stay on screen.
+            setUserStorageScope("");
+            setStatusState(null);
+        }
     }, [refresh]);
 
     const value = useMemo<AuthContextValue>(
