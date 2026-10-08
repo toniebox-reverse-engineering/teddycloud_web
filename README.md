@@ -6,7 +6,13 @@ If you are using this repository for the first time, please refer to the **Gener
 
 ## TeddyCloud configuration
 
-No special configuration (e.g. CORS) is needed. The dev server runs same-origin with the GUI and proxies all requests except `/web` to the teddyCloud instance set in `VITE_APP_TEDDYCLOUD_API_URL`. This is required because API calls send credentials (web login), which do not work with CORS `*`.
+You'll need to allow CORS for your teddyCloud instance used for development. The easiest variant is to set `CORS Allow-Originⓘ` to `*`.
+
+### Optional: same-origin dev proxy
+
+With web login enabled, images and audio are not loaded in the setup above: the browser requests them without the login token. Set `VITE_APP_TEDDYCLOUD_DEV_PROXY=true` in your `.env.local` to let the dev server proxy all requests except `/web` to the teddyCloud instance set in `VITE_APP_TEDDYCLOUD_API_URL`. The browser then only talks to the dev server, and no CORS configuration is needed.
+
+The dev server connects to `VITE_APP_TEDDYCLOUD_API_URL` as configured. If your teddyCloud is behind a reverse proxy that routes by hostname (SNI), use the hostname there, not the IP.
 
 ## NPM Environment file '.env'
 

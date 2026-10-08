@@ -13,7 +13,7 @@
 - gui: Refactored language functionality to simplify adding and maintaining additional languages. New languages can now be added without requiring code changes. Simply translate an existing language file, save it as [languagecode].json (e.g. en.json) in the public/translations folder, and rebuild the frontend. The new language will then be detected and made available automatically.
 - gui: added Italian language
 - gui: updated packages to latest version
-- gui maintenance: Fixed dev setup with web login: the dev server now proxies all API requests same-origin, CORS `*` is no longer needed [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342)
+- gui maintenance: Added optional same-origin dev proxy (`VITE_APP_TEDDYCLOUD_DEV_PROXY=true`), so images and audio load in the dev setup with web login enabled [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342)
 - gui: replaced deprecated andt list with antd listy
 - gui: added missing language entries
 - gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)

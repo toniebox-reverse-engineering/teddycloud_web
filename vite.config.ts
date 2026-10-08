@@ -20,6 +20,7 @@ export default defineConfig(({ command, mode }) => {
     // Use the configured URL as is: the proxy must talk to exactly the host and port that was set.
     const proxyUrl = env.VITE_APP_TEDDYCLOUD_API_URL || "http://teddycloud.local";
 
+    // All teddyCloud paths the app requests ("/reverse" also covers "/reverseGeneric")
     const teddyCloudPaths = [
         "/api",
         "/img_unknown.png",
@@ -27,22 +28,30 @@ export default defineConfig(({ command, mode }) => {
         "/img",
         "/custom_img",
         "/plugins",
+        "/content",
+        "/library",
+        "/v1",
+        "/reverse",
     ];
     const proxyOptions = { target: proxyUrl, changeOrigin: true, secure: false };
+    const teddyCloudProxy = Object.fromEntries(teddyCloudPaths.map((p) => [p, proxyOptions]));
 
-    // The dev server serves the app below this path; everything else is proxied to teddyCloud
     const devBase = "/web";
+
+    // Opt-in: the dev server proxies everything except the app itself to teddyCloud, so the
+    // browser only sees one origin. Needed for images and audio with web login enabled,
+    // as those requests carry no bearer token and the session cookie is not set cross-origin.
+    const useDevProxy = command === "serve" && env.VITE_APP_TEDDYCLOUD_DEV_PROXY === "true";
 
     return {
         // Production builds use a relative base so the bundle works under any URL prefix
         // (index.html injects a matching <base href> at runtime). The dev server keeps /web.
         base: command === "build" ? "./" : devBase,
-        // In dev, API URLs must be relative so that they hit the proxy below.
-        // VITE_APP_TEDDYCLOUD_API_URL is only used as proxy target there.
-        define:
-            command === "serve"
-                ? { "import.meta.env.VITE_APP_TEDDYCLOUD_API_URL": JSON.stringify("") }
-                : {},
+        // With the dev proxy, API URLs must be relative so that they hit the proxy below.
+        // VITE_APP_TEDDYCLOUD_API_URL is only used as proxy target then.
+        define: useDevProxy
+            ? { "import.meta.env.VITE_APP_TEDDYCLOUD_API_URL": JSON.stringify("") }
+            : {},
         plugins: [
             react(),
 
@@ -90,14 +99,11 @@ export default defineConfig(({ command, mode }) => {
             port: useHttps ? portHttps : portHttp,
             host: true,
             https: httpsOptions,
-            // Same-origin setup: API calls send credentials, which do not work cross-origin with CORS "*".
-            proxy: {
-                [`^(?!${devBase}(/|$)).*`]: proxyOptions,
-            },
+            proxy: useDevProxy ? { [`^(?!${devBase}(/|$)).*`]: proxyOptions } : teddyCloudProxy,
         },
         // `vite preview` inherits server.proxy by default; keep it limited to the teddyCloud paths.
         preview: {
-            proxy: Object.fromEntries(teddyCloudPaths.map((p) => [p, proxyOptions])),
+            proxy: teddyCloudProxy,
         },
     };
 });
