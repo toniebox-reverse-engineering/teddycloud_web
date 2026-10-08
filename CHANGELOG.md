@@ -23,6 +23,7 @@
 - gui: Removed link to the sunseted legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
 - gui: Improved API request handling so authenticated requests consistently use the central TeddyCloud API configuration, including FormData uploads and protected file downloads
 - gui: Improved web authentication error handling so backend/network failures are no longer treated as disabled authentication
+- gui: Fixed "save on navigate" in the custom model editor (save was racing with the navigation and failed with a bogus duplicate-model error); the option is available again [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/323](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/323)
 - gui: Fixed custom Tonie track filtering when `sourceInfo.tracks` is empty but `tonieInfo.tracks` contains track data
 - gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
 - gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic

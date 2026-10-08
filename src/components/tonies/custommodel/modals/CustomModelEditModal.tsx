@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button, Checkbox, Modal } from "antd";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,8 @@ export interface CustomModelEditModalProps {
     open: boolean;
     onCancel: () => void;
     onSave?: () => void;
-    onSaveForNavigate?: () => void;
+    /** Resolves to true if the entry was persisted; navigation is skipped otherwise. */
+    onSaveForNavigate?: () => Promise<boolean>;
     onPrev?: () => void;
     onNext?: () => void;
     canGoPrev?: boolean;
@@ -40,15 +41,24 @@ export const CustomModelEditModal: React.FC<CustomModelEditModalProps> = ({
     children,
 }) => {
     const { t } = useTranslation();
-    const [saveOnNavigate, setSaveOnNavigate] = useState<boolean>(false); // disabled save on navigate by default since it's seems to be not working
-    const handleNext = () => {
-        if (saveOnNavigate && hasChanges()) (onSaveForNavigate ?? onSave)?.();
-        onNext?.();
+    const [saveOnNavigate, setSaveOnNavigate] = useState<boolean>(false);
+    const navigatingRef = useRef(false);
+    // The save must finish before navigating: navigation swaps the form values, so a save
+    // running concurrently would read the next entry's data.
+    const navigate = async (target?: () => void) => {
+        if (navigatingRef.current) return;
+        navigatingRef.current = true;
+        try {
+            if (saveOnNavigate && hasChanges() && onSaveForNavigate) {
+                if (!(await onSaveForNavigate())) return;
+            }
+            target?.();
+        } finally {
+            navigatingRef.current = false;
+        }
     };
-    const handlePrev = () => {
-        if (saveOnNavigate && hasChanges()) (onSaveForNavigate ?? onSave)?.();
-        onPrev?.();
-    };
+    const handleNext = () => void navigate(onNext);
+    const handlePrev = () => void navigate(onPrev);
     const resolvedTitle =
         title ||
         (totalItems > 0
