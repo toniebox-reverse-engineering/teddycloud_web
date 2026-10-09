@@ -25,7 +25,7 @@ export const HomeSubNav = () => {
     }, [currentLanguage]);
 
     const pluginItems = plugins
-        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Home)
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Home && !p.hideInNav)
         .map((plugin) => ({
             key: `plugin-${plugin.pluginId}`,
             label: (

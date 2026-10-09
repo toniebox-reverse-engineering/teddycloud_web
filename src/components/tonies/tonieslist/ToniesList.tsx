@@ -459,7 +459,9 @@ export const ToniesList: React.FC<{
     const listPagination = (
         <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
             {!paginationEnabled ? (
-                <Button onClick={handleShowPagination}>{t("tonies.tonies.showPagination")}</Button>
+                <Button onClick={handleShowPagination} style={{ marginBottom: 8 }}>
+                    {t("tonies.tonies.showPagination")}
+                </Button>
             ) : (
                 <ToniesPagination
                     currentPage={currentPage}

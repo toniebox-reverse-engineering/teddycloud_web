@@ -28,7 +28,7 @@ export const TonieboxesSubNav = () => {
     }, [openKeys, currentLanguage]);
 
     const pluginItems = plugins
-        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Tonieboxes)
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Tonieboxes && !p.hideInNav)
         .map((plugin) => ({
             key: `plugin-${plugin.pluginId}`,
             label: (

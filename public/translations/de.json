@@ -21,11 +21,11 @@
         "password": "Passwort",
         "passwordMin": "Mindestens 4 Zeichen",
         "passwordRequired": "Passwort ist erforderlich",
-        "username": "Benutzername",
-        "usernameRequired": "Benutzername ist erforderlich",
+        "retry": "Erneut versuchen",
         "statusLoadFailed": "Authentifizierungsstatus konnte nicht geladen werden",
         "statusLoadFailedDetails": "Der Authentifizierungsstatus konnte nicht geladen werden. Prüfe die Verbindung zu TeddyCloud und versuche es erneut.",
-        "retry": "Erneut versuchen"
+        "username": "Benutzername",
+        "usernameRequired": "Benutzername ist erforderlich"
     },
     "common": {
         "cancel": "Abbrechen"
@@ -142,6 +142,7 @@
                 "fields": {
                     "author": "Autor des Plugins",
                     "description": "Kurze Zusammenfassung des Plugins",
+                    "hideInNav": "Flag, das angibt, ob das Plugin in der Navigation ausgeblendet werden soll (true/false)",
                     "icon": "Das für das Plugin verwendete Icon. Muss eine gültige Ant Design Icon-Komponente von https://ant.design/components/icon sein, z. B. TrophyOutlined, TagsOutlined",
                     "pluginHomepage": "Homepage des Plugins",
                     "pluginName": "Der Titel, der in Menüs angezeigt wird (erforderlich)",
@@ -157,11 +158,16 @@
             },
             "helpButton": "Hilfe",
             "helpTextCreatePlugin": "Ein Text darüber, wie man ein Plugin erstellt",
+            "hidden": "Versteckt",
             "installedPlugins": "Installierte Plugins",
             "intro": "Hier findest du deine hinzugefügten TeddyCloud Plugins und kannst neue Plugins von dir oder der TeddyCloud Community hinzufügen!",
             "navigationTitle": "TC Plugins",
             "ok": "OK",
             "open": "Plugin öffnen",
+            "pagination": {
+                "pageSelector": "Plugins pro Seite",
+                "showAll": "Alle anzeigen"
+            },
             "plugin": "Plugin",
             "title": "TeddyCloud Plugins",
             "upload": {
@@ -390,9 +396,17 @@
         "filter": "Filter im aktuellen Ordner",
         "help": {
             "actionItems": {
+                "assignToTonie": {
+                    "text": "Weist die ausgewählte Datei einem Tonie/Tag als Inhalt zu.",
+                    "title": "Tonie zuweisen"
+                },
                 "deleteFileFolder": {
                     "text": "Löscht die Datei oder den Ordner (nur wenn der Ordner leer ist). Hinweis: Wenn diese Datei einem Tonie/Tag zugewiesen ist, wird der Verweis nicht aktualisiert.",
                     "title": "Datei/Ordner löschen"
+                },
+                "downloadFile": {
+                    "text": "Lädt die ausgewählte Datei herunter oder lädt TAF-Dateien als OGG-Datei herunter.",
+                    "title": "Datei herunterladen"
                 },
                 "duplicateTAPFile": {
                     "text": "Erstellt eine Kopie der ausgewählten TAP-Datei.",
@@ -405,6 +419,16 @@
                 "editTAPPlaylist": {
                     "text": "Öffnet den Tonie-Audio-Playlist-Editor, um TAP-Dateien zu verwalten.",
                     "title": "TAP-Playlist bearbeiten"
+                },
+                "markAsListened": {
+                    "listened": {
+                        "text": "Die Datei ist derzeit als gehört markiert. Klicke, um sie als nicht gehört zu markieren.",
+                        "title": "Als nicht gehört markieren"
+                    },
+                    "unlistened": {
+                        "text": "Die Datei ist derzeit als nicht gehört markiert. Klicke, um sie als gehört zu markieren.",
+                        "title": "Als gehört markieren"
+                    }
                 },
                 "migrateToAudioIdFolder": {
                     "text": "Verschiebt die TAF-Datei in den Ordner 'by/audioId' der Library und aktualisiert die Quelle in der JSON-Datei.",
@@ -425,24 +449,6 @@
                 "renameFile": {
                     "text": "Benennt die Datei um. Hinweis: Wenn diese Datei einem Tonie/Tag zugewiesen ist, wird der Verweis nicht automatisch aktualisiert.",
                     "title": "Datei umbenennen"
-                },
-                "downloadFile": {
-                    "title": "Datei herunterladen",
-                    "text": "Lädt die ausgewählte Datei herunter oder lädt TAF-Dateien als OGG-Datei herunter."
-                },
-                "markAsListened": {
-                    "unlistened": {
-                        "title": "Als gehört markieren",
-                        "text": "Die Datei ist derzeit als nicht gehört markiert. Klicke, um sie als gehört zu markieren."
-                    },
-                    "listened": {
-                        "title": "Als nicht gehört markieren",
-                        "text": "Die Datei ist derzeit als gehört markiert. Klicke, um sie als nicht gehört zu markieren."
-                    }
-                },
-                "assignToTonie": {
-                    "title": "Tonie zuweisen",
-                    "text": "Weist die ausgewählte Datei einem Tonie/Tag als Inhalt zu."
                 }
             },
             "actionItemsMulti": {

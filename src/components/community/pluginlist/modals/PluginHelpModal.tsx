@@ -22,6 +22,7 @@ export const PluginHelpModal: React.FC<PluginHelpModalProps> = ({ open, onClose 
         ["pluginHomepage", t("community.plugins.help.fields.pluginHomepage")],
         ["teddyCloudSection", t("community.plugins.help.fields.teddyCloudSection")],
         ["icon", t("community.plugins.help.fields.icon")],
+        ["hideInNav", t("community.plugins.help.fields.hideInNav")],
     ];
 
     return (
@@ -65,7 +66,8 @@ export const PluginHelpModal: React.FC<PluginHelpModalProps> = ({ open, onClose 
   "version": "Version of the plugin",
   "pluginHomepage": "Homepage of the plugin",
   "teddyCloudSection": "tonies",
-  "icon": "TrophyOutlined"
+  "icon": "TrophyOutlined",
+  "hideInNav": false
 }`}
                 />
 
