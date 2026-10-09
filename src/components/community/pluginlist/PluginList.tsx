@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { Alert, Badge, Button, Col, Empty, Row, Tag, Typography } from "antd";
+import { Alert, Badge, Button, Col, Empty, Flex, Row, Tag, Typography } from "antd";
 import { AppstoreAddOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { usePluginList } from "./hooks/usePluginList";
 import PluginTemplateDownloadButton from "../../common/buttons/PluginTemplateDownloadButton";
@@ -59,7 +59,7 @@ export const PluginList = () => {
                 console.error("Error parsing stored plugin list state:", error);
             }
         }
-        return 24;
+        return 12;
     });
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [paginationEnabled, setPaginationEnabled] = useState(true);
@@ -136,7 +136,9 @@ export const PluginList = () => {
     const listPagination = (
         <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
             {!paginationEnabled ? (
-                <Button onClick={handleShowPagination}>{t("tonies.tonies.showPagination")}</Button>
+                <Button onClick={handleShowPagination} style={{ marginBottom: 8 }}>
+                    {t("tonies.tonies.showPagination")}
+                </Button>
             ) : (
                 <PluginPagination
                     currentPage={currentPage}

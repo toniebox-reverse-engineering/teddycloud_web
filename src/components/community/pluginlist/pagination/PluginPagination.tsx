@@ -27,9 +27,10 @@ const PluginPagination: React.FC<PluginPaginationProps> = ({
                 pageSize={pageSize}
                 onChange={onChange}
                 showSizeChanger
-                pageSizeOptions={["12", "24", "48", "96", "192"]}
+                pageSizeOptions={["12", "24", "48"]}
                 locale={{ items_per_page: t("community.plugins.pagination.pageSelector") }}
-                style={{ marginBottom: 0 }}
+                style={{ marginBottom: 8 }}
+                styles={{ item: { padding: 0 } }}
                 showLessItems
             />
             <Button onClick={additionalButtonOnClick} style={{ marginLeft: 16 }}>
