@@ -10,7 +10,6 @@ import { PluginDeleteDialog } from "./modals/PluginDeleteModal";
 import { PluginHelpModal } from "./modals/PluginHelpModal";
 import { PluginUploadModal } from "./modals/PluginUploadModal";
 import PluginPagination from "./pagination/PluginPagination";
-import { scrollToTop } from "../../../utils/browser/browserUtils";
 import { userStorage } from "../../../utils/storage/userStorage";
 
 const { Paragraph } = Typography;
@@ -74,10 +73,11 @@ export const PluginList = () => {
                     JSON.parse(storedState);
                 if (storedShowAll) {
                     setPageSize(storedPageSize);
-                    handleShowAll(storedPageSize);
+                    setShowAll(true);
+                    setPaginationEnabled(false);
                 } else {
                     setPageSize(storedPageSize);
-                    handlePageSizeChange(1, storedPageSize);
+                    setCurrentPage(1);
                 }
             } catch (error) {
                 console.error("Error parsing stored plugin list state:", error);
@@ -95,11 +95,6 @@ export const PluginList = () => {
         userStorage.setItem(STORAGE_KEY, stateToStore);
     }, [pageSize, paginationEnabled, showAll]);
 
-    useEffect(() => {
-        handlePageSizeChange(1, pageSize);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pageSize]);
-
     const handleShowAll = (size?: number) => {
         const effectiveSize = size ?? pageSize;
         setPageSize(effectiveSize);
@@ -116,7 +111,7 @@ export const PluginList = () => {
     const handlePageSizeChange = (current: number, size: number) => {
         setPageSize(size);
         setCurrentPage(current);
-        setTimeout(() => scrollToTop(pluginListRef.current), 0);
+        setTimeout(scrollToPluginList, 0);
     };
 
     const handleSectionFilterChange = (section: string, checked: boolean) => {
@@ -127,6 +122,23 @@ export const PluginList = () => {
     const handleHiddenFilterChange = (checked: boolean) => {
         setHiddenOnly(checked);
         setCurrentPage(1);
+    };
+
+    const scrollToPluginList = () => {
+        const element = pluginListRef.current;
+
+        if (!element) {
+            return;
+        }
+
+        const rect = element.getBoundingClientRect();
+
+        if (rect.top < 0) {
+            window.scrollTo({
+                top: window.scrollY + rect.top - 16,
+                behavior: "smooth",
+            });
+        }
     };
 
     const currentPageData = showAll
@@ -154,12 +166,6 @@ export const PluginList = () => {
     return (
         <>
             <h1>{t("community.plugins.title")}</h1>
-            <Alert
-                type="warning"
-                showIcon
-                title="WIP - To be extended soon... meanwhile you can upload plugins manually into teddycloud/data/www/plugins using any SFTP-Client"
-                style={{ margin: 32 }}
-            />
 
             <div
                 style={{
@@ -187,7 +193,13 @@ export const PluginList = () => {
                     </Button>
                 </Paragraph>
             </div>
-            <Paragraph>
+            <Alert
+                type="warning"
+                showIcon
+                title="WIP - To be extended soon... meanwhile you can upload plugins manually into teddycloud/data/www/plugins using any SFTP-Client"
+                style={{ margin: 16 }}
+            />
+            <>
                 <h2>{t("community.plugins.installedPlugins")}</h2>
                 <div style={{ marginBottom: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
                     {allSections.map((section) => {
@@ -220,14 +232,14 @@ export const PluginList = () => {
                     </Badge>
                 </div>
 
-                <div ref={pluginListRef}>
+                <Flex ref={pluginListRef} vertical gap={16}>
                     {filteredPlugins.length === 0 ? (
                         <Empty description={t("community.plugins.empty")} />
                     ) : (
                         <>
                             {listPagination}
 
-                            <Row gutter={[16, 16]} style={{ marginTop: 8, marginBottom: 8 }}>
+                            <Row gutter={[16, 16]}>
                                 {currentPageData.map((plugin) => (
                                     <Col
                                         key={plugin.pluginId}
@@ -254,7 +266,7 @@ export const PluginList = () => {
                             {listPagination}
                         </>
                     )}
-                </div>
+                </Flex>
 
                 <PluginHelpModal open={isVisibleHelpModal} onClose={closeHelp} />
                 <PluginUploadModal
@@ -271,7 +283,7 @@ export const PluginList = () => {
                     onConfirm={handleConfirmDelete}
                     onCancel={handleCancelDelete}
                 />
-            </Paragraph>
+            </>
         </>
     );
 };

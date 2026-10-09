@@ -58,7 +58,7 @@ export const PluginCard: React.FC<PluginCardProps> = ({
                         whiteSpace: "nowrap",
                     }}
                 >
-                    <strong>{plugin.pluginName}</strong>
+                    {plugin.pluginName}
                 </h3>
             </div>
         </Badge.Ribbon>
@@ -74,7 +74,7 @@ export const PluginCard: React.FC<PluginCardProps> = ({
                 whiteSpace: "nowrap",
             }}
         >
-            <strong>{plugin.pluginName}</strong>
+            {plugin.pluginName}
         </h3>
     );
 
