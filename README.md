@@ -14,6 +14,13 @@ With web login enabled, images and audio are not loaded in the setup above: the 
 
 The dev server connects to `VITE_APP_TEDDYCLOUD_API_URL` as configured. If your teddyCloud is behind a reverse proxy that routes by hostname (SNI), use the hostname there, not the IP.
 
+If that reverse proxy requires a client certificate (mutual TLS), put your PKCS#12 file (`.p12`, containing certificate and private key) into the `certs` folder and add it to your `.env.local`. The dev proxy then uses it for all requests to teddyCloud, including plugins:
+
+```env
+TEDDYCLOUD_DEV_CLIENT_P12=client.p12
+TEDDYCLOUD_DEV_CLIENT_P12_PASSWORD=<password, if set>
+```
+
 ## NPM Environment file '.env'
 
 Please place an environment file '.env.local' in the teddycloud_web directory.
@@ -22,8 +29,8 @@ Please place an environment file '.env.local' in the teddycloud_web directory.
 VITE_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
 VITE_APP_TEDDYCLOUD_PORT_HTTPS=3443
 VITE_APP_TEDDYCLOUD_PORT_HTTP=3000
-SSL_CRT_FILE=./localhost.pem
-SSL_KEY_FILE=./localhost-key.pem
+SSL_CRT_FILE=./certs/localhost.pem
+SSL_KEY_FILE=./certs/localhost-key.pem
 ```
 
 VITE_APP_TEDDYCLOUD_PORT_HTTPS and VITE_APP_TEDDYCLOUD_PORT_HTTP should match the ones entered in the package.json. If you don't change them, these are the ones from the example above.
@@ -32,11 +39,12 @@ VITE_APP_TEDDYCLOUD_PORT_HTTPS and VITE_APP_TEDDYCLOUD_PORT_HTTP should match th
 
 _needed for ESP32 Box Flashing section_
 
-You need to provide certificates for https. Use for example `mkcert`. The generated certificates must be stored in projects root path (or adapt the `env.development.local` file accordingly).
+You need to provide certificates for https. Use for example `mkcert`. The generated certificates must be stored in the `certs` folder of the project (the folder is git-ignored).
 
 ```shell
 mkcert -install
-mkcert localhost
+mkdir -p certs
+mkcert -cert-file certs/localhost.pem -key-file certs/localhost-key.pem localhost
 ```
 
 You must also allow unsecure content in chrome ([HowTo](https://stackoverflow.com/questions/18321032/how-to-get-chrome-to-allow-mixed-content)) to be able to connect to teddycloud server in https context.

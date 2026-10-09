@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
+import https from "https";
 
 export default defineConfig(({ command, mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
@@ -12,8 +13,8 @@ export default defineConfig(({ command, mode }) => {
 
     const httpsOptions = useHttps
         ? {
-              key: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost-key.pem")),
-              cert: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost.pem")),
+              key: fs.readFileSync(path.resolve(import.meta.dirname, "certs", "localhost-key.pem")),
+              cert: fs.readFileSync(path.resolve(import.meta.dirname, "certs", "localhost.pem")),
           }
         : undefined;
 
@@ -33,7 +34,26 @@ export default defineConfig(({ command, mode }) => {
         "/v1",
         "/reverse",
     ];
-    const proxyOptions = { target: proxyUrl, changeOrigin: true, secure: false };
+
+    // Optional client certificate (PKCS#12, file inside certs/) for teddyCloud instances behind a
+    // reverse proxy that requires mutual TLS. Without the setting, nothing changes.
+    const proxyAgent =
+        proxyUrl.startsWith("https://") && env.TEDDYCLOUD_DEV_CLIENT_P12
+            ? new https.Agent({
+                  pfx: fs.readFileSync(
+                      path.resolve(import.meta.dirname, "certs", env.TEDDYCLOUD_DEV_CLIENT_P12),
+                  ),
+                  passphrase: env.TEDDYCLOUD_DEV_CLIENT_P12_PASSWORD || undefined,
+                  rejectUnauthorized: false,
+              })
+            : undefined;
+
+    const proxyOptions = {
+        target: proxyUrl,
+        changeOrigin: true,
+        secure: false,
+        ...(proxyAgent ? { agent: proxyAgent } : {}),
+    };
     const teddyCloudProxy = Object.fromEntries(teddyCloudPaths.map((p) => [p, proxyOptions]));
 
     const devBase = "/web";
