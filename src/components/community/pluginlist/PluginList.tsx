@@ -21,6 +21,9 @@ export const PluginList = () => {
         activeSectionFilters,
         pluginCountBySection,
         toggleSectionFilter,
+        hiddenOnly,
+        setHiddenOnly,
+        hiddenPluginCount,
 
         isVisibleHelpModal,
         openHelp,
@@ -79,29 +82,33 @@ export const PluginList = () => {
             </div>
             <Paragraph>
                 <h2>{t("community.plugins.installedPlugins")}</h2>
-                <div style={{ marginBottom: 16, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <div style={{ marginBottom: 16, display: "flex", gap: 12, flexWrap: "wrap" }}>
                     {allSections.map((section) => {
                         const isChecked = activeSectionFilters.includes(section);
+
                         return (
                             <Badge
                                 count={pluginCountBySection[section] || 0}
                                 color="grey"
                                 size="small"
-                                offset={[-8, 4]}
+                                offset={[0, 2]}
                                 key={section}
                             >
                                 <Tag.CheckableTag
-                                    key={section}
                                     checked={isChecked}
                                     onChange={(checked) => toggleSectionFilter(section, checked)}
                                 >
-                                    <span>
-                                        {section.charAt(0).toUpperCase() + section.slice(1)}
-                                    </span>
+                                    {section.charAt(0).toUpperCase() + section.slice(1)}
                                 </Tag.CheckableTag>
                             </Badge>
                         );
                     })}
+
+                    <Badge count={hiddenPluginCount} color="grey" size="small" offset={[0, 2]}>
+                        <Tag.CheckableTag checked={hiddenOnly} onChange={setHiddenOnly}>
+                            {t("community.plugins.hidden")}
+                        </Tag.CheckableTag>
+                    </Badge>
                 </div>
                 {filteredPlugins.length === 0 ? (
                     <Empty description={t("community.plugins.empty")} />
