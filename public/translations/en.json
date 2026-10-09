@@ -142,6 +142,7 @@
                 "fields": {
                     "author": "Author of the plugin",
                     "description": "Short summary of the plugin",
+                    "hideInNav": "Flag indicating whether the plugin should be hidden in navigation (true/false)",
                     "icon": "The icon used for the plugin. Must be a valid Ant Design icon component from https://ant.design/components/icon, e.g. TrophyOutlined, TagsOutlined",
                     "pluginHomepage": "Homepage of the plugin",
                     "pluginName": "The title shown in menus (mandatory)",
@@ -157,6 +158,7 @@
             },
             "helpButton": "Help",
             "helpTextCreatePlugin": "Some Text about how to create a plugin",
+            "hidden": "Hidden",
             "installedPlugins": "Installed plugins",
             "intro": "Here you find your added TeddyCloud plugins and you can add new plugins provided by you or the TeddyCloud community!",
             "navigationTitle": "TC Plugins",

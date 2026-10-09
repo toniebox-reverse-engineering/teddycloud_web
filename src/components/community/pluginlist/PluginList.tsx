@@ -106,7 +106,7 @@ export const PluginList = () => {
                 {filteredPlugins.length === 0 ? (
                     <Empty description={t("community.plugins.empty")} />
                 ) : (
-                    <Row gutter={8}>
+                    <Row gutter={[8, 8]}>
                         {filteredPlugins.map((plugin) => (
                             <Col
                                 key={plugin.pluginId}
@@ -116,22 +116,16 @@ export const PluginList = () => {
                                 lg={8}
                                 xl={8}
                                 xxl={6}
+                                style={{ minWidth: 0, display: "flex" }}
                             >
-                                <div
-                                    style={{
-                                        height: "100%",
-                                        display: "flex",
-                                    }}
-                                >
-                                    <PluginCard
-                                        plugin={plugin}
-                                        onOpen={(pluginId) =>
-                                            navigate(`/community/tcplugins/${pluginId}`)
-                                        }
-                                        onOpenHomepage={(url) => window.open(url, "_blank")}
-                                        onDelete={requestDelete}
-                                    />
-                                </div>
+                                <PluginCard
+                                    plugin={plugin}
+                                    onOpen={(pluginId) =>
+                                        navigate(`/community/tcplugins/${pluginId}`)
+                                    }
+                                    onOpenHomepage={(url) => window.open(url, "_blank")}
+                                    onDelete={requestDelete}
+                                />
                             </Col>
                         ))}
                     </Row>

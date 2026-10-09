@@ -1,5 +1,5 @@
-import { Card, Typography, Badge, Tooltip, theme } from "antd";
-import { DesktopOutlined, HomeOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Card, Typography, Badge, Tooltip, theme, Tag } from "antd";
+import { DesktopOutlined, HomeOutlined, DeleteOutlined, TagFilled } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { canHover } from "../../../utils/browser/browserUtils";
 import { withBase } from "../../../utils/basePath";
@@ -40,14 +40,40 @@ export const PluginCard: React.FC<PluginCardProps> = ({
 
     const titleContent = plugin.teddyCloudSection ? (
         <Badge.Ribbon placement="start" text={sectionLabel} style={{ marginLeft: 8 }}>
-            <div style={{ marginTop: 28, marginLeft: 16 }}>
-                <h3>
+            <div
+                style={{
+                    paddingTop: 28,
+                    width: "auto",
+                    minWidth: 0,
+                    overflow: "hidden",
+                }}
+            >
+                <h3
+                    style={{
+                        margin: 0,
+                        marginLeft: 12,
+                        width: "calc(100%-16px)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                    }}
+                >
                     <strong>{plugin.pluginName}</strong>
                 </h3>
             </div>
         </Badge.Ribbon>
     ) : (
-        <h3>
+        <h3
+            style={{
+                margin: 0,
+                paddingTop: 28,
+                marginLeft: 12,
+                width: "calc(100%-8px)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+            }}
+        >
             <strong>{plugin.pluginName}</strong>
         </h3>
     );
@@ -59,20 +85,24 @@ export const PluginCard: React.FC<PluginCardProps> = ({
             key={plugin.pluginId}
             style={{
                 width: "100%",
-                margin: 8,
+                height: "100%",
+                minWidth: 0,
                 borderRadius: 8,
                 background: token.colorBgContainerDisabled,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between",
+            }}
+            styles={{
+                body: {
+                    flex: 1,
+                },
             }}
             title={
                 <div
                     style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        width: 100,
+                        width: "100%",
+                        minWidth: 0,
+                        overflow: "hidden",
                     }}
                 >
                     {titleContent}
@@ -127,6 +157,13 @@ export const PluginCard: React.FC<PluginCardProps> = ({
                     e.currentTarget.style.display = "none";
                 }}
             />
+            {plugin.hideInNav && (
+                <Paragraph style={{ textAlign: "center" }}>
+                    <Tag color="warning" variant="filled" style={{ marginTop: 8 }}>
+                        {t("community.plugins.hidden")}
+                    </Tag>
+                </Paragraph>
+            )}
             <Paragraph type="secondary" style={{ marginBottom: 8 }}>
                 {plugin.author && `${t("community.plugins.by")} ${plugin.author}`}
                 {plugin.version && ` - v${plugin.version}`}

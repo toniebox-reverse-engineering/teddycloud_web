@@ -373,6 +373,7 @@ export function TeddyCloudProvider({ children }: TeddyCloudProviderProps) {
                     )
                         ? meta.teddyCloudSection
                         : null,
+                    hideInNav: !!meta.hideInNav,
                     icon: (meta.icon && meta.icon in AntIcons
                         ? AntIcons[meta.icon as keyof typeof AntIcons]
                         : AntIcons.CodeSandboxOutlined) as ElementType,

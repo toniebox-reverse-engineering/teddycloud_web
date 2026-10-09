@@ -21,11 +21,11 @@
         "password": "Hasło",
         "passwordMin": "Co najmniej 4 znaki",
         "passwordRequired": "Hasło jest wymagane",
-        "username": "Nazwa użytkownika",
-        "usernameRequired": "Nazwa użytkownika jest wymagana",
+        "retry": "Spróbuj ponownie",
         "statusLoadFailed": "Nie udało się wczytać stanu uwierzytelniania",
         "statusLoadFailedDetails": "Nie udało się wczytać stanu uwierzytelniania. Sprawdź połączenie z TeddyCloud i spróbuj ponownie.",
-        "retry": "Spróbuj ponownie"
+        "username": "Nazwa użytkownika",
+        "usernameRequired": "Nazwa użytkownika jest wymagana"
     },
     "common": {
         "cancel": "Anuluj"
@@ -142,6 +142,7 @@
                 "fields": {
                     "author": "Autor wtyczki",
                     "description": "Krótki opis wtyczki",
+                    "hideInNav": "Flaga określająca, czy wtyczka ma być ukryta w nawigacji (true/false)",
                     "icon": "Ikona używana dla wtyczki. Musi być prawidłowym komponentem ikony Ant Design z https://ant.design/components/icon, np. TrophyOutlined, TagsOutlined",
                     "pluginHomepage": "Strona domowa wtyczki",
                     "pluginName": "Tytuł wyświetlany w menu (wymagane)",
@@ -157,6 +158,7 @@
             },
             "helpButton": "Pomoc",
             "helpTextCreatePlugin": "Przykładowy tekst o tym, jak stworzyć wtyczkę",
+            "hidden": "Ukryta",
             "installedPlugins": "Zainstalowane wtyczki",
             "intro": "Tutaj znajdziesz dodane przez Ciebie wtyczki TeddyCloud oraz możesz dodać nowe wtyczki udostępnione przez Ciebie lub społeczność TeddyCloud!",
             "navigationTitle": "Wtyczki TC",
@@ -390,9 +392,17 @@
         "filter": "Filtruj w bieżącym folderze",
         "help": {
             "actionItems": {
+                "assignToTonie": {
+                    "text": "Przypisuje wybrany plik jako zawartość do Tonie/Taga.",
+                    "title": "Przypisz do Tonie"
+                },
                 "deleteFileFolder": {
                     "text": "Usuwa plik lub folder (tylko jeśli folder jest pusty). Uwaga: jeśli ten plik jest przypisany do Tonie/Taga, odwołanie nie zostanie zaktualizowane.",
                     "title": "Usuń plik/folder"
+                },
+                "downloadFile": {
+                    "text": "Pobiera wybrany plik lub, w przypadku plików TAF, pobiera go jako plik OGG.",
+                    "title": "Pobierz plik"
                 },
                 "duplicateTAPFile": {
                     "text": "Tworzy duplikat wybranego pliku TAP.",
@@ -405,6 +415,16 @@
                 "editTAPPlaylist": {
                     "text": "Otwiera edytor playlist TeddyAudio do zarządzania plikami TAP.",
                     "title": "Edytuj playlistę TAP"
+                },
+                "markAsListened": {
+                    "listened": {
+                        "text": "Plik jest obecnie oznaczony jako odsłuchany. Kliknij, aby oznaczyć go jako nieodsłuchany.",
+                        "title": "Oznacz jako nieodsłuchane"
+                    },
+                    "unlistened": {
+                        "text": "Plik jest obecnie oznaczony jako nieodsłuchany. Kliknij, aby oznaczyć go jako odsłuchany.",
+                        "title": "Oznacz jako odsłuchane"
+                    }
                 },
                 "migrateToAudioIdFolder": {
                     "text": "Przenosi plik TAF do folderu biblioteki 'by/audioId' i aktualizuje źródło w pliku JSON.",
@@ -425,24 +445,6 @@
                 "renameFile": {
                     "text": "Zmienia nazwę pliku. Uwaga: jeśli ten plik jest przypisany do Tonie/Taga, odwołanie nie zostanie zaktualizowane automatycznie.",
                     "title": "Zmień nazwę pliku"
-                },
-                "downloadFile": {
-                    "title": "Pobierz plik",
-                    "text": "Pobiera wybrany plik lub, w przypadku plików TAF, pobiera go jako plik OGG."
-                },
-                "markAsListened": {
-                    "unlistened": {
-                        "title": "Oznacz jako odsłuchane",
-                        "text": "Plik jest obecnie oznaczony jako nieodsłuchany. Kliknij, aby oznaczyć go jako odsłuchany."
-                    },
-                    "listened": {
-                        "title": "Oznacz jako nieodsłuchane",
-                        "text": "Plik jest obecnie oznaczony jako odsłuchany. Kliknij, aby oznaczyć go jako nieodsłuchany."
-                    }
-                },
-                "assignToTonie": {
-                    "title": "Przypisz do Tonie",
-                    "text": "Przypisuje wybrany plik jako zawartość do Tonie/Taga."
                 }
             },
             "actionItemsMulti": {
