@@ -27,6 +27,7 @@
 - gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
 - gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
 - gui: Added support for the optional `hideInNav` property in plugin `plugin.json` files to prevent plugins from being shown in the navigation
+- gui: Added pagination in plugin list
 
 ### Commits
 
