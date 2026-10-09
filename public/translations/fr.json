@@ -165,6 +165,10 @@
             "ok": "OK",
             "open": "Ouvrir le plugin",
             "plugin": "Plugin",
+            "pagination": {
+                "pageSelector": "Plugins par page",
+                "showAll": "Afficher tout"
+            },
             "title": "Plugins TeddyCloud",
             "upload": {
                 "add": "Ajouter un plugin",

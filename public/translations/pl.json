@@ -165,6 +165,10 @@
             "ok": "OK",
             "open": "Otwórz wtyczkę",
             "plugin": "Wtyczka",
+            "pagination": {
+                "pageSelector": "Wtyczki na stronę",
+                "showAll": "Pokaż wszystkie"
+            },
             "title": "Wtyczki TeddyCloud",
             "upload": {
                 "add": "Dodaj wtyczkę",

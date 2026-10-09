@@ -164,6 +164,10 @@
             "navigationTitle": "TC Plugins",
             "ok": "OK",
             "open": "Open Plugin",
+            "pagination": {
+                "pageSelector": "Plugins per Page",
+                "showAll": "Show All"
+            },
             "plugin": "Plugin",
             "title": "TeddyCloud Plugins",
             "upload": {

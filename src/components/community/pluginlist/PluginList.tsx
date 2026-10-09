@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Alert, Badge, Button, Col, Empty, Row, Tag, Typography } from "antd";
@@ -8,8 +9,12 @@ import { PluginCard } from "../plugincard/PluginCard";
 import { PluginDeleteDialog } from "./modals/PluginDeleteModal";
 import { PluginHelpModal } from "./modals/PluginHelpModal";
 import { PluginUploadModal } from "./modals/PluginUploadModal";
+import PluginPagination from "./pagination/PluginPagination";
+import { scrollToTop } from "../../../utils/browser/browserUtils";
+import { userStorage } from "../../../utils/storage/userStorage";
 
 const { Paragraph } = Typography;
+const STORAGE_KEY = "pluginListState";
 
 export const PluginList = () => {
     const { t } = useTranslation();
@@ -43,6 +48,106 @@ export const PluginList = () => {
         handleConfirmDelete,
         handleCancelDelete,
     } = usePluginList();
+
+    const [pageSize, setPageSize] = useState<number>(() => {
+        const storedState = userStorage.getItem(STORAGE_KEY);
+        if (storedState) {
+            try {
+                const { pageSize: storedPageSize } = JSON.parse(storedState);
+                if (typeof storedPageSize === "number") return storedPageSize;
+            } catch (error) {
+                console.error("Error parsing stored plugin list state:", error);
+            }
+        }
+        return 24;
+    });
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [paginationEnabled, setPaginationEnabled] = useState(true);
+    const [showAll, setShowAll] = useState(false);
+    const pluginListRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        const storedState = userStorage.getItem(STORAGE_KEY);
+        if (storedState) {
+            try {
+                const { pageSize: storedPageSize, showAll: storedShowAll } =
+                    JSON.parse(storedState);
+                if (storedShowAll) {
+                    setPageSize(storedPageSize);
+                    handleShowAll(storedPageSize);
+                } else {
+                    setPageSize(storedPageSize);
+                    handlePageSizeChange(1, storedPageSize);
+                }
+            } catch (error) {
+                console.error("Error parsing stored plugin list state:", error);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        const stateToStore = JSON.stringify({
+            pageSize,
+            paginationEnabled,
+            showAll,
+        });
+        userStorage.setItem(STORAGE_KEY, stateToStore);
+    }, [pageSize, paginationEnabled, showAll]);
+
+    useEffect(() => {
+        handlePageSizeChange(1, pageSize);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pageSize]);
+
+    const handleShowAll = (size?: number) => {
+        const effectiveSize = size ?? pageSize;
+        setPageSize(effectiveSize);
+        setShowAll(true);
+        setPaginationEnabled(false);
+    };
+
+    const handleShowPagination = () => {
+        setPaginationEnabled(true);
+        setShowAll(false);
+        handlePageSizeChange(1, pageSize);
+    };
+
+    const handlePageSizeChange = (current: number, size: number) => {
+        setPageSize(size);
+        setCurrentPage(current);
+        setTimeout(() => scrollToTop(pluginListRef.current), 0);
+    };
+
+    const handleSectionFilterChange = (section: string, checked: boolean) => {
+        toggleSectionFilter(section, checked);
+        setCurrentPage(1);
+    };
+
+    const handleHiddenFilterChange = (checked: boolean) => {
+        setHiddenOnly(checked);
+        setCurrentPage(1);
+    };
+
+    const currentPageData = showAll
+        ? filteredPlugins
+        : filteredPlugins.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    const listPagination = (
+        <div style={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}>
+            {!paginationEnabled ? (
+                <Button onClick={handleShowPagination}>{t("tonies.tonies.showPagination")}</Button>
+            ) : (
+                <PluginPagination
+                    currentPage={currentPage}
+                    onChange={handlePageSizeChange}
+                    total={filteredPlugins.length}
+                    pageSize={pageSize}
+                    additionalButtonOnClick={() => handleShowAll()}
+                />
+            )}
+        </div>
+    );
 
     return (
         <>
@@ -96,7 +201,9 @@ export const PluginList = () => {
                             >
                                 <Tag.CheckableTag
                                     checked={isChecked}
-                                    onChange={(checked) => toggleSectionFilter(section, checked)}
+                                    onChange={(checked) =>
+                                        handleSectionFilterChange(section, checked)
+                                    }
                                 >
                                     {section.charAt(0).toUpperCase() + section.slice(1)}
                                 </Tag.CheckableTag>
@@ -105,38 +212,47 @@ export const PluginList = () => {
                     })}
 
                     <Badge count={hiddenPluginCount} color="grey" size="small" offset={[0, 2]}>
-                        <Tag.CheckableTag checked={hiddenOnly} onChange={setHiddenOnly}>
+                        <Tag.CheckableTag checked={hiddenOnly} onChange={handleHiddenFilterChange}>
                             {t("community.plugins.hidden")}
                         </Tag.CheckableTag>
                     </Badge>
                 </div>
-                {filteredPlugins.length === 0 ? (
-                    <Empty description={t("community.plugins.empty")} />
-                ) : (
-                    <Row gutter={[8, 8]}>
-                        {filteredPlugins.map((plugin) => (
-                            <Col
-                                key={plugin.pluginId}
-                                xs={24}
-                                sm={12}
-                                md={12}
-                                lg={8}
-                                xl={8}
-                                xxl={6}
-                                style={{ minWidth: 0, display: "flex" }}
-                            >
-                                <PluginCard
-                                    plugin={plugin}
-                                    onOpen={(pluginId) =>
-                                        navigate(`/community/tcplugins/${pluginId}`)
-                                    }
-                                    onOpenHomepage={(url) => window.open(url, "_blank")}
-                                    onDelete={requestDelete}
-                                />
-                            </Col>
-                        ))}
-                    </Row>
-                )}
+
+                <div ref={pluginListRef}>
+                    {filteredPlugins.length === 0 ? (
+                        <Empty description={t("community.plugins.empty")} />
+                    ) : (
+                        <>
+                            {listPagination}
+
+                            <Row gutter={[16, 16]} style={{ marginTop: 8, marginBottom: 8 }}>
+                                {currentPageData.map((plugin) => (
+                                    <Col
+                                        key={plugin.pluginId}
+                                        xs={24}
+                                        sm={12}
+                                        md={12}
+                                        lg={8}
+                                        xl={8}
+                                        xxl={6}
+                                        style={{ minWidth: 0, display: "flex" }}
+                                    >
+                                        <PluginCard
+                                            plugin={plugin}
+                                            onOpen={(pluginId) =>
+                                                navigate(`/community/tcplugins/${pluginId}`)
+                                            }
+                                            onOpenHomepage={(url) => window.open(url, "_blank")}
+                                            onDelete={requestDelete}
+                                        />
+                                    </Col>
+                                ))}
+                            </Row>
+
+                            {listPagination}
+                        </>
+                    )}
+                </div>
 
                 <PluginHelpModal open={isVisibleHelpModal} onClose={closeHelp} />
                 <PluginUploadModal
