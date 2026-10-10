@@ -11,10 +11,16 @@ export default defineConfig(({ command, mode }) => {
     const portHttps = parseInt(env.VITE_APP_TEDDYCLOUD_PORT_HTTPS || "3443", 10);
     const useHttps = env.HTTPS === "true";
 
+    // Local certificates live in certs/; the project root is still accepted for existing setups.
+    const certFile = (name: string) => {
+        const inCerts = path.resolve(import.meta.dirname, "certs", name);
+        return fs.existsSync(inCerts) ? inCerts : path.resolve(import.meta.dirname, name);
+    };
+
     const httpsOptions = useHttps
         ? {
-              key: fs.readFileSync(path.resolve(import.meta.dirname, "certs", "localhost-key.pem")),
-              cert: fs.readFileSync(path.resolve(import.meta.dirname, "certs", "localhost.pem")),
+              key: fs.readFileSync(certFile("localhost-key.pem")),
+              cert: fs.readFileSync(certFile("localhost.pem")),
           }
         : undefined;
 

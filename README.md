@@ -14,12 +14,7 @@ With web login enabled, images and audio are not loaded in the setup above: the 
 
 The dev server connects to `VITE_APP_TEDDYCLOUD_API_URL` as configured. If your teddyCloud is behind a reverse proxy that routes by hostname (SNI), use the hostname there, not the IP.
 
-If that reverse proxy requires a client certificate (mutual TLS), put your PKCS#12 file (`.p12`, containing certificate and private key) into the `certs` folder and add it to your `.env.local`. The dev proxy then uses it for all requests to teddyCloud, including plugins:
-
-```env
-TEDDYCLOUD_DEV_CLIENT_P12=client.p12
-TEDDYCLOUD_DEV_CLIENT_P12_PASSWORD=<password, if set>
-```
+If access to your teddyCloud is secured by a client certificate, put the PKCS#12 file (`.p12`, with certificate and private key) into the `certs` folder and set `TEDDYCLOUD_DEV_CLIENT_P12=<file name>` and `TEDDYCLOUD_DEV_CLIENT_P12_PASSWORD=<password>` in your `.env.local`.
 
 ## NPM Environment file '.env'
 
@@ -39,7 +34,7 @@ VITE_APP_TEDDYCLOUD_PORT_HTTPS and VITE_APP_TEDDYCLOUD_PORT_HTTP should match th
 
 _needed for ESP32 Box Flashing section_
 
-You need to provide certificates for https. Use for example `mkcert`. The generated certificates must be stored in the `certs` folder of the project (the folder is git-ignored).
+You need to provide certificates for https. Use for example `mkcert`. The generated certificates must be stored in the `certs` folder of the project (the folder is git-ignored). Certificates in the project root are still found.
 
 ```shell
 mkcert -install
