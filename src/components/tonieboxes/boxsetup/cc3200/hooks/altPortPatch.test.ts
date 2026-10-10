@@ -20,12 +20,7 @@ describe("createAltPortPatch", () => {
 
     it("keeps the original bytes for 443", () => {
         const patch = JSON.parse(createAltPortPatch(443));
-        expect(replaced(443)).toEqual([
-            "4b f6 01 33",
-            "01 bb",
-            "40 f2 bb 13",
-            "40 f2 bb 1a",
-        ]);
+        expect(replaced(443)).toEqual(["4b f6 01 33", "01 bb", "40 f2 bb 13", "40 f2 bb 1a"]);
         for (const entry of patch.searchAndReplace) {
             expect(entry.replace).toHaveLength(entry.search.length);
         }
