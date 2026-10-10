@@ -429,7 +429,7 @@
                 },
                 "downloadFile": {
                     "title": "Descargar archivo",
-                    "text": "Descarga el archivo seleccionado o, en el caso de archivos TAF, lo descarga como archivo OGG."
+                    "text": "Descarga el archivo seleccionado. En archivos TAF con varias pistas se abre una selección de pistas para descargarlas como archivos *.ogg separados (ZIP) o como un solo archivo *.ogg; los archivos TAF de una sola pista se descargan como un único archivo *.ogg."
                 },
                 "markAsListened": {
                     "unlistened": {

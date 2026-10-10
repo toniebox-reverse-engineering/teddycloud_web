@@ -371,6 +371,7 @@
         "deleteMultiple": "Usuń {{selectedRowCount}} zaznaczonych wierszy",
         "downloadFile": "Pobierz plik",
         "downloadFileAsOgg": "Pobierz TAF jako *.ogg",
+        "downloadTracks": "Pobierz utwory TAF jako *.ogg",
         "encodeFiles": {
             "addFiles": "Dodaj pliki",
             "cancel": "Anuluj",
@@ -428,7 +429,7 @@
                 },
                 "downloadFile": {
                     "title": "Pobierz plik",
-                    "text": "Pobiera wybrany plik lub, w przypadku plików TAF, pobiera go jako plik OGG."
+                    "text": "Pobiera wybrany plik. W przypadku plików TAF z wieloma utworami otwiera się wybór utworów, aby pobrać je jako osobne pliki *.ogg (ZIP) lub jako jeden plik *.ogg; pliki TAF z jednym utworem są pobierane jako jeden plik *.ogg."
                 },
                 "markAsListened": {
                     "unlistened": {
@@ -2232,6 +2233,17 @@
             "tracklist": "Lista utworów:",
             "valid": "Prawidłowy:",
             "yes": "Tak"
+        },
+        "tafDownload": {
+            "asOneFile": "Pobierz jako jeden plik *.ogg",
+            "downloadCount": "Pobierz utwory ({{count}}) jako *.ogg",
+            "downloadOne": "Pobierz 1 utwór jako *.ogg",
+            "duration": "Czas",
+            "modalTitle": "Pobierz utwory jako *.ogg",
+            "selectAll": "Zaznacz wszystkie utwory",
+            "selectedCount": "Wybrano {{selected}} z {{total}}",
+            "track": "Utwór",
+            "unnamedTrack": "Utwór {{number}}"
         },
         "informationModal": {
             "hideTag": "Ukryj Tonie/Tag",

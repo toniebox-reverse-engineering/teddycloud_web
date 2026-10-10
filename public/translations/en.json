@@ -400,7 +400,7 @@
                     "title": "Delete File/Folder"
                 },
                 "downloadFile": {
-                    "text": "Downloads the selected file or, for TAF files, downloads it as an OGG file.",
+                    "text": "Downloads the selected file. For TAF files with several tracks, a track selection opens to download the tracks as separate *.ogg files (ZIP) or as one *.ogg file; single-track TAF files are downloaded as one *.ogg file.",
                     "title": "Download File"
                 },
                 "duplicateTAPFile": {

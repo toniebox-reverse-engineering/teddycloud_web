@@ -429,7 +429,7 @@
                 },
                 "downloadFile": {
                     "title": "Datei herunterladen",
-                    "text": "Lädt die ausgewählte Datei herunter oder lädt TAF-Dateien als OGG-Datei herunter."
+                    "text": "Lädt die ausgewählte Datei herunter. Bei TAF-Dateien mit mehreren Tracks öffnet sich eine Track-Auswahl, um die Tracks als einzelne *.ogg-Dateien (ZIP) oder als eine *.ogg-Datei herunterzuladen; TAF-Dateien mit nur einem Track werden als eine *.ogg-Datei heruntergeladen."
                 },
                 "markAsListened": {
                     "unlistened": {
