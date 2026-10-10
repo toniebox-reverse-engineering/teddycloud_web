@@ -371,6 +371,7 @@
         "deleteMultiple": "Elimina {{selectedRowCount}} righe selezionate",
         "downloadFile": "Scarica file",
         "downloadFileAsOgg": "Scarica TAF come *.ogg",
+        "downloadTracks": "Scarica tracce TAF come *.ogg",
         "encodeFiles": {
             "addFiles": "Aggiungi file",
             "cancel": "Annulla",
@@ -428,7 +429,7 @@
                 },
                 "downloadFile": {
                     "title": "Scarica file",
-                    "text": "Scarica il file selezionato oppure, per i file TAF, lo scarica come file OGG."
+                    "text": "Scarica il file selezionato. Per i file TAF con più tracce si apre una selezione delle tracce per scaricarle come file *.ogg separati (ZIP) o come un unico file *.ogg; i file TAF con una sola traccia vengono scaricati come un unico file *.ogg."
                 },
                 "markAsListened": {
                     "unlistened": {
@@ -2160,9 +2161,9 @@
                 },
                 "infoIcon": {
                     "download": {
-                        "description": "Se disponibile, il file TAF associato può essere scaricato come singolo file .ogg.",
-                        "text": "Consente di scaricare il file TAF come file audio .ogg.",
-                        "title": "Scarica TAF come .ogg"
+                        "description": "Se disponibili, le tracce possono essere scaricate come file *.ogg separati (o come un unico file *.ogg).",
+                        "text": "Apre la selezione delle tracce per scaricare il TAF come *.ogg.",
+                        "title": "Scarica TAF come *.ogg"
                     },
                     "exists": {
                         "description": "Lo stato 'esiste' è impostato su 'sì' se il file sorgente assegnato è presente.",
@@ -2232,6 +2233,17 @@
             "tracklist": "Elenco tracce:",
             "valid": "Valido:",
             "yes": "Sì"
+        },
+        "tafDownload": {
+            "asOneFile": "Scarica come un unico file *.ogg",
+            "downloadCount": "Scarica {{count}} tracce come *.ogg",
+            "downloadOne": "Scarica 1 traccia come *.ogg",
+            "duration": "Durata",
+            "modalTitle": "Scarica tracce come *.ogg",
+            "selectAll": "Seleziona tutte le tracce",
+            "selectedCount": "{{selected}} di {{total}} selezionate",
+            "track": "Traccia",
+            "unnamedTrack": "Traccia {{number}}"
         },
         "informationModal": {
             "hideTag": "Nascondi Tonie/Tag",

@@ -2,6 +2,7 @@
 
 ## 0.7.1
 
+- gui: Download TAF tracks as separate .ogg files (ZIP when more than one track is selected) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/169](https://github.com/toniebox-reverse-engineering/teddycloud/issues/169)
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
 - gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
 - gui: Rate-limit web login after repeated failures

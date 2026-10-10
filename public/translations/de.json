@@ -371,6 +371,7 @@
         "deleteMultiple": "{{selectedRowCount}} markierte Zeilen löschen",
         "downloadFile": "Download file",
         "downloadFileAsOgg": "Download TAF als *.ogg",
+        "downloadTracks": "TAF-Tracks als *.ogg herunterladen",
         "encodeFiles": {
             "addFiles": "Dateien hinzufügen",
             "cancel": "Abbrechen",
@@ -428,7 +429,7 @@
                 },
                 "downloadFile": {
                     "title": "Datei herunterladen",
-                    "text": "Lädt die ausgewählte Datei herunter oder lädt TAF-Dateien als OGG-Datei herunter."
+                    "text": "Lädt die ausgewählte Datei herunter. Bei TAF-Dateien mit mehreren Tracks öffnet sich eine Track-Auswahl, um die Tracks als einzelne *.ogg-Dateien (ZIP) oder als eine *.ogg-Datei herunterzuladen; TAF-Dateien mit nur einem Track werden als eine *.ogg-Datei heruntergeladen."
                 },
                 "markAsListened": {
                     "unlistened": {
@@ -2160,9 +2161,9 @@
                 },
                 "infoIcon": {
                     "download": {
-                        "description": "Wenn verfügbar, kann die verlinkte TAF-Datei als einzelne .ogg-Datei heruntergeladen werden.",
-                        "text": "Ermöglicht das Herunterladen der TAF-Datei als .ogg-Audiodatei.",
-                        "title": "TAF als .ogg herunterladen"
+                        "description": "Wenn verfügbar, können Tracks als einzelne *.ogg-Dateien heruntergeladen werden (oder als eine *.ogg-Datei).",
+                        "text": "Öffnet die Track-Auswahl zum Herunterladen der TAF als *.ogg.",
+                        "title": "TAF als *.ogg herunterladen"
                     },
                     "exists": {
                         "description": "Der Status 'Existiert' wird auf 'ja' gesetzt, wenn die zugewiesene Quelldatei existiert.",
@@ -2232,6 +2233,17 @@
             "tracklist": "Trackliste:",
             "valid": "Gültig:",
             "yes": "Ja"
+        },
+        "tafDownload": {
+            "asOneFile": "Als eine *.ogg-Datei herunterladen",
+            "downloadCount": "{{count}} Tracks als *.ogg herunterladen",
+            "downloadOne": "1 Track als *.ogg herunterladen",
+            "duration": "Zeit",
+            "modalTitle": "Tracks als *.ogg herunterladen",
+            "selectAll": "Alle Tracks auswählen",
+            "selectedCount": "{{selected}} von {{total}} ausgewählt",
+            "track": "Track",
+            "unnamedTrack": "Track {{number}}"
         },
         "informationModal": {
             "hideTag": "Tonie/Tag ausblenden",

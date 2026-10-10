@@ -73,6 +73,11 @@ export default defineConfig(({ command, mode }) => {
             host: true,
             https: httpsOptions,
             proxy: {
+                "/content": {
+                    target: proxyUrl,
+                    changeOrigin: true,
+                    secure: false,
+                },
                 "/api": {
                     target: proxyUrl,
                     changeOrigin: true,
