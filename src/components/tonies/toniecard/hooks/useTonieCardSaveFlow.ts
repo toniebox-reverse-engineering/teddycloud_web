@@ -14,7 +14,7 @@ type UseTonieCardSaveFlowParams = {
     modelTitle: string;
     selectedModel: string;
     selectedSource: string;
-    resolvedAudioModel: string;
+    audioModel: string;
     modelAudioPath: string | null;
     fetchUpdatedTonieCard: () => Promise<void>;
     setIsEditModalOpen: (open: boolean) => void;
@@ -81,27 +81,21 @@ const validateSelectedModelExists = async (
 };
 
 const shouldWarnForModelClear = ({
-    tonieCard,
     selectedSource,
     selectedModel,
-    resolvedAudioModel,
+    audioModel,
     needsModelSave,
 }: {
-    tonieCard: TonieCardProps;
     selectedSource: string;
     selectedModel: string;
-    resolvedAudioModel: string;
+    audioModel: string;
     needsModelSave: boolean;
 }) => {
     const nextSource = (selectedSource || "").trim();
-    const audioModel = (resolvedAudioModel || tonieCard.sourceInfo?.model || "").trim();
     const hasAssignedAudio = Boolean(nextSource);
     const isClearingModel = needsModelSave && selectedModel.trim() === "";
 
-    return {
-        warn: isClearingModel && hasAssignedAudio && Boolean(audioModel),
-        audioModel,
-    };
+    return isClearingModel && hasAssignedAudio && Boolean(audioModel.trim());
 };
 
 export const useTonieCardSaveFlow = ({
@@ -110,7 +104,7 @@ export const useTonieCardSaveFlow = ({
     modelTitle,
     selectedModel,
     selectedSource,
-    resolvedAudioModel,
+    audioModel,
     modelAudioPath,
     fetchUpdatedTonieCard,
     setIsEditModalOpen,
@@ -224,17 +218,16 @@ export const useTonieCardSaveFlow = ({
             }
         }
 
-        const { warn: shouldWarnAutoModelReset, audioModel } = shouldWarnForModelClear({
-            tonieCard,
+        const shouldWarnAutoModelReset = shouldWarnForModelClear({
             selectedSource,
             selectedModel,
-            resolvedAudioModel,
+            audioModel,
             needsModelSave,
         });
         if (shouldWarnAutoModelReset) {
             const confirmed = await showAudioModelMismatchConfirm(
                 t,
-                audioModel || t("tonies.confirmAudioModelMismatchModal.unknownModel"),
+                audioModel.trim() || t("tonies.confirmAudioModelMismatchModal.unknownModel"),
             );
             if (!confirmed) {
                 return;

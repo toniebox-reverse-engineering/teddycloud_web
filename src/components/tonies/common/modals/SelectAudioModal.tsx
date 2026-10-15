@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Modal, theme } from "antd";
 
 import { SelectFileFileBrowser } from "../../filebrowser/SelectFileFileBrowser";
+import { TonieInfo } from "../../../../types/tonieTypes";
 
 const { useToken } = theme;
 
@@ -14,6 +15,8 @@ export interface SelectAudioFileResult {
     trackSeconds?: number[];
     /** Total audio length in seconds, when the backend provides it. */
     lengthSeconds?: number;
+    /** Model info resolved by the backend from the TAF header (fileIndexV2 tonieInfo). */
+    tonieInfo?: Pick<TonieInfo, "model" | "series" | "episode">;
 }
 
 /**
@@ -46,22 +49,23 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
-    const [selectedFile, setSelectedFile] = useState<{
-        path: string;
-        audioId?: string;
-        hash?: string;
-        trackSeconds?: number[];
-        lengthSeconds?: number;
-    } | null>(null);
+    const [selectedFile, setSelectedFile] = useState<SelectAudioFileResult | null>(null);
 
-    const resolveSelectedFile = (files: any[], path: string) => {
+    const resolveSelectedFile = (files: any[], path: string): SelectAudioFileResult | null => {
         if (!files || files.length !== 1) return null;
         const file = files[0];
         const normalizedPath = path === "" || path.endsWith("/") ? path : `${path}/`;
         const filePath = `lib://${normalizedPath}${file.name}`;
+        const tonieInfo = file?.tonieInfo
+            ? {
+                  model: String(file.tonieInfo.model ?? "").trim(),
+                  series: String(file.tonieInfo.series ?? "").trim(),
+                  episode: String(file.tonieInfo.episode ?? "").trim(),
+              }
+            : undefined;
 
         if (!requireTafHeader) {
-            return { path: filePath };
+            return { path: filePath, tonieInfo };
         }
 
         const audioIdRaw = file?.tafHeader?.audioId;
@@ -74,6 +78,7 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
             hash: String(hashRaw).trim(),
             trackSeconds: file?.tafHeader?.trackSeconds,
             lengthSeconds: file?.tafHeader?.lengthSeconds,
+            tonieInfo,
         };
     };
 
@@ -91,13 +96,7 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
 
     const handleConfirm = () => {
         if (selectedFile && canConfirm) {
-            onSelect({
-                path: selectedFile.path,
-                audioId: selectedFile.audioId,
-                hash: selectedFile.hash,
-                trackSeconds: selectedFile.trackSeconds,
-                lengthSeconds: selectedFile.lengthSeconds,
-            });
+            onSelect(selectedFile);
             setSelectedFile(null);
             onClose();
         }
