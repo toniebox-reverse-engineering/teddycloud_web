@@ -9,23 +9,21 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 type UseTooltipInfoByModelParams = {
     isEditModalOpen: boolean;
     selectedModel: string;
-    resolvedAudioModel: string;
+    audioModel: string;
     overlay: string;
 };
 
 export const useTooltipInfoByModel = ({
     isEditModalOpen,
     selectedModel,
-    resolvedAudioModel,
+    audioModel,
     overlay,
 }: UseTooltipInfoByModelParams) => {
     const [tooltipInfoByModel, setTooltipInfoByModel] = useState<Record<string, TooltipInfo>>({});
 
     useEffect(() => {
         if (!isEditModalOpen) return;
-        const candidates = [toModelKey(selectedModel), toModelKey(resolvedAudioModel)].filter(
-            Boolean,
-        );
+        const candidates = [toModelKey(selectedModel), toModelKey(audioModel)].filter(Boolean);
         const pending = Array.from(new Set(candidates)).filter((key) => !tooltipInfoByModel[key]);
         if (pending.length === 0) return;
 
@@ -73,7 +71,7 @@ export const useTooltipInfoByModel = ({
         return () => {
             cancelled = true;
         };
-    }, [isEditModalOpen, selectedModel, resolvedAudioModel, overlay, tooltipInfoByModel]);
+    }, [isEditModalOpen, selectedModel, audioModel, overlay, tooltipInfoByModel]);
 
     return { tooltipInfoByModel };
 };

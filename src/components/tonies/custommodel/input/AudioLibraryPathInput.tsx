@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Divider, Input, theme } from "antd";
-import { CloseOutlined, FolderOpenOutlined, RollbackOutlined } from "@ant-design/icons";
+import {
+    CloseOutlined,
+    FileSearchOutlined,
+    FolderOpenOutlined,
+    LoadingOutlined,
+    RollbackOutlined,
+} from "@ant-design/icons";
 
 import { resolveAudioIdHashToLibraryPath } from "../../../../utils/teddycloud/modelAudioResolution";
 
-/** Input that shows library path, resolving from audio_id+hash when not stored. */
+/**
+ * Input that shows the library path. When no path is stored, audio_id+hash is shown and the
+ * library path can be looked up on demand ("locate in library"), as this traverses the library.
+ */
 export const AudioLibraryPathInput: React.FC<{
     audioId: string;
     hash: string;
@@ -32,26 +42,34 @@ export const AudioLibraryPathInput: React.FC<{
     onUndo,
     onBrowse,
 }) => {
+    const { t } = useTranslation();
     const { token } = theme.useToken();
-    const [resolvedPath, setResolvedPath] = useState<string | null>(null);
+    const pairKey = audioId && hash ? `${audioId}/${hash}` : "";
+    // Lookup result for a specific audio pair; ignored once the pair changes.
+    const [lookup, setLookup] = useState<{ key: string; path: string | null } | null>(null);
+    const [locatingKey, setLocatingKey] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (storedPath || !audioId || !hash) {
-            setResolvedPath(null);
-            return;
+    const resolvedPath = lookup && lookup.key === pairKey ? lookup.path : null;
+    const notFound = Boolean(lookup && lookup.key === pairKey && !lookup.path);
+    const isLocating = Boolean(pairKey) && locatingKey === pairKey;
+    const canLocate = !storedPath && Boolean(pairKey) && !resolvedPath;
+
+    const handleLocate = async () => {
+        if (!canLocate || isLocating) return;
+        const key = pairKey;
+        setLocatingKey(key);
+        try {
+            const path = await resolveAudioIdHashToLibraryPath(audioId, hash, overlay);
+            setLookup({ key, path });
+        } finally {
+            setLocatingKey((current) => (current === key ? null : current));
         }
-        let cancelled = false;
-        resolveAudioIdHashToLibraryPath(audioId, hash, overlay).then((p) => {
-            if (!cancelled && p) setResolvedPath(p);
-        });
-        return () => {
-            cancelled = true;
-        };
-    }, [audioId, hash, storedPath, overlay]);
+    };
 
     const displayValue =
         storedPath ||
         resolvedPath ||
+        (notFound ? t("tonies.customEditor.audio.notFoundInLibrary") : "") ||
         (audioId && hash ? `${audioId} / ${hash.slice(0, 8)}...` : "");
 
     return (
@@ -60,6 +78,7 @@ export const AudioLibraryPathInput: React.FC<{
             disabled={disabled}
             placeholder={placeholder}
             readOnly
+            status={notFound ? "warning" : undefined}
             style={changedInputStyle(areAudioPairsChanged)}
             prefix={[
                 <CloseOutlined
@@ -80,11 +99,31 @@ export const AudioLibraryPathInput: React.FC<{
                 <Divider key="d2" orientation="vertical" style={{ marginLeft: 2 }} />,
             ]}
             suffix={
-                <FolderOpenOutlined
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={onBrowse}
-                    style={{ cursor: "pointer" }}
-                />
+                <>
+                    {canLocate ? (
+                        <>
+                            {isLocating ? (
+                                <LoadingOutlined />
+                            ) : (
+                                <FileSearchOutlined
+                                    aria-label={t("tonies.customEditor.audio.locateInLibrary")}
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={handleLocate}
+                                    style={{
+                                        cursor: "pointer",
+                                        color: notFound ? token.colorWarning : undefined,
+                                    }}
+                                />
+                            )}
+                            <Divider orientation="vertical" style={{ marginLeft: 2 }} />
+                        </>
+                    ) : null}
+                    <FolderOpenOutlined
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={onBrowse}
+                        style={{ cursor: "pointer" }}
+                    />
+                </>
             }
         />
     );

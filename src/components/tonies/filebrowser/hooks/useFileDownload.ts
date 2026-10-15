@@ -1,6 +1,11 @@
+import { useTranslation } from "react-i18next";
+
 import { Record as tafRecord } from "../../../../types/fileBrowserTypes";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
+import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { describeDownloadError } from "../../common/utils/downloadError";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
@@ -9,6 +14,9 @@ interface UseFileDownloadParams {
 }
 
 export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
+    const { t } = useTranslation();
+    const { addNotification } = useTeddyCloud();
+
     const handleDownload = async (path: string, filename: string) => {
         const response = await api.apiGetTeddyCloudApiRaw(path);
         const blob = await response.blob();
@@ -51,6 +59,13 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
 
         try {
             await handleDownload(fileUrl, fileName);
+        } catch (error) {
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("fileBrowser.messages.downloadFailed"),
+                `${t("fileBrowser.messages.downloadFailedDetails", { file: record.name })}: ${describeDownloadError(error)}`,
+                t("fileBrowser.title"),
+            );
         } finally {
             setDownloading((prev) => ({ ...prev, [record.name]: false }));
         }
