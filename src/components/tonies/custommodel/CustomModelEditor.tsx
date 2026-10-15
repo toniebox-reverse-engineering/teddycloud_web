@@ -317,12 +317,17 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         }
     };
 
-    const handleSaveFromModal = async (silent = false) => {
-        if (editIndex === null || editIndex < 0 || editIndex >= customEntries.length) return;
+    /**
+     * Saves the entry currently open in the edit modal.
+     * Resolves to true only if the entry was persisted, so callers (e.g. save-on-navigate)
+     * can decide whether it is safe to continue. `silent` keeps the modal open on the entry.
+     */
+    const handleSaveFromModal = async (silent = false): Promise<boolean> => {
+        if (editIndex === null || editIndex < 0 || editIndex >= customEntries.length) return false;
         try {
             await form.validateFields();
         } catch {
-            return;
+            return false;
         }
         const values = form.getFieldsValue(true) as FormValues;
         const draft = toEntry(values);
@@ -332,7 +337,14 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         );
         if (validation.error) {
             setValidationMessages([validation.error]);
-            return;
+            // The inline alert sits behind the edit modal, so surface the problem there as well.
+            addNotification(
+                NotificationTypeEnum.Error,
+                t("tonies.addNewCustomTonieModal.failedToCreate"),
+                validation.error,
+                t("tonies.customToniesEditorJsonEntry"),
+            );
+            return false;
         }
 
         const originalEntry = customEntries[editIndex];
@@ -353,10 +365,11 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
             });
             setRenameConfirmOpen(true);
             setRenameConfirmSkipUpdate(false);
-            return;
+            // Not persisted yet, the user has to confirm the rename first.
+            return false;
         }
 
-        await performSaveFromModal(draft, silent);
+        return performSaveFromModal(draft, silent);
     };
 
     const formatApiError = (error: unknown): string => {
@@ -369,7 +382,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
         return msg;
     };
 
-    const performSaveFromModal = async (draft: CustomEntry, silent: boolean) => {
+    const performSaveFromModal = async (draft: CustomEntry, silent: boolean): Promise<boolean> => {
         setSaving(true);
         try {
             await postJson("/api/toniesCustomJsonUpsert", draft);
@@ -402,9 +415,13 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 `[${draft.model}] ${draft.series || ""}${draft.episodes ? ` - ${draft.episodes}` : ""}`.trim();
             onCreated?.(draft.model, selectionText);
             onUpdated?.(draft.model, selectionText);
-            setEditModalOpen(false);
-            setEditIndex(null);
-            if (mode !== "full") onClose();
+            // A silent save (save on navigate) must leave the modal open on the current entry.
+            if (!silent) {
+                setEditModalOpen(false);
+                setEditIndex(null);
+                if (mode !== "full") onClose();
+            }
+            return true;
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,
@@ -412,6 +429,7 @@ export const CustomModelEditor: React.FC<CustomModelEditorProps> = ({
                 formatApiError(error),
                 t("tonies.customToniesEditorJsonEntry"),
             );
+            return false;
         } finally {
             setSaving(false);
         }
