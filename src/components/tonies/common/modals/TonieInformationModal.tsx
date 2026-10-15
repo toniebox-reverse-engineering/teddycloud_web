@@ -12,6 +12,7 @@ import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
 import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { describeDownloadError } from "../utils/downloadError";
 import { useAudioContext } from "../../../../provider/AudioProvider";
 import { toImageSrc } from "../utils/imagePathUtils";
 import { TafDownloadPanel, buildTafDownloadTracks } from "./TafTrackDownloadModal";

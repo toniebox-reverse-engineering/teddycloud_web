@@ -1,5 +1,5 @@
 import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { ConfigProvider, Flex, Alert, Button, Layout, Spin, theme } from "antd";
+import { ConfigProvider, Flex, Alert, Button, Layout, Spin, Typography, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
@@ -203,7 +203,18 @@ function AuthenticatedApp({
                     type="error"
                     showIcon
                     title={t("auth.statusLoadFailed")}
-                    description={error || t("auth.statusLoadFailedDetails")}
+                    description={
+                        <>
+                            {t("auth.statusLoadFailedDetails")}
+                            {error ? (
+                                <div>
+                                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                                        {error}
+                                    </Typography.Text>
+                                </div>
+                            ) : null}
+                        </>
+                    }
                     action={
                         <Button
                             onClick={() => {

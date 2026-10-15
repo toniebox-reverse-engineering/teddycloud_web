@@ -14,9 +14,11 @@
 - gui: Refactored language functionality to simplify adding and maintaining additional languages. New languages can now be added without requiring code changes. Simply translate an existing language file, save it as [languagecode].json (e.g. en.json) in the public/translations folder, and rebuild the frontend. The new language will then be detected and made available automatically.
 - gui: added Italian language
 - gui: updated packages to latest version
+- gui maintenance: Added optional same-origin dev proxy (`VITE_APP_TEDDYCLOUD_DEV_PROXY=true`), so images and audio load in the dev setup with web login enabled; optional client certificate (`TEDDYCLOUD_DEV_CLIENT_P12`) for the dev proxy, local https certificates now live in the git-ignored `certs/` folder [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342)
 - gui: replaced deprecated andt list with antd listy
 - gui: added missing language entries
 - gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)
+- gui: Opening the Tonie edit modal and the Custom Model Editor no longer scans the whole library. "Set model from audio" uses the model resolved by the backend, "Set audio from model" and the custom audio path ("locate in library") only search the library on click, the help dialog describes the model actions [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/332](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/332)
 - gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
 - gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
 - gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)
@@ -24,9 +26,13 @@
 - gui: Removed link to the sunseted legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
 - gui: Improved API request handling so authenticated requests consistently use the central TeddyCloud API configuration, including FormData uploads and protected file downloads
 - gui: Improved web authentication error handling so backend/network failures are no longer treated as disabled authentication
+- gui: Fixed "save on navigate" in the custom model editor (save was racing with the navigation and failed with a bogus duplicate-model error); the option is available again [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/323](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/323)
 - gui: Fixed custom Tonie track filtering when `sourceInfo.tracks` is empty but `tonieInfo.tracks` contains track data
 - gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
 - gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
+- gui: Fixed web login edge cases: the login page now appears when login gets enabled while the UI is open, and logging out while TeddyCloud is unreachable no longer leaves the logged-in view on screen
+- gui: Failed file downloads in the library and the Tonie information dialog now show an error notification instead of failing silently
+- gui: A failed upload in the browser-side (WASM) audio encoder no longer additionally raises an uncaught promise rejection after showing the error notification
 
 ### Commits
 
