@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "fs";
 import path from "path";
+import https from "https";
 
 export default defineConfig(({ command, mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
@@ -10,21 +11,73 @@ export default defineConfig(({ command, mode }) => {
     const portHttps = parseInt(env.VITE_APP_TEDDYCLOUD_PORT_HTTPS || "3443", 10);
     const useHttps = env.HTTPS === "true";
 
+    // Local certificates live in certs/; the project root is still accepted for existing setups.
+    const certFile = (name: string) => {
+        const inCerts = path.resolve(import.meta.dirname, "certs", name);
+        return fs.existsSync(inCerts) ? inCerts : path.resolve(import.meta.dirname, name);
+    };
+
     const httpsOptions = useHttps
         ? {
-              key: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost-key.pem")),
-              cert: fs.readFileSync(path.resolve(import.meta.dirname, "./localhost.pem")),
+              key: fs.readFileSync(certFile("localhost-key.pem")),
+              cert: fs.readFileSync(certFile("localhost.pem")),
           }
         : undefined;
 
-    const proxyUrl = env.VITE_APP_TEDDYCLOUD_API_URL
-        ? env.VITE_APP_TEDDYCLOUD_API_URL.replace(/^https:/, "http:")
-        : "http://teddycloud.local";
+    // Use the configured URL as is: the proxy must talk to exactly the host and port that was set.
+    const proxyUrl = env.VITE_APP_TEDDYCLOUD_API_URL || "http://teddycloud.local";
+
+    // All teddyCloud paths the app requests ("/reverse" also covers "/reverseGeneric")
+    const teddyCloudPaths = [
+        "/api",
+        "/img_unknown.png",
+        "/cache",
+        "/img",
+        "/custom_img",
+        "/plugins",
+        "/content",
+        "/library",
+        "/v1",
+        "/reverse",
+    ];
+
+    // Optional client certificate (PKCS#12, file inside certs/) for teddyCloud instances behind a
+    // reverse proxy that requires mutual TLS. Without the setting, nothing changes.
+    const proxyAgent =
+        proxyUrl.startsWith("https://") && env.TEDDYCLOUD_DEV_CLIENT_P12
+            ? new https.Agent({
+                  pfx: fs.readFileSync(
+                      path.resolve(import.meta.dirname, "certs", env.TEDDYCLOUD_DEV_CLIENT_P12),
+                  ),
+                  passphrase: env.TEDDYCLOUD_DEV_CLIENT_P12_PASSWORD || undefined,
+                  rejectUnauthorized: false,
+              })
+            : undefined;
+
+    const proxyOptions = {
+        target: proxyUrl,
+        changeOrigin: true,
+        secure: false,
+        ...(proxyAgent ? { agent: proxyAgent } : {}),
+    };
+    const teddyCloudProxy = Object.fromEntries(teddyCloudPaths.map((p) => [p, proxyOptions]));
+
+    const devBase = "/web";
+
+    // Opt-in: the dev server proxies everything except the app itself to teddyCloud, so the
+    // browser only sees one origin. Needed for images and audio with web login enabled,
+    // as those requests carry no bearer token and the session cookie is not set cross-origin.
+    const useDevProxy = command === "serve" && env.VITE_APP_TEDDYCLOUD_DEV_PROXY === "true";
 
     return {
         // Production builds use a relative base so the bundle works under any URL prefix
         // (index.html injects a matching <base href> at runtime). The dev server keeps /web.
-        base: command === "build" ? "./" : "/web",
+        base: command === "build" ? "./" : devBase,
+        // With the dev proxy, API URLs must be relative so that they hit the proxy below.
+        // VITE_APP_TEDDYCLOUD_API_URL is only used as proxy target then.
+        define: useDevProxy
+            ? { "import.meta.env.VITE_APP_TEDDYCLOUD_API_URL": JSON.stringify("") }
+            : {},
         plugins: [
             react(),
 
@@ -72,45 +125,11 @@ export default defineConfig(({ command, mode }) => {
             port: useHttps ? portHttps : portHttp,
             host: true,
             https: httpsOptions,
-            proxy: {
-                "/api": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
-                "/img_unknown.png": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/img_unknown\.png/, "/img_unknown.png"),
-                    secure: false,
-                },
-
-                // Proxy /cache/* (cached figurine images when tonie_json.cache_images is enabled)
-                "/cache": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
-
-                // Proxy /img/* (static images from tonies.json)
-                "/img": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
-
-                // Proxy all requests from /custom_img/* to the Teddycloud API URL during development.
-                // The target URL is taken from the environment variable VITE_APP_TEDDYCLOUD_API_URL,
-                // converted to HTTP if it was HTTPS, so local development works correctly.
-                // Example:
-                //   /custom_img/example.png -> [VITE_APP_TEDDYCLOUD_API_URL]/custom_img/example.png
-                // Fallback: if the env variable is missing, it defaults to http://teddycloud.local.
-                "/custom_img": {
-                    target: proxyUrl,
-                    changeOrigin: true,
-                    secure: false,
-                },
-            },
+            proxy: useDevProxy ? { [`^(?!${devBase}(/|$)).*`]: proxyOptions } : teddyCloudProxy,
+        },
+        // `vite preview` inherits server.proxy by default; keep it limited to the teddyCloud paths.
+        preview: {
+            proxy: teddyCloudProxy,
         },
     };
 });
