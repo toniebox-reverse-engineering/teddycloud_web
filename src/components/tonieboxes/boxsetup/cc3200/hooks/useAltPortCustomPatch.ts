@@ -14,6 +14,7 @@ export const useAltPortCustomPatch = (port: number) => {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }, [port]);
 
     return { createPatch };
