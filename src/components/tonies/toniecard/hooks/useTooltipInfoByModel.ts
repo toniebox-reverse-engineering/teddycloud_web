@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../../api";
 import { toModelKey } from "../../hooks/useCustomModelKeys";
-import { TooltipInfo } from "../TonieCardTypes";
+import { TooltipInfo } from "../../../../types/tonieCardTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
