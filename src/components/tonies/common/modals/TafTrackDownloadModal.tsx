@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Checkbox, Flex, Modal, Table, theme } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DownloadOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { DownloadOutlined, LoadingOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 
 import {
@@ -74,6 +74,8 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
     const canSplit = tracks.length > 1;
     const allKeys = useMemo(() => tracks.map((track) => track.number), [tracks]);
     const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
+    const [downloadingWholeFile, setDownloadingWholeFile] = useState(false);
+    const [downloadingSelected, setDownloadingSelected] = useState(false);
 
     useEffect(() => {
         setSelectedKeys([]);
@@ -81,11 +83,24 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
 
     const downloadBase = sanitizeDownloadName(baseFilename || "download");
 
-    const downloadWholeFile = () => {
-        triggerBrowserDownload(buildTafDownloadUrl(contentUrl), `${downloadBase}.ogg`);
+    const downloadWholeFile = async () => {
+        if (downloadingWholeFile) {
+            return;
+        }
+
+        setDownloadingWholeFile(true);
+        try {
+            await triggerBrowserDownload(buildTafDownloadUrl(contentUrl), `${downloadBase}.ogg`);
+        } finally {
+            setDownloadingWholeFile(false);
+        }
     };
 
-    const downloadSelected = () => {
+    const downloadSelected = async () => {
+        if (downloadingSelected) {
+            return;
+        }
+
         const selected = tracks.filter((track) => selectedKeys.includes(track.number));
         if (selected.length === 0) {
             return;
@@ -96,12 +111,18 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
             return `${padTrackNumber(track.number)} ${sanitizeDownloadName(title)}.ogg`;
         });
         const filename = selected.length === 1 ? entries[0] : `${downloadBase}.zip`;
-        triggerBrowserDownload(
-            buildTafDownloadUrl(contentUrl, {
-                tracks: selected.map((track) => track.number),
-            }),
-            filename,
-        );
+
+        setDownloadingSelected(true);
+        try {
+            await triggerBrowserDownload(
+                buildTafDownloadUrl(contentUrl, {
+                    tracks: selected.map((track) => track.number),
+                }),
+                filename,
+            );
+        } finally {
+            setDownloadingSelected(false);
+        }
     };
 
     if (!canSplit) {
@@ -121,7 +142,8 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
                 ))}
                 <Button
                     type="default"
-                    icon={<DownloadOutlined />}
+                    icon={downloadingWholeFile ? <LoadingOutlined spin /> : <DownloadOutlined />}
+                    disabled={downloadingWholeFile}
                     onClick={downloadWholeFile}
                     block
                 >
@@ -233,11 +255,18 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
                     paddingBottom: 8,
                 }}
             >
-                <Button onClick={downloadWholeFile}>{t("tonies.tafDownload.asOneFile")}</Button>
+                <Button
+                    type="default"
+                    icon={downloadingWholeFile ? <LoadingOutlined spin /> : <DownloadOutlined />}
+                    disabled={downloadingWholeFile}
+                    onClick={downloadWholeFile}
+                >
+                    {t("tonies.tafDownload.asOneFile")}
+                </Button>
                 <Button
                     type="primary"
-                    icon={<DownloadOutlined />}
-                    disabled={selectedKeys.length === 0}
+                    icon={downloadingSelected ? <LoadingOutlined spin /> : <DownloadOutlined />}
+                    disabled={selectedKeys.length === 0 || downloadingSelected}
                     onClick={downloadSelected}
                 >
                     {selectedKeys.length === 1
