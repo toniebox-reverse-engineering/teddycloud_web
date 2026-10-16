@@ -46,12 +46,13 @@ const formatClock = (seconds?: number): string => {
 export const buildTafDownloadTracks = (
     titles: string[] | undefined,
     trackSeconds: number[] | undefined,
+    lengthSeconds: number | undefined,
 ): TafDownloadTrack[] => {
     const count = Math.max(titles?.length || 0, trackSeconds?.length || 0);
     const tracks: TafDownloadTrack[] = [];
     for (let i = 0; i < count; i++) {
         const start = trackSeconds?.[i];
-        const next = trackSeconds?.[i + 1];
+        const next = trackSeconds?.[i + 1] || lengthSeconds;
         tracks.push({
             number: i + 1,
             title: titles?.[i]?.trim() || "",

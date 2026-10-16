@@ -361,8 +361,11 @@ export const FileBrowser: React.FC<{
     ) => {
         if (
             record.name.toLowerCase().endsWith(".taf") &&
-            buildTafDownloadTracks(record.tonieInfo?.tracks, record.tafHeader?.trackSeconds)
-                .length > 1
+            buildTafDownloadTracks(
+                record.tonieInfo?.tracks,
+                record.tafHeader?.trackSeconds,
+                record.tafHeader?.lengthSeconds,
+            ).length > 1
         ) {
             setTafDownloadRecord(record);
             return;
@@ -611,6 +614,7 @@ export const FileBrowser: React.FC<{
                     tracks={buildTafDownloadTracks(
                         tafDownloadRecord.tonieInfo?.tracks,
                         tafDownloadRecord.tafHeader?.trackSeconds,
+                        tafDownloadRecord.tafHeader?.lengthSeconds,
                     )}
                     contentUrl={withBase(buildContentUrl(tafDownloadRecord.name, { ogg: true }))}
                     baseFilename={sanitizeDownloadName(
