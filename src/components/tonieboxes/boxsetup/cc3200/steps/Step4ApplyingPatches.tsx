@@ -425,6 +425,9 @@ export const Step4ApplyingPatches: React.FC = () => {
     },
 ...`}
             />
+            <Paragraph>
+                {t("tonieboxes.cc3200BoxFlashing.applyingPatchesSection.altPortHint")}
+            </Paragraph>
 
             <Collapse
                 size="small"
