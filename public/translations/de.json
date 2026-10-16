@@ -405,7 +405,7 @@
                     "text": "Löscht die Datei oder den Ordner (nur wenn der Ordner leer ist). Hinweis: Wenn diese Datei einem Tonie/Tag zugewiesen ist, wird der Verweis nicht aktualisiert.",
                     "title": "Datei/Ordner löschen"
                 },
-                "downloadFile": {                    
+                "downloadFile": {
                     "text": "Lädt die ausgewählte Datei herunter. Bei TAF-Dateien mit mehreren Tracks öffnet sich eine Track-Auswahl, um die Tracks als einzelne *.ogg-Dateien (ZIP) oder als eine *.ogg-Datei herunterzuladen; TAF-Dateien mit nur einem Track werden als eine *.ogg-Datei heruntergeladen.",
                     "title": "Datei herunterladen"
                 },
@@ -421,14 +421,14 @@
                     "text": "Öffnet den Tonie-Audio-Playlist-Editor, um TAP-Dateien zu verwalten.",
                     "title": "TAP-Playlist bearbeiten"
                 },
-                "markAsListened": {                    
-                    "listened": {                        
+                "markAsListened": {
+                    "listened": {
                         "text": "Die Datei ist derzeit als gehört markiert. Klicke, um sie als nicht gehört zu markieren.",
                         "title": "Als nicht gehört markieren"
                     },
-                  "unlistened": {
+                    "unlistened": {
                         "text": "Die Datei ist derzeit als nicht gehört markiert. Klicke, um sie als gehört zu markieren.",
-                        "title": "Als gehört markieren"                        
+                        "title": "Als gehört markieren"
                     }
                 },
                 "migrateToAudioIdFolder": {
@@ -450,7 +450,7 @@
                 "renameFile": {
                     "text": "Benennt die Datei um. Hinweis: Wenn diese Datei einem Tonie/Tag zugewiesen ist, wird der Verweis nicht automatisch aktualisiert.",
                     "title": "Datei umbenennen"
-                }                
+                }
             },
             "actionItemsMulti": {
                 "deleteSelectedFiles": {

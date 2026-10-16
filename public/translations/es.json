@@ -407,7 +407,7 @@
                 },
                 "downloadFile": {
                     "text": "Descarga el archivo seleccionado. En archivos TAF con varias pistas se abre una selección de pistas para descargarlas como archivos *.ogg separados (ZIP) o como un solo archivo *.ogg; los archivos TAF de una sola pista se descargan como un único archivo *.ogg.",
-                    "title": "Descargar archivo"                    
+                    "title": "Descargar archivo"
                 },
                 "duplicateTAPFile": {
                     "text": "Crea una copia del archivo TAP seleccionado.",

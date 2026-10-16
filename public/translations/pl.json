@@ -407,7 +407,7 @@
                 },
                 "downloadFile": {
                     "text": "Pobiera wybrany plik. W przypadku plików TAF z wieloma utworami otwiera się wybór utworów, aby pobrać je jako osobne pliki *.ogg (ZIP) lub jako jeden plik *.ogg; pliki TAF z jednym utworem są pobierane jako jeden plik *.ogg.",
-                    "title": "Pobierz plik"                    
+                    "title": "Pobierz plik"
                 },
                 "duplicateTAPFile": {
                     "text": "Tworzy duplikat wybranego pliku TAP.",
@@ -450,7 +450,7 @@
                 "renameFile": {
                     "text": "Zmienia nazwę pliku. Uwaga: jeśli ten plik jest przypisany do Tonie/Taga, odwołanie nie zostanie zaktualizowane automatycznie.",
                     "title": "Zmień nazwę pliku"
-                }                
+                }
             },
             "actionItemsMulti": {
                 "deleteSelectedFiles": {
