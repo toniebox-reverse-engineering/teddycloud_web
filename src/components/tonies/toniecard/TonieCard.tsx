@@ -30,7 +30,7 @@ import { useTonieCardActions } from "./hooks/useTonieCardActions";
 import { useTooltipInfoByModel } from "./hooks/useTooltipInfoByModel";
 import { getInfoForTooltip } from "./utils/tooltipInfo";
 import { useTonieCardSaveFlow } from "./hooks/useTonieCardSaveFlow";
-import { TooltipInfo, ValidateStatus } from "./TonieCardTypes";
+import { TooltipInfo, ValidateStatus } from "../../../types/tonieCardTypes";
 import { backendUrl } from "../../../utils/basePath";
 import { locateModelAudioInLibrary } from "../../../utils/teddycloud/modelAudioResolution";
 
