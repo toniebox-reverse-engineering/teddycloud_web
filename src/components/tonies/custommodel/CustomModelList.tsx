@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Flex, Pagination, theme, Typography } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { CustomModelCard } from "./CustomModelCard";
-import type { TableRow } from "./types/customModelEditorTypes";
+import type { CustomEntry, TableRow } from "./types/customModelEditorTypes";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
 
 export type CustomModelListProps = {
@@ -17,6 +17,8 @@ export type CustomModelListProps = {
     gridColumns: number;
     token: ReturnType<typeof theme.useToken>["token"];
     onMergeAndCreateNew: () => void;
+    /** Model of the original tonie the entry takes precedence over, if any. */
+    getOverriddenModel: (entry: CustomEntry) => string | undefined;
     onEdit: (idx: number) => void;
     onDuplicate: (idx: number) => void;
     onDelete: (idx: number) => void;
@@ -37,6 +39,7 @@ export const CustomModelList: React.FC<CustomModelListProps> = ({
     gridColumns,
     token,
     onMergeAndCreateNew,
+    getOverriddenModel,
     onEdit,
     onDuplicate,
     onDelete,
@@ -132,6 +135,7 @@ export const CustomModelList: React.FC<CustomModelListProps> = ({
                                 idx={row.idx}
                                 entry={row.entry}
                                 gridColumns={gridColumns}
+                                overriddenModel={getOverriddenModel(row.entry)}
                                 onEdit={onEdit}
                                 onDuplicate={onDuplicate}
                                 onDelete={onDelete}

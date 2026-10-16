@@ -32,6 +32,7 @@ import {
     SELECT_IMAGE_CELL_GAP_HALF,
 } from "../../../../constants/selectImageTableLayoutSizes";
 import { backendUrl } from "../../../../utils/basePath";
+import { hasTafMeta } from "../hooks/useTafMetaEditor";
 
 const { useToken } = theme;
 
@@ -558,7 +559,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     );
                 }
 
-                if (record.tafHeader && handleEditTafMetaDataClick) {
+                if (hasTafMeta(record) && handleEditTafMetaDataClick) {
                     actions.push(
                         <Tooltip
                             open={!canHover ? false : undefined}

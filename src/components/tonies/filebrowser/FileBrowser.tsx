@@ -47,6 +47,8 @@ import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
 import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
+import { useTafMetaEditor } from "./hooks/useTafMetaEditor";
+import { CustomModelEditor } from "../custommodel/CustomModelEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
 import { backendUrl } from "../../../utils/basePath";
@@ -87,9 +89,6 @@ export const FileBrowser: React.FC<{
 
     const [isJsonViewerModalOpen, setIsJsonViewerModalOpen] = useState<boolean>(false);
     const [jsonViewerFile, setJsonViewerFile] = useState<string | null>(null);
-
-    const [isTafMetaEditorModalOpen, setIsTafMetaEditorModalOpen] = useState<boolean>(false);
-    const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
 
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
     const [tafHeaderRecord, setTafHeaderRecord] = useState<RecordTafHeader | null>(null);
@@ -191,6 +190,17 @@ export const FileBrowser: React.FC<{
         setRebuildList,
     });
 
+    const {
+        isTafMetaEditorModalOpen,
+        tafMetaAudioSource,
+        openTafMetaEditor,
+        closeTafMetaEditor,
+        onTafMetaSaved,
+    } = useTafMetaEditor({
+        special,
+        setRebuildList,
+    });
+
     // information modal
     const showInformationModal = (record: any) => {
         if (!record.isDir && record.tonieInfo?.tracks) {
@@ -216,11 +226,6 @@ export const FileBrowser: React.FC<{
     const closeTafHeader = () => {
         setIsTafHeaderModalOpen(false);
         setTafHeaderRecord(null);
-    };
-
-    // taf meta placeholder
-    const handleEditTafMetaDataClick = (path: string, record: Record) => {
-        // ToDo
     };
 
     // unused TAFs modal
@@ -395,7 +400,7 @@ export const FileBrowser: React.FC<{
         handleFileDownload,
         migrateContent2Lib,
         handleEditTapClick: openEditTap,
-        handleEditTafMetaDataClick,
+        handleEditTafMetaDataClick: openTafMetaEditor,
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
@@ -542,6 +547,16 @@ export const FileBrowser: React.FC<{
                     initialValuesPath={initialValuesPath}
                     onCreate={onTapCreateOrSave}
                     onCancel={closeTapEditor}
+                />
+            )}
+            {isTafMetaEditorModalOpen && (
+                <CustomModelEditor
+                    open={isTafMetaEditorModalOpen}
+                    onClose={closeTafMetaEditor}
+                    mode="audio-single"
+                    audioSource={tafMetaAudioSource}
+                    onUpdated={onTafMetaSaved}
+                    overlay={overlay}
                 />
             )}
             {isHelpModalOpen && (

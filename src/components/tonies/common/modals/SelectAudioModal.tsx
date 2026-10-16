@@ -11,6 +11,10 @@ export interface SelectAudioFileResult {
     path: string;
     audioId?: string;
     hash?: string;
+    /** Start of each track in seconds, from the TAF header. */
+    trackSeconds?: number[];
+    /** Total audio length in seconds, when the backend provides it. */
+    lengthSeconds?: number;
     /** Model info resolved by the backend from the TAF header (fileIndexV2 tonieInfo). */
     tonieInfo?: Pick<TonieInfo, "model" | "series" | "episode">;
 }
@@ -72,6 +76,8 @@ export const SelectAudioModal: React.FC<SelectAudioModalProps> = ({
             path: filePath,
             audioId: String(audioIdRaw).trim(),
             hash: String(hashRaw).trim(),
+            trackSeconds: file?.tafHeader?.trackSeconds,
+            lengthSeconds: file?.tafHeader?.lengthSeconds,
             tonieInfo,
         };
     };
