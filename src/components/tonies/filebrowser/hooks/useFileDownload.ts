@@ -1,13 +1,12 @@
 import { useTranslation } from "react-i18next";
 
 import { Record as tafRecord } from "../../../../types/fileBrowserTypes";
-import { TeddyCloudApi } from "../../../../api";
-import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
+import { triggerBrowserDownload, toSameOriginUrl } from "../../../../utils/downloads/tafDownload";
+import { sanitizeDownloadName } from "../../../../utils/files/sanitizeDownloadName";
+import { withBase } from "../../../../utils/basePath";
 import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { describeDownloadError } from "../../common/utils/downloadError";
-
-const api = new TeddyCloudApi(defaultAPIConfig());
 
 interface UseFileDownloadParams {
     setDownloading: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
@@ -16,21 +15,6 @@ interface UseFileDownloadParams {
 export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
     const { t } = useTranslation();
     const { addNotification } = useTeddyCloud();
-
-    const handleDownload = async (path: string, filename: string) => {
-        const response = await api.apiGetTeddyCloudApiRaw(path);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = filename;
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
-    };
 
     const handleFileDownload = async (
         record: tafRecord,
@@ -41,7 +25,7 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
         const fileUrl =
             encodeURI("/content/" + decodeURIComponent(path) + "/" + record.name) +
             "?" +
-            (record.name.endsWith(".taf") ? "ogg=true&" : "") +
+            (record.name.toLowerCase().endsWith(".taf") ? "ogg=true&" : "") +
             "special=" +
             special +
             (overlay ? `&overlay=${overlay}` : "");
@@ -58,7 +42,10 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
         setDownloading((prev) => ({ ...prev, [record.name]: true }));
 
         try {
-            await handleDownload(fileUrl, fileName);
+            await triggerBrowserDownload(
+                withBase(toSameOriginUrl(fileUrl)),
+                sanitizeDownloadName(fileName),
+            );
         } catch (error) {
             addNotification(
                 NotificationTypeEnum.Error,

@@ -17,6 +17,11 @@ import { useNavigate } from "react-router-dom";
 
 import TeddyAudioPlaylistEditor from "./modals/TeddyAudioPlaylistEditorModal";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
+import {
+    TafTrackDownloadModal,
+    buildTafDownloadTracks,
+} from "../common/modals/TafTrackDownloadModal";
+import { sanitizeDownloadName } from "../../../utils/files/sanitizeDownloadName";
 import { AssignTonieModal } from "../common/modals/AssignTonieModal";
 
 import { IMAGE_EXTENSIONS } from "../../../constants/fileTypes";
@@ -51,7 +56,7 @@ import { useTafMetaEditor } from "./hooks/useTafMetaEditor";
 import { CustomModelEditor } from "../custommodel/CustomModelEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
-import { backendUrl } from "../../../utils/basePath";
+import { backendUrl, withBase } from "../../../utils/basePath";
 
 const { Paragraph } = Typography;
 
@@ -120,6 +125,7 @@ export const FileBrowser: React.FC<{
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
+    const [tafDownloadRecord, setTafDownloadRecord] = useState<Record | null>(null);
 
     const directoryTree = useDirectoryTree(special);
 
@@ -347,6 +353,23 @@ export const FileBrowser: React.FC<{
         setDownloading,
     });
 
+    const handleFileDownloadClick = (
+        record: Record,
+        downloadPath: string,
+        downloadSpecial: string,
+        downloadOverlay?: string,
+    ) => {
+        if (
+            record.name.toLowerCase().endsWith(".taf") &&
+            buildTafDownloadTracks(record.tonieInfo?.tracks, record.tafHeader?.trackSeconds)
+                .length > 1
+        ) {
+            setTafDownloadRecord(record);
+            return;
+        }
+        handleFileDownload(record, downloadPath, downloadSpecial, downloadOverlay);
+    };
+
     const { toggleListened } = useToggleListened({
         path,
         special,
@@ -397,7 +420,7 @@ export const FileBrowser: React.FC<{
         handleDirClick,
         showInformationModal,
         playAudio,
-        handleFileDownload,
+        handleFileDownload: handleFileDownloadClick,
         migrateContent2Lib,
         handleEditTapClick: openEditTap,
         handleEditTafMetaDataClick: openTafMetaEditor,
@@ -572,6 +595,35 @@ export const FileBrowser: React.FC<{
             ) : (
                 ""
             )}
+            {tafDownloadRecord ? (
+                <TafTrackDownloadModal
+                    open
+                    onClose={() => setTafDownloadRecord(null)}
+                    title={
+                        tafDownloadRecord.tonieInfo?.series || tafDownloadRecord.tonieInfo?.episode
+                            ? `${tafDownloadRecord.tonieInfo.series || ""}${
+                                  tafDownloadRecord.tonieInfo.episode
+                                      ? " - " + tafDownloadRecord.tonieInfo.episode
+                                      : ""
+                              }`
+                            : tafDownloadRecord.name
+                    }
+                    tracks={buildTafDownloadTracks(
+                        tafDownloadRecord.tonieInfo?.tracks,
+                        tafDownloadRecord.tafHeader?.trackSeconds,
+                    )}
+                    contentUrl={withBase(buildContentUrl(tafDownloadRecord.name, { ogg: true }))}
+                    baseFilename={sanitizeDownloadName(
+                        tafDownloadRecord.tonieInfo?.series || tafDownloadRecord.tonieInfo?.episode
+                            ? `${tafDownloadRecord.tonieInfo.series || ""}${
+                                  tafDownloadRecord.tonieInfo.episode
+                                      ? " - " + tafDownloadRecord.tonieInfo.episode
+                                      : ""
+                              }`
+                            : tafDownloadRecord.name.replace(/\.taf$/i, ""),
+                    )}
+                />
+            ) : null}
             {special === "custom_img" && (
                 <Modal
                     title={t("tonies.customEditor.previewTitle")}
