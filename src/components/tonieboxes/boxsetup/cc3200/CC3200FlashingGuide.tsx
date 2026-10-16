@@ -12,6 +12,8 @@ import {
 import { BoxVersionsEnum } from "../../../../types/tonieboxTypes";
 
 import { useAltUrlCustomPatch } from "./hooks/useAltUrlCustomPatch";
+import { useAltPortCustomPatch } from "./hooks/useAltPortCustomPatch";
+import { isValidAltPort } from "./hooks/altPortPatch";
 import { Step0Preparations } from "./steps/Step0Preparations";
 import { Step1Bootloader } from "./steps/Step1Bootloader";
 import { Step2Certificates } from "./steps/Step2Certificates";
@@ -31,6 +33,8 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [hostname, setHostname] = useState<string>("");
     const [warningTextHostname, setWarningTextHostname] = useState<string>("");
+    const [port, setPort] = useState<string>("443");
+    const [warningTextPort, setWarningTextPort] = useState<string>("");
 
     const [hwTool, setHwTool] = useState<HwTool>("uart");
 
@@ -84,6 +88,20 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
         setWarningTextHostname(warningText);
     };
 
+    const handlePortChange = (value: string) => {
+        const sanitized = value.replace(/[^0-9]/g, "").slice(0, 5);
+        setPort(sanitized);
+        setWarningTextPort(
+            sanitized && !isValidAltPort(Number(sanitized))
+                ? t("tonieboxes.cc3200BoxFlashing.portInvalid")
+                : "",
+        );
+    };
+
+    const portNumber = Number(port);
+    const isPortInvalid = !isValidAltPort(portNumber) || portNumber === 443;
+    const { createPatch: createPortPatch } = useAltPortCustomPatch(portNumber);
+
     const prev = () => setCurrentStep((s) => Math.max(0, s - 1));
     const next = () => setCurrentStep((s) => Math.min(steps.length - 1, s + 1));
 
@@ -114,6 +132,11 @@ export const CC3200BoxFlashingGuide: React.FC = () => {
                         hostname={hostname}
                         warningTextHostname={warningTextHostname}
                         onHostnameChange={handleHostnameChange}
+                        port={port}
+                        warningTextPort={warningTextPort}
+                        onPortChange={handlePortChange}
+                        onCreatePortPatch={createPortPatch}
+                        isPortInvalid={isPortInvalid}
                     />
                 );
             case 4:
