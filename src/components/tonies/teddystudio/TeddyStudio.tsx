@@ -23,7 +23,7 @@ import { CustomImages } from "./input/CustomImages";
 import { EditLabelModal } from "./modals/EditLabelModal";
 import { LabelOverridesById, LabelOverrides } from "./types/labelOverrides";
 import { createTeddyStudioPdf } from "./print/teddyStudioPdf";
-import { createTeddyStudioPdfFilename } from "./print/printFile";
+import { createTeddyStudioPdfFilename, downloadPdfBlob, printPdfBlob } from "./print/printFile";
 import SelectImageModal from "../common/modals/SelectImageModal";
 
 const { Paragraph } = Typography;
@@ -158,40 +158,16 @@ export const TeddyStudio: React.FC = () => {
             });
 
             const filename = createTeddyStudioPdfFilename();
-            const pdfFile =
-                typeof File !== "undefined"
-                    ? new File([pdf], filename, { type: "application/pdf" })
-                    : new Blob([pdf], { type: "application/pdf" });
-            const url = URL.createObjectURL(pdfFile);
 
             if (action === "download") {
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = filename;
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
+                downloadPdfBlob(pdf, filename);
             } else {
-                // Open the PDF only after it has been fully generated. If the browser blocks the
-                // asynchronous popup, fall back to a regular download instead of failing.
-                const printWindow = window.open(url, "_blank");
-                if (printWindow) {
-                    try {
-                        printWindow.opener = null;
-                    } catch {
-                        // Nothing to do. The PDF itself is already open.
-                    }
-                } else {
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = filename;
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
+                const printResult = await printPdfBlob(pdf, filename);
+                if (printResult === "downloaded") {
                     addNotification(
                         NotificationTypeEnum.Warning,
                         t("tonies.teddystudio.printPage"),
-                        "The browser blocked opening the finished PDF in a new tab. The PDF was downloaded instead.",
+                        "The browser could not print or open the finished PDF. The PDF was downloaded instead.",
                         t("tonies.teddystudio.navigationTitle"),
                         undefined,
                         false,
@@ -216,8 +192,6 @@ export const TeddyStudio: React.FC = () => {
                     false,
                 );
             }
-
-            window.setTimeout(() => URL.revokeObjectURL(url), 5 * 60 * 1000);
         } catch (error) {
             const description = error instanceof Error ? error.message : String(error);
             addNotification(
