@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, theme, Typography } from "antd";
 import { ClearOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 import { LanguageFlagIcon } from "../../../common/icons/LanguageFlagIcon";
 import type { SettingsState } from "../hooks/useSettings";
-import "./../styles/print.css";
+import "./../styles/labels.css";
 import "./../styles/fonts.css";
 import { useTranslation } from "react-i18next";
 import { CircleText } from "../elements/CircleText";
@@ -46,23 +46,8 @@ export const LabelGrid: React.FC<LabelGridProps> = ({
         labelSpacingY,
         printMode,
         showLabelBorder,
-        paperSize,
-        customPaperWidth,
-        customPaperHeight,
-        paperMarginTop,
-        paperMarginLeft,
         paperLabelImageBleed,
     } = settings;
-
-    useEffect(() => {
-        const root = document.documentElement;
-        const paperSizeValue =
-            paperSize === "Custom" ? `${customPaperWidth} ${customPaperHeight}` : paperSize;
-
-        root.style.setProperty("--paper-size", paperSizeValue);
-        root.style.setProperty("--paper-margin-top", paperMarginTop);
-        root.style.setProperty("--paper-margin-left", paperMarginLeft);
-    }, [paperSize, customPaperWidth, customPaperHeight, paperMarginTop, paperMarginLeft]);
 
     return (
         <div
