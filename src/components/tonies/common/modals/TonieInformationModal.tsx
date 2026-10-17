@@ -130,7 +130,16 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         "trackSeconds" in tonieCardOrTAFRecord
             ? tonieCardOrTAFRecord.trackSeconds
             : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
-    const downloadTracks = buildTafDownloadTracks(displayTrackTitles, displayTrackSeconds);
+    const displayLengthSeconds =
+        "lengthSeconds" in tonieCardOrTAFRecord
+            ? tonieCardOrTAFRecord.lengthSeconds
+            : (tonieCardOrTAFRecord as Record).tafHeader?.lengthSeconds;
+
+    const downloadTracks = buildTafDownloadTracks(
+        displayTrackTitles,
+        displayTrackSeconds,
+        displayLengthSeconds,
+    );
     const canDownloadAudio =
         "audioUrl" in tonieCardOrTAFRecord &&
         (!("exists" in tonieCardOrTAFRecord) || tonieCardOrTAFRecord.exists);

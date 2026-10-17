@@ -48,25 +48,27 @@ export const CommunitySubNav = () => {
 
     const { plugins } = useTeddyCloud();
 
-    const pluginItems = plugins.map((plugin) => ({
-        key: `tcplugins-${plugin.pluginId}`,
-        label: (
-            <Link
-                to={`/community/tcplugins/${plugin.pluginId}`}
-                onClick={() => {
-                    setNavOpen(false);
-                    setSubNavOpen(false);
-                }}
-            >
-                {plugin.pluginName}
-            </Link>
-        ),
-        icon: React.createElement(plugin.icon),
-        title: plugin.pluginName,
-    }));
+    const pluginItems = plugins
+        .filter((p) => !p.hideInNav)
+        .map((plugin) => ({
+            key: `tcplugins-${plugin.pluginId}`,
+            label: (
+                <Link
+                    to={`/community/tcplugins/${plugin.pluginId}`}
+                    onClick={() => {
+                        setNavOpen(false);
+                        setSubNavOpen(false);
+                    }}
+                >
+                    {plugin.pluginName}
+                </Link>
+            ),
+            icon: React.createElement(plugin.icon),
+            title: plugin.pluginName,
+        }));
 
     const filteredPluginItems = plugins
-        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Community)
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Community && !p.hideInNav)
         .map((plugin) => ({
             key: `plugin-${plugin.pluginId}`,
             label: (
