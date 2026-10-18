@@ -73,13 +73,14 @@ export const TafDownloadPanel: React.FC<TafDownloadPanelProps> = ({
     const { token } = useToken();
     const canSplit = tracks.length > 1;
     const allKeys = useMemo(() => tracks.map((track) => track.number), [tracks]);
+    const selectionScope = `${contentUrl}|${allKeys.join(",")}`;
     const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
     const [downloadingWholeFile, setDownloadingWholeFile] = useState(false);
     const [downloadingSelected, setDownloadingSelected] = useState(false);
 
     useEffect(() => {
         setSelectedKeys([]);
-    }, [allKeys]);
+    }, [selectionScope]);
 
     const downloadBase = sanitizeDownloadName(baseFilename || "download");
 
