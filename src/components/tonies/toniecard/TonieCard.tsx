@@ -6,6 +6,7 @@ import {
     DownloadOutlined,
     EditOutlined,
     InfoCircleOutlined,
+    LoadingOutlined,
     PlayCircleOutlined,
     RetweetOutlined,
     StopOutlined,
@@ -238,7 +239,12 @@ export const TonieCard: React.FC<{
         overlay,
     });
 
-    const { handleLiveClick, handleNoCloudClick, handleBackgroundDownload } = useTonieCardActions({
+    const {
+        handleLiveClick,
+        handleNoCloudClick,
+        handleBackgroundDownload,
+        isBackgroundDownloading,
+    } = useTonieCardActions({
         tonieCard,
         overlay,
         modelTitle,
@@ -492,6 +498,8 @@ export const TonieCard: React.FC<{
                         <DownloadOutlined />
                     </div>
                 </Tooltip>
+            ) : isBackgroundDownloading ? (
+                <LoadingOutlined key="download" spin />
             ) : (
                 <DownloadOutlined key="download" onClick={handleBackgroundDownload} />
             )
