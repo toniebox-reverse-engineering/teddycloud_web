@@ -49,7 +49,10 @@ interface UseFileBrowserCoreResult {
     generateBreadcrumbs: (currentPath: string) => React.ReactNode;
 
     buildDirPath: (dirPath: string) => string;
-    buildContentUrl: (fileName: string, options?: { ogg?: boolean }) => string;
+    buildContentUrl: (
+        fileName: string,
+        options?: { ogg?: boolean; path?: string; special?: string },
+    ) => string;
 
     defaultSorter: (a: any, b: any, dataIndex: string | string[]) => number;
     dirNameSorter: (a: any, b: any) => number;
@@ -421,22 +424,31 @@ export const useFileBrowserCore = ({
         return path ? `${path}/${dirPath}` : dirPath;
     };
 
-    const buildContentUrl = (fileName: string, options?: { ogg?: boolean }): string => {
-        const { ogg = false } = options || {};
+    const buildContentUrl = (
+        fileName: string,
+        options?: { ogg?: boolean; path?: string; special?: string },
+    ): string => {
+        const { ogg = false, path: pathOverride, special: specialOverride } = options || {};
 
         const encodedPath =
-            mode === "fileBrowser"
-                ? path || ""
-                : path
-                  ? path
-                        .split("/")
-                        .map((segment) => encodeURIComponent(segment))
-                        .join("/")
-                  : "";
-
+            pathOverride !== undefined
+                ? pathOverride
+                      .split("/")
+                      .filter(Boolean)
+                      .map((segment) => encodeURIComponent(segment))
+                      .join("/")
+                : mode === "fileBrowser"
+                  ? path || ""
+                  : path
+                    ? path
+                          .split("/")
+                          .map((segment) => encodeURIComponent(segment))
+                          .join("/")
+                    : "";
+        const targetSpecial = specialOverride !== undefined ? specialOverride : special;
         const encodedName = encodeURIComponent(fileName);
 
-        if (special === "custom_img") {
+        if (targetSpecial === "custom_img") {
             return encodedPath
                 ? `/custom_img/${encodedPath}/${encodedName}`
                 : `/custom_img/${encodedName}`;
@@ -446,10 +458,13 @@ export const useFileBrowserCore = ({
 
         const params = new URLSearchParams();
         if (ogg) params.set("ogg", "true");
-        params.set("special", special);
+        if (targetSpecial) params.set("special", targetSpecial);
         if (overlay) params.set("overlay", overlay);
 
-        url += `?${params.toString()}`;
+        const query = params.toString();
+        if (query) {
+            url += `?${query}`;
+        }
         return url;
     };
 

@@ -57,8 +57,12 @@ import { CustomModelEditor } from "../custommodel/CustomModelEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
 import { backendUrl, withBase } from "../../../utils/basePath";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 const { Paragraph } = Typography;
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
@@ -208,12 +212,60 @@ export const FileBrowser: React.FC<{
     });
 
     // information modal
-    const showInformationModal = (record: any) => {
-        if (!record.isDir && record.tonieInfo?.tracks) {
-            setCurrentRecord(record);
-            setCurrentAudioUrl(buildContentUrl(record.name, { ogg: true }));
-            setIsInformationModalOpen(true);
+    const buildLibraryTafContentUrl = (source: unknown): string | null => {
+        if (typeof source !== "string" || !source.toLowerCase().startsWith("lib://")) {
+            return null;
         }
+
+        let libraryPath = source.slice("lib://".length).replace(/^\/+/, "");
+        try {
+            libraryPath = decodeURIComponent(libraryPath);
+        } catch {
+            // Keep the original path if it is not URI encoded correctly.
+        }
+
+        libraryPath = libraryPath.replace(/\\/g, "/").replace(/\/{2,}/g, "/");
+        if (!libraryPath.toLowerCase().endsWith(".taf")) {
+            return null;
+        }
+
+        const pathParts = libraryPath.split("/").filter(Boolean);
+        const fileName = pathParts.pop();
+        if (!fileName) {
+            return null;
+        }
+
+        return buildContentUrl(fileName, {
+            ogg: true,
+            path: pathParts.join("/"),
+            special: "library",
+        });
+    };
+
+    const showInformationModal = async (record: Record) => {
+        if (record.isDir || !record.tonieInfo?.tracks) {
+            return;
+        }
+
+        let audioUrl = buildContentUrl(record.name, { ogg: true });
+
+        if (record.name.toLowerCase().match(/500304e0\.json$/)) {
+            try {
+                const response = await api.apiGetTeddyCloudApiRaw(buildContentUrl(record.name));
+                const contentJson = await response.json();
+                const sourceAudioUrl = buildLibraryTafContentUrl(contentJson?.source);
+
+                if (sourceAudioUrl) {
+                    audioUrl = sourceAudioUrl;
+                }
+            } catch (error) {
+                console.warn("Could not resolve audio source from content JSON", error);
+            }
+        }
+
+        setCurrentRecord(record);
+        setCurrentAudioUrl(audioUrl);
+        setIsInformationModalOpen(true);
     };
 
     // json viewer
