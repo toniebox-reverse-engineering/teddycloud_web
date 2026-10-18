@@ -53,12 +53,9 @@ export function buildTafDownloadUrl(
     parsed.searchParams.delete("filename");
     parsed.searchParams.delete("entry");
 
-    // /content/download/... serves the already prepared audio stream and does not
-    // support exporting individual TAF tracks. For a track selection, address the
-    // underlying cached TAF through the regular /content/... route instead.
+    // Track titles stay out of the query. The server only accepts 255 characters,
+    // and a multi-track name list exceeds that and is dropped as an empty reply.
     if (options.tracks && options.tracks.length > 0) {
-        parsed.pathname = parsed.pathname.replace("/content/download/", "/content/");
-        parsed.searchParams.delete("skip_header");
         parsed.searchParams.set("tracks", options.tracks.join(","));
     }
 

@@ -140,56 +140,14 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         displayTrackSeconds,
         displayLengthSeconds,
     );
-    const librarySourceContentUrl = (() => {
-        if (!("source" in tonieCardOrTAFRecord)) {
-            return null;
-        }
-
-        const source = tonieCardOrTAFRecord.source?.trim();
-        if (!source?.toLowerCase().startsWith("lib://")) {
-            return null;
-        }
-
-        let libraryPath = source.slice("lib://".length).replace(/^\/+/, "");
-        try {
-            libraryPath = decodeURIComponent(libraryPath);
-        } catch {
-            // Keep the original path if it is not URI encoded correctly.
-        }
-
-        libraryPath = libraryPath.replace(/\\/g, "/").replace(/\/{2,}/g, "/");
-        if (!libraryPath.toLowerCase().endsWith(".taf")) {
-            return null;
-        }
-
-        const pathParts = libraryPath.split("/").filter(Boolean);
-        const fileName = pathParts.pop();
-        if (!fileName) {
-            return null;
-        }
-
-        const encodedPath = pathParts.map((part) => encodeURIComponent(part)).join("/");
-        const params = new URLSearchParams();
-        params.set("ogg", "true");
-        params.set("special", "library");
-        if (overlay) {
-            params.set("overlay", overlay);
-        }
-
-        return withBase(
-            `/content/${encodedPath ? `${encodedPath}/` : ""}${encodeURIComponent(fileName)}?${params.toString()}`,
-        );
-    })();
 
     const canDownloadAudio =
-        librarySourceContentUrl !== null ||
-        ("audioUrl" in tonieCardOrTAFRecord &&
-            (!("exists" in tonieCardOrTAFRecord) || tonieCardOrTAFRecord.exists));
+        "audioUrl" in tonieCardOrTAFRecord &&
+        (!("exists" in tonieCardOrTAFRecord) || tonieCardOrTAFRecord.exists);
     const downloadContentUrl =
-        librarySourceContentUrl ??
-        ("audioUrl" in tonieCardOrTAFRecord
+        canDownloadAudio && "audioUrl" in tonieCardOrTAFRecord
             ? withBase(toSameOriginUrl(tonieCardOrTAFRecord.audioUrl))
-            : "");
+            : "";
 
     const trackSecondsMatchSourceTracks = (
         tonieCardOrTAFRecord: TonieCardTAFRecord,
