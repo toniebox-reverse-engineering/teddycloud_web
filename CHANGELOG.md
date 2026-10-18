@@ -53,7 +53,7 @@
 - gui: Track names in the Custom Model Editor keep their position, unnamed tracks in between are no longer dropped
 - gui: Box setup can create a port patch for CC3200 boxes (altPort.custom.json) and patch the port of ESP32 boxes, e.g. for a proxy that routes boxes by port (not possible for CC3235 boxes and the Toniebox 2)
 - gui: Show a loading spinner and prevent repeated clicks while a TonieCard background download is in progress
-- gui: fix filedownload in content. 500304E0.json files were downloaded as invalid ogg files.
+- gui: Fixed TAF track downloads in the TonieInformationModal to use the correct linked/source TAF for Content and Tonies views, including uncached Tonies, and keep track selections across re-renders, screen size changes and audio player updates
 
 ### Commits
 
