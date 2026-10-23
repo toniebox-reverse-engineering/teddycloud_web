@@ -830,7 +830,7 @@ export const FileBrowser: React.FC<{
                                         {t("fileBrowser.upload.showUploadFilesDragNDrop")}
                                     </div>
                                 </Button>
-                                {special === "library" && (
+                                {special === "library" && !isTapList && (
                                     <Button
                                         size="small"
                                         icon={<SearchOutlined />}
@@ -839,7 +839,7 @@ export const FileBrowser: React.FC<{
                                         {t("fileBrowser.unusedTafsModal.title")}
                                     </Button>
                                 )}
-                                {special === "library" && (
+                                {special === "library" && !isTapList && (
                                     <Button
                                         size="small"
                                         icon={<CodeOutlined />}

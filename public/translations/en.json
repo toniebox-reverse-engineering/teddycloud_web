@@ -2486,6 +2486,7 @@
             "customImageTitle": "Enter a title to be printed",
             "customImageUpload": "Add temporary image (without Library)",
             "diameter": "Inner diameter",
+            "downloadPdf": "Download PDF",
             "empty": "Empty - Please select Tonies or Tags or add custom image first!",
             "episodes": "Episodes",
             "fontFamily": "Label font",
