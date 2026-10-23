@@ -9,6 +9,8 @@ interface CC3200Step3PatchesProps {
     hostname: string;
     warningTextHostname: string;
     onHostnameChange: (value: string) => void;
+    onCreateHostNamePatch: () => void;
+    isHostnameInvalid: boolean;
     port: string;
     warningTextPort: string;
     onPortChange: (value: string) => void;
@@ -20,6 +22,8 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
     hostname,
     warningTextHostname,
     onHostnameChange,
+    onCreateHostNamePatch,
+    isHostnameInvalid,
     port,
     warningTextPort,
     onPortChange,
@@ -86,7 +90,7 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
             <Form>
                 <Paragraph>{t("tonieboxes.cc3200BoxFlashing.hintPatchHost")}</Paragraph>
                 <Form.Item>
-                    <Row align="middle" style={{ display: "flex", alignItems: "center" }}>
+                    <Row align="middle" style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <Col
                             style={{
                                 flex: "0 0 200px",
@@ -101,6 +105,15 @@ export const Step3Patches: React.FC<CC3200Step3PatchesProps> = ({
                                 value={hostname}
                                 onChange={(e) => onHostnameChange(e.target.value)}
                             />
+                        </Col>
+                        <Col>
+                            <Button
+                                icon={<CodeOutlined />}
+                                disabled={isHostnameInvalid}
+                                onClick={onCreateHostNamePatch}
+                            >
+                                {t("tonieboxes.cc3200BoxFlashing.createHostNamePatch")}
+                            </Button>
                         </Col>
                     </Row>
                     {warningTextHostname && (

@@ -4,7 +4,7 @@ import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTy
 import { TonieCardProps } from "../../../../types/tonieTypes";
 import { toModelKey } from "../../hooks/useCustomModelKeys";
 import { showAudioModelMismatchConfirm } from "../modals/AudioModelMismatchConfirmModal";
-import { ValidationState } from "../TonieCardTypes";
+import { ValidationState } from "../../../../types/tonieCardTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 

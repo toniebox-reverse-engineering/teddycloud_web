@@ -192,7 +192,10 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
         setVolume(lastVolume);
     };
 
-    const handleAudioPlay = () => setIsPlaying(true);
+    const handleAudioPlay = () => {
+        setIsPlaying(true);
+        setAudioPlayerDisplay("flex");
+    };
     const handleAudioPause = () => setIsPlaying(false);
     const handleAudioEnded = () => setIsPlaying(false);
 
@@ -207,6 +210,7 @@ const AudioPlayerFooter: React.FC<AudioPlayerFooterProps> = ({ onVisibilityChang
             }
             globalAudio.load();
         }
+        setIsPlaying(false);
         setAudioPlayerDisplay("none");
         onVisibilityChange(false);
     };

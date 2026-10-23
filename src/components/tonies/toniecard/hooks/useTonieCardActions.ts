@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { TeddyCloudApi } from "../../../../api";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
@@ -31,6 +32,8 @@ export const useTonieCardActions = ({
     closeLoadingNotification,
     fetchUpdatedTonieCard,
 }: UseTonieCardActionsParams) => {
+    const [isBackgroundDownloading, setIsBackgroundDownloading] = useState(false);
+
     const notifySuccess = (message: string, description: string) => {
         addNotification(NotificationTypeEnum.Success, message, description, t("tonies.title"));
     };
@@ -122,9 +125,10 @@ export const useTonieCardActions = ({
 
     const handleBackgroundDownload = async () => {
         const path = tonieCard.downloadTriggerUrl;
-        if (!path) return;
+        if (!path || isBackgroundDownloading) return;
 
         const key = "loading" + tonieCard.ruid;
+        setIsBackgroundDownloading(true);
 
         try {
             addLoadingNotification(
@@ -159,6 +163,8 @@ export const useTonieCardActions = ({
                 }).replace(' "" ', ""),
                 error,
             );
+        } finally {
+            setIsBackgroundDownloading(false);
         }
     };
 
@@ -166,5 +172,6 @@ export const useTonieCardActions = ({
         handleLiveClick,
         handleNoCloudClick,
         handleBackgroundDownload,
+        isBackgroundDownloading,
     };
 };

@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { Record } from "../../../../types/fileBrowserTypes";
-import { ValidateStatus } from "../TonieCardTypes";
+import { ValidationState } from "../../../../types/tonieCardTypes";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 type UseAssignSiblingEpisodeParams = {
     source: string;
     onSelectedSourceChange: (value: string) => void;
-    setInputValidationSource: (state: { validateStatus: ValidateStatus; help: string }) => void;
+    setInputValidationSource: (value: ValidationState) => void;
 };
 
 /**

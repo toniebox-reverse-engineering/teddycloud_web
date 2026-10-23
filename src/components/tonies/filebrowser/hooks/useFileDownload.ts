@@ -22,22 +22,32 @@ export function useFileDownload({ setDownloading }: UseFileDownloadParams) {
         special: string,
         overlay?: string,
     ) => {
+        console.log("handleFileDownload", record, path, special, overlay);
+        const params = new URLSearchParams();
+        if (record.name.toLowerCase().endsWith(".taf")) {
+            params.set("ogg", "true");
+        }
+        if (special) {
+            params.set("special", special);
+        }
+        if (overlay) {
+            params.set("overlay", overlay);
+        }
+        const query = params.toString();
+
         const fileUrl =
             encodeURI("/content/" + decodeURIComponent(path) + "/" + record.name) +
-            "?" +
-            (record.name.toLowerCase().endsWith(".taf") ? "ogg=true&" : "") +
-            "special=" +
-            special +
-            (overlay ? `&overlay=${overlay}` : "");
+            (query ? `?${query}` : "");
 
-        let fileName =
-            record.tonieInfo?.series || record.tonieInfo?.episode
-                ? `${record.tonieInfo.series || ""}${record.tonieInfo.episode ? " - " + record.tonieInfo.episode : ""}`
-                : record.name;
+        const isTaf = record.name.toLowerCase().endsWith(".taf");
 
-        if (!record.tonieInfo?.series && !record.tonieInfo?.episode && fileName.endsWith(".taf")) {
-            fileName = fileName.replace(/\.taf$/i, ".ogg");
-        }
+        const tonieName = [record.tonieInfo?.series, record.tonieInfo?.episode]
+            .filter(Boolean)
+            .join(" - ");
+
+        const fileName = isTaf
+            ? `${tonieName || record.name.replace(/\.taf$/i, "")}.ogg`
+            : record.name;
 
         setDownloading((prev) => ({ ...prev, [record.name]: true }));
 
