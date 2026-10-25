@@ -36,7 +36,7 @@ export const Features = () => {
                 <Link
                     to={
                         isReleaseCandidateVersion
-                            ? gitHubTCCommitTreeBaseUrl + latestReleaseCandidateTag
+                            ? gitHubTCCommitTreeBaseUrl + "rc_" + versionShort.replace("-rc", "-")
                             : isDevelopVersion
                               ? gitHubTCCommitTreeBaseUrl + commitGitSha
                               : gitHubTCReleasesUrl + "tag/tc_" + versionShort

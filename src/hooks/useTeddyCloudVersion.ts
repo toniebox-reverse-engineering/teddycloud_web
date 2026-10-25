@@ -102,16 +102,39 @@ export const useTeddyCloudVersion = () => {
                         return 0;
                     });
 
-                    const latestSHA = candidates[0]?.object.sha;
+                    const latest = candidates[0];
 
-                    if (!latestSHA) {
+                    if (!latest) {
                         return;
                     }
 
-                    setLatestReleaseCandidateTag(candidates[0].ref.replace("refs/tags/", ""));
-                    setNewVersionAvailable(
-                        !commitGitSha.includes("unknown") && commitGitSha !== latestSHA,
-                    );
+                    const latestTag = latest.ref.replace("refs/tags/", "");
+
+                    // Example: v0.7.1-rc2 -> rc_v0.7.1-2
+                    const currentTag = versionShort
+                        .replace(/^v/, "rc_v")
+                        .replace(/-rc(\d+)$/, "-$1")
+                        .replace(/-rc$/, "");
+
+                    const currentVersion = parseRcVersion(`refs/tags/${currentTag}`);
+
+                    setLatestReleaseCandidateTag(latestTag);
+
+                    if (!currentVersion) {
+                        return;
+                    }
+
+                    const updateAvailable = latest.version!.some((value, index) => {
+                        for (let i = 0; i < index; i++) {
+                            if (latest.version![i] !== currentVersion[i]) {
+                                return false;
+                            }
+                        }
+
+                        return value > currentVersion[index];
+                    });
+
+                    setNewVersionAvailable(updateAvailable);
                 } else if (develop) {
                     const latestDevelopSHA = versionInfo.sha;
                     setNewVersionAvailable(
