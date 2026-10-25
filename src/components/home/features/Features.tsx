@@ -8,7 +8,14 @@ import { ExportOutlined } from "@ant-design/icons";
 
 export const Features = () => {
     const { t } = useTranslation();
-    const { version, versionShort, isDevelopVersion, commitGitSha } = useTeddyCloudVersion();
+    const {
+        version,
+        versionShort,
+        isDevelopVersion,
+        commitGitSha,
+        isReleaseCandidateVersion,
+        latestReleaseCandidateTag,
+    } = useTeddyCloudVersion();
 
     const features = t("home.features.features", {
         returnObjects: true,
@@ -28,9 +35,11 @@ export const Features = () => {
                 {t("home.build")}:{" "}
                 <Link
                     to={
-                        isDevelopVersion
-                            ? gitHubTCCommitTreeBaseUrl + commitGitSha
-                            : gitHubTCReleasesUrl + "tag/tc_" + versionShort
+                        isReleaseCandidateVersion
+                            ? gitHubTCCommitTreeBaseUrl + latestReleaseCandidateTag
+                            : isDevelopVersion
+                              ? gitHubTCCommitTreeBaseUrl + commitGitSha
+                              : gitHubTCReleasesUrl + "tag/tc_" + versionShort
                     }
                     target="_blank"
                     rel="noopener noreferrer"

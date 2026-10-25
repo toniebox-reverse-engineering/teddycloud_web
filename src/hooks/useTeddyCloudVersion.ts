@@ -4,6 +4,22 @@ import { defaultAPIConfig } from "../config/defaultApiConfig";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
+interface GitHubRef {
+    ref: string;
+    object: {
+        sha: string;
+        type: string;
+    };
+}
+
+const parseRcVersion = (ref: string): number[] | null => {
+    const match = ref.match(/^refs\/tags\/rc_v(\d+)\.(\d+)\.(\d+)(?:-(?:rc)?(\d+))?$/);
+
+    return match
+        ? [Number(match[1]), Number(match[2]), Number(match[3]), Number(match[4] ?? 0)]
+        : null;
+};
+
 export const useTeddyCloudVersion = () => {
     const [version, setVersion] = useState("");
     const [versionShort, setVersionShort] = useState("");
@@ -12,7 +28,10 @@ export const useTeddyCloudVersion = () => {
 
     const [newVersionAvailable, setNewVersionAvailable] = useState<boolean>(false);
     const [isDevelopVersion, setIsDevelopVersion] = useState<boolean>(false);
+    const [isReleaseCandidateVersion, setIsReleaseCandidateVersion] = useState<boolean>(false);
+
     const [latestDevelopSHA, setLatestDevelopSHA] = useState("");
+    const [latestReleaseCandidateTag, setLatestReleaseCandidateTag] = useState("");
     const [latestReleaseVersion, setLatestReleaseVersion] = useState("");
 
     useEffect(() => {
@@ -42,17 +61,55 @@ export const useTeddyCloudVersion = () => {
             return;
         }
 
-        const develop = versionShort.endsWith("X.X.X");
-        setIsDevelopVersion(develop);
+        const develop = versionShort.endsWith("X.X.X") && !versionShort.includes("rc");
+        const releaseCandidate = versionShort.includes("rc");
 
-        const endpoint = develop
-            ? "/reverseGeneric/teddycloud_develop"
-            : "/reverseGeneric/teddycloud_release";
+        setIsDevelopVersion(develop);
+        setIsReleaseCandidateVersion(releaseCandidate);
+
+        const endpoint = releaseCandidate
+            ? "/reverseGeneric/teddycloud_release_candidate"
+            : develop
+              ? "/reverseGeneric/teddycloud_develop"
+              : "/reverseGeneric/teddycloud_release";
 
         api.apiGetTeddyCloudApiRaw(endpoint)
             .then((response) => response.json())
             .then((versionInfo) => {
-                if (develop) {
+                if (releaseCandidate) {
+                    const refs = versionInfo as GitHubRef[];
+
+                    const candidates = refs
+                        .map((ref) => ({
+                            ...ref,
+                            version: parseRcVersion(ref.ref),
+                        }))
+                        .filter((ref) => ref.version !== null && ref.object.type === "commit");
+
+                    candidates.sort((a, b) => {
+                        const va = a.version!;
+                        const vb = b.version!;
+
+                        for (let i = 0; i < 4; i++) {
+                            if (va[i] !== vb[i]) {
+                                return vb[i] - va[i];
+                            }
+                        }
+
+                        return 0;
+                    });
+
+                    const latestSHA = candidates[0]?.object.sha;
+
+                    if (!latestSHA) {
+                        return;
+                    }
+
+                    setLatestReleaseCandidateTag(candidates[0].ref.replace("refs/tags/", ""));
+                    setNewVersionAvailable(
+                        !commitGitSha.includes("unknown") && commitGitSha !== latestSHA,
+                    );
+                } else if (develop) {
                     const latestDevelopSHA = versionInfo.sha;
                     setNewVersionAvailable(
                         !commitGitSha.includes("unknown") && commitGitSha !== latestDevelopSHA,
@@ -75,8 +132,10 @@ export const useTeddyCloudVersion = () => {
         commitGitShaShort,
         commitGitSha,
         latestDevelopSHA,
+        latestReleaseCandidateTag,
         latestReleaseVersion,
         newVersionAvailable,
         isDevelopVersion,
+        isReleaseCandidateVersion,
     };
 };

@@ -55,6 +55,7 @@
 - gui: Show a loading spinner and prevent repeated clicks while a TonieCard background download is in progress
 - gui: Fixed TAF track downloads in the TonieInformationModal to use the correct linked/source TAF for Content and Tonies views, including uncached Tonies, and keep track selections across re-renders, screen size changes and audio player updates
 - gui: TeddyStudio: Reworked label printing to generate a browser-independent PDF instead of relying on CSS print layouts, including PDF preview and download functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286)
+- gui: adapted outdated hint to new release candidate tags
 
 ### Commits
 
