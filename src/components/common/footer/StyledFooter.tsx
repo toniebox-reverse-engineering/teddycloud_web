@@ -54,6 +54,8 @@ export const StyledFooter = () => {
         latestDevelopSHA,
         newVersionAvailable,
         isDevelopVersion,
+        isReleaseCandidateVersion,
+        latestReleaseCandidateTag,
     } = useTeddyCloudVersion();
 
     const [isAudioPlayerVisible, setIsAudioPlayerVisible] = useState(false);
@@ -85,9 +87,11 @@ export const StyledFooter = () => {
                     <small style={{ display: "flex", color: colorText, whiteSpace: "nowrap" }}>
                         <Link
                             to={
-                                isDevelopVersion
-                                    ? gitHubTCCommitTreeBaseUrl + commitGitSha
-                                    : gitHubTCReleasesUrl + "tag/tc_" + versionShort
+                                isReleaseCandidateVersion
+                                    ? gitHubTCCommitTreeBaseUrl + latestReleaseCandidateTag
+                                    : isDevelopVersion
+                                      ? gitHubTCCommitTreeBaseUrl + commitGitSha
+                                      : gitHubTCReleasesUrl + "tag/tc_" + versionShort
                             }
                             target="_blank"
                             rel="noopener noreferrer"
@@ -109,9 +113,11 @@ export const StyledFooter = () => {
                                 <span style={{ paddingRight: 8 }}>-</span>
                                 <Link
                                     to={
-                                        isDevelopVersion
-                                            ? gitHubTCCommitTreeBaseUrl + latestDevelopSHA
-                                            : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
+                                        isReleaseCandidateVersion
+                                            ? gitHubTCCommitTreeBaseUrl + latestReleaseCandidateTag
+                                            : isDevelopVersion
+                                              ? gitHubTCCommitTreeBaseUrl + latestDevelopSHA
+                                              : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
                                     }
                                     target="_blank"
                                     rel="noopener noreferrer"
