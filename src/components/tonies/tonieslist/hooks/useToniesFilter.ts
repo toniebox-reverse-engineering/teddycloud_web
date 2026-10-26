@@ -34,6 +34,7 @@ const FIELD_ACCESSORS: FIELD_ACCESSOR_MAP = {
     picture: (t) => t.sourceInfo?.picture || t.tonieInfo.picture || "",
     exists: (t) => t.exists,
     valid: (t) => t.valid,
+    corrupt: (t) => t.corrupt === true,
     live: (t) => t.live,
     nocloud: (t) => t.nocloud,
     uid: (t) => t.uid,
@@ -476,7 +477,11 @@ export function useToniesFilter(params: UseToniesFilterParams) {
     }
 
     const suggestionsAfterField = (field: string): string[] => {
-        if (["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(field)) {
+        if (
+            ["exists", "valid", "corrupt", "live", "nocloud", "claimed", "hasCloudAuth"].includes(
+                field,
+            )
+        ) {
             return [...LOGICALS];
         }
 
@@ -570,7 +575,15 @@ export function useToniesFilter(params: UseToniesFilterParams) {
 
         if (isNegated) {
             return unique.map((c) =>
-                ["exists", "valid", "live", "nocloud", "claimed", "hasCloudAuth"].includes(c)
+                [
+                    "exists",
+                    "valid",
+                    "corrupt",
+                    "live",
+                    "nocloud",
+                    "claimed",
+                    "hasCloudAuth",
+                ].includes(c)
                     ? `!${c}`
                     : c,
             );

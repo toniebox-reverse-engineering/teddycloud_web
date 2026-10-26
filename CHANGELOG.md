@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.8.0
+
+- Fixed a corrupted TAF in the library being kept when the same content was cached from the cloud again [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
+- Added `corrupt` and `redownloadUrl` to the tag index, a forced cloud download (`force=true`) and a full TAF check on demand (`getTagInfo?validate=true`) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
+- gui: Show corrupted TAF files on the Tonie card, check a TAF on demand and redownload it from the cloud in the Tonie information [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-8-0/XXXXX](https://forum.revvox.de/t/release-notes-0-8-0/XXXXX)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0)
+
 ## 0.7.1
 
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
