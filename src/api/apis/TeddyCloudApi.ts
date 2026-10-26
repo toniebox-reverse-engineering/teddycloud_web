@@ -365,11 +365,33 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
     /**
      * get tonieBoxVersion
+     * falls back to boxIC if boxVersion is unset
      */
     async apiGetTonieboxVersion(
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<string> {
+        try {
+            const response = await this.apiGetTeddyCloudSettingRaw(
+                "boxVersion",
+                overlay,
+                initOverrides,
+            );
+            const boxVersion = (await response.text()).trim();
+            if (boxVersion !== "" && boxVersion !== "0") {
+                return boxVersion;
+            }
+        } catch (error) {
+            // the runtime wraps an aborted fetch in a FetchError
+            if (
+                error instanceof Error &&
+                (error.name === "AbortError" ||
+                    (error instanceof runtime.FetchError && error.cause.name === "AbortError"))
+            ) {
+                throw error;
+            }
+            // older server without the boxVersion setting
+        }
         const response = await this.apiGetTeddyCloudSettingRaw(
             "internal.toniebox_firmware.boxIC",
             overlay,
