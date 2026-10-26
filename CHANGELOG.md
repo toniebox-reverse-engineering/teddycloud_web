@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.8.0
+
+- Box version (hardware) is now persisted in the overlay config and returned by /api/getBoxes [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/566](https://github.com/toniebox-reverse-engineering/teddycloud/pull/566)
+- gui: Box version on the box card and in box setup now uses the persisted box version, so it stays known after a server restart [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561)
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-8-0/XXXXX](https://forum.revvox.de/t/release-notes-0-8-0/XXXXX)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0)
+
 ## 0.7.1
 
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
@@ -16,8 +34,6 @@
 - Fixed Docker startup when the configured PUID/PGID already belongs to an existing account in the base image
 - Greatly expanded automated backend testing and CI, including isolated test environments, C and pytest test suites, simulated Tonieboxes with hardware-specific profiles, a fake Boxine cloud and additional security regression tests [https://github.com/toniebox-reverse-engineering/teddycloud/pull/461](https://github.com/toniebox-reverse-engineering/teddycloud/pull/461)
 - Added and expanded architecture, settings, streaming and development documentation
-- Box version (hardware) is now persisted in the overlay config and returned by /api/getBoxes [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/566](https://github.com/toniebox-reverse-engineering/teddycloud/pull/566)
-- gui: Box version on the box card and in box setup now uses the persisted box version, so it stays known after a server restart [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561)
 - gui: Download TAF tracks as separate .ogg files (ZIP when more than one track is selected) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/169](https://github.com/toniebox-reverse-engineering/teddycloud/issues/169)
 - gui: Box setup can create a port patch for CC3200 boxes (altPort.custom.json) and patch the port of ESP32 boxes, e.g. for a proxy that routes boxes by port
 - gui: Certificate check per box (issued by TeddyCloud / pinned / other certificate) on the box card and in the certificates dialog [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
