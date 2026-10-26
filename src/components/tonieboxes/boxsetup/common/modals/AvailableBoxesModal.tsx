@@ -52,6 +52,7 @@ const AvailableBoxesModal: React.FC<AvailableBoxesModalProps> = ({
                         "1": "CC3200",
                         "2": "CC3235",
                         "3": "ESP32",
+                        "4": "TB2",
                     };
                     const version = BoxVersions[tonieboxVersion] || "UNKNOWN";
                     return {

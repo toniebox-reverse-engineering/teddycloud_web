@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.8.0
+
+- Box version (hardware) is now persisted in the overlay config and returned by /api/getBoxes [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/566](https://github.com/toniebox-reverse-engineering/teddycloud/pull/566)
+- gui: Box version on the box card and in box setup now uses the persisted box version, so it stays known after a server restart [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561)
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-8-0/XXXXX](https://forum.revvox.de/t/release-notes-0-8-0/XXXXX)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0)
+
 ## 0.7.1
 
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
