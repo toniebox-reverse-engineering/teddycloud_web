@@ -1715,7 +1715,7 @@
                 "cancel": "Anuluj",
                 "chipMAC": "MAC układu",
                 "chipType": "Typ układu",
-                "chipTypeError": "Błąd typu układu - odczytano nieoczekiwany typ. Odczytano {{actualname}}, oczekiwano {{expectedname}}. Przerwij przetwarzanie, sprawdź połączenie i spróbuj ponownie!",
+                "chipTypeError": "Błąd typu układu - odczytano nieoczekiwany typ. Odczytano {{actualtype}}, oczekiwano {{expectedtype}}. Przerwij przetwarzanie, sprawdź połączenie i spróbuj ponownie!",
                 "confirmFlashDialog": "Czy na pewno chcesz zflashować swojego Tonieboxa? Upewnij się, że masz stabilne połączenie i nie przerywaj procesu!",
                 "confirmFlashDialogHint": "Aby Twój Toniebox działał prawidłowo, podana instancja TeddyCloud jest absolutnie niezbędna. Jeśli Twój TeddyCloud jest offline, Twój Toniebox nie będzie mógł uzyskać dostępu do nowej zawartości!",
                 "confirmFlashModal": "Zflashuj Tonieboxa spatchowanym firmware",
