@@ -16,6 +16,8 @@
 - Fixed Docker startup when the configured PUID/PGID already belongs to an existing account in the base image
 - Greatly expanded automated backend testing and CI, including isolated test environments, C and pytest test suites, simulated Tonieboxes with hardware-specific profiles, a fake Boxine cloud and additional security regression tests [https://github.com/toniebox-reverse-engineering/teddycloud/pull/461](https://github.com/toniebox-reverse-engineering/teddycloud/pull/461)
 - Added and expanded architecture, settings, streaming and development documentation
+- Fixed a corrupted TAF in the library being kept when the same content was cached from the cloud again [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
+- Added `corrupt` and `redownloadUrl` to the tag index, a forced cloud download (`force=true`) and a full TAF check on demand (`getTagInfo?validate=true`) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
 - gui: Download TAF tracks as separate .ogg files (ZIP when more than one track is selected) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/169](https://github.com/toniebox-reverse-engineering/teddycloud/issues/169)
 - gui: Box setup can create a port patch for CC3200 boxes (altPort.custom.json) and patch the port of ESP32 boxes, e.g. for a proxy that routes boxes by port
 - gui: Certificate check per box (issued by TeddyCloud / pinned / other certificate) on the box card and in the certificates dialog [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
@@ -56,6 +58,7 @@
 - gui: Fixed TAF track downloads in the TonieInformationModal to use the correct linked/source TAF for Content and Tonies views, including uncached Tonies, and keep track selections across re-renders, screen size changes and audio player updates
 - gui: TeddyStudio: Reworked label printing to generate a browser-independent PDF instead of relying on CSS print layouts, including PDF preview and download functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286)
 - gui: Adapted outdated hint to new release candidate tags
+- gui: Show corrupted TAF files on the Tonie card, check a TAF on demand and redownload it from the cloud in the Tonie information [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
 
 ### Commits
 
