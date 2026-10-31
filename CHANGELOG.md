@@ -47,6 +47,7 @@
 - gui: Added support for the optional `hideInNav` property in plugin `plugin.json` files to prevent plugins from being shown in the navigation
 - gui: Added pagination in plugin list
 - gui: Fixed web login edge cases: the login page now appears when login gets enabled while the UI is open, and logging out while TeddyCloud is unreachable no longer leaves the logged-in view on screen
+- gui: A 401 passed on from the cloud (e.g. by a TonieCard background download) no longer switches the UI to the login page; only the web login's own answer does [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357)
 - gui: Failed file downloads in the library and the Tonie information dialog now show an error notification instead of failing silently
 - gui: A failed upload in the browser-side (WASM) audio encoder no longer additionally raises an uncaught promise rejection after showing the error notification
 - gui: Connected the "edit metadata" action of TAF files in the file browser with the Custom Model Editor, incl. track rows from the TAF header with their duration and a hint when a custom model overrides an original tonie [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341)
