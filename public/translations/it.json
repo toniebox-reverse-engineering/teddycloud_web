@@ -1718,6 +1718,8 @@
                 "chipTypeError": "Errore nel tipo di chip - letto un tipo imprevisto. Letto {{actualname}}, previsto {{expectedname}}. Elaborazione interrotta: controlla il collegamento e riprova!",
                 "confirmFlashDialog": "Vuoi davvero flashare il Toniebox? Assicurati che la connessione sia stabile e non interrompere il processo!",
                 "confirmFlashDialogHint": "Per garantire il corretto funzionamento del Toniebox, l'istanza TeddyCloud specificata è assolutamente necessaria. Se TeddyCloud è offline, il Toniebox non potrà accedere a nuovi contenuti!",
+                "confirmResetDialog": "L'intera flash del Toniebox viene sovrascritta con il file scelto. Usa solo il backup proprio di questo box. Non interrompere e non scollegare.",
+                "resetOtherBox": "Il file è il backup del box {{file}}, ma è collegato il box {{box}}. Non è stato scritto nulla.",
                 "confirmFlashModal": "Flasha il Toniebox con il firmware modificato",
                 "connected": "Connesso",
                 "connectESPCollapseTitle": "Aiuto: collega UART al Toniebox",
