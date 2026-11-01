@@ -1718,6 +1718,8 @@
                 "chipTypeError": "Błąd typu układu - odczytano nieoczekiwany typ. Odczytano {{actualtype}}, oczekiwano {{expectedtype}}. Przerwij przetwarzanie, sprawdź połączenie i spróbuj ponownie!",
                 "confirmFlashDialog": "Czy na pewno chcesz zflashować swojego Tonieboxa? Upewnij się, że masz stabilne połączenie i nie przerywaj procesu!",
                 "confirmFlashDialogHint": "Aby Twój Toniebox działał prawidłowo, podana instancja TeddyCloud jest absolutnie niezbędna. Jeśli Twój TeddyCloud jest offline, Twój Toniebox nie będzie mógł uzyskać dostępu do nowej zawartości!",
+                "confirmResetDialog": "Cała pamięć flash Tonieboxa zostanie nadpisana wybranym plikiem. Używaj tylko kopii zapasowej dokładnie tego boxa. Nie przerywaj i nie odłączaj.",
+                "resetOtherBox": "Plik jest kopią zapasową boxa {{file}}, a podłączony jest box {{box}}. Nic nie zapisano.",
                 "confirmFlashModal": "Zflashuj Tonieboxa spatchowanym firmware",
                 "connected": "Połączono",
                 "connectESPCollapseTitle": "Pomoc: podłącz UART do Tonieboxa",
