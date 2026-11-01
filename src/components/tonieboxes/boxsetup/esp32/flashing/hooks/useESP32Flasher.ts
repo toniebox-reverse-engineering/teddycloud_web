@@ -1078,19 +1078,25 @@ export const useESP32Flasher = (
                 mac,
                 chip: flasher.current_chip,
             });
-            // a backup named after another box would give this one that box's identity
+            // a backup named after another box gives this one that box's identity;
+            // allowed, as it can rescue a box whose own image is lost
             const fileMac = /(?:^|_)(?:ESP32|patched)_([0-9a-f]{12})(?![0-9a-z])/i
                 .exec(state.flashName)?.[1]
                 .toLowerCase();
             const chipMac = (mac ?? "").replace(/:/g, "").toLowerCase();
-            if (fileMac && chipMac && fileMac !== chipMac) {
+            if (
+                fileMac &&
+                chipMac &&
+                fileMac !== chipMac &&
+                !window.confirm(
+                    t("tonieboxes.esp32BoxFlashing.esp32flasher.resetOtherBox", {
+                        file: fileMac,
+                        box: chipMac,
+                    }),
+                )
+            ) {
                 throw Object.assign(
-                    new Error(
-                        t("tonieboxes.esp32BoxFlashing.esp32flasher.resetOtherBox", {
-                            file: fileMac,
-                            box: chipMac,
-                        }),
-                    ),
+                    new Error(t("tonieboxes.esp32BoxFlashing.esp32flasher.resetNotWritten")),
                     { refused: true },
                 );
             }
