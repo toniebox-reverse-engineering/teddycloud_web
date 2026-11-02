@@ -81,6 +81,8 @@ export interface UseESP32FlasherResult {
     setIsConfirmFlashModalOpen: (open: boolean) => void;
     isOverwriteForceConfirmationModalOpen: boolean;
     setIsOverwriteForceConfirmationModalOpen: (open: boolean) => void;
+    otherBoxBackup: { file: string; box: string } | null;
+    setOtherBoxBackup: (backup: { file: string; box: string } | null) => void;
     extractCertificateErrorMessage: string;
     isOpenAvailableBoxesModal: boolean;
     setIsOpenAvailableBoxesModal: (open: boolean) => void;
@@ -93,7 +95,7 @@ export interface UseESP32FlasherResult {
     loadFlashFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
     readFlash: () => Promise<void>;
     patchFlash: () => Promise<void>;
-    resetFlash: () => Promise<void>;
+    resetFlash: (force?: boolean) => Promise<void>;
     writeFlash: () => Promise<void>;
     extractAndStoreCertsFromFlash: (force?: boolean) => Promise<void>;
 
@@ -124,6 +126,9 @@ export const useESP32Flasher = (
     const [httpsUrl, setHttpsUrl] = useState<string>("");
 
     const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState(false);
+    const [otherBoxBackup, setOtherBoxBackup] = useState<{ file: string; box: string } | null>(
+        null,
+    );
     const [isOverwriteForceConfirmationModalOpen, setIsOverwriteForceConfirmationModalOpen] =
         useState(false);
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState("");
@@ -306,7 +311,7 @@ export const useESP32Flasher = (
         }));
 
         console.info("[ESP32][Revvox] prepare: openPort...");
-        await flasher.openPort(state.port);
+        await flasher.openPort(state.port, baudRate);
 
         console.info("[ESP32][Revvox] prepare: sync...");
         await flasher.sync();
@@ -411,15 +416,6 @@ export const useESP32Flasher = (
         getHttpsUrl().catch((e) => console.error("[ESP32] getHttpsUrl failed", e));
     }, []);
 
-    // auto-reset path
-    useEffect(() => {
-        if (state.resetBox && state.patchedFlash) {
-            console.info("[ESP32] auto resetFlash triggered", logCtx());
-            resetFlash();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.resetBox, state.patchedFlash]);
-
     // auto-next when proceed
     useEffect(() => {
         if (!state.resetBox && state.proceed) {
@@ -477,6 +473,12 @@ export const useESP32Flasher = (
                 port: port,
             }));
 
+            // a cancelled file dialog ends the action as well
+            fileInputRef.current?.addEventListener(
+                "cancel",
+                () => setState((prev) => ({ ...prev, actionInProgress: false })),
+                { once: true },
+            );
             fileInputRef.current?.click();
         } catch (err: any) {
             console.error("[ESP32] startLoadFlash: openPort failed", err);
@@ -575,8 +577,11 @@ export const useESP32Flasher = (
                     patchedFlash: arrayBuffer,
                     showFlash: true,
                     connected: false,
-                    flashName: "from file",
+                    flashName: file.name,
+                    actionInProgress: false,
                 }));
+                // written after the confirmation on the write step
+                setCurrentStep(ESP32_FLASH_STEPS.WRITE);
             } else {
                 const flasher = getRevvoxFlasher();
 
@@ -591,7 +596,7 @@ export const useESP32Flasher = (
                     }));
 
                     console.info("[ESP32][Revvox] loadFlashFile: openPort");
-                    await flasher.openPort(state.port);
+                    await flasher.openPort(state.port, baudRate);
 
                     console.info("[ESP32][Revvox] loadFlashFile: sync");
                     setState((prev) => ({
@@ -641,20 +646,19 @@ export const useESP32Flasher = (
                 await uploadFlashData(flashData, sanitizedName);
 
                 console.info("[ESP32] loadFlashFile: done (revvox)", { downloadLinkCreated: true });
+                // flashed is only what the patch step makes of it
                 setState((prev) => ({
                     ...prev,
-                    patchedFlash: arrayBuffer,
-                    showFlash: true,
+                    showFlash: false,
                     connected: false,
                     flashName: "from file",
                     downloadLink: url,
+                    actionInProgress: false,
                 }));
             }
         };
 
         reader.readAsArrayBuffer(file);
-
-        setState((prev) => ({ ...prev, actionInProgress: false }));
         e.target.value = "";
     };
 
@@ -1040,7 +1044,7 @@ export const useESP32Flasher = (
         }
     };
 
-    const resetFlash = async () => {
+    const resetFlash = async (force = false) => {
         console.info("[ESP32] resetFlash: start");
 
         if (!state.patchedFlash) {
@@ -1079,6 +1083,19 @@ export const useESP32Flasher = (
                 mac,
                 chip: flasher.current_chip,
             });
+            // a backup named after another box gives this one that box's identity;
+            // allowed, as it can rescue a box whose own image is lost
+            const fileMac = /(?:^|_)(?:ESP32|patched)_([0-9a-f]{12})(?![0-9a-z])/i
+                .exec(state.flashName)?.[1]
+                .toLowerCase();
+            const chipMac = (mac ?? "").replace(/:/g, "").toLowerCase();
+            if (fileMac && chipMac && fileMac !== chipMac && !force) {
+                setOtherBoxBackup({ file: fileMac, box: chipMac });
+                throw Object.assign(
+                    new Error(t("tonieboxes.esp32BoxFlashing.esp32flasher.resetNotWritten")),
+                    { refused: true },
+                );
+            }
 
             if (mac) {
                 setState((prev) => ({
@@ -1148,13 +1165,14 @@ export const useESP32Flasher = (
             setCurrentStep(ESP32_FLASH_STEPS.FINISH);
         } catch (err: any) {
             console.error("[ESP32][Revvox] resetFlash: failed", err);
-            alert(err);
+            if (!err?.refused) alert(err);
 
             setState((prev) => ({
                 ...prev,
-                state:
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
-                    ` ${String(err?.message ?? err)}`,
+                state: err?.refused
+                    ? err.message
+                    : t("tonieboxes.esp32BoxFlashing.esp32flasher.failedToCommunicate") +
+                      ` ${String(err?.message ?? err)}`,
                 connected: false,
                 actionInProgress: false,
                 error: true,
@@ -1410,6 +1428,8 @@ export const useESP32Flasher = (
         setIsConfirmFlashModalOpen,
         isOverwriteForceConfirmationModalOpen,
         setIsOverwriteForceConfirmationModalOpen,
+        otherBoxBackup,
+        setOtherBoxBackup,
         extractCertificateErrorMessage,
         isOpenAvailableBoxesModal,
         setIsOpenAvailableBoxesModal,
