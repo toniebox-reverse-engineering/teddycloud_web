@@ -3,6 +3,7 @@
 ## 0.8.0
 
 - add condition to skip changelog check for dependabot pull requests
+- Upgrade to cyclone 2.6.6 and reduce cyclone modifications [https://github.com/toniebox-reverse-engineering/teddycloud/pull/559](https://github.com/toniebox-reverse-engineering/teddycloud/pull/559)
 
 ### Commits
 
