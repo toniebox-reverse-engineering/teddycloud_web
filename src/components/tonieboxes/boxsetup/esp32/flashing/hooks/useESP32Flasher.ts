@@ -81,6 +81,8 @@ export interface UseESP32FlasherResult {
     setIsConfirmFlashModalOpen: (open: boolean) => void;
     isOverwriteForceConfirmationModalOpen: boolean;
     setIsOverwriteForceConfirmationModalOpen: (open: boolean) => void;
+    otherBoxBackup: { file: string; box: string } | null;
+    setOtherBoxBackup: (backup: { file: string; box: string } | null) => void;
     extractCertificateErrorMessage: string;
     isOpenAvailableBoxesModal: boolean;
     setIsOpenAvailableBoxesModal: (open: boolean) => void;
@@ -93,7 +95,7 @@ export interface UseESP32FlasherResult {
     loadFlashFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
     readFlash: () => Promise<void>;
     patchFlash: () => Promise<void>;
-    resetFlash: () => Promise<void>;
+    resetFlash: (force?: boolean) => Promise<void>;
     writeFlash: () => Promise<void>;
     extractAndStoreCertsFromFlash: (force?: boolean) => Promise<void>;
 
@@ -124,6 +126,9 @@ export const useESP32Flasher = (
     const [httpsUrl, setHttpsUrl] = useState<string>("");
 
     const [isConfirmFlashModalOpen, setIsConfirmFlashModalOpen] = useState(false);
+    const [otherBoxBackup, setOtherBoxBackup] = useState<{ file: string; box: string } | null>(
+        null,
+    );
     const [isOverwriteForceConfirmationModalOpen, setIsOverwriteForceConfirmationModalOpen] =
         useState(false);
     const [extractCertificateErrorMessage, setExtractCertificateErrorMessage] = useState("");
@@ -1039,7 +1044,7 @@ export const useESP32Flasher = (
         }
     };
 
-    const resetFlash = async () => {
+    const resetFlash = async (force = false) => {
         console.info("[ESP32] resetFlash: start");
 
         if (!state.patchedFlash) {
@@ -1084,17 +1089,8 @@ export const useESP32Flasher = (
                 .exec(state.flashName)?.[1]
                 .toLowerCase();
             const chipMac = (mac ?? "").replace(/:/g, "").toLowerCase();
-            if (
-                fileMac &&
-                chipMac &&
-                fileMac !== chipMac &&
-                !window.confirm(
-                    t("tonieboxes.esp32BoxFlashing.esp32flasher.resetOtherBox", {
-                        file: fileMac,
-                        box: chipMac,
-                    }),
-                )
-            ) {
+            if (fileMac && chipMac && fileMac !== chipMac && !force) {
+                setOtherBoxBackup({ file: fileMac, box: chipMac });
                 throw Object.assign(
                     new Error(t("tonieboxes.esp32BoxFlashing.esp32flasher.resetNotWritten")),
                     { refused: true },
@@ -1432,6 +1428,8 @@ export const useESP32Flasher = (
         setIsConfirmFlashModalOpen,
         isOverwriteForceConfirmationModalOpen,
         setIsOverwriteForceConfirmationModalOpen,
+        otherBoxBackup,
+        setOtherBoxBackup,
         extractCertificateErrorMessage,
         isOpenAvailableBoxesModal,
         setIsOpenAvailableBoxesModal,

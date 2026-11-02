@@ -59,6 +59,8 @@ export const Flashing: React.FC = () => {
         setIsConfirmFlashModalOpen,
         isOverwriteForceConfirmationModalOpen,
         setIsOverwriteForceConfirmationModalOpen,
+        otherBoxBackup,
+        setOtherBoxBackup,
         extractCertificateErrorMessage,
         isOpenAvailableBoxesModal,
         setIsOpenAvailableBoxesModal,
@@ -732,6 +734,21 @@ export const Flashing: React.FC = () => {
                         open={isOverwriteForceConfirmationModalOpen}
                         handleOk={() => extractAndStoreCertsFromFlash(true)}
                         handleCancel={() => setIsOverwriteForceConfirmationModalOpen(false)}
+                    />
+                    <ConfirmationDialog
+                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine")}
+                        open={otherBoxBackup !== null}
+                        okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
+                        cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
+                        content={t(
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.resetOtherBox",
+                            otherBoxBackup ?? {},
+                        )}
+                        handleOk={() => {
+                            setOtherBoxBackup(null);
+                            resetFlash(true);
+                        }}
+                        handleCancel={() => setOtherBoxBackup(null)}
                     />
                 </>
             )}
