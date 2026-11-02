@@ -48,7 +48,7 @@ export function connectESP32Explanation(): JSX.Element {
     return (
         <>
             <Uart3v3Hint />
-            <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1.1")}</Paragraph>
+            <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1_1")}</Paragraph>
             <Paragraph
                 style={{
                     display: "flex",
@@ -65,7 +65,7 @@ export function connectESP32Explanation(): JSX.Element {
                     alt={t("tonieboxes.connectESP32Modal.esp32UartJ100")}
                 />
             </Paragraph>
-            <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1.2")}</Paragraph>
+            <Paragraph>{t("tonieboxes.connectESP32Modal.connectESP32Text1_2")}</Paragraph>
 
             <Paragraph
                 style={{

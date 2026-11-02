@@ -5,10 +5,10 @@ import type { ColumnsType } from "antd/es/table";
 import {
     Translations,
     fetchTranslations,
-    LANGUAGES,
     BASE_LANG,
     collectAllKeys,
 } from "./utils/TranslationUtils";
+import LANGUAGES from "virtual:languages";
 
 interface DataType {
     key: string;
@@ -43,7 +43,7 @@ const TranslationTable: React.FC = () => {
                 title: t("community.translations.key"),
                 dataIndex: "key",
                 key: "key",
-                width: "30%",
+                width: 300,
                 fixed: "left",
                 render: (text: string) => (
                     <div style={{ wordWrap: "break-word", wordBreak: "break-all" }}>{text}</div>
@@ -53,6 +53,8 @@ const TranslationTable: React.FC = () => {
                 title: lang.toUpperCase(),
                 dataIndex: lang,
                 key: lang,
+                minWidth: 250,
+                fixed: lang === "en" ? ("left" as const) : undefined,
             })),
         ],
         [t],
@@ -80,7 +82,11 @@ const TranslationTable: React.FC = () => {
             <Table
                 size="small"
                 columns={columns}
-                scroll={{ x: "100%" }}
+                scroll={{ x: 300 + LANGUAGES.length * 250 }}
+                sticky={{
+                    offsetHeader: 0,
+                    offsetScroll: 10,
+                }}
                 dataSource={dataSource}
                 rowKey="key"
                 pagination={false}

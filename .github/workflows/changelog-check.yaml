@@ -1,0 +1,35 @@
+name: Changelog Check
+on:
+    pull_request:
+        branches:
+            - master
+            - develop
+jobs:
+    changelog:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - name: Check CHANGELOG.md
+              shell: bash
+              run: |
+                  BASE_SHA="${{ github.event.pull_request.base.sha }}"
+                  HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+                  echo "Comparing $BASE_SHA...$HEAD_SHA"
+
+                  if ! git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- CHANGELOG.md | grep -qx "CHANGELOG.md"; then
+                      echo "ERROR: CHANGELOG.md was not changed."
+                      exit 1
+                  fi
+
+                  ADDED_LINES=$(git diff --numstat "$BASE_SHA" "$HEAD_SHA" -- CHANGELOG.md | awk '{sum += $1} END {print sum + 0}')
+
+                  if [ "$ADDED_LINES" -eq 0 ]; then
+                      echo "ERROR: No lines were added to CHANGELOG.md."
+                      exit 1
+                  fi
+
+                  echo "CHANGELOG.md contains $ADDED_LINES added line(s)."

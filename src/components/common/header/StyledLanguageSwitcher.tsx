@@ -2,16 +2,15 @@ import { useTranslation } from "react-i18next";
 import { Dropdown, Space, Tag } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { LANGUAGES } from "virtual:languages";
 
 export const StyledLanguageSwitcher = () => {
     const { t, i18n } = useTranslation();
 
-    const LANGS = [
-        { key: "en", label: t("language.english") },
-        { key: "de", label: t("language.german") },
-        { key: "fr", label: t("language.french") },
-        { key: "es", label: t("language.spanish") },
-    ];
+    const LANGS = LANGUAGES.map((key) => ({
+        key,
+        label: key.toUpperCase(),
+    }));
 
     const currentLanguage = i18n.language;
     const currentLabel =
@@ -38,7 +37,7 @@ export const StyledLanguageSwitcher = () => {
                                 color: "white",
                             }}
                         >
-                            <GlobalOutlined /> {currentLabel}
+                            <GlobalOutlined /> {currentLabel.toUpperCase()}
                         </Tag>
                     </Link>
                 </Dropdown>

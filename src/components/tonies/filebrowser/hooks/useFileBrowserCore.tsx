@@ -49,7 +49,10 @@ interface UseFileBrowserCoreResult {
     generateBreadcrumbs: (currentPath: string) => React.ReactNode;
 
     buildDirPath: (dirPath: string) => string;
-    buildContentUrl: (fileName: string, options?: { ogg?: boolean }) => string;
+    buildContentUrl: (
+        fileName: string,
+        options?: { ogg?: boolean; path?: string; special?: string },
+    ) => string;
 
     defaultSorter: (a: any, b: any, dataIndex: string | string[]) => number;
     dirNameSorter: (a: any, b: any) => number;
@@ -106,6 +109,9 @@ export const useFileBrowserCore = ({
     // Prevent infinite fallback loops
     const fallbackInProgressRef = useRef(false);
 
+    // Only the latest directory request may update FileBrowser state.
+    const requestIdRef = useRef(0);
+
     // If initialPathProp changes, apply it in select-mode
     const lastAppliedInitialPathRef = useRef<string>(resolvedInitialPath);
     useEffect(() => {
@@ -120,27 +126,37 @@ export const useFileBrowserCore = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialPathProp, mode]);
 
-    // overlay → reset path + URL + force reload
+    const previousOverlayRef = useRef(overlay);
+
+    // overlay change → reset path + URL. The fetch effect below reacts to overlay directly.
     useEffect(() => {
-        if (!overlay) return;
+        if (previousOverlayRef.current === overlay) return;
+        previousOverlayRef.current = overlay;
 
         if (mode === "fileBrowser" && trackUrl) {
-            const qp = new URLSearchParams(location.search);
+            const qp = new URLSearchParams(window.location.search);
             qp.set("path", "");
             const newUrl = `${window.location.pathname}?${qp.toString()}`;
             window.history.replaceState(null, "", newUrl);
         }
 
         setPath("");
-        setRebuildList((prev) => !prev);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [overlay]);
+    }, [overlay, mode, trackUrl]);
+
+    const filetypeFilterKey = filetypeFilter.join("|");
 
     // fetch directory listing (SWR for custom_img: show cache first, revalidate in background)
     useEffect(() => {
         if (!active) return;
+
+        const requestId = ++requestIdRef.current;
+        const abortController = new AbortController();
+        const isCurrentRequest = () =>
+            requestIdRef.current === requestId && !abortController.signal.aborted;
+
         const apiPathParam = mode === "fileBrowser" ? path : encodeURIComponent(path);
-        const cacheKey = `fileIndexV2:${special}:${overlay || ""}:${apiPathParam}:${showDirOnly}:${filetypeFilter.join(",")}`;
+        const activeFiletypeFilter = filetypeFilterKey ? filetypeFilterKey.split("|") : [];
+        const cacheKey = `fileIndexV2:${special}:${overlay || ""}:${apiPathParam}:${showDirOnly}:${filetypeFilterKey}`;
         const useSwr = special === "custom_img";
 
         let hadCache = false;
@@ -166,8 +182,12 @@ export const useFileBrowserCore = ({
         api.apiGetTeddyCloudApiRaw(
             `/api/fileIndexV2?path=${apiPathParam}&special=${special}` +
                 (overlay ? `&overlay=${overlay}` : ""),
+            undefined,
+            { signal: abortController.signal },
         )
             .then(async (response: Response) => {
+                if (!isCurrentRequest()) return null;
+
                 // IMPORTANT: make non-2xx fail deterministically (so we can fallback)
                 if (!response.ok) {
                     const err: any = new Error(`HTTP ${response.status}`);
@@ -177,6 +197,8 @@ export const useFileBrowserCore = ({
                 return response.json();
             })
             .then((data: any) => {
+                if (!isCurrentRequest() || !data) return;
+
                 fallbackInProgressRef.current = false;
 
                 const list: Record[] = (data.files || []) as Record[];
@@ -184,9 +206,9 @@ export const useFileBrowserCore = ({
                 const filteredList = list.filter((entry) => {
                     if (showDirOnly && !entry.isDir) return false;
 
-                    if (filetypeFilter.length > 0 && !entry.isDir) {
+                    if (activeFiletypeFilter.length > 0 && !entry.isDir) {
                         const lowerName = entry.name.toLowerCase();
-                        return filetypeFilter.some((suffix) =>
+                        return activeFiletypeFilter.some((suffix) =>
                             lowerName.endsWith(suffix.toLowerCase()),
                         );
                     }
@@ -204,6 +226,14 @@ export const useFileBrowserCore = ({
                 }
             })
             .catch((error: any) => {
+                if (
+                    !isCurrentRequest() ||
+                    abortController.signal.aborted ||
+                    error?.name === "AbortError"
+                ) {
+                    return;
+                }
+
                 // If the requested path is invalid/unavailable -> go back to root
                 // Do this only once to avoid loops if root is also failing.
                 const canFallback = path !== "" && !fallbackInProgressRef.current;
@@ -231,7 +261,7 @@ export const useFileBrowserCore = ({
                     setPath("");
 
                     if (mode === "fileBrowser" && trackUrl) {
-                        const qp = new URLSearchParams(location.search);
+                        const qp = new URLSearchParams(window.location.search);
                         qp.set("path", "");
                         navigate(`?${qp.toString()}`, { replace: true });
                     }
@@ -239,9 +269,15 @@ export const useFileBrowserCore = ({
                 }
             })
             .finally(() => {
-                setLoading(false);
+                if (isCurrentRequest()) {
+                    setLoading(false);
+                }
             });
-    }, [active, path, special, showDirOnly, rebuildList]);
+
+        return () => {
+            abortController.abort();
+        };
+    }, [active, path, special, overlay, showDirOnly, filetypeFilterKey, rebuildList]);
 
     useEffect(() => {
         const timer = window.setTimeout(
@@ -388,22 +424,31 @@ export const useFileBrowserCore = ({
         return path ? `${path}/${dirPath}` : dirPath;
     };
 
-    const buildContentUrl = (fileName: string, options?: { ogg?: boolean }): string => {
-        const { ogg = false } = options || {};
+    const buildContentUrl = (
+        fileName: string,
+        options?: { ogg?: boolean; path?: string; special?: string },
+    ): string => {
+        const { ogg = false, path: pathOverride, special: specialOverride } = options || {};
 
         const encodedPath =
-            mode === "fileBrowser"
-                ? path || ""
-                : path
-                  ? path
-                        .split("/")
-                        .map((segment) => encodeURIComponent(segment))
-                        .join("/")
-                  : "";
-
+            pathOverride !== undefined
+                ? pathOverride
+                      .split("/")
+                      .filter(Boolean)
+                      .map((segment) => encodeURIComponent(segment))
+                      .join("/")
+                : mode === "fileBrowser"
+                  ? path || ""
+                  : path
+                    ? path
+                          .split("/")
+                          .map((segment) => encodeURIComponent(segment))
+                          .join("/")
+                    : "";
+        const targetSpecial = specialOverride !== undefined ? specialOverride : special;
         const encodedName = encodeURIComponent(fileName);
 
-        if (special === "custom_img") {
+        if (targetSpecial === "custom_img") {
             return encodedPath
                 ? `/custom_img/${encodedPath}/${encodedName}`
                 : `/custom_img/${encodedName}`;
@@ -413,10 +458,13 @@ export const useFileBrowserCore = ({
 
         const params = new URLSearchParams();
         if (ogg) params.set("ogg", "true");
-        params.set("special", special);
+        if (targetSpecial) params.set("special", targetSpecial);
         if (overlay) params.set("overlay", overlay);
 
-        url += `?${params.toString()}`;
+        const query = params.toString();
+        if (query) {
+            url += `?${query}`;
+        }
         return url;
     };
 

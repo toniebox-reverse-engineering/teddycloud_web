@@ -3,6 +3,7 @@ import { theme } from "antd";
 
 import QuestionMarkSVG from "../icons/QuestionMarkIcon";
 import { useTonies } from "../../../hooks/useTonies";
+import { withBase } from "../../../utils/basePath";
 
 const { useToken } = theme;
 
@@ -173,7 +174,7 @@ export const TonieMeetingElement: React.FC<TonieMeetingElementProps> = ({
                     }}
                 >
                     <img
-                        src={image.src}
+                        src={withBase(image.src)}
                         alt={`Random ${image.id}`}
                         className="collage-image"
                         style={{

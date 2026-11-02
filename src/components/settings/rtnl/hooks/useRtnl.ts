@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { backendUrl } from "../../../../utils/basePath";
 
 export const useRtnl = () => {
     const [logEntries, setLogEntries] = useState<string[]>([]);
@@ -33,8 +34,7 @@ export const useRtnl = () => {
     }, []);
 
     useEffect(() => {
-        const baseUrl = import.meta.env.VITE_APP_TEDDYCLOUD_API_URL;
-        const eventSource = new EventSource(`${baseUrl}/api/sse`);
+        const eventSource = new EventSource(backendUrl("/api/sse"));
 
         const appendLog = (entry: string) => {
             setLogEntries((prev) => [...prev, entry]);

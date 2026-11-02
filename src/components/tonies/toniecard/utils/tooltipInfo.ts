@@ -1,5 +1,5 @@
 import { toModelKey } from "../../hooks/useCustomModelKeys";
-import { TooltipInfo } from "../TonieCardTypes";
+import { TooltipInfo } from "../../../../types/tonieCardTypes";
 
 export const normalized = (v?: string) => (v || "").trim().toLowerCase();
 

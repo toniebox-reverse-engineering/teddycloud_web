@@ -1,5 +1,75 @@
 # Changelog
 
+## 0.7.1
+
+- Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
+- Added total audio length (`lengthSeconds`) to the TAF info of the file index and the tag index [https://github.com/toniebox-reverse-engineering/teddycloud/pull/537](https://github.com/toniebox-reverse-engineering/teddycloud/pull/537)
+- Fixed WARN log spam (incl. leaked session token) for every web UI request when login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud/issues/485](https://github.com/toniebox-reverse-engineering/teddycloud/issues/485)
+- Improved web radio / streaming reliability and performance, including continued playback of growing stream files and avoiding unnecessary encoder starts [https://github.com/toniebox-reverse-engineering/teddycloud/pull/478](https://github.com/toniebox-reverse-engineering/teddycloud/pull/478) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/479](https://github.com/toniebox-reverse-engineering/teddycloud/pull/479)
+- Fixed CC3235 boxes being incorrectly detected as Toniebox 2 instead of Toniebox 1
+- Improved box authentication and TLS/certificate handling, including fixes for authentication state reuse, TLS session handling and per-box certificate uploads [https://github.com/toniebox-reverse-engineering/teddycloud/pull/477](https://github.com/toniebox-reverse-engineering/teddycloud/pull/477)
+- Added extensive security and robustness hardening across HTTP/API handling, file operations, uploads, TAF processing, RTNL, ESP32 firmware/NVS parsing and network handling, including fixes for path traversal, command injection, secret exposure, malformed-input crashes/hangs and memory-safety issues
+- Server-side downloads now reject private/non-public network addresses by default to prevent SSRF; core.allowPrivateFetch can be enabled to explicitly allow internal sources such as a NAS
+- Improved compatibility with real CC3200 and ESP32 Toniebox behavior based on captured traffic, including TLS, claim handling, cloud responses, content downloads and RTNL communication
+- Improved runtime stability during settings/configuration reloads and reduced memory usage in settings lookup and audio encoding
+- Improved HTTP and SSE reliability, including request parsing, range handling, locking and response initialization
+- Fixed Docker startup when the configured PUID/PGID already belongs to an existing account in the base image
+- Greatly expanded automated backend testing and CI, including isolated test environments, C and pytest test suites, simulated Tonieboxes with hardware-specific profiles, a fake Boxine cloud and additional security regression tests [https://github.com/toniebox-reverse-engineering/teddycloud/pull/461](https://github.com/toniebox-reverse-engineering/teddycloud/pull/461)
+- Added and expanded architecture, settings, streaming and development documentation
+- gui: Download TAF tracks as separate .ogg files (ZIP when more than one track is selected) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/169](https://github.com/toniebox-reverse-engineering/teddycloud/issues/169)
+- gui: Box setup can create a port patch for CC3200 boxes (altPort.custom.json) and patch the port of ESP32 boxes, e.g. for a proxy that routes boxes by port
+- gui: Certificate check per box (issued by TeddyCloud / pinned / other certificate) on the box card and in the certificates dialog [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
+- gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
+- gui: Rate-limit web login after repeated failures
+- gui: Fixed auto-redirect from base URL to web UI returning "Login required" when web login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333)
+- gui: fixed missing images in library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320)
+- gui: Added Polish (pl) language support [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325)
+- gui: Added "assign to Tonie" action directly from the library file browser [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240)
+- gui: Refactored language functionality to simplify adding and maintaining additional languages. New languages can now be added without requiring code changes. Simply translate an existing language file, save it as [languagecode].json (e.g. en.json) in the public/translations folder, and rebuild the frontend. The new language will then be detected and made available automatically.
+- gui: added Italian language
+- gui: updated packages to latest version
+- gui maintenance: Added optional same-origin dev proxy (`VITE_APP_TEDDYCLOUD_DEV_PROXY=true`), so images and audio load in the dev setup with web login enabled; optional client certificate (`TEDDYCLOUD_DEV_CLIENT_P12`) for the dev proxy, local https certificates now live in the git-ignored `certs/` folder [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/342)
+- gui: replaced deprecated andt list with antd listy
+- gui: added missing language entries
+- gui: The web UI can now be served under an arbitrary URL prefix determined at runtime (e.g. Home Assistant ingress or a reverse proxy sub-path) without rewriting the built files [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/326)
+- gui: Opening the Tonie edit modal and the Custom Model Editor no longer scans the whole library. "Set model from audio" uses the model resolved by the backend, "Set audio from model" and the custom audio path ("locate in library") only search the library on click, the help dialog describes the model actions [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/332](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/332)
+- gui: Added "listened" toggle for library files and "assign next episode" action on Tonie cards [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/317)
+- gui: Overworked "assign next episode", moved it into the edit dialog, added prev episode variant, excluded audioid named files.
+- gui: Documented running the web UI under a URL prefix, simplified the prefix handling and added unit tests (`npm test`) [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/331)
+- gui: Refactored WebAuthApi to use TeddycloudApi (and allow again local dev setup with remote teddycloud instance)
+- gui: Removed link to the sunseted legacy admin GUI [https://github.com/toniebox-reverse-engineering/teddycloud/issues/489](https://github.com/toniebox-reverse-engineering/teddycloud/issues/489)
+- gui: Improved API request handling so authenticated requests consistently use the central TeddyCloud API configuration, including FormData uploads and protected file downloads
+- gui: Improved web authentication error handling so backend/network failures are no longer treated as disabled authentication
+- gui: Fixed "save on navigate" in the custom model editor (save was racing with the navigation and failed with a bogus duplicate-model error); the option is available again [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/323](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/323)
+- gui: Fixed custom Tonie track filtering when `sourceInfo.tracks` is empty but `tonieInfo.tracks` contains track data
+- gui: Fixed sibling episode assignment for library-root files and improved handling of failed directory requests
+- gui: Expanded automated test coverage for authentication, API requests and core Tonie/library logic
+- gui: Added support for the optional `hideInNav` property in plugin `plugin.json` files to prevent plugins from being shown in the navigation
+- gui: Added pagination in plugin list
+- gui: Fixed web login edge cases: the login page now appears when login gets enabled while the UI is open, and logging out while TeddyCloud is unreachable no longer leaves the logged-in view on screen
+- gui: Failed file downloads in the library and the Tonie information dialog now show an error notification instead of failing silently
+- gui: A failed upload in the browser-side (WASM) audio encoder no longer additionally raises an uncaught promise rejection after showing the error notification
+- gui: Connected the "edit metadata" action of TAF files in the file browser with the Custom Model Editor, incl. track rows from the TAF header with their duration and a hint when a custom model overrides an original tonie [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341)
+- gui: Track names in the Custom Model Editor keep their position, unnamed tracks in between are no longer dropped
+- gui: Box setup can create a port patch for CC3200 boxes (altPort.custom.json) and patch the port of ESP32 boxes, e.g. for a proxy that routes boxes by port (not possible for CC3235 boxes and the Toniebox 2)
+- gui: Show a loading spinner and prevent repeated clicks while a TonieCard background download is in progress
+- gui: Fixed TAF track downloads in the TonieInformationModal to use the correct linked/source TAF for Content and Tonies views, including uncached Tonies, and keep track selections across re-renders, screen size changes and audio player updates
+- gui: TeddyStudio: Reworked label printing to generate a browser-independent PDF instead of relying on CSS print layouts, including PDF preview and download functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286)
+- gui: Adapted outdated hint to new release candidate tags
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.0...tc_v0.7.1](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.0...tc_v0.7.1)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.0...tcw_v0.7.1](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.0...tcw_v0.7.1)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-7-1/4299](https://forum.revvox.de/t/release-notes-0-7-1/4299)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.1](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.7.1)
+
 ## 0.7.0
 
 - First TB2 support (not for daily use! Search for beta testers open: [https://t.me/toniebox_reverse_engineering/74847](https://t.me/toniebox_reverse_engineering/74847))

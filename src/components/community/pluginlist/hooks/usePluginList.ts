@@ -20,6 +20,12 @@ export const usePluginList = () => {
     const [file, setFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+    const [hiddenOnly, setHiddenOnly] = useState(false);
+
+    const hiddenPluginCount = useMemo(
+        () => plugins.filter((plugin) => plugin.hideInNav).length,
+        [plugins],
+    );
 
     const allSections = useMemo(
         () =>
@@ -49,14 +55,18 @@ export const usePluginList = () => {
         [plugins, t],
     );
 
-    const filteredPlugins = useMemo(
-        () =>
-            (plugins as TeddyCloudPlugin[]).filter((plugin) => {
-                const section = plugin.teddyCloudSection || t("community.plugins.filter.unknown");
-                return activeSectionFilters.includes(section);
-            }),
-        [plugins, activeSectionFilters, t],
-    );
+    const filteredPlugins = useMemo(() => {
+        return plugins.filter((plugin) => {
+            const matchesSection =
+                activeSectionFilters.length === 0 ||
+                (plugin.teddyCloudSection &&
+                    activeSectionFilters.includes(plugin.teddyCloudSection));
+
+            const matchesHidden = !hiddenOnly || plugin.hideInNav;
+
+            return matchesSection && matchesHidden;
+        });
+    }, [plugins, activeSectionFilters, hiddenOnly]);
 
     const toggleSectionFilter = (section: string, checked: boolean) => {
         setActiveSectionFilters((prev) =>
@@ -166,6 +176,9 @@ export const usePluginList = () => {
         filteredPlugins,
         allSections,
         activeSectionFilters,
+        hiddenOnly,
+        setHiddenOnly,
+        hiddenPluginCount,
         pluginCountBySection,
 
         // filters

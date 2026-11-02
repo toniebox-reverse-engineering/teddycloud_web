@@ -104,7 +104,7 @@ export const Uart3v3Hint: React.FC<Uart3v3HintProps> = ({
                                 checked={checked}
                                 onChange={(e) => onCheckedChange(e.target.checked)}
                             >
-                                {checkboxLabel ?? t("tonieboxes.boxSetup.UARTHint.ack")}
+                                {checkboxLabel ?? t("tonieboxes.boxSetup.UARTHint.ackUARTHint")}
                             </Checkbox>
                         )}
                     </>

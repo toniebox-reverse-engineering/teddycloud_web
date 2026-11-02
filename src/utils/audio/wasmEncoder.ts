@@ -7,6 +7,7 @@
  */
 
 import type { MyUploadFile } from "./audioEncoder";
+import { withBase } from "../basePath";
 
 // Emscripten module base type
 interface EmscriptenModule {
@@ -63,7 +64,7 @@ export async function loadWasmEncoder(): Promise<void> {
             }
 
             const script = document.createElement("script");
-            script.src = "/web/wasm/taf_encoder.js";
+            script.src = withBase("/web/wasm/taf_encoder.js");
             script.async = true;
             script.onload = () => resolve();
             script.onerror = () => reject(new Error("Failed to load WASM script"));

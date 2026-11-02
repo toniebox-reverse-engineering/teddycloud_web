@@ -2,6 +2,7 @@ import type { TFunction } from "i18next";
 import { BoxineApi, TeddyCloudApi } from "../../api";
 import { defaultAPIConfig } from "../../config/defaultApiConfig";
 import { NotificationTypeEnum } from "../../types/teddyCloudNotificationTypes";
+import { withBase } from "../basePath";
 
 const apiTC = new TeddyCloudApi(defaultAPIConfig());
 const api = new BoxineApi(defaultAPIConfig());
@@ -64,7 +65,7 @@ export const restartServer = async (
                 );
 
                 if (redirectToBase) {
-                    window.location.href = `${import.meta.env.VITE_APP_TEDDYCLOUD_WEB_BASE}`;
+                    window.location.href = withBase("/web");
                 }
                 return;
             }

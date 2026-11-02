@@ -592,6 +592,45 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         return response;
     }
 
+    async apiPostTeddyCloudJsonRaw(
+        path: string,
+        body: unknown,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Response> {
+        return this.apiPostTeddyCloudRaw(path, JSON.stringify(body), undefined, initOverrides, {
+            "Content-Type": "application/json",
+        });
+    }
+
+    /**
+     * @description Set/unset the "listened" flag for an arbitrary library (or other special-root) file
+     *
+     * @param path path of the file, relative to the special root (optional)
+     * @param special special root the path is relative to, e.g. "library" (optional)
+     * @param listened target value of the "listened" flag
+     * @param overlay overlay (optional)
+     * @param initOverrides initOverrides (optional)
+     * @returns
+     */
+    async apiPostFileSetListened(
+        path: string,
+        special: string,
+        listened: boolean,
+        overlay?: string,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Response> {
+        const response = await this.apiPostTeddyCloudRaw(
+            `/api/fileSetListened?path=${encodeURIComponent(path)}&special=${encodeURIComponent(special)}${overlay ? "&overlay=" + encodeURIComponent(overlay) : ""}`,
+            "listened=" + listened,
+            undefined,
+            initOverrides,
+        );
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response;
+    }
+
     /**
      * @description Post simple data to endpoint path of TeddyCloud api
      *
@@ -659,45 +698,30 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
         headerParameters: runtime.HTTPHeaders = {},
     ): Promise<Response> {
+        const overlaySeparator = path.includes("?") ? "&" : "?";
+        const requestPath = `${path}${overlay ? `${overlaySeparator}overlay=${overlay}` : ""}`;
+
         try {
-            // To Do: Replace fetch with request
-            const response = await fetch(import.meta.env.VITE_APP_TEDDYCLOUD_API_URL + path, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await this.request(
+                {
+                    path: requestPath,
+                    method: "POST",
+                    headers: headerParameters,
+                    body: formData,
+                },
+                initOverrides,
+            );
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
             return response;
         } catch (err: any) {
-            if (err.response) {
+            if (err?.response) {
                 return err.response;
-            } else if (err instanceof TypeError) {
-                return new Response(
-                    JSON.stringify({
-                        error: "Network error, please try again later.",
-                        message: err.message,
-                    }),
-                    {
-                        status: 500,
-                        statusText: "Network Error",
-                        headers: { "Content-Type": "application/json" },
-                    },
-                );
-            } else {
-                return new Response(
-                    JSON.stringify({
-                        error: "An unexpected error occurred.",
-                        message: err,
-                    }),
-                    {
-                        status: 500,
-                        statusText: "Unexpected Error",
-                        headers: { "Content-Type": "application/json" },
-                    },
-                );
             }
+            const causeMsg = err?.cause?.message ?? err?.message;
+            throw new Error(causeMsg || "Network error, please try again");
         }
     }
 }

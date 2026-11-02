@@ -21,8 +21,14 @@ const { Paragraph } = Typography;
 export const Home = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
-    const { newVersionAvailable, isDevelopVersion, latestDevelopSHA, latestReleaseVersion } =
-        useTeddyCloudVersion();
+    const {
+        newVersionAvailable,
+        isDevelopVersion,
+        isReleaseCandidateVersion,
+        latestReleaseCandidateTag,
+        latestDevelopSHA,
+        latestReleaseVersion,
+    } = useTeddyCloudVersion();
 
     const {
         tonies,
@@ -76,16 +82,20 @@ export const Home = () => {
             description={
                 <>
                     <Paragraph>
-                        {isDevelopVersion
-                            ? t("teddycloud.newVersionDetailsAvailableDevelop")
-                            : t("teddycloud.newVersionDetailsAvailable")}{" "}
+                        {isReleaseCandidateVersion
+                            ? t("teddycloud.newVersionDetailsAvailableReleaseCandidate")
+                            : isDevelopVersion
+                              ? t("teddycloud.newVersionDetailsAvailableDevelop")
+                              : t("teddycloud.newVersionDetailsAvailable")}{" "}
                     </Paragraph>
 
                     <Link
                         to={
-                            isDevelopVersion
-                                ? gitHubTCCommitTreeBaseUrl + latestDevelopSHA
-                                : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
+                            isReleaseCandidateVersion
+                                ? gitHubTCCommitTreeBaseUrl + latestReleaseCandidateTag
+                                : isDevelopVersion
+                                  ? gitHubTCCommitTreeBaseUrl + latestDevelopSHA
+                                  : gitHubTCReleasesUrl + "tag/" + latestReleaseVersion
                         }
                         target="_blank"
                         rel="noopener noreferrer"

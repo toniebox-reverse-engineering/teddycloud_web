@@ -1,5 +1,16 @@
 import React from "react";
-import { Alert, AutoComplete, Button, Col, Collapse, Form, Input, Row, Space } from "antd";
+import {
+    Alert,
+    AutoComplete,
+    Button,
+    Col,
+    Collapse,
+    Form,
+    Input,
+    Row,
+    Space,
+    Typography,
+} from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import type { FormInstance } from "antd/es/form";
@@ -7,6 +18,7 @@ import type { FormInstance } from "antd/es/form";
 import { toPreviewableImageUrl } from "../common/utils/imagePathUtils";
 import { languageOptions, toLanguageCode } from "../../common/icons/LanguageFlagIcon";
 import type { CustomEntry, FormValues } from "./types/customModelEditorTypes";
+import { formatTrackTime, toTrackArray, toTrackDurations } from "./utils/customModelEditorUtils";
 
 type AudioLibraryPathInputProps = {
     audioId: string;
@@ -59,6 +71,10 @@ interface CustomModelFormProps {
     setKeySelectAudioFileBrowser: React.Dispatch<React.SetStateAction<number>>;
     setSelectAudioModalOpen: (open: boolean) => void;
     AudioLibraryPathInputComponent: React.ComponentType<AudioLibraryPathInputProps>;
+    /** Track starts (seconds) of the linked file, when known. */
+    fileTrackSeconds?: number[];
+    /** Total length (seconds) of the linked file, when known. */
+    fileLengthSeconds?: number;
 }
 
 export const CustomModelForm: React.FC<CustomModelFormProps> = ({
@@ -83,8 +99,16 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
     setKeySelectAudioFileBrowser,
     setSelectAudioModalOpen,
     AudioLibraryPathInputComponent,
+    fileTrackSeconds,
+    fileLengthSeconds,
 }) => {
     const { t } = useTranslation();
+    // as saved: by position, without trailing empty rows
+    const trackNames = toTrackArray((Form.useWatch("tracks", form) || []).map((row) => row?.track));
+    const fileTrackCount = fileTrackSeconds?.length ?? 0;
+    const fileTrackDurations = toTrackDurations(fileTrackSeconds ?? [], fileLengthSeconds);
+    const trackCountMismatch =
+        fileTrackCount > 0 && trackNames.length > 0 && trackNames.length !== fileTrackCount;
     const collapseItems = [
         {
             key: "media",
@@ -456,8 +480,41 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                 marginBottom: 8,
                             }}
                         >
+                            {trackCountMismatch && (
+                                <Alert
+                                    type={trackNames.length > fileTrackCount ? "info" : "warning"}
+                                    showIcon
+                                    style={{ marginBottom: 12 }}
+                                    title={
+                                        trackNames.length > fileTrackCount
+                                            ? t("tonies.customEditor.tracks.moreNamesTitle", {
+                                                  tracks: fileTrackCount,
+                                              })
+                                            : t("tonies.customEditor.tracks.fewerNamesTitle", {
+                                                  tracks: fileTrackCount,
+                                              })
+                                    }
+                                    description={
+                                        trackNames.length > fileTrackCount
+                                            ? t("tonies.customEditor.tracks.moreNamesDescription")
+                                            : t(
+                                                  "tonies.customEditor.tracks.fewerNamesDescription",
+                                                  {
+                                                      tracks: fileTrackCount,
+                                                  },
+                                              )
+                                    }
+                                />
+                            )}
                             {fields.map(({ key, name, ...restField }, idx) => (
                                 <Row key={key} gutter={[12, 0]} style={{ marginTop: 8 }}>
+                                    {fileTrackCount > 0 && idx === fileTrackCount && (
+                                        <Col span={24} style={{ marginBottom: 8 }}>
+                                            <Typography.Text type="secondary">
+                                                {t("tonies.customEditor.tracks.notInFile")}
+                                            </Typography.Text>
+                                        </Col>
+                                    )}
                                     <Col xs={24} md={22}>
                                         <Form.Item
                                             {...restField}
@@ -471,6 +528,15 @@ export const CustomModelForm: React.FC<CustomModelFormProps> = ({
                                             <Input
                                                 disabled={disablePerFieldInMultiSelect.tracks}
                                                 style={changedInputStyle(areTracksChanged)}
+                                                prefix={
+                                                    idx < fileTrackCount ? (
+                                                        <Typography.Text type="secondary">
+                                                            {fileTrackDurations[idx] !== undefined
+                                                                ? `${idx + 1} · ${formatTrackTime(fileTrackDurations[idx]!)}`
+                                                                : idx + 1}
+                                                        </Typography.Text>
+                                                    ) : undefined
+                                                }
                                             />
                                         </Form.Item>
                                     </Col>

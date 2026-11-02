@@ -5,6 +5,7 @@ export interface RecordTafHeader {
     sha1Hash?: any;
     size?: number;
     trackSeconds?: number[];
+    lengthSeconds?: number;
     valid?: boolean;
 }
 
@@ -20,4 +21,5 @@ export type Record = {
     name: string;
     tafHeader: RecordTafHeader;
     tonieInfo: TonieInfo;
+    listened?: boolean;
 };

@@ -17,6 +17,12 @@ import { useNavigate } from "react-router-dom";
 
 import TeddyAudioPlaylistEditor from "./modals/TeddyAudioPlaylistEditorModal";
 import TonieInformationModal from "../common/modals/TonieInformationModal";
+import {
+    TafTrackDownloadModal,
+    buildTafDownloadTracks,
+} from "../common/modals/TafTrackDownloadModal";
+import { sanitizeDownloadName } from "../../../utils/files/sanitizeDownloadName";
+import { AssignTonieModal } from "../common/modals/AssignTonieModal";
 
 import { IMAGE_EXTENSIONS } from "../../../constants/fileTypes";
 import { ffmpegSupportedExtensions } from "../../../utils/files/ffmpegSupportedExtensions";
@@ -36,6 +42,7 @@ import { createColumns } from "./helper/Columns";
 import { useFileBrowserCore } from "./hooks/useFileBrowserCore";
 import { useFileDownload } from "./hooks/useFileDownload";
 import { useMigrateContent2Lib } from "./hooks/useMigrateContent2Lib";
+import { useToggleListened } from "./hooks/useToggleListened";
 import DeleteFilesModal from "./modals/DeleteFilesModal";
 import EncodeFilesModal from "./modals/EncodeFilesModal";
 import JsonViewerModal from "./modals/JsonViewerModal";
@@ -45,10 +52,17 @@ import TafHeaderModal from "./modals/TafHeaderModal";
 import UploadFilesModal from "./modals/UploadFilesModal";
 import { canHover } from "../../../utils/browser/browserUtils";
 import { useTapEditor } from "./hooks/useTAPEditor";
+import { useTafMetaEditor } from "./hooks/useTafMetaEditor";
+import { CustomModelEditor } from "../custommodel/CustomModelEditor";
 import { UnusedTAFsModal } from "./modals/UnusedTAFsModal";
 import CustomJsonSnippetModal from "./modals/CustomJsonSnippetModal";
+import { backendUrl, withBase } from "../../../utils/basePath";
+import { TeddyCloudApi } from "../../../api";
+import { defaultAPIConfig } from "../../../config/defaultApiConfig";
 
 const { Paragraph } = Typography;
+
+const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { useToken } = theme;
 
@@ -85,9 +99,6 @@ export const FileBrowser: React.FC<{
     const [isJsonViewerModalOpen, setIsJsonViewerModalOpen] = useState<boolean>(false);
     const [jsonViewerFile, setJsonViewerFile] = useState<string | null>(null);
 
-    const [isTafMetaEditorModalOpen, setIsTafMetaEditorModalOpen] = useState<boolean>(false);
-    const [tafMetaEditorKey, setTafMetaEditorKey] = useState<number>(0);
-
     const [isTafHeaderModalOpen, setIsTafHeaderModalOpen] = useState<boolean>(false);
     const [tafHeaderRecord, setTafHeaderRecord] = useState<RecordTafHeader | null>(null);
 
@@ -102,6 +113,9 @@ export const FileBrowser: React.FC<{
     const [isMoveFileModalOpen, setIsMoveFileModalOpen] = useState<boolean>(false);
     const [isRenameFileModalOpen, setIsRenameFileModalOpen] = useState<boolean>(false);
 
+    const [isAssignTonieModalOpen, setIsAssignTonieModalOpen] = useState<boolean>(false);
+    const [assignTonieSourcePath, setAssignTonieSourcePath] = useState<string>("");
+
     const [isOpenUploadDragAndDropModal, setIsOpenUploadDragAndDropModal] =
         useState<boolean>(false);
     const [uploadFileList, setUploadFileList] = useState<any[]>([]);
@@ -115,6 +129,7 @@ export const FileBrowser: React.FC<{
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
     const [downloading, setDownloading] = useState<{ [key: string]: boolean }>({});
+    const [tafDownloadRecord, setTafDownloadRecord] = useState<Record | null>(null);
 
     const directoryTree = useDirectoryTree(special);
 
@@ -185,13 +200,72 @@ export const FileBrowser: React.FC<{
         setRebuildList,
     });
 
+    const {
+        isTafMetaEditorModalOpen,
+        tafMetaAudioSource,
+        openTafMetaEditor,
+        closeTafMetaEditor,
+        onTafMetaSaved,
+    } = useTafMetaEditor({
+        special,
+        setRebuildList,
+    });
+
     // information modal
-    const showInformationModal = (record: any) => {
-        if (!record.isDir && record.tonieInfo?.tracks) {
-            setCurrentRecord(record);
-            setCurrentAudioUrl(buildContentUrl(record.name, { ogg: true }));
-            setIsInformationModalOpen(true);
+    const buildLibraryTafContentUrl = (source: unknown): string | null => {
+        if (typeof source !== "string" || !source.toLowerCase().startsWith("lib://")) {
+            return null;
         }
+
+        let libraryPath = source.slice("lib://".length).replace(/^\/+/, "");
+        try {
+            libraryPath = decodeURIComponent(libraryPath);
+        } catch {
+            // Keep the original path if it is not URI encoded correctly.
+        }
+
+        libraryPath = libraryPath.replace(/\\/g, "/").replace(/\/{2,}/g, "/");
+        if (!libraryPath.toLowerCase().endsWith(".taf")) {
+            return null;
+        }
+
+        const pathParts = libraryPath.split("/").filter(Boolean);
+        const fileName = pathParts.pop();
+        if (!fileName) {
+            return null;
+        }
+
+        return buildContentUrl(fileName, {
+            ogg: true,
+            path: pathParts.join("/"),
+            special: "library",
+        });
+    };
+
+    const showInformationModal = async (record: Record) => {
+        if (record.isDir || !record.tonieInfo?.tracks) {
+            return;
+        }
+
+        let audioUrl = buildContentUrl(record.name, { ogg: true });
+
+        if (record.name.toLowerCase().match(/500304e0\.json$/)) {
+            try {
+                const response = await api.apiGetTeddyCloudApiRaw(buildContentUrl(record.name));
+                const contentJson = await response.json();
+                const sourceAudioUrl = buildLibraryTafContentUrl(contentJson?.source);
+
+                if (sourceAudioUrl) {
+                    audioUrl = sourceAudioUrl;
+                }
+            } catch (error) {
+                console.warn("Could not resolve audio source from content JSON", error);
+            }
+        }
+
+        setCurrentRecord(record);
+        setCurrentAudioUrl(audioUrl);
+        setIsInformationModalOpen(true);
     };
 
     // json viewer
@@ -210,11 +284,6 @@ export const FileBrowser: React.FC<{
     const closeTafHeader = () => {
         setIsTafHeaderModalOpen(false);
         setTafHeaderRecord(null);
-    };
-
-    // taf meta placeholder
-    const handleEditTafMetaDataClick = (path: string, record: Record) => {
-        // ToDo
     };
 
     // unused TAFs modal
@@ -267,6 +336,17 @@ export const FileBrowser: React.FC<{
 
     const closeRenameFileModal = () => {
         setIsRenameFileModalOpen(false);
+    };
+
+    // assign to tonie
+    const showAssignTonieDialog = (record: Record) => {
+        const normalizedPath = path === "" || path.endsWith("/") ? path : `${path}/`;
+        setAssignTonieSourcePath(`lib://${normalizedPath}${record.name}`);
+        setIsAssignTonieModalOpen(true);
+    };
+
+    const closeAssignTonieModal = () => {
+        setIsAssignTonieModalOpen(false);
     };
 
     // encode files
@@ -325,6 +405,33 @@ export const FileBrowser: React.FC<{
         setDownloading,
     });
 
+    const handleFileDownloadClick = (
+        record: Record,
+        downloadPath: string,
+        downloadSpecial: string,
+        downloadOverlay?: string,
+    ) => {
+        if (
+            record.name.toLowerCase().endsWith(".taf") &&
+            buildTafDownloadTracks(
+                record.tonieInfo?.tracks,
+                record.tafHeader?.trackSeconds,
+                record.tafHeader?.lengthSeconds,
+            ).length > 1
+        ) {
+            setTafDownloadRecord(record);
+            return;
+        }
+        handleFileDownload(record, downloadPath, downloadSpecial, downloadOverlay);
+    };
+
+    const { toggleListened } = useToggleListened({
+        path,
+        special,
+        overlay,
+        setRebuildList,
+    });
+
     // table selection / classes
     const rowClassName = (record: any) => {
         return selectedRowKeys.includes(record.key) ? "highlight-row" : "";
@@ -368,13 +475,15 @@ export const FileBrowser: React.FC<{
         handleDirClick,
         showInformationModal,
         playAudio,
-        handleFileDownload,
+        handleFileDownload: handleFileDownloadClick,
         migrateContent2Lib,
         handleEditTapClick: openEditTap,
-        handleEditTafMetaDataClick,
+        handleEditTafMetaDataClick: openTafMetaEditor,
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        toggleListened,
+        showAssignTonieDialog,
         buildContentUrl: special === "custom_img" ? buildContentUrl : undefined,
         onImagePreviewClick:
             special === "custom_img"
@@ -487,6 +596,14 @@ export const FileBrowser: React.FC<{
                     setRebuildList={setRebuildList}
                 />
             )}
+            {isAssignTonieModalOpen && (
+                <AssignTonieModal
+                    open={isAssignTonieModalOpen}
+                    onClose={closeAssignTonieModal}
+                    sourcePath={assignTonieSourcePath}
+                    onAssigned={() => setRebuildList((prev) => !prev)}
+                />
+            )}
             {isEncodeFilesModalOpen && (
                 <EncodeFilesModal
                     open={isEncodeFilesModalOpen}
@@ -510,6 +627,16 @@ export const FileBrowser: React.FC<{
                     onCancel={closeTapEditor}
                 />
             )}
+            {isTafMetaEditorModalOpen && (
+                <CustomModelEditor
+                    open={isTafMetaEditorModalOpen}
+                    onClose={closeTafMetaEditor}
+                    mode="audio-single"
+                    audioSource={tafMetaAudioSource}
+                    onUpdated={onTafMetaSaved}
+                    overlay={overlay}
+                />
+            )}
             {isHelpModalOpen && (
                 <HelpModal open={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
             )}
@@ -523,6 +650,36 @@ export const FileBrowser: React.FC<{
             ) : (
                 ""
             )}
+            {tafDownloadRecord ? (
+                <TafTrackDownloadModal
+                    open
+                    onClose={() => setTafDownloadRecord(null)}
+                    title={
+                        tafDownloadRecord.tonieInfo?.series || tafDownloadRecord.tonieInfo?.episode
+                            ? `${tafDownloadRecord.tonieInfo.series || ""}${
+                                  tafDownloadRecord.tonieInfo.episode
+                                      ? " - " + tafDownloadRecord.tonieInfo.episode
+                                      : ""
+                              }`
+                            : tafDownloadRecord.name
+                    }
+                    tracks={buildTafDownloadTracks(
+                        tafDownloadRecord.tonieInfo?.tracks,
+                        tafDownloadRecord.tafHeader?.trackSeconds,
+                        tafDownloadRecord.tafHeader?.lengthSeconds,
+                    )}
+                    contentUrl={withBase(buildContentUrl(tafDownloadRecord.name, { ogg: true }))}
+                    baseFilename={sanitizeDownloadName(
+                        tafDownloadRecord.tonieInfo?.series || tafDownloadRecord.tonieInfo?.episode
+                            ? `${tafDownloadRecord.tonieInfo.series || ""}${
+                                  tafDownloadRecord.tonieInfo.episode
+                                      ? " - " + tafDownloadRecord.tonieInfo.episode
+                                      : ""
+                              }`
+                            : tafDownloadRecord.name.replace(/\.taf$/i, ""),
+                    )}
+                />
+            ) : null}
             {special === "custom_img" && (
                 <Modal
                     title={t("tonies.customEditor.previewTitle")}
@@ -673,7 +830,7 @@ export const FileBrowser: React.FC<{
                                         {t("fileBrowser.upload.showUploadFilesDragNDrop")}
                                     </div>
                                 </Button>
-                                {special === "library" && (
+                                {special === "library" && !isTapList && (
                                     <Button
                                         size="small"
                                         icon={<SearchOutlined />}
@@ -682,7 +839,7 @@ export const FileBrowser: React.FC<{
                                         {t("fileBrowser.unusedTafsModal.title")}
                                     </Button>
                                 )}
-                                {special === "library" && (
+                                {special === "library" && !isTapList && (
                                     <Button
                                         size="small"
                                         icon={<CodeOutlined />}
@@ -743,15 +900,7 @@ export const FileBrowser: React.FC<{
                                     record.name.toLowerCase().endsWith(ext),
                                 )
                             ) {
-                                const contentPath = buildContentUrl(record.name);
-                                const baseApiUrl =
-                                    (typeof import.meta !== "undefined" &&
-                                        (import.meta as any).env?.VITE_APP_TEDDYCLOUD_API_URL) ||
-                                    "";
-                                const url = baseApiUrl
-                                    ? `${baseApiUrl.replace(/\/$/, "")}${contentPath.startsWith("/") ? contentPath : `/${contentPath}`}`
-                                    : contentPath;
-                                setImagePreviewUrl(url);
+                                setImagePreviewUrl(backendUrl(buildContentUrl(record.name)));
                                 setImagePreviewOpen(true);
                             } else if (
                                 record.name.includes(".json") ||

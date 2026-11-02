@@ -3,6 +3,7 @@ import { Alert, Typography, theme } from "antd";
 import { useTranslation } from "react-i18next";
 import { useTeddyCloud } from "../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../types/teddyCloudNotificationTypes";
+import { withBase } from "../../../utils/basePath";
 
 const { Paragraph } = Typography;
 const { useToken } = theme;
@@ -156,7 +157,7 @@ export const PluginContainer: React.FC<PluginContainerProps> = ({ pluginId }) =>
             )}
             <iframe
                 ref={iframeRef}
-                src={`/plugins/${pluginId}/index.html`}
+                src={withBase(`/plugins/${pluginId}/index.html`)}
                 title={`${t("community.plugins.plugin")}: ${pluginId}`}
                 style={{
                     width: "100%",

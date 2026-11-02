@@ -11,6 +11,7 @@ import {
     buildEffectiveSettings,
 } from "../types/labelOverrides";
 import { LocalOverrideSettings } from "../settingspanel/LocalOverridesSettingsPanel";
+import { withBase } from "../../../../utils/basePath";
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -242,7 +243,7 @@ export const EditLabelModal: React.FC<EditLabelModalProps> = ({
                                     <p className="ant-upload-drag-icon">
                                         {picture ? (
                                             <img
-                                                src={picture}
+                                                src={withBase(picture)}
                                                 alt="preview"
                                                 style={{
                                                     maxWidth: "100%",

@@ -9,12 +9,15 @@ import {
     PlusOutlined,
     RollbackOutlined,
     SaveFilled,
+    StepBackwardOutlined,
+    StepForwardOutlined,
     SwapOutlined,
 } from "@ant-design/icons";
 
 import { ToniesJsonSearch } from "../../common/searches/ToniesJsonSearch";
 import { RadioStreamSearch } from "../search/RadioStreamSearch";
 import { toModelKey } from "../../utils/modelKey";
+import { useAssignSiblingEpisode } from "../hooks/useAssignSiblingEpisode";
 
 const { useToken } = theme;
 const { Text } = Typography;
@@ -56,9 +59,10 @@ interface EditTonieModalProps {
     // File selection
     onOpenFileSelectModal: () => void;
 
-    // Set audio from model (when source differs from model and model audio exists in library)
+    // Set audio from model: library path of the model audio, once located on demand
     modelAudioPath?: string | null;
-    modelAudioHasMapping?: boolean;
+    onSetAudioFromModel?: () => void;
+    isLocatingModelAudio?: boolean;
 
     // Display text for selected model (e.g. "[01-0013] Sample Series - Episode Title")
     modelDisplayText?: string;
@@ -77,7 +81,8 @@ interface EditTonieModalProps {
     onModelSelectResult?: (result: { value: string; selectionText: string }) => void;
     modelInfoTooltip?: React.ReactNode;
     audioInfoTooltip?: React.ReactNode;
-    audioModelForSet?: string;
+    // Model of the selected audio (resolved by the backend)
+    audioModel?: string;
     onSetModelFromAudio?: () => void;
 }
 
@@ -103,7 +108,8 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
     hasPendingChanges,
     onOpenFileSelectModal,
     modelAudioPath,
-    modelAudioHasMapping = false,
+    onSetAudioFromModel,
+    isLocatingModelAudio = false,
     modelDisplayText = "",
     onCreateNewModel,
     onEditModel,
@@ -112,11 +118,25 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
     onModelSelectResult,
     modelInfoTooltip,
     audioInfoTooltip,
-    audioModelForSet,
+    audioModel,
     onSetModelFromAudio,
 }) => {
     const { t } = useTranslation();
     const { token } = useToken();
+
+    const {
+        nextEpisodeAvailable,
+        prevEpisodeAvailable,
+        nextEpisodeFile,
+        prevEpisodeFile,
+        handleAssignNextEpisode,
+        handleAssignPrevEpisode,
+    } = useAssignSiblingEpisode({
+        source: selectedSource,
+        onSelectedSourceChange,
+        setInputValidationSource,
+    });
+
     const handleClearSource = () => {
         onSelectedSourceChange("");
         setInputValidationSource({ validateStatus: "", help: "" });
@@ -143,22 +163,67 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
             .toLowerCase();
     const isSourceUnchanged = selectedSource === (originalSource || "");
     const isModelUnchanged = selectedModel === (originalModel || "");
+    const normalizedAudioModel = (audioModel || "").trim();
     const sourceMatchesModelAudio =
-        Boolean(modelAudioPath) && normalized(selectedSource) === normalized(modelAudioPath);
+        (Boolean(modelAudioPath) && normalized(selectedSource) === normalized(modelAudioPath)) ||
+        (Boolean(normalizedAudioModel) &&
+            toModelKey(selectedModel) === toModelKey(normalizedAudioModel));
     const showSyncActions = !sourceMatchesModelAudio;
-    const normalizedAudioModelForSet = (audioModelForSet || "").trim();
-    // Show when model has a tonies.json mapping and source ≠ model audio; enable once library path resolved.
+    // The library is only searched for the model audio when the button is clicked.
     const showSetAudioFromModelAction =
-        showSyncActions && Boolean(selectedModel.trim()) && Boolean(modelAudioHasMapping);
+        showSyncActions && Boolean(selectedModel.trim()) && Boolean(onSetAudioFromModel);
     const showSetModelFromAudioAction =
-        showSyncActions &&
-        Boolean(normalizedAudioModelForSet) &&
-        Boolean(onSetModelFromAudio) &&
-        toModelKey(selectedModel) !== toModelKey(normalizedAudioModelForSet);
-    const setAudioFromModelDisabled = showSetAudioFromModelAction && !modelAudioPath;
-    const setAudioFromModelTooltip = !modelAudioPath
-        ? t("tonies.editModal.setAudioFromModelUnavailableInLibrary")
-        : undefined;
+        showSyncActions && Boolean(normalizedAudioModel) && Boolean(onSetModelFromAudio);
+
+    const assignNextEpisodeAction = (
+        <Tooltip
+            key="assignNextEpisode"
+            title={
+                nextEpisodeAvailable
+                    ? t("tonies.assignNextEpisode.action", {
+                          file: nextEpisodeFile?.tonieInfo?.episode
+                              ? nextEpisodeFile?.tonieInfo?.episode
+                              : nextEpisodeFile?.name,
+                      })
+                    : t("tonies.assignNextEpisode.noneLeft")
+            }
+        >
+            <StepForwardOutlined
+                key="assignNextEpisode"
+                style={
+                    nextEpisodeAvailable
+                        ? undefined
+                        : { cursor: "default", color: token.colorTextDisabled }
+                }
+                onClick={nextEpisodeAvailable ? handleAssignNextEpisode : undefined}
+            />
+        </Tooltip>
+    );
+
+    const assignPrevEpisodeAction = (
+        <Tooltip
+            key="assignPrevEpisode"
+            title={
+                prevEpisodeAvailable
+                    ? t("tonies.assignPrevEpisode.action", {
+                          file: prevEpisodeFile?.tonieInfo?.episode
+                              ? prevEpisodeFile?.tonieInfo?.episode
+                              : prevEpisodeFile?.name,
+                      })
+                    : t("tonies.assignPrevEpisode.noneLeft")
+            }
+        >
+            <StepBackwardOutlined
+                key="assignPrevEpisode"
+                style={
+                    prevEpisodeAvailable
+                        ? undefined
+                        : { cursor: "default", color: token.colorTextDisabled }
+                }
+                onClick={prevEpisodeAvailable ? handleAssignPrevEpisode : undefined}
+            />
+        </Tooltip>
+    );
 
     return (
         <Modal
@@ -231,6 +296,19 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                                     style={{ marginLeft: 2 }}
                                 />
                             ) : null,
+                            prevEpisodeAvailable || nextEpisodeAvailable
+                                ? assignPrevEpisodeAction
+                                : null,
+                            prevEpisodeAvailable || nextEpisodeAvailable
+                                ? assignNextEpisodeAction
+                                : null,
+                            prevEpisodeAvailable || nextEpisodeAvailable ? (
+                                <Divider
+                                    key="divider-assign-sibling-episode"
+                                    orientation="vertical"
+                                    style={{ marginLeft: 2 }}
+                                />
+                            ) : null,
                             <FolderOpenOutlined
                                 key="select-file"
                                 onMouseDown={(e) => e.preventDefault()}
@@ -248,11 +326,14 @@ export const EditTonieModal: React.FC<EditTonieModalProps> = ({
                             <Button
                                 type="default"
                                 icon={<SwapOutlined />}
-                                disabled={setAudioFromModelDisabled}
+                                loading={isLocatingModelAudio}
                                 onClick={() => {
-                                    if (!modelAudioPath) return;
-                                    onSelectedSourceChange(modelAudioPath);
-                                    setInputValidationSource({ validateStatus: "", help: "" });
+                                    if (modelAudioPath) {
+                                        onSelectedSourceChange(modelAudioPath);
+                                        setInputValidationSource({ validateStatus: "", help: "" });
+                                        return;
+                                    }
+                                    onSetAudioFromModel?.();
                                 }}
                             >
                                 {t("tonies.editModal.setAudioFromModel")}

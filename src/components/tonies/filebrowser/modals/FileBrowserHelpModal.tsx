@@ -11,6 +11,10 @@ import {
     EditOutlined,
     FormOutlined,
     CopyOutlined,
+    DownloadOutlined,
+    ClockCircleOutlined,
+    CheckCircleOutlined,
+    SwapOutlined,
 } from "@ant-design/icons";
 
 interface HelpModalProps {
@@ -51,6 +55,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
             title: t("fileBrowser.help.actionItems.playAudioFile.title"),
             text: t("fileBrowser.help.actionItems.playAudioFile.text"),
         },
+
         {
             key: 2,
             icon: <CloudServerOutlined />,
@@ -77,24 +82,48 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
         },
         {
             key: 6,
+            icon: <DownloadOutlined />,
+            title: t("fileBrowser.help.actionItems.downloadFile.title"),
+            text: t("fileBrowser.help.actionItems.downloadFile.text"),
+        },
+        {
+            key: 7,
+            icon: <ClockCircleOutlined />,
+            title: t("fileBrowser.help.actionItems.markAsListened.unlistened.title"),
+            text: t("fileBrowser.help.actionItems.markAsListened.unlistened.text"),
+        },
+        {
+            key: 8,
+            icon: <CheckCircleOutlined />,
+            title: t("fileBrowser.help.actionItems.markAsListened.listened.title"),
+            text: t("fileBrowser.help.actionItems.markAsListened.listened.text"),
+        },
+        {
+            key: 9,
+            icon: <SwapOutlined />,
+            title: t("fileBrowser.help.actionItems.assignToTonie.title"),
+            text: t("fileBrowser.help.actionItems.assignToTonie.text"),
+        },
+        {
+            key: 10,
             icon: <FormOutlined />,
             title: t("fileBrowser.help.actionItems.renameFile.title"),
             text: t("fileBrowser.help.actionItems.renameFile.text"),
         },
         {
-            key: 7,
+            key: 11,
             icon: <NodeExpandOutlined />,
             title: t("fileBrowser.help.actionItems.moveFile.title"),
             text: t("fileBrowser.help.actionItems.moveFile.text"),
         },
         {
-            key: 8,
+            key: 12,
             icon: <DeleteOutlined />,
             title: t("fileBrowser.help.actionItems.deleteFileFolder.title"),
             text: t("fileBrowser.help.actionItems.deleteFileFolder.text"),
         },
         {
-            key: 9,
+            key: 13,
             icon: <CopyOutlined />,
             title: t("fileBrowser.help.actionItems.duplicateTAPFile.title"),
             text: t("fileBrowser.help.actionItems.duplicateTAPFile.text"),

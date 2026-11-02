@@ -7,6 +7,7 @@ import logoImg from "../assets/logo.png";
 import { Record } from "../types/fileBrowserTypes";
 import { TonieCardProps } from "../types/tonieTypes";
 import { supportsOggOpus } from "../utils/browser/browserUtils";
+import { withBase } from "../utils/basePath";
 
 type TonieCardTAFRecord = TonieCardProps | Record;
 
@@ -92,7 +93,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 globalAudio.load();
             }
             if (meta) {
-                setSongImage(meta.picture);
+                setSongImage(withBase(meta.picture));
                 setSongArtist(
                     meta.series || meta.episode
                         ? meta.series
@@ -102,7 +103,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 );
                 setSongTitle(meta.episode);
             } else {
-                setSongImage(decodeURI(url).includes(".taf?") ? "/img_unknown.png" : logoImg);
+                setSongImage(
+                    decodeURI(url).includes(".taf?") ? withBase("/img_unknown.png") : logoImg,
+                );
                 setSongArtist("");
                 setSongTitle(extractFilename(decodeURI(url)));
             }

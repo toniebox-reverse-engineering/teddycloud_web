@@ -8,17 +8,24 @@ If you are using this repository for the first time, please refer to the **Gener
 
 You'll need to allow CORS for your teddyCloud instance used for development. The easiest variant is to set `CORS Allow-Originⓘ` to `*`.
 
+### Optional: same-origin dev proxy
+
+With web login enabled, images and audio are not loaded in the setup above: the browser requests them without the login token. Set `VITE_APP_TEDDYCLOUD_DEV_PROXY=true` in your `.env.local` to let the dev server proxy all requests except `/web` to the teddyCloud instance set in `VITE_APP_TEDDYCLOUD_API_URL`. The browser then only talks to the dev server, and no CORS configuration is needed.
+
+The dev server connects to `VITE_APP_TEDDYCLOUD_API_URL` as configured. If your teddyCloud is behind a reverse proxy that routes by hostname (SNI), use the hostname there, not the IP.
+
+If access to your teddyCloud is secured by a client certificate, put the PKCS#12 file (`.p12`, with certificate and private key) into the `certs` folder and set `TEDDYCLOUD_DEV_CLIENT_P12=<file name>` and `TEDDYCLOUD_DEV_CLIENT_P12_PASSWORD=<password>` in your `.env.local`.
+
 ## NPM Environment file '.env'
 
 Please place an environment file '.env.local' in the teddycloud_web directory.
 
 ```env
 VITE_APP_TEDDYCLOUD_API_URL=http://<teddycloud-ip>
-VITE_APP_TEDDYCLOUD_WEB_BASE=/web
 VITE_APP_TEDDYCLOUD_PORT_HTTPS=3443
 VITE_APP_TEDDYCLOUD_PORT_HTTP=3000
-SSL_CRT_FILE=./localhost.pem
-SSL_KEY_FILE=./localhost-key.pem
+SSL_CRT_FILE=./certs/localhost.pem
+SSL_KEY_FILE=./certs/localhost-key.pem
 ```
 
 VITE_APP_TEDDYCLOUD_PORT_HTTPS and VITE_APP_TEDDYCLOUD_PORT_HTTP should match the ones entered in the package.json. If you don't change them, these are the ones from the example above.
@@ -27,11 +34,12 @@ VITE_APP_TEDDYCLOUD_PORT_HTTPS and VITE_APP_TEDDYCLOUD_PORT_HTTP should match th
 
 _needed for ESP32 Box Flashing section_
 
-You need to provide certificates for https. Use for example `mkcert`. The generated certificates must be stored in projects root path (or adapt the `env.development.local` file accordingly).
+You need to provide certificates for https. Use for example `mkcert`. The generated certificates must be stored in the `certs` folder of the project (the folder is git-ignored). Certificates in the project root are still found.
 
 ```shell
 mkcert -install
-mkcert localhost
+mkdir -p certs
+mkcert -cert-file certs/localhost.pem -key-file certs/localhost-key.pem localhost
 ```
 
 You must also allow unsecure content in chrome ([HowTo](https://stackoverflow.com/questions/18321032/how-to-get-chrome-to-allow-mixed-content)) to be able to connect to teddycloud server in https context.
@@ -46,7 +54,8 @@ If you don't need the ESP32 Box flashing section working, you can adapt the `pac
         "build": "tsc && vite build",
         "preview": "vite preview",
         "format": "prettier . --write",
-        "format:check": "prettier . --check"
+        "format:check": "prettier . --check",
+        "check:translations": "node scripts/check-translations.mjs"
     },
 ```
 
@@ -58,7 +67,8 @@ to
         "build": "tsc && vite build",
         "preview": "vite preview",
         "format": "prettier . --write",
-        "format:check": "prettier . --check"
+        "format:check": "prettier . --check",
+        "check:translations": "node scripts/check-translations.mjs"
      },
 ```
 
@@ -68,6 +78,10 @@ Use `./start_dev.sh` to start the NPM server in development mode. Be patient, it
 Be sure your teddyCloud instance is also running.
 
 If you just need the http variant, simply call `dotenv -e .env.development.local npm start-http`
+
+### Tests
+
+Unit tests use [Vitest](https://vitest.dev/) and live next to the code they cover (`*.test.ts`). Run them with `npm test`.
 
 ## Project Structure & Architecture (Frontend)
 
@@ -217,6 +231,8 @@ All changes must be added to the central `CHANGELOG.md` file.
 Whenever you implement a change, add a new entry under the correct version.
 If the next version does not yet exist in the changelog, create a new version block and append your changes there.
 Reference related GitHub issues or pull requests whenever possible.
+Pull requests are checked by the GitHub Actions workflow `.github/workflows/changelog-check.yml`.
+The workflow verifies that `CHANGELOG.md` was changed and that at least one new changelog entry was added.
 
 ---
 
@@ -270,9 +286,11 @@ This ensures that your component respects both light and dark themes.
 
 Always use `t("...")` instead of hard-coded text.
 
-- Add new strings to the English, German, French and Spanish translation JSON files.
+- English (`en`), German (`de`), French (`fr`) and Spanish (`es`) are actively maintained. New strings must be added to all four translation JSON files.
+- Additional languages are optional to maintain. Missing translations in these languages are allowed, but contributions are welcome.
 - Use meaningful, structured keys (e.g. `settings.notifications.title`, `tonies.encoder.uploadHint`).
 - Avoid inline strings in JSX, especially in pages and reusable components.
+- Run `npm run translation:check` before opening a pull request.
 
 ---
 
@@ -303,6 +321,18 @@ If you need to add a new API request to the TeddyCloud API, please use one of th
 If none of the existing methods meet your needs, add the new request to `src/api/apis/TeddyCloudApi.ts`.
 We prefer to have all API requests centralized in this file.
 One reason is the upcoming authentication for accessing the API and the possibility to reintroduce generated clients later.
+
+---
+
+#### Backend URLs and the URL prefix
+
+The web UI can be served under a URL prefix that is only known at runtime (see [Serving under a URL prefix](#serving-under-a-url-prefix)). Never hardcode root-absolute backend paths like `/content/...`, `/api/...` or `/web/...` in `src`:
+
+- API requests through `TeddyCloudApi` already take the prefix into account.
+- For URLs handed to the browser directly (`<img src>`, audio sources, downloads, `EventSource`, ...), use `backendUrl(path)` from `src/utils/basePath.ts`. It adds the dev-only `VITE_APP_TEDDYCLOUD_API_URL` and the runtime prefix.
+- For other same-origin paths (router basename, i18n, WASM scripts, iframes), use `withBase(path)`.
+
+Both helpers leave absolute URLs (`https:`, `data:`, `blob:`, ...) unchanged and are safe to apply twice.
 
 ---
 
@@ -338,6 +368,20 @@ Some URLs already defined (partial list):
 This combined structure and guideline set should be followed for all new code and refactorings.
 
 ## Tips and Tricks
+
+### Serving under a URL prefix
+
+The production build works unchanged behind a reverse proxy sub-path or Home Assistant ingress. There is nothing to configure: the prefix is everything in the browser URL before the first `/web` path segment, e.g. `/teddycloud` for `https://proxy/teddycloud/web/`.
+
+The proxy has to strip the prefix and forward everything below it to the root of teddyCloud, not only `/web` (the UI also calls `/api`, `/content`, `/v1`, `/reverse`, ...). Example for nginx:
+
+```nginx
+location /teddycloud/ {
+    proxy_pass http://teddycloud:80/; # the trailing slash strips /teddycloud
+}
+```
+
+Then open `https://proxy/teddycloud/web/`. The prefix itself must not contain a `/web` segment.
 
 ### Missing img_unknown.png
 
@@ -423,6 +467,20 @@ Then commit the changed files.
 
 The CI workflow runs the same formatting check (and additionally a production build) on pull requests, as well as on pushes to `master` and `develop`.
 
+### Translation check
+
+Before opening a pull request, run:
+
+```shell
+npm run translation:check
+```
+
+The check uses English (`en`) as the reference language. English (`en`), German (`de`), French (`fr`) and Spanish (`es`) are actively maintained and must contain all required translation keys.
+
+Additional languages are optional to maintain. Missing keys in optional languages are reported as warnings only.
+
+The check also reports statically used translation keys that are missing from `en.json`. Dynamically constructed translation keys cannot be resolved reliably and are therefore ignored by this source-code check.
+
 ### Install dotenv
 
 #### Debian
@@ -474,6 +532,18 @@ npm run format
 ```
 
 Then commit the formatted files.
+
+### `npm run translation:check`
+
+Checks the translation files and statically used translation keys.
+
+```shell
+npm run translation:check
+```
+
+English (`en`) is used as the reference language. German (`de`), French (`fr`) and Spanish (`es`) are actively maintained and must contain all required translation keys.
+
+Additional languages are optional to maintain. Missing keys in these languages are reported as warnings only.
 
 ### `npm start`
 

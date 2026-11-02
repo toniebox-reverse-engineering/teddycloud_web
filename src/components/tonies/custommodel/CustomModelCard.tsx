@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Card, Popconfirm, Tooltip, theme } from "antd";
+import { Card, Popconfirm, Tag, Tooltip, theme } from "antd";
 import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { toImageSrc, toPreviewableImageUrl } from "../common/utils/imagePathUtils";
 
@@ -15,6 +15,8 @@ export interface CustomModelCardProps {
     idx: number;
     entry: CustomModelCardEntry;
     gridColumns: number;
+    /** Model of the original tonie this entry takes precedence over, if any. */
+    overriddenModel?: string;
     onEdit: (idx: number) => void;
     onDuplicate: (idx: number) => void;
     onDelete: (idx: number) => void;
@@ -25,6 +27,7 @@ export const CustomModelCard: React.FC<CustomModelCardProps> = ({
     idx,
     entry,
     gridColumns,
+    overriddenModel,
     onEdit,
     onDuplicate,
     onDelete,
@@ -121,8 +124,23 @@ export const CustomModelCard: React.FC<CustomModelCardProps> = ({
                     const displayName = (entry.series || entry.model || "").trim();
                     const metaDescription =
                         entry.model && entry.model.trim() !== displayName ? entry.model : undefined;
-                    if (!metaTitle && !metaDescription) return null;
-                    return <Card.Meta title={metaTitle} description={metaDescription} />;
+                    const overrideTag = overriddenModel ? (
+                        <Tag
+                            color="warning"
+                            style={{ border: 0, marginTop: 8, whiteSpace: "normal" }}
+                        >
+                            {t("tonies.customEditor.overridesOriginal.tag", {
+                                model: overriddenModel,
+                            })}
+                        </Tag>
+                    ) : null;
+                    if (!metaTitle && !metaDescription) return overrideTag;
+                    return (
+                        <>
+                            <Card.Meta title={metaTitle} description={metaDescription} />
+                            {overrideTag}
+                        </>
+                    );
                 })()}
             </Card>
         </div>

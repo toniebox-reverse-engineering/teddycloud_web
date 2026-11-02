@@ -12,7 +12,8 @@ const createPluginJson = (): string =>
   "standalone": false,
   "pluginHomepage": "Homepage of the plugin (optionally)",
   "teddyCloudSection": "one of: home|tonies|tonieboxes|settings|community (optionally)",
-  "icon": "name of an icon from Ant Design icons (optional)"
+  "icon": "name of an icon from Ant Design icons (optional)",
+  "hideInNav": false
 }`;
 
 const createScriptJs = (): string =>
@@ -430,6 +431,7 @@ You can add more files as needed, for example:
 - \`pluginHomepage\`: Optional project or documentation URL
 - \`teddyCloudSection\`: Optional section of the TeddyCloud UI (home|tonies|tonieboxes|settings|community)
 - \`icon\`: Optional Ant Design icon name
+- \`hideInNav\`: Optional boolean flag to hide the plugin in navigation (true/false, no quotes!)
 
 ---
 

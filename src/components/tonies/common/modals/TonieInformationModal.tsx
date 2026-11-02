@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Modal, Typography, Button, Tooltip, Spin, theme, Flex } from "antd";
-import { DownloadOutlined, LoadingOutlined, PlayCircleOutlined } from "@ant-design/icons";
+import { Modal, Typography, Button, Tooltip, Flex } from "antd";
 
 import { Record } from "../../../../types/fileBrowserTypes";
 import { TonieCardProps } from "../../../../types/tonieTypes";
@@ -13,13 +12,17 @@ import ConfirmationDialog from "../../../common/modals/ConfirmationModal";
 
 import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
+import { describeDownloadError } from "../utils/downloadError";
 import { useAudioContext } from "../../../../provider/AudioProvider";
 import { toImageSrc } from "../utils/imagePathUtils";
+import { TafDownloadPanel, buildTafDownloadTracks } from "./TafTrackDownloadModal";
+import { toSameOriginUrl } from "../../../../utils/downloads/tafDownload";
+import { sanitizeDownloadName } from "../../../../utils/files/sanitizeDownloadName";
+import { withBase } from "../../../../utils/basePath";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const { Text } = Typography;
-const { useToken } = theme;
 
 type TonieCardTAFRecord = TonieCardProps | Record;
 
@@ -45,7 +48,6 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     onHide,
 }) => {
     const { t } = useTranslation();
-    const { token } = useToken();
     const { playAudio } = useAudioContext();
     const { addNotification } = useTeddyCloud();
 
@@ -55,8 +57,6 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
     const [informationFromSource, setInformationFromSource] = useState<boolean>(false);
     const [sourcePic, setSourcePic] = useState<string>("");
     const [sourceTracks, setSourceTracks] = useState<string[]>([]);
-
-    const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
     useEffect(() => {
         if (
@@ -91,21 +91,6 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
         );
     };
 
-    const handleDownload = async (url: string, filename: string) => {
-        setIsDownloading(true);
-        const response = await fetch(url);
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = blobUrl;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
-        setIsDownloading(false);
-    };
-
     const toniePlayedOn =
         lastRUIDs && "ruid" in tonieCardOrTAFRecord
             ? lastRUIDs
@@ -138,6 +123,32 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
 
     const title = informationFromSource ? sourceTitle : modelTitle;
 
+    const displayTrackTitles = informationFromSource
+        ? sourceTracks
+        : tonieCardOrTAFRecord.tonieInfo?.tracks;
+    const displayTrackSeconds =
+        "trackSeconds" in tonieCardOrTAFRecord
+            ? tonieCardOrTAFRecord.trackSeconds
+            : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
+    const displayLengthSeconds =
+        "lengthSeconds" in tonieCardOrTAFRecord
+            ? tonieCardOrTAFRecord.lengthSeconds
+            : (tonieCardOrTAFRecord as Record).tafHeader?.lengthSeconds;
+
+    const downloadTracks = buildTafDownloadTracks(
+        displayTrackTitles,
+        displayTrackSeconds,
+        displayLengthSeconds,
+    );
+
+    const canDownloadAudio =
+        "audioUrl" in tonieCardOrTAFRecord &&
+        (!("exists" in tonieCardOrTAFRecord) || tonieCardOrTAFRecord.exists);
+    const downloadContentUrl =
+        canDownloadAudio && "audioUrl" in tonieCardOrTAFRecord
+            ? withBase(toSameOriginUrl(tonieCardOrTAFRecord.audioUrl))
+            : "";
+
     const trackSecondsMatchSourceTracks = (
         tonieCardOrTAFRecord: TonieCardTAFRecord,
         tracksLength: number,
@@ -147,14 +158,6 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 ? tonieCardOrTAFRecord.trackSeconds
                 : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
         return trackSeconds?.length === tracksLength;
-    };
-
-    const getTrackStartTime = (tonieCardOrTAFRecord: TonieCardTAFRecord, index: number) => {
-        const trackSeconds =
-            "trackSeconds" in tonieCardOrTAFRecord
-                ? tonieCardOrTAFRecord.trackSeconds
-                : tonieCardOrTAFRecord.tafHeader?.trackSeconds;
-        return (trackSeconds && trackSeconds[index]) || 0;
     };
 
     // hide tag functions
@@ -266,8 +269,8 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                 footer={informationModalFooter}
                 open={open}
                 keyboard={true}
-                closable={false}
-                mask={{ closable: false }}
+                closable={true}
+                mask={{ closable: true }}
                 onCancel={onClose}
             >
                 <div style={{ position: "relative" }}>
@@ -349,134 +352,53 @@ const TonieInformationModal: React.FC<InformationModalProps> = ({
                     ) : (
                         ""
                     )}
-                    {informationFromSource ? (
-                        sourceTracks && sourceTracks.length > 0 ? (
-                            <>
-                                <strong>{t("tonies.infoModal.tracklist")}</strong>
-                                <Flex vertical gap={4} style={{ textAlign: "left" }}>
-                                    {sourceTracks.map((track: string, index: number) => (
-                                        <div
-                                            key={index}
-                                            style={{
-                                                display: "flex",
-                                                gap: 16,
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            {"audioUrl" in tonieCardOrTAFRecord &&
-                                            trackSecondsMatchSourceTracks(
-                                                tonieCardOrTAFRecord,
-                                                tonieCardOrTAFRecord.sourceInfo.tracks?.length,
-                                            ) ? (
-                                                <PlayCircleOutlined
-                                                    onClick={() =>
-                                                        handlePlayPauseClick(
-                                                            import.meta.env
-                                                                .VITE_APP_TEDDYCLOUD_API_URL +
-                                                                tonieCardOrTAFRecord.audioUrl,
-                                                            getTrackStartTime(
-                                                                tonieCardOrTAFRecord,
-                                                                index,
-                                                            ),
-                                                        )
-                                                    }
-                                                />
-                                            ) : null}
-
-                                            <div>
-                                                {index + 1}. {track}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </Flex>
-                            </>
-                        ) : (
-                            <></>
-                        )
-                    ) : tonieCardOrTAFRecord.tonieInfo?.tracks &&
-                      tonieCardOrTAFRecord.tonieInfo?.tracks.length > 0 ? (
+                    {downloadTracks.length > 0 ? (
                         <>
                             <strong>{t("tonies.infoModal.tracklist")}</strong>
-                            <Flex vertical gap={4}>
-                                {(tonieCardOrTAFRecord.tonieInfo?.tracks || []).map(
-                                    (track: string, index: number) => (
-                                        <div
-                                            key={index}
-                                            style={{
-                                                display: "flex",
-                                                gap: 16,
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            {"audioUrl" in tonieCardOrTAFRecord &&
-                                            trackSecondsMatchSourceTracks(
-                                                tonieCardOrTAFRecord,
-                                                tonieCardOrTAFRecord.tonieInfo?.tracks?.length,
-                                            ) ? (
-                                                <PlayCircleOutlined
-                                                    onClick={() =>
-                                                        handlePlayPauseClick(
-                                                            import.meta.env
-                                                                .VITE_APP_TEDDYCLOUD_API_URL +
-                                                                tonieCardOrTAFRecord.audioUrl,
-                                                            getTrackStartTime(
-                                                                tonieCardOrTAFRecord,
-                                                                index,
-                                                            ),
-                                                        )
-                                                    }
-                                                />
-                                            ) : null}
-
-                                            <div>
-                                                {index + 1}. {track}
-                                            </div>
-                                        </div>
-                                    ),
-                                )}
-                            </Flex>
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                    {"exists" in tonieCardOrTAFRecord &&
-                    tonieCardOrTAFRecord.exists &&
-                    "audioUrl" in tonieCardOrTAFRecord ? (
-                        <p
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "5px",
-                                cursor: isDownloading ? "default" : "pointer",
-                            }}
-                            onClick={
-                                !isDownloading
-                                    ? () =>
-                                          handleDownload(
-                                              import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
-                                                  tonieCardOrTAFRecord.audioUrl,
-                                              sourceTitle ? sourceTitle : modelTitle + ".ogg",
-                                          )
-                                    : undefined
-                            }
-                        >
-                            {isDownloading ? (
-                                <Spin
-                                    size="small"
-                                    indicator={
-                                        <LoadingOutlined
-                                            style={{ fontSize: 14, color: token.colorText }}
-                                            spin
-                                        />
+                            {canDownloadAudio ? (
+                                <TafDownloadPanel
+                                    tracks={downloadTracks}
+                                    contentUrl={downloadContentUrl}
+                                    baseFilename={sanitizeDownloadName(
+                                        sourceTitle || modelTitle || "download",
+                                    )}
+                                    onPlayTrack={
+                                        trackSecondsMatchSourceTracks(
+                                            tonieCardOrTAFRecord,
+                                            downloadTracks.length,
+                                        )
+                                            ? (startSeconds) =>
+                                                  handlePlayPauseClick(
+                                                      downloadContentUrl,
+                                                      startSeconds,
+                                                  )
+                                            : undefined
                                     }
                                 />
                             ) : (
-                                <DownloadOutlined key="download" />
+                                <Flex vertical gap={4} style={{ textAlign: "left" }}>
+                                    {downloadTracks.map((track) => (
+                                        <div key={track.number}>
+                                            {track.number}.{" "}
+                                            {track.title ||
+                                                t("tonies.tafDownload.unnamedTrack", {
+                                                    number: track.number,
+                                                })}
+                                        </div>
+                                    ))}
+                                </Flex>
                             )}
-                            {t("tonies.infoModal.download")}
-                        </p>
+                        </>
+                    ) : canDownloadAudio ? (
+                        <TafDownloadPanel
+                            tracks={[]}
+                            contentUrl={downloadContentUrl}
+                            baseFilename={sanitizeDownloadName(
+                                sourceTitle || modelTitle || "download",
+                            )}
+                        />
                     ) : (
-                        ""
+                        <></>
                     )}
                 </div>
             </Modal>

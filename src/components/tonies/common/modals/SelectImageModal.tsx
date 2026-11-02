@@ -250,7 +250,7 @@ export const SelectImageModal: React.FC<SelectImageModalProps> = ({
     const uploadDraggerProps: UploadProps = {
         name: "file",
         multiple: true,
-        accept: IMAGE_EXTENSIONS.map((ext) => `.${ext}`).join(","),
+        accept: IMAGE_EXTENSIONS.map((ext) => `${ext}`).join(","),
         fileList: uploadFileList,
         customRequest: handleUploadRequest,
         onChange: (info) => {

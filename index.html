@@ -1,6 +1,18 @@
 <!doctype html>
 <html lang="en">
     <head>
+        <script>
+            // Runtime URL prefix support: the app may be served under an unknown prefix (e.g.
+            // /api/hassio_ingress/<token>/web/...). Vite emits relative asset URLs, so inject a
+            // matching <base href> before anything else loads. src/utils/basePath.ts reads the
+            // prefix back from this element.
+            (function () {
+                var m = window.location.pathname.match(/^(.*?)\/web(?=[\/?#]|$)/);
+                var base = document.createElement("base");
+                base.href = (m ? m[1] : "") + "/web/";
+                document.head.appendChild(base);
+            })();
+        </script>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#000000" />
@@ -28,7 +40,7 @@
         <script>
             (async () => {
                 try {
-                    const res = await fetch("/web/web_version.json?ts=" + Date.now(), {
+                    const res = await fetch("web_version.json?ts=" + Date.now(), {
                         cache: "no-store",
                     });
                     if (!res.ok) {

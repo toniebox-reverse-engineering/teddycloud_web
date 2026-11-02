@@ -12,6 +12,9 @@ import {
     NodeExpandOutlined,
     DeleteOutlined,
     LoadingOutlined,
+    CheckCircleOutlined,
+    SwapOutlined,
+    ClockCircleOutlined,
 } from "@ant-design/icons";
 
 import { IMAGE_EXTENSIONS } from "../../../../constants/fileTypes";
@@ -28,6 +31,8 @@ import {
     SELECT_IMAGE_THUMB_COL_WIDTH,
     SELECT_IMAGE_CELL_GAP_HALF,
 } from "../../../../constants/selectImageTableLayoutSizes";
+import { backendUrl } from "../../../../utils/basePath";
+import { hasTafMeta } from "../hooks/useTafMetaEditor";
 
 const { useToken } = theme;
 
@@ -62,13 +67,7 @@ export interface CreateColumnsOptions {
         startTime?: number,
     ) => void;
 
-    handleFileDownload?: (
-        record: Record,
-        baseUrl: string,
-        path: string,
-        special: string,
-        overlay?: string,
-    ) => void;
+    handleFileDownload?: (record: Record, path: string, special: string, overlay?: string) => void;
 
     migrateContent2Lib?: (ruid: string, libroot: boolean, overlay?: string) => void;
     handleEditTapClick?: (fullPath: string) => void;
@@ -76,6 +75,8 @@ export interface CreateColumnsOptions {
     showRenameDialog?: (fileName: string) => void;
     showMoveDialog?: (fileName: string) => void;
     showDeleteConfirmDialog?: (fileName: string, fullPath: string, query: string) => void;
+    toggleListened?: (record: Record) => void;
+    showAssignTonieDialog?: (record: Record) => void;
     buildContentUrl?: (fileName: string, options?: { ogg?: boolean }) => string;
     onImagePreviewClick?: (imageUrl: string) => void;
     onRowSelect?: (record: Record) => void;
@@ -111,6 +112,8 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
         showRenameDialog,
         showMoveDialog,
         showDeleteConfirmDialog,
+        toggleListened,
+        showAssignTonieDialog,
         buildContentUrl,
         onImagePreviewClick,
         onRowSelect,
@@ -131,12 +134,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
     const getPictureSrc = (record: any): string | null => {
         if (!record) return null;
         if (record.tonieInfo?.picture) return toImageSrc(record.tonieInfo.picture);
-        if (
-            special === "custom_img" &&
-            !record.isDir &&
-            buildContentUrl &&
-            isImageFileName(record.name)
-        ) {
+        if (!record.isDir && buildContentUrl && isImageFileName(record.name)) {
             const path = buildContentUrl(record.name);
             return toImageSrc(path.startsWith("/") ? path : `/${path}`);
         }
@@ -145,7 +143,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
 
     let columns: any[] = [
         {
-            title: mode === "full" ? t("fileBrowser.image") : "",
+            title: "",
             dataIndex: ["tonieInfo", "picture"],
             key: "picture",
             sorter: undefined,
@@ -179,6 +177,19 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                     alignItems: "center",
                                 }}
                             >
+                                {record?.isDir ? (
+                                    <FolderOutlined
+                                        style={{
+                                            position: "absolute",
+                                            fontSize: 28,
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            opacity: 0.5,
+                                        }}
+                                    />
+                                ) : (
+                                    ""
+                                )}
                                 <ThumbnailCell
                                     src={src}
                                     alt={t("tonies.content.toniePicture")}
@@ -186,7 +197,14 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 />
                             </div>
                         ) : record?.isDir ? (
-                            <FolderOutlined style={{ fontSize: 24, marginRight: 8 }} />
+                            <FolderOutlined
+                                style={{
+                                    fontSize: 28,
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    opacity: 0.5,
+                                }}
+                            />
                         ) : null}
                         {mode === "full" && record?.hide ? (
                             <div style={{ textAlign: "center" }}>
@@ -199,7 +217,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 );
             },
             showOnDirOnly: false,
-            hideForSpecial: "library",
         },
 
         {
@@ -272,7 +289,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             key={`name-${record.name}`}
                             style={{ display: "flex", alignItems: "center" }}
                         >
-                            {record.isDir ? <FolderOutlined style={{ marginRight: 8 }} /> : null}
                             <div style={{ wordBreak: record.isDir ? "normal" : "break-word" }}>
                                 {nameContent}
                             </div>
@@ -285,11 +301,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             <div className="showSmallDevicesOnly">
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <div style={{ display: "flex" }}>
-                                        {record.isDir ? (
-                                            <FolderOutlined style={{ marginRight: 8 }} />
-                                        ) : (
-                                            ""
-                                        )}
                                         <div
                                             style={{
                                                 wordBreak: record.isDir ? "normal" : "break-word",
@@ -329,11 +340,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             <div className="showMediumDevicesOnly">
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <div style={{ display: "flex" }}>
-                                        {record.isDir ? (
-                                            <FolderOutlined style={{ marginRight: 8 }} />
-                                        ) : (
-                                            ""
-                                        )}
                                         <div
                                             style={{
                                                 wordBreak: record.isDir ? "normal" : "break-word",
@@ -355,11 +361,6 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             </div>
                             <div className="showBigDevicesOnly">
                                 <div style={{ display: "flex" }}>
-                                    {record.isDir ? (
-                                        <FolderOutlined style={{ marginRight: 8 }} />
-                                    ) : (
-                                        ""
-                                    )}
                                     <div
                                         style={{
                                             wordBreak: record.isDir ? "normal" : "break-word",
@@ -511,11 +512,12 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                             onClick={() =>
                                 playAudio(
                                     encodeURI(
-                                        import.meta.env.VITE_APP_TEDDYCLOUD_API_URL +
+                                        backendUrl(
                                             "/content/" +
-                                            decodeURIComponent(path) +
-                                            "/" +
-                                            record.name,
+                                                decodeURIComponent(path) +
+                                                "/" +
+                                                record.name,
+                                        ),
                                     ) +
                                         "?ogg=true&special=" +
                                         special +
@@ -557,7 +559,7 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                     );
                 }
 
-                if (record.tafHeader && handleEditTafMetaDataClick) {
+                if (hasTafMeta(record) && handleEditTafMetaDataClick) {
                     actions.push(
                         <Tooltip
                             open={!canHover ? false : undefined}
@@ -596,21 +598,15 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                                 open={!canHover ? false : undefined}
                                 key={`action-download-${record.name}`}
                                 title={
-                                    record.name.endsWith(".taf")
-                                        ? t("fileBrowser.downloadFileAsOgg")
+                                    record.name.toLowerCase().endsWith(".taf")
+                                        ? t("fileBrowser.downloadTracks")
                                         : t("fileBrowser.downloadFile")
                                 }
                             >
                                 <DownloadOutlined
                                     style={{ margin: "4px 8px 4px 0", padding: 4 }}
                                     onClick={() =>
-                                        handleFileDownload(
-                                            record,
-                                            import.meta.env.VITE_APP_TEDDYCLOUD_API_URL,
-                                            path,
-                                            special,
-                                            overlay,
-                                        )
+                                        handleFileDownload(record, path, special, overlay)
                                     }
                                 />
                             </Tooltip>
@@ -657,6 +653,56 @@ export const createColumns = (options: CreateColumnsOptions): any[] => {
                 }
 
                 if ((special === "library" || special === "custom_img") && record.name !== "..") {
+                    if (!record.isDir && special === "library" && toggleListened) {
+                        actions.push(
+                            <Tooltip
+                                open={!canHover ? false : undefined}
+                                key={`action-listened-${record.name}`}
+                                title={
+                                    record.listened
+                                        ? t("fileBrowser.unmarkAsListened")
+                                        : t("fileBrowser.markAsListened")
+                                }
+                            >
+                                {record.listened ? (
+                                    <CheckCircleOutlined
+                                        onClick={() => toggleListened(record)}
+                                        style={{
+                                            margin: "4px 8px 4px 0",
+                                            padding: 4,
+                                            color: token.colorSuccess,
+                                        }}
+                                    />
+                                ) : (
+                                    <ClockCircleOutlined
+                                        onClick={() => toggleListened(record)}
+                                        style={{
+                                            margin: "4px 8px 4px 0",
+                                            padding: 4,
+                                            color: undefined,
+                                        }}
+                                    />
+                                )}
+                            </Tooltip>,
+                        );
+                    }
+                    if (!record.isDir && special === "library" && showAssignTonieDialog) {
+                        actions.push(
+                            <Tooltip
+                                open={!canHover ? false : undefined}
+                                key={`action-assign-${record.name}`}
+                                title={t("fileBrowser.assignToTonie.action")}
+                            >
+                                <SwapOutlined
+                                    onClick={() => showAssignTonieDialog(record)}
+                                    style={{
+                                        margin: "4px 8px 4px 0",
+                                        padding: 4,
+                                    }}
+                                />
+                            </Tooltip>,
+                        );
+                    }
                     if (!record.isDir && showRenameDialog) {
                         actions.push(
                             <Tooltip

@@ -33,7 +33,7 @@ export const ToniesSubNav = () => {
     }, [currentLanguage]);
 
     const pluginItems = plugins
-        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Tonies)
+        .filter((p) => p.teddyCloudSection === TeddyCloudSection.Tonies && !p.hideInNav)
         .map((plugin) => ({
             key: `plugin-${plugin.pluginId}`,
             label: (

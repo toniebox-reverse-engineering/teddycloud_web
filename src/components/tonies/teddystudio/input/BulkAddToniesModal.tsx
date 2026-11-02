@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Input, Modal, Transfer, theme, Grid, List, Button, Checkbox } from "antd";
+import { Input, Modal, Transfer, theme, Grid, Button, Checkbox, Listy, Empty, Flex } from "antd";
 import type { TransferProps } from "antd";
 import { CheckCircleFilled, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
@@ -7,16 +7,12 @@ import { useTranslation } from "react-i18next";
 import { TeddyCloudApi } from "../../../../api";
 import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { toImageSrc } from "../../common/utils/imagePathUtils";
+import LoadingSpinner from "../../../common/elements/LoadingSpinner";
 
 const api = new TeddyCloudApi(defaultAPIConfig());
 
 const SEARCH_MIN_CHARS = 2;
 const SEARCH_DEBOUNCE_MS = 300;
-
-// Cap how many matched rows the mobile list mounts at once. The catalog is ~6.4k
-// entries and a broad query (e.g. "benjamin") can still match >1k; antd's <List>
-// is not virtualized, so we render a slice and nudge the user to narrow instead.
-const RESULT_CAP = 200;
 
 // Local debounced-value hook. The repo already ships `useDebouncedCallback`
 // (callback variant) but no value variant; rather than pull in a new dep
@@ -285,12 +281,6 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
 
     const searchTooShort = debouncedSearch.trim().length < SEARCH_MIN_CHARS;
 
-    // Mobile results are sliced to RESULT_CAP (perf — antd <List> isn't virtualized);
-    // isTruncated drives a "keep typing to narrow" footer so a capped list never
-    // looks like the complete result set.
-    const visibleResults = useMemo(() => dataSource.slice(0, RESULT_CAP), [dataSource]);
-    const isTruncated = dataSource.length > RESULT_CAP;
-
     const handleChange: TransferProps["onChange"] = (nextTargetKeys) => {
         // antd 6 returns Key[]; coerce to string[] for our string-keyed catalog.
         setTargetKeys(nextTargetKeys.map((k) => String(k)));
@@ -447,76 +437,69 @@ export const BulkAddToniesModal: React.FC<BulkAddToniesModalProps> = ({
                         </div>
                     ) : (
                         <div style={{ maxHeight: "55vh", overflowY: "auto", overflowX: "hidden" }}>
-                            <List
-                                loading={loading}
-                                dataSource={visibleResults}
-                                locale={{
-                                    emptyText: t("tonies.teddystudio.bulkAdd.modal.notFound"),
-                                }}
-                                rowKey="key"
-                                renderItem={(item) => {
-                                    const added = selectedSet.has(item.key);
-                                    return (
-                                        <List.Item
-                                            role="checkbox"
-                                            aria-checked={added}
-                                            aria-label={item.title}
-                                            tabIndex={0}
-                                            onClick={() => toggleKey(item.key)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter" || e.key === " ") {
-                                                    e.preventDefault();
-                                                    toggleKey(item.key);
-                                                }
-                                            }}
-                                            style={{
-                                                cursor: "pointer",
-                                                paddingInline: 8,
-                                                minHeight: 56,
-                                                gap: 12,
-                                                background: added
-                                                    ? token.controlItemBgActive
-                                                    : "transparent",
-                                            }}
-                                        >
-                                            <RowLabel pic={item.pic} title={item.title} />
-                                            {added ? (
-                                                <CheckCircleFilled
-                                                    style={{
-                                                        color: token.colorPrimary,
-                                                        fontSize: 20,
-                                                        flexShrink: 0,
-                                                    }}
-                                                />
-                                            ) : (
-                                                <PlusOutlined
-                                                    style={{
-                                                        color: token.colorTextSecondary,
-                                                        fontSize: 18,
-                                                        flexShrink: 0,
-                                                    }}
-                                                />
-                                            )}
-                                        </List.Item>
-                                    );
-                                }}
-                            />
-                            {isTruncated && (
-                                <div
-                                    style={{
-                                        textAlign: "center",
-                                        padding: "8px 16px",
-                                        fontSize: token.fontSizeSM,
-                                        color: token.colorTextDescription,
+                            {loading ? (
+                                <LoadingSpinner />
+                            ) : dataSource.length === 0 ? (
+                                <Empty
+                                    style={{ margin: "40px 0" }}
+                                    description={t("tonies.teddystudio.bulkAdd.modal.notFound")}
+                                />
+                            ) : (
+                                <Listy
+                                    items={dataSource}
+                                    virtual
+                                    height={300}
+                                    rowKey="key"
+                                    itemRender={(item) => {
+                                        const added = selectedSet.has(item.key);
+                                        return (
+                                            <Flex
+                                                role="checkbox"
+                                                aria-checked={added}
+                                                aria-label={item.title}
+                                                tabIndex={0}
+                                                align="center"
+                                                justify="space-between"
+                                                gap={12}
+                                                onClick={() => toggleKey(item.key)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter" || e.key === " ") {
+                                                        e.preventDefault();
+                                                        toggleKey(item.key);
+                                                    }
+                                                }}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    paddingInline: 8,
+                                                    minHeight: 56,
+                                                    background: added
+                                                        ? token.controlItemBgActive
+                                                        : "transparent",
+                                                }}
+                                            >
+                                                <RowLabel pic={item.pic} title={item.title} />
+
+                                                {added ? (
+                                                    <CheckCircleFilled
+                                                        style={{
+                                                            color: token.colorPrimary,
+                                                            fontSize: 20,
+                                                            flexShrink: 0,
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <PlusOutlined
+                                                        style={{
+                                                            color: token.colorTextSecondary,
+                                                            fontSize: 18,
+                                                            flexShrink: 0,
+                                                        }}
+                                                    />
+                                                )}
+                                            </Flex>
+                                        );
                                     }}
-                                >
-                                    {t("tonies.teddystudio.bulkAdd.modal.resultsTruncated", {
-                                        shown: RESULT_CAP,
-                                        total: dataSource.length,
-                                        defaultValue:
-                                            "Showing first {{shown}} of {{total}} — keep typing to narrow",
-                                    })}
-                                </div>
+                                />
                             )}
                         </div>
                     )}

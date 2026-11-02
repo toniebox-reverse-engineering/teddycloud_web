@@ -5,6 +5,7 @@ import { defaultAPIConfig } from "../../../../config/defaultApiConfig";
 import { useTeddyCloud } from "../../../../provider/TeddyCloudProvider";
 import { NotificationTypeEnum } from "../../../../types/teddyCloudNotificationTypes";
 import { generateUUID } from "../../../../utils/ids/generateUUID";
+import { userStorage } from "../../../../utils/storage/userStorage";
 
 type LocalSettings = Record<string, unknown>;
 
@@ -70,11 +71,8 @@ export const useGuiLocalSettings = () => {
     const loadLocalSettings = useCallback(() => {
         const entries: LocalSettings = {};
 
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (!key) continue;
-
-            const rawValue = localStorage.getItem(key);
+        for (const key of userStorage.keys()) {
+            const rawValue = userStorage.getItem(key);
             if (rawValue === null) continue;
 
             try {
@@ -108,11 +106,8 @@ export const useGuiLocalSettings = () => {
             exportedAt: new Date().toISOString(),
         };
 
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (!key) continue;
-
-            const rawValue = localStorage.getItem(key);
+        for (const key of userStorage.keys()) {
+            const rawValue = userStorage.getItem(key);
             if (rawValue === null) continue;
 
             try {
@@ -163,9 +158,9 @@ export const useGuiLocalSettings = () => {
                             : value;
 
                     if (typeof valueToStore === "string") {
-                        localStorage.setItem(key, valueToStore);
+                        userStorage.setItem(key, valueToStore);
                     } else {
-                        localStorage.setItem(key, JSON.stringify(valueToStore));
+                        userStorage.setItem(key, JSON.stringify(valueToStore));
                     }
                 });
 
