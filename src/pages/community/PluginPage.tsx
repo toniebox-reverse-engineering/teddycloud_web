@@ -10,6 +10,7 @@ import BreadcrumbWrapper, {
 import { CommunitySubNav } from "../../components/community/CommunitySubNav";
 import { HomeSubNav } from "../../components/home/HomeSubNav";
 import { SettingsSubNav } from "../../components/settings/SettingsSubNav";
+import { TeddyBoxesSubNav } from "../../components/teddyboxes/TeddyBoxesSubNav";
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { ToniesSubNav } from "../../components/tonies/ToniesSubNav";
 import { PluginContainer } from "../../components/community/plugin/PluginContainter";
@@ -39,6 +40,8 @@ export const PluginPage: React.FC<PluginPageProps> = ({ standalone = false }) =>
             items.push({ title: <Link to="/settings">{t("settings.navigationTitle")}</Link> });
         } else if (section === "tonieboxes") {
             items.push({ title: <Link to="/tonieboxes">{t("tonieboxes.navigationTitle")}</Link> });
+        } else if (section === "teddyboxes") {
+            items.push({ title: <Link to="/teddyboxes">{t("teddybox.title")}</Link> });
         } else if (section === "community") {
             items.push({ title: <Link to="/community">{t("community.navigationTitle")}</Link> });
             if (section2 === "tcplugins") {
@@ -64,6 +67,7 @@ export const PluginPage: React.FC<PluginPageProps> = ({ standalone = false }) =>
         if (section === TeddyCloudSection.Home) return <HomeSubNav />;
         if (section === TeddyCloudSection.Settings) return <SettingsSubNav />;
         if (section === TeddyCloudSection.Tonieboxes) return <TonieboxesSubNav />;
+        if (section === TeddyCloudSection.Teddyboxes) return <TeddyBoxesSubNav />;
         return <CommunitySubNav />;
     }, [section]);
 

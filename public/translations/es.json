@@ -757,8 +757,8 @@
         "tonieMeeting": {
             "navigationTitle": "Reunión de Tonies"
         },
-        "yourTonieboxes": "Tus Tonieboxes",
-        "yourTonies": "Tus Tonies"
+        "toAllYourTeddyBoxes": "Ir a tus Teddybox",
+        "teddyboxesIntro": "Una Teddybox convierte un móvil o una tableta en una Toniebox que tu hijo puede usar solo."
     },
     "inputValidator": {
         "invalidCharactersDetected": "Tu entrada contiene caracteres no válidos, como {{invalidChar}}"
@@ -1157,6 +1157,278 @@
             "saveFailed": "No se pudieron guardar los cambios",
             "title": "Inicio de sesión web",
             "users": "Usuarios"
+        }
+    },
+    "teddybox": {
+        "title": "Teddybox",
+        "intro": "Una Teddybox es una Toniebox virtual para móvil o tableta. El niño elige un Tonie de una colección y lo escucha, sin saber leer y sin salir de la Teddybox. Solo un adulto puede cerrarla.",
+        "add": "Crear Teddybox",
+        "empty": "Convierte un móvil o una tableta en una Toniebox para tu hijo: estanterías llenas de Tonies, orejas para el volumen y un golpecito para la siguiente pista.",
+        "open": "Abrir la Teddybox en este dispositivo",
+        "delete": "Eliminar",
+        "deleteTitle": "¿Eliminar la Teddybox?",
+        "deleteText": "Se eliminarán «{{name}}» y sus estanterías. Los dispositivos que muestran esta Teddybox vuelven a la interfaz normal al recargar.",
+        "deleteFailed": "No se pudo eliminar la Teddybox",
+        "saved": "Teddybox guardada",
+        "savedDetails": "«{{name}}» se ha guardado.",
+        "saveFailed": "No se pudo guardar la Teddybox",
+        "loadError": "No se pudieron cargar las Teddybox.",
+        "notFound": "Esta Teddybox no existe (ya).",
+        "summary": "Colecciones: {{shelves}} · Tonies: {{tonies}}",
+        "edit": {
+            "tabGeneral": "General",
+            "tabShelves": "Colecciones",
+            "tabSettings": "Ajustes",
+            "name": "Nombre",
+            "namePlaceholder": "p. ej. la Teddybox de Emma",
+            "color": "Color",
+            "colors": "Sugerencias",
+            "background": "Fondo",
+            "backgroundShelfHint": "La estantería siempre está delante de la pared tranquila a rayas. El fondo aparece en cuanto hay un Tonie en la caja.",
+            "backgroundColor": "Color del fondo",
+            "backgrounds": {
+                "room": "Habitación infantil",
+                "night": "Noche",
+                "spring": "Primavera",
+                "summer": "Verano",
+                "autumn": "Otoño",
+                "winter": "Invierno",
+                "christmas": "Navidad",
+                "easter": "Pascua",
+                "plain": "Liso",
+                "meadow": "Prado",
+                "ocean": "Bajo el agua",
+                "space": "Espacio",
+                "beach": "Playa",
+                "inherit": "Predeterminado",
+                "image": "Imagen propia"
+            },
+            "shelvesIntro": "Cada colección contiene los Tonies entre los que el niño puede elegir y se muestra en una estantería o en círculo alrededor de la Teddybox.",
+            "shelfDefaultName": "Colección {{number}}",
+            "shelfName": "Nombre (solo visible para los adultos)",
+            "shelfColor": "Color",
+            "toniesHint": "Ordena arrastrando el asa o con las flechas. Solo se pueden añadir Tonies con contenido de audio.",
+            "tonieCount": "Tonies: {{count}}",
+            "lead": "Primera figura del botón de colección",
+            "leadHint": "El botón muestra la colección en pequeño: como mini estantería o como círculo de figuras. Esta figura aparece primero, mejor una que el niño conozca bien. Por defecto: el primer Tonie.",
+            "addShelf": "Añadir colección",
+            "moveUp": "Subir",
+            "moveDown": "Bajar",
+            "deleteShelf": "Eliminar colección",
+            "shelfSwitching": "Por el niño",
+            "switching": {
+                "buttons": "Botones de colección abajo",
+                "swipe": "Deslizar",
+                "overview": "Vista general de las colecciones (botón arriba a la izquierda)"
+            },
+            "switchingHint": {
+                "none": "Nada seleccionado: el niño solo ve una colección. Cuál se elige en el dispositivo del niño, en los ajustes en «Colecciones».",
+                "noneHere": "Nada seleccionado: el niño solo ve la colección inicial (en «Colecciones»).",
+                "manyShelves": "Los botones son tan grandes como permite el ancho de la pantalla. Si no caben en una fila, por ejemplo en móviles estrechos, se convierten en puntos de color.",
+                "age": "Hasta los más pequeños entienden los botones de colección: muestran sus propias figuras en una mini estantería, basta un toque (desde unos 2 años). La vista general desde unos 3 años, deslizar desde unos 5 años."
+            },
+            "maxVolume": "Volumen máximo",
+            "startVolume": "Volumen inicial",
+            "allowTrackSkip": "Golpear cambia de pista",
+            "resume": "Continuar donde se quedó",
+            "showKnockHint": "Mostrar la pista de golpear",
+            "pin": "PIN para desbloquear",
+            "pinHint": "Para desbloquear siempre hay que mantener y deslizar el candado. Con PIN se piden además 4 dígitos.",
+            "pinKeep": "Déjalo vacío para mantener el PIN actual.",
+            "pinInvalid": "Introduce 4 dígitos.",
+            "save": "Guardar",
+            "cancel": "Cancelar",
+            "columns": "Tonies por fila",
+            "columnsHint": "En la estantería caben entonces hasta {{count}} Tonies. Menos por fila significa figuras más grandes.",
+            "toniesCount": "Tonies ({{count}} de {{max}})",
+            "addTonie": "Añadir Tonies",
+            "shelfFull": "La colección está llena",
+            "dragToSort": "Arrastra para ordenar",
+            "tonieMissing": "Tonie no encontrado",
+            "tonieInfo": "Detalles",
+            "removeTonie": "Quitar de la colección",
+            "overfull": "Algunas colecciones tienen más Tonies de los que se pueden mostrar.",
+            "display": "Vista",
+            "displayOptions": {
+                "shelf": "Estantería",
+                "circle": "Círculo alrededor de la Teddybox"
+            },
+            "displayHint": {
+                "shelf": "Los Tonies están en tres baldas, hasta {{count}} Tonies.",
+                "circle": "Hasta {{count}} Tonies se colocan en círculo alrededor de la Teddybox. El niño ve los Tonies y la caja en una sola pantalla."
+            },
+            "truncateTitle": "¿No mostrar todos los Tonies?",
+            "truncateText": "La colección tiene {{count}} Tonies y en la nueva vista solo caben {{max}}. El niño no verá los Tonies a partir del puesto {{from}}. Siguen en la colección y vuelven a aparecer cuando haya sitio.",
+            "truncateOk": "Cambiar de todos modos",
+            "pickImage": "Elegir imagen de fondo",
+            "hiddenTitle": "Esta colección tiene más Tonies de los que se pueden mostrar.",
+            "hiddenText": "En la vista elegida caben {{max}} Tonies. A partir del puesto {{from}}, el niño no ve estos Tonies: {{tonies}}. Siguen en la colección. Para mostrarlos, súbelos o elige una vista con más sitio.",
+            "hiddenShort": "No se muestra",
+            "overfullItem": "«{{name}}»: {{count}} Tonies, sitio para {{max}}",
+            "hiddenItem": "Puesto {{position}}: en la vista elegida solo caben {{max}} Tonies, por eso el niño no ve este Tonie. Súbelo o elige una vista con más sitio.",
+            "startShelf": "Colección inicial en este dispositivo",
+            "startShelfHint": "La Teddybox empieza con esta colección en este dispositivo.",
+            "startShelfHintOnly": "En este dispositivo el niño solo ve esta colección.",
+            "startTag": "Inicio",
+            "switchOffTitle": "El niño solo ve la colección inicial",
+            "switchOffText": "El cambio de colección está desactivado. Los botones de colección son lo más fácil para los pequeños. En «Más opciones» también hay un horario, la vista general y deslizar.",
+            "switchOffAction": "Activar botones",
+            "switchOffMore": "Más opciones"
+        },
+        "qr": {
+            "title": "Abrir «{{name}}» en otro dispositivo",
+            "howTo": "Escanea el código con el móvil o la tableta del niño. La Teddybox se abre directamente. Si el inicio de sesión web está activo, inicia sesión una vez en ese dispositivo.",
+            "close": "Cerrar",
+            "install": "Si el navegador del dispositivo ofrece la instalación, «Instalar como app» está al final de los ajustes de la Teddybox, en «Este dispositivo»."
+        },
+        "kids": {
+            "shelf": "Colección {{number}}",
+            "allShelves": "Todas las colecciones",
+            "previousTrack": "Pista anterior",
+            "nextTrack": "Pista siguiente",
+            "louder": "Más alto",
+            "quieter": "Más bajo",
+            "takeOff": "Quitar el Tonie",
+            "parentLock": "Bloqueo de padres: mantener y deslizar"
+        },
+        "parent": {
+            "enterPin": "Introducir PIN",
+            "pinWrong": "PIN incorrecto",
+            "pinLocked": "Demasiados intentos. Espera {{seconds}} segundos.",
+            "pinDelete": "Borrar",
+            "cancel": "Cancelar",
+            "targetSettings": "Ajustes",
+            "targetExit": "Salir"
+        },
+        "device": {
+            "title": "Este dispositivo",
+            "install": "App",
+            "installButton": "Instalar como app",
+            "installIos": "En Safari, toca Compartir y luego «Añadir a pantalla de inicio»."
+        },
+        "pinning": {
+            "title": "Evitar salir de la Teddybox",
+            "text": "Una página web no puede bloquear el botón de inicio. Usa Acceso guiado (iPhone/iPad: Ajustes → Accesibilidad) o Fijar aplicación (Android: Ajustes → Seguridad).",
+            "guideLink": "Cómo hacerlo está en la guía."
+        },
+        "setup": {
+            "title": "Configurar la Teddybox",
+            "liveHint": "Los cambios se ven al instante en la vista previa. ✕ los descarta.",
+            "toOverview": "A la vista general",
+            "discardTitle": "¿Descartar los cambios?",
+            "discardText": "Los cambios aún no están guardados. ¿Descartarlos y cerrar?",
+            "discardOk": "Descartar",
+            "toBox": "A la Teddybox",
+            "saveToBox": "Guardar e ir a la Teddybox",
+            "saveToOverview": "Guardar e ir a la vista general",
+            "discard": "Descartar los cambios y cerrar"
+        },
+        "setupOpen": "Ajustes con vista previa en directo",
+        "details": {
+            "content": "Contenido",
+            "tag": "Etiqueta"
+        },
+        "pageTitle": "Tus Teddybox",
+        "toTeddyBoxes": "Ir a las Teddybox",
+        "guide": {
+            "navigationTitle": "Guía",
+            "linkText": "Cómo configurar una Teddybox.",
+            "title": "Configurar una Teddybox",
+            "intro": "En pocos pasos, un móvil o una tableta se convierte en una Teddybox que tu hijo puede usar solo.",
+            "steps": {
+                "create": {
+                    "title": "Crear una Teddybox",
+                    "text": "En Teddybox, toca «Crear Teddybox»: la nueva Teddybox se abre directamente en sus ajustes. Ponle allí un nombre y coloca los primeros Tonies en una colección. Basta con una Teddybox por dispositivo: varios niños tienen simplemente sus propias colecciones.",
+                    "items": []
+                },
+                "setup": {
+                    "title": "Configurar con vista previa",
+                    "text": "La rueda dentada de la tarjeta abre los ajustes de la Teddybox sin poner el dispositivo en modo infantil. Encima, la vista previa muestra el dispositivo en pequeño y con sus proporciones reales: en «General» la Teddybox sobre su fondo, en «Colecciones» la colección que se está editando. Cada cambio se ve al instante. Abajo, «A la vista general» y «A la Teddybox» llevan adelante, se hayan abierto los ajustes desde donde sea; ambos guardan antes. «A la Teddybox» convierte este dispositivo en la Teddybox. La ✕ descarta los cambios.",
+                    "items": [
+                        "Elige el fondo y el color de la Teddybox. «Liso» tiene su propio color. Cada colección puede tener su propio fondo o imagen.",
+                        "Elige la vista de cada colección: estantería (3 baldas, 2 a 4 Tonies por fila) o círculo alrededor de la Teddybox (hasta 8 Tonies). Menos Tonies significa figuras más grandes para los pequeños.",
+                        "Si no caben todos los Tonies en la vista, los demás siguen en la colección, pero el niño no los ve. Un triángulo amarillo lo indica; al tocarlo explica qué Tonies están afectados.",
+                        "Añade Tonies con «Añadir Tonies»: toca sus imágenes, los Tonies con nombre aparecen primero. Cambia el orden arrastrando el asa o con las flechas. El icono de información muestra el contenido de un Tonie.",
+                        "Elige para el botón de la colección una figura que el niño conozca bien.",
+                        "Colección inicial: en el dispositivo del niño está arriba en «Colecciones» y marcada con «Inicio» en la lista. Solo vale para ese dispositivo, así cada niño tiene su propia colección.",
+                        "Horario (opcional, arriba en «Ajustes»): a horas fijas la Teddybox de este dispositivo cambia de colección sola, por ejemplo a «Noche» desde las 18:00. El niño no tiene que hacer nada; si suena un Tonie, cambia en cuanto se baja.",
+                        "Cambiar de colección, de lo más fácil a lo más difícil: los botones de colección abajo (desde unos 2 años, muestran la colección como mini estantería o círculo de sus figuras), la vista general con el botón de arriba a la izquierda (desde unos 3 años) y deslizar (desde unos 5 años). Cada uno se activa por separado. Si los botones no caben en una fila, se convierten en puntos de color. Sin selección, el niño solo ve la colección inicial.",
+                        "En «Ajustes»: «Volumen máximo» y «Volumen inicial», «Golpear cambia de pista», «Continuar donde se quedó», «Mostrar la pista de golpear» y, opcionalmente, un «PIN para desbloquear».",
+                        "Para Tonies originales a tamaño completo, activa «guardar imágenes en caché» en los ajustes de TeddyCloud (tonie_json.cache_images). La vista general de Teddyboxes lo ofrece mientras esté desactivado."
+                    ]
+                },
+                "open": {
+                    "title": "Abrir en el dispositivo del niño",
+                    "text": "Toca el icono QR de la tarjeta y escanea el código con el móvil o la tableta del niño. La Teddybox se abre directamente. Si el inicio de sesión web está activo, inicia sesión una vez en el dispositivo.",
+                    "items": []
+                },
+                "install": {
+                    "title": "Instalar como app",
+                    "text": "Como app, la Teddybox se abre desde la pantalla de inicio, sin barra de direcciones. Sin instalarla funciona igual en el navegador.",
+                    "items": [
+                        "Android (Chrome): al final de los ajustes de la Teddybox, en «Este dispositivo», elige «Instalar como app». Requiere que TeddyCloud sea accesible por HTTPS con un certificado válido, p. ej. detrás de un proxy inverso.",
+                        "iPhone y iPad (Safari): toca Compartir y elige «Añadir a pantalla de inicio». También funciona sin HTTPS."
+                    ]
+                },
+                "restrict": {
+                    "title": "Evitar salir de la Teddybox",
+                    "text": "La Teddybox intercepta el botón atrás y otras páginas. Pero una página web no puede bloquear el botón de inicio; de eso se encarga el sistema.",
+                    "items": [
+                        "iPhone y iPad: Ajustes → Accesibilidad → activar Acceso guiado. En la Teddybox, pulsa tres veces el botón lateral.",
+                        "Android: Ajustes → Seguridad → activar Fijar aplicación. Fija la Teddybox en la vista de aplicaciones."
+                    ]
+                },
+                "child": {
+                    "title": "Cómo usa el niño la Teddybox",
+                    "text": "Funciona como la Toniebox real y no necesita texto.",
+                    "items": [
+                        "Tocar un Tonie o, en el círculo, arrastrarlo a la caja: salta a la caja y suena.",
+                        "Tocar el Tonie de la caja: se baja. Con «Continuar donde se quedó» activado, la próxima vez sigue en ese punto.",
+                        "Oreja grande: más alto, oreja pequeña: más bajo. El volumen se ilumina un momento en la rejilla de la caja.",
+                        "Con «Golpear cambia de pista» activado: tocar el lado izquierdo o derecho de la caja o justo al lado (llamar) para la pista anterior o siguiente. Las luces abajo en la rejilla muestran la pista actual; con más de 12 pistas es una barra.",
+                        "Otra colección, según los ajustes: los botones de colección abajo (o puntos de color), la vista general arriba a la izquierda, o deslizar de lado (también con dos dedos en el touchpad). En una estantería el Tonie se baja; en un círculo sigue sonando."
+                    ]
+                },
+                "parent": {
+                    "title": "Acceso para padres",
+                    "text": "Mantén pulsado el candado de arriba a la derecha hasta que el anillo se llene y deslízalo sin soltar hacia uno de los dos objetivos. También puedes soltar y volver a coger el botón. Si hay PIN, se pide a continuación.",
+                    "items": [
+                        "Objetivo azul «Ajustes» con engranaje: ajustes de la Teddybox con vista previa. La colección inicial de este dispositivo está en «Colecciones»; la instalación de la app, al final de «Ajustes».",
+                        "Objetivo rojo «Salir»: salir de la Teddybox en este dispositivo y volver a las Teddyboxes."
+                    ]
+                },
+                "login": {
+                    "title": "Inicio de sesión en el dispositivo del niño",
+                    "text": "Con el inicio de sesión web activo, el dispositivo del niño necesita iniciar sesión como cualquier otro. Si la sesión caduca o TeddyCloud se reinicia, un adulto vuelve a iniciar sesión en el dispositivo.",
+                    "items": []
+                }
+            }
+        },
+        "newName": "Teddybox {{number}}",
+        "picker": {
+            "title": "Añadir Tonies",
+            "search": "Buscar",
+            "none": "No hay Tonies que coincidan",
+            "picked": "{{count}} seleccionados, espacio para {{max}}",
+            "full": "La colección quedará llena ({{count}} añadidos)",
+            "add": "Añadir {{count}}"
+        },
+        "schedule": {
+            "title": "Automáticamente según la hora (solo este dispositivo)",
+            "hint": "A estas horas la Teddybox de este dispositivo cambia de colección sola, por ejemplo a cuentos para dormir por la noche. El niño no tiene que hacer nada. Si suena un Tonie, cambia en cuanto se baja.",
+            "from": "desde",
+            "time": "Hora",
+            "shelf": "Colección",
+            "remove": "Quitar hora",
+            "add": "Añadir hora"
+        },
+        "caching": {
+            "title": "Activa la caché de imágenes para que los Tonies originales se vean grandes",
+            "text": "Sin caché, las imágenes de los Tonies originales vienen directamente del servidor de Tonies. El navegador no puede medirlas allí, así que la Teddybox muestra las figuras con su margen vacío y, por tanto, pequeñas. Con «guardar imágenes en caché» TeddyCloud sirve las imágenes él mismo: las figuras llenan su espacio, cargan más rápido y se ven también sin internet.",
+            "enable": "Activar ahora",
+            "enabled": "La caché de imágenes está activada",
+            "enabledDetails": "Vuelve a cargar la Teddybox para que use las imágenes de TeddyCloud.",
+            "failed": "No se pudo activar la caché de imágenes"
         }
     },
     "teddycloud": {
@@ -1904,7 +2176,10 @@
             "uploadTonieboxCertificates": "Subir certificados para Toniebox{{name}}"
         },
         "warningUseAtYourOwnRisk": "Advertencia: úsalo bajo tu propia responsabilidad",
-        "warningUseAtYourOwnRiskText": "Flashear tu Toniebox con un firmware modificado anulará la garantía y puede dejar la caja inutilizable. Sigue las instrucciones cuidadosamente y asegúrate de comprender los riesgos asociados."
+        "warningUseAtYourOwnRiskText": "Flashear tu Toniebox con un firmware modificado anulará la garantía y puede dejar la caja inutilizable. Sigue las instrucciones cuidadosamente y asegúrate de comprender los riesgos asociados.",
+        "teddyboxHint": "Incluso sin caja: la Teddybox",
+        "teddyboxHintText": "Convierte un móvil o una tableta en una Toniebox virtual para tu hijo.",
+        "teddyboxHintLink": "Ir a las Teddybox"
     },
     "tonies": {
         "addNewCustomTonie": "Crear nuevo modelo",

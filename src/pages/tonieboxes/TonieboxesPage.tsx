@@ -10,6 +10,7 @@ import BreadcrumbWrapper, {
 
 import { TonieboxesSubNav } from "../../components/tonieboxes/TonieboxesSubNav";
 import { TonieboxesList } from "../../components/tonieboxes/tonieboxeslist/TonieboxesList";
+import { TEDDYBOXES_ROUTE } from "../../constants/teddybox";
 
 import { useNewBoxesAllowed } from "../../hooks/getsettings/useGetSettingNewBoxesAllowed";
 import { useTonieboxes } from "../../hooks/useTonieboxes";
@@ -48,6 +49,21 @@ export const TonieboxesPage = () => {
                     )}
 
                     <TonieboxesList tonieboxCards={tonieboxes} />
+
+                    <Alert
+                        type="info"
+                        showIcon
+                        style={{ marginTop: 24 }}
+                        title={t("tonieboxes.teddyboxHint")}
+                        description={
+                            <>
+                                {t("tonieboxes.teddyboxHintText")}{" "}
+                                <Link to={TEDDYBOXES_ROUTE}>
+                                    {t("tonieboxes.teddyboxHintLink")}
+                                </Link>
+                            </>
+                        }
+                    />
                 </StyledContent>
             </StyledLayout>
         </>
