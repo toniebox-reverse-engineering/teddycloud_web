@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.8.0
+
+- add condition to skip changelog check for dependabot pull requests
+- Upgrade to cyclone 2.6.6 and reduce cyclone modifications [https://github.com/toniebox-reverse-engineering/teddycloud/pull/559](https://github.com/toniebox-reverse-engineering/teddycloud/pull/559)
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-8-0/4376](https://forum.revvox.de/t/release-notes-0-8-0/4376)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0)
+
 ## 0.7.1
 
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)
