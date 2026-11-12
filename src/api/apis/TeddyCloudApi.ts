@@ -94,9 +94,10 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         ruid: string,
         overlay?: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        validate?: boolean,
     ): Promise<runtime.ApiResponse<TagTonieCard>> {
         const response = await this.apiGetTeddyCloudApiRaw(
-            `/api/getTagInfo?ruid=${ruid}`,
+            `/api/getTagInfo?ruid=${ruid}${validate ? "&validate=true" : ""}`,
             overlay,
             initOverrides,
         );
@@ -104,14 +105,15 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * get tag info
+     * get tag info, validate=true checks the SHA1 hash and length of the whole TAF
      */
     async apiGetTagInfo(
         ruid: string,
         overlay?: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        validate?: boolean,
     ): Promise<TonieCardProps> {
-        const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides);
+        const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides, validate);
         const tag = (await response.value()).tagInfo;
 
         return tag;

@@ -10,6 +10,7 @@ import {
     PlayCircleOutlined,
     RetweetOutlined,
     StopOutlined,
+    WarningOutlined,
 } from "@ant-design/icons";
 
 import { TonieCardProps, TonieInfo } from "../../../types/tonieTypes";
@@ -88,6 +89,13 @@ export const TonieCard: React.FC<{
     const [keySelectFileFileBrowser, setKeySelectFileFileBrowser] = useState(0);
 
     const [isInformationModalOpen, setInformationModalOpen] = useState(false);
+    // result of a file check, passed to the list when the information modal closes
+    const [verified, setVerified] = useState<{
+        checked: TonieCardProps;
+        card: TonieCardProps;
+    } | null>(null);
+    // a check of an older version of this card is outdated
+    const verifiedTonieCard = verified?.checked === tonieCard ? verified.card : null;
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isSelectFileModalOpen, setSelectFileModalOpen] = useState(false);
     const [selectedModelDisplayText, setSelectedModelDisplayText] = useState<string>("");
@@ -243,7 +251,10 @@ export const TonieCard: React.FC<{
         handleLiveClick,
         handleNoCloudClick,
         handleBackgroundDownload,
+        handleRedownload,
+        handleVerify,
         isBackgroundDownloading,
+        isVerifying,
     } = useTonieCardActions({
         tonieCard,
         overlay,
@@ -253,6 +264,7 @@ export const TonieCard: React.FC<{
         addLoadingNotification,
         closeLoadingNotification,
         fetchUpdatedTonieCard,
+        onVerified: (card, checked) => setVerified({ checked, card }),
     });
 
     // ------------------------
@@ -588,6 +600,23 @@ export const TonieCard: React.FC<{
                                   : t("tonies.unsetTonie")}
                         </div>
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                            {(verifiedTonieCard ?? tonieCard).corrupt ? (
+                                <Tooltip placement="top" zIndex={2} title={t("tonies.corruptHint")}>
+                                    <WarningOutlined
+                                        role="button"
+                                        tabIndex={0}
+                                        aria-label={t("tonies.corruptHint")}
+                                        style={{ color: token.colorError, fontSize: 18 }}
+                                        onClick={() => setInformationModalOpen(true)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                setInformationModalOpen(true);
+                                            }
+                                        }}
+                                    />
+                                </Tooltip>
+                            ) : null}
                             {languageCode && languageCode !== defaultLanguageCode ? (
                                 <Tooltip
                                     placement="top"
@@ -665,13 +694,27 @@ export const TonieCard: React.FC<{
             {isInformationModalOpen && (
                 <TonieInformationModal
                     open={isInformationModalOpen}
-                    onClose={() => setInformationModalOpen(false)}
-                    tonieCardOrTAFRecord={tonieCard}
+                    onClose={() => {
+                        setInformationModalOpen(false);
+                        if (verifiedTonieCard) {
+                            setVerified(null);
+                            onUpdate(verifiedTonieCard);
+                        }
+                    }}
+                    tonieCardOrTAFRecord={verifiedTonieCard ?? tonieCard}
                     showSourceInfo={showSourceInfo}
                     readOnly={readOnly}
                     lastRUIDs={lastRUIDs}
                     onHide={onHide}
                     overlay={overlay}
+                    onVerify={handleVerify}
+                    isVerifying={isVerifying}
+                    onRedownload={
+                        (verifiedTonieCard ?? tonieCard).redownloadUrl && toniesCloudAvailable
+                            ? () => handleRedownload((verifiedTonieCard ?? tonieCard).redownloadUrl)
+                            : undefined
+                    }
+                    isRedownloading={isBackgroundDownloading}
                 />
             )}
 
