@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.8.0
+
+- add condition to skip changelog check for dependabot pull requests
+- Upgrade to cyclone 2.6.6 and reduce cyclone modifications [https://github.com/toniebox-reverse-engineering/teddycloud/pull/559](https://github.com/toniebox-reverse-engineering/teddycloud/pull/559)
+- gui: Fixed opening a subfolder in the library's image view switching back to the audio view and failing to load the folder [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/370](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/370)
+- gui: A 401 passed on from the cloud (e.g. by a TonieCard background download) no longer switches the UI to the login page; only the web login's own answer does [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357)
+- gui: Fixed settings listeners: removing a listener had no effect, and id listeners were added to the general listeners again on every render [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365)
+- gui: Fixed the ESP32 flasher's wrong-chip message showing placeholders instead of the chip types [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/367](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/367)
+- Box version (hardware) is now persisted in the overlay config and returned by /api/getBoxes [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/566](https://github.com/toniebox-reverse-engineering/teddycloud/pull/566)
+- gui: Box version on the box card and in box setup now uses the persisted box version, so it stays known after a server restart [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561)
+- Fixed a corrupted TAF in the library being kept when the same content was cached from the cloud again [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
+- Added `corrupt` and `redownloadUrl` to the tag index, a forced cloud download (`force=true`) and a full TAF check on demand (`getTagInfo?validate=true`) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
+- gui: Show corrupted TAF files on the Tonie card, check a TAF on demand and redownload it from the cloud in the Tonie information [https://github.com/toniebox-reverse-engineering/teddycloud/issues/338](https://github.com/toniebox-reverse-engineering/teddycloud/issues/338)
+
+### Commits
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/compare/tc_v0.7.1...tc_v0.8.0)
+- [https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud_web/compare/tcw_v0.7.1...tcw_v0.8.0)
+
+### Discussion
+
+- [https://forum.revvox.de/t/release-notes-0-8-0/4376](https://forum.revvox.de/t/release-notes-0-8-0/4376)
+
+### GitHub Release
+
+- [https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0](https://github.com/toniebox-reverse-engineering/teddycloud/releases/tag/tc_v0.8.0)
+
 ## 0.7.1
 
 - Added "listened" status tracking for library files, incl. auto-mark on sync (opt-out) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/467](https://github.com/toniebox-reverse-engineering/teddycloud/pull/467)

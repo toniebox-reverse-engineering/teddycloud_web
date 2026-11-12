@@ -17,6 +17,19 @@ const getBasePath = (): string => {
     return "http://localhost";
 };
 
+// Proxied requests such as /content/download pass the cloud's own 401 on; only the web login answers with this body.
+const isLoginRequired = async (response: Response): Promise<boolean> => {
+    if (response.status !== 401) {
+        return false;
+    }
+    try {
+        const body = await response.clone().json();
+        return body?.error === "unauthorized";
+    } catch {
+        return false;
+    }
+};
+
 export const defaultAPIConfig = () =>
     new Configuration({
         basePath: getBasePath(),
@@ -32,11 +45,9 @@ export const defaultAPIConfig = () =>
                 /* ignore */
             }
             const response = await fetch(url, { ...init, headers, credentials: "same-origin" });
-            if (response.status === 401) {
-                const path = typeof url === "string" ? url : url.toString();
-                if (!path.includes("/api/auth/")) {
-                    window.dispatchEvent(new Event("teddycloud-auth-required"));
-                }
+            const path = typeof url === "string" ? url : url.toString();
+            if (!path.includes("/api/auth/") && (await isLoginRequired(response))) {
+                window.dispatchEvent(new Event("teddycloud-auth-required"));
             }
             return response;
         },
