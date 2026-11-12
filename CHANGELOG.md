@@ -8,6 +8,8 @@
 - gui: A 401 passed on from the cloud (e.g. by a TonieCard background download) no longer switches the UI to the login page; only the web login's own answer does [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357)
 - gui: Fixed settings listeners: removing a listener had no effect, and id listeners were added to the general listeners again on every render [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365)
 - gui: Fixed the ESP32 flasher's wrong-chip message showing placeholders instead of the chip types [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/367](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/367)
+- Box version (hardware) is now persisted in the overlay config and returned by /api/getBoxes [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561) [https://github.com/toniebox-reverse-engineering/teddycloud/pull/566](https://github.com/toniebox-reverse-engineering/teddycloud/pull/566)
+- gui: Box version on the box card and in box setup now uses the persisted box version, so it stays known after a server restart [https://github.com/toniebox-reverse-engineering/teddycloud/issues/561](https://github.com/toniebox-reverse-engineering/teddycloud/issues/561)
 
 ### Commits
 
