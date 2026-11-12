@@ -1715,7 +1715,7 @@
                 "cancel": "Annulla",
                 "chipMAC": "MAC chip",
                 "chipType": "Tipo di chip",
-                "chipTypeError": "Errore nel tipo di chip - letto un tipo imprevisto. Letto {{actualname}}, previsto {{expectedname}}. Elaborazione interrotta: controlla il collegamento e riprova!",
+                "chipTypeError": "Errore nel tipo di chip - letto un tipo imprevisto. Letto {{actualtype}}, previsto {{expectedtype}}. Elaborazione interrotta: controlla il collegamento e riprova!",
                 "confirmFlashDialog": "Vuoi davvero flashare il Toniebox? Assicurati che la connessione sia stabile e non interrompere il processo!",
                 "confirmFlashDialogHint": "Per garantire il corretto funzionamento del Toniebox, l'istanza TeddyCloud specificata è assolutamente necessaria. Se TeddyCloud è offline, il Toniebox non potrà accedere a nuovi contenuti!",
                 "confirmFlashModal": "Flasha il Toniebox con il firmware modificato",

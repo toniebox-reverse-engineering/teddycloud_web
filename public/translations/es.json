@@ -1715,7 +1715,7 @@
                 "cancel": "Cancelar",
                 "chipMAC": "Chip MAC",
                 "chipType": "Tipo de chip",
-                "chipTypeError": "Error de tipo de chip - Se leyó un tipo inesperado. Leído {{actualname}}, esperado {{expectedname}}. Proceso abortado, revise la conexión y vuelva a intentarlo.",
+                "chipTypeError": "Error de tipo de chip - Se leyó un tipo inesperado. Leído {{actualtype}}, esperado {{expectedtype}}. Proceso abortado, revise la conexión y vuelva a intentarlo.",
                 "confirmFlashDialog": "¿Realmente quieres flashear tu Toniebox? ¡Asegúrate de tener una conexión estable y no interrumpas el proceso!",
                 "confirmFlashDialogHint": "Para garantizar que tu Toniebox funcione correctamente, la instancia especificada de TeddyCloud es absolutamente necesaria. Si tu TeddyCloud está desconectado, ¡tu Toniebox no podrá acceder al nuevo contenido!",
                 "confirmFlashModal": "Flashear Toniebox con firmware parcheado",
