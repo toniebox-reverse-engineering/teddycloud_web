@@ -4,6 +4,10 @@
 
 - add condition to skip changelog check for dependabot pull requests
 - Upgrade to cyclone 2.6.6 and reduce cyclone modifications [https://github.com/toniebox-reverse-engineering/teddycloud/pull/559](https://github.com/toniebox-reverse-engineering/teddycloud/pull/559)
+- gui: Fixed opening a subfolder in the library's image view switching back to the audio view and failing to load the folder [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/370](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/370)
+- gui: A 401 passed on from the cloud (e.g. by a TonieCard background download) no longer switches the UI to the login page; only the web login's own answer does [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357)
+- gui: Fixed settings listeners: removing a listener had no effect, and id listeners were added to the general listeners again on every render [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365)
+- gui: Fixed the ESP32 flasher's wrong-chip message showing placeholders instead of the chip types [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/367](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/367)
 
 ### Commits
 
@@ -40,7 +44,6 @@
 - gui: Optional web UI login with multiple users (all full UI rights) [https://github.com/toniebox-reverse-engineering/teddycloud/issues/85](https://github.com/toniebox-reverse-engineering/teddycloud/issues/85)
 - gui: Rate-limit web login after repeated failures
 - gui: Fixed auto-redirect from base URL to web UI returning "Login required" when web login is enabled [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/333)
-- gui: Fixed opening a subfolder in the library's image view switching back to the audio view and failing to load the folder [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/370](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/370)
 - gui: fixed missing images in library [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/320)
 - gui: Added Polish (pl) language support [https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325](https://github.com/toniebox-reverse-engineering/teddycloud_web/pull/325)
 - gui: Added "assign to Tonie" action directly from the library file browser [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/240)
@@ -66,7 +69,6 @@
 - gui: Added support for the optional `hideInNav` property in plugin `plugin.json` files to prevent plugins from being shown in the navigation
 - gui: Added pagination in plugin list
 - gui: Fixed web login edge cases: the login page now appears when login gets enabled while the UI is open, and logging out while TeddyCloud is unreachable no longer leaves the logged-in view on screen
-- gui: A 401 passed on from the cloud (e.g. by a TonieCard background download) no longer switches the UI to the login page; only the web login's own answer does [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/357)
 - gui: Failed file downloads in the library and the Tonie information dialog now show an error notification instead of failing silently
 - gui: A failed upload in the browser-side (WASM) audio encoder no longer additionally raises an uncaught promise rejection after showing the error notification
 - gui: Connected the "edit metadata" action of TAF files in the file browser with the Custom Model Editor, incl. track rows from the TAF header with their duration and a hint when a custom model overrides an original tonie [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/341)
@@ -76,7 +78,6 @@
 - gui: Fixed TAF track downloads in the TonieInformationModal to use the correct linked/source TAF for Content and Tonies views, including uncached Tonies, and keep track selections across re-renders, screen size changes and audio player updates
 - gui: TeddyStudio: Reworked label printing to generate a browser-independent PDF instead of relying on CSS print layouts, including PDF preview and download functionality [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/286)
 - gui: Adapted outdated hint to new release candidate tags
-- gui: Fixed settings listeners: removing a listener had no effect, and id listeners were added to the general listeners again on every render [https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365](https://github.com/toniebox-reverse-engineering/teddycloud_web/issues/365)
 
 ### Commits
 
