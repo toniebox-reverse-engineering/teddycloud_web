@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs>
+  <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8816f"/><stop offset="0.35" stop-color="#e0573f"/><stop offset="1" stop-color="#c54c37"/></linearGradient>
+  <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse" x="2" y="4"><circle cx="7" cy="7" r="2.8" fill="#86331f"/></pattern>
+  <radialGradient id="bg" cx="0.5" cy="0.35" r="0.75"><stop offset="0" stop-color="#3a9bbd"/><stop offset="1" stop-color="#1f6f8b"/></radialGradient>
+</defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<g transform="translate(40 70) scale(1.08)">
+  <ellipse cx="200" cy="338" rx="160" ry="15" fill="#000" opacity="0.18"/>
+  <ellipse cx="98" cy="110" rx="40" ry="43" fill="#a8412f"/><ellipse cx="93" cy="103" rx="33" ry="34" fill="#c24c37"/>
+  <ellipse cx="98" cy="112" rx="23" ry="26" fill="#f4b3a2"/>
+  <ellipse cx="300" cy="94" rx="56" ry="60" fill="#a8412f"/><ellipse cx="293" cy="84" rx="46" ry="48" fill="#c24c37"/>
+  <ellipse cx="300" cy="97" rx="32" ry="36" fill="#f4b3a2"/>
+  <rect x="92" y="312" width="52" height="22" rx="10" fill="#86331f"/><rect x="256" y="312" width="52" height="22" rx="10" fill="#86331f"/>
+  <rect x="52" y="112" width="296" height="212" rx="52" fill="url(#body)"/>
+  <rect x="66" y="146" width="268" height="164" rx="40" fill="none" stroke="#f08d79" stroke-width="2.5" stroke-dasharray="7 7" opacity="0.7"/>
+  <rect x="88" y="160" width="224" height="136" rx="32" fill="#a9432f"/>
+  <rect x="88" y="160" width="224" height="136" rx="32" fill="url(#dots)"/>
+  <g fill="#fdeee6"><ellipse cx="200" cy="246" rx="27" ry="21"/><circle cx="171" cy="214" r="10"/><circle cx="191" cy="202" r="10.5"/><circle cx="211" cy="202" r="10.5"/><circle cx="230" cy="214" r="10"/></g>
+  <ellipse cx="200" cy="116" rx="80" ry="17" fill="#86331f"/><ellipse cx="200" cy="112" rx="72" ry="13" fill="#ee8a74"/>
+</g>
+</svg>

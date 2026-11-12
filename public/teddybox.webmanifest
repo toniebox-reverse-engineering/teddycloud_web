@@ -1,0 +1,39 @@
+{
+    "id": "teddybox",
+    "name": "Teddybox",
+    "short_name": "Teddybox",
+    "description": "Teddybox: the kids player of TeddyCloud",
+    "start_url": "teddybox",
+    "scope": "teddybox",
+    "display": "fullscreen",
+    "display_override": ["fullscreen", "standalone"],
+    "orientation": "any",
+    "theme_color": "#1f6f8b",
+    "background_color": "#1f6f8b",
+    "icons": [
+        {
+            "src": "teddybox-icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "teddybox-icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "teddybox-icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "teddybox-icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ]
+}

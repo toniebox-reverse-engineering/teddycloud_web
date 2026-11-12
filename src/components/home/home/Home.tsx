@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Tabs, TabsProps, Typography } from "antd";
+import { Alert, Button, Grid, Tabs, TabsProps, Typography, theme } from "antd";
 import {
     forumUrl,
     gitHubTCCommitTreeBaseUrl,
@@ -10,6 +10,8 @@ import {
     wikiUrl,
 } from "../../../constants/urls";
 import LoadingSpinner from "../../common/elements/LoadingSpinner";
+import { TeddyBoxesList } from "../../teddyboxes/TeddyBoxesList";
+import { TEDDYBOXES_ROUTE } from "../../../constants/teddybox";
 import { TonieboxesList } from "../../tonieboxes/tonieboxeslist/TonieboxesList";
 import { ToniesList } from "../../tonies/tonieslist/ToniesList";
 import { useHomeData } from "./data/useHomeData";
@@ -20,6 +22,17 @@ const { Paragraph } = Typography;
 
 export const Home = () => {
     const { t } = useTranslation();
+    const { token } = theme.useToken();
+    const screens = Grid.useBreakpoint();
+    // below desktop width the three tab titles only fit next to each other in a smaller size
+    const tabTitleStyle = {
+        marginBottom: 0,
+        fontSize: screens.lg
+            ? undefined
+            : screens.sm
+              ? token.fontSizeHeading4
+              : token.fontSizeHeading5,
+    };
     const navigate = useNavigate();
     const {
         newVersionAvailable,
@@ -155,16 +168,33 @@ export const Home = () => {
         </>
     );
 
+    const teddyboxesTab = (
+        <>
+            <Paragraph type="secondary">{t("home.teddyboxesIntro")}</Paragraph>
+            <TeddyBoxesList readOnly limit={4} />
+            <Paragraph style={{ marginTop: 16 }}>
+                <Button onClick={() => navigate(TEDDYBOXES_ROUTE)}>
+                    {t("home.toAllYourTeddyBoxes")}
+                </Button>
+            </Paragraph>
+        </>
+    );
+
     const toniesAndTonieboxes: TabsProps["items"] = [
         {
             key: "tonies",
-            label: <h2 style={{ marginBottom: 0 }}>{t("home.yourTonies")}</h2>,
+            label: <h2 style={tabTitleStyle}>{t("tonies.navigationTitle")}</h2>,
             children: toniesTab,
         },
         {
             key: "tonieboxes",
-            label: <h2 style={{ marginBottom: 0 }}>{t("home.yourTonieboxes")}</h2>,
+            label: <h2 style={tabTitleStyle}>{t("tonieboxes.navigationTitle")}</h2>,
             children: tonieboxesTab,
+        },
+        {
+            key: "teddyboxes",
+            label: <h2 style={tabTitleStyle}>{t("teddybox.title")}</h2>,
+            children: teddyboxesTab,
         },
     ];
 
@@ -197,6 +227,9 @@ export const Home = () => {
 
             <Paragraph>
                 <Tabs
+                    tabBarGutter={
+                        screens.lg ? undefined : screens.sm ? token.marginMD : token.marginSM
+                    }
                     onChange={(newKey) => setActiveTab(newKey)}
                     activeKey={activeTab}
                     items={toniesAndTonieboxes}

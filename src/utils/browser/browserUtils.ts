@@ -58,6 +58,13 @@ export const isVolumeControlSupported = (): boolean => {
 
 export const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
+/**
+ * Phone or tablet: the main input is a finger. Independent of the window width, so a narrow
+ * window on a laptop (also one with a touch screen) does not count.
+ */
+export const isPhoneOrTablet = (): boolean =>
+    isBrowser && (window.matchMedia("(pointer: coarse) and (hover: none)").matches || isIOS());
+
 // ============================
 // Theme / Color Scheme
 // ============================

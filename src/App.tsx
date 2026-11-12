@@ -2,7 +2,7 @@ import { BulbOutlined, CodeOutlined, MoonOutlined, SunOutlined } from "@ant-desi
 import { ConfigProvider, Flex, Alert, Button, Layout, Spin, Typography, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { StyledFooter } from "./components/common/footer/StyledFooter";
@@ -57,6 +57,12 @@ import { TeddyAudioPlaylistsPage } from "./pages/tonies/TeddyAudioPlaylistsPage"
 import { TeddyStudioPage } from "./pages/tonies/TeddyStudioPage";
 import { ToniesPage } from "./pages/tonies/ToniesPage";
 import { CustomTonieCreatorPage } from "./pages/tonies/CustomTonieCreatorPage";
+
+import { TeddyBoxPage } from "./pages/teddybox/TeddyBoxPage";
+import { TeddyBoxesPage } from "./pages/teddyboxes/TeddyBoxesPage";
+import { TeddyBoxGuidePage } from "./pages/teddyboxes/TeddyBoxGuidePage";
+import { TEDDYBOX_ROUTE, TEDDYBOXES_GUIDE_ROUTE, TEDDYBOXES_ROUTE } from "./constants/teddybox";
+import { getActiveTeddyBox } from "./utils/teddybox/deviceStorage";
 
 import "./styles/matrix/matrix.css";
 import { matrixAlgorithm } from "./styles/matrix/matrixAlgorithm";
@@ -187,6 +193,11 @@ function AuthenticatedApp({
 }) {
     const { t } = useTranslation();
     const { loading, error, statusAvailable, needsLogin, refresh } = useAuth();
+    const location = useLocation();
+    const onTeddyBox =
+        location.pathname === TEDDYBOX_ROUTE || location.pathname.startsWith(`${TEDDYBOX_ROUTE}/`);
+    // A device with an active TeddyBox stays in the kids mode until a parent ends it there.
+    const activeTeddyBox = getActiveTeddyBox();
 
     if (loading) {
         return (
@@ -231,6 +242,25 @@ function AuthenticatedApp({
 
     if (needsLogin) {
         return <LoginPage themeSwitch={themeSwitch} />;
+    }
+
+    if (activeTeddyBox && !onTeddyBox) {
+        return <Navigate to={`${TEDDYBOX_ROUTE}/${encodeURIComponent(activeTeddyBox)}`} replace />;
+    }
+
+    if (onTeddyBox) {
+        // The TeddyBox is a separate full-screen UI without header, menu and footer.
+        return (
+            <TeddyCloudProvider>
+                {/* the settings reuse dialogs of the admin UI (e.g. the image picker) that need it */}
+                <AudioProvider>
+                    <Routes>
+                        <Route path={TEDDYBOX_ROUTE} element={<TeddyBoxPage />} />
+                        <Route path={`${TEDDYBOX_ROUTE}/:id`} element={<TeddyBoxPage />} />
+                    </Routes>
+                </AudioProvider>
+            </TeddyCloudProvider>
+        );
     }
 
     return (
@@ -313,6 +343,16 @@ function AuthenticatedApp({
                                 />
                                 <Route
                                     path="/tonieboxes/plugin/:pluginId"
+                                    element={<PluginPage />}
+                                />
+
+                                <Route path={TEDDYBOXES_ROUTE} element={<TeddyBoxesPage />} />
+                                <Route
+                                    path={TEDDYBOXES_GUIDE_ROUTE}
+                                    element={<TeddyBoxGuidePage />}
+                                />
+                                <Route
+                                    path={`${TEDDYBOXES_ROUTE}/plugin/:pluginId`}
                                     element={<PluginPage />}
                                 />
 
