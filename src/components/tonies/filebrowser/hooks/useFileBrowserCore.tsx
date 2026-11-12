@@ -49,6 +49,7 @@ interface UseFileBrowserCoreResult {
     generateBreadcrumbs: (currentPath: string) => React.ReactNode;
 
     buildDirPath: (dirPath: string) => string;
+    navigateToPath: (newPath: string) => void;
     buildContentUrl: (
         fileName: string,
         options?: { ogg?: boolean; path?: string; special?: string },
@@ -318,10 +319,18 @@ export const useFileBrowserCore = ({
         setFilterFieldAutoFocus(false);
     };
 
+    // Keep other query params (e.g. Library page's view=custom_img); path is already segment-encoded.
+    const navigateToPath = (newPath: string) => {
+        const qp = new URLSearchParams(location.search);
+        qp.delete("path");
+        const rest = qp.toString();
+        navigate(`?${rest ? `${rest}&` : ""}path=${newPath}`);
+    };
+
     // breadcrumbs
     const handleBreadcrumbClick = (dirPath: string) => {
         if (mode === "fileBrowser" && trackUrl) {
-            navigate(`?path=${dirPath}`);
+            navigateToPath(dirPath);
         }
         if (path === dirPath) {
             setRebuildList((prev) => !prev);
@@ -492,6 +501,7 @@ export const useFileBrowserCore = ({
         generateBreadcrumbs,
 
         buildDirPath,
+        navigateToPath,
         buildContentUrl,
 
         defaultSorter,
