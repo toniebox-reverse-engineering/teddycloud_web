@@ -24,7 +24,7 @@ export default class SettingsDataHandler {
     private settings: Setting[] = [];
     private unsavedChanges: boolean = false;
     private listeners: (() => void)[] = [];
-    private idListeners: { iD: string; listener: () => {} }[] = [];
+    private idListeners: { iD: string; listener: () => void }[] = [];
     private addNotification!: (
         type: NotificationTypeEnum,
         message: string,
@@ -84,17 +84,17 @@ export default class SettingsDataHandler {
     }
 
     removeListener(listener: () => void) {
-        this.listeners.filter((currentListener) => currentListener !== listener);
+        this.listeners = this.listeners.filter((currentListener) => currentListener !== listener);
     }
 
     public addIdListener(listener: () => void, iD: string) {
         if (!this.idListeners.find((element) => element.listener === listener)) {
-            this.listeners.push(listener);
+            this.idListeners.push({ iD, listener });
         }
     }
 
     removeIdListener(listener: () => void) {
-        this.idListeners.filter((element) => element.listener !== listener);
+        this.idListeners = this.idListeners.filter((element) => element.listener !== listener);
     }
 
     private callAllListeners() {

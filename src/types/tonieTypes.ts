@@ -21,6 +21,8 @@ export type TonieCardProps = {
     source: string;
     audioUrl: string;
     downloadTriggerUrl: string;
+    redownloadUrl?: string;
+    corrupt?: boolean;
     tonieInfo: TonieInfo;
     sourceInfo: TonieInfo;
     trackSeconds: number[];

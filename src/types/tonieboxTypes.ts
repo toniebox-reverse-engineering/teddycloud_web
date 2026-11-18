@@ -10,6 +10,7 @@ export type TonieboxCardProps = {
     commonName: string;
     boxName: string;
     boxModel: string;
+    boxVersion?: number;
 };
 
 export type TonieboxCardsList = {

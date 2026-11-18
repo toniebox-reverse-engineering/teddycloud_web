@@ -94,9 +94,10 @@ export class TeddyCloudApi extends runtime.BaseAPI {
         ruid: string,
         overlay?: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        validate?: boolean,
     ): Promise<runtime.ApiResponse<TagTonieCard>> {
         const response = await this.apiGetTeddyCloudApiRaw(
-            `/api/getTagInfo?ruid=${ruid}`,
+            `/api/getTagInfo?ruid=${ruid}${validate ? "&validate=true" : ""}`,
             overlay,
             initOverrides,
         );
@@ -104,14 +105,15 @@ export class TeddyCloudApi extends runtime.BaseAPI {
     }
 
     /**
-     * get tag info
+     * get tag info, validate=true checks the SHA1 hash and length of the whole TAF
      */
     async apiGetTagInfo(
         ruid: string,
         overlay?: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
+        validate?: boolean,
     ): Promise<TonieCardProps> {
-        const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides);
+        const response = await this.apiGetTagInfoRaw(ruid, overlay, initOverrides, validate);
         const tag = (await response.value()).tagInfo;
 
         return tag;
@@ -365,11 +367,33 @@ export class TeddyCloudApi extends runtime.BaseAPI {
 
     /**
      * get tonieBoxVersion
+     * falls back to boxIC if boxVersion is unset
      */
     async apiGetTonieboxVersion(
         overlay: string,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<string> {
+        try {
+            const response = await this.apiGetTeddyCloudSettingRaw(
+                "boxVersion",
+                overlay,
+                initOverrides,
+            );
+            const boxVersion = (await response.text()).trim();
+            if (boxVersion !== "" && boxVersion !== "0") {
+                return boxVersion;
+            }
+        } catch (error) {
+            // the runtime wraps an aborted fetch in a FetchError
+            if (
+                error instanceof Error &&
+                (error.name === "AbortError" ||
+                    (error instanceof runtime.FetchError && error.cause.name === "AbortError"))
+            ) {
+                throw error;
+            }
+            // older server without the boxVersion setting
+        }
         const response = await this.apiGetTeddyCloudSettingRaw(
             "internal.toniebox_firmware.boxIC",
             overlay,

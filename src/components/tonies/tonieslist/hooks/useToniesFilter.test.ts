@@ -145,6 +145,19 @@ describe("useToniesFilter custom filter", () => {
         expect(result.map((t) => t.ruid)).toEqual(["match"]);
     });
 
+    it("filters corrupted tonies, a missing corrupt flag counts as not corrupted", () => {
+        const corrupted = makeTonie({ ruid: "corrupt", corrupt: true });
+        const intact = makeTonie({ ruid: "intact", corrupt: false });
+        const unknown = makeTonie({ ruid: "unknown" });
+
+        expect(
+            applyCustomFilter("corrupt", [corrupted, intact, unknown]).map((t) => t.ruid),
+        ).toEqual(["corrupt"]);
+        expect(
+            applyCustomFilter("!corrupt", [corrupted, intact, unknown]).map((t) => t.ruid),
+        ).toEqual(["intact", "unknown"]);
+    });
+
     it("supports case-insensitive startswith, endswith and in operators", () => {
         const a = makeTonie({ ruid: "a" });
         const b = makeTonie({

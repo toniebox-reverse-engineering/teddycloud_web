@@ -20,6 +20,8 @@ type UseTonieCardActionsParams = {
     addLoadingNotification: (key: string, title: string, description?: string) => void;
     closeLoadingNotification: (key: string) => void;
     fetchUpdatedTonieCard: () => Promise<void>;
+    // the list remounts all cards on an update, which would close an open modal
+    onVerified: (verifiedTonieCard: TonieCardProps, checkedTonieCard: TonieCardProps) => void;
 };
 
 export const useTonieCardActions = ({
@@ -31,8 +33,10 @@ export const useTonieCardActions = ({
     addLoadingNotification,
     closeLoadingNotification,
     fetchUpdatedTonieCard,
+    onVerified,
 }: UseTonieCardActionsParams) => {
     const [isBackgroundDownloading, setIsBackgroundDownloading] = useState(false);
+    const [isVerifying, setIsVerifying] = useState(false);
 
     const notifySuccess = (message: string, description: string) => {
         addNotification(NotificationTypeEnum.Success, message, description, t("tonies.title"));
@@ -123,8 +127,13 @@ export const useTonieCardActions = ({
         }
     };
 
-    const handleBackgroundDownload = async () => {
-        const path = tonieCard.downloadTriggerUrl;
+    const messageArgs = () => ({ model: modelTitle, ruid: tonieCard.ruid });
+
+    // the server streams the TAF from the cloud and caches it; the response body itself is not needed
+    const runCloudDownload = async (
+        path: string | undefined,
+        messages: { loading: string; success: string; error: string },
+    ) => {
         if (!path || isBackgroundDownloading) return;
 
         const key = "loading" + tonieCard.ruid;
@@ -133,34 +142,24 @@ export const useTonieCardActions = ({
         try {
             addLoadingNotification(
                 key,
-                t("tonies.messages.downloading"),
-                t("tonies.messages.downloadingDetails", {
-                    model: modelTitle,
-                    ruid: tonieCard.ruid,
-                }).replace(' "" ', " "),
+                t(`tonies.messages.${messages.loading}`),
+                t(`tonies.messages.${messages.loading}Details`, messageArgs()).replace(' "" ', " "),
             );
 
             const response = await api.apiGetTeddyCloudApiRaw(path);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const blob = await response.blob();
+            await response.blob();
             closeLoadingNotification(key);
 
             notifySuccess(
-                t("tonies.messages.downloadedFile"),
-                t("tonies.messages.downloadedFileDetails", {
-                    model: modelTitle,
-                    ruid: tonieCard.ruid,
-                }).replace(' "" ', " "),
+                t(`tonies.messages.${messages.success}`),
+                t(`tonies.messages.${messages.success}Details`, messageArgs()).replace(' "" ', " "),
             );
             await fetchUpdatedTonieCard();
         } catch (error) {
             closeLoadingNotification(key);
             notifyError(
-                t("tonies.messages.errorDuringDownload"),
-                t("tonies.messages.errorDuringDownloadDetails", {
-                    model: modelTitle,
-                    ruid: tonieCard.ruid,
-                }).replace(' "" ', ""),
+                t(`tonies.messages.${messages.error}`),
+                t(`tonies.messages.${messages.error}Details`, messageArgs()).replace(' "" ', ""),
                 error,
             );
         } finally {
@@ -168,10 +167,62 @@ export const useTonieCardActions = ({
         }
     };
 
+    const handleBackgroundDownload = () =>
+        runCloudDownload(tonieCard.downloadTriggerUrl, {
+            loading: "downloading",
+            success: "downloadedFile",
+            error: "errorDuringDownload",
+        });
+
+    // the url can come from a just checked card that is not in the list yet
+    const handleRedownload = (redownloadUrl = tonieCard.redownloadUrl) =>
+        runCloudDownload(redownloadUrl, {
+            loading: "redownloading",
+            success: "redownloadedFile",
+            error: "errorDuringRedownload",
+        });
+
+    const handleVerify = async () => {
+        if (isVerifying) return;
+        setIsVerifying(true);
+        const checkedTonieCard = tonieCard;
+        try {
+            const verifiedTonieCard = await api.apiGetTagInfo(
+                tonieCard.ruid,
+                overlay,
+                undefined,
+                true,
+            );
+            onVerified(verifiedTonieCard, checkedTonieCard);
+            if (verifiedTonieCard.corrupt) {
+                notifyError(
+                    t("tonies.messages.verifiedCorrupt"),
+                    t("tonies.messages.verifiedCorruptDetails", messageArgs()).replace(' "" ', " "),
+                );
+            } else {
+                notifySuccess(
+                    t("tonies.messages.verifiedValid"),
+                    t("tonies.messages.verifiedValidDetails", messageArgs()).replace(' "" ', " "),
+                );
+            }
+        } catch (error) {
+            notifyError(
+                t("tonies.messages.errorDuringVerify"),
+                t("tonies.messages.errorDuringVerifyDetails", messageArgs()).replace(' "" ', ""),
+                error,
+            );
+        } finally {
+            setIsVerifying(false);
+        }
+    };
+
     return {
         handleLiveClick,
         handleNoCloudClick,
         handleBackgroundDownload,
+        handleRedownload,
+        handleVerify,
         isBackgroundDownloading,
+        isVerifying,
     };
 };

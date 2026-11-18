@@ -95,7 +95,11 @@ describe("defaultAPIConfig", () => {
     });
 
     it("dispatches auth-required for a protected 401 response", async () => {
-        vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(null, { status: 401 }));
+        vi.spyOn(globalThis, "fetch").mockResolvedValue(
+            new Response(JSON.stringify({ error: "unauthorized", message: "Login required" }), {
+                status: 401,
+            }),
+        );
         const authRequired = vi.fn();
         window.addEventListener("teddycloud-auth-required", authRequired);
 
@@ -104,6 +108,24 @@ describe("defaultAPIConfig", () => {
             await config.fetchApi!("/api/fileIndexV2", { method: "GET" });
 
             expect(authRequired).toHaveBeenCalledTimes(1);
+        } finally {
+            window.removeEventListener("teddycloud-auth-required", authRequired);
+        }
+    });
+
+    it("does not dispatch auth-required for a 401 passed on from the cloud", async () => {
+        vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(null, { status: 401 }));
+        const authRequired = vi.fn();
+        window.addEventListener("teddycloud-auth-required", authRequired);
+
+        try {
+            const config = defaultAPIConfig();
+            const response = await config.fetchApi!("/content/download/12345678/50000000", {
+                method: "GET",
+            });
+
+            expect(authRequired).not.toHaveBeenCalled();
+            expect(response.status).toBe(401);
         } finally {
             window.removeEventListener("teddycloud-auth-required", authRequired);
         }

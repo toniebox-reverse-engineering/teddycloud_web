@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Table, Input, theme, Modal, Upload } from "antd";
 import type { UploadProps } from "antd";
@@ -70,8 +69,6 @@ const SelectFileFileBrowserComponent: React.FC<{
     const { token } = useToken();
     const { addNotification } = useTeddyCloud();
 
-    const navigate = useNavigate();
-
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const [isInformationModalOpen, setIsInformationModalOpen] = useState<boolean>(false);
@@ -101,6 +98,7 @@ const SelectFileFileBrowserComponent: React.FC<{
         inputFilterRef,
         generateBreadcrumbs,
         buildDirPath,
+        navigateToPath,
         buildContentUrl,
         defaultSorter,
         dirNameSorter,
@@ -186,7 +184,7 @@ const SelectFileFileBrowserComponent: React.FC<{
     const handleDirClick = (dirPath: string) => {
         const newPath = buildDirPath(dirPath);
         if (trackUrl) {
-            navigate(`?path=${newPath}`);
+            navigateToPath(newPath);
         }
         handleFilterFieldInputBlur();
         setSelectedRowKeys([]);

@@ -45,6 +45,10 @@ const CustomFilterHelpModal: React.FC<CustomFilterHelpModalProps> = ({ open, onC
             description: t("tonies.tonies.filterBar.customFilterHelp.fields.claimed"),
         },
         { field: "valid", description: t("tonies.tonies.filterBar.customFilterHelp.fields.valid") },
+        {
+            field: "corrupt",
+            description: t("tonies.tonies.filterBar.customFilterHelp.fields.corrupt"),
+        },
         { field: "live", description: t("tonies.tonies.filterBar.customFilterHelp.fields.live") },
         {
             field: "nocloud",
