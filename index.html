@@ -18,7 +18,8 @@
         <meta name="theme-color" content="#000000" />
         <meta name="description" content="TeddyCloud Admin" />
 
-        <link rel="manifest" href="/manifest.json" />
+        <!-- use-credentials: browsers fetch the manifest without cookies otherwise, which fails behind a login proxy -->
+        <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
 
         <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

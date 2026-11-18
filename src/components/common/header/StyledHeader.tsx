@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useMemo, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -18,6 +18,7 @@ import { HomeSubNav } from "../../home/HomeSubNav";
 import { CommunitySubNav } from "../../community/CommunitySubNav";
 import { SettingsSubNav } from "../../settings/SettingsSubNav";
 import { ToniesSubNav } from "../../tonies/ToniesSubNav";
+import { TeddyBoxesSubNav } from "../../teddyboxes/TeddyBoxesSubNav";
 import { TonieboxesSubNav } from "../../tonieboxes/TonieboxesSubNav";
 
 const { useToken } = theme;
@@ -59,7 +60,7 @@ export const StyledHeader = ({
     themeSwitch: React.ReactNode;
     themeMode: string;
 }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { token } = useToken();
     const location = useLocation();
 
@@ -153,6 +154,37 @@ export const StyledHeader = ({
         [isMobile, setCurrentTCSection, setSubNavOpen, setNavOpen],
     );
 
+    // When the menu does not fit, the overflow menu ("...") takes items from the end. Teddyboxes
+    // then moves to the end, so it is the first section to be hidden instead of e.g. Community.
+    const menuWrapRef = useRef<HTMLSpanElement>(null);
+    const [teddyboxesLast, setTeddyboxesLast] = useState(false);
+    useLayoutEffect(() => {
+        const wrap = menuWrapRef.current;
+        if (!wrap) return;
+        const check = () => {
+            const items = Array.from(
+                wrap.querySelectorAll<HTMLElement>(
+                    ".ant-menu-overflow-item:not(.ant-menu-overflow-item-rest)",
+                ),
+            );
+            const needed = items.reduce((sum, item) => sum + item.getBoundingClientRect().width, 0);
+            // hidden on mobile (width 0): the drawer menu keeps the normal order
+            setTeddyboxesLast(wrap.clientWidth > 0 && needed > wrap.clientWidth);
+        };
+        check();
+        const observer = new ResizeObserver(check);
+        observer.observe(wrap);
+        return () => observer.disconnect();
+    }, [i18n.language]);
+
+    const teddyboxesItem = useMemo(
+        () => ({
+            key: "teddyboxes",
+            label: <NavItem title={t("teddybox.title")} to="/teddyboxes" />,
+        }),
+        [NavItem, t],
+    );
+
     // Main Navigation Items
     const mainNav: MenuProps["items"] = useMemo(
         () => [
@@ -162,6 +194,7 @@ export const StyledHeader = ({
                 key: "tonieboxes",
                 label: <NavItem title={t("tonieboxes.navigationTitle")} to="/tonieboxes" />,
             },
+            ...(teddyboxesLast ? [] : [teddyboxesItem]),
             {
                 key: "settings",
                 label: <NavItem title={t("settings.navigationTitle")} to="/settings" />,
@@ -170,8 +203,9 @@ export const StyledHeader = ({
                 key: "community",
                 label: <NavItem title={t("community.navigationTitle")} to="/community" />,
             },
+            ...(teddyboxesLast ? [teddyboxesItem] : []),
         ],
-        [NavItem, t],
+        [NavItem, t, teddyboxesItem, teddyboxesLast],
     );
 
     // Get selected navigation key
@@ -191,6 +225,8 @@ export const StyledHeader = ({
                 return <ToniesSubNav />;
             case t("tonieboxes.navigationTitle"):
                 return <TonieboxesSubNav />;
+            case t("teddybox.title"):
+                return <TeddyBoxesSubNav />;
             default:
                 return <HomeSubNav />;
         }
@@ -206,13 +242,14 @@ export const StyledHeader = ({
                 <HiddenMobile style={{ textWrap: "nowrap" }}> TeddyCloud</HiddenMobile>
             </Link>
 
-            <HiddenMobile>
+            {/* the menu takes the free space between logo and status icons */}
+            <HiddenMobile ref={menuWrapRef} style={{ flex: 1, minWidth: 0 }}>
                 <Menu
                     theme="dark"
                     mode="horizontal"
                     items={mainNav}
                     selectedKeys={[selectedKey]}
-                    style={{ width: "calc(100vw - 510px)" }}
+                    style={{ width: "100%" }}
                 />
             </HiddenMobile>
 

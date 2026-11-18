@@ -4,6 +4,7 @@ export enum TeddyCloudSection {
     Tonies = "tonies",
     Home = "home",
     Tonieboxes = "tonieboxes",
+    Teddyboxes = "teddyboxes",
     Settings = "settings",
     Community = "community",
 }
