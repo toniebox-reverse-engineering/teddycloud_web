@@ -66,6 +66,7 @@ import { detectColorScheme } from "./utils/browser/browserUtils";
 import { StyledThemeProvider } from "./provider/StyledThemeProvider";
 import { USER_STORAGE_SCOPE_EVENT, userStorage } from "./utils/storage/userStorage";
 import { withBase } from "./utils/basePath";
+import { useWebVersionMismatchCheck } from "./hooks/useWebVersionMismatchCheck";
 
 function App() {
     const { defaultAlgorithm, darkAlgorithm } = theme;
@@ -187,6 +188,8 @@ function AuthenticatedApp({
 }) {
     const { t } = useTranslation();
     const { loading, error, statusAvailable, needsLogin, refresh } = useAuth();
+
+    useWebVersionMismatchCheck();
 
     if (loading) {
         return (
