@@ -12,7 +12,7 @@ const api = new TeddyCloudApi(defaultAPIConfig());
 export const checkWebVersionMismatch = async (t: (key: string) => string) => {
     try {
         const ignoreResp = await api.apiGetTeddyCloudSettingRaw(
-            "frontend.ignore_web_version_mismatch"
+            "frontend.ignore_web_version_mismatch",
         );
         const ignoreMismatch = (await ignoreResp.text()).trim() === "true";
         if (ignoreMismatch) {
@@ -20,7 +20,7 @@ export const checkWebVersionMismatch = async (t: (key: string) => string) => {
         }
 
         const expectedShaResp = await api.apiGetTeddyCloudSettingRaw(
-            "internal.version_web.git_sha"
+            "internal.version_web.git_sha",
         );
         const expectedWebGitSha = (await expectedShaResp.text()).trim();
 
@@ -56,7 +56,8 @@ export const checkWebVersionMismatch = async (t: (key: string) => string) => {
                             >
                                 <div>Expected: {expectedWebGitSha.slice(0, 7)}</div>
                                 <div>
-                                    Found: {actualWebGitSha ? actualWebGitSha.slice(0, 7) : "missing"}
+                                    Found:{" "}
+                                    {actualWebGitSha ? actualWebGitSha.slice(0, 7) : "missing"}
                                 </div>
                             </div>
                         </div>
