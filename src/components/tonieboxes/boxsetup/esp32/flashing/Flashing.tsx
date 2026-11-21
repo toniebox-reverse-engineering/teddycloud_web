@@ -59,6 +59,8 @@ export const Flashing: React.FC = () => {
         setIsConfirmFlashModalOpen,
         isOverwriteForceConfirmationModalOpen,
         setIsOverwriteForceConfirmationModalOpen,
+        otherBoxBackup,
+        setOtherBoxBackup,
         extractCertificateErrorMessage,
         isOpenAvailableBoxesModal,
         setIsOpenAvailableBoxesModal,
@@ -290,7 +292,11 @@ export const Flashing: React.FC = () => {
 
     const handleConfirmFlash = () => {
         setIsConfirmFlashModalOpen(false);
-        flashESP32();
+        if (state.resetBox) {
+            resetFlash();
+        } else {
+            flashESP32();
+        }
     };
 
     const handleCancelFlash = () => setIsConfirmFlashModalOpen(false);
@@ -646,11 +652,7 @@ export const Flashing: React.FC = () => {
                                         icon={<UploadOutlined />}
                                         disabled={disableButtons}
                                         type="primary"
-                                        onClick={
-                                            state.resetBox
-                                                ? resetFlash
-                                                : () => setIsConfirmFlashModalOpen(true)
-                                        }
+                                        onClick={() => setIsConfirmFlashModalOpen(true)}
                                     >
                                         {t("tonieboxes.esp32BoxFlashing.esp32flasher.flashEsp32")}
                                     </Button>
@@ -693,14 +695,26 @@ export const Flashing: React.FC = () => {
                     {availableBoxesModal}
 
                     <ConfirmationDialog
-                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal")}
+                        title={t(
+                            state.resetBox
+                                ? "tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine"
+                                : "tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashModal",
+                        )}
                         open={isConfirmFlashModalOpen}
                         okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
                         cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
-                        content={t("tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog")}
-                        contentHint={t(
-                            "tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint",
+                        content={t(
+                            state.resetBox
+                                ? "tonieboxes.esp32BoxFlashing.esp32flasher.confirmResetDialog"
+                                : "tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialog",
                         )}
+                        contentHint={
+                            state.resetBox
+                                ? undefined
+                                : t(
+                                      "tonieboxes.esp32BoxFlashing.esp32flasher.confirmFlashDialogHint",
+                                  )
+                        }
                         handleOk={handleConfirmFlash}
                         handleCancel={handleCancelFlash}
                     />
@@ -720,6 +734,21 @@ export const Flashing: React.FC = () => {
                         open={isOverwriteForceConfirmationModalOpen}
                         handleOk={() => extractAndStoreCertsFromFlash(true)}
                         handleCancel={() => setIsOverwriteForceConfirmationModalOpen(false)}
+                    />
+                    <ConfirmationDialog
+                        title={t("tonieboxes.esp32BoxFlashing.esp32flasher.resetBoxine")}
+                        open={otherBoxBackup !== null}
+                        okText={t("tonieboxes.esp32BoxFlashing.esp32flasher.flash")}
+                        cancelText={t("tonieboxes.esp32BoxFlashing.esp32flasher.cancel")}
+                        content={t(
+                            "tonieboxes.esp32BoxFlashing.esp32flasher.resetOtherBox",
+                            otherBoxBackup ?? {},
+                        )}
+                        handleOk={() => {
+                            setOtherBoxBackup(null);
+                            resetFlash(true);
+                        }}
+                        handleCancel={() => setOtherBoxBackup(null)}
                     />
                 </>
             )}
